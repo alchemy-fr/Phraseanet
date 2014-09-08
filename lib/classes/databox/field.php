@@ -117,6 +117,9 @@ class databox_field implements cache_cacheableInterface
      * @var boolean
      */
     protected $Business;
+
+    protected $aggregable;
+
     protected $renamed = false;
 
     /**
@@ -180,7 +183,7 @@ class databox_field implements cache_cacheableInterface
 
         $sql = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
                 `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
-                `name`, `src`, `business`, `VocabularyControlType`,
+                `name`, `src`, `business`, `aggregable`,  `VocabularyControlType`,
                 `RestrictToVocabularyControl`, `sorter`,
                 `label_en`, `label_fr`, `label_de`, `label_nl`
               FROM metadatas_structure WHERE id=:id";
@@ -214,6 +217,7 @@ class databox_field implements cache_cacheableInterface
         $this->multi = (Boolean) $row['multi'];
         $this->Business = (Boolean) $row['business'];
         $this->report = (Boolean) $row['report'];
+        $this->aggregable = (Boolean) $row['aggregable'];
         $this->position = (Int) $row['sorter'];
         $this->type = $row['type'] ? : self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
@@ -259,6 +263,11 @@ class databox_field implements cache_cacheableInterface
     public function isBusiness()
     {
         return $this->Business;
+    }
+
+    public function isAggregable()
+    {
+        return $this->aggregable;
     }
 
     /**
@@ -370,6 +379,7 @@ class databox_field implements cache_cacheableInterface
           `separator` = :separator,
           `multi` = :multi,
           `business` = :business,
+          `aggregable` = :aggregable,
           `report` = :report,
           `type` = :type,
           `tbranch` = :tbranch,
@@ -392,6 +402,7 @@ class databox_field implements cache_cacheableInterface
             ':separator'             => $this->separator,
             ':multi'                 => $this->multi ? '1' : '0',
             ':business'              => $this->Business ? '1' : '0',
+            ':aggregable'            => $this->aggregable ? '1' : '0',
             ':report'                => $this->report ? '1' : '0',
             ':type'                  => $this->type,
             ':tbranch'               => $this->tbranch,
@@ -443,6 +454,7 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('multi', $this->multi ? '1' : '0');
         $meta->setAttribute('report', $this->report ? '1' : '0');
         $meta->setAttribute('business', $this->Business ? '1' : '0');
+        $meta->setAttribute('aggregable', $this->aggregable ? '1' : '0');
         $meta->setAttribute('type', $this->type);
         $meta->setAttribute('tbranch', $this->tbranch);
         if ($this->multi) {
@@ -601,6 +613,7 @@ class databox_field implements cache_cacheableInterface
     {
         $connbas = $this->get_connection();
 
+
         if (null !== $DCES_element) {
             $sql = 'UPDATE metadatas_structure
                SET dces_element = null WHERE dces_element = :dces_element';
@@ -691,6 +704,14 @@ class databox_field implements cache_cacheableInterface
         if ($this->Business) {
             $this->thumbtitle = null;
         }
+
+        return $this;
+    }
+
+    public function set_aggregable($boolean)
+    {
+        $this->aggregable = ! ! $boolean;
+
 
         return $this;
     }
@@ -932,6 +953,7 @@ class databox_field implements cache_cacheableInterface
             'name'                  => $this->name,
             'tag'                   => $this->tag->getTagname(),
             'business'              => $this->Business,
+            'aggregable'            => $this->aggregable,
             'type'                  => $this->type,
             'sorter'                => $this->position,
             'thumbtitle'            => $this->thumbtitle,
@@ -975,11 +997,11 @@ class databox_field implements cache_cacheableInterface
 
         $sql = "INSERT INTO metadatas_structure
         (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
-          `thumbtitle`, `multi`, `business`,
+          `thumbtitle`, `multi`, `business`, `aggregable`,
           `report`, `sorter`)
         VALUES (null, :name, '', 0, 1, 'string', '',
           null, :multi,
-          0, 1, :sorter)";
+          0, 0, 1, :sorter)";
 
         $name = self::generateName($name);
 

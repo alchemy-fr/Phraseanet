@@ -2655,6 +2655,14 @@
             <comment></comment>
           </field>
           <field>
+            <name>aggregable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
             <name>indexable</name>
             <type>int(1) unsigned</type>
             <null></null>
