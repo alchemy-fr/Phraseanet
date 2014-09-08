@@ -20,6 +20,9 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Elasticsearch\Client;
+use Monolog\Handler\RotatingFileHandler;
+use Psr\Log\LogLevel;
+use Symfony\Bridge\Monolog\Logger;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -355,7 +358,18 @@ class ElasticSearchEngine implements SearchEngineInterface
             'index' => 'phraseanet',
         ], $options);
 
-        $client = new Client(['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]]);
+        $clientParams = ['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]];
+
+        if ($app['debug']) {
+            /** @var $logger Logger */
+            $logger = new $app['monolog.logger.class']('search logger');
+            $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2), Logger::INFO);
+
+            $clientParams['logObject'] = $logger;
+            $clientParams['logging'] = true;
+        }
+
+        $client = new Client($clientParams);
 
         return new static($app, $client, $app['serializer.es-record'], $options['index']);
     }
