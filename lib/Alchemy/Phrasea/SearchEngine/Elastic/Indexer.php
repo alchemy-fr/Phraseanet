@@ -229,37 +229,6 @@ class Indexer
         $mapping->add('flags', $this->getRecordFlagsMapping());
 
         return $mapping->export();
-
-
-        // TODO Migrate code below this line
-        [
-            '_source' => [
-                'enabled' => true
-            ],
-            '_all' => [
-                'analyzer' => 'french',
-                'analysis' => [
-                    'analyzer' => [
-                        'french' => [
-                            'type'      => 'custom',
-                            'tokenizer' => 'letter',
-                            'filter'    => ["asciifolding", "lowercase", "french_stem", "stop_fr"]
-                        ],
-                        'autocomplete_french' => [
-                            'type'      => 'custom',
-                            'tokenizer' => 'letter',
-                            'filter'    => ["asciifolding", "lowercase", "stop_fr"]
-                        ]
-                    ],
-                    'filter' => [
-                        'stop_fr' => [
-                            'type' => 'stop',
-                            'stopwords' => ['l', 'm', 't', 'qu', 'n', 's', 'j', 'd'],
-                        ]
-                    ],
-                ]
-            ]
-        ];
     }
 
     private function getRecordFieldsStructure()
