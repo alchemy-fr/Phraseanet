@@ -362,7 +362,7 @@ foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $da
 
             $connbas = $databox->get_connection();
 
-            $sql = 'SELECT coll_id, record_id'
+            $sql = 'SELECT SQL_CALC_FOUND_ROWS coll_id, record_id'
                   . ' FROM record'
                   . ' WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0'
                   . ' AND type IN(' . implode(',', $sqlqmark) . ')'
@@ -371,6 +371,14 @@ foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $da
             $stmt->execute($sqlparms);
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
+
+            $sql = 'SELECT FOUND_ROWS()';
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute();
+            $this->_todo = (int) $stmt->fetchColumn(0);
+            $stmt->closeCursor();
+
+            $this->setProgress(0, $this->_todo);
         }
         return $rs;
     }
@@ -409,6 +417,11 @@ foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $da
 
     protected function postProcessOneContent(databox $databox, Array $row)
     {
+        if($this->_todo > 0) {
+            $this->_todo--;
+            $this->setProgress(0, $this->_todo);
+        }
+
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
               SET jeton=(jeton & ~' . JETON_MAKE_SUBDEF . '), moddate=NOW()
