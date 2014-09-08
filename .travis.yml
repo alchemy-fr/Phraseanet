@@ -20,9 +20,12 @@ before_script:
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
   - travis_retry composer self-update
   - travis_retry composer install --dev --prefer-source
-  - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
-  - tar xzf sphinx-2.0.6-release.tar.gz
-  - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
+  - sh -c "wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz && tar xzf sphinx-2.0.6-release.tar.gz && cd sphinx-2.0.6-release;
+    if curl -s --head  --request GET http://snowball.tartarus.org/dist/libstemmer_c.tgz | grep '200 OK' > /dev/null; then
+     wget -q http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz;
+     sed -i 's/stem_ISO_8859_1_hungarian/stem_ISO_8859_2_hungarian/g' libstemmer_c/Makefile.in;
+     ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install;
+    fi"
   - sudo mkdir -p /var/sphinx/datas
   - sudo chmod -R 0777 /var/sphinx
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'

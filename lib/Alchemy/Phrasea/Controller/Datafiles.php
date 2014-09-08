@@ -84,11 +84,9 @@ class Datafiles extends AbstractDelivery
                 }
 
                 if ($watermark && !$all_access) {
-
                     $repository = $app['EM']->getRepository('\Entities\BasketElement');
 
                     /* @var $repository \Repositories\BasketElementRepository */
-
                     $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser());
                     $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['authentication']->getUser());
 
