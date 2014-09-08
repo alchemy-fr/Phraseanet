@@ -6,9 +6,9 @@ sudo dpkg-reconfigure -f noninteractive tzdata
 
 # locales
 
-export LANGUAGE=fr_FR.UTF-8
-export LANG=fr_FR.UTF-8
-export LC_ALL=fr_FR.UTF-8
+sudo sh -c "echo 'LANGUAGE=fr_FR.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LANG=fr_FR.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LC_ALL=fr_FR.UTF-8' >> /etc/environment"
 sudo sh -c 'echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen'
@@ -83,11 +83,15 @@ then
     #copy configuration template
     mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
     cp /vagrant/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
+    mv /var/www/phraseanet/.bowerrc /var/www/phraseanet/.bowerrc.bkp
+    cp /vagrant/resources/vagrant/config/bower/.bower.rc /var/www/phraseanet/.bowerrc
     cd /var/www/phraseanet
     composer install -n --prefer-source --dev
     bower install --config.interactive=false
     bin/developer assets:compile-less
     rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
+    rm -f /var/www/phraseanet/.bowerrc
+    mv /www/phraseanet/.bowerrc.bkp /www/phraseanet/.bowerrc
     mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml
 fi
 
@@ -95,3 +99,9 @@ fi
 sudo service mysql restart
 sudo service php5-fpm restart
 sudo service nginx restart
+
+# stoping iptable
+sudo service iptables-persistent stop
+
+# reload bash
+source ~/.bashrc
