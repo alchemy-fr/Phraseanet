@@ -24,7 +24,6 @@ class Indexer
     /** @var Elasticsearch\Client */
     private $client;
     private $options;
-    private $engine;
     private $logger;
     private $appbox;
 
@@ -133,7 +132,7 @@ class Indexer
         if (null !== $refreshInterval) {
             $this->previousRefreshInterval = $refreshInterval;
         }
-        $this->setSetting(self::REFRESH_INTERVAL_KEY, -1);
+        $this->setSetting(self::REFRESH_INTERVAL_KEY, "30s");
     }
 
     private function restoreShardRefreshing()
