@@ -21,7 +21,7 @@ use igorw;
 
 class Indexer
 {
-    /** @var Elasticsearch\Client */
+    /** @var \Elasticsearch\Client */
     private $client;
     private $options;
     private $logger;
@@ -66,6 +66,8 @@ class Indexer
         $params['index'] = $this->options['index'];
         $params['type'] = self::TYPE_RECORD;
         $params['body'][self::TYPE_RECORD] = $this->getRecordMapping();
+
+        // @todo This must throw a new indexation if a mapping is edited
         $this->client->indices()->putMapping($params);
     }
 
@@ -119,7 +121,7 @@ class Indexer
             // Optimize index
             $params = array('index' => $this->options['index']);
             $this->client->indices()->optimize($params);
-
+            $this->restoreShardRefreshing();
         } catch (Exception $e) {
             $this->restoreShardRefreshing();
             throw $e;
