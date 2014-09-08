@@ -130,17 +130,22 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     }
 
     /**
+     * @param $subdef_type
+     * @param $subdef_name
      *
-     * @param  type           $subdef_type
-     * @param  type           $subdef_name
-     * @return databox_subdef
+     * @return mixed
+     * @throws Exception_Databox_SubdefNotFound
      */
     public function get_subdef($subdef_type, $subdef_name)
     {
-        if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name])) {
-            return $this->AvSubdefs[$subdef_type][$subdef_name];
+        $type = strtolower($subdef_type);
+        $name = strtolower($subdef_name);
+
+        if (isset($this->AvSubdefs[$type]) && isset($this->AvSubdefs[$type][$name])) {
+            return $this->AvSubdefs[$type][$name];
         }
-        throw new Exception_Databox_SubdefNotFound(sprintf('Databox subdef name `%s` of type `%s` not found', $subdef_name, $subdef_type));
+
+        throw new Exception_Databox_SubdefNotFound(sprintf('Databox subdef name `%s` of type `%s` not found', $name, $type));
     }
 
     /**

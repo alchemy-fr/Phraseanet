@@ -292,7 +292,7 @@ interface API_V1_Interface
      *    USER_ID : required INT
      *
      */
-    public function get_user_acces(Request $request, $usr_id);
+    public function get_user_access(Request $request, $usr_id);
 
     public function add_record(Application $app, Request $request);
 

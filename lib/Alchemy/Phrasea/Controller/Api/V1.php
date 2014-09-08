@@ -34,7 +34,8 @@ class V1 implements ControllerProviderInterface
 
         /**
          * Api Service
-         * @var Closure
+         *
+         * @return \API_V1_adapter
          */
         $app['api'] = function () use ($app) {
                 return new \API_V1_adapter($app);
@@ -44,7 +45,7 @@ class V1 implements ControllerProviderInterface
          * oAuth token verification process
          * - Check if oauth_token exists && is valid
          * - Check if request comes from phraseanet Navigator && phraseanet Navigator
-         *  is enbale on current instance
+         *  is enable on current instance
          * - restore user session
          *
          * @ throws \API_V1_exception_unauthorized
@@ -165,6 +166,9 @@ class V1 implements ControllerProviderInterface
             );
         });
 
+        /**
+         * Close session
+         */
         $controllers->after(function () use ($app) {
             $app['authentication']->closeAccount();
         });
@@ -177,11 +181,76 @@ class V1 implements ControllerProviderInterface
         };
 
         /**
-         * Check wether the current user is Admin or not
+         * Check whether the current user is Admin or not
          */
         $mustBeAdmin = function (Request $request) use ($app) {
             $user = $app['token']->get_account()->get_user();
             if (!$user->ACL()->is_admin()) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
+            }
+        };
+
+        /**
+         * Check whether the current user has access to databox
+         */
+        $hasAccessToDatabox = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            $databox = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'));
+            if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
+            }
+        };
+
+        /**
+         * Check whether the current user has access to the record
+         */
+        $hasAccessToRecord = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            $record = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'))->get_record($request->attributes->get('record_id'));
+            if (!$user->ACL()->has_access_to_record($record)) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
+            }
+        };
+
+        /**
+         * Check whether the current user can modify the record
+         */
+        $canModifyRecord = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            if (!$user->ACL()->has_right('modifyrecord')) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
+            }
+        };
+
+        /**
+         * Check whether the current user can modify the record status
+         */
+        $canModifyRecordStatus = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            $record = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'))->get_record($request->attributes->get('record_id'));
+            if (!$user->ACL()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
+            }
+        };
+
+        /**
+         * Check whether the current user can see databox structure
+         */
+        $canSeeDataboxStructure = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            $databox = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'));
+            if (!$user->ACL()->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct')) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
+            }
+        };
+
+        /**
+         * Check whether the current user can move record from a collection to an other
+         */
+        $canMoveRecord = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            $record = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'))->get_record($request->attributes->get('record_id'));
+            if ((!$user->ACL()->has_right('addrecord') && !$user->ACL()->has_right('deleterecord')) || !$user->ACL()->has_right_on_base($record->get_base_id(), 'candeleterecord')) {
                 throw new \API_V1_exception_unauthorized('You are not authorized');
             }
         };
@@ -309,7 +378,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_databox_collections($app['request'], $databox_id)
                     ->get_response();
-        })->assert('databox_id', '\d+');
+        })->before($hasAccessToDatabox)->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/collections/', $bad_request_exception);
 
@@ -326,7 +395,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_databox_status($app['request'], $databox_id)
                     ->get_response();
-        })->assert('databox_id', '\d+');
+        })->before($hasAccessToDatabox)->before($canSeeDataboxStructure)->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/status/', $bad_request_exception);
 
@@ -342,7 +411,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_databox_metadatas($app['request'], $databox_id)
                     ->get_response();
-        })->assert('databox_id', '\d+');
+        })->before($hasAccessToDatabox)->before($canSeeDataboxStructure)->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/metadatas/', $bad_request_exception);
 
@@ -362,13 +431,30 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
+        /**
+         * Route /quarantine/list/
+         *
+         * Method : GET
+         *
+         * Parameters ;
+         */
         $controllers->get('/quarantine/list/', function (SilexApplication $app, Request $request) {
             return $app['api']->list_quarantine($app, $request)->get_response();
         });
 
+        /**
+         * Route /quarantine/item/{lazaret_id}/
+         *
+         * Method : GET
+         *
+         * Parameters ;
+         *      LAZARET_ID : required INT
+         */
         $controllers->get('/quarantine/item/{lazaret_id}/', function ($lazaret_id, SilexApplication $app, Request $request) {
             return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
         });
+
+        $controllers->get('/quarantine/item/{any_id}/', $bad_request_exception);
 
         /**
          * Route : /records/add/
@@ -422,11 +508,18 @@ class V1 implements ControllerProviderInterface
             return $app['api']->search_records($app['request'])->get_response();
         });
 
+        /**
+         * Route : /records/{databox_id}/{record_id}/caption/
+         *
+         * Parameters ;
+         *      DATABOX_ID : required INT
+         *      RECORD_ID : required INT
+         */
         $controllers->get('/records/{databox_id}/{record_id}/caption/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->caption_records($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/caption/', $bad_request_exception);
 
@@ -444,7 +537,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_record_metadatas($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/metadatas/', $bad_request_exception);
 
@@ -462,7 +555,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_record_status($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/status/', $bad_request_exception);
 
@@ -480,7 +573,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_record_related($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/related/', $bad_request_exception);
 
@@ -498,7 +591,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->get_record_embed($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
@@ -516,7 +609,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->set_record_metadatas($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->before($canModifyRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/records/{any_id}/{anyother_id}/setmetadatas/', $bad_request_exception);
 
@@ -534,7 +627,7 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->set_record_status($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->before($canModifyRecord)->before($canModifyRecordStatus)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/records/{any_id}/{anyother_id}/setstatus/', $bad_request_exception);
 
@@ -552,15 +645,25 @@ class V1 implements ControllerProviderInterface
             return $app['api']
                     ->set_record_collection($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->before($canMoveRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', $bad_request_exception);
 
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
         $controllers->get('/records/{databox_id}/{record_id}/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->get_record($app['request'], $databox_id, $record_id)
                     ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/', $bad_request_exception);
 
@@ -666,12 +769,29 @@ class V1 implements ControllerProviderInterface
                     ->get_response();
         });
 
+        /**
+         * Route : /feeds/content/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *
+         */
         $controllers->get('/feeds/content/', function (SilexApplication $app) {
             return $app['api']
                     ->get_publications($app['request'], $app['authentication']->getUser())
                     ->get_response();
         });
 
+        /**
+         * Route : /feeds/entry/{entry_id}/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    ENTRY_ID : required INT
+         *
+         */
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
             return $app['api']
                     ->get_feed_entry($app['request'], $entry_id, $app['authentication']->getUser())
@@ -704,33 +824,44 @@ class V1 implements ControllerProviderInterface
          *
          * Parameters :
          *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
+         *    STORY_ID : required INT
          *
          */
-        $controllers->get('/stories/{databox_id}/{story_id}/embed/', function ($databox_id, $story_id) use ($app) {
-                $result = $app['api']->get_story_embed($app['request'], $databox_id, $story_id);
+        $controllers->get('/stories/{databox_id}/{record_id}/embed/', function ($databox_id, $record_id) use ($app) {
+                $result = $app['api']->get_story_embed($app['request'], $databox_id, $record_id);
 
                 return $result->get_response();
             }
-        )->assert('databox_id', '\d+')->assert('story_id', '\d+');
+        )->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
-            $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
+        /**
+         * Route : /stories/DATABOX_ID/RECORD_ID/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    STORY_ID : required INT
+         *
+         */
+        $controllers->get('/stories/{databox_id}/{record_id}/', function ($databox_id, $record_id) use ($app) {
+            $result = $app['api']->get_story($app['request'], $databox_id, $record_id);
 
             return $result->get_response();
-        })->assert('databox_id', '\d+')->assert('story_id', '\d+');
+        })->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
-            $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
-
-            return $result->get_response();
-        })->assert('databox_id', '\d+')->assert('story_id', '\d+');
-        $controllers->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
-
+        /**
+         * Route : /me/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *
+         */
         $controllers->get('/me/', function (SilexApplication $app, Request $request) {
             $result = $app['api']->get_current_user($app, $request);
 
