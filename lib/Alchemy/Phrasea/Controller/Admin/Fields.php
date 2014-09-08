@@ -326,6 +326,7 @@ class Fields implements ControllerProviderInterface
             ->set_thumbtitle($data['thumbtitle'])
             ->set_tag(\databox_field::loadClassFromTagName($data['tag']))
             ->set_business($data['business'])
+            ->set_aggregable($data['aggregable'])
             ->set_indexable($data['indexable'])
             ->set_required($data['required'])
             ->set_separator($data['separator'])
@@ -366,7 +367,7 @@ class Fields implements ControllerProviderInterface
     private function getMandatoryFieldProperties()
     {
         return [
-            'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable',
+            'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable', 'aggregable',
             'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
             'vocabulary-type', 'vocabulary-restricted', 'dces-element', 'labels'
         ];
