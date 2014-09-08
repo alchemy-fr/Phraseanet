@@ -50,8 +50,7 @@ class Indexer
         $params['body']['settings']['number_of_shards'] = $this->options['shards'];
         $params['body']['settings']['number_of_replicas'] = $this->options['replicas'];
 
-        $params['body']['settings']['analysis'] = $this->getAnalysis();
-        $params['body']['settings']['analysis'] = ;
+        $params['body']['settings']['analysis'] = $this->getAnalysis();;
 
         if ($withMapping) {
             // TODO Move term/record mapping logic in TermIndexer and a new RecordIndexer
@@ -316,6 +315,7 @@ class Indexer
         return $fields;
     }
 
+    // @todo Add call to addAnalyzedVersion ?
     private function getRecordExifMapping()
     {
         $mapping = new Mapping();

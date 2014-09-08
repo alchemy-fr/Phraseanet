@@ -344,6 +344,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      *
+     * @todo Allow multiple hosts!
      * @return ElastcSearchEngine
      */
     public static function create(Application $app, array $options = [])
