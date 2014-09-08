@@ -528,7 +528,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
         $filters[] = [
             'term' => [
-                'type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ? 'record' : 'story',
+                '_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ? 'record' : 'story',
             ]
         ];
 
