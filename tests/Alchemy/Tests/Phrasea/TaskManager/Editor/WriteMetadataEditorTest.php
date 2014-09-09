@@ -11,7 +11,7 @@ class WriteMetadataEditorTest extends EditorTestCase
         return [
             ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-<cleardoc>0</cleardoc></tasksettings>
+<cleardoc>0</cleardoc><mwg>0</mwg></tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
 </tasksettings>', []
@@ -19,6 +19,7 @@ class WriteMetadataEditorTest extends EditorTestCase
             ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <cleardoc>1</cleardoc>
+  <mwg>0</mwg>
 </tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
@@ -27,8 +28,16 @@ class WriteMetadataEditorTest extends EditorTestCase
             ],
             ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
+<cleardoc>0</cleardoc><mwg>1</mwg></tasksettings>
+', '<?xml version="1.0" encoding="UTF-8"?>
+<tasksettings>
+</tasksettings>', ['mwg' => 1]
+            ],
+            ['<?xml version="1.0" encoding="UTF-8"?>
+<tasksettings>
   <customtag>value</customtag>
   <cleardoc>0</cleardoc>
+  <mwg>0</mwg>
 </tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>

@@ -28,8 +28,7 @@ class DatabaseHelper extends Helper
                 'host'     => $hostname,
                 'port'     => $port,
                 'user'     => $user,
-                'password' => $password,
-                'dbname'   => $dbname
+                'password' => $password
             ]);
             $conn->connect();
             $connection_ok = true;
