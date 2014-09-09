@@ -118,6 +118,7 @@ class RecordFetcher
             SELECT r.record_id
                  , r.coll_id as collection_id
                  , r.uuid
+                 , BIN(r.status) as bin_status
                  , r.sha256 -- TODO rename in "hash"
                  , r.originalname as original_name
                  , r.mime

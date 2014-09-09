@@ -272,11 +272,14 @@ class RecordIndexer
     /**
      * Inspired by ESRecordSerializer
      *
+     * @todo complete, with all the other transformations
      * @param $record
      */
     private function sanitize($record)
     {
         $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
+
+        // @todo transform the $record['bin_status'] into flags booleans
 
         foreach ($dateFields as $field) {
             if (!isset($record['caption'][$field])) {
