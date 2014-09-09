@@ -474,7 +474,23 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $app = self::$DI['app'];
         $stub = $this->getMock("API_V1_adapter", array("list_record"), array($app));
-        $databox = self::$DI['record_1']->get_databox();
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
+            ->setMethods(array('ACL'))
+            ->disableOriginalConstructor()
+            ->getMock());
+
+        $stubbedACL = $this->getMockBuilder('\ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        //has_right_on_base return true
+        $stubbedACL->expects($this->any())
+            ->method('has_right_on_base')
+            ->will($this->returnValue(true));
+
+        self::$DI['app']['authentication']->getUser()->expects($this->any())
+            ->method('ACL')
+            ->will($this->returnValue($stubbedACL));
 
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $stub->set_record_collection($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());

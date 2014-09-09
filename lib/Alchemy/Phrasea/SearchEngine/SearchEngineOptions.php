@@ -625,7 +625,12 @@ class SearchEngineOptions
 
         if (is_array($request->get('bases'))) {
             $bas = array_map(function ($base_id) use ($app) {
-                return \collection::get_from_base_id($app, $base_id);
+                try {
+                    return \collection::get_from_base_id($app, $base_id);
+                } catch (\Exception_Databox_CollectionNotFound $e) {
+                    return null;
+                }
+
             }, $request->get('bases'));
         } elseif (!$app['authentication']->isAuthenticated()) {
             $bas = $app->getOpenCollections();
