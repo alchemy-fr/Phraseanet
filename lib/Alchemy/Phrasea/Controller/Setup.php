@@ -139,16 +139,16 @@ class Setup implements ControllerProviderInterface
 
         $abConn = $dbConn = null;
 
-        $hostname = $request->request->get('ab_hostname');
-        $port = $request->request->get('ab_port');
-        $user_ab = $request->request->get('ab_user');
-        $ab_password = $request->request->get('ab_password');
+        $database_host = $request->request->get('hostname');
+        $database_port = $request->request->get('port');
+        $database_user = $request->request->get('user');
+        $database_password = $request->request->get('password');
 
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
 
         try {
-            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
+            $abConn = new \connection_pdo('appbox', $database_host, $database_port, $database_user, $database_password, $appbox_name, array(), $app['debug']);
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', array(
                 'error' => _('Appbox is unreachable'),
@@ -157,7 +157,7 @@ class Setup implements ControllerProviderInterface
 
         try {
             if ($databox_name) {
-                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $app['debug']);
+                $dbConn = new \connection_pdo('databox', $database_host, $database_port, $database_user, $database_password, $databox_name, array(), $app['debug']);
             }
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', array(
