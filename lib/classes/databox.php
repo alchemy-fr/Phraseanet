@@ -439,19 +439,14 @@ class databox extends base
                 $ret['thesaurus_indexed'] += $row['n'];
         }
 
-        $sql = "SELECT type, jeton, COUNT(record_id) AS n FROM record WHERE jeton & ".JETON_MAKE_SUBDEF." GROUP BY type, jeton";
+        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".JETON_MAKE_SUBDEF." GROUP BY type";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            if(!array_key_exists($row['type'], $ret['jeton_subdef'])) {
-                $ret['jeton_subdef'][$row['type']] = 0;
-            }
-            if((int)$row['jeton'] & JETON_MAKE_SUBDEF) {
-                $ret['jeton_subdef'][$row['type']] += (int)$row['n'];
-            }
+            $ret['jeton_subdef'][$row['type']] = (int)$row['n'];
         }
 
         return $ret;
