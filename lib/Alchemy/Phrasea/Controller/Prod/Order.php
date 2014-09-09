@@ -101,8 +101,6 @@ class Order implements ControllerProviderInterface
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));
             foreach ($records as $key => $record) {
-                $query = new \User_Query($app);
-
                 if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
                     if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
                         $records->remove($key);
@@ -110,7 +108,7 @@ class Order implements ControllerProviderInterface
                 }
 
                 if (!isset($hasOneAdmin[$record->get_base_id()])) {
-                    $query = new \User_Query($app);
+                    $query = $app['phraseanet.user-query'];
                     $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids([$record->get_base_id()])
                         ->who_have_right(['order_master'])
                         ->execute()->get_results());

@@ -400,7 +400,7 @@ class Databox implements ControllerProviderInterface
             $othCollSel = (int) $request->request->get("othcollsel") ?: null;
 
             if (null !== $othCollSel) {
-                $query = new \User_Query($app);
+                $query = $app['phraseanet.user-query'];
                 $n = 0;
 
                 while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
@@ -798,7 +798,7 @@ class Databox implements ControllerProviderInterface
 
             if (($request->request->get('ccusrothercoll') === "on")
                 && (null !== $othcollsel = $request->request->get('othcollsel'))) {
-                $query = new \User_Query($app);
+                $query = $app['phraseanet.user-query'];
                 $total = $query->on_base_ids([$othcollsel])->get_total();
                 $n = 0;
                 while ($n < $total) {

@@ -215,8 +215,7 @@ class Users implements ControllerProviderInterface
         $controllers->get('/typeahead/search/', function (Application $app) {
             $request = $app['request'];
 
-            $user_query = new \User_Query($app);
-
+            $user_query = $app['phraseanet.user-query'];
             $like_value = $request->query->get('term');
             $rights = $request->query->get('filter_rights') ? : [];
             $have_right = $request->query->get('have_right') ? : [];
@@ -279,7 +278,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/export/csv/', function (Application $app) {
             $request = $app['request'];
-            $user_query = new \User_Query($app);
+            $user_query = $app['phraseanet.user-query'];
 
             $like_value = $request->request->get('like_value');
             $like_field = $request->request->get('like_field');

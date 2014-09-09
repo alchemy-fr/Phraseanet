@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\EventDispatcher\Event;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
@@ -22,6 +23,12 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testCreateOrder()
     {
+        self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
+
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
@@ -47,6 +54,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testCreateOrderJson()
     {
+        self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
+
+
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();

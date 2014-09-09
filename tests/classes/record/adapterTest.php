@@ -3,6 +3,7 @@
 use Rhumsaa\Uuid\Uuid;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\EventDispatcher\Event;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
@@ -66,6 +67,12 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             ->will($this->returnValue($acl));
 
         self::$DI['app']['acl'] = $aclProvider;
+
+        self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
 
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()

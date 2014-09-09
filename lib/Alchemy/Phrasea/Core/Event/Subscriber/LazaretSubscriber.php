@@ -35,8 +35,7 @@ class LazaretSubscriber extends AbstractNotificationSubscriber
 
             $this->notifyUser($user, json_encode($params));
         } else { //No lazaretSession user, fil is uploaded via automated tasks etc ..
-            $query = new \User_Query($this->app);
-
+            $query = $this->app['phraseanet.user-query'];
             $users = $query
                 ->on_base_ids([$lazaretFile->getBaseId()])
                 ->who_have_right(['canaddrecord'])

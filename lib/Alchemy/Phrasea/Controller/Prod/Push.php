@@ -447,7 +447,7 @@ class Push implements ControllerProviderInterface
 
             $request = $app['request'];
 
-            $query = new \User_Query($app);
+            $query = new $app['phraseanet.user-query'];
 
             $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
@@ -558,7 +558,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/search-user/', function (Application $app) use ($userFormatter, $listFormatter) {
             $request = $app['request'];
 
-            $query = new \User_Query($app);
+            $query = $app['phraseanet.user-query'];
 
             $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
@@ -598,7 +598,7 @@ class Push implements ControllerProviderInterface
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
-            $query = new \User_Query($app);
+            $query = $app['phraseanet.user-query'];
 
             $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 

@@ -46,7 +46,7 @@ class CreateCollection extends Command
 
         if ($new_collection && $input->getOption('base_id_rights')) {
 
-            $query = new \User_Query($this->container);
+            $query = $this->container['phraseanet.user-query'];
             $total = $query->on_base_ids([$input->getOption('base_id_rights')])->get_total();
 
             $n = 0;

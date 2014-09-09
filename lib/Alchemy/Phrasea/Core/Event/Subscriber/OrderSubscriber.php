@@ -34,7 +34,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
             return $element->getBaseId();
         }, iterator_to_array($event->getOrder()->getElements())));
 
-        $query = new \User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
         $users = $query->on_base_ids($base_ids)
             ->who_have_right(['order_master'])
             ->execute()->get_results();

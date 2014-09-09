@@ -36,7 +36,7 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
 
         $datas = json_encode($params);
 
-        $Query = new \User_Query($this->app);
+        $Query = $this->app['phraseanet.user-query'];
 
         $Query->include_phantoms(true)
             ->include_invite(false)

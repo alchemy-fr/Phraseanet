@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Application;
 
 interface User_QueryInterface
 {
-
     public function __construct(Application $app);
 
     public function get_results();

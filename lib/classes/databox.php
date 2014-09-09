@@ -458,7 +458,7 @@ class databox extends base
             $collection->unmount_collection($this->app);
         }
 
-        $query = new User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
         $total = $query->on_sbas_ids([$this->id])
             ->include_phantoms(false)
             ->include_special_users(true)
