@@ -12,11 +12,14 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
-use PHPExiftool\Writer;
+use PHPExiftool\Driver\TagFactory;
+use PHPExiftool\Writer as ExifWriter;
+use PHPExiftool\Exception\TagUnknown;
 
 class task_period_writemeta extends task_databoxAbstract
 {
     protected $clear_doc;
+    protected $mwg;
     protected $metasubdefs = array();
 
     private $_todo = 0; // set by "retrieveSbasContent", dec by "postProcessOneContent"
@@ -29,6 +32,7 @@ class task_period_writemeta extends task_databoxAbstract
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->clear_doc = p4field::isyes($sx_task_settings->cleardoc);
+        $this->mwg       = p4field::isyes($sx_task_settings->mwg);
         parent::loadSettings($sx_task_settings);
     }
 
@@ -41,13 +45,13 @@ class task_period_writemeta extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms('period', 'cleardoc', 'maxrecs', 'maxmegs');
+        $parm2 = $request->get_parms('period', 'cleardoc', 'mwg', 'maxrecs', 'maxmegs');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array('str:period', 'str:maxrecs', 'str:maxmegs', 'boo:cleardoc') as $pname) {
+            foreach (array('str:period', 'str:maxrecs', 'str:maxmegs', 'boo:cleardoc', 'boo:mwg') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -103,6 +107,7 @@ class task_period_writemeta extends task_databoxAbstract
             <script type="text/javascript">
             <?php echo $form ?>.period.value        = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             <?php echo $form ?>.cleardoc.checked    = <?php echo p4field::isyes($sxml->cleardoc) ? "true" : 'false' ?>;
+            <?php echo $form ?>.mwg.checked         = <?php echo p4field::isyes($sxml->mwg) ? "true" : 'false' ?>;
             <?php echo $form ?>.maxrecs.value       = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
             <?php echo $form ?>.maxmegs.value       = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
@@ -129,6 +134,7 @@ class task_period_writemeta extends task_databoxAbstract
                     {
                         period.value     = xml.find("period").text();
                         cleardoc.checked = Number(xml.find("cleardoc").text()) > 0;
+                        cleardoc.mwg     = Number(xml.find("mwg").text()) > 0;
                         maxrecs.value    = xml.find("maxrecs").text();
                         maxmegs.value    = xml.find("maxmegs").text();
                     }
@@ -186,6 +192,14 @@ class task_period_writemeta extends task_databoxAbstract
                     </div>
                 </div>
                 <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input class="formElem" type="checkbox" name="mwg">
+                            <?php echo _('task::writemeta:Compatibilité MWG') ?>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label"><?php echo _('Restart the task every X records') ?></label>
                     <div class="controls">
                         <input class="formElem input-small" type="text" name="maxrecs" value="">
@@ -207,8 +221,6 @@ class task_period_writemeta extends task_databoxAbstract
 
     protected function retrieveSbasContent(databox $databox)
     {
-        $this->dependencyContainer['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
-
         $connbas = $databox->get_connection();
         $subdefgroups = $databox->get_subdef_structure();
         $metasubdefs = array();
@@ -287,37 +299,66 @@ class task_period_writemeta extends task_databoxAbstract
             );
         }
 
-        foreach ($record->get_caption()->get_fields() as $field) {
+        /* @var $caption \caption_record */
+        $caption = $record->get_caption();
+        /* @var $struct_field \databox_field */
+        foreach($databox->get_meta_structure() as $struct_field_id=>$struct_field) {
 
-            $meta = $field->get_databox_field();
-            /* @var $meta \databox_field */
+            $tagName = $struct_field->get_tag()->getTagname();
+            $fieldName = $struct_field->get_name();
 
-            $datas = $field->get_values();
+            // skip fields with no src
+            if($tagName == '') {
+                continue;
+            }
 
-            if ($meta->is_multi()) {
-                $values = array();
-                foreach ($datas as $data) {
-                    $values[] = $data->getValue();
+            // check exiftool known tags to skip Phraseanet:tf-*
+            try {
+                TagFactory::getFromRDFTagname($tagName);
+            } catch (TagUnknown $e) {
+                continue;
+            }
+
+            try {
+                /* @var $struct_field \databox_field */
+                $field = $caption->get_field($fieldName);
+                $datas = $field->get_values();
+
+                if ($struct_field->is_multi()) {
+                    $values = array();
+                    foreach ($datas as $data) {
+                        $values[] = $data->getValue();
+                    }
+
+                    $value = new Value\Multi($values);
+                } else {
+                    $data = array_pop($datas);
+                    $value = $data->getValue();
+
+                    $value = new Value\Mono($value);
                 }
-
-                $value = new Value\Multi($values);
-            } else {
-                $data = array_pop($datas);
-                $value = $data->getValue();
-
-                $value = new Value\Mono($value);
+            } catch(\Exception $e) {
+                // the field is not set in the record, erase it
+                if ($struct_field->is_multi()) {
+                    $value = new Value\Multi(Array(""));
+                }
+                else {
+                    $value = new Value\Mono("");
+                }
             }
 
             $metadatas->add(
-                new Metadata\Metadata($meta->get_tag(), $value)
+                new Metadata\Metadata($struct_field->get_tag(), $value)
             );
         }
 
         $this->dependencyContainer['exiftool.writer']->reset();
+        if($this->mwg) {
+            $this->dependencyContainer['exiftool.writer']->setModule(ExifWriter::MODULE_MWG, true);
+        }
+
         foreach ($tsub as $name => $file) {
-
             $this->dependencyContainer['exiftool.writer']->erase($name != 'document' || $this->clear_doc, true);
-
             try {
                 $this->dependencyContainer['exiftool.writer']->write($file, $metadatas);
 
@@ -366,6 +407,7 @@ class task_period_writemeta extends task_databoxAbstract
               <maxrecs>%s</maxrecs>
               <maxmegs>%s</maxmegs>
               <cleardoc>0</cleardoc>
+              <mwg>0</mwg>
             </tasksettings>',
             min(max($period, self::MINPERIOD), self::MAXPERIOD),
             min(max($maxrecs, self::MINRECS), self::MAXRECS),
