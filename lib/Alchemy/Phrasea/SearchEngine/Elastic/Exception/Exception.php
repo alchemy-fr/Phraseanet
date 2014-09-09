@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\Exception;
 
 class Exception extends \Exception
 {

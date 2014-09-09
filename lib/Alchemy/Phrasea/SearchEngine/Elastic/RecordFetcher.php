@@ -119,7 +119,7 @@ class RecordFetcher
     public function setBatchSize($size)
     {
         if ($size < 1) {
-            throw new LogicException("Batch size must be greater than or equal to 1");
+            throw new \LogicException("Batch size must be greater than or equal to 1");
         }
         $this->batchSize = (int) $size;
     }

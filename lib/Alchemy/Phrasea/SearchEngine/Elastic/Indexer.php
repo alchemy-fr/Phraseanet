@@ -11,12 +11,10 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\MergeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Psr\Log\LoggerInterface;
 use Elasticsearch\Client;
-use media_subdef;
-use Exception;
 use igorw;
 
 class Indexer
@@ -27,13 +25,13 @@ class Indexer
     private $logger;
     private $appbox;
 
+    private $recordIndexer = null;
+    private $termIndexer   = null;
+
     private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
 
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
-
-    const TYPE_RECORD = 'record';
-    const TYPE_TERM   = 'term';
 
     public function __construct(Client $client, array $options, LoggerInterface $logger, \appbox $appbox)
     {
@@ -53,8 +51,8 @@ class Indexer
 
         if ($withMapping) {
             // TODO Move term/record mapping logic in TermIndexer and a new RecordIndexer
-            $params['body']['mappings'][self::TYPE_RECORD] = $this->getRecordMapping();
-            $params['body']['mappings'][self::TYPE_TERM]   = $this->getTermMapping();
+            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->getRecordIndexer()->getMapping();
+            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->getTermIndexer()->getMapping();
         }
 
         $this->client->indices()->create($params);
@@ -64,8 +62,10 @@ class Indexer
     {
         $params = array();
         $params['index'] = $this->options['index'];
-        $params['type'] = self::TYPE_RECORD;
-        $params['body'][self::TYPE_RECORD] = $this->getRecordMapping();
+        $params['type'] = RecordIndexer::TYPE_NAME;
+        $params['body'][RecordIndexer::TYPE_NAME] = $this->getRecordIndexer()->getMapping();
+
+        // @todo Add term mapping
 
         // @todo This must throw a new indexation if a mapping is edited
         $this->client->indices()->putMapping($params);
@@ -89,40 +89,15 @@ class Indexer
         $this->disableShardRefreshing();
 
         try {
-            // Prepare the bulk operation
-            $bulk = new BulkOperation($this->client);
-            $bulk->setDefaultIndex($this->options['index']);
-            $bulk->setDefaultType(self::TYPE_RECORD);
-            $bulk->setAutoFlushLimit(1000);
-
-            // Helper to fetch record related data
-            $recordHelper = new RecordHelper($this->appbox);
-
-            foreach ($this->appbox->get_databoxes() as $databox) {
-                // Update thesaurus terms index
-                $termIndexer = new TermIndexer($this->client, $this->options, $databox);
-                // TODO Pass a BulkOperation object to TermIndexer to muliplex
-                // indexing queries between types
-                $termIndexer->populateIndex();
-                // TODO Create object to query thesaurus for term paths/synonyms
-                // TODO Extract record indexing logic in a RecordIndexer class
-                $fetcher = new RecordFetcher($databox, $recordHelper);
-                $fetcher->setBatchSize(200);
-                while ($record = $fetcher->fetch()) {
-                    $params = array();
-                    $params['id'] = $record['id'];
-                    $params['body'] = $record;
-                    $bulk->index($params);
-                }
-            }
-
-            $bulk->flush();
+            $this->getRecordIndexer()->populateIndex();
+            $this->getTermIndexer()->populateIndex();
 
             // Optimize index
             $params = array('index' => $this->options['index']);
             $this->client->indices()->optimize($params);
+
             $this->restoreShardRefreshing();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->restoreShardRefreshing();
             throw $e;
         }
@@ -164,187 +139,6 @@ class Indexer
         $response = $this->client->indices()->putSettings($params);
 
         return igorw\get_in($response, ['acknowledged']);
-    }
-
-    private function getTermMapping()
-    {
-        $mapping = new Mapping();
-        $mapping
-            ->add('value', 'string')
-            ->add('context', 'string')
-            ->add('path', 'string')
-            ->add('lang', 'string')->notAnalyzed()
-            ->add('databox_id', 'integer')
-        ;
-
-        return $mapping->export();
-    }
-
-    private function getRecordMapping()
-    {
-        $mapping = new Mapping();
-        $mapping
-            // Identifiers
-            ->add('record_id', 'integer')  // Compound primary key
-            ->add('databox_id', 'integer') // Compound primary key
-            ->add('base_id', 'integer') // Unique collection ID
-            ->add('collection_id', 'integer') // Useless collection ID (local to databox)
-            ->add('uuid', 'string')->notAnalyzed()
-            ->add('sha256', 'string')->notAnalyzed()
-            // Mandatory metadata
-            ->add('original_name', 'string')->notAnalyzed()
-            ->add('mime', 'string')->notAnalyzed()
-            ->add('type', 'string')->notAnalyzed()
-            // Dates
-            ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
-            ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
-        ;
-
-        // Caption mapping
-        $captionMapping = new Mapping();
-        $mapping->add('caption', $captionMapping);
-        $privateCaptionMapping = new Mapping();
-        $mapping->add('private_caption', $privateCaptionMapping);
-        foreach ($this->getRecordFieldsStructure() as $name => $params) {
-            $m = $params['private'] ? $privateCaptionMapping : $captionMapping;
-            $m->add($name, $params['type']);
-
-            if ($params['type'] === Mapping::TYPE_DATE) {
-                $m->format(Mapping::DATE_FORMAT_CAPTION);
-            }
-
-            if (!$params['indexable'] && !$params['to_aggregate']) {
-                $m->notIndexed();
-            } elseif (!$params['indexable'] && $params['to_aggregate']) {
-                $m->notAnalyzed();
-                $m->addRawVersion();
-            } else {
-                $m->addRawVersion();
-                $m->addAnalyzedVersion(['fr', 'de']); // @todo Dynamic list for the box
-            }
-        }
-
-        // EXIF
-        $mapping->add('exif', $this->getRecordExifMapping());
-
-        // Status
-        $mapping->add('flags', $this->getRecordFlagsMapping());
-
-        return $mapping->export();
-    }
-
-    private function getRecordFieldsStructure()
-    {
-        $fields = array();
-
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            printf("Databox %d\n", $databox->get_sbas_id());
-            foreach ($databox->get_meta_structure() as $fieldStructure) {
-                $field = array();
-                // Field type
-                switch ($fieldStructure->get_type()) {
-                    case \databox_field::TYPE_DATE:
-                        $field['type'] = 'date';
-                        break;
-                    case \databox_field::TYPE_NUMBER:
-                        $field['type'] = 'string'; // TODO integer, float, double ?
-                        break;
-                    case \databox_field::TYPE_STRING:
-                    case \databox_field::TYPE_TEXT:
-                        $field['type'] = 'string';
-                        break;
-                    default:
-                        throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $fieldStructure->get_type()));
-                        break;
-                }
-
-                // Business rules
-                $field['private'] = $fieldStructure->isBusiness();
-                $field['indexable'] = $fieldStructure->is_indexable();
-                $field['to_aggregate'] = false; // @todo, dev in progress
-
-                $name = $fieldStructure->get_name();
-
-                printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
-
-                // Since mapping is merged between databoxes, two fields may
-                // have conflicting names. Indexing is the same for a given
-                // type so we reject only those with different types.
-                if (isset($fields[$name])) {
-                    if ($fields[$name]['type'] !== $field['type']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $fields[$name]['type'], $field['type']));
-                    }
-
-                    if ($fields[$name]['indexable'] !== $field['indexable']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible indexable state", $name));
-                    }
-
-                    if ($fields[$name]['to_aggregate'] !== $field['to_aggregate']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible to_aggregate state", $name));
-                    }
-                    // TODO other structure incompatibilities
-
-                    printf("Merged with previous \"%s\" field\n", $name);
-                }
-
-                $fields[$name] = $field;
-            }
-        }
-
-        return $fields;
-    }
-
-    // @todo Add call to addAnalyzedVersion ?
-    private function getRecordExifMapping()
-    {
-        $mapping = new Mapping();
-        $mapping
-            ->add(media_subdef::TC_DATA_WIDTH, 'integer')
-            ->add(media_subdef::TC_DATA_HEIGHT, 'integer')
-            ->add(media_subdef::TC_DATA_COLORSPACE, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_CHANNELS, 'integer')
-            ->add(media_subdef::TC_DATA_ORIENTATION, 'integer')
-            ->add(media_subdef::TC_DATA_COLORDEPTH, 'integer')
-            ->add(media_subdef::TC_DATA_DURATION, 'float')
-            ->add(media_subdef::TC_DATA_AUDIOCODEC, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_AUDIOSAMPLERATE, 'integer')
-            ->add(media_subdef::TC_DATA_VIDEOCODEC, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_FRAMERATE, 'float')
-            ->add(media_subdef::TC_DATA_MIMETYPE, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_FILESIZE, 'long')
-            // TODO use geo point type for lat/long
-            ->add(media_subdef::TC_DATA_LONGITUDE, 'float')
-            ->add(media_subdef::TC_DATA_LATITUDE, 'float')
-            ->add(media_subdef::TC_DATA_FOCALLENGTH, 'float')
-            ->add(media_subdef::TC_DATA_CAMERAMODEL, 'string')
-            ->add(media_subdef::TC_DATA_FLASHFIRED, 'boolean')
-            ->add(media_subdef::TC_DATA_APERTURE, 'float')
-            ->add(media_subdef::TC_DATA_SHUTTERSPEED, 'float')
-            ->add(media_subdef::TC_DATA_HYPERFOCALDISTANCE, 'float')
-            ->add(media_subdef::TC_DATA_ISO, 'integer')
-            ->add(media_subdef::TC_DATA_LIGHTVALUE, 'float')
-        ;
-
-        return $mapping;
-    }
-
-    private function getRecordFlagsMapping()
-    {
-        $mapping = new Mapping();
-        $seen = array();
-
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_statusbits() as $bit => $status) {
-                $key = self::normalizeFlagKey($status['labelon']);
-                // We only add to mapping new statuses
-                if (!in_array($key, $seen)) {
-                    $mapping->add($key, 'boolean');
-                    $seen[] = $key;
-                }
-            }
-        }
-
-        return $mapping;
     }
 
     /**
@@ -482,21 +276,27 @@ class Indexer
         ];
     }
 
-    private static function normalizeFlagKey($key)
+    /**
+     * @return RecordIndexer
+     */
+    public function getRecordIndexer()
     {
-        // Replace non letter or digits by _
-        $key = preg_replace('/[^\\pL\d]+/u', '_', $key);
-        $key = trim($key, '_');
-
-        // Transliterate
-        if (function_exists('iconv')) {
-            $key = iconv('UTF-8', 'ASCII//TRANSLIT', $key);
+        if (!$this->recordIndexer) {
+            $this->recordIndexer = new RecordIndexer($this->client, $this->options, $this->appbox);
         }
 
-        // Remove non wording characters
-        $key = preg_replace('/[^-\w]+/', '', $key);
-        $key = strtolower($key);
+        return $this->recordIndexer;
+    }
 
-        return $key;
+    /**
+     * @return TermIndexer
+     */
+    public function getTermIndexer()
+    {
+        if (!$this->termIndexer) {
+            $this->termIndexer = new TermIndexer($this->client, $this->options, $this->appbox);
+        }
+
+        return $this->termIndexer;
     }
 }

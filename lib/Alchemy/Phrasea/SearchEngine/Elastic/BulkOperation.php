@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Elasticsearch\Client;
 use igorw;
 
@@ -86,7 +86,7 @@ class BulkOperation
             //         printf($key, $item['index']['error']);
             //     }
             // }
-            throw new Exception('Errors occurred during bulk indexing request, index may be in an iconsistent state');
+            throw new Exception('Errors occurred during bulk indexing request, index may be in an inconsistent state');
         }
     }
 }

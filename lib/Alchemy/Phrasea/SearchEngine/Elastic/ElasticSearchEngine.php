@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -19,10 +18,10 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Elasticsearch\Client;
 use Monolog\Handler\RotatingFileHandler;
-use Psr\Log\LogLevel;
 use Symfony\Bridge\Monolog\Logger;
+use Alchemy\Phrasea\Application;
+use Elasticsearch\Client;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -360,8 +359,8 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $clientParams = ['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]];
 
+        // Create file logger for debug
         if ($app['debug']) {
-            /** @var $logger Logger */
             $logger = new $app['monolog.logger.class']('search logger');
             $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2), Logger::INFO);
 
