@@ -75,7 +75,7 @@ class RecordFetcher
             // Metadata can be multi-valued
             if (!isset($records[$metadata['record_id']] [$type][$key])) {
                 $records[$metadata['record_id']] [$type][$key] = $value;
-            } elseif (is_array($record[$type][$key])) {
+            } elseif (is_array($records[$metadata['record_id']] [$type][$key])) {
                 $records[$metadata['record_id']] [$type][$key][] = $value;
             } else {
                 $records[$metadata['record_id']] [$type][$key] = array($records[$metadata['record_id']] [$type][$key], $value);
