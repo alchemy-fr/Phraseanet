@@ -29,6 +29,7 @@ sudo cp -rf * /usr/local/
 sudo npm install -g recess
 sudo npm install -g grunt-cli
 sudo npm install -g bower
+sudo npm install -g uglify-js
 
 #twig
 cd /tmp
@@ -88,6 +89,7 @@ then
     cd /var/www/phraseanet
     composer install -n --prefer-source --dev
     bower install --config.interactive=false
+    bin/developer assets:build-javascript
     bin/developer assets:compile-less
     rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
     rm -f /var/www/phraseanet/.bowerrc
