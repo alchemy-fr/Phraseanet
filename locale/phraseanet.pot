@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Phraseanet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-05 17:23+0100\n"
-"PO-Revision-Date: 2014-09-05 17:24+0100\n"
+"POT-Creation-Date: 2014-09-09 11:29+0100\n"
+"PO-Revision-Date: 2014-09-09 11:29+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <support@alchemy.fr>\n"
 "Language: Francais\n"
@@ -25,16 +25,16 @@ msgstr ""
 "X-Poedit-SearchPath-6: ../lib/Doctrine\n"
 "X-Poedit-SearchPath-7: ../bin\n"
 
-#: ../lib/classes/databox.php:1343
+#: ../lib/classes/databox.php:1338
 msgid "ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name"
 msgstr ""
 
-#: ../lib/classes/databox.php:1354
+#: ../lib/classes/databox.php:1349
 msgid ""
 "ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire"
 msgstr ""
 
-#: ../lib/classes/databox.php:1358
+#: ../lib/classes/databox.php:1353
 msgid ""
 "ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview"
 "\" ou \"document\""
@@ -42,14 +42,12 @@ msgstr ""
 
 #: ../lib/classes/phrasea.php:112 ../lib/classes/record/preview.php:541
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:30
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:30
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:121
 msgid "admin::monitor: module production"
 msgstr ""
 
 #: ../lib/classes/phrasea.php:113 ../lib/classes/record/preview.php:543
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:40
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:40
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:122
 msgid "admin::monitor: module client"
 msgstr ""
@@ -57,8 +55,6 @@ msgstr ""
 #: ../lib/classes/phrasea.php:114
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:143
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:50
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:50
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:143
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:123
 msgid "admin::monitor: module admin"
 msgstr ""
@@ -66,8 +62,6 @@ msgstr ""
 #: ../lib/classes/phrasea.php:115
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:170
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:60
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:60
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:170
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:124
 msgid "admin::monitor: module report"
 msgstr ""
@@ -75,15 +69,12 @@ msgstr ""
 #: ../lib/classes/phrasea.php:116
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:115
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:70
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:70
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:115
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:125
 msgid "admin::monitor: module thesaurus"
 msgstr ""
 
 #: ../lib/classes/phrasea.php:117
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:80
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:80
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:126
 msgid "admin::monitor: module comparateur"
 msgstr ""
@@ -91,8 +82,6 @@ msgstr ""
 #: ../lib/classes/phrasea.php:118
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:189
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:90
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:90
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:189
 #: ../lib/Alchemy/Phrasea/Controller/Lightbox.php:242
 #: ../lib/Alchemy/Phrasea/Controller/Lightbox.php:296
 #: ../lib/Alchemy/Phrasea/Controller/Lightbox.php:329
@@ -102,7 +91,6 @@ msgstr ""
 
 #: ../lib/classes/phrasea.php:119
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:229
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:229
 #: ../lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:128
 msgid "admin::monitor: module upload"
 msgstr ""
@@ -201,7 +189,6 @@ msgid "Your install might need to build some sub-definitions"
 msgstr ""
 
 #: ../lib/classes/queries.php:168 ../lib/classes/queries.php:181
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1398
 #: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1398
 #: ../tmp/cache_twig/b3/e0/4a4e1ce4ec6d4119b307a8fa5d5d9ae16540ac85c107db26273140e09cf5.php:202
 #: ../tmp/cache_twig/08/16/03bf13cb1a99a73a5231f0d0f7f0e327ccd12cd3288ac87096407b704187.php:105
@@ -571,7 +558,7 @@ msgstr ""
 #: ../lib/classes/task/period/RecordMover.php:288
 #: ../lib/classes/task/period/ftpPull.php:226
 #: ../lib/classes/task/period/subdef.php:269
-#: ../lib/classes/task/period/writemeta.php:174
+#: ../lib/classes/task/period/writemeta.php:180
 #: ../lib/classes/task/period/ftp.php:158
 msgid "task::_common_:periodicite de la tache"
 msgstr ""
@@ -581,7 +568,7 @@ msgstr ""
 #: ../lib/classes/task/period/RecordMover.php:291
 #: ../lib/classes/task/period/ftpPull.php:229
 #: ../lib/classes/task/period/subdef.php:272
-#: ../lib/classes/task/period/writemeta.php:177
+#: ../lib/classes/task/period/writemeta.php:183
 #: ../lib/classes/task/period/ftp.php:161
 msgid "task::_common_:secondes (unite temporelle)"
 msgstr ""
@@ -717,7 +704,7 @@ msgid "Number of records to process per batch"
 msgstr ""
 
 #: ../lib/classes/task/period/subdef.php:322
-#: ../lib/classes/task/period/writemeta.php:189
+#: ../lib/classes/task/period/writemeta.php:203
 msgid "Restart the task every X records"
 msgstr ""
 
@@ -729,21 +716,25 @@ msgstr ""
 msgid "Try to extract embedded thumbnails"
 msgstr ""
 
-#: ../lib/classes/task/period/writemeta.php:26
+#: ../lib/classes/task/period/writemeta.php:29
 msgid ""
 "task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs "
 "concernees)"
 msgstr ""
 
-#: ../lib/classes/task/period/writemeta.php:37
+#: ../lib/classes/task/period/writemeta.php:41
 msgid "task::writemeta:ecriture des metadatas"
 msgstr ""
 
-#: ../lib/classes/task/period/writemeta.php:184
+#: ../lib/classes/task/period/writemeta.php:190
 msgid "task::writemeta:effacer les metadatas non presentes dans la structure"
 msgstr ""
 
-#: ../lib/classes/task/period/writemeta.php:195
+#: ../lib/classes/task/period/writemeta.php:198
+msgid "task::writemeta:Compatibilité MWG"
+msgstr ""
+
+#: ../lib/classes/task/period/writemeta.php:209
 msgid "task::_common_:records, ou si la memoire depasse"
 msgstr ""
 
@@ -967,7 +958,6 @@ msgstr ""
 
 #: ../lib/classes/eventsmanager/notify/order.php:161
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:269
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:269
 msgid "Orders manager"
 msgstr ""
 
@@ -997,7 +987,6 @@ msgstr ""
 #: ../tmp/cache_twig/44/a7/0cf82fcb594684d385bdd2cf514674dd929f0184d0b7689a72ab78a9d78c.php:295
 #: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:670
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:290
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:290
 #: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:163
 #: ../tmp/cache_twig/42/cc/1f4fdbf351eb278d4db2fa68a0aa80ee32b4d7c33ec4150f5a301e9f30b5.php:843
 #: ../lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:72
@@ -1019,7 +1008,6 @@ msgstr ""
 #: ../tmp/cache_twig/44/a7/0cf82fcb594684d385bdd2cf514674dd929f0184d0b7689a72ab78a9d78c.php:307
 #: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:696
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:314
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:314
 #: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:189
 #: ../tmp/cache_twig/42/cc/1f4fdbf351eb278d4db2fa68a0aa80ee32b4d7c33ec4150f5a301e9f30b5.php:857
 #: ../tmp/cache_twig/8c/f4/64c10cb30a56f31b158e58b059d30ce10ee4eb3bbd21a509b43b3702db17.php:327
@@ -1626,7 +1614,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/53/40/2f1183236c852bbb0e14498ba61718265ab5a71a0b9a54337c931a779abf.php:169
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:422
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:422
 #: ../tmp/cache_twig/5e/c4/1e793f024e5b3bf2519ff6a8de43a43baa130c27c68101a37439bb8d1362.php:169
 msgid "phraseanet:: deconnection"
 msgstr ""
@@ -1653,7 +1640,6 @@ msgstr ""
 #: ../tmp/cache_twig/7a/72/f20894272ff1593d8f0771e60af00d476051d6843ac928e4937209748a05.php:284
 #: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:516
 #: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:524
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2048
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2048
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:56
 #: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:276
@@ -1769,81 +1755,6 @@ msgstr ""
 msgid "boutton::monter"
 msgstr ""
 
-#: ../tmp/cache_twig/01/9a/b60c0fcbeb44c2c9f47cb74645be87474c725160b22a757c74fdc091dac2.php:22
-#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:22
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:63
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:63
-msgid "Setup"
-msgstr ""
-
-#: ../tmp/cache_twig/01/9a/b60c0fcbeb44c2c9f47cb74645be87474c725160b22a757c74fdc091dac2.php:276
-#: ../tmp/cache_twig/01/9a/b60c0fcbeb44c2c9f47cb74645be87474c725160b22a757c74fdc091dac2.php:327
-#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:276
-#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:327
-msgid "erreur avec la valeur %name%"
-msgstr ""
-
-#: ../tmp/cache_twig/01/9a/b60c0fcbeb44c2c9f47cb74645be87474c725160b22a757c74fdc091dac2.php:482
-#: ../tmp/cache_twig/3b/ab/b47f963b377299aea801c165a16a39fc97d6a60d7005cd70f666315b2bce.php:78
-#: ../tmp/cache_twig/86/95/a766bab60e20263f3a76e303a87aef30aeed628c7887227aac384b9ffdc4.php:74
-#: ../tmp/cache_twig/0a/1b/e34e137b60267bb2074a1eebce9913a239a1ae6d2cbeca7d7c7bc8626089.php:77
-#: ../tmp/cache_twig/f5/25/26a9c9c89a4544b638d8cb920b86e4ad4a53a3447eb398985cc99e29a27a.php:196
-#: ../tmp/cache_twig/44/a7/0cf82fcb594684d385bdd2cf514674dd929f0184d0b7689a72ab78a9d78c.php:488
-#: ../tmp/cache_twig/c9/db/fc05a687527ffcea5900b8c3639bc1fb1e451abea2f6f32868a11c122bc8.php:180
-#: ../tmp/cache_twig/a4/29/9d4202bef5356fa2348fbc0c8ca67c470bd6d541b1a88626a37a13058220.php:131
-#: ../tmp/cache_twig/6e/bd/f9193590d15ae5f9c4d187bb1e6b891149980ed7702ba39fadf5d6feead3.php:74
-#: ../tmp/cache_twig/c2/cd/0edfdf965cae686928b893aecee859cc95eabd7c0f1d0e9529d886303081.php:74
-#: ../tmp/cache_twig/c6/14/eb1b4181802db8b69470965dc865cf6c643b0dfec76fb8bb1a3a491c5ab9.php:160
-#: ../tmp/cache_twig/79/dc/66fde540fca94a734960ec1caff0853d35b682f22c085f5deb14749a0d06.php:182
-#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:482
-#: ../tmp/cache_twig/8e/52/8cc1dc1ebbfc7ca3e6b093222f55dbfb6ece9988955c577f278bf6062449.php:113
-#: ../tmp/cache_twig/f0/4d/5fa9878e5e837c599426d7949a7560835bd9022aef1c645e6c00eecce499.php:180
-#: ../tmp/cache_twig/19/82/712821ac44298850ceb75efb4fd76c1d90ec1d53d48c4c3e06442e12833b.php:152
-#: ../tmp/cache_twig/ef/d4/b0d18671f32d3a0ebea5dcde8c814f610214c29a0e536c22584d6cb3d9b9.php:234
-#: ../tmp/cache_twig/09/7a/3b6a21611b5028c479dde4eba3354be7b4c59b2e0258047a0121bb273857.php:72
-#: ../tmp/cache_twig/4c/bf/5727e2a78ae25e76bf3dd674c0f499bd5300296aaed204214aa455a50987.php:111
-#: ../tmp/cache_twig/2b/d7/0f5f275852582b8dea384f3ea54b8d2dfa693d41e0c626b1b4beb2dc26a1.php:120
-#: ../tmp/cache_twig/f4/c7/5574405b1ed7d6237c4c894fc093d06961fc01a172d22fe904ec51a41b74.php:129
-#: ../tmp/cache_twig/71/3a/d49ad1d50eb2444c0bcb1449c2f6b21bfa95013a375870d95df60e59525c.php:138
-#: ../tmp/cache_twig/f6/48/9fdef8e5bcd467702bf0fc37b74a372eea4f8a0095f9b843a2bbb5492ad5.php:103
-#: ../tmp/cache_twig/ba/7d/e75c50395bcaf6529e78a2fb3aa60137de877e6835e66be82712e66ae2d3.php:103
-#: ../tmp/cache_twig/f2/87/6b100ae1c9075a7357e8702579ae166529504e1c6bbbdf2b0a14c26f76f0.php:74
-#: ../tmp/cache_twig/37/fe/644ac28917c84e903c2640c6dc036440c6b810143a478e9fc6e511797679.php:103
-#: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:509
-#: ../tmp/cache_twig/88/b3/a68391b09fbc77bacf14181cf9292ad30591784465daaf3f80a24ca136c1.php:67
-#: ../tmp/cache_twig/f7/fe/2b6b0647bba4cd3a38bd497eb217e1353439050817ee0a5e815ecb368789.php:231
-#: ../tmp/cache_twig/42/cc/1f4fdbf351eb278d4db2fa68a0aa80ee32b4d7c33ec4150f5a301e9f30b5.php:990
-#: ../tmp/cache_twig/eb/2c/568885d5344d512046d52d66a2d2592712f142a7e25d361c63e14505c297.php:221
-#: ../tmp/cache_twig/18/81/534c52ed6dc27a9b3d96d0e556c668e45049b0544b019bcdc19a2a190621.php:178
-#: ../tmp/cache_twig/78/e0/fc37749b10cd47bdee7978fcdfc6f998488df32c4344ae16ab45b52de332.php:74
-#: ../tmp/cache_twig/84/5f/a0ebccbc209614f54ddf16cf037355990905cefd3079e576a313f6a11586.php:171
-#: ../tmp/cache_twig/a2/33/8d87342695b62d292dd7029c19564cc3ab9b99ce9034d81019263d15a804.php:63
-#: ../tmp/cache_twig/dd/b4/2981051829969df987bd8ddb5c6dc5f9d0d10f5393c21080f9cd47633f95.php:734
-#: ../tmp/cache_twig/e2/07/010647dc8415a615d5f8cf2093c6fa3721c9a3b8e58e708eb900cc7bdebf.php:67
-#: ../tmp/cache_twig/0f/1a/2943a9b8534b0da4f702678616cb595709744afee1183ddee046bccc69f9.php:103
-#: ../tmp/cache_twig/96/a1/7b38f615336af0c84683a91ace70b9aa67c1a43acb498429d6882ac2dfbc.php:315
-#: ../tmp/cache_twig/a9/0c/8a8cbfe5d6b1a893662f865ece58bd76a8bd33b7c696dc4ff370eaadd4a9.php:306
-#: ../tmp/cache_twig/35/29/71e36a293225ce5372e99db946bf567585c4a65a61433e3c73ad354f9236.php:76
-#: ../tmp/cache_twig/35/3c/c8c14efa08266d7255db5f4b30255297ebb9500894c7d9af510fc4550214.php:169
-#: ../tmp/cache_twig/35/3c/c8c14efa08266d7255db5f4b30255297ebb9500894c7d9af510fc4550214.php:246
-#: ../tmp/cache_twig/6c/a4/1f01b162e7851408eead3a04d9e6de6374b54a32a55e7d6380cdba0f2f53.php:127
-#: ../tmp/cache_twig/98/a5/f945c93304136135a26fa3cce67ff847dd8e2b2c48296b14aa0d643dde2b.php:109
-#: ../tmp/cache_twig/8f/ac/36591e4ba588a071b21bae71ea6da83259df62670763ae7e9cd2e5da556e.php:480
-#: ../tmp/cache_twig/64/81/83b73fb5a6159fbb4692452426501112d9f3e3746c6a4da2a126b639e326.php:73
-#: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:462
-#: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:485
-#: ../tmp/cache_twig/bb/68/1551edcbc53574a4b19f29bd9604f86b97c0c81fdad097803bc3f82c51b1.php:74
-#: ../tmp/cache_twig/97/fe/c90f86fa3cdc292b5f1e598b398f5eb76d0db3adc514986e60285ccdb92e.php:134
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1975
-#: ../tmp/cache_twig/5e/93/f96277b28158c423dfdf2cc2e1699111753fcae4276f0173f3eb0cd67ec4.php:81
-#: ../tmp/cache_twig/57/d7/862a6d9ece31ca7a8450dd2dd95202d61a8181dd207a620b9d9b179f08ac.php:115
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1975
-#: ../tmp/cache_twig/7d/1d/0e0610f67f01a7610b14ed19d95faa829f3da46d9c1c8e5b43116a1f9d33.php:42
-#: ../tmp/cache_twig/46/16/ce4342ba8d6f1ad6ad3ec6d404a050649a3a11d1578ade704aadb9b4b8cf.php:126
-#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
-msgid "boutton::valider"
-msgstr ""
-
 #: ../tmp/cache_twig/94/90/cc824cded39dcf79a157b837e4df1e45ddc8623271a52ff7f6c1574c666a.php:22
 msgid "Upload a csv file for users creation"
 msgstr ""
@@ -1914,7 +1825,7 @@ msgstr ""
 #: ../tmp/cache_twig/94/90/cc824cded39dcf79a157b837e4df1e45ddc8623271a52ff7f6c1574c666a.php:146
 #: ../tmp/cache_twig/84/5f/a0ebccbc209614f54ddf16cf037355990905cefd3079e576a313f6a11586.php:594
 #: ../tmp/cache_twig/96/a1/7b38f615336af0c84683a91ace70b9aa67c1a43acb498429d6882ac2dfbc.php:350
-#: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:715
+#: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:718
 msgid ""
 "Invalid file type, only (%supported_file_types%) file formats are supported"
 msgstr ""
@@ -2059,22 +1970,17 @@ msgid "phraseanet:: presentation des resultats"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:397
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:606
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1055
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:606
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1055
 msgid "phraseanet::type:: documents"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:405
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:618
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:618
 msgid "phraseanet::type:: reportages"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:419
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:320
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:588
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:320
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:588
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:50
@@ -2092,8 +1998,6 @@ msgid ""
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:452
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:235
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:239
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:235
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:239
 msgid "phraseanet:: propositions"
@@ -2104,13 +2008,11 @@ msgid "phraseanet:: historique"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:478
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:668
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:668
 msgid "boutton:: selectionner toutes les bases"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:482
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:673
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:673
 msgid "boutton:: selectionner aucune base"
 msgstr ""
@@ -2121,13 +2023,11 @@ msgid ""
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:703
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:950
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:950
 msgid "phraseanet::time:: de"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:709
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:963
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:963
 msgid "phraseanet::time:: a"
 msgstr ""
@@ -2153,19 +2053,16 @@ msgid "client::recherche: filtrer par champs : tous les champs"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:987
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2006
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2006
 msgid "preview:: Description"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:991
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2010
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2010
 msgid "preview:: Historique"
 msgstr ""
 
 #: ../tmp/cache_twig/3b/07/a9a3906b11952256cf2866410a28899d5afd5215ff59479df7cdac37a126.php:995
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2017
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2017
 msgid "preview:: Popularite"
 msgstr ""
@@ -2182,8 +2079,6 @@ msgstr ""
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:29
 #: ../tmp/cache_twig/a9/65/bb886fd354edf20ac34b522a597a9941965457604ab705ca7e84a17eb45c.php:231
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:28
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1086
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2142
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1086
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2142
 msgid "action : exporter"
@@ -2221,6 +2116,65 @@ msgstr ""
 #: ../tmp/cache_twig/1b/61/3da38346442ea53414c51c4523d252ef4aefdc156a6c21206e9007cbed2b.php:127
 #: ../tmp/cache_twig/57/d7/862a6d9ece31ca7a8450dd2dd95202d61a8181dd207a620b9d9b179f08ac.php:63
 msgid "Description"
+msgstr ""
+
+#: ../tmp/cache_twig/3b/ab/b47f963b377299aea801c165a16a39fc97d6a60d7005cd70f666315b2bce.php:78
+#: ../tmp/cache_twig/86/95/a766bab60e20263f3a76e303a87aef30aeed628c7887227aac384b9ffdc4.php:74
+#: ../tmp/cache_twig/0a/1b/e34e137b60267bb2074a1eebce9913a239a1ae6d2cbeca7d7c7bc8626089.php:77
+#: ../tmp/cache_twig/f5/25/26a9c9c89a4544b638d8cb920b86e4ad4a53a3447eb398985cc99e29a27a.php:196
+#: ../tmp/cache_twig/44/a7/0cf82fcb594684d385bdd2cf514674dd929f0184d0b7689a72ab78a9d78c.php:488
+#: ../tmp/cache_twig/c9/db/fc05a687527ffcea5900b8c3639bc1fb1e451abea2f6f32868a11c122bc8.php:180
+#: ../tmp/cache_twig/a4/29/9d4202bef5356fa2348fbc0c8ca67c470bd6d541b1a88626a37a13058220.php:131
+#: ../tmp/cache_twig/6e/bd/f9193590d15ae5f9c4d187bb1e6b891149980ed7702ba39fadf5d6feead3.php:74
+#: ../tmp/cache_twig/c2/cd/0edfdf965cae686928b893aecee859cc95eabd7c0f1d0e9529d886303081.php:74
+#: ../tmp/cache_twig/c6/14/eb1b4181802db8b69470965dc865cf6c643b0dfec76fb8bb1a3a491c5ab9.php:160
+#: ../tmp/cache_twig/79/dc/66fde540fca94a734960ec1caff0853d35b682f22c085f5deb14749a0d06.php:182
+#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:482
+#: ../tmp/cache_twig/8e/52/8cc1dc1ebbfc7ca3e6b093222f55dbfb6ece9988955c577f278bf6062449.php:113
+#: ../tmp/cache_twig/f0/4d/5fa9878e5e837c599426d7949a7560835bd9022aef1c645e6c00eecce499.php:180
+#: ../tmp/cache_twig/19/82/712821ac44298850ceb75efb4fd76c1d90ec1d53d48c4c3e06442e12833b.php:152
+#: ../tmp/cache_twig/ef/d4/b0d18671f32d3a0ebea5dcde8c814f610214c29a0e536c22584d6cb3d9b9.php:234
+#: ../tmp/cache_twig/09/7a/3b6a21611b5028c479dde4eba3354be7b4c59b2e0258047a0121bb273857.php:72
+#: ../tmp/cache_twig/4c/bf/5727e2a78ae25e76bf3dd674c0f499bd5300296aaed204214aa455a50987.php:111
+#: ../tmp/cache_twig/2b/d7/0f5f275852582b8dea384f3ea54b8d2dfa693d41e0c626b1b4beb2dc26a1.php:120
+#: ../tmp/cache_twig/f4/c7/5574405b1ed7d6237c4c894fc093d06961fc01a172d22fe904ec51a41b74.php:129
+#: ../tmp/cache_twig/71/3a/d49ad1d50eb2444c0bcb1449c2f6b21bfa95013a375870d95df60e59525c.php:138
+#: ../tmp/cache_twig/f6/48/9fdef8e5bcd467702bf0fc37b74a372eea4f8a0095f9b843a2bbb5492ad5.php:103
+#: ../tmp/cache_twig/ba/7d/e75c50395bcaf6529e78a2fb3aa60137de877e6835e66be82712e66ae2d3.php:103
+#: ../tmp/cache_twig/f2/87/6b100ae1c9075a7357e8702579ae166529504e1c6bbbdf2b0a14c26f76f0.php:74
+#: ../tmp/cache_twig/37/fe/644ac28917c84e903c2640c6dc036440c6b810143a478e9fc6e511797679.php:103
+#: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:509
+#: ../tmp/cache_twig/88/b3/a68391b09fbc77bacf14181cf9292ad30591784465daaf3f80a24ca136c1.php:67
+#: ../tmp/cache_twig/f7/fe/2b6b0647bba4cd3a38bd497eb217e1353439050817ee0a5e815ecb368789.php:231
+#: ../tmp/cache_twig/42/cc/1f4fdbf351eb278d4db2fa68a0aa80ee32b4d7c33ec4150f5a301e9f30b5.php:990
+#: ../tmp/cache_twig/eb/2c/568885d5344d512046d52d66a2d2592712f142a7e25d361c63e14505c297.php:221
+#: ../tmp/cache_twig/18/81/534c52ed6dc27a9b3d96d0e556c668e45049b0544b019bcdc19a2a190621.php:178
+#: ../tmp/cache_twig/78/e0/fc37749b10cd47bdee7978fcdfc6f998488df32c4344ae16ab45b52de332.php:74
+#: ../tmp/cache_twig/84/5f/a0ebccbc209614f54ddf16cf037355990905cefd3079e576a313f6a11586.php:171
+#: ../tmp/cache_twig/a2/33/8d87342695b62d292dd7029c19564cc3ab9b99ce9034d81019263d15a804.php:63
+#: ../tmp/cache_twig/dd/b4/2981051829969df987bd8ddb5c6dc5f9d0d10f5393c21080f9cd47633f95.php:734
+#: ../tmp/cache_twig/e2/07/010647dc8415a615d5f8cf2093c6fa3721c9a3b8e58e708eb900cc7bdebf.php:67
+#: ../tmp/cache_twig/0f/1a/2943a9b8534b0da4f702678616cb595709744afee1183ddee046bccc69f9.php:103
+#: ../tmp/cache_twig/96/a1/7b38f615336af0c84683a91ace70b9aa67c1a43acb498429d6882ac2dfbc.php:315
+#: ../tmp/cache_twig/a9/0c/8a8cbfe5d6b1a893662f865ece58bd76a8bd33b7c696dc4ff370eaadd4a9.php:306
+#: ../tmp/cache_twig/35/29/71e36a293225ce5372e99db946bf567585c4a65a61433e3c73ad354f9236.php:76
+#: ../tmp/cache_twig/35/3c/c8c14efa08266d7255db5f4b30255297ebb9500894c7d9af510fc4550214.php:169
+#: ../tmp/cache_twig/35/3c/c8c14efa08266d7255db5f4b30255297ebb9500894c7d9af510fc4550214.php:246
+#: ../tmp/cache_twig/6c/a4/1f01b162e7851408eead3a04d9e6de6374b54a32a55e7d6380cdba0f2f53.php:127
+#: ../tmp/cache_twig/98/a5/f945c93304136135a26fa3cce67ff847dd8e2b2c48296b14aa0d643dde2b.php:109
+#: ../tmp/cache_twig/8f/ac/36591e4ba588a071b21bae71ea6da83259df62670763ae7e9cd2e5da556e.php:480
+#: ../tmp/cache_twig/64/81/83b73fb5a6159fbb4692452426501112d9f3e3746c6a4da2a126b639e326.php:73
+#: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:462
+#: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:485
+#: ../tmp/cache_twig/bb/68/1551edcbc53574a4b19f29bd9604f86b97c0c81fdad097803bc3f82c51b1.php:74
+#: ../tmp/cache_twig/97/fe/c90f86fa3cdc292b5f1e598b398f5eb76d0db3adc514986e60285ccdb92e.php:134
+#: ../tmp/cache_twig/5e/93/f96277b28158c423dfdf2cc2e1699111753fcae4276f0173f3eb0cd67ec4.php:81
+#: ../tmp/cache_twig/57/d7/862a6d9ece31ca7a8450dd2dd95202d61a8181dd207a620b9d9b179f08ac.php:115
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1975
+#: ../tmp/cache_twig/7d/1d/0e0610f67f01a7610b14ed19d95faa829f3da46d9c1c8e5b43116a1f9d33.php:42
+#: ../tmp/cache_twig/46/16/ce4342ba8d6f1ad6ad3ec6d404a050649a3a11d1578ade704aadb9b4b8cf.php:126
+#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
+msgid "boutton::valider"
 msgstr ""
 
 #: ../tmp/cache_twig/86/96/c50474d682d60204be567efebad9abb32aea7fe04e1aae0a24cd042dd09b.php:40
@@ -2269,7 +2223,6 @@ msgstr ""
 #: ../tmp/cache_twig/22/68/5e0be77af6e35c71581a839825c948f0b8f936a6fded555bbdf97d7effd6.php:54
 #: ../tmp/cache_twig/c9/f8/7dfad135d6bf4a7f2fbd1dab2796c6c60fce7da03d1230ceed632be013c6.php:54
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:61
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:61
 msgid "Voulez-vous dire %link% ?"
 msgstr ""
 
@@ -2292,10 +2245,7 @@ msgstr ""
 #: ../tmp/cache_twig/8d/4f/32bee541d4f7212b6523ba55410f4cedb90bcbc95512ef2e50729bf218db.php:23
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:251
 #: ../tmp/cache_twig/05/2f/fa5fb801e36fe0715e2a3dcc7222b8bc1b79c9a839eafe2334644fd80d97.php:23
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:153
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:251
 #: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:153
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1948
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1948
 msgid "Publications"
 msgstr ""
@@ -2306,17 +2256,14 @@ msgid "Vous devez remplir les champs requis"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:51
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:51
 msgid "admin::monitor: Ancienne version (client)"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:70
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:70
 msgid "admin::monitor: Nouvelle version (prod)"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:83
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:83
 msgid "admin::monitor: production"
 msgstr ""
 
@@ -2328,45 +2275,37 @@ msgstr ""
 #: ../tmp/cache_twig/6a/bd/fb12585e7041a6be70c4636cf1b414aed005587f3d961ab3724217c21ea7.php:37
 #: ../tmp/cache_twig/6a/bd/fb12585e7041a6be70c4636cf1b414aed005587f3d961ab3724217c21ea7.php:211
 #: ../tmp/cache_twig/5f/5b/af90ed6dd30d3a17dd01e65d349b45edf4aad5dadbb00da847719774c6d7.php:30
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:224
 #: ../tmp/cache_twig/1b/61/3da38346442ea53414c51c4523d252ef4aefdc156a6c21206e9007cbed2b.php:35
 #: ../tmp/cache_twig/1b/61/3da38346442ea53414c51c4523d252ef4aefdc156a6c21206e9007cbed2b.php:233
 msgid "Upload"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:274
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:274
 msgid "Commandes"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:301
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:301
 msgid "Notifications"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:338
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:338
 msgid "Guest"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:347
 #: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:78
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:347
 msgid "login:: Mon compte"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:368
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:368
 msgid "phraseanet:: aide"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:386
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:386
 msgid "phraseanet:: raccourcis clavier"
 msgstr ""
 
 #: ../tmp/cache_twig/63/ac/f0b1df9d181803f7d613db17722a90308e78771de5d4dd4d3cd3e097e205.php:402
-#: ../tmp/cache_twig/7f/42/293a8ca36c49038dbb1c6d7dd044bea4fad5b4e69638ca8f699161384ebf.php:402
 msgid "phraseanet:: a propos"
 msgstr ""
 
@@ -2583,7 +2522,6 @@ msgstr ""
 #: ../tmp/cache_twig/f0/4d/5fa9878e5e837c599426d7949a7560835bd9022aef1c645e6c00eecce499.php:47
 #: ../tmp/cache_twig/f0/4d/5fa9878e5e837c599426d7949a7560835bd9022aef1c645e6c00eecce499.php:184
 #: ../tmp/cache_twig/19/82/712821ac44298850ceb75efb4fd76c1d90ec1d53d48c4c3e06442e12833b.php:148
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:108
 #: ../tmp/cache_twig/ef/d4/b0d18671f32d3a0ebea5dcde8c814f610214c29a0e536c22584d6cb3d9b9.php:229
 #: ../tmp/cache_twig/71/3a/d49ad1d50eb2444c0bcb1449c2f6b21bfa95013a375870d95df60e59525c.php:133
 #: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:108
@@ -2600,7 +2538,6 @@ msgstr ""
 #: ../tmp/cache_twig/98/a5/f945c93304136135a26fa3cce67ff847dd8e2b2c48296b14aa0d643dde2b.php:113
 #: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:250
 #: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:489
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:324
 #: ../tmp/cache_twig/ae/ac/607531696dda8fb5b66a7ab9d8901e54012d11edda41f60645d9473f53ed.php:188
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:324
 #: ../tmp/cache_twig/46/16/ce4342ba8d6f1ad6ad3ec6d404a050649a3a11d1578ade704aadb9b4b8cf.php:131
@@ -2613,7 +2550,6 @@ msgstr ""
 #: ../tmp/cache_twig/a1/e9/ada267627adbc3fe06e90fda2e200af6c348401bbca1bbb248257672b732.php:34
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:45
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:44
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1115
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1115
 msgid "action : editer"
 msgstr ""
@@ -2755,7 +2691,6 @@ msgstr ""
 #: ../tmp/cache_twig/44/a7/0cf82fcb594684d385bdd2cf514674dd929f0184d0b7689a72ab78a9d78c.php:315
 #: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:722
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:298
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:298
 #: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:272
 #: ../tmp/cache_twig/42/cc/1f4fdbf351eb278d4db2fa68a0aa80ee32b4d7c33ec4150f5a301e9f30b5.php:927
 #: ../tmp/cache_twig/8c/f4/64c10cb30a56f31b158e58b059d30ce10ee4eb3bbd21a509b43b3702db17.php:311
@@ -2784,7 +2719,6 @@ msgstr ""
 #: ../tmp/cache_twig/44/a7/0cf82fcb594684d385bdd2cf514674dd929f0184d0b7689a72ab78a9d78c.php:339
 #: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:709
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:306
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:306
 #: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:298
 #: ../tmp/cache_twig/42/cc/1f4fdbf351eb278d4db2fa68a0aa80ee32b4d7c33ec4150f5a301e9f30b5.php:956
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Users.php:311
@@ -2922,18 +2856,14 @@ msgstr ""
 #: ../tmp/cache_twig/d4/8b/fe38991c5bbee8da424f61ed8f650ad4af837f54d8bff6db80fcfc6c90c2.php:51
 #: ../tmp/cache_twig/d4/8b/fe38991c5bbee8da424f61ed8f650ad4af837f54d8bff6db80fcfc6c90c2.php:178
 #: ../tmp/cache_twig/51/72/a2a84c4596c645b645a25306b5814bd362620ab9c177c757a275f96a8f88.php:151
-#: ../tmp/cache_twig/a3/73/04a8099e8e2fe5d981e783193a2490b5cdda551c3e6d8939b25c48b25d60.php:93
-#: ../tmp/cache_twig/a3/73/04a8099e8e2fe5d981e783193a2490b5cdda551c3e6d8939b25c48b25d60.php:204
 msgid "Connection"
 msgstr ""
 
 #: ../tmp/cache_twig/62/bc/a48a9739664d8a9b28c991e303d159dcf2c8dcc5914df22276f218fca39e.php:114
-#: ../tmp/cache_twig/a3/73/04a8099e8e2fe5d981e783193a2490b5cdda551c3e6d8939b25c48b25d60.php:114
 msgid "Your account is locked, please follow the following link to unlock it"
 msgstr ""
 
 #: ../tmp/cache_twig/62/bc/a48a9739664d8a9b28c991e303d159dcf2c8dcc5914df22276f218fca39e.php:122
-#: ../tmp/cache_twig/a3/73/04a8099e8e2fe5d981e783193a2490b5cdda551c3e6d8939b25c48b25d60.php:122
 msgid "login:: Envoyer a nouveau le mail de confirmation"
 msgstr ""
 
@@ -2941,13 +2871,11 @@ msgstr ""
 #: ../tmp/cache_twig/ba/0d/93954add45ba4fed370dad3623fce3ea5e10a8f11e35d33f203e02cf37e9.php:125
 #: ../tmp/cache_twig/d4/8b/fe38991c5bbee8da424f61ed8f650ad4af837f54d8bff6db80fcfc6c90c2.php:149
 #: ../tmp/cache_twig/51/72/a2a84c4596c645b645a25306b5814bd362620ab9c177c757a275f96a8f88.php:121
-#: ../tmp/cache_twig/a3/73/04a8099e8e2fe5d981e783193a2490b5cdda551c3e6d8939b25c48b25d60.php:179
 msgid "Forgot password?"
 msgstr ""
 
 #: ../tmp/cache_twig/62/bc/a48a9739664d8a9b28c991e303d159dcf2c8dcc5914df22276f218fca39e.php:234
 #: ../tmp/cache_twig/51/72/a2a84c4596c645b645a25306b5814bd362620ab9c177c757a275f96a8f88.php:177
-#: ../tmp/cache_twig/a3/73/04a8099e8e2fe5d981e783193a2490b5cdda551c3e6d8939b25c48b25d60.php:234
 #: ../tmp/cache_twig/80/14/0243e87c831fd5c01bb92f110393631aa5184797a34a02fd1313f2f9a197.php:82
 msgid "Or login with"
 msgstr ""
@@ -2957,7 +2885,6 @@ msgstr ""
 #: ../tmp/cache_twig/9a/16/7afdc2310853cccb62c2ddeedce28326fa61965a13a39df59d491d9500c5.php:30
 #: ../tmp/cache_twig/9a/16/7afdc2310853cccb62c2ddeedce28326fa61965a13a39df59d491d9500c5.php:319
 #: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:267
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:247
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:247
 msgid "phraseanet:: thesaurus"
 msgstr ""
@@ -3083,174 +3010,142 @@ msgid "boutton::publier"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:48
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:48
 msgid "Votre recherche ne retourne aucun resultat"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:80
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:80
 msgid ""
 "La recherche s'effectue grâce à la boîte de dialogue qui se trouve en haut à "
 "gauche de l'écran."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:83
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:83
 msgid ""
 "Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux "
 "suivants :"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:87
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:87
 msgid ""
 "* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , "
 "LAST , ALL)"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:92
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:92
 msgid "Caractères de troncature"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:99
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:99
 msgid "auto*"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:103
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:103
 msgid "retourne \"automobile\", \"automate\", \"autoroute\", ..."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:109
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:109
 msgid "dé?it"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:113
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:113
 msgid "retourne \"délit\", \"débit\", ..."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:120
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:120
 msgid "Visualiser tous les enregistrements / les derniers enregistrements"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:126
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:126
 msgid "TOUT"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:130
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:130
 msgid "retourne tous les enregistrements des collections selectionnees"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:136
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:136
 msgid "LAST 20"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:140
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:140
 msgid ""
 "retourne les 20 derniers enregistrements archives dans les collections "
 "selectionnees"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:147
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:147
 msgid "Recherche multicritères"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:151
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:151
 msgid ""
 "Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou "
 "DANS"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:157
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:157
 msgid "sport"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:159
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:159
 msgid "automobile"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:163
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:163
 msgid "retourne les documents comprenant les deux mots."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:169
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:169
 msgid "journal OU jt"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:173
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:173
 msgid "retourne les documents comprenant un mot et/ou l'autre."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:179
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:179
 msgid "cannes SAUF festival"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:183
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:183
 msgid "retourne les documents comprenant cannes sans le mot festival."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:189
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:189
 msgid "thalassa DANS titre"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:193
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:193
 msgid ""
 "retourne les documents où le terme est au moins présent dans le titre, en "
 "évitant par exemple celles où le terme est uniquement cité dans la légende."
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:201
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:120
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:201
 #: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:120
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:99
 msgid "Attention"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:205
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:205
 msgid ""
 "pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les "
 "guillemets :"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:209
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:209
 msgid "C dans l'air"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:213
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:213
 msgid "Et Dieu créa la femme"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:217
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:217
 msgid "bijou en or"
 msgstr ""
 
 #: ../tmp/cache_twig/e1/51/f5dd66ef9bca8aa2ed5f323681670771eb1d998eb8d390deffb5a62f7a6a.php:221
-#: ../tmp/cache_twig/ec/87/4f0c36c9f6136d4df3ee98a789ffa07e1f7ef4db65445b39ee22ad0c41b1.php:221
 msgid "tout le sport"
 msgstr ""
 
@@ -3287,7 +3182,6 @@ msgstr ""
 #: ../tmp/cache_twig/2e/f3/a84d1ad7a7721d057a5a9682c259fd5b75da040aab8417cd6dbdb4d3789c.php:78
 #: ../tmp/cache_twig/e9/07/be09c70decea00f9953235fed236d74d2f25054c91c724f798530a0bba3e.php:73
 #: ../tmp/cache_twig/c7/20/7ca546f3a781705835b8042a1415de7cfbddcd9422998a3a3e90d55dc826.php:86
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1531
 #: ../tmp/cache_twig/ba/16/635be613ef6420a0da108eb79d3b94a3094ccba2a606078122e5f4577218.php:73
 #: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1531
 #: ../tmp/cache_twig/f7/fe/2b6b0647bba4cd3a38bd497eb217e1353439050817ee0a5e815ecb368789.php:328
@@ -3564,7 +3458,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/15/e6/48f7a939abc1d982521039d24da527c3ada5f5d03863f37a898f9ba0e842.php:1525
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:133
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:133
 #: ../tmp/cache_twig/50/69/a4a9283c5e8d05f572a3558b98b463102522cf57228ad562e5f0ba8a8764.php:831
 #: ../tmp/cache_twig/69/b4/0c7b997e3992628918451ead61f2169b878196e58c2b6704c657eb026257.php:416
 #: ../tmp/cache_twig/84/5f/a0ebccbc209614f54ddf16cf037355990905cefd3079e576a313f6a11586.php:85
@@ -3680,7 +3573,6 @@ msgstr ""
 #: ../tmp/cache_twig/10/7b/8164a1c1e4ee3ff6ab9801cdfdb8871881d8c31a9c7fb91333dec6ac13cc.php:105
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:35
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:34
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1096
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1096
 msgid "action : print"
 msgstr ""
@@ -3689,18 +3581,6 @@ msgstr ""
 #: ../tmp/cache_twig/e9/3e/149ce3009cd2c4aa24e1f29bdab9e7dee50b5d5c1c97f151abfb9e481ae3.php:31
 #: ../tmp/cache_twig/10/7b/8164a1c1e4ee3ff6ab9801cdfdb8871881d8c31a9c7fb91333dec6ac13cc.php:68
 msgid "action : ajouter au panier"
-msgstr ""
-
-#: ../tmp/cache_twig/5a/93/0f252e925966654810d27615faeb5ccc00e27bca12f769e954aac5b5b4ad.php:25
-#: ../tmp/cache_twig/ca/ad/6180b9deacd03924bb5b091226eb2a840bea46b45e7ca1ee5c3ef801be72.php:324
-#: ../tmp/cache_twig/48/68/9ee0a0d02de30c1bc9f99f678edfdb0cf8d29e547c14c07089b718b03059.php:324
-#: ../tmp/cache_twig/b5/52/f39c1776945e313240f92a872789c285591d5c211a5c387715fa1d332cd2.php:25
-msgid "Home"
-msgstr ""
-
-#: ../tmp/cache_twig/5a/93/0f252e925966654810d27615faeb5ccc00e27bca12f769e954aac5b5b4ad.php:62
-#: ../tmp/cache_twig/b5/52/f39c1776945e313240f92a872789c285591d5c211a5c387715fa1d332cd2.php:62
-msgid "language"
 msgstr ""
 
 #: ../tmp/cache_twig/e7/50/53cfecd5ef2d484586fc68c07a475f4ab38cbc11526ed24b5febb581eb93.php:43
@@ -3913,8 +3793,17 @@ msgstr ""
 msgid "No URL available"
 msgstr ""
 
+#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:22
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:63
+msgid "Setup"
+msgstr ""
+
+#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:276
+#: ../tmp/cache_twig/4e/05/fc1e4d1dc689276c8fd898e017a39066d57dd37474a73b49f38007bb80dd.php:327
+msgid "erreur avec la valeur %name%"
+msgstr ""
+
 #: ../tmp/cache_twig/4e/bb/8dda57e76aeebf518aba376f448b35caf96a9e3b156c47fc162938fc47e1.php:38
-#: ../tmp/cache_twig/ef/64/5cea90ceef30cbdd896088270a3fea9ef25941881f0b67c3538c4ae9bf41.php:36
 #: ../tmp/cache_twig/1a/c7/9f4d35e216d902c13390ce56aec05c0c813b02d8bbf605c5f24701e067e3.php:36
 #: ../tmp/cache_twig/5f/8c/a0fda08bf8166d5402804ace67a7420bf62316429b61364cb217b3b79fc8.php:36
 #: ../tmp/cache_twig/80/14/0243e87c831fd5c01bb92f110393631aa5184797a34a02fd1313f2f9a197.php:35
@@ -3973,7 +3862,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/8e/52/8cc1dc1ebbfc7ca3e6b093222f55dbfb6ece9988955c577f278bf6062449.php:85
 #: ../tmp/cache_twig/3f/dd/e8aa84e869c5c7619c3e3880c0b999fd23cb0c0ecacde77d1435f2d0220c.php:417
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1900
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1900
 msgid "choisir"
 msgstr ""
@@ -4025,6 +3913,12 @@ msgstr ""
 msgid "Installer Google Chrome Frame"
 msgstr ""
 
+#: ../tmp/cache_twig/ca/ad/6180b9deacd03924bb5b091226eb2a840bea46b45e7ca1ee5c3ef801be72.php:324
+#: ../tmp/cache_twig/48/68/9ee0a0d02de30c1bc9f99f678edfdb0cf8d29e547c14c07089b718b03059.php:324
+#: ../tmp/cache_twig/b5/52/f39c1776945e313240f92a872789c285591d5c211a5c387715fa1d332cd2.php:25
+msgid "Home"
+msgstr ""
+
 #: ../tmp/cache_twig/ca/ad/6180b9deacd03924bb5b091226eb2a840bea46b45e7ca1ee5c3ef801be72.php:330
 #: ../tmp/cache_twig/48/68/9ee0a0d02de30c1bc9f99f678edfdb0cf8d29e547c14c07089b718b03059.php:330
 msgid "Help"
@@ -4071,18 +3965,13 @@ msgstr ""
 #: ../tmp/cache_twig/39/b4/7f3771406edf35ef9d791fd45a7048688d56c740ced66241b76f382ccd5a.php:129
 #: ../tmp/cache_twig/39/b4/7f3771406edf35ef9d791fd45a7048688d56c740ced66241b76f382ccd5a.php:328
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:364
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:364
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:135
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:134
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1449
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1449
 msgid "action : supprimer"
 msgstr ""
 
 #: ../tmp/cache_twig/39/b4/7f3771406edf35ef9d791fd45a7048688d56c740ced66241b76f382ccd5a.php:135
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:477
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:483
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:487
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:477
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:483
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:487
@@ -4295,136 +4184,6 @@ msgstr ""
 msgid "boutton::refresh"
 msgstr ""
 
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:80
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:80
-#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:34
-#: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:271
-msgid ""
-"phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, "
-"contactez le support technique"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:84
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:84
-#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:36
-#: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:272
-msgid ""
-"phraseanet::erreur: La connection au serveur Phraseanet semble etre "
-"indisponible"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:88
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:88
-#: ../tmp/cache_twig/9a/16/7afdc2310853cccb62c2ddeedce28326fa61965a13a39df59d491d9500c5.php:168
-#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:37
-#: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:273
-msgid ""
-"phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:92
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:92
-msgid "Cocher toute la colonne"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:96
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:96
-msgid "Decocher toute la colonne"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:100
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:100
-msgid "Creer un model"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:104
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:104
-msgid "Creer un utilisateur"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:112
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:112
-#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:94
-msgid "This file is too big"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:116
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:116
-msgid "This field is required"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:124
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:124
-msgid "Reset and apply"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:128
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:128
-msgid "Confirm reset users rights before applying template"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:132
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:132
-msgid "Rights will be erased before applying template, do you confirm?"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:136
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:136
-msgid "Reset and apply template"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:140
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:140
-msgid "Apply template"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:144
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:144
-msgid "Reset rights before applying template?"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:148
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:152
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:148
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:152
-msgid "Would you like to reset rights before applying the template?"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:335
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:335
-msgid "Successful install"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:353
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:353
-msgid "Ajouter un nouvel utilisateur"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:358
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:358
-msgid "Adresse email du nouvel utilisateur"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:365
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:365
-msgid "Send an email to the user to setup his password"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:372
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:372
-msgid "Require email validation to activate the account"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:380
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:380
-msgid "Creer un modele"
-msgstr ""
-
-#: ../tmp/cache_twig/9f/64/63bba563d6287361a5a5dac0d5f0fadbf377f64edde5275220ec9677ccae.php:385
-#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:385
-msgid "Nom du nouveau modele"
-msgstr ""
-
 #: ../tmp/cache_twig/ef/d4/b0d18671f32d3a0ebea5dcde8c814f610214c29a0e536c22584d6cb3d9b9.php:28
 #: ../tmp/cache_twig/b6/35/094c101262771037c2b305afa21c933be3ff315dddb89406eff2609af687.php:28
 msgid "thesaurus:: export en topics"
@@ -4447,8 +4206,6 @@ msgid "phraseanet:: tri"
 msgstr ""
 
 #: ../tmp/cache_twig/ef/d4/b0d18671f32d3a0ebea5dcde8c814f610214c29a0e536c22584d6cb3d9b9.php:148
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:533
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:537
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:533
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:537
 msgid "phraseanet:: tri par date"
@@ -4492,11 +4249,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/ef/d4/b0d18671f32d3a0ebea5dcde8c814f610214c29a0e536c22584d6cb3d9b9.php:222
 msgid "thesaurus:: tout fermer"
-msgstr ""
-
-#: ../tmp/cache_twig/ef/64/5cea90ceef30cbdd896088270a3fea9ef25941881f0b67c3538c4ae9bf41.php:26
-#: ../tmp/cache_twig/5f/8c/a0fda08bf8166d5402804ace67a7420bf62316429b61364cb217b3b79fc8.php:26
-msgid "No account yet?"
 msgstr ""
 
 #: ../tmp/cache_twig/ef/aa/32409302817ec4ea0b8377058286e46bd91b8fd5a78e1344868065062e0f.php:22
@@ -4577,7 +4329,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/09/7a/3b6a21611b5028c479dde4eba3354be7b4c59b2e0258047a0121bb273857.php:34
 #: ../tmp/cache_twig/64/81/83b73fb5a6159fbb4692452426501112d9f3e3746c6a4da2a126b639e326.php:35
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:687
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:687
 msgid "Re-initialiser"
 msgstr ""
@@ -4587,10 +4338,6 @@ msgstr ""
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:379
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:507
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:513
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:373
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:379
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:507
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:513
 #: ../tmp/cache_twig/64/81/83b73fb5a6159fbb4692452426501112d9f3e3746c6a4da2a126b639e326.php:44
 msgid "Re-ordonner"
 msgstr ""
@@ -4752,12 +4499,10 @@ msgid "There is no user to add."
 msgstr ""
 
 #: ../tmp/cache_twig/8a/3d/7fc97ed3d56ebbf9be70953f845469b47745f11ed7c44e4cba328bc22467.php:28
-#: ../tmp/cache_twig/c0/5d/74a098a6a082faaf800e3ff2b172eab4641c5ea1cb332b22108bc5576d19.php:28
 msgid "Aucune notification"
 msgstr ""
 
 #: ../tmp/cache_twig/8a/3d/7fc97ed3d56ebbf9be70953f845469b47745f11ed7c44e4cba328bc22467.php:37
-#: ../tmp/cache_twig/c0/5d/74a098a6a082faaf800e3ff2b172eab4641c5ea1cb332b22108bc5576d19.php:37
 msgid "toutes les notifications"
 msgstr ""
 
@@ -4921,142 +4666,36 @@ msgstr ""
 msgid "Which photosets you want to put you %number% photos into ?"
 msgstr ""
 
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:124
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:124
-msgid ""
-"prod::thesaurusTab:dlg:Remplacement du candidat \"%(from)s\" par \"%(to)s\""
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:259
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:259
-msgid "prod::thesaurusTab:dlg:Remplacement en cours."
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:322
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:322
-msgid "prod::thesaurusTab:dlg:Acceptation en cours."
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:415
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:415
-msgid "prod::thesaurusTab:dlg:Suppression en cours."
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:489
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:489
-#, php-format
-msgid "prod::thesaurusTab:dlg:accepter le terme candidat \"%s\" ?"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:498
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:498
-#, php-format
-msgid "prod::thesaurusTab:dlg:accepter les %d termes candidats ?"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:607
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:607
-#, php-format
-msgid ""
-"prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:616
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:616
-#, php-format
-msgid "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:654
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:654
-#, php-format
-msgid "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:663
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:663
-#, php-format
-msgid "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:703
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:703
-#, php-format
-msgid "prod::thesaurusTab:dlg:supprimer le terme \"%s\" des fiches ?"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:712
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:712
-#, php-format
-msgid "prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:773
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1031
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:773
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1031
-msgid "prod::thesaurusTab:tree:loading"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1408
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1408
-msgid "prod::thesaurusTab:tmenu:Accepter comme terme specifique"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1418
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1418
-msgid "prod::thesaurusTab:tmenu:Accepter comme synonyme"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1500
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1500
-msgid "prod::thesaurusTab:cmenu:Accepter en %lng_code%"
-msgstr ""
-
-#: ../tmp/cache_twig/41/84/a69baa2cefce6ea90aa80f612824f7260c17cdb37d65b35e6bbce938c72f.php:1520
-#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1520
-msgid "prod::thesaurusTab:cmenu:Remplacer par..."
-msgstr ""
-
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:22
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:22
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:95
 #: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:95
 msgid "admin::utilisateurs: utilisateurs connectes"
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:104
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:104
 msgid "admin::monitor: total des utilisateurs uniques : "
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:125
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:125
 msgid "admin::monitor: utilisateur"
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:129
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:129
 msgid "admin::monitor: modules"
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:137
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:137
 msgid "admin::monitor: date de connexion"
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:141
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:141
 msgid "admin::monitor: dernier access"
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:322
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:322
 msgid "admin::monitor: bases sur lesquelles l'utilisateur est connecte : "
 msgstr ""
 
 #: ../tmp/cache_twig/60/71/9f695554b086be3c52604398a4bad8494e844d52ce08762603e83f180ebc.php:358
-#: ../tmp/cache_twig/33/59/31a65f341632e2bde67213a411fe023cdeb95c366f250d7044ce35ecc1cb.php:358
 msgid "Session persistente"
 msgstr ""
 
@@ -5080,6 +4719,85 @@ msgstr ""
 #: ../tmp/cache_twig/ba/7d/e75c50395bcaf6529e78a2fb3aa60137de877e6835e66be82712e66ae2d3.php:51
 #: ../tmp/cache_twig/37/fe/644ac28917c84e903c2640c6dc036440c6b810143a478e9fc6e511797679.php:51
 msgid "Which playlist you want to put you %number% elements into ?"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:124
+msgid ""
+"prod::thesaurusTab:dlg:Remplacement du candidat \"%(from)s\" par \"%(to)s\""
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:259
+msgid "prod::thesaurusTab:dlg:Remplacement en cours."
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:322
+msgid "prod::thesaurusTab:dlg:Acceptation en cours."
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:415
+msgid "prod::thesaurusTab:dlg:Suppression en cours."
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:489
+#, php-format
+msgid "prod::thesaurusTab:dlg:accepter le terme candidat \"%s\" ?"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:498
+#, php-format
+msgid "prod::thesaurusTab:dlg:accepter les %d termes candidats ?"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:607
+#, php-format
+msgid ""
+"prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:616
+#, php-format
+msgid "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:654
+#, php-format
+msgid "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:663
+#, php-format
+msgid "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:703
+#, php-format
+msgid "prod::thesaurusTab:dlg:supprimer le terme \"%s\" des fiches ?"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:712
+#, php-format
+msgid "prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:773
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1031
+msgid "prod::thesaurusTab:tree:loading"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1408
+msgid "prod::thesaurusTab:tmenu:Accepter comme terme specifique"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1418
+msgid "prod::thesaurusTab:tmenu:Accepter comme synonyme"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1500
+msgid "prod::thesaurusTab:cmenu:Accepter en %lng_code%"
+msgstr ""
+
+#: ../tmp/cache_twig/33/ef/a190816b95eeb625cb3269ebd51c8679e1f98a0060fe89807fdfa03e7519.php:1520
+msgid "prod::thesaurusTab:cmenu:Remplacer par..."
 msgstr ""
 
 #: ../tmp/cache_twig/f2/87/6b100ae1c9075a7357e8702579ae166529504e1c6bbbdf2b0a14c26f76f0.php:35
@@ -5106,7 +4824,6 @@ msgid "boutton::modifier"
 msgstr ""
 
 #: ../tmp/cache_twig/ec/ad/35a6086a385e182c02e25c928b51514f7e1846f5be323b63c35ca93c79dd.php:30
-#: ../tmp/cache_twig/20/f9/502e6bea58def37b27b89f78b7b38a46e6f199feab2babc2aa990f295c85.php:30
 msgid "Guest access"
 msgstr ""
 
@@ -5137,109 +4854,85 @@ msgstr ""
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:49
 #: ../tmp/cache_twig/d3/4a/935ee7f92da2e1661502992f9a8f3e754a644c8a00ebe80cee29914b3054.php:47
 #: ../tmp/cache_twig/d3/4a/935ee7f92da2e1661502992f9a8f3e754a644c8a00ebe80cee29914b3054.php:62
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:49
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:145
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:152
 msgid "rafraichir"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:53
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:53
 msgid "Vous avez recu un nouveau panier"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:106
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:106
 msgid "Vous avez recu une demande de validation de document sur ce panier"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:129
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:295
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:468
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:129
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:295
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:468
 msgid "action::exporter"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:144
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:483
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:144
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:483
 msgid "action::editer"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:172
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:335
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:172
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:335
 msgid "action::Valider"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:247
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:247
 msgid "Vous avez envoye une demande de validation de document sur ce panier"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:268
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:268
 msgid "paniers:: panier recu de %pusher%"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:311
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:317
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:311
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:317
 msgid "action::renommer"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:352
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:352
 msgid "Archive"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:498
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:498
 msgid "action::detacher"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:707
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:707
 msgid "delete"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:796
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:796
 msgid "panier:: ordre du panier"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:804
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:804
 msgid "panier:: ordre Validation ascendante"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:812
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:812
 msgid "panier:: ordre Validation descendante"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:860
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:860
 msgid "L'utilisateur approuve ce document"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:866
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:866
 msgid "L'utilisateur n'a pas encore donne son avis sur ce document"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:872
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:872
 msgid "L'utilisateur desapprouve ce document"
 msgstr ""
 
 #: ../tmp/cache_twig/d6/5f/fe7979b57c801a6dfc6e36c230a277e5cf48c8a4438e8a88b9eb394ad063.php:881
-#: ../tmp/cache_twig/4a/cc/d67776b4510d915aa71f6c1f98078e8c5ba5abb901906654050bb3439e39.php:881
 msgid "This user does not participate to the validation but is only viewer."
 msgstr ""
 
@@ -5637,16 +5330,117 @@ msgstr ""
 msgid "charger d'avantage de publications"
 msgstr ""
 
-#: ../tmp/cache_twig/d3/cf/2c8e27de15e38a7be2fdc5a9566c4438d53fa32db6bf6d192a3680a7fa71.php:63
-#: ../tmp/cache_twig/49/1b/0e2ac7b81840de06d8a0ad990fac70f9b079ab9b4bc116e5c4f76ee7f1d8.php:63
-msgid "Incorrect please try again"
-msgstr ""
-
 #: ../tmp/cache_twig/d3/38/355ca33f58e37d1320f8e94c1a5f108976494f40f91231913ef0f5dd7d13.php:22
 #: ../tmp/cache_twig/d3/38/355ca33f58e37d1320f8e94c1a5f108976494f40f91231913ef0f5dd7d13.php:27
 #: ../tmp/cache_twig/3e/44/f2e4d44fbc2e9c2427435cc867bea4369f3dd254b09946aba3bde9c7aca4.php:22
 #: ../tmp/cache_twig/3e/44/f2e4d44fbc2e9c2427435cc867bea4369f3dd254b09946aba3bde9c7aca4.php:27
 msgid "validation::envoyer mon rapport"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:80
+#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:34
+#: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:271
+msgid ""
+"phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, "
+"contactez le support technique"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:84
+#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:36
+#: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:272
+msgid ""
+"phraseanet::erreur: La connection au serveur Phraseanet semble etre "
+"indisponible"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:88
+#: ../tmp/cache_twig/9a/16/7afdc2310853cccb62c2ddeedce28326fa61965a13a39df59d491d9500c5.php:168
+#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:37
+#: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:273
+msgid ""
+"phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:92
+msgid "Cocher toute la colonne"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:96
+msgid "Decocher toute la colonne"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:100
+msgid "Creer un model"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:104
+msgid "Creer un utilisateur"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:112
+#: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:94
+msgid "This file is too big"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:116
+msgid "This field is required"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:124
+msgid "Reset and apply"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:128
+msgid "Confirm reset users rights before applying template"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:132
+msgid "Rights will be erased before applying template, do you confirm?"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:136
+msgid "Reset and apply template"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:140
+msgid "Apply template"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:144
+msgid "Reset rights before applying template?"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:148
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:152
+msgid "Would you like to reset rights before applying the template?"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:335
+msgid "Successful install"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:353
+msgid "Ajouter un nouvel utilisateur"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:358
+msgid "Adresse email du nouvel utilisateur"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:365
+msgid "Send an email to the user to setup his password"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:372
+msgid "Require email validation to activate the account"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:380
+msgid "Creer un modele"
+msgstr ""
+
+#: ../tmp/cache_twig/9a/b6/a7f490b9e28d1254c79b1d6b0720a5557537e01b2a796e13edbbd6b3ac42.php:385
+msgid "Nom du nouveau modele"
 msgstr ""
 
 #: ../tmp/cache_twig/9a/16/7afdc2310853cccb62c2ddeedce28326fa61965a13a39df59d491d9500c5.php:112
@@ -5764,6 +5558,10 @@ msgstr ""
 #: ../tmp/cache_twig/3e/cd/88166b0732227947c2afa98bd5c68baa9360300b65c1828de0eda693f6f1.php:82
 #: ../tmp/cache_twig/ce/f5/3fc6514831a3beba14a6cf8235c50358ef94e24cf34037cff6f24d2c4c47.php:454
 msgid "Deselect all"
+msgstr ""
+
+#: ../tmp/cache_twig/49/1b/0e2ac7b81840de06d8a0ad990fac70f9b079ab9b4bc116e5c4f76ee7f1d8.php:63
+msgid "Incorrect please try again"
 msgstr ""
 
 #: ../tmp/cache_twig/d1/be/831744873b5b165b6af565a7f750e773ed30b1dee6fa45f29e8601e3ed5f.php:29
@@ -7118,93 +6916,20 @@ msgstr ""
 msgid "Select a list on the left and edit it !"
 msgstr ""
 
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:34
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:34
-msgid "Tableau de bord"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:74
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:74
-msgid "SearchEngine settings"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:116
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:394
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:480
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:116
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:394
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:480
-msgid "admin::utilisateurs: utilisateurs"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:133
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:133
-msgid "admin::utilisateurs: demandes en cours"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:177
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:177
-msgid "admin::utilisateurs: gestionnaire de taches"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:199
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:199
-msgid "admin::utilisateurs: bases de donnees"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:288
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:288
-msgid "admin::structure: reglage de la structure"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:300
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:300
-msgid "CHAMPS"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:312
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:312
-msgid "SUBDEFS"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:324
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:324
-msgid "admin::status: reglage des status"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:335
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:335
-msgid "admin:: CGUs"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:347
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:347
-msgid "admin::collection: ordre des collections"
-msgstr ""
-
-#: ../tmp/cache_twig/a9/12/eadbc0dce9b453905fd54ea604cbb71dd91fb4728a8cbcd64bc454abfbaf.php:460
-#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:460
-msgid "admin::base: preferences de collection"
-msgstr ""
-
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:58
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:57
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1133
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1133
 msgid "action : status"
 msgstr ""
 
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:71
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:70
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1151
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1151
 msgid "action : collection"
 msgstr ""
 
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:84
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:83
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1330
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1378
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1330
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1378
 msgid "action : push"
@@ -7212,8 +6937,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:97
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:96
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1340
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1388
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1340
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1388
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:110
@@ -7222,9 +6945,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:108
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:107
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1353
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1403
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2133
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1353
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1403
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2133
@@ -7233,9 +6953,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:114
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:113
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1363
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1413
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2138
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1363
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1413
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2138
@@ -7244,7 +6961,6 @@ msgstr ""
 
 #: ../tmp/cache_twig/a9/19/8f9ba6319a22ee423e3fc74e98bcdbf9814a2ba850ffce3d04de14936907.php:127
 #: ../tmp/cache_twig/9c/16/a0e4180a47fa7ae7b8a328953789ff927d94aef0808c0eaf8e4ced094a0e.php:126
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1433
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1433
 msgid "action : outils"
 msgstr ""
@@ -7380,6 +7096,10 @@ msgstr ""
 
 #: ../tmp/cache_twig/5f/5b/af90ed6dd30d3a17dd01e65d349b45edf4aad5dadbb00da847719774c6d7.php:686
 msgid "Please select at least one valid file"
+msgstr ""
+
+#: ../tmp/cache_twig/5f/8c/a0fda08bf8166d5402804ace67a7420bf62316429b61364cb217b3b79fc8.php:26
+msgid "No account yet?"
 msgstr ""
 
 #: ../tmp/cache_twig/68/8d/e83c91f65268e1fdebb213e07d3c4b9807c2f5487048997476a9c4ea9848.php:41
@@ -7821,7 +7541,6 @@ msgid "ISO sensibility"
 msgstr ""
 
 #: ../tmp/cache_twig/6c/f7/621836377e72e0aedcf913450a25b5341b50103f3d0f90d15dd649b58718.php:319
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:651
 #: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:651
 msgid "Flash"
 msgstr ""
@@ -8415,6 +8134,60 @@ msgstr ""
 msgid "%value% likes"
 msgstr ""
 
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:34
+msgid "Tableau de bord"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:74
+msgid "SearchEngine settings"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:116
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:394
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:480
+msgid "admin::utilisateurs: utilisateurs"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:133
+msgid "admin::utilisateurs: demandes en cours"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:177
+msgid "admin::utilisateurs: gestionnaire de taches"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:199
+msgid "admin::utilisateurs: bases de donnees"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:288
+msgid "admin::structure: reglage de la structure"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:300
+msgid "CHAMPS"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:312
+msgid "SUBDEFS"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:324
+msgid "admin::status: reglage des status"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:335
+msgid "admin:: CGUs"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:347
+msgid "admin::collection: ordre des collections"
+msgstr ""
+
+#: ../tmp/cache_twig/1e/96/776ebadb740ee36b8f45a95e97994f022db34264ec297d328f8832ec70fb.php:460
+msgid "admin::base: preferences de collection"
+msgstr ""
+
 #: ../tmp/cache_twig/1e/bb/4b22948fc6a7e5073b258160c8fae78d85ed2c7342bf01fc11c8aba0ee48.php:158
 msgid "Aucun statut editable"
 msgstr ""
@@ -8643,412 +8416,16 @@ msgstr ""
 msgid "Certaines donnees du reportage ont change"
 msgstr ""
 
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:188
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:188
-msgid "Chargement"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:258
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:258
-msgid "Close the WorkZone"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:284
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:284
-msgid "prod::thesaurusTab:thesaurus"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:291
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:291
-msgid "prod::thesaurusTab:candidats"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:306
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:306
-msgid "prod::thesaurusTab:wizard:accepter le terme candidat"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:312
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:312
-msgid "prod::thesaurusTab:wizard:remplacer par le terme"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:368
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:436
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:368
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:436
-msgid "chargement"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:494
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:500
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:494
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:500
-msgid "Browse Baskets"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:511
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:517
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:521
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:511
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:517
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:521
-msgid "action:: nouveau reportage"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:545
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:549
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:545
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:549
-msgid "phraseanet:: tri par nom"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:557
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1486
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1667
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:557
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1486
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1667
-msgid "Preferences"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:583
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:583
-msgid "Advanced Search"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:631
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:631
-msgid "Tout type"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:635
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:635
-msgid "Image"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:639
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:639
-msgid "Video"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:643
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:643
-msgid "Audio"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:647
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:647
-msgid "Document"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:693
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:693
-msgid "Trier par "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:745
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:745
-msgid "rechercher par stemme"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:755
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:755
-msgid "Les termes apparaissent dans le(s) champs"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:760
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:941
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:760
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:941
-msgid "rechercher dans tous les champs"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:801
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:801
-msgid "Status des documents a rechercher"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:913
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:913
-msgid "Rechercher dans un champ date"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:957
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:970
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:957
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:970
-msgid "YYYY/MM/DD"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1028
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1028
-msgid "reponses:: selectionner tout"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1037
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1037
-msgid "reponses:: selectionner rien"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1046
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1046
-msgid "phraseanet::type:: images"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1064
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1064
-msgid "phraseanet::type:: videos"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1073
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1073
-msgid "phraseanet::type:: audios"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1547
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1547
-msgid "raccourci :: a propos des raccourcis claviers"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1552
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1552
-msgid "Raccourcis claviers en cours de recherche : "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1557
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1593
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1557
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1593
-msgid "Raccourcis:: ctrl-a : tout selectionner "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1561
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1597
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1561
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1597
-msgid "Raccourcis:: ctrl-p : imprimer la selection "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1565
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1601
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1565
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1601
-msgid "Raccourcis:: ctrl-e : editer la selection "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1569
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1569
-msgid "Raccourcis::fleche gauche : page precedente "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1573
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1573
-msgid "Raccourcis::fleche droite : page suivante "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1577
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1577
-msgid "Raccourcis::fleche haut : scroll vertical "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1581
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1581
-msgid "Raccourcis::fleche bas : scroll vertical "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1588
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1588
-msgid "Raccourcis claviers de la zone des paniers : "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1608
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1608
-msgid "Raccourcis claviers en cours de editing : "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1613
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1613
-msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1620
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1620
-msgid "Raccourcis claviers en cours de preview : "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1625
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1625
-msgid "Raccourcis::fleche gauche : en avant "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1629
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1629
-msgid "Raccourcis::fleche gauche : en arriere "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1633
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1633
-msgid "Raccourcis::espace : arreter/demarrer le diaporama "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1641
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1641
-msgid ""
-"Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1652
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1652
-msgid "raccourcis :: ne plus montrer cette aide"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1673
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1673
-msgid "Affichage"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1677
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1677
-msgid "Configuration"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1696
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1696
-msgid "Use latest search settings on Production loading"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1705
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1705
-msgid "Mode de presentation"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1720
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1720
-msgid "reponses:: mode vignettes"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1732
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1732
-msgid "reponses:: mode liste"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1739
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1739
-msgid "Theme"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1748
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1748
-msgid "Selecteur de theme"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1770
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1770
-msgid "Presentation de vignettes"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1781
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1781
-msgid "Iconographe (description au rollover)"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1793
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1793
-msgid "Graphiste (preview au rollover)"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1803
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1803
-msgid "Display technical data"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1814
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1814
-msgid "In the answer grid"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1826
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1826
-msgid "After metadata"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1838
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1838
-msgid "Do not display"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1848
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1848
-msgid "Type de documents"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1859
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1859
-msgid "Afficher une icone"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1868
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1868
-msgid "reponses:: images par pages : "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1881
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1881
-msgid "reponses:: taille des images : "
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1895
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1895
-msgid "Couleur de selection"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1910
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1910
-msgid "Affichage au demarrage"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1926
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1926
-msgid "Ma derniere question"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1937
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1937
-msgid "Une question personnelle"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:1959
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1959
-msgid "Aide"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2066
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2066
-msgid "Presentation de vignettes de panier"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2084
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2084
-msgid "Afficher les status"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2104
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2104
-msgid "Afficher la fiche descriptive"
-msgstr ""
-
-#: ../tmp/cache_twig/4d/e3/ea3fcb2d3e7975ff578926bd30accf55a102a8ee205fe8a41f5236f64c7a.php:2124
-#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2124
-msgid "Afficher le titre"
-msgstr ""
-
 #: ../tmp/cache_twig/cc/49/de3b22a0ad2136aa4a2d04ab8029e9576ebc9278899da69e600ed81ac675.php:27
 msgid "Apparait aussi dans ces reportages"
 msgstr ""
 
 #: ../tmp/cache_twig/cc/49/de3b22a0ad2136aa4a2d04ab8029e9576ebc9278899da69e600ed81ac675.php:75
 msgid "Apparait aussi dans ces paniers"
+msgstr ""
+
+#: ../tmp/cache_twig/b5/52/f39c1776945e313240f92a872789c285591d5c211a5c387715fa1d332cd2.php:62
+msgid "language"
 msgstr ""
 
 #: ../tmp/cache_twig/80/14/0243e87c831fd5c01bb92f110393631aa5184797a34a02fd1313f2f9a197.php:62
@@ -9065,6 +8442,319 @@ msgstr ""
 
 #: ../tmp/cache_twig/ae/ac/607531696dda8fb5b66a7ab9d8901e54012d11edda41f60645d9473f53ed.php:184
 msgid "boutton::mettre a jour"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:188
+msgid "Chargement"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:258
+msgid "Close the WorkZone"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:284
+msgid "prod::thesaurusTab:thesaurus"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:291
+msgid "prod::thesaurusTab:candidats"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:306
+msgid "prod::thesaurusTab:wizard:accepter le terme candidat"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:312
+msgid "prod::thesaurusTab:wizard:remplacer par le terme"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:368
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:436
+msgid "chargement"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:494
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:500
+msgid "Browse Baskets"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:511
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:517
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:521
+msgid "action:: nouveau reportage"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:545
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:549
+msgid "phraseanet:: tri par nom"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:557
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1486
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1667
+msgid "Preferences"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:583
+msgid "Advanced Search"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:631
+msgid "Tout type"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:635
+msgid "Image"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:639
+msgid "Video"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:643
+msgid "Audio"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:647
+msgid "Document"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:693
+msgid "Trier par "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:745
+msgid "rechercher par stemme"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:755
+msgid "Les termes apparaissent dans le(s) champs"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:760
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:941
+msgid "rechercher dans tous les champs"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:801
+msgid "Status des documents a rechercher"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:913
+msgid "Rechercher dans un champ date"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:957
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:970
+msgid "YYYY/MM/DD"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1028
+msgid "reponses:: selectionner tout"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1037
+msgid "reponses:: selectionner rien"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1046
+msgid "phraseanet::type:: images"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1064
+msgid "phraseanet::type:: videos"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1073
+msgid "phraseanet::type:: audios"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1547
+msgid "raccourci :: a propos des raccourcis claviers"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1552
+msgid "Raccourcis claviers en cours de recherche : "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1557
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1593
+msgid "Raccourcis:: ctrl-a : tout selectionner "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1561
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1597
+msgid "Raccourcis:: ctrl-p : imprimer la selection "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1565
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1601
+msgid "Raccourcis:: ctrl-e : editer la selection "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1569
+msgid "Raccourcis::fleche gauche : page precedente "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1573
+msgid "Raccourcis::fleche droite : page suivante "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1577
+msgid "Raccourcis::fleche haut : scroll vertical "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1581
+msgid "Raccourcis::fleche bas : scroll vertical "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1588
+msgid "Raccourcis claviers de la zone des paniers : "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1608
+msgid "Raccourcis claviers en cours de editing : "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1613
+msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1620
+msgid "Raccourcis claviers en cours de preview : "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1625
+msgid "Raccourcis::fleche gauche : en avant "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1629
+msgid "Raccourcis::fleche gauche : en arriere "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1633
+msgid "Raccourcis::espace : arreter/demarrer le diaporama "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1641
+msgid ""
+"Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1652
+msgid "raccourcis :: ne plus montrer cette aide"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1673
+msgid "Affichage"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1677
+msgid "Configuration"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1696
+msgid "Use latest search settings on Production loading"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1705
+msgid "Mode de presentation"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1720
+msgid "reponses:: mode vignettes"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1732
+msgid "reponses:: mode liste"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1739
+msgid "Theme"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1748
+msgid "Selecteur de theme"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1770
+msgid "Presentation de vignettes"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1781
+msgid "Iconographe (description au rollover)"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1793
+msgid "Graphiste (preview au rollover)"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1803
+msgid "Display technical data"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1814
+msgid "In the answer grid"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1826
+msgid "After metadata"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1838
+msgid "Do not display"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1848
+msgid "Type de documents"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1859
+msgid "Afficher une icone"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1868
+msgid "reponses:: images par pages : "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1881
+msgid "reponses:: taille des images : "
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1895
+msgid "Couleur de selection"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1910
+msgid "Affichage au demarrage"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1926
+msgid "Ma derniere question"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1937
+msgid "Une question personnelle"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:1959
+msgid "Aide"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2066
+msgid "Presentation de vignettes de panier"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2084
+msgid "Afficher les status"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2104
+msgid "Afficher la fiche descriptive"
+msgstr ""
+
+#: ../tmp/cache_twig/c3/ab/c3d7cd8dd996eb27a3bbf052d6132d1245cc24cce5ee1f4ba9876300625f.php:2124
+msgid "Afficher le titre"
 msgstr ""
 
 #: ../tmp/cache_twig/7d/1d/0e0610f67f01a7610b14ed19d95faa829f3da46d9c1c8e5b43116a1f9d33.php:26
