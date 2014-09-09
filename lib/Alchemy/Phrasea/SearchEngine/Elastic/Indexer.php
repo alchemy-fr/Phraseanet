@@ -25,8 +25,8 @@ class Indexer
     private $logger;
     private $appbox;
 
-    private $recordIndexer = null;
-    private $termIndexer   = null;
+    private $recordIndexer;
+    private $termIndexer;
 
     private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
 
@@ -35,10 +35,10 @@ class Indexer
 
     public function __construct(Client $client, array $options, LoggerInterface $logger, \appbox $appbox)
     {
-        $this->client = $client;
-        $this->options = $options;
-        $this->logger = $logger;
-        $this->appbox = $appbox;
+        $this->client   = $client;
+        $this->options  = $options;
+        $this->logger   = $logger;
+        $this->appbox   = $appbox;
     }
 
     public function createIndex($withMapping = true)
@@ -89,8 +89,8 @@ class Indexer
         $this->disableShardRefreshing();
 
         try {
-            $this->getRecordIndexer()->populateIndex();
             $this->getTermIndexer()->populateIndex();
+            $this->getRecordIndexer()->populateIndex();
 
             // Optimize index
             $params = array('index' => $this->options['index']);
@@ -279,7 +279,7 @@ class Indexer
     /**
      * @return RecordIndexer
      */
-    public function getRecordIndexer()
+    private function getRecordIndexer()
     {
         if (!$this->recordIndexer) {
             $this->recordIndexer = new RecordIndexer($this->client, $this->options, $this->appbox);
@@ -291,7 +291,7 @@ class Indexer
     /**
      * @return TermIndexer
      */
-    public function getTermIndexer()
+    private function getTermIndexer()
     {
         if (!$this->termIndexer) {
             $this->termIndexer = new TermIndexer($this->client, $this->options, $this->appbox);
