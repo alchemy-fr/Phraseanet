@@ -12,12 +12,12 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
-use Elasticsearch\Client;
 use media_subdef;
 
 class RecordIndexer
@@ -39,11 +39,17 @@ class RecordIndexer
      */
     private $appbox;
 
-    public function __construct(Client $client, array $options, \appbox $appbox)
+    /**
+     * @var \Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine
+     */
+    private $elasticSearchEngine;
+
+    public function __construct(ElasticSearchEngine $elasticSearchEngine, array $options, \appbox $appbox)
     {
-        $this->client = $client;
+        $this->client = $elasticSearchEngine->getClient();
         $this->options = $options;
         $this->appbox = $appbox;
+        $this->elasticSearchEngine = $elasticSearchEngine;
     }
 
     public function populateIndex()
@@ -58,18 +64,17 @@ class RecordIndexer
         $recordHelper = new RecordHelper($this->appbox);
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-
             // TODO Pass a BulkOperation object to TermIndexer to muliplex
             // indexing queries between types
-            // TODO Create object to query thesaurus for term paths/synonyms
-            // TODO Extract record indexing logic in a RecordIndexer class
             $fetcher = new RecordFetcher($databox, $recordHelper);
             $fetcher->setBatchSize(200);
-            while ($record = $fetcher->fetch()) {
-                $params = array();
-                $params['id'] = $record['id'];
-                $params['body'] = $record;
-                $bulk->index($params);
+            while ($records = $fetcher->fetch()) {
+                foreach ($records as $record) {
+                    $params = array();
+                    $params['id'] = $record['id'];
+                    $params['body'] = $this->sanitize($record);
+                    $bulk->index($params);
+                }
             }
         }
 
@@ -109,14 +114,16 @@ class RecordIndexer
                 $m->format(Mapping::DATE_FORMAT_CAPTION);
             }
 
-            if (!$params['indexable'] && !$params['to_aggregate']) {
-                $m->notIndexed();
-            } elseif (!$params['indexable'] && $params['to_aggregate']) {
-                $m->notAnalyzed();
-                $m->addRawVersion();
-            } else {
-                $m->addRawVersion();
-                $m->addAnalyzedVersion(['fr', 'de']); // @todo Dynamic list from the box
+            if ($params['type'] === Mapping::TYPE_STRING) {
+                if (!$params['indexable'] && !$params['to_aggregate']) {
+                    $m->notIndexed();
+                } elseif (!$params['indexable'] && $params['to_aggregate']) {
+                    $m->notAnalyzed();
+                    $m->addRawVersion();
+                } else {
+                    $m->addRawVersion();
+                    $m->addAnalyzedVersion(['fr', 'de']); // @todo Dynamic list from the box
+                }
             }
         }
 
@@ -260,5 +267,31 @@ class RecordIndexer
         $key = strtolower($key);
 
         return $key;
+    }
+
+    /**
+     * Inspired by ESRecordSerializer
+     *
+     * @param $record
+     */
+    private function sanitize($record)
+    {
+        $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
+
+        foreach ($dateFields as $field) {
+            if (!isset($record['caption'][$field])) {
+                continue;
+            }
+
+            try {
+                $date = new \DateTime($record['caption'][$field]);
+                $record['caption'][$field] = $date->format(Mapping::DATE_FORMAT_CAPTION_PHP);
+            } catch (\Exception $e) {
+                $record['caption'][$field] = null;
+                continue;
+            }
+        }
+
+        return $record;
     }
 }

@@ -20,7 +20,8 @@ class Mapping
     private $current;
 
     const DATE_FORMAT_MYSQL = 'yyyy-MM-dd HH:mm:ss';
-    const DATE_FORMAT_CAPTION = 'yyyy/MM/dd';
+    const DATE_FORMAT_CAPTION = 'yyyy/MM/dd'; // ES format
+    const DATE_FORMAT_CAPTION_PHP = 'Y/m/d';  // PHP format
 
     // Core types
     const TYPE_STRING  = 'string';

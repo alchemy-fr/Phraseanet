@@ -12,19 +12,17 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use databox;
-use Doctrine\DBAL\Driver\Connection;
 use PDO;
 
 class RecordFetcher
 {
     private $connection;
-    private $statement;
+    private $statementRecords;
+    private $statementMetadata;
     private $helper;
 
     private $offset = 0;
     private $batchSize = 1;
-    private $needsFetch = true;
-    private $currentRow;
 
     private $databoxId;
 
@@ -37,83 +35,59 @@ class RecordFetcher
 
     public function fetch()
     {
-        $statement = $this->statement();
+        $statementRecords = $this->statementRecords();
 
-        // Start of a batch
-        if ($this->needsFetch) {
-            $statement->execute();
-            $this->needsFetch = false;
-            printf("Query %d/%d -> %d rows\n", $this->offset, $this->batchSize, $statement->rowCount());
+        // Fetch records rows
+        $statementRecords->execute();
+        printf("Query %d/%d -> %d rows\n", $this->offset, $this->batchSize, $statementRecords->rowCount());
+        $records = [];
+
+        while ($record = $statementRecords->fetch()) {
+            $records[$record['record_id']] = $record;
+            printf("Record found (#%d)\n", $record['record_id']);
+            $this->offset++;
         }
 
-        $record = null;
+        if (count($records) < 1) {
+            printf("End of records\n");
 
-        while (true) {
-            // Get a row
-            if ($this->currentRow) {
-                $row = $this->currentRow;
-                $this->currentRow = null;
-            } else {
-                $row = $statement->fetch();
-            }
-            // End of data
-            if (!$row) {
-                break;
-            }
-            if ($record) {
-                // This row belongs to the next record, keep row for next call
-                if ($row['record_id'] !== $record['record_id']) {
-                    $this->currentRow = $row;
-                    break;
-                }
-            } else {
-                // Keep this row as record data
-                $record = $row;
-                // Cleanup query metadata
-                unset($record['metadata_key']);
-                unset($record['metadata_value']);
-                unset($record['metadata_type']);
-                unset($record['metadata_private']);
-            }
+            return false; // End
+        }
 
+        // Fetch metadata
+        $statementMetadata = $this->statementMetadata();
+        $statementMetadata->execute(['ids' => implode(',', array_keys($records))]);
+        while ($metadata = $statementMetadata->fetch()) {
             // Store metadata value
-            $value = $row['metadata_value'];
-            $key = $row['metadata_key'];
-            $type = $row['metadata_type'];
+            $value = $metadata['metadata_value'];
+            $key = $metadata['metadata_key'];
+            $type = $metadata['metadata_type'];
 
             // Do not keep empty values
             if (empty($value)) {
                 continue;
             }
 
-            if ($row['metadata_private']) {
+            if ($metadata['metadata_private']) {
                 $type = 'private_'.$type;
             }
+
             // Metadata can be multi-valued
-            if (!isset($record[$type][$key])) {
-                $record[$type][$key] = $value;
+            if (!isset($records[$metadata['record_id']] [$type][$key])) {
+                $records[$metadata['record_id']] [$type][$key] = $value;
             } elseif (is_array($record[$type][$key])) {
-                $record[$type][$key][] = $value;
+                $records[$metadata['record_id']] [$type][$key][] = $value;
             } else {
-                $record[$type][$key] = array($record[$type][$key], $value);
+                $records[$metadata['record_id']] [$type][$key] = array($records[$metadata['record_id']] [$type][$key], $value);
             }
         }
 
-        if ($record) {
-            printf("Record found (#%d)\n", $record['record_id']);
-            $record = $this->hydrate($record);
-            $this->offset++;
-        } else {
-            printf("End of records\n");
+        // Hydrate records
+        foreach ($records as $key => $record) {
+            $records[$key] = $this->hydrate($record);
         }
 
-        // If we exausted the last result set
-        if ($this->offset % $this->batchSize === 0 || !$record) {
-            $statement->closeCursor();
-            $this->needsFetch = true;
-        }
-
-        return $record;
+        return $records;
     }
 
     public function setBatchSize($size)
@@ -137,43 +111,54 @@ class RecordFetcher
         return $record;
     }
 
-    private function statement()
+    private function statementRecords()
     {
-        if (!$this->statement) {
-            $sql = 'SELECT r.record_id
-                         , r.coll_id as collection_id
-                         , r.uuid
-                         , r.sha256 -- TODO rename in "hash"
-                         , r.originalname as original_name
-                         , r.mime
-                         , r.type
-                         , r.credate as created_on
-                         , r.moddate as updated_on
-                         , m.metadata_key
-                         , m.metadata_value
-                         , m.metadata_type
-                         , m.metadata_private
-                    FROM (
-                        SELECT * FROM record r
-                        WHERE r.parent_record_id = 0 -- Only records, not stories
-                        LIMIT :offset, :limit
-                    ) AS r
-                    LEFT JOIN (
-                        SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, \'caption\' AS metadata_type, ms.business AS metadata_private
-                        FROM metadatas AS m
-                        INNER JOIN metadatas_structure AS ms ON (ms.id=m.meta_struct_id)
-                        UNION
-                        SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, \'exif\' AS metadata_type, 0 AS metadata_private
-                        FROM technical_datas AS t
-                    ) AS m USING(record_id)
-                    ORDER BY r.record_id ASC';
+        if (!$this->statementRecords) {
+            $sql = <<<SQL
+            SELECT r.record_id
+                 , r.coll_id as collection_id
+                 , r.uuid
+                 , r.sha256 -- TODO rename in "hash"
+                 , r.originalname as original_name
+                 , r.mime
+                 , r.type
+                 , r.credate as created_on
+                 , r.moddate as updated_on
+                    FROM record r
+                    WHERE r.parent_record_id = 0
+                    ORDER BY r.record_id ASC
+                    LIMIT :offset, :limit
+SQL;
 
             $statement = $this->connection->prepare($sql);
             $statement->bindParam(':offset', $this->offset, PDO::PARAM_INT);
             $statement->bindParam(':limit', $this->batchSize, PDO::PARAM_INT);
-            $this->statement = $statement;
+            $this->statementRecords = $statement;
         }
 
-        return $this->statement;
+        return $this->statementRecords;
+    }
+
+    private function statementMetadata()
+    {
+        if (!$this->statementMetadata) {
+            $sql = <<<SQL
+                SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, 'caption' AS metadata_type, ms.business AS metadata_private
+                FROM metadatas AS m
+                INNER JOIN metadatas_structure AS ms ON (ms.id = m.meta_struct_id)
+                WHERE record_id IN (:ids)
+
+                UNION
+
+                SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, 'exif' AS metadata_type, 0 AS metadata_private
+                FROM technical_datas AS t
+                WHERE record_id IN (:ids)
+SQL;
+
+            $statement = $this->connection->prepare($sql);
+            $this->statementMetadata = $statement;
+        }
+
+        return $this->statementMetadata;
     }
 }

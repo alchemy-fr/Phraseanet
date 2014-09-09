@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Psr\Log\LoggerInterface;
-use Elasticsearch\Client;
 use igorw;
 
 class Indexer
@@ -24,6 +23,7 @@ class Indexer
     private $options;
     private $logger;
     private $appbox;
+    private $elasticSearchEngine;
 
     private $recordIndexer;
     private $termIndexer;
@@ -33,12 +33,13 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    public function __construct(Client $client, array $options, LoggerInterface $logger, \appbox $appbox)
+    public function __construct(ElasticSearchEngine $elasticSearchEngine, array $options, LoggerInterface $logger, \appbox $appbox)
     {
-        $this->client   = $client;
+        $this->client   = $elasticSearchEngine->getClient();
         $this->options  = $options;
         $this->logger   = $logger;
         $this->appbox   = $appbox;
+        $this->elasticSearchEngine = $elasticSearchEngine;
     }
 
     public function createIndex($withMapping = true)
@@ -282,7 +283,7 @@ class Indexer
     private function getRecordIndexer()
     {
         if (!$this->recordIndexer) {
-            $this->recordIndexer = new RecordIndexer($this->client, $this->options, $this->appbox);
+            $this->recordIndexer = new RecordIndexer($this->elasticSearchEngine, $this->options, $this->appbox);
         }
 
         return $this->recordIndexer;
@@ -294,7 +295,7 @@ class Indexer
     private function getTermIndexer()
     {
         if (!$this->termIndexer) {
-            $this->termIndexer = new TermIndexer($this->client, $this->options, $this->appbox);
+            $this->termIndexer = new TermIndexer($this->elasticSearchEngine, $this->options, $this->appbox);
         }
 
         return $this->termIndexer;

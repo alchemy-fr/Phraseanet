@@ -49,18 +49,11 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer'] = $app->share(function ($app) {
             return new Indexer(
-                $app['elasticsearch.client'],
+                $app['phraseanet.SE'],
                 $app['elasticsearch.options'],
                 $app['monolog'],
                 $app['phraseanet.appbox']
             );
-        });
-
-        $app['elasticsearch.client'] = $app->share(function($app) {
-            $options = $app['elasticsearch.options'];
-            $host = sprintf('%s:%s', $options['host'], $options['port']);
-
-            return new Client(array('hosts' => array($host)));
         });
 
         $app['elasticsearch.options'] = $app->share(function($app) {

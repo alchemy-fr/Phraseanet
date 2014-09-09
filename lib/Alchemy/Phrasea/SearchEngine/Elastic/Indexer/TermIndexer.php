@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Elasticsearch\Client;
 use databox;
@@ -28,9 +29,9 @@ class TermIndexer
      */
     private $appbox;
 
-    public function __construct(Client $client, array $options, \appbox $appbox)
+    public function __construct(ElasticSearchEngine $elasticSearchEngine, array $options, \appbox $appbox)
     {
-        $this->client = $client;
+        $this->client = $elasticSearchEngine->getClient();
         $this->options = $options;
         //$this->document = self::thesaurusFromDatabox($databox);
         $this->appbox = $appbox;
