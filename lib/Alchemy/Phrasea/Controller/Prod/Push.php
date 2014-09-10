@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\PushEvent;
+use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -227,21 +230,9 @@ class Push implements ControllerProviderInterface
 
                     $url = $app->url('lightbox_compare', $arguments);
 
-                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
-                    $params = [
-                        'from'       => $app['authentication']->getUser()->getId(),
-                        'from_email' => $app['authentication']->getUser()->getEmail(),
-                        'to'         => $user_receiver->getId(),
-                        'to_email'   => $user_receiver->getEmail(),
-                        'to_name'    => $user_receiver->getDisplayName(),
-                        'url'        => $url,
-                        'accuse'     => $receipt,
-                        'message'    => $request->request->get('message'),
-                        'ssel_id'    => $Basket->getId(),
-                    ];
-
-                    $app['events-manager']->trigger('__PUSH_DATAS__', $params);
+                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
+                    $app['dispatcher']->dispatch(PhraseaEvents::BASKET_PUSH, new PushEvent($Basket, $request->request->get('message'), $url, $receipt));
                 }
 
                 $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
@@ -352,47 +343,47 @@ class Push implements ControllerProviderInterface
                 }
 
                 foreach ($participants as $key => $participant) {
-                    foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryparam) {
-                        if (!array_key_exists($mandatoryparam, $participant))
-                            throw new ControllerException($app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryparam]));
+                    foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryParam) {
+                        if (!array_key_exists($mandatoryParam, $participant))
+                            throw new ControllerException($app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryParam]));
                     }
 
                     try {
-                        $participant_user = $app['repo.users']->find($participant['usr_id']);
+                        $participantUser = $app['repo.users']->find($participant['usr_id']);
                     } catch (\Exception $e) {
                         throw new ControllerException($app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']]));
                     }
 
                     try {
-                        $Participant = $Validation->getParticipant($participant_user);
+                        $Validation->getParticipant($participantUser);
                         continue;
                     } catch (NotFoundHttpException $e) {
 
                     }
 
-                    $Participant = new ValidationParticipant();
-                    $Participant->setUser($participant_user);
-                    $Participant->setSession($Validation);
+                    $validationParticipant = new ValidationParticipant();
+                    $validationParticipant->setUser($participantUser);
+                    $validationParticipant->setSession($Validation);
 
-                    $Participant->setCanAgree($participant['agree']);
-                    $Participant->setCanSeeOthers($participant['see_others']);
+                    $validationParticipant->setCanAgree($participant['agree']);
+                    $validationParticipant->setCanSeeOthers($participant['see_others']);
 
-                    $app['EM']->persist($Participant);
+                    $app['EM']->persist($validationParticipant);
 
                     foreach ($Basket->getElements() as $BasketElement) {
                         $ValidationData = new ValidationData();
-                        $ValidationData->setParticipant($Participant);
+                        $ValidationData->setParticipant($validationParticipant);
                         $ValidationData->setBasketElement($BasketElement);
                         $BasketElement->addValidationData($ValidationData);
 
                         if ($participant['HD']) {
-                            $app['acl']->get($participant_user)->grant_hd_on(
+                            $app['acl']->get($participantUser)->grant_hd_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
                             );
                         } else {
-                            $app['acl']->get($participant_user)->grant_preview_on(
+                            $app['acl']->get($participantUser)->grant_preview_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
@@ -403,12 +394,12 @@ class Push implements ControllerProviderInterface
                         $app['EM']->persist($ValidationData);
 
                         $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
-                            ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->getId(), '');
+                            ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participantUser->getId(), '');
 
-                        $Participant->addData($ValidationData);
+                        $validationParticipant->addData($ValidationData);
                     }
 
-                    $Participant = $app['EM']->merge($Participant);
+                    $validationParticipant = $app['EM']->merge($validationParticipant);
 
                     $app['EM']->flush();
 
@@ -417,32 +408,19 @@ class Push implements ControllerProviderInterface
                     ];
 
                     if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication')) {
-                        $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participant_user);
+                        $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participantUser);
                     }
 
                     $url = $app->url('lightbox_validation', $arguments);
 
+
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->getEmail() : '';
 
-                    $params = [
-                        'from'       => $app['authentication']->getUser()->getId(),
-                        'from_email' => $app['authentication']->getUser()->getEmail(),
-                        'to'         => $participant_user->getId(),
-                        'to_email'   => $participant_user->getEmail(),
-                        'to_name'    => $participant_user->getDisplayName(),
-                        'url'        => $url,
-                        'accuse'     => $receipt,
-                        'message'    => $request->request->get('message'),
-                        'ssel_id'    => $Basket->getId(),
-                        'duration'   => (int) $request->request->get('duration'),
-                    ];
-
-                    $app['events-manager']->trigger('__PUSH_VALIDATION__', $params);
+                    $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_CREATE, new ValidationEvent($validationParticipant, $Basket, $url, $request->request->get('message'), $receipt, (int) $request->request->get('duration')));
                 }
 
-                $Basket = $app['EM']->merge($Basket);
-                $Validation = $app['EM']->merge($Validation);
-
+                $app['EM']->merge($Basket);
+                $app['EM']->merge($Validation);
                 $app['EM']->flush();
 
                 $message = $app->trans('%quantity_records% records have been sent for validation to %quantity_users% users', [
@@ -469,7 +447,7 @@ class Push implements ControllerProviderInterface
 
             $request = $app['request'];
 
-            $query = new \User_Query($app);
+            $query = new $app['phraseanet.user-query'];
 
             $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
@@ -580,7 +558,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/search-user/', function (Application $app) use ($userFormatter, $listFormatter) {
             $request = $app['request'];
 
-            $query = new \User_Query($app);
+            $query = $app['phraseanet.user-query'];
 
             $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 
@@ -620,7 +598,7 @@ class Push implements ControllerProviderInterface
 
             $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
 
-            $query = new \User_Query($app);
+            $query = $app['phraseanet.user-query'];
 
             $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
 

@@ -57,7 +57,7 @@ class Manage extends Helper
             , 'offset_start' => 0
         ];
 
-        $query = new \User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
 
         if (is_array($this->query_parms['base_id']))
             $query->on_base_ids($this->query_parms['base_id']);
@@ -95,7 +95,7 @@ class Manage extends Helper
             , 'offset_start' => $offset_start
         ];
 
-        $query = new \User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
 
         if (is_array($this->query_parms['base_id']))
             $query->on_base_ids($this->query_parms['base_id']);
@@ -124,7 +124,7 @@ class Manage extends Helper
                 $this->query_parms[$k] = false;
         }
 
-        $query = new \User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
         $templates = $query
                 ->only_templates(true)
                 ->execute()->get_results();

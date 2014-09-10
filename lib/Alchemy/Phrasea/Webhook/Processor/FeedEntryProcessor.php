@@ -22,7 +22,7 @@ class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
 
         $feed = $entry->getFeed();
 
-        $query = new \User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
 
         $query->include_phantoms(true)
             ->include_invite(false)

@@ -515,7 +515,7 @@ class collection implements cache_cacheableInterface
     {
         $params = [':base_id' => $this->get_base_id()];
 
-        $query = new User_Query($app);
+        $query = $app['phraseanet.user-query'];
         $total = $query->on_base_ids([$this->get_base_id()])
                 ->include_phantoms(false)
                 ->include_special_users(true)

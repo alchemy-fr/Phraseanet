@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
+use Alchemy\Phrasea\Core\Event\LazaretEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
@@ -230,9 +232,7 @@ class Upload implements ControllerProviderInterface
                     }
                 }
             } else {
-                $params = ['lazaret_file' => $elementCreated];
-
-                $app['events-manager']->trigger('__UPLOAD_QUARANTINE__', $params);
+                $app['dispatcher']->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';

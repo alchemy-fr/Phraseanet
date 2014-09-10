@@ -164,7 +164,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             }
         }
 
-        $query = new \User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
         $templates = $query
                 ->only_templates(true)
                 ->execute()->get_results();

@@ -26,5 +26,20 @@ final class PhraseaEvents
     const API_LOAD_END = 'api.load.end';
     const API_RESULT = 'api.result';
 
+    const ORDER_CREATE = 'order.create';
+    const ORDER_DELIVER = 'order.deliver';
+    const ORDER_DENY = 'order.deny';
     const COLLECTION_CREATE = 'collection.create';
+    const FEED_ENTRY_CREATE = 'feed-entry.create';
+    const REGISTRATION_CREATE = 'registration.create';
+    const REGISTRATION_AUTOREGISTER = 'registration.autoregister';
+    const BASKET_PUSH = 'basket.push';
+    const VALIDATION_CREATE = 'validation.create';
+    const VALIDATION_DONE = 'validation.done';
+    const VALIDATION_REMINDER = 'validation.reminder';
+
+    const LAZARET_CREATE = 'lazaret.create';
+    const BRIDGE_UPLOAD_FAILURE = 'bridge.upload-failure';
+    const EXPORT_MAIL_FAILURE = 'export.mail-failure';
+    const EXPORT_CREATE = 'export.create';
 }

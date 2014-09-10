@@ -1,6 +1,9 @@
 <?php
 
 use Rhumsaa\Uuid\Uuid;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Symfony\Component\EventDispatcher\Event;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
@@ -65,21 +68,26 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         self::$DI['app']['acl'] = $aclProvider;
 
-        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+        self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
+        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
 
-        $eventManagerStub->expects($this->once())
-             ->method('trigger')
-             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
-             ->will($this->returnValue(null));
-
-        self::$DI['app']['events-manager'] = $eventManagerStub;
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $triggered = false;
+        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         self::$DI['client']->request('POST', self::$DI['app']['url_generator']->generate('prod_order_new'), [
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ]);
+
+        $this->assertTrue($triggered);
     }
 
     public function testGet_creation_date()
