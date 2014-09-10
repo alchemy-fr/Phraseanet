@@ -65,7 +65,7 @@ class Setup_Upgrade
         $this->appbox = $app['phraseanet.appbox'];
 
         if (count(User_Adapter::get_wrong_email_users($app)) > 0) {
-            throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
+            throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting with the bin/setup system:mailCheck command');
         }
 
         $this->write_lock();

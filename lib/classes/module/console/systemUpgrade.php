@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Version;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -103,6 +104,13 @@ class module_console_systemUpgrade extends Command
                 $output->writeln(sprintf("\t\t%s", $command));
                 $output->writeln("");
                 $output->writeln("");
+            }
+
+            if (null !== $this->getApplication()) {
+                $command = $this->getApplication()->find('crossdomain:generate');
+                $command->run(new ArrayInput(array(
+                    'command' => 'crossdomain:generate'
+                )), $output);
             }
         } else {
             $output->write('<info>Canceled</info>', true);

@@ -59,8 +59,7 @@ script:
   - travis_retry bin/developer dependencies:all --prefer-source -v
   - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
               bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y -v;
-              bin/developer ini:reset --v3.1 -v;
-              bin/setup system:upgrade -y -v -f;
+              bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches -v;
             fi"
   - sh -c " if [ '$SETUP_MODE' = 'install' ]; then
               bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y -v;

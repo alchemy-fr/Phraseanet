@@ -28,8 +28,8 @@ class Installer
     {
         $this->rollbackInstall($abConn, $dbConn);
 
+        $this->createConfigFile($abConn, $serverName, $binaryData);
         try {
-            $this->createConfigFile($abConn, $serverName, $binaryData);
             $this->createAB();
             $this->populateRegistryData($serverName, $dataPath, $binaryData);
             $user = $this->createUser($email, $password);
