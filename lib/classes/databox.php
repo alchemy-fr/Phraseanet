@@ -596,10 +596,9 @@ class databox extends base
      * @param  string      $user
      * @param  string      $password
      * @param  string      $dbname
-     * @param  registry    $registry
      * @return databox
      */
-    public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
+    public static function mount(Application $app, $host, $port, $user, $password, $dbname)
     {
         $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $app['debug']);
 
