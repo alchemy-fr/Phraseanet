@@ -77,7 +77,7 @@ sudo make install
 sudo sh -c 'echo "RUN=yes" > /etc/default/cachefilesd'
 
 # copy www.conf
-sudo sh -c "cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
+sudo sh -c 'cat /vagrant/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf'
 
 if [ ! -f /var/www/phraseanet/config/configuration.yml ]
 then
@@ -85,12 +85,12 @@ then
     mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
     cp /vagrant/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
     mv /var/www/phraseanet/.bowerrc /var/www/phraseanet/.bowerrc.bkp
-    cp /vagrant/resources/vagrant/config/bower/.bower.rc /var/www/phraseanet/.bowerrc
+    cp /vagrant/vagrant/config/bower/.bower.rc /var/www/phraseanet/.bowerrc
     cd /var/www/phraseanet
-    composer install -n --prefer-source --dev
-    bower install --config.interactive=false
-    bin/developer assets:build-javascript
-    bin/developer assets:compile-less
+    sudo -u vagrant composer install -n --prefer-source --dev
+    sudo -u vagrant bower install --config.interactive=false
+    sudo -u vagrant bin/developer assets:build-javascript
+    sudo -u vagrant bin/developer assets:compile-less
     rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
     rm -f /var/www/phraseanet/.bowerrc
     mv /www/phraseanet/.bowerrc.bkp /www/phraseanet/.bowerrc
