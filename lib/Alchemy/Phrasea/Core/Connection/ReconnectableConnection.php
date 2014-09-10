@@ -57,11 +57,14 @@ class ReconnectableConnection implements ConnectionInterface
     public function connect()
     {
         $this->logger->notice('Trying to connect...');
+       echo ('Trying to connect...')."\n";
         do {
             $this->logger->notice(sprintf('Try: %d', $this->triesDone + 1));
+            echo (sprintf('Try: %d', $this->triesDone + 1))."\n";
             if ($this->triesDone > 0) {
                 $delay = min((int) pow(2, $this->triesDone - 1), self::MAX_DELAY);
                 $this->logger->notice(sprintf('Waiting %d seconds before issuing a new connection', $delay));
+                echo (sprintf('Waiting %d seconds before issuing a new connection', $delay))."\n";
                 sleep($delay);
             }
 
@@ -196,9 +199,11 @@ class ReconnectableConnection implements ConnectionInterface
         try {
             $this->connection->query('SELECT 1');
             $this->logger->notice('Connection to database is established!');
+            echo ('Connection to database is established!')."\n";
             $this->isConnected = true;
         } catch (DBALException $e) {
             $this->logger->notice('Failed to connect to database!');
+            echo ('Failed to connect to database!')."\n";
 
             if (self::isDeconnected($e)) {
                 $this->isConnected = false;
@@ -221,9 +226,11 @@ class ReconnectableConnection implements ConnectionInterface
             }
 
             $this->logger->critical(sprintf('Database connection lost: %s', $e->getMessage()));
+            echo "\n".(sprintf('Database connection lost: %s', $e->getMessage()))."\n";
 
             if (!$this->connect()) {
                 $this->logger->critical('Failed to reconnect');
+                echo ('Failed to reconnect')."\n";
                 throw $e;
             }
         }
