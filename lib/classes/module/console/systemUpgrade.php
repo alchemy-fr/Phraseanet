@@ -106,10 +106,12 @@ class module_console_systemUpgrade extends Command
                 $output->writeln("");
             }
 
-            $command = $this->getApplication()->find('crossdomain:generate');
-            $command->run(new ArrayInput(array(
-                'command' => 'crossdomain:generate'
-            )), $output);
+            if (null !== $this->getApplication()) {
+                $command = $this->getApplication()->find('crossdomain:generate');
+                $command->run(new ArrayInput(array(
+                    'command' => 'crossdomain:generate'
+                )), $output);
+            }
         } else {
             $output->write('<info>Canceled</info>', true);
         }
