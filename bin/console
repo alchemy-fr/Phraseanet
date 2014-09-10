@@ -42,6 +42,7 @@ use Alchemy\Phrasea\Command\Task\TaskRun;
 use Alchemy\Phrasea\Command\Task\TaskStart;
 use Alchemy\Phrasea\Command\Task\TaskStop;
 use Alchemy\Phrasea\Command\Task\TaskState;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -119,7 +120,7 @@ $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
 $cli->command(new CrossDomainGenerator());
 
-if ($cli['phraseanet.SE']->getName() === 'ElasticSearch') {
+if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
     $cli->command(new IndexCreateCommand());
     $cli->command(new IndexDropCommand());
     $cli->command(new IndexPopulateCommand());

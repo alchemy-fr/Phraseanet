@@ -335,44 +335,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function createSubscriber(Application $app)
-    {
-        return new ElasticSearchEngineSubscriber();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @todo Allow multiple hosts!
-     * @return \Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine
-     */
-    public static function create(Application $app, array $options = [])
-    {
-        $options = array_replace([
-            'host'  => '127.0.0.1',
-            'port'  => '9200',
-            'index' => 'phraseanet',
-        ], $options);
-
-        $clientParams = ['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]];
-
-        // Create file logger for debug
-        if ($app['debug']) {
-            $logger = new $app['monolog.logger.class']('search logger');
-            $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2), Logger::INFO);
-
-            $clientParams['logObject'] = $logger;
-            $clientParams['logging'] = true;
-        }
-
-        $client = new Client($clientParams);
-
-        return new static($app, $client, $app['serializer.es-record'], $options['index']);
-    }
-
     private function createQueryParams($query, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [
