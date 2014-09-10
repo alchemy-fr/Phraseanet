@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Closure;
 use Elasticsearch\Client;
 use databox;
 use DOMDocument;
@@ -22,29 +23,20 @@ class TermIndexer
 {
     const TYPE_NAME = 'term';
 
-    private $client;
-    private $options;
+    private $bulkOperationFactory;
     /**
      * @var \appbox
      */
     private $appbox;
 
-    public function __construct(ElasticSearchEngine $elasticSearchEngine, array $options, \appbox $appbox)
+    public function __construct(\appbox $appbox)
     {
-        $this->client = $elasticSearchEngine->getClient();
-        $this->options = $options;
         //$this->document = self::thesaurusFromDatabox($databox);
         $this->appbox = $appbox;
     }
 
-    public function populateIndex()
+    public function populateIndex(BulkOperation $bulk)
     {
-        // Prepare the bulk operation
-        $bulk = new BulkOperation($this->client);
-        $bulk->setDefaultIndex($this->options['index']);
-        $bulk->setDefaultType(self::TYPE_NAME);
-        $bulk->setAutoFlushLimit(1000);
-
         // Helper to fetch record related data
         //$recordHelper = new RecordHelper($this->appbox);
 

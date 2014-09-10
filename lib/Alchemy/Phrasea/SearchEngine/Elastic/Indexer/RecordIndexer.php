@@ -25,16 +25,6 @@ class RecordIndexer
     const TYPE_NAME = 'record';
 
     /**
-     * @var \Elasticsearch\Client
-     */
-    private $client;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * @var \appbox
      */
     private $appbox;
@@ -44,22 +34,14 @@ class RecordIndexer
      */
     private $elasticSearchEngine;
 
-    public function __construct(ElasticSearchEngine $elasticSearchEngine, array $options, \appbox $appbox)
+    public function __construct(ElasticSearchEngine $elasticSearchEngine, \appbox $appbox)
     {
-        $this->client = $elasticSearchEngine->getClient();
-        $this->options = $options;
         $this->appbox = $appbox;
         $this->elasticSearchEngine = $elasticSearchEngine;
     }
 
-    public function populateIndex()
+    public function populateIndex(BulkOperation $bulk)
     {
-        // Prepare the bulk operation
-        $bulk = new BulkOperation($this->client);
-        $bulk->setDefaultIndex($this->options['index']);
-        $bulk->setDefaultType(self::TYPE_NAME);
-        $bulk->setAutoFlushLimit(1000);
-
         // Helper to fetch record related data
         $recordHelper = new RecordHelper($this->appbox);
 
@@ -72,6 +54,7 @@ class RecordIndexer
                 foreach ($records as $record) {
                     $params = array();
                     $params['id'] = $record['id'];
+                    $params['type'] = self::TYPE_NAME;
                     $params['body'] = $this->sanitize($record);
                     $bulk->index($params);
                 }

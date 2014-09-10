@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
 
@@ -23,7 +24,6 @@ class Indexer
     private $options;
     private $logger;
     private $appbox;
-    private $elasticSearchEngine;
 
     private $recordIndexer;
     private $termIndexer;
@@ -33,13 +33,13 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    public function __construct(ElasticSearchEngine $elasticSearchEngine, array $options, LoggerInterface $logger, \appbox $appbox)
+    public function __construct(Client $client, array $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, LoggerInterface $logger)
     {
-        $this->client   = $elasticSearchEngine->getClient();
+        $this->client   = $client;
         $this->options  = $options;
+        $this->termIndexer = $termIndexer;
+        $this->recordIndexer = $recordIndexer;
         $this->logger   = $logger;
-        $this->appbox   = $appbox;
-        $this->elasticSearchEngine = $elasticSearchEngine;
     }
 
     public function createIndex($withMapping = true)
@@ -51,9 +51,8 @@ class Indexer
         $params['body']['settings']['analysis'] = $this->getAnalysis();;
 
         if ($withMapping) {
-            // TODO Move term/record mapping logic in TermIndexer and a new RecordIndexer
-            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->getRecordIndexer()->getMapping();
-            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->getTermIndexer()->getMapping();
+            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->recordIndexer->getMapping();
+            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->termIndexer->getMapping();
         }
 
         $this->client->indices()->create($params);
@@ -64,7 +63,7 @@ class Indexer
         $params = array();
         $params['index'] = $this->options['index'];
         $params['type'] = RecordIndexer::TYPE_NAME;
-        $params['body'][RecordIndexer::TYPE_NAME] = $this->getRecordIndexer()->getMapping();
+        $params['body'][RecordIndexer::TYPE_NAME] = $this->recordIndexer->getMapping();
 
         // @todo Add term mapping
 
@@ -90,8 +89,15 @@ class Indexer
         $this->disableShardRefreshing();
 
         try {
-            $this->getTermIndexer()->populateIndex();
-            $this->getRecordIndexer()->populateIndex();
+            // Prepare the bulk operation
+            $bulk = new BulkOperation($this->client);
+            $bulk->setDefaultIndex($this->options['index']);
+            $bulk->setAutoFlushLimit(1000);
+
+            $this->termIndexer->populateIndex($bulk);
+            $this->recordIndexer->populateIndex($bulk);
+
+            $bulk->flush();
 
             // Optimize index
             $params = array('index' => $this->options['index']);
@@ -275,29 +281,5 @@ class Indexer
                 ]
             ],
         ];
-    }
-
-    /**
-     * @return RecordIndexer
-     */
-    private function getRecordIndexer()
-    {
-        if (!$this->recordIndexer) {
-            $this->recordIndexer = new RecordIndexer($this->elasticSearchEngine, $this->options, $this->appbox);
-        }
-
-        return $this->recordIndexer;
-    }
-
-    /**
-     * @return TermIndexer
-     */
-    private function getTermIndexer()
-    {
-        if (!$this->termIndexer) {
-            $this->termIndexer = new TermIndexer($this->elasticSearchEngine, $this->options, $this->appbox);
-        }
-
-        return $this->termIndexer;
     }
 }

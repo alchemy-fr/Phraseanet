@@ -16,6 +16,8 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
@@ -34,12 +36,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             $type = $app['search_engine.type'];
             switch ($type) {
                 case SearchEngineInterface::TYPE_ELASTICSEARCH:
-                    return new ElasticSearchEngine(
-                        $app,
-                        $app['elasticsearch.client'],
-                        $app['serializer.es-record'],
-                        $app['elasticsearch.options']['index']
-                    );
+                    return $app['elasticsearch.engine'];
                 case SearchEngineInterface::TYPE_PHRASEA:
                     return new PhraseaEngine($app);
                 default:
@@ -60,11 +57,32 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new PhraseaEngineSubscriber($app);
         });
 
+        $app['elasticsearch.engine'] = $app->share(function ($app) {
+            return new ElasticSearchEngine(
+                $app,
+                $app['elasticsearch.client'],
+                $app['serializer.es-record'],
+                $app['elasticsearch.options']['index']
+            );
+        });
+
         $app['elasticsearch.indexer'] = $app->share(function ($app) {
             return new Indexer(
-                $app['phraseanet.SE'],
+                $app['elasticsearch.client'],
                 $app['elasticsearch.options'],
-                $app['monolog'],
+                $app['elasticsearch.indexer.term_indexer'],
+                $app['elasticsearch.indexer.record_indexer'],
+                $app['monolog']
+            );
+        });
+
+        $app['elasticsearch.indexer.term_indexer'] = $app->share(function ($app) {
+            return new TermIndexer($app['phraseanet.appbox']);
+        });
+
+        $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
+            return new RecordIndexer(
+                $app['elasticsearch.engine'],
                 $app['phraseanet.appbox']
             );
         });
