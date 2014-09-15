@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
 use Closure;
 use Elasticsearch\Client;
 use databox;
@@ -31,20 +33,22 @@ class TermIndexer
 
     public function __construct(\appbox $appbox)
     {
-        //$this->document = self::thesaurusFromDatabox($databox);
         $this->appbox = $appbox;
     }
 
     public function populateIndex(BulkOperation $bulk)
     {
-        // Helper to fetch record related data
-        //$recordHelper = new RecordHelper($this->appbox);
+        // TODO Create object to query thesaurus for term paths/synonyms
+
+        $navigator = new Navigator();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-            // TODO Create object to query thesaurus for term paths/synonyms
-            // TODO Extract record indexing logic in a RecordIndexer class
-            //$fetcher = new RecordFetcher($databox, $recordHelper);
-            //$fetcher->setBatchSize(200);
+            $document = self::thesaurusFromDatabox($databox);
+            $visitor = new TermVisitor(function ($term) use ($bulk) {
+                printf("- %s (%s)\n", $term['path'], $term['value']);
+            });
+            $navigator->walk($document, $visitor);
+
             while ($record = false) {
                 $params = array();
                 $params['id'] = $record['id'];
