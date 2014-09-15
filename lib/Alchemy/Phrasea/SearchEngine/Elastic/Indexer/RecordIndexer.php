@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use media_subdef;
 
 class RecordIndexer
@@ -236,20 +237,7 @@ class RecordIndexer
 
     private static function normalizeFlagKey($key)
     {
-        // Replace non letter or digits by _
-        $key = preg_replace('/[^\\pL\d]+/u', '_', $key);
-        $key = trim($key, '_');
-
-        // Transliterate
-        if (function_exists('iconv')) {
-            $key = iconv('UTF-8', 'ASCII//TRANSLIT', $key);
-        }
-
-        // Remove non wording characters
-        $key = preg_replace('/[^-\w]+/', '', $key);
-        $key = strtolower($key);
-
-        return $key;
+        return StringUtils::slugify($key, '_');
     }
 
     /**
