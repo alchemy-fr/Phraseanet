@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Command\SearchEngine;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexDropCommand extends Command
@@ -23,6 +24,12 @@ class IndexDropCommand extends Command
         $this
             ->setName('searchengine:index:drop')
             ->setDescription('Deletes the search index')
+            ->addOption(
+               'force',
+               null,
+               InputOption::VALUE_NONE,
+               "Don't ask for for the dropping of the index, but force the operation to run."
+            )
         ;
     }
 
@@ -30,7 +37,11 @@ class IndexDropCommand extends Command
     {
 
         $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
-        $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+        if ($input->getOption('force')) {
+            $confirmation = true;
+        } else {
+            $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+        }
 
         if ($confirmation) {
             $indexer = $this->container['elasticsearch.indexer'];
