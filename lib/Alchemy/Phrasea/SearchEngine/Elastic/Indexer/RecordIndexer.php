@@ -61,8 +61,6 @@ class RecordIndexer
                 }
             }
         }
-
-        $bulk->flush();
     }
 
     public function getMapping()

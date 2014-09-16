@@ -56,8 +56,6 @@ class TermIndexer
                 $bulk->index($params);
             }
         }
-
-        $bulk->flush();
     }
 
     private static function thesaurusFromDatabox(databox $databox)
