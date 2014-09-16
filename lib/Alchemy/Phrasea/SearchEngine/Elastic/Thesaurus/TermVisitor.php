@@ -24,6 +24,7 @@ use DOMNode;
 class TermVisitor implements VisitorInterface
 {
     const TERM_TAG_NAME = 'sy';
+    const TERM_ID_ATTR = 'id';
     const TERM_LANG_ATTR = 'lng';
     const TERM_VALUE_ATTR = 'v';
     // So, this is a huuuge regex to match a group of words eventually followed
@@ -54,7 +55,8 @@ class TermVisitor implements VisitorInterface
         $term = $this->parseTermValue($value);
         $term += [
             'path' => $this->getCurrentPathAsString(),
-            'lang' => $this->getTermAttribute($element, self::TERM_LANG_ATTR)
+            'lang' => $this->getTermAttribute($element, self::TERM_LANG_ATTR),
+            'id'   => $this->getTermAttribute($element, self::TERM_ID_ATTR)
         ];
 
         call_user_func($this->termCallback, $term);

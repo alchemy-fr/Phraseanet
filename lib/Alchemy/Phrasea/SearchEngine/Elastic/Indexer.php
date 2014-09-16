@@ -202,6 +202,16 @@ class Indexer
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
                     'filter'    => ['nfkc_normalizer', 'asciifolding']
+                ],
+                // Thesaurus specific
+                'thesaurus_path' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'thesaurus_path'
+                ]
+            ],
+            'tokenizer' => [
+                'thesaurus_path' => [
+                    'type' => 'path_hierarchy'
                 ]
             ],
             'filter' => [

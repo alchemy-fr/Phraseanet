@@ -90,6 +90,31 @@ class Mapping
         return $properties;
     }
 
+    public function analyzer($analyzer, $type = null)
+    {
+        $field = &$this->currentField();
+        if ($field['type'] !== self::TYPE_STRING) {
+            throw new LogicException('Only string fields can be analyzed');
+        }
+        switch ($type) {
+            case null:
+                $field['analyzer'] = $analyzer;
+                unset($field['index_analyzer'], $field['search_analyzer']);
+                break;
+            case 'indexing':
+                $field['index_analyzer'] = $analyzer;
+                break;
+            case 'searching':
+                $field['search_analyzer'] = $analyzer;
+                break;
+            default:
+                throw new LogicException(sprintf('Invalid analyzer type "%s".', $type));
+        }
+        $field['index'] = 'analyzed';
+
+        return $this;
+    }
+
     public function notAnalyzed()
     {
         $field = &$this->currentField();

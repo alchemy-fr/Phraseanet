@@ -31,30 +31,33 @@ class TermIndexer
      */
     private $appbox;
 
+    private $navigator;
+
     public function __construct(\appbox $appbox)
     {
         $this->appbox = $appbox;
+        $this->navigator = new Navigator();
     }
 
     public function populateIndex(BulkOperation $bulk)
     {
-        // TODO Create object to query thesaurus for term paths/synonyms
-
-        $navigator = new Navigator();
-
         foreach ($this->appbox->get_databoxes() as $databox) {
+            $databoxId = $databox->get_sbas_id();
             $document = self::thesaurusFromDatabox($databox);
-            $visitor = new TermVisitor(function ($term) use ($bulk) {
+            $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId) {
                 printf("- %s (%s)\n", $term['path'], $term['value']);
-            });
-            $navigator->walk($document, $visitor);
-
-            while ($record = false) {
+                // Term structure
+                $id = $term['id'];
+                unset($term['id']);
+                $term['databox_id'] = $databoxId;
+                // Index request
                 $params = array();
-                $params['id'] = $record['id'];
-                $params['body'] = $record;
+                $params['id'] = $id;
+                $params['type'] = self::TYPE_NAME;
+                $params['body'] = $term;
                 $bulk->index($params);
-            }
+            });
+            $this->navigator->walk($document, $visitor);
         }
     }
 
@@ -72,9 +75,12 @@ class TermIndexer
     {
         $mapping = new Mapping();
         $mapping
+            ->add('raw_value', 'string')->notAnalyzed()
             ->add('value', 'string')
             ->add('context', 'string')
             ->add('path', 'string')
+                ->analyzer('thesaurus_path', 'indexing')
+                ->analyzer('keyword', 'searching')
             ->add('lang', 'string')->notAnalyzed()
             ->add('databox_id', 'integer')
         ;
