@@ -12,12 +12,9 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
-use Closure;
-use Elasticsearch\Client;
 use databox;
 use DOMDocument;
 
@@ -25,7 +22,6 @@ class TermIndexer
 {
     const TYPE_NAME = 'term';
 
-    private $bulkOperationFactory;
     /**
      * @var \appbox
      */
@@ -44,8 +40,9 @@ class TermIndexer
         foreach ($this->appbox->get_databoxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
             $document = self::thesaurusFromDatabox($databox);
+
             $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId) {
-                // printf("- %s (%s)\n", $term['path'], $term['value']);
+                //printf("- %s (%s)\n", $term['path'], $term['value']);
                 // Term structure
                 $id = $term['id'];
                 unset($term['id']);
@@ -57,6 +54,7 @@ class TermIndexer
                 $params['body'] = $term;
                 $bulk->index($params);
             });
+
             $this->navigator->walk($document, $visitor);
         }
     }
