@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 use Exception;
 
 
-use AST\Node, AST\TextNode, AST\QuotedTextNode, AST\PrefixNode, AST\KeywordNode, AST\AndExpression, AST\OrExpression, AST\InExpression;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST as AST;
 
 class QueryParser
 {

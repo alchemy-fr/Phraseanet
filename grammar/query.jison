@@ -145,5 +145,5 @@ text
 
 //option namespace:Alchemy\Phrasea\SearchEngine\Elastic
 //option class:QueryParser
-//option use:AST\Node, AST\TextNode, AST\QuotedTextNode, AST\PrefixNode, AST\KeywordNode, AST\AndExpression, AST\OrExpression, AST\InExpression;
+//option use:Alchemy\Phrasea\SearchEngine\Elastic\AST as AST;
 //option fileName:QueryParser.php
