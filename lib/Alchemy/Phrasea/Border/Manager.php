@@ -84,9 +84,9 @@ class Manager
         $visa = $this->getVisa($file);
 
         /**
-         * Generates and write UUID
+         * Generate UUID
          */
-        $file->getUUID(true, true);
+        $file->getUUID(true, false);
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
 
@@ -101,6 +101,11 @@ class Manager
 
             $code = self::LAZARET_CREATED;
         }
+
+        /**
+         * Write UUID
+         */
+        $file->getUUID(false, true);
 
         if (is_callable($callable)) {
             $callable($element, $visa, $code);
