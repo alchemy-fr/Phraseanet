@@ -1195,7 +1195,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $sql = 'UPDATE record
-            SET jeton = ' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . '
+            SET jeton = jeton | (' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ')
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->record_id));
