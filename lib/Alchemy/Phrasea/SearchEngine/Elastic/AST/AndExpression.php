@@ -17,11 +17,11 @@ class AndExpression extends Node
         return $this->members;
     }
 
-    public function getQuery($field = '_all')
+    public function getQuery($fields = ['_all'])
     {
         $rules = array();
         foreach ($this->members as $member) {
-            $rules[] = $member->getQuery($field);
+            $rules[] = $member->getQuery($fields);
         }
 
         return array(

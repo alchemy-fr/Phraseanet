@@ -11,11 +11,12 @@ class TextNode extends Node
         $this->text = $text;
     }
 
-    public function getQuery($field = '_all')
+    public function getQuery($fields = ['_all'])
     {
         return array(
-            'match' => array(
-                $field => $this->text
+            'multi_match' => array(
+                'fields'    => $fields,
+                'query'     => $this->text,
             )
         );
     }

@@ -11,11 +11,13 @@ class PrefixNode extends Node
         $this->prefix = $prefix;
     }
 
-    public function getQuery($field = '_all')
+    public function getQuery($fields = ['_all'])
     {
         return array(
-            'prefix' => array(
-                $field => $this->prefix
+            'multi_match' => array(
+                'fields'    => $fields,
+                'query'     => $this->prefix,
+                'type'      => 'phrase_prefix'
             )
         );
     }

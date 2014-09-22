@@ -4,14 +4,13 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 class QuotedTextNode extends TextNode
 {
-    public function getQuery($field = '_all')
+    public function getQuery($fields = ['_all'])
     {
         return array(
-            'match' => array(
-                $field => array(
-                    'query' => $this->text,
-                    'operator' => 'and'
-                )
+            'multi_match' => array(
+                'fields'    => $fields,
+                'query'     => $this->text,
+                'operator'  => 'and'
             )
         );
     }
