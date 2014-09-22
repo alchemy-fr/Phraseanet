@@ -274,26 +274,32 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($query, $offset, $perPage, SearchEngineOptions $options = null)
+    public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
     {
-        $query = 'all' !== strtolower($query) ? $query : '';
-        $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions());
-        $params['from'] = $offset;
-        $params['size'] = $perPage;
+        $parser = new QueryParser();
+        $ast = $parser->parse($string);
+        $query = $ast->getQuery();
 
-        $res = $this->doExecute('search', $params);
+        // $query = 'all' !== strtolower($query) ? $query : '';
+        // $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions());
+        // $params['from'] = $offset;
+        // $params['size'] = $perPage;
+
+        // $res = $this->doExecute('search', $params);
 
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
-        $n = 0;
+        // $n = 0;
 
-        foreach ($res['hits']['hits'] as $hit) {
-            $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
-            $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
-            $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
-        }
+        // foreach ($res['hits']['hits'] as $hit) {
+        //     $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
+        //     $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
+        //     $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
+        // }
 
-        return new SearchEngineResult($results, $query, $res['took'], $offset, $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
+        $query['_ast'] = (string) $ast;
+
+        return new SearchEngineResult($results, json_encode($query), null, null, null, null, null, null, $suggestions, [], $this->indexName);
     }
 
     /**
@@ -387,17 +393,17 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     private function createESQuery($query, SearchEngineOptions $options)
     {
-        $preg = preg_match('/\s?(recordid|storyid)\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
+        // $preg = preg_match('/\s?(recordid|storyid)\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
 
-        $search = [];
-        if ($preg > 0) {
-            $search['bool']['must'][] = [
-                'term' => [
-                    'record_id' => $matches[2],
-                ],
-            ];
-            $query = '';
-        }
+        // $search = [];
+        // if ($preg > 0) {
+        //     $search['bool']['must'][] = [
+        //         'term' => [
+        //             'record_id' => $matches[2],
+        //         ],
+        //     ];
+        //     $query = '';
+        // }
 
         if ('' !== $query) {
             if (0 < count($options->getBusinessFieldsOn())) {

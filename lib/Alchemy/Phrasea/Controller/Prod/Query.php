@@ -191,6 +191,7 @@ class Query implements ControllerProviderInterface
         );
 
         $json['query'] = $query;
+        $json['parsed_query'] = $result->getQuery();
         $json['phrasea_props'] = $proposals;
         $json['total_answers'] = (int) $result->getAvailable();
         $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
