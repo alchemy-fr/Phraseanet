@@ -155,7 +155,7 @@ nginx:
                 - nginx.phrasea.net
                 - phraseanet.php54.nginx
             www_root: /var/www/phraseanet/www
-            listen_port: '8080'
+            listen_port: '80'
             index_files:
                 - index.html
                 - index.htm
