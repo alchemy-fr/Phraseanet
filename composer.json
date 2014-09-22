@@ -42,7 +42,7 @@
         "neutron/temporary-filesystem"     : "~2.1",
         "php-ffmpeg/php-ffmpeg"            : "~0.5.0",
         "php-xpdf/php-xpdf"                : "~0.2.1",
-        "phpexiftool/phpexiftool"          : "~0.3",
+        "phpexiftool/phpexiftool"          : "~0.4",
         "silex/silex"                      : "~1.0.0",
         "silex/web-profiler"               : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",

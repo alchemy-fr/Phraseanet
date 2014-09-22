@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5e9293b21ad80c1c0046cf7e5accefb2",
+    "hash": "d64dc123bcae1e42dbaaa028c8cd841d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -2250,16 +2250,16 @@
         },
         {
             "name": "phpexiftool/exiftool",
-            "version": "9.15",
+            "version": "9.70",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/exiftool.git",
-                "reference": "0b05edb639d032181f3fae7df8dc1194e9210dc4"
+                "reference": "fd7e64947dd628f8b7cc28dc06fd59848f2caca7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0b05edb639d032181f3fae7df8dc1194e9210dc4",
-                "reference": "0b05edb639d032181f3fae7df8dc1194e9210dc4",
+                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/fd7e64947dd628f8b7cc28dc06fd59848f2caca7",
+                "reference": "fd7e64947dd628f8b7cc28dc06fd59848f2caca7",
                 "shasum": ""
             },
             "require": {
@@ -2282,20 +2282,20 @@
                 "exiftool",
                 "metadatas"
             ],
-            "time": "2013-01-30 18:48:32"
+            "time": "2014-09-15 08:05:30"
         },
         {
             "name": "phpexiftool/phpexiftool",
-            "version": "0.3.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/PHPExiftool.git",
-                "reference": "5c7d6124729eb34f2d86f730e534067e6be31ab9"
+                "reference": "2581c6aac2cc23cd19bb4475536d83e3e33ff16c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/PHPExiftool/zipball/5c7d6124729eb34f2d86f730e534067e6be31ab9",
-                "reference": "5c7d6124729eb34f2d86f730e534067e6be31ab9",
+                "url": "https://api.github.com/repos/romainneutron/PHPExiftool/zipball/2581c6aac2cc23cd19bb4475536d83e3e33ff16c",
+                "reference": "2581c6aac2cc23cd19bb4475536d83e3e33ff16c",
                 "shasum": ""
             },
             "require": {
@@ -2303,14 +2303,14 @@
                 "doctrine/collections": "~1.0",
                 "monolog/monolog": "~1.3",
                 "php": ">=5.3.3",
-                "phpexiftool/exiftool": "9.15",
+                "phpexiftool/exiftool": "9.70",
+                "symfony/console": "~2.0",
                 "symfony/process": "~2.0"
             },
             "require-dev": {
                 "jms/serializer": "~0.10",
                 "sami/sami": "~1.0",
                 "silex/silex": "~1.0",
-                "symfony/console": "~2.0",
                 "symfony/css-selector": "~2.0",
                 "symfony/dom-crawler": "~2.0",
                 "symfony/finder": "~2.0",
@@ -2321,11 +2321,6 @@
                 "symfony/yaml": "To serialize tags in Yaml format"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.3-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "PHPExiftool": "lib"
@@ -2347,7 +2342,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2013-08-07 13:54:27"
+            "time": "2014-09-18 23:00:26"
         },
         {
             "name": "phpoption/phpoption",
