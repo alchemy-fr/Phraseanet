@@ -19,6 +19,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
 use media_subdef;
 
 class RecordIndexer
@@ -35,8 +37,9 @@ class RecordIndexer
      */
     private $elasticSearchEngine;
 
-    public function __construct(ElasticSearchEngine $elasticSearchEngine, \appbox $appbox)
+    public function __construct(Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox)
     {
+        $this->thesaurus = $thesaurus;
         $this->appbox = $appbox;
         $this->elasticSearchEngine = $elasticSearchEngine;
     }
@@ -47,12 +50,11 @@ class RecordIndexer
         $recordHelper = new RecordHelper($this->appbox);
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-            // TODO Pass a BulkOperation object to TermIndexer to muliplex
-            // indexing queries between types
             $fetcher = new RecordFetcher($databox, $recordHelper);
             $fetcher->setBatchSize(200);
             while ($records = $fetcher->fetch()) {
                 foreach ($records as $record) {
+                    $record['concept_paths'] = $this->findLinkedConcepts($record);
                     $params = array();
                     $params['id'] = $record['id'];
                     $params['type'] = self::TYPE_NAME;
@@ -61,6 +63,11 @@ class RecordIndexer
                 }
             }
         }
+    }
+
+    private function findLinkedConcepts($record)
+    {
+        return [];
     }
 
     public function getMapping()
@@ -81,6 +88,10 @@ class RecordIndexer
             // Dates
             ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
             ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
+            // Inferred thesaurus concepts
+            ->add('concept_paths', 'string')
+                ->analyzer('thesaurus_path', 'indexing')
+                ->analyzer('keyword', 'searching')
         ;
 
         // Caption mapping
@@ -148,6 +159,13 @@ class RecordIndexer
                 $field['private'] = $fieldStructure->isBusiness();
                 $field['indexable'] = $fieldStructure->is_indexable();
                 $field['to_aggregate'] = false; // @todo, dev in progress
+
+                // Thesaurus concept inference
+                // $xpath = "/thesaurus/te[@id='T26'] | /thesaurus/te[@id='T24']";
+                $helper = new ThesaurusHelper();
+                // TODO Find thesaurus path prefixes
+                $field['thesaurus_concept_inference'] = true;
+                $field['thesaurus_prefix'] = '/categories';
 
                 $name = $fieldStructure->get_name();
 

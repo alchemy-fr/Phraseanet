@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
@@ -82,6 +83,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             return new RecordIndexer(
+                $app['elasticsearch.thesaurus'],
                 $app['elasticsearch.engine'],
                 $app['phraseanet.appbox']
             );
@@ -107,6 +109,13 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             ];
 
             return array_replace($defaults, $options);
+        });
+
+        $app['elasticsearch.thesaurus'] = $app->share(function ($app) {
+            return new Thesaurus(
+                $app['elasticsearch.client'],
+                $app['elasticsearch.options']['index']
+            );
         });
     }
 

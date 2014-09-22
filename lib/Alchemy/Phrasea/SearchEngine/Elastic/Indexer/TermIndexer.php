@@ -45,7 +45,7 @@ class TermIndexer
             $databoxId = $databox->get_sbas_id();
             $document = self::thesaurusFromDatabox($databox);
             $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId) {
-                printf("- %s (%s)\n", $term['path'], $term['value']);
+                // printf("- %s (%s)\n", $term['path'], $term['value']);
                 // Term structure
                 $id = $term['id'];
                 unset($term['id']);
@@ -78,9 +78,7 @@ class TermIndexer
             ->add('raw_value', 'string')->notAnalyzed()
             ->add('value', 'string')
             ->add('context', 'string')
-            ->add('path', 'string')
-                ->analyzer('thesaurus_path', 'indexing')
-                ->analyzer('keyword', 'searching')
+            ->add('path', 'string')->notAnalyzed()
             ->add('lang', 'string')->notAnalyzed()
             ->add('databox_id', 'integer')
         ;

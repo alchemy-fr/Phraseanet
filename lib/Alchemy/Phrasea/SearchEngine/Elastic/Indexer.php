@@ -95,8 +95,12 @@ class Indexer
             $bulk->setAutoFlushLimit(1000);
 
             $this->termIndexer->populateIndex($bulk);
+            // Record indexing depends on indexed terms so we need to flush
+            // between the two operations
+            $bulk->flush();
             $this->recordIndexer->populateIndex($bulk);
 
+            // Final flush
             $bulk->flush();
 
             // Optimize index
