@@ -63,13 +63,13 @@ class SearchEngineOptions
 
     /**
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $date_min;
 
     /**
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $date_max;
 

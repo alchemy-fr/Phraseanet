@@ -22,6 +22,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -90,12 +92,19 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.client'] = $app->share(function($app) {
-            $options = $app['elasticsearch.options'];
-            $host = sprintf('%s:%s', $options['host'], $options['port']);
+            $options        = $app['elasticsearch.options'];
+            $clientParams   = ['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]];
 
-            // TODO (mdarse) Add logging support
+            // Create file logger for debug
+            if ($app['debug']) {
+                $logger = new $app['monolog.logger.class']('search logger');
+                $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2), Logger::INFO);
 
-            return new Client(array('hosts' => array($host)));
+                $clientParams['logObject'] = $logger;
+                $clientParams['logging'] = true;
+            }
+
+            return new Client($clientParams);
         });
 
         $app['elasticsearch.options'] = $app->share(function($app) {
