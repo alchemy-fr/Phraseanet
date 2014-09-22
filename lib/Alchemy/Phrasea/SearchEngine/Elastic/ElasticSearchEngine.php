@@ -18,8 +18,6 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Monolog\Handler\RotatingFileHandler;
-use Symfony\Bridge\Monolog\Logger;
 use Alchemy\Phrasea\Application;
 use Elasticsearch\Client;
 
@@ -278,28 +276,29 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $parser = new QueryParser();
         $ast = $parser->parse($string);
-        $query = $ast->getQuery();
+        $userQuery = $ast->getQuery();
 
-        // $query = 'all' !== strtolower($query) ? $query : '';
-        // $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions());
-        // $params['from'] = $offset;
-        // $params['size'] = $perPage;
+        $params = $this->createQueryParams($userQuery, $options ?: new SearchEngineOptions());
+        $params['from'] = $offset;
+        $params['size'] = $perPage;
 
-        // $res = $this->doExecute('search', $params);
+        $res = $this->doExecute('search', $params);
 
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
-        // $n = 0;
+        $n = 0;
 
-        // foreach ($res['hits']['hits'] as $hit) {
-        //     $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
-        //     $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
-        //     $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
-        // }
+        foreach ($res['hits']['hits'] as $hit) {
+            $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
+
+            $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
+            $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
+        }
 
         $query['_ast'] = (string) $ast;
 
-        return new SearchEngineResult($results, json_encode($query), null, null, null, null, null, null, $suggestions, [], $this->indexName);
+        return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
+            $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
     }
 
     /**
@@ -307,7 +306,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        throw new RuntimeException('ElasticSearch engine currently does not support auto-complete.');
+        throw new RuntimeException('Elasticsearch engine currently does not support auto-complete.');
     }
 
     /**
@@ -352,8 +351,10 @@ class ElasticSearchEngine implements SearchEngineInterface
             ]
         ];
 
-        $ESquery = $this->createESQuery($query, $options);
+        $ESquery = $query; // = $this->createESQuery($query, $options);
+
         $filters = $this->createFilters($options);
+        $filters = [];
 
         if ($record) {
             $filters[] = [
