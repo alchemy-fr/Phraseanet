@@ -446,12 +446,14 @@ class QueryParser
 
 switch ($yystate) {
 case 1:
+
         
         return $thisS;
         
     
 break;
 case 2:
+
         // $thisS = sprintf('(%s DEF_OP %s)', $s[$o-1]->text, $s[$o]->text);
         
         $thisS = new AST\AndExpression($s[$o-1]->text, $s[$o]->text);
@@ -459,40 +461,48 @@ case 2:
     
 break;
 case 4:
+
         
         $thisS = new AST\AndExpression($s[$o-2]->text, $s[$o]->text);
         
     
 break;
 case 5:
+
         
         $thisS = new AST\OrExpression($s[$o-2]->text, $s[$o]->text);
         
     
 break;
 case 6:
+
         
         $thisS = new AST\InExpression($s[$o]->text, $s[$o-2]->text);
         
     
 break;
 case 7:
+
          $thisS = $s[$o-1];
     
 break;
 case 10:
+
          $thisS = new AST\KeywordNode($s[$o]->text);
     
 break;
 case 11:
+
          $thisS = new AST\PrefixNode($s[$o-1]->text);
     
 break;
 case 12:
+
          $thisS = new AST\TextNode($s[$o]->text);
     
 break;
 case 13:
+
          $thisS = new AST\QuotedTextNode($s[$o]->text);
     
 break;
@@ -811,7 +821,7 @@ break;
                 }
             }
         }
-        if ( isset($match) && $match ) {
+        if ( $match ) {
             $matchCount = strlen($match[0]);
             $lineCount = preg_match("/(?:\r\n?|\n).*/", $match[0], $lines);
             $line = ($lines ? $lines[$lineCount - 1] : false);
@@ -897,7 +907,6 @@ break;
     function LexerPerformAction($avoidingNameCollisions, $YY_START = null)
     {
         
-
 ;
 switch($avoidingNameCollisions) {
 case 0:/* skip whitespace */

@@ -276,6 +276,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $parser = new QueryParser();
         $ast = $parser->parse($string);
+
+
         $userQuery = $ast->getQuery();
 
         $params = $this->createQueryParams($userQuery, $options ?: new SearchEngineOptions());

@@ -18,7 +18,7 @@ class KeywordNode extends Node
 
     public function getQuery()
     {
-        throw new LogicException("A keyword can't be converted to a query.");
+        throw new \LogicException("A keyword can't be converted to a query.");
     }
 
     public function __toString()
