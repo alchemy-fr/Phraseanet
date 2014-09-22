@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
+use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -88,7 +89,10 @@ class Oauth2 implements ControllerProviderInterface
                         return $app->redirectPath('oauth2_authorize', array_merge(array('error' => 'account-locked'), $params));
                     }
 
-                    $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
+                    $user = \User_Adapter::getInstance($usr_id, $app);
+                    $app['authentication']->openAccount($user);
+                    $event = new PostAuthenticate($request, new Response(), $user, $context);
+                    $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
                 } else {
                     $r = new Response($app['twig']->render($template, array('error' => $error, "auth" => $oauth2_adapter)));
                     $r->headers->set('Content-Type', 'text/html');
