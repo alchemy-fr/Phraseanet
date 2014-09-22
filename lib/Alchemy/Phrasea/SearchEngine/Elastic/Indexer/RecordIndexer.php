@@ -99,7 +99,7 @@ class RecordIndexer
         $mapping->add('caption', $captionMapping);
         $privateCaptionMapping = new Mapping();
         $mapping->add('private_caption', $privateCaptionMapping);
-        foreach ($this->getRecordFieldsStructure() as $name => $params) {
+        foreach ($this->getFieldsStructure() as $name => $params) {
             $m = $params['private'] ? $privateCaptionMapping : $captionMapping;
             $m->add($name, $params['type']);
 
@@ -121,16 +121,16 @@ class RecordIndexer
         }
 
         // EXIF
-        $mapping->add('exif', $this->getRecordExifMapping());
+        $mapping->add('exif', $this->getExifMapping());
 
         // Status
-        $mapping->add('flags', $this->getRecordFlagsMapping());
+        $mapping->add('flags', $this->getFlagsMapping());
 
         return $mapping->export();
     }
 
 
-    private function getRecordFieldsStructure()
+    private function getFieldsStructure()
     {
         $fields = array();
 
@@ -199,7 +199,7 @@ class RecordIndexer
     }
 
     // @todo Add call to addAnalyzedVersion ?
-    private function getRecordExifMapping()
+    private function getExifMapping()
     {
         $mapping = new Mapping();
         $mapping
@@ -232,7 +232,7 @@ class RecordIndexer
         return $mapping;
     }
 
-    private function getRecordFlagsMapping()
+    private function getFlagsMapping()
     {
         $mapping = new Mapping();
         $seen = array();
