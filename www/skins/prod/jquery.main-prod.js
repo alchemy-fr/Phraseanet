@@ -466,6 +466,14 @@ function initAnswerForm() {
             },
             success: function (datas) {
 
+                // DEBUG QUERY PARSER
+                var query = datas.parsed_query;
+                try {
+                    query = JSON.parse(query);
+                }
+                catch (e) {}
+                console.log('Parsed Query:', query);
+
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
 
