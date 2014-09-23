@@ -14,4 +14,9 @@ class QuotedTextNode extends TextNode
             )
         );
     }
+
+    public function isFullTextOnly()
+    {
+        return true;
+    }
 }

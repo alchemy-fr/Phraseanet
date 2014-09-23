@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\QuotedTextNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\TextNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
@@ -281,22 +282,25 @@ class ElasticSearchEngine implements SearchEngineInterface
         $parser = new QueryParser();
         $ast = $parser->parse($string);
 
-        $termFiels = $this->expendToAnalyzedFieldsNames(['value'], $this->locales);
-        $termsQuery = $ast->getQuery($termFiels);
-        $params = $this->createTermQueryParams($termsQuery, $options ?: new SearchEngineOptions());
-        $params['size'] = 5; // @todo remove?
-        $terms = $this->doExecute('search', $params);
-
-        // Contains the full thesaurus paths
+        // Contains the full thesaurus paths to search on
         $pathsToFilter = [];
         // Contains the thesaurus values by fields (synonyms, translations, etc)
         $collectFields = [];
 
-        foreach ($terms['hits']['hits'] as $term) {
-            $pathsToFilter[] = $term['_source']['path'];
+        // Only search in thesaurus for full text search
+        if ($ast->isFullTextOnly()) {
+            $termFiels = $this->expendToAnalyzedFieldsNames(['value'], $this->locales);
+            $termsQuery = $ast->getQuery($termFiels);
 
-            foreach ($term['_source']['fields'] as $field) {
-                $collectFields['caption.'.$field][] = $term['_source']['value'];
+            $params = $this->createTermQueryParams($termsQuery, $options ?: new SearchEngineOptions());
+            $terms = $this->doExecute('search', $params);
+
+            foreach ($terms['hits']['hits'] as $term) {
+                $pathsToFilter[] = $term['_source']['path'];
+
+                foreach ($term['_source']['fields'] as $field) {
+                    $collectFields['caption.'.$field][] = $term['_source']['value'];
+                }
             }
         }
 
@@ -305,7 +309,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         if (empty($collectFields)) {
             // @todo a list of field by default? all fields?
-            $collectFields['caption.Keywords'][] = $string;
+            $collectFields['caption.Keywords'] = [];
         }
 
         $recordFields = $this->expendToAnalyzedFieldsNames(array_keys($collectFields), $this->locales);

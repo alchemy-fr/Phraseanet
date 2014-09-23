@@ -26,4 +26,9 @@ class PrefixNode extends Node
     {
         return sprintf('prefix("%s")', $this->prefix);
     }
+    
+    public function isFullTextOnly()
+    {
+        return true;
+    }
 }

@@ -25,4 +25,9 @@ class TextNode extends Node
     {
         return sprintf('"%s"', $this->text);
     }
+
+    public function isFullTextOnly()
+    {
+        return true;
+    }
 }

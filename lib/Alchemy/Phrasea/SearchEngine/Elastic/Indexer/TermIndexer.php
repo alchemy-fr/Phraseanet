@@ -17,7 +17,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
 use databox;
 use DOMDocument;
-use DOMXpath;
 
 class TermIndexer
 {

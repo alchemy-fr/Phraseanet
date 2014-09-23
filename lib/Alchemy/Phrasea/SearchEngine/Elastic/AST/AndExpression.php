@@ -6,7 +6,7 @@ class AndExpression extends Node
 {
     protected $members = array();
 
-    public function __construct($left, $right)
+    public function __construct(Node $left, Node $right)
     {
         $this->members[] = $left;
         $this->members[] = $right;
@@ -34,5 +34,16 @@ class AndExpression extends Node
     public function __toString()
     {
         return sprintf('(%s)', implode(' AND ', $this->members));
+    }
+
+    public function isFullTextOnly()
+    {
+        foreach ($this->members as $member) {
+            if (!$member->isFullTextOnly()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

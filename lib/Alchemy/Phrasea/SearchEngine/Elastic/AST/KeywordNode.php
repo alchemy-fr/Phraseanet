@@ -25,4 +25,9 @@ class KeywordNode extends Node
     {
         return sprintf('<%s>', $this->keyword);
     }
+
+    public function isFullTextOnly()
+    {
+        return false;
+    }
 }
