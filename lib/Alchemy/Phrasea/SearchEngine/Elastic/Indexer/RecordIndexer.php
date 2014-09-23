@@ -37,11 +37,17 @@ class RecordIndexer
      */
     private $elasticSearchEngine;
 
-    public function __construct(Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox)
+    /**
+     * @var array
+     */
+    private $locales;
+
+    public function __construct(Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox, array $locales)
     {
         $this->thesaurus = $thesaurus;
         $this->appbox = $appbox;
         $this->elasticSearchEngine = $elasticSearchEngine;
+        $this->locales = $locales;
     }
 
     public function populateIndex(BulkOperation $bulk)
@@ -115,7 +121,7 @@ class RecordIndexer
                     $m->addRawVersion();
                 } else {
                     $m->addRawVersion();
-                    $m->addAnalyzedVersion(['fr', 'de']); // @todo Dynamic list from the box
+                    $m->addAnalyzedVersion($this->locales);
                 }
             }
         }

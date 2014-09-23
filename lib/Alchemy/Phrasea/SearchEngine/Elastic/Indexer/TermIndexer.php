@@ -29,11 +29,13 @@ class TermIndexer
     private $appbox;
 
     private $navigator;
+    private $locales;
 
-    public function __construct(\appbox $appbox)
+    public function __construct(\appbox $appbox, array $locales)
     {
         $this->appbox = $appbox;
         $this->navigator = new Navigator();
+        $this->locales = $locales;
     }
 
     public function populateIndex(BulkOperation $bulk)
@@ -108,7 +110,7 @@ class TermIndexer
         $mapping = new Mapping();
         $mapping
             ->add('raw_value', 'string')->notAnalyzed()
-            ->add('value', 'string')
+            ->add('value', 'string')->addAnalyzedVersion($this->locales)
             ->add('context', 'string')
             ->add('path', 'string')->notAnalyzed()
             ->add('lang', 'string')->notAnalyzed()

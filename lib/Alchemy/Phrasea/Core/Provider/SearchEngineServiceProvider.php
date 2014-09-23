@@ -80,14 +80,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.indexer.term_indexer'] = $app->share(function ($app) {
-            return new TermIndexer($app['phraseanet.appbox']);
+            return new TermIndexer($app['phraseanet.appbox'], array_keys($app['locales.available']));
         });
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             return new RecordIndexer(
                 $app['elasticsearch.thesaurus'],
                 $app['elasticsearch.engine'],
-                $app['phraseanet.appbox']
+                $app['phraseanet.appbox'],
+                array_keys($app['locales.available'])
             );
         });
 
