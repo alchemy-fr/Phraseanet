@@ -21,20 +21,20 @@ class DatabaseHelper extends Helper
         $port = (int) $this->request->query->get('port', 3306);
         $user = $this->request->query->get('user');
         $password = $this->request->query->get('password');
-        $dbname = $this->request->query->get('dbname');
+        $db_name = $this->request->query->get('db_name');
 
         $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
-            new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), false);
+            new \connection_pdo('test', $hostname, $port, $user, $password, $db_name, array(), false);
             $connection_ok = true;
         } catch (\Exception $e) {
 
         }
 
-        if ($dbname && $connection_ok === true) {
+        if ($db_name && $connection_ok === true) {
             try {
-                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), false);
+                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $db_name, array(), false);
                 $db_ok = true;
 
                 $sql = "SHOW TABLE STATUS";

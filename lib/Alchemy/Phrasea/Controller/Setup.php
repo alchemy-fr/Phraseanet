@@ -142,7 +142,7 @@ class Setup implements ControllerProviderInterface
         $database_host = $request->request->get('hostname');
         $database_port = $request->request->get('port');
         $database_user = $request->request->get('user');
-        $database_password = $request->request->get('password');
+        $database_password = $request->request->get('db_password');
 
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
