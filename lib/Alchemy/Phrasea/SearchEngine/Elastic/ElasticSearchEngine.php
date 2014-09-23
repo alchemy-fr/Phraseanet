@@ -319,7 +319,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             ]
         ];
 
-
         foreach ($pathsToFilter as $path) {
             // @todo switch to must??
             $recordQuery['bool']['should'][] = [
@@ -350,6 +349,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $query['_ast'] = (string) $ast;
         $query['_paths'] = $pathsToFilter;
+        $query['_richFields'] = $collectFields;
         $query['query'] = json_encode($recordQuery);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,

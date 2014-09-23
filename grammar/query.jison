@@ -33,7 +33,7 @@
                             //php $this->popState();
                         }
 <literal>([^"])*   return 'LITERAL'
-\w+                     return 'WORD'
+\S+                     return 'WORD'
 <<EOF>>                 return 'EOF'
 
 /lex
