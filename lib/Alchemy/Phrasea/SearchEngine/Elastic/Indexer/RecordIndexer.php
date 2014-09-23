@@ -71,6 +71,9 @@ class RecordIndexer
         }
     }
 
+    /**
+     * @todo
+     */
     private function findLinkedConcepts($record)
     {
         return [];

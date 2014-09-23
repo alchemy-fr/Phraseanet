@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\TextNode;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -26,17 +29,18 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $app;
     /** @var Client */
     private $client;
-
     private $dateFields;
     private $indexName;
     private $serializer;
     private $configurationPanel;
+    private $locales;
 
     public function __construct(Application $app, Client $client, ESRecordSerializer $serializer, $indexName)
     {
         $this->app = $app;
         $this->client = $client;
         $this->serializer = $serializer;
+        $this->locales = array_keys($app['locales.available']);
 
         if ('' === trim($indexName)) {
             throw new \InvalidArgumentException('The provided index name is invalid.');
@@ -277,10 +281,57 @@ class ElasticSearchEngine implements SearchEngineInterface
         $parser = new QueryParser();
         $ast = $parser->parse($string);
 
+        $termFiels = $this->expendToAnalyzedFieldsNames(['value'], $this->locales);
+        $termsQuery = $ast->getQuery($termFiels);
+        $params = $this->createTermQueryParams($termsQuery, $options ?: new SearchEngineOptions());
+        $params['size'] = 5; // @todo remove?
+        $terms = $this->doExecute('search', $params);
 
-        $userQuery = $ast->getQuery();
+        // Contains the full thesaurus paths
+        $pathsToFilter = [];
+        // Contains the thesaurus values by fields (synonyms, translations, etc)
+        $collectFields = [];
 
-        $params = $this->createQueryParams($userQuery, $options ?: new SearchEngineOptions());
+        foreach ($terms['hits']['hits'] as $term) {
+            $pathsToFilter[] = $term['_source']['path'];
+
+            foreach ($term['_source']['fields'] as $field) {
+                $collectFields['caption.'.$field][] = $term['_source']['value'];
+            }
+        }
+
+        //print_r($pathsToFilter);
+        //print_r($collectFields);
+
+        if (empty($collectFields)) {
+            // @todo a list of field by default? all fields?
+            $collectFields['caption.Keywords'][] = $string;
+        }
+
+        $recordFields = $this->expendToAnalyzedFieldsNames(array_keys($collectFields), $this->locales);
+        $pathsToFilter = array_unique($pathsToFilter);
+
+        $recordQuery = [
+            'bool' => [
+                'should' => [
+                    $ast->getQuery($recordFields)
+                ]
+            ]
+        ];
+
+
+        foreach ($pathsToFilter as $path) {
+            // @todo switch to must??
+            $recordQuery['bool']['should'][] = [
+                'match' => [
+                    'concept_paths' => $path
+                ]
+            ];
+        }
+
+        //print_r($recordQuery); die();
+
+        $params = $this->createRecordQueryParams($recordQuery, $options ?: new SearchEngineOptions());
         $params['from'] = $offset;
         $params['size'] = $perPage;
 
@@ -298,6 +349,8 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $query['_ast'] = (string) $ast;
+        $query['_paths'] = $pathsToFilter;
+        $query['query'] = json_encode($recordQuery);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
@@ -342,11 +395,24 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
     }
 
-    private function createQueryParams($query, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createTermQueryParams($query, SearchEngineOptions $options)
     {
         $params = [
             'index' => $this->indexName,
-            'type'  => self::GEM_TYPE_RECORD,
+            'type'  => TermIndexer::TYPE_NAME,
+            'body'  => []
+        ];
+
+        $params['body']['query'] = $query;
+
+        return $params;
+    }
+
+    private function createRecordQueryParams($query, SearchEngineOptions $options, \record_adapter $record = null)
+    {
+        $params = [
+            'index' => $this->indexName,
+            'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
                 'fields' => ['databox_id', 'record_id'],
                 'sort'   => $this->createSortQueryParams($options),
@@ -552,5 +618,22 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $res;
+    }
+
+    /**
+     * @todo Add a booster on the lang the use is using?
+     */
+    private function expendToAnalyzedFieldsNames($fields, $locales)
+    {
+        $fieldsExpended = [];
+
+        foreach ($fields as $field) {
+            foreach ($locales as $locale) {
+                $fieldsExpended[] = sprintf('%s.%s', $field, $locale);
+            }
+            $fieldsExpended[] = sprintf('%s.%s', $field, 'light');
+        }
+
+        return $fieldsExpended;
     }
 }
