@@ -1,4 +1,6 @@
 /nbproject
+/.idea
+/.vagrant
 /config
 !/config/configuration.sample.yml
 .DS_Store
@@ -15,3 +17,4 @@ behat.yml
 !/bin/console
 !/bin/developer
 !/bin/setup
+/tmp-assets
