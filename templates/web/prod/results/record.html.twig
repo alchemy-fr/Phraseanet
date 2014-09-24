@@ -59,9 +59,10 @@
                 {% if rollover_gif %}
                 {% set extraclass = 'rollover-gif-out' %}
                 {% endif %}
-                {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, true, true)}}
+                {% set lazyload = not app['phraseanet.static-file-factory'].isStaticFileModeEnabled %}
+                {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, true, lazyload)}}
                 {% if rollover_gif %}
-                {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', true, true)}}
+                {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', true, lazyload)}}
                 {% endif %}
                 </div>
             </div>

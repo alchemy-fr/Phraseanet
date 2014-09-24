@@ -11,14 +11,9 @@
 
 namespace Alchemy\Phrasea\Core;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Version
 {
-    protected static $number = '3.8.6-alpha.2';
+    protected static $number = '3.8.6-alpha.3';
     protected static $name = 'Falcarius';
 
     public static function getNumber()
