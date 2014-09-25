@@ -35,7 +35,7 @@ class SymLinker
             $app['phraseanet.thumb-symlinker-encoder'],
             $app['filesystem'],
             $app['phraseanet.registry'],
-            isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : $app['root.path'] . '/symlinks'
+            isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : $app['root.path'] . '/tmp/symlinks'
         );
     }
 
