@@ -32,10 +32,6 @@ class StaticConfigurationDumper extends Command
     {
         $output->writeln('');
 
-        if ($this->container['phraseanet.xsendfile-factory']->isXSendFileModeEnabled()) {
-            throw new \LogicException('XSendFile mode is already activated');
-        }
-
         if (!$this->container['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
             $output->writeln('Static file support is <error>disabled</error>');
             $ret = 1;
