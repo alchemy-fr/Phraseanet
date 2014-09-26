@@ -4,6 +4,7 @@
     {% import 'common/drop_down_options.html.twig' as drop_down %}
     {% set th_size = app['authentication'].getUser().getPrefs('images_size')%}
     {% set sbas_id = record.get_sbas_id %}
+    {% set lazyload = not app['phraseanet.static-file-factory'].isStaticFileModeEnabled and app['phraseanet.configuration']['lazyload']|default(false) %}
     {% if entry_id %}
         <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
             id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
@@ -59,7 +60,6 @@
                 {% if rollover_gif %}
                 {% set extraclass = 'rollover-gif-out' %}
                 {% endif %}
-                {% set lazyload = not app['phraseanet.static-file-factory'].isStaticFileModeEnabled %}
                 {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, true, lazyload)}}
                 {% if rollover_gif %}
                 {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', true, lazyload)}}
