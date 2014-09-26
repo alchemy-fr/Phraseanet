@@ -21,82 +21,78 @@ class Prod extends Helper
 
     public function get_search_datas()
     {
-        $search_datas = array(
-            'bases' => array(),
-            'dates' => array(),
-            'fields' => array()
-        );
+        $searchData = array('bases' => array(), 'dates' => array(), 'fields' => array(), 'sort' => array(),);
 
-        $bases = $fields = $dates = array();
+        $bases = $fields = $dates = $sort = array();
 
-        if (! $this->app['authentication']->getUser() instanceof \User_Adapter) {
-            return $search_datas;
+        if (!$this->app['authentication']->getUser() instanceof \User_Adapter) {
+            return $searchData;
         }
 
         $searchSet = json_decode($this->app['authentication']->getUser()->getPrefs('search'), true);
         $saveSettings = $this->app['authentication']->getUser()->getPrefs('advanced_search_reload');
 
         foreach ($this->app['authentication']->getUser()->ACL()->get_granted_sbas() as $databox) {
-            $sbas_id = $databox->get_sbas_id();
+            $sbasId = $databox->get_sbas_id();
 
-            $bases[$sbas_id] = array(
-                'thesaurus'   => (trim($databox->get_thesaurus()) != ""),
-                'cterms'      => false,
-                'collections' => array(),
-                'sbas_id' => $sbas_id
-            );
+            $bases[$sbasId] = array('thesaurus' => (trim($databox->get_thesaurus()) !== ""), 'cterms' => false, 'collections' => array(), 'sbas_id' => $sbasId);
 
-            foreach ($this->app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
-                $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbas_id])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbas_id])) : true) : true;
-                $bases[$sbas_id]['collections'][] =
-                    array(
-                        'selected' => $selected,
-                        'base_id'  => $coll->get_base_id()
-                );
+            foreach ($this->app['authentication']->getUser()->ACL()->get_granted_base(array(), array($sbasId)) as $coll) {
+                $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
+                $bases[$sbasId]['collections'][] = array('selected' => $selected, 'base_id' => $coll->get_base_id());
             }
 
-            $meta_struct = $databox->get_meta_structure();
-            foreach ($meta_struct as $meta) {
-                if ( ! $meta->is_indexable())
+            foreach ($databox->get_meta_structure() as $fieldMeta) {
+                if (!$fieldMeta->is_indexable()) {
                     continue;
-                $id = $meta->get_id();
-                $name = $meta->get_name();
-                if ($meta->get_type() == 'date') {
-                    if (isset($dates[$id]))
-                        $dates[$id]['sbas'][] = $sbas_id;
-                    else
-                        $dates[$id] = array('sbas' => array($sbas_id), 'fieldname' => $name);
+                }
+                $id = $fieldMeta->get_id();
+                $name = $fieldMeta->get_name();
+                $type = $fieldMeta->get_type();
+
+                $data = array('sbas' => array($sbasId), 'fieldname' => $name, 'type' => $type, 'id' => $id);
+
+                if ($fieldMeta->get_type() === \databox_field::TYPE_DATE) {
+                    if (isset($dates[$id])) {
+                        $dates[$id]['sbas'][] = $sbasId;
+                    } else {
+                        $dates[$id] = $data;
+                    }
+                }
+
+                if ($fieldMeta->get_type() == \databox_field::TYPE_NUMBER || $fieldMeta->get_type() === \databox_field::TYPE_DATE) {
+                    if (isset($sort[$id])) {
+                        $sort[$id]['sbas'][] = $sbasId;
+                    } else {
+                        $sort[$id] = $data;
+                    }
                 }
 
                 if (isset($fields[$name])) {
-                    $fields[$name]['sbas'][] = $sbas_id;
+                    $fields[$name]['sbas'][] = $sbasId;
                 } else {
-                    $fields[$name] = array(
-                        'sbas' => array($sbas_id)
-                        , 'fieldname' => $name
-                        , 'type'      => $meta->get_type()
-                        , 'id'        => $id
-                    );
+                    $fields[$name] = $data;
                 }
             }
 
-            if (! $bases[$sbas_id]['thesaurus']) {
+            if (!$bases[$sbasId]['thesaurus']) {
                 continue;
             }
-            if ( ! $this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
+            if (!$this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbasId, 'bas_modif_th')) {
                 continue;
             }
 
             if (false !== simplexml_load_string($databox->get_cterms())) {
-                $bases[$sbas_id]['cterms'] = true;
+                $bases[$sbasId]['cterms'] = true;
             }
         }
 
-        $search_datas['fields'] = $fields;
-        $search_datas['dates'] = $dates;
-        $search_datas['bases'] = $bases;
+        $searchData['fields'] = $fields;
+        $searchData['dates'] = $dates;
+        $searchData['bases'] = $bases;
+        $searchData['sort'] = $sort;
 
-        return $search_datas;
+        return $searchData;
     }
 
     public function getRandom()
