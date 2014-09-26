@@ -515,6 +515,7 @@ class databox extends base
         $stmt->closeCursor();
 
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         return;
     }
