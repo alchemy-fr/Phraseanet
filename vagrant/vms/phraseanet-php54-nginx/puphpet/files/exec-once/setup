@@ -5,7 +5,6 @@ sudo sh -c 'echo "Europe/Paris" > /etc/timezone'
 sudo dpkg-reconfigure -f noninteractive tzdata 
 
 # locales
-
 sudo sh -c "echo 'LANGUAGE=fr_FR.UTF-8' >> /etc/environment"
 sudo sh -c "echo 'LANG=fr_FR.UTF-8' >> /etc/environment"
 sudo sh -c "echo 'LC_ALL=fr_FR.UTF-8' >> /etc/environment"
@@ -16,6 +15,51 @@ sudo sh -c 'echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "nl_NL.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo locale-gen en_US en_US.UTF-8 en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
 sudo dpkg-reconfigure -f noninteractive locales
+
+#ffmpeg
+sudo sh -c 'echo "deb http://www.deb-multimedia.org wheezy main non-free" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://www.deb-multimedia.org wheezy main non-free" >> /etc/apt/sources.list'
+
+sudo apt-get update
+sudo apt-get install --force-yes -y deb-multimedia-keyring
+sudo apt-get update
+sudo apt-get install --force-yes -y libfaac-dev
+
+cd /tmp
+wget –quiet https://www.ffmpeg.org/releases/ffmpeg-1.2.8.tar.gz
+tar -zxvf ffmpeg-1.2.8.tar.gz
+cd ffmpeg-1.2.8
+
+wget –quiet -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
+sudo -u vagrant unzip fdk-aac.zip
+cd mstorsjo-fdk-aac*
+autoreconf -fiv
+./configure --disable-shared
+make
+sudo make install
+make distclean
+cd ..
+
+./configure --enable-gpl \
+            --enable-nonfree \
+            --enable-libfaac \
+            --enable-libgsm \
+            --enable-libmp3lame \
+            --enable-libtheora \
+            --enable-libvorbis \
+            --enable-libx264 \
+            --enable-libxvid \
+            --enable-zlib \
+            --enable-postproc \
+            --enable-swscale \
+            --enable-pthreads \
+            --enable-x11grab \
+            --enable-libdc1394 \
+            --enable-version3 \
+            --enable-libopencore-amrnb \
+            --enable-libopencore-amrwb
+make
+sudo make install
 
 # node + npm
 cd /tmp
