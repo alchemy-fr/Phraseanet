@@ -704,8 +704,9 @@ class API_OAuth2_Application
     public static function load_dev_app_by_user(Application $app, User_Adapter $user)
     {
         $sql = 'SELECT a.application_id
-        FROM api_applications a, api_accounts b
-        WHERE a.creator = :usr_id AND a.application_id = b.application_id';
+                FROM api_applications a
+                INNER JOIN api_accounts b ON a.application_id = b.application_id
+                WHERE a.creator = :usr_id AND b.usr_id = :usr_id';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
