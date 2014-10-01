@@ -351,6 +351,10 @@ class recordutils_image extends recordutils
         $image_out->save($pathOut);
 
         if (is_file($pathOut)) {
+            // copy metadatas to the stamped file if we can
+            if(method_exists($app['exiftool.writer'], "copy")) {
+                $app['exiftool.writer']->copy($subdef->get_pathfile(), $pathOut);
+            }
             return $pathOut;
         }
 
