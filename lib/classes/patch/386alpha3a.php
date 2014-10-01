@@ -16,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class patch_386alpha3a implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.5-alpha.1';
+    private $release = '3.8.6-alpha.3';
 
     /** @var array */
     private $concern = array(base::APPLICATION_BOX);
