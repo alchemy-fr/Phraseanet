@@ -18,11 +18,6 @@ use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class API_V1_adapter extends API_V1_Abstract
 {
     /**
@@ -30,7 +25,7 @@ class API_V1_adapter extends API_V1_Abstract
      *
      * @var string
      */
-    protected $version = '1.3';
+    protected $version = '1.4.1';
 
     /**
      * Application context
