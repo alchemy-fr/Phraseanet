@@ -86,7 +86,7 @@ class TermIndexer
 
     private function getDedicatedFieldTerms(databox $databox, DOMDocument $document)
     {
-        $xpath = new DOMXpath($document);
+        $xpath = new \DOMXpath($document);
         $dedicatedFieldTerms = [];
 
         foreach ($databox->get_meta_structure() as $f) {
