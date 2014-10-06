@@ -110,7 +110,7 @@ class TermIndexer
         $mapping
             ->add('raw_value', 'string')->notAnalyzed()
             ->add('value', 'string')->addAnalyzedVersion($this->locales)
-            ->add('context', 'string')
+            ->add('context', 'string')->addAnalyzedVersion($this->locales)
             ->add('path', 'string')->notAnalyzed()
             ->add('lang', 'string')->notAnalyzed()
             ->add('databox_id', 'integer')

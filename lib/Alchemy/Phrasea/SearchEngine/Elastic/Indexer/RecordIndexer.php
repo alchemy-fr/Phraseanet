@@ -87,7 +87,7 @@ class RecordIndexer
             // @todo is thesaurus_concept_inference the right option?
             if (isset($record['caption'][$field]) && $options['thesaurus_concept_inference']) {
                 $shoulds[] = ["multi_match" => [
-                    'fields' => $this->elasticSearchEngine->expendToAnalyzedFieldsNames('value'),
+                    'fields' => $this->elasticSearchEngine->expendToAnalyzedFieldsNames(array('value', 'context')),
                     'query'  => $record['caption'][$field],
                     'operator' => 'and'
                 ]];
@@ -98,8 +98,10 @@ class RecordIndexer
             return [];
         }
 
-        // @todo appbox filter?
-        $searchParams['body']['query'] = array('bool' => array('should' => $shoulds));
+        $searchParams['body']['query']['filtered']['query'] = array('bool' => array('should' => $shoulds));
+
+        // Only search in the databox of the record itself
+        $searchParams['body']['query']['filtered']['filter'] = array('term' => array('databox_id' => $record['databox_id']));
 
         $queryResponse = $client->search($searchParams);
 
