@@ -54,13 +54,14 @@ class RecordIndexer
     {
         // Helper to fetch record related data
         $recordHelper = new RecordHelper($this->appbox);
+        $structure = $this->getFieldsStructure();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             $fetcher = new RecordFetcher($databox, $recordHelper);
             $fetcher->setBatchSize(200);
             while ($records = $fetcher->fetch()) {
                 foreach ($records as $record) {
-                    $record['concept_paths'] = $this->findLinkedConcepts($record);
+                    $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
                     $params = array();
                     $params['id'] = $record['id'];
                     $params['type'] = self::TYPE_NAME;
@@ -72,11 +73,40 @@ class RecordIndexer
     }
 
     /**
-     * @todo
+     * @todo Handle field related concepts
      */
-    private function findLinkedConcepts(array $record)
+    private function findLinkedConcepts($structure, array $record)
     {
-        return [];
+        $client = $this->elasticSearchEngine->getClient();
+        $searchParams['index'] = $this->elasticSearchEngine->getIndexName();
+        $searchParams['type']  = TermIndexer::TYPE_NAME;
+        $shoulds = [];
+        $paths   = [];
+
+        foreach ($structure as $field => $options) {
+            // @todo is thesaurus_concept_inference the right option?
+            if (isset($record['caption'][$field]) && $options['thesaurus_concept_inference']) {
+                $shoulds[] = ["multi_match" => [
+                    'fields' => $this->elasticSearchEngine->expendToAnalyzedFieldsNames('value'),
+                    'query'  => $record['caption'][$field],
+                    'operator' => 'and'
+                ]];
+            }
+        }
+
+        if (empty($shoulds)) {
+            return [];
+        }
+
+        $searchParams['body']['query'] = array('bool' => array('should' => $shoulds));
+
+        $queryResponse = $client->search($searchParams);
+
+        foreach ($queryResponse['hits']['hits'] as $hit) {
+            $paths[] = $hit['_source']['path'];
+        }
+
+        return array_values(array_unique($paths));
     }
 
     public function getMapping()

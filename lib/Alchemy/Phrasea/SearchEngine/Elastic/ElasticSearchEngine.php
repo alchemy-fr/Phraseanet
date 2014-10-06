@@ -627,11 +627,15 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * @todo Add a booster on the lang the use is using?
      */
-    private function expendToAnalyzedFieldsNames($fields, $locales)
+    public function expendToAnalyzedFieldsNames($fields, $locales = null)
     {
         $fieldsExpended = [];
 
-        foreach ($fields as $field) {
+        if (!$locales) {
+            $locales = $this->locales;
+        }
+
+        foreach ((array) $fields as $field) {
             foreach ($locales as $locale) {
                 $fieldsExpended[] = sprintf('%s.%s', $field, $locale);
             }

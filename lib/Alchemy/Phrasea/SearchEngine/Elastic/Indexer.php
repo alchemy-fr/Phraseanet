@@ -98,6 +98,10 @@ class Indexer
             // Record indexing depends on indexed terms so we need to flush
             // between the two operations
             $bulk->flush();
+
+            // Make everything ready to search
+            $this->client->indices()->refresh();
+
             $this->recordIndexer->populateIndex($bulk);
 
             // Final flush
