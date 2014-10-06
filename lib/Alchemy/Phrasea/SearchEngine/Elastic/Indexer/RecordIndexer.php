@@ -98,6 +98,7 @@ class RecordIndexer
             return [];
         }
 
+        // @todo appbox filter?
         $searchParams['body']['query'] = array('bool' => array('should' => $shoulds));
 
         $queryResponse = $client->search($searchParams);

@@ -296,12 +296,13 @@ class ElasticSearchEngine implements SearchEngineInterface
             $terms = $this->doExecute('search', $params);
 
             foreach ($terms['hits']['hits'] as $term) {
-                $pathsToFilter[] = $term['_source']['path'];
+                $pathsToFilter[$term['_source']['path']] = $term['_score'];
 
                 foreach ($term['_source']['fields'] as $field) {
                     $collectFields['caption.'.$field][] = $term['_source']['value'];
                 }
             }
+            $pathsToFilter = array_unique($pathsToFilter);
         }
 
         //print_r($pathsToFilter);
@@ -315,7 +316,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $recordFields = $this->expendToAnalyzedFieldsNames($searchFieldNames);
-        $pathsToFilter = array_unique($pathsToFilter);
 
         $recordQuery = [
             'bool' => [
@@ -325,11 +325,14 @@ class ElasticSearchEngine implements SearchEngineInterface
             ]
         ];
 
-        foreach ($pathsToFilter as $path) {
+        foreach ($pathsToFilter as $path => $score) {
             // @todo switch to must??
             $recordQuery['bool']['should'][] = [
                 'match' => [
-                    'concept_paths' => $path
+                    'concept_paths' => array(
+                        'query' => $path,
+                        'boost' => $score,
+                    )
                 ]
             ];
         }
