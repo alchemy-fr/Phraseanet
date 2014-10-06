@@ -52,7 +52,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function find($query, User $for_user,\databox $on_databox = null)
     {
-        $user_query = new \User_Query($this->app);
+        $user_query = $this->app['phraseanet.user-query'];
 
         $users = $user_query
                 ->like(\User_Query::LIKE_EMAIL, $query)

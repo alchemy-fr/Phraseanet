@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\FeedEntryEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
@@ -83,7 +85,7 @@ class Feed implements ControllerProviderInterface
             $app['EM']->persist($feed);
             $app['EM']->flush();
 
-            $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', ['entry_id' => $entry->getId(), 'notify_email' => (Boolean) $request->request->get('notify')], $entry);
+            $app['dispatcher']->dispatch(PhraseaEvents::FEED_ENTRY_CREATE, new FeedEntryEvent($entry, $request->request->get('notify')));
 
             $datas = ['error' => false, 'message' => false];
 

@@ -439,19 +439,14 @@ class databox extends base
                 $ret['thesaurus_indexed'] += $row['n'];
         }
 
-        $sql = "SELECT type, jeton, COUNT(record_id) AS n FROM record WHERE jeton & ".JETON_MAKE_SUBDEF." GROUP BY type, jeton";
+        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".JETON_MAKE_SUBDEF." GROUP BY type";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            if(!array_key_exists($row['type'], $ret['jeton_subdef'])) {
-                $ret['jeton_subdef'][$row['type']] = 0;
-            }
-            if((int)$row['jeton'] & JETON_MAKE_SUBDEF) {
-                $ret['jeton_subdef'][$row['type']] += (int)$row['n'];
-            }
+            $ret['jeton_subdef'][$row['type']] = (int)$row['n'];
         }
 
         return $ret;
@@ -463,7 +458,7 @@ class databox extends base
             $collection->unmount_collection($this->app);
         }
 
-        $query = new User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
         $total = $query->on_sbas_ids([$this->id])
             ->include_phantoms(false)
             ->include_special_users(true)
@@ -986,6 +981,7 @@ class databox extends base
                 ->set_separator(isset($field['separator']) ? (string) $field['separator'] : '')
                 ->set_required((isset($field['required']) && (string) $field['required'] == 1))
                 ->set_business((isset($field['business']) && (string) $field['business'] == 1))
+                ->set_aggregable((isset($field['aggregable']) && (string) $field['aggregable'] == 1))
                 ->set_type($type)
                 ->set_tbranch(isset($field['tbranch']) ? (string) $field['tbranch'] : '')
                 ->set_thumbtitle(isset($field['thumbtitle']) ? (string) $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))

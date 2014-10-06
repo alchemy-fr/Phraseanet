@@ -139,20 +139,20 @@ class Setup implements ControllerProviderInterface
 
         $abConn = $dbConn = null;
 
-        $hostname = $request->request->get('ab_hostname');
-        $port = $request->request->get('ab_port');
-        $user_ab = $request->request->get('ab_user');
-        $ab_password = $request->request->get('ab_password');
+        $database_host = $request->request->get('hostname');
+        $database_port = $request->request->get('port');
+        $database_user = $request->request->get('user');
+        $database_password = $request->request->get('password');
 
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
 
         try {
             $abConn = $app['dbal.provider']->get([
-                'host'     => $hostname,
-                'port'     => $port,
-                'user'     => $user_ab,
-                'password' => $ab_password,
+                'host'     => $database_host,
+                'port'     => $database_port,
+                'user'     => $database_user,
+                'password' => $database_password,
                 'dbname'   => $appbox_name,
             ]);
             $abConn->connect();
@@ -165,10 +165,10 @@ class Setup implements ControllerProviderInterface
         try {
             if ($databox_name) {
                 $dbConn = $app['dbal.provider']->get([
-                    'host'     => $hostname,
-                    'port'     => $port,
-                    'user'     => $user_ab,
-                    'password' => $ab_password,
+                    'host'     => $database_host,
+                    'port'     => $database_port,
+                    'user'     => $database_user,
+                    'password' => $database_password,
                     'dbname'   => $databox_name,
                 ]);
                 $dbConn->connect();

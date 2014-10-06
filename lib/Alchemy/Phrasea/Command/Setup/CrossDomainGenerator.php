@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Utilities\CrossDomainDumper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class CrossDomainGenerator extends Command
 {
@@ -30,13 +31,16 @@ class CrossDomainGenerator extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $configuration = $this->container['phraseanet.configuration']['crossdomain'];
+        if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
+            $configuration = $this->container['phraseanet.configuration']['crossdomain'];
+        } else {
+            $default = Yaml::parse($this->container['root.path'].'/lib/conf.d/configuration.yml');
+            $configuration = $default['crossdomain'];
+        }
 
         $dumper = new CrossDomainDumper();
-
         $xml = $dumper->dump($configuration);
-
-        $output->writeln($xml);
+        $output->writeln("Generating crossdomain.xml");
 
         $this->container['filesystem']->dumpFile($this->container['root.path'].'/www/crossdomain.xml', $xml);
 

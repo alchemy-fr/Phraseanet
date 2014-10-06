@@ -136,7 +136,7 @@ class Collection implements ControllerProviderInterface
         $admins = [];
 
         if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($bas_id, 'manage')) {
-            $query = new \User_Query($app);
+            $query = $app['phraseanet.user-query'];
             $admins = $query->on_base_ids([$bas_id])
                 ->who_have_right(['order_master'])
                 ->execute()
@@ -198,7 +198,7 @@ class Collection implements ControllerProviderInterface
         $conn->beginTransaction();
 
         try {
-            $userQuery = new \User_Query($app);
+            $userQuery = $app['phraseanet.user-query'];
 
             $result = $userQuery->on_base_ids([$bas_id])
                     ->who_have_right(['order_master'])

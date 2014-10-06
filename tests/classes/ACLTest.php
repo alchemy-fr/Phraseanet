@@ -274,6 +274,12 @@ class ACLTest extends \PhraseanetAuthenticatedTestCase
             return $collection->get_base_id();
         }, $acl->get_order_master_collections()));
         $this->assertEquals(0, count($tbas));
+
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $acl->set_order_master($collection, true);
+            }
+        }
     }
 
     public function testIs_restricted_download()

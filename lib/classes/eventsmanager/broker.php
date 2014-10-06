@@ -10,10 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class eventsmanager_broker
 {
-    protected $events = [];
     protected $notifications = [];
     protected $pool_classes = [];
 
@@ -60,10 +60,7 @@ class eventsmanager_broker
                 if ( ! class_exists($classname, true)) {
                     continue;
                 }
-                $this->pool_classes[$classname] = new $classname($this->app, $this);
-
-                foreach ($this->pool_classes[$classname]->get_events() as $event)
-                    $this->bind($event, $classname);
+                $this->pool_classes[$classname] = new $classname($this->app);
 
                 if ($type === 'notify' && $this->pool_classes[$classname])
                     $this->notifications[] = $classname;
@@ -71,26 +68,6 @@ class eventsmanager_broker
         }
 
         return;
-    }
-
-    public function trigger($event, $array_params = [], &$object = false)
-    {
-        if (array_key_exists($event, $this->events)) {
-            foreach ($this->events[$event] as $classname) {
-                $this->pool_classes[$classname]->fire($event, $array_params, $object);
-            }
-        }
-
-        return;
-    }
-
-    public function bind($event, $object_name)
-    {
-
-        if ( ! array_key_exists($event, $this->events))
-            $this->events[$event] = [];
-
-        $this->events[$event][] = $object_name;
     }
 
     public function notify($usr_id, $event_type, $datas, $mailed = false)
@@ -151,7 +128,13 @@ class eventsmanager_broker
 
         foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
-            $content = $this->pool_classes[$type]->datas($row['datas'], $row['unread']);
+            $data = @json_decode($row['datas'], true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue;
+            }
+
+            $content = $this->pool_classes[$type]->datas($data, $row['unread']);
 
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
@@ -241,7 +224,13 @@ class eventsmanager_broker
             if ( ! isset($this->pool_classes[$type])) {
                 continue;
             }
-            $datas = $this->pool_classes[$type]->datas($row['datas'], $row['unread']);
+            $data = @json_decode($row['datas'], true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue;
+            }
+
+            $datas = $this->pool_classes[$type]->datas($data, $row['unread']);
 
             if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
@@ -282,12 +271,12 @@ class eventsmanager_broker
         return $this;
     }
 
-    public function list_notifications_available($usr_id)
+    public function list_notifications_available(User $user)
     {
         $personnal_notifications = [];
 
         foreach ($this->notifications as $notification) {
-            if (!$this->pool_classes[$notification]->is_available($usr_id)) {
+            if (!$this->pool_classes[$notification]->is_available($user)) {
                 continue;
             }
             $group = $this->pool_classes[$notification]->get_group();

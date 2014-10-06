@@ -116,7 +116,7 @@ class record_exportElement extends record_adapter
             $go_dl['preview'] = true;
         }
 
-        $query = new User_Query($this->app);
+        $query = $this->app['phraseanet.user-query'];
 
         $masters = $query->on_base_ids([$this->base_id])
                 ->who_have_right(['order_master'])
