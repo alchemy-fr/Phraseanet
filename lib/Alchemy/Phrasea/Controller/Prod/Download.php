@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\ExportEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,16 +65,8 @@ class Download implements ControllerProviderInterface
         );
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
-
         $token = $app['manipulator.token']->createDownloadToken($app['authentication']->getUser(), serialize($list));
-
-        $app['events-manager']->trigger('__DOWNLOAD__', [
-            'lst'         => $lst,
-            'downloader'  => $app['authentication']->getUser()->getId(),
-            'subdefs'     => $subdefs,
-            'from_basket' => $ssttid,
-            'export_file' => $download->getExportName()
-        ]);
+        $app['dispatcher']->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent($app['authentication']->getUser(), $ssttid, $lst, $subdefs, $download->getExportName()));
 
         return $app->redirectPath('prepare_download', ['token' => $token->getValue()]);
     }

@@ -221,6 +221,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'thumbtitle' => false,
             'tag' => 'XMP:XMP',
             'business' => false,
+            'aggregable' => false,
             'indexable' => true,
             'required' => true,
             'labels' => [

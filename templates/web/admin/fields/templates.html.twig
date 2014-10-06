@@ -177,6 +177,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="2">
+                        <label for="aggregable" class="checkbox">
+                            <input id="aggregable" type="checkbox" <%= field.aggregable ? "checked='checked'" : "" %> />
+                                {% trans %}Aggregable fields{% endtrans %}
+                            </label>
+                    </td>
+                </tr>
+                <tr>
                     <td><label for="separator">{% trans %}Separator{% endtrans %}</label></td>
                     <td><input id="separator" type="text" value="<%= field.separator %>" /></td>
                 </tr>

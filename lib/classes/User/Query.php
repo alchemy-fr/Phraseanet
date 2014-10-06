@@ -12,147 +12,12 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
+use Alchemy\Phrasea\Utilities\Countries;
 
 class User_Query implements User_QueryInterface
 {
-    /**
-     *
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     *
-     * @var Array
-     */
-    protected $results = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected $sort = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected $like_field = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected $have_rights;
-
-    /**
-     *
-     * @var Array
-     */
-    protected $have_not_rights;
-
-    /**
-     *
-     * @var string
-     */
-    protected $like_match = 'OR';
-
-    /**
-     *
-     * @var string
-     */
-    protected $get_inactives = '';
-
-    /**
-     *
-     * @var int
-     */
-    protected $total = 0;
-
-    /**
-     *
-     * @var Array
-     */
-    protected $active_bases = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected $active_sbas = [];
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $bases_restrictions = false;
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $sbas_restrictions = false;
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $include_templates = false;
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $only_templates = false;
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $email_not_null = false;
-
-    /**
-     *
-     * @var Array
-     */
-    protected $base_ids = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected $sbas_ids = [];
-
-    /**
-     *
-     * @var int
-     */
-    protected $page;
-
-    /**
-     *
-     * @var int
-     */
-    protected $offset_start;
-    protected $last_model;
-
-    /**
-     *
-     * @var int
-     */
-    protected $results_quantity;
-    protected $include_phantoms = true;
-    protected $include_special_users = false;
-    protected $include_invite = false;
-    protected $activities;
-    protected $templates;
-    protected $companies;
-    protected $countries;
-    protected $positions;
-    protected $in_ids;
-
-    const ORD_ASC = 'asc';
-    const ORD_DESC = 'desc';
+    const ORD_ASC = 'ASC';
+    const ORD_DESC = 'DESC';
     const SORT_FIRSTNAME = 'first_name';
     const SORT_LASTNAME = 'last_name';
     const SORT_COMPANY = 'company';
@@ -172,28 +37,49 @@ class User_Query implements User_QueryInterface
     const LIKE_MATCH_AND = 'AND';
     const LIKE_MATCH_OR = 'OR';
 
-    /**
-     *
-     * @return User_Query
-     */
+    protected $app;
+    protected $results = [];
+    protected $sort = [];
+    protected $like_field = [];
+    protected $have_rights = null;
+    protected $have_not_rights = null;
+    protected $like_match = 'OR';
+    protected $get_inactives = '';
+    protected $total = 0;
+    protected $active_bases = [];
+    protected $active_sbas = [];
+    protected $bases_restrictions = false;
+    protected $sbas_restrictions = false;
+    protected $include_templates = false;
+    protected $only_templates = false;
+    protected $email_not_null = false;
+    protected $base_ids = [];
+    protected $sbas_ids = [];
+    protected $page = null;
+    protected $offset_start = null;
+    protected $last_model = null;
+    protected $results_quantity = null;
+    protected $include_phantoms = true;
+    protected $include_special_users = false;
+    protected $include_invite = false;
+    protected $activities = null;
+    protected $templates = null;
+    protected $companies = null;
+    protected $countries = null;
+    protected $positions = null;
+    protected $in_ids = null;
+    protected $sql_params = null;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
-
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-            $this->active_sbas[] = $databox->get_sbas_id();
-            foreach ($databox->get_collections() as $collection) {
-                $this->active_bases[] = $collection->get_base_id();
-            }
-        }
-
-        return $this;
+        $this->setActiveBases();
     }
-    protected $sql_params;
 
     /**
+     * Return query results
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return array
      */
     public function get_results()
     {
@@ -201,21 +87,720 @@ class User_Query implements User_QueryInterface
     }
 
     /**
+     * Restrict users to the provided ones
      *
-     * @return string
+     * @param array $usr_ids
+     *
+     * @return $this
      */
+    public function in(array $usr_ids)
+    {
+        $this->in_ids = array_unique(array_filter(array_map('intval', $usr_ids)));
+
+        return $this;
+    }
+
+    /**
+     * Restrict user with the provided last model
+     * 
+     * @param User|string|null $login
+     *
+     * @return $this
+     */
+    public function last_model_is($login = null)
+    {
+        $this->last_model = $login instanceof User ? $login->getLogin() : $login;
+
+        return $this;
+    }
+
+    /**
+     * Include users with no rights in any base
+     *
+     * @param bool $boolean
+     *
+     * @return $this
+     */
+    public function include_phantoms($boolean = true)
+    {
+        $this->include_phantoms = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Include user such as 'guest' and 'autoregister'
+     *
+     * @param bool $boolean
+     *
+     * @return $this
+     */
+    public function include_special_users($boolean = false)
+    {
+        $this->include_special_users = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Include guest user
+     *
+     * @param bool $boolean
+     *
+     * @return $this
+     */
+    public function include_invite($boolean = false)
+    {
+        $this->include_invite = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Include user with provided rights
+     *
+     * @param array $rights
+     *
+     * @return $this
+     */
+    public function who_have_right(array $rights)
+    {
+        $this->have_rights = $rights;
+
+        return $this;
+    }
+
+    /**
+     * Include users who are in reality templates
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function include_templates($boolean)
+    {
+        $this->include_templates = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict to templates
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function only_templates($boolean)
+    {
+        $this->only_templates = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict to user with an email
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function email_not_null($boolean)
+    {
+        $this->email_not_null = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict to users who have provided rights
+     *
+     * @param array $rights
+     *
+     * @return $this
+     */
+    public function who_have_not_right(array $rights)
+    {
+        $this->have_not_rights = $rights;
+
+        return $this;
+    }
+
+    /**
+     * Execute query
+     *
+     * @return $this
+     */
+    public function execute()
+    {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $sql = 'SELECT DISTINCT Users.id ' . $this->generate_sql_constraints();
+
+        if ('' !== $sorter = $this->generate_sort_constraint()) {
+            $sql .= ' ORDER BY ' . $sorter;
+        }
+
+        if (is_int($this->offset_start) && is_int($this->results_quantity)) {
+            $sql .= sprintf(
+                ' LIMIT %d, %d'
+                , $this->offset_start
+                , $this->results_quantity
+            );
+        }
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $users = new ArrayCollection();
+
+        foreach ($rs as $row) {
+            $users[] = $this->app['repo.users']->find($row['id']);
+        }
+
+        $this->results = $users;
+
+        return $this;
+    }
+
+    /**
+     * Get total of fetched users
+     *
+     * @return int
+     */
+    public function get_total()
+    {
+        if ($this->total) {
+            return $this->total;
+        }
+
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql_count = 'SELECT COUNT(DISTINCT Users.id) as total ' . $this->generate_sql_constraints();
+
+        $stmt = $conn->prepare($sql_count);
+        $stmt->execute($this->sql_params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $this->total = $row['total'];
+
+        $this->page = 1;
+        if ($this->total > 0 && is_int($this->offset_start) && is_int($this->results_quantity)) {
+            $this->page = floor($this->offset_start / $this->results_quantity) + 1;
+            $this->total_page = floor($this->total / $this->results_quantity) + 1;
+        }
+
+        return $this->total;
+    }
+
+    /**
+     * Get current page
+     *
+     * @return null|int
+     */
+    public function get_page()
+    {
+        $this->get_total();
+
+        return $this->page;
+    }
+
+    /**
+     * Get total page
+     *
+     * @return null|int
+     */
+    public function get_total_page()
+    {
+        $this->get_total();
+
+        return $this->total_page;
+    }
+
+    /**
+     * Restrict users on collection with provided rights
+     *
+     * @param ACL   $ACL
+     * @param array $rights
+     *
+     * @return $this
+     */
+    public function on_bases_where_i_am(ACL $ACL, Array $rights)
+    {
+        $this->bases_restrictions = true;
+        $collections = array_keys($ACL->get_granted_base($rights));
+
+        if (count($this->base_ids) > 0) {
+            $this->base_ids = array_intersect($this->base_ids, $collections);
+        } else {
+            $this->base_ids = $collections;
+        }
+
+        $this->total = $this->page = $this->total_page = null;
+
+        return $this;
+    }
+
+    /**
+     * Restrict users on database with provided rights
+     *
+     * @param ACL   $ACL
+     * @param array $rights
+     *
+     * @return $this
+     */
+    public function on_sbas_where_i_am(ACL $ACL, Array $rights)
+    {
+        $this->sbas_restrictions = true;
+        $databoxes = array_keys($ACL->get_granted_sbas($rights));
+
+        if (count($this->sbas_ids) > 0)
+            $this->sbas_ids = array_intersect($this->sbas_ids, $databoxes);
+        else
+            $this->sbas_ids = $databoxes;
+
+        $this->total = $this->page = $this->total_page = null;
+
+        return $this;
+    }
+
+    /**
+     * Restrict to provided limits
+     *
+     * @param $offset_start
+     * @param $results_quantity
+     *
+     * @return $this
+     */
+    public function limit($offset_start, $results_quantity)
+    {
+        $this->offset_start = (int) $offset_start;
+        $this->results_quantity = (int) $results_quantity;
+
+        return $this;
+    }
+
+    /**
+     * Restrict on provided field with provided value
+     *
+     * @param $like_field
+     * @param $like_value
+     *
+     * @return $this
+     */
+    public function like($like_field, $like_value)
+    {
+        $this->like_field[trim($like_field)] = trim($like_value);
+        $this->total = $this->page = $this->total_page = null;
+
+        return $this;
+    }
+
+    /**
+     * Restrict on match
+     *
+     * @param $like_match
+     *
+     * @return $this
+     */
+    public function like_match($like_match)
+    {
+        switch ($like_match) {
+            case self::LIKE_MATCH_AND:
+            case self::LIKE_MATCH_OR:
+                $this->like_match = $like_match;
+                break;
+            default:
+                break;
+        }
+        $this->total = $this->page = $this->total_page = null;
+
+        return $this;
+    }
+
+    /**
+     * Restrict on collections
+     *
+     * @param array $base_ids
+     *
+     * @return $this
+     */
+    public function on_base_ids(array $base_ids = null)
+    {
+        if (! $base_ids) {
+            return $this;
+        }
+
+        $this->bases_restrictions = true;
+
+        $this->include_phantoms(false);
+
+        if (count($this->base_ids) > 0) {
+            $this->base_ids = array_intersect($this->base_ids, $base_ids);
+        } else {
+            $this->base_ids = $base_ids;
+        }
+
+        $this->total = $this->page = $this->total_page = null;
+
+        return $this;
+    }
+
+    /**
+     * Restrict on databoxes
+     *
+     * @param array $sbas_ids
+     *
+     * @return $this
+     */
+    public function on_sbas_ids(Array $sbas_ids = null)
+    {
+        if (! $sbas_ids) {
+            return $this;
+        }
+
+        $this->sbas_restrictions = true;
+
+        $this->include_phantoms(false);
+
+        if (count($this->sbas_ids) > 0) {
+            $this->sbas_ids = array_intersect($this->sbas_ids, $sbas_ids);
+        } else {
+            $this->sbas_ids = $sbas_ids;
+        }
+
+        $this->total = $this->page = $this->total_page = null;
+
+        return $this;
+    }
+
+    /**
+     * Sort by
+     *
+     * @param        $sort
+     * @param string $ord
+     *
+     * @return $this
+     */
+    public function sort_by($sort, $ord = self::ORD_ASC)
+    {
+        $this->sort[$sort] = $ord;
+
+        return $this;
+    }
+
+    /**
+     * Restrict users with provided activities
+     *
+     * @param array $req_activities
+     *
+     * @return $this
+     */
+    public function haveActivities(array $req_activities)
+    {
+        $activities = new ArrayCollection();
+
+        foreach ($req_activities as $activity) {
+            if ($activity = trim($activity) === '') {
+                continue;
+            }
+
+            if ($activities->contains($activity)) {
+                continue;
+            }
+
+            $activities->add($activity);
+        }
+
+        if (!$activities->isEmpty()) {
+            $this->activities = $activities;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict users with provided jobs
+     *
+     * @param array $req_positions
+     *
+     * @return $this
+     */
+    public function havePositions(array $req_positions)
+    {
+        $positions = new ArrayCollection();
+
+        foreach ($req_positions as $position) {
+            if ($position = trim($position) === '') {
+                continue;
+            }
+            if ($positions->contains($position)) {
+                continue;
+            }
+
+            $positions->add($position);
+        }
+
+        if (!$positions->isEmpty()) {
+            $this->positions = $positions;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict users by countries
+     *
+     * @param array $req_countries
+     *
+     * @return $this
+     */
+    public function inCountries(array $req_countries)
+    {
+        $countries = new ArrayCollection();
+
+        foreach ($req_countries as $country) {
+            if ($country = trim($country) === '') {
+                continue;
+            }
+            if ($countries->contains($country)) {
+                continue;
+            }
+
+            $countries->add($country);
+        }
+
+        if (!$countries->isEmpty()) {
+            $this->countries = $countries;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict users by companies
+     *
+     * @param array $req_companies
+     *
+     * @return $this
+     */
+    public function inCompanies(array $req_companies)
+    {
+        $companies = new ArrayCollection();
+
+        foreach ($req_companies as $company) {
+            if ($company = trim($company) === '') {
+                continue;
+            }
+            if ($companies->contains($company)) {
+                continue;
+            }
+            $companies->add($company);
+        }
+
+        if (!$companies->isEmpty()) {
+            $this->companies = $companies;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict users with given templates
+     *
+     * @param array $req_templates
+     *
+     * @return $this
+     */
+    public function haveTemplate(array $req_templates)
+    {
+        $templates = new ArrayCollection();
+
+        foreach ($req_templates as $template) {
+            if ($template = trim($template) === '') {
+                continue;
+            }
+            if ($templates->contains($template)) {
+                continue;
+            }
+            $templates->add($template);
+        }
+
+        if (!$templates->isEmpty()) {
+            $this->templates = $templates;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve inactive use
+     * (inactive users do not have the "access" right)
+     *
+     * @param bool $boolean
+     *
+     * @return $this
+     */
+    public function get_inactives($boolean = true)
+    {
+        $this->get_inactives = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Get users activities
+     *
+     * @return array
+     */
+    public function getRelatedActivities()
+    {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SELECT DISTINCT Users.activity ' . $this->generate_sql_constraints(). ' ORDER BY Users.activity';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $activities = [];
+        foreach ($rs as $row) {
+            if (trim($row['activity']) === '') {
+                continue;
+            }
+            $activities[] = $row['activite'];
+        }
+
+        return $activities;
+    }
+
+    /**
+     * Get users jobs
+     *
+     * @return array
+     */
+    public function getRelatedPositions()
+    {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SELECT DISTINCT Users.job ' . $this->generate_sql_constraints() . ' ORDER BY Users.job';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $jobs = [];
+        foreach ($rs as $row) {
+            if (trim($row['job']) === '') {
+                continue;
+            }
+            $jobs[] = $row['job'];
+        }
+
+        return $jobs;
+    }
+
+    /**
+     * Get user countries
+     *
+     * @return array
+     */
+    public function getRelatedCountries()
+    {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SELECT DISTINCT Users.country ' . $this->generate_sql_constraints() . ' ORDER BY Users.country';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $countries = [];
+        $listCountry = Countries::getCountries($this->app['locale']);
+        foreach ($rs as $row) {
+            if (trim($row['country']) === '') {
+                continue;
+            }
+
+            if (isset($listCountry[$row['country']])) {
+                $countries[$row['country']] = $listCountry[$row['country']];
+            }
+        }
+
+        return $countries;
+    }
+
+    /**
+     * Get users companies
+     *
+     * @return array
+     */
+    public function getRelatedCompanies()
+    {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SELECT DISTINCT Users.company ' . $this->generate_sql_constraints() . ' ORDER BY Users.company';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $companies = [];
+        foreach ($rs as $row) {
+            if (trim($row['company']) === '') {
+                continue;
+            }
+            $companies[] = $row['company'];
+        }
+
+        return $companies;
+    }
+
+    /**
+     * Get users templates
+     *
+     * @return array
+     */
+    public function getRelatedTemplates()
+    {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SELECT DISTINCT Users.last_model ' . $this->generate_sql_constraints() . ' ORDER BY Users.last_model';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $lastModel = [];
+        foreach ($rs as $row) {
+            if (trim($row['last_model']) === '') {
+                continue;
+            }
+
+            $lastModel[] = $row['last_model'];
+        }
+
+        return $lastModel;
+    }
+
     protected function generate_sql_constraints()
     {
         $this->sql_params = [];
 
         $sql = '
-      FROM Users LEFT JOIN basusr ON (Users.id = basusr.usr_id)
-       LEFT JOIN sbasusr ON (Users.id = sbasusr.usr_id)
-      WHERE 1 ';
+                FROM Users LEFT JOIN basusr ON (Users.id = basusr.usr_id)
+                LEFT JOIN sbasusr ON (Users.id = sbasusr.usr_id)
+                WHERE 1 ';
 
         if (! $this->include_special_users) {
-            $sql .= ' AND Users.login != "autoregister"
-              AND Users.login != "invite" ';
+            $sql .= ' AND Users.login != "autoregister" AND Users.login != "invite" ';
         }
 
         $sql .= ' AND Users.deleted="0" ';
@@ -262,27 +847,25 @@ class User_Query implements User_QueryInterface
         }
 
         if (count($this->base_ids) == 0) {
-            if ($this->bases_restrictions)
+            if ($this->bases_restrictions) {
                 throw new Exception('No base available for you, not enough rights');
+            }
         } else {
             $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
 
             $not_base_id = array_diff($this->active_bases, $this->base_ids);
 
             if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
-                $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')'
-                    , implode(' AND base_id != ', $not_base_id)
-                );
+                $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
             } else {
-                $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') '
-                    , implode(' OR base_id = ', $this->base_ids)
-                );
+                $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
             }
         }
 
         if (count($this->sbas_ids) == 0) {
-            if ($this->sbas_restrictions)
+            if ($this->sbas_restrictions) {
                 throw new Exception('No base available for you, not enough rights');
+            }
         } else {
             $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
 
@@ -324,14 +907,13 @@ class User_Query implements User_QueryInterface
         foreach ($this->like_field as $like_field => $like_value) {
             switch ($like_field) {
                 case self::LIKE_NAME:
-                    $qrys = [];
+                    $queries = [];
                     foreach (explode(' ', $like_value) as $like_val) {
                         if (trim($like_val) === '')
                             continue;
 
-                        $qrys[] = sprintf(
-                            ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci
-                OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
+                        $queries[] = sprintf(
+                            ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
                             , self::LIKE_FIRSTNAME
                             , str_replace(['"', '%'], ['\"', '\%'], $like_val)
                             , self::LIKE_LASTNAME
@@ -339,9 +921,9 @@ class User_Query implements User_QueryInterface
                         );
                     }
 
-                    if (count($qrys) > 0)
-                        $sql_like[] = ' (' . implode(' AND ', $qrys) . ') ';
-
+                    if (count($queries) > 0) {
+                        $sql_like[] = ' (' . implode(' AND ', $queries) . ') ';
+                    }
                     break;
                 case self::LIKE_FIRSTNAME:
                 case self::LIKE_LASTNAME:
@@ -360,8 +942,9 @@ class User_Query implements User_QueryInterface
             }
         }
 
-        if (count($sql_like) > 0)
+        if (count($sql_like) > 0) {
             $sql .= sprintf(' AND (%s) ', implode($this->like_match, $sql_like));
+        }
 
         return $sql;
     }
@@ -374,621 +957,11 @@ class User_Query implements User_QueryInterface
         foreach ($fields as $field) {
             $constraints[':' . $fieldName . $n ++] = $field;
         }
-        $sql = ' AND (' . $fieldName . ' = '
-            . implode(' OR ' . $fieldName . ' = ', array_keys($constraints)) . ') ';
+        $sql = ' AND (' . $fieldName . ' = ' . implode(' OR ' . $fieldName . ' = ', array_keys($constraints)) . ') ';
 
         $this->sql_params = array_merge($this->sql_params, $constraints);
 
         return $sql;
-    }
-
-    public function in(array $usr_ids)
-    {
-        $tmp_usr_ids = [];
-
-        foreach ($usr_ids as $usr_id) {
-            $tmp_usr_ids[] = (int) $usr_id;
-        }
-
-        $this->in_ids = array_unique($tmp_usr_ids);
-
-        return $this;
-    }
-
-    public function last_model_is($login = null)
-    {
-        $this->last_model = $login instanceof User ? $login->getLogin() : $login;
-
-        return $this;
-    }
-
-    public function include_phantoms($boolean = true)
-    {
-        $this->include_phantoms = ! ! $boolean;
-
-        return $this;
-    }
-
-    public function include_special_users($boolean = false)
-    {
-        $this->include_special_users = ! ! $boolean;
-
-        return $this;
-    }
-
-    public function include_invite($boolean = false)
-    {
-        $this->include_invite = ! ! $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  array      $rights
-     * @return User_Query
-     */
-    public function who_have_right(Array $rights)
-    {
-        $this->have_rights = $rights;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  boolean    $boolean
-     * @return User_Query
-     */
-    public function include_templates($boolean)
-    {
-        $this->include_templates = ! ! $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  boolean    $boolean
-     * @return User_Query
-     */
-    public function only_templates($boolean)
-    {
-        $this->only_templates = ! ! $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  boolean    $boolean
-     * @return User_Query
-     */
-    public function email_not_null($boolean)
-    {
-        $this->email_not_null = ! ! $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  array      $rights
-     * @return User_Query
-     */
-    public function who_have_not_right(Array $rights)
-    {
-        $this->have_not_rights = $rights;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @return User_Query
-     */
-    public function execute()
-    {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT DISTINCT Users.id ' . $this->generate_sql_constraints();
-
-        if ('' !== $sorter = $this->generate_sort_constraint()) {
-            $sql .= ' ORDER BY ' . $sorter;
-        }
-
-        if (is_int($this->offset_start) && is_int($this->results_quantity)) {
-            $sql .= sprintf(
-                ' LIMIT %d, %d'
-                , $this->offset_start
-                , $this->results_quantity
-            );
-        }
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $users = new ArrayCollection();
-
-        foreach ($rs as $row) {
-            $users[] = $this->app['repo.users']->find($row['id']);
-        }
-
-        $this->results = $users;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function get_total()
-    {
-        if ($this->total) {
-            return $this->total;
-        }
-
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql_count = 'SELECT COUNT(DISTINCT Users.id) as total '
-            . $this->generate_sql_constraints();
-
-        $stmt = $conn->prepare($sql_count);
-        $stmt->execute($this->sql_params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $this->total = $row['total'];
-
-        $this->page = 1;
-        if ($this->total > 0 && is_int($this->offset_start) && is_int($this->results_quantity)) {
-            $this->page = floor($this->offset_start / $this->results_quantity) + 1;
-            $this->total_page = floor($this->total / $this->results_quantity) + 1;
-        }
-
-        return $this->total;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function get_page()
-    {
-        $this->get_total();
-
-        return $this->page;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function get_total_page()
-    {
-        $this->get_total();
-
-        return $this->total_page;
-    }
-
-    /**
-     *
-     * @param  ACL        $ACL    User's ACLs
-     * @param  array      $rights An array of base rights you need
-     * @return User_Query
-     */
-    public function on_bases_where_i_am(ACL $ACL, Array $rights)
-    {
-        $this->bases_restrictions = true;
-        $baslist = array_keys($ACL->get_granted_base($rights));
-
-        if (count($this->base_ids) > 0)
-            $this->base_ids = array_intersect($this->base_ids, $baslist);
-        else
-            $this->base_ids = $baslist;
-
-        $this->total = $this->page = $this->total_page = null;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  ACL        $ACL
-     * @param  array      $rights An array of sbas rights you need
-     * @return User_Query
-     */
-    public function on_sbas_where_i_am(ACL $ACL, Array $rights)
-    {
-        $this->sbas_restrictions = true;
-        $sbaslist = array_keys($ACL->get_granted_sbas($rights));
-
-        if (count($this->sbas_ids) > 0)
-            $this->sbas_ids = array_intersect($this->sbas_ids, $sbaslist);
-        else
-            $this->sbas_ids = $sbaslist;
-
-        $this->total = $this->page = $this->total_page = null;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  int        $offset_start
-     * @param  int        $results_quantity
-     * @return User_Query
-     */
-    public function limit($offset_start, $results_quantity)
-    {
-        $this->offset_start = (int) $offset_start;
-        $this->results_quantity = (int) $results_quantity;
-
-        return $this;
-    }
-
-    /**
-     * Query width a like field
-     * like fields are defined as constants of the object
-     *
-     * @param  const      $like_field
-     * @param  string     $like_value
-     * @return User_Query
-     */
-    public function like($like_field, $like_value)
-    {
-        $this->like_field[trim($like_field)] = trim($like_value);
-        $this->total = $this->page = $this->total_page = null;
-
-        return $this;
-    }
-
-    /**
-     * Choose whether multiple like will be treated as AND or OR
-     *
-     * @param  type       $like_match
-     * @return User_Query
-     */
-    public function like_match($like_match)
-    {
-        switch ($like_match) {
-            case self::LIKE_MATCH_AND:
-            case self::LIKE_MATCH_OR:
-                $this->like_match = $like_match;
-                break;
-            default:
-                break;
-        }
-        $this->total = $this->page = $this->total_page = null;
-
-        return $this;
-    }
-
-    /**
-     * Restrict User search on base_ids
-     *
-     * @param  array      $base_ids
-     * @return User_Query
-     */
-    public function on_base_ids(Array $base_ids = null)
-    {
-        if (! $base_ids) {
-            return $this;
-        }
-
-        $this->bases_restrictions = true;
-
-        $this->include_phantoms(false);
-
-        if (count($this->base_ids) > 0)
-            $this->base_ids = array_intersect($this->base_ids, $base_ids);
-        else
-            $this->base_ids = $base_ids;
-
-        $this->total = $this->page = $this->total_page = null;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  array      $sbas_ids
-     * @return User_Query
-     */
-    public function on_sbas_ids(Array $sbas_ids = null)
-    {
-        if (! $sbas_ids) {
-            return $this;
-        }
-
-        $this->sbas_restrictions = true;
-
-        $this->include_phantoms(false);
-
-        if (count($this->sbas_ids) > 0)
-            $this->sbas_ids = array_intersect($this->sbas_ids, $sbas_ids);
-        else
-            $this->sbas_ids = $sbas_ids;
-
-        $this->total = $this->page = $this->total_page = null;
-
-        return $this;
-    }
-
-    /**
-     * Sort results. Sort field and sort order are defined as constants
-     * of this object
-     *
-     * @param  const      $sort
-     * @param  const      $ord
-     * @return User_Query
-     */
-    public function sort_by($sort, $ord = 'asc')
-    {
-        $this->sort[$sort] = $ord;
-
-        return $this;
-    }
-
-    public function haveActivities(array $req_activities)
-    {
-        $Activities = new \Doctrine\Common\Collections\ArrayCollection();
-
-        foreach ($req_activities as $activity) {
-            $activity = trim($activity);
-
-            if ($activity === '')
-                continue;
-
-            if ($Activities->contains($activity))
-                continue;
-
-            $Activities->add($activity);
-        }
-
-        if ( ! $Activities->isEmpty()) {
-            $this->activities = $Activities;
-        }
-
-        return $this;
-    }
-
-    public function havePositions(array $req_positions)
-    {
-        $Positions = new \Doctrine\Common\Collections\ArrayCollection();
-
-        foreach ($req_positions as $Position) {
-            $Position = trim($Position);
-
-            if ($Position === '')
-                continue;
-
-            if ($Positions->contains($Position))
-                continue;
-
-            $Positions->add($Position);
-        }
-
-        if ( ! $Positions->isEmpty()) {
-            $this->positions = $Positions;
-        }
-
-        return $this;
-    }
-
-    public function inCountries(array $req_countries)
-    {
-        $Countries = new \Doctrine\Common\Collections\ArrayCollection();
-
-        foreach ($req_countries as $Country) {
-            $Country = trim($Country);
-
-            if ($Country === '')
-                continue;
-
-            if ($Countries->contains($Country))
-                continue;
-
-            $Countries->add($Country);
-        }
-
-        if ( ! $Countries->isEmpty()) {
-            $this->countries = $Countries;
-        }
-
-        return $this;
-    }
-
-    public function inCompanies(array $req_companies)
-    {
-        $Companies = new \Doctrine\Common\Collections\ArrayCollection();
-
-        foreach ($req_companies as $Company) {
-            $Company = trim($Company);
-
-            if ($Company === '')
-                continue;
-
-            if ($Companies->contains($Company))
-                continue;
-
-            $Companies->add($Company);
-        }
-
-        if ( ! $Companies->isEmpty()) {
-            $this->companies = $Companies;
-        }
-
-        return $this;
-    }
-
-    public function haveTemplate(array $req_templates)
-    {
-        $Templates = new \Doctrine\Common\Collections\ArrayCollection();
-
-        foreach ($req_templates as $Template) {
-            $Template = trim($Template);
-
-            if ($Template === '')
-                continue;
-
-            if ($Templates->contains($Template))
-                continue;
-
-            $Templates->add($Template);
-        }
-
-        if ( ! $Templates->isEmpty()) {
-            $this->templates = $Templates;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Wheter or not retrieve inactive users
-     * (inactive users do not have the "access" right)
-     *
-     * @param  boolean    $boolean
-     * @return User_Query
-     */
-    public function get_inactives($boolean = true)
-    {
-        $this->get_inactives = ! ! $boolean;
-
-        return $this;
-    }
-
-    public function getRelatedActivities()
-    {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SELECT DISTINCT Users.activity ' . $this->generate_sql_constraints();
-
-        $sql .= ' ORDER BY Users.activity';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $activities = [];
-
-        foreach ($rs as $row) {
-            if (trim($row['activity']) === '')
-                continue;
-
-            $activities[] = $row['activite'];
-        }
-
-        return $activities;
-    }
-
-    public function getRelatedPositions()
-    {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SELECT DISTINCT Users.job ' . $this->generate_sql_constraints();
-
-        $sql .= ' ORDER BY Users.job';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $fonction = [];
-
-        foreach ($rs as $row) {
-            if (trim($row['job']) === '')
-                continue;
-
-            $fonction[] = $row['job'];
-        }
-
-        return $fonction;
-    }
-
-    public function getRelatedCountries()
-    {
-        require_once __DIR__ . '/../../classes/deprecated/countries.php';
-
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SELECT DISTINCT Users.country ' . $this->generate_sql_constraints();
-
-        $sql .= ' ORDER BY Users.country';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $pays = [];
-
-        $ctry = \getCountries($this->app['locale']);
-
-        foreach ($rs as $row) {
-            if (trim($row['country']) === '')
-                continue;
-
-            if (isset($ctry[$row['country']]))
-                $pays[$row['country']] = $ctry[$row['country']];
-        }
-
-        return $pays;
-    }
-
-    public function getRelatedCompanies()
-    {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SELECT DISTINCT Users.company ' . $this->generate_sql_constraints();
-
-        $sql .= ' ORDER BY Users.company';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $societe = [];
-
-        foreach ($rs as $row) {
-            if (trim($row['company']) === '')
-                continue;
-
-            $societe[] = $row['company'];
-        }
-
-        return $societe;
-    }
-
-    public function getRelatedTemplates()
-    {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SELECT DISTINCT Users.last_model ' . $this->generate_sql_constraints();
-
-        $sql .= ' ORDER BY Users.last_model';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $lastModel = [];
-
-        foreach ($rs as $row) {
-            if (trim($row['last_model']) === '')
-                continue;
-
-            $lastModel[] = $row['last_model'];
-        }
-
-        return $lastModel;
     }
 
     private function generate_sort_constraint()
@@ -996,7 +969,6 @@ class User_Query implements User_QueryInterface
         $sorter = [];
 
         foreach ($this->sort as $sort => $ord) {
-
             $k = count($sorter);
 
             switch ($sort) {
@@ -1017,7 +989,7 @@ class User_Query implements User_QueryInterface
                     break;
             }
 
-            if ( ! isset($sorter[$k]))
+            if (!isset($sorter[$k]))
                 continue;
 
             switch ($ord) {
@@ -1032,5 +1004,15 @@ class User_Query implements User_QueryInterface
         }
 
         return implode(', ', $sorter);
+    }
+
+    private function setActiveBases()
+    {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+            $this->active_sbas[] = $databox->get_sbas_id();
+            foreach ($databox->get_collections() as $collection) {
+                $this->active_bases[] = $collection->get_base_id();
+            }
+        }
     }
 }

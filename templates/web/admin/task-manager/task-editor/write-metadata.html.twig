@@ -9,6 +9,14 @@
         </label>
     </div>
 </div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="mwg">
+            {{ 'task::writemeta:Compatibilité MWG' | trans }}
+        </label>
+    </div>
+</div>
 {% endblock %}
 
 
@@ -22,6 +30,7 @@
             with(document.forms['graphicForm'])
             {
                 cleardoc.checked = Number(xml.find("cleardoc").text()) > 0;
+                mwg.checked = Number(xml.find("mwg").text()) > 0;
             }
         }
     }

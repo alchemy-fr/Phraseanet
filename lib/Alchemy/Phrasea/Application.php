@@ -69,11 +69,19 @@ use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
+use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
+use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
-use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
 use Alchemy\Phrasea\Core\Provider\APIServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
@@ -479,6 +487,14 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
                 $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
+                $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
+                $dispatcher->addSubscriber(new RegistrationSubscriber($app));
+                $dispatcher->addSubscriber(new BridgeSubscriber($app));
+                $dispatcher->addSubscriber(new ExportSubscriber($app));
+                $dispatcher->addSubscriber(new OrderSubscriber($app));
+                $dispatcher->addSubscriber(new BasketSubscriber($app));
+                $dispatcher->addSubscriber(new LazaretSubscriber($app));
+                $dispatcher->addSubscriber(new ValidationSubscriber($app));
 
                 return $dispatcher;
             })

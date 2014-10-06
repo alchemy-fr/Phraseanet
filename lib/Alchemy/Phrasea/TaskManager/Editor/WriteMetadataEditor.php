@@ -40,6 +40,7 @@ class WriteMetadataEditor extends AbstractEditor
 <?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
     <cleardoc>0</cleardoc>
+    <mwg>0</mwg>
 </tasksettings>
 EOF;
     }
@@ -51,6 +52,7 @@ EOF;
     {
         return [
             'cleardoc' => static::FORM_TYPE_BOOLEAN,
+            'mwg' => static::FORM_TYPE_BOOLEAN,
         ];
     }
 }

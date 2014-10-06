@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
+use Alchemy\Phrasea\Core\Event\OrderEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -98,8 +101,6 @@ class Order implements ControllerProviderInterface
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));
             foreach ($records as $key => $record) {
-                $query = new \User_Query($app);
-
                 if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
                     if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
                         $records->remove($key);
@@ -107,7 +108,7 @@ class Order implements ControllerProviderInterface
                 }
 
                 if (!isset($hasOneAdmin[$record->get_base_id()])) {
-                    $query = new \User_Query($app);
+                    $query = $app['phraseanet.user-query'];
                     $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids([$record->get_base_id()])
                         ->who_have_right(['order_master'])
                         ->execute()->get_results());
@@ -139,28 +140,18 @@ class Order implements ControllerProviderInterface
 
             if ($noAdmins) {
                 $msg = $app->trans('There is no one to validate orders, please contact an administrator');
-            }
-
-            $order->setTodo($order->getElements()->count());
-
-            try {
-                $app['events-manager']->trigger('__NEW_ORDER__', [
-                    'order_id' => $order->getId(),
-                    'usr_id'   => $order->getUser()->getId()
-                ]);
-
-                $success = true;
-
-                $app['EM']->persist($order);
-                $app['EM']->flush();
-            } catch (\Exception $e) {
-
-            }
-
-            if ($success) {
-                $msg = $app->trans('The records have been properly ordered');
             } else {
-                $msg = $app->trans('An error occured');
+                $order->setTodo($order->getElements()->count());
+
+                try {
+                    $app['dispatcher']->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+                    $app['EM']->persist($order);
+                    $app['EM']->flush();
+                    $msg = $app->trans('The records have been properly ordered');
+                    $success = true;
+                } catch (\Exception $e) {
+                    $msg = $app->trans('An error occured');
+                }
             }
         } else {
             $msg = $app->trans('There is no record eligible for an order');
@@ -280,13 +271,7 @@ class Order implements ControllerProviderInterface
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-
-                $app['events-manager']->trigger('__ORDER_DELIVER__', [
-                    'ssel_id' => $order->getBasket()->getId(),
-                    'from'    => $app['authentication']->getUser()->getId(),
-                    'to'      => $order->getUser()->getId(),
-                    'n'       => $n
-                ]);
+                $app['dispatcher']->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $app['authentication']->getUser(), $n));
             }
             $success = true;
 
@@ -343,12 +328,7 @@ class Order implements ControllerProviderInterface
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-
-                $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', [
-                    'from' => $app['authentication']->getUser()->getId(),
-                    'to'   => $order->getUser()->getId(),
-                    'n'    => $n
-                ]);
+                $app['dispatcher']->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($order, $app['authentication']->getUser(), $n));
             }
             $success = true;
 

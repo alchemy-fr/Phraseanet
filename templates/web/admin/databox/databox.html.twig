@@ -287,6 +287,9 @@
                     {
                         t += (t==""?"":" ; ") + i + ": " + data.jeton_subdef[i];
                     }
+                    if(t == "") {
+                        t = "0";
+                    }
                     $("#subdefs_todo").text(t);
                 }
 

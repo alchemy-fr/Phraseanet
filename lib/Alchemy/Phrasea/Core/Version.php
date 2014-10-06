@@ -13,8 +13,8 @@ namespace Alchemy\Phrasea\Core;
 
 class Version
 {
-    protected static $number = '3.9.0-alpha.19';
-    protected static $name = 'Gorgosaurus';
+    protected static $number = '3.9.0-alpha.20';
+    protected static $name = 'Epanterias';
 
     public static function getNumber()
     {

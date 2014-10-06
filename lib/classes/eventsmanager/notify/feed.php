@@ -9,18 +9,10 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Notification\Receiver;
-use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
-use Alchemy\Phrasea\Model\Entities\WebhookEvent;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 {
-    /**
-     *
-     * @var string
-     */
-    public $events = ['__FEED_ENTRY_CREATE__'];
-
     /**
      *
      * @return string
@@ -32,102 +24,13 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param  string        $event
-     * @param  Array         $params
-     * @param  mixed content $object
-     * @return boolean
-     */
-    public function fire($event, $params, &$entry)
-    {
-        $params = [
-            'entry_id' => $entry->getId(),
-            'notify_email' => $params['notify_email'],
-        ];
-
-        $dom_xml = new DOMDocument('1.0', 'UTF-8');
-        $dom_xml->preserveWhiteSpace = false;
-        $dom_xml->formatOutput = true;
-
-        $root = $dom_xml->createElement('datas');
-
-        $entry_id = $dom_xml->createElement('entry_id');
-
-        $entry_id->appendChild($dom_xml->createTextNode($params['entry_id']));
-
-        $root->appendChild($entry_id);
-
-        $dom_xml->appendChild($root);
-
-        $data = $dom_xml->saveXml();
-
-        $this->app['manipulator.webhook-event']->create(
-            WebhookEvent::NEW_FEED_ENTRY,
-            WebhookEvent::FEED_ENTRY_TYPE,
-            array_merge(['feed_id' => $entry->getFeed()->getId()], $params)
-        );
-
-        $Query = new \User_Query($this->app);
-
-        $Query->include_phantoms(true)
-            ->include_invite(false)
-            ->include_templates(false)
-            ->email_not_null(true);
-
-        if ($entry->getFeed()->getCollection($this->app)) {
-            $Query->on_base_ids([$entry->getFeed()->getCollection($this->app)->get_base_id()]);
-        }
-
-        $start = 0;
-        $perLoop = 100;
-
-        do {
-            $results = $Query->limit($start, $perLoop)->execute()->get_results();
-
-            foreach ($results as $user_to_notif) {
-                $mailed = false;
-
-                if ($params['notify_email'] && $this->shouldSendNotificationFor($user_to_notif->getId())) {
-                    $readyToSend = false;
-                    try {
-                        $token = $this->app['manipulator.token']->createFeedEntryToken($user_to_notif, $entry);
-                        $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
-
-                        $receiver = Receiver::fromUser($user_to_notif);
-                        $readyToSend = true;
-                    } catch (\Exception $e) {
-
-                    }
-
-                    if ($readyToSend) {
-                        $mail = MailInfoNewPublication::create($this->app, $receiver);
-                        $mail->setButtonUrl($url);
-                        $mail->setAuthor($entry->getAuthorName());
-                        $mail->setTitle($entry->getTitle());
-
-                        $this->app['notification.deliverer']->deliver($mail);
-                        $mailed = true;
-                    }
-                }
-
-                $this->broker->notify($user_to_notif->getId(), __CLASS__, $data, $mailed);
-            }
-            $start += $perLoop;
-        } while (count($results) > 0);
-
-        return true;
-    }
-
-    /**
-     *
-     * @param  Array   $data
+     * @param  Array   $datas
      * @param  boolean $unread
      * @return Array
      */
-    public function datas($data, $unread)
+    public function datas(array $data, $unread)
     {
-        $sx = simplexml_load_string($data);
-
-        $entry = $this->app['repo.feed-entries']->find((int) $sx->entry_id);
+        $entry = $this->app['repo.feed-entries']->find($data['entry_id']);
 
         if (null === $entry) {
             return [];
@@ -164,7 +67,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    public function is_available($usr_id)
+    public function is_available(User $user)
     {
         return true;
     }

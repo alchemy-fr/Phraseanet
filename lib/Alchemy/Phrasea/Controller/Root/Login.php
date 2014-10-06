@@ -19,6 +19,8 @@ use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
+use Alchemy\Phrasea\Core\Event\RegistrationEvent;
+use Alchemy\Phrasea\Core\Event\ValidationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
@@ -398,23 +400,18 @@ class Login implements ControllerProviderInterface
 
                     $autoReg = $app['acl']->get($user)->get_granted_base();
 
-                    foreach ($inscOK as $baseId => $authorization) {
+                    array_walk($inscOK, function ($authorization, $baseId) use ($app, $user, &$registrationsOK) {
                         if (false === $authorization || $app['acl']->get($user)->has_access_to_base($baseId)) {
-                            continue;
+                            return;
                         }
 
-                        $app['manipulator.registration']->createRegistration($user, \collection::get_from_base_id($app, $baseId));
-                        $registrationsOK[$baseId] = true;
-                    }
+                        $collection = \collection::get_from_base_id($app, $baseId);
+                        $app['manipulator.registration']->createRegistration($user, $collection);
+                        $registrationsOK[$baseId] = $collection;
+                    });
 
-                    $params = [
-                        'registrations'=> $registrationsOK,
-                        'autoregister' => $autoReg,
-                        'usr_id'       => $user->getId()
-                    ];
-
-                    $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
-                    $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
+                    $app['dispatcher']->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
+                    $app['dispatcher']->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $registrationsOK));
 
                     $user->setMailLocked(true);
 
@@ -819,20 +816,14 @@ class Login implements ControllerProviderInterface
             /* @var $participant ValidationParticipant */
 
             $validationSession = $participant->getSession();
-            $participantId = $participant->getUser()->getId();
             $basket = $validationSession->getBasket();
 
             if (null === $token = $app['repo.tokens']->findValidationToken($basket, $participant->getUser())) {
                 continue;
             }
 
-            $app['events-manager']->trigger('__VALIDATION_REMINDER__', [
-                'to'          => $participantId,
-                'ssel_id'     => $basket->getId(),
-                'from'        => $validationSession->getInitiator()->getId(),
-                'validate_id' => $validationSession->getId(),
-                'url'         => $app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]),
-            ]);
+            $url = $app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]);
+            $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_REMINDER, new ValidationEvent($participant, $basket, $url));
 
             $participant->setReminded(new \DateTime('now'));
             $app['EM']->persist($participant);
