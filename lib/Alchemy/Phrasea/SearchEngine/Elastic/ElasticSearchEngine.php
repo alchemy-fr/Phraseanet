@@ -289,7 +289,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         // Only search in thesaurus for full text search
         if ($ast->isFullTextOnly()) {
-            $termFiels = $this->expendToAnalyzedFieldsNames(['value'], $this->locales);
+            $termFiels = $this->expendToAnalyzedFieldsNames('value');
             $termsQuery = $ast->getQuery($termFiels);
 
             $params = $this->createTermQueryParams($termsQuery, $options ?: new SearchEngineOptions());
@@ -309,10 +309,12 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         if (empty($collectFields)) {
             // @todo a list of field by default? all fields?
-            $collectFields['caption.Keywords'] = [];
+            $searchFieldNames = ['caption.*'];
+        } else {
+            $searchFieldNames = array_keys($collectFields);
         }
 
-        $recordFields = $this->expendToAnalyzedFieldsNames(array_keys($collectFields), $this->locales);
+        $recordFields = $this->expendToAnalyzedFieldsNames($searchFieldNames);
         $pathsToFilter = array_unique($pathsToFilter);
 
         $recordQuery = [
@@ -626,7 +628,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @todo Add a booster on the lang the use is using?
-     * 
+     *
      * @param array|string  $fields
      * @param array|null    $locales
      * @return array
