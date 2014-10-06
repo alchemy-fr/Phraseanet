@@ -16,6 +16,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class Indexer
 {
@@ -86,6 +87,9 @@ class Indexer
 
     public function populateIndex()
     {
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('populate');
+
         $this->disableShardRefreshing();
 
         try {
@@ -116,6 +120,9 @@ class Indexer
             $this->restoreShardRefreshing();
             throw $e;
         }
+
+        $event = $stopwatch->stop('populate');
+        printf("Indexation finished in %s (Mem. %s)", $event->getDuration(), $event->getMemory());
     }
 
     private function disableShardRefreshing()

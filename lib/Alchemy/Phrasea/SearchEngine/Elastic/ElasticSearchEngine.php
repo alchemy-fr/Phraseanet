@@ -626,6 +626,10 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @todo Add a booster on the lang the use is using?
+     * 
+     * @param array|string  $fields
+     * @param array|null    $locales
+     * @return array
      */
     public function expendToAnalyzedFieldsNames($fields, $locales = null)
     {
