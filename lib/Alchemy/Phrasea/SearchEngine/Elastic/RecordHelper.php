@@ -32,7 +32,16 @@ class RecordHelper
 
     public function getUniqueCollectionId($databoxId, $collectionId)
     {
-        return igorw\get_in($this->collectionMap(), [$databoxId, $collectionId]);
+        $col = $this->collectionMap();
+
+        if (isset($col[$databoxId])) {
+            $index = array_search($collectionId, $col[$databoxId]);
+            if ($index !== false) {
+                return (int) $index;
+            }
+        }
+
+        return null;
     }
 
     private function collectionMap()
