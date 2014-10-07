@@ -100,6 +100,7 @@ class RecordFetcher
 
     private function hydrate(array $record)
     {
+        var_dump($record);die();
         // Some casting
         $record['record_id']     = (int) $record['record_id'];
         $record['collection_id'] = (int) $record['collection_id'];

@@ -495,8 +495,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             ];
         }
 
-
-
         /** @todo move this, records & story are the same type!
         $filters[] = [
             'term' => [
@@ -538,10 +536,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         $sort = [];
         if ($options->getSortBy() === 'score') {
             $sort['_score'] = $options->getSortOrder();
+        } else {
+            $sort['created_on'] = $options->getSortOrder();
         }
-
-        $sort['created_on'] = $options->getSortOrder();
-
+        
         return $sort;
     }
 
