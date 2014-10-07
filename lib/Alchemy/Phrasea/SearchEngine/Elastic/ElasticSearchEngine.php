@@ -495,12 +495,12 @@ class ElasticSearchEngine implements SearchEngineInterface
             ];
         }
 
-        /** @todo move this, records & story are the same type!
         $filters[] = [
             'term' => [
-                '_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ? 'record' : 'story',
+                'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                    SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY,
             ]
-        ];*/
+        ];
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
@@ -539,7 +539,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         } else {
             $sort['created_on'] = $options->getSortOrder();
         }
-        
+
         return $sort;
     }
 

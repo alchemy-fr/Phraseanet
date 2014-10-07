@@ -127,6 +127,7 @@ class RecordIndexer
             ->add('original_name', 'string')->notAnalyzed()
             ->add('mime', 'string')->notAnalyzed()
             ->add('type', 'string')->notAnalyzed()
+            ->add('record_type', 'string')->notAnalyzed() // record or story
             // Dates
             ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
             ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)

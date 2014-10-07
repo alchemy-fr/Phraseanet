@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use databox;
 use PDO;
 
@@ -100,7 +101,6 @@ class RecordFetcher
 
     private function hydrate(array $record)
     {
-        var_dump($record);die();
         // Some casting
         $record['record_id']     = (int) $record['record_id'];
         $record['collection_id'] = (int) $record['collection_id'];
@@ -108,6 +108,14 @@ class RecordFetcher
         $record['id'] = $this->helper->getUniqueRecordId($this->databoxId, $record['record_id']);
         $record['base_id'] = $this->helper->getUniqueCollectionId($this->databoxId, $record['collection_id']);
         $record['databox_id'] = $this->databoxId;
+
+        if ((int) $record['parent_record_id'] === 1) {
+            $record['record_type'] = SearchEngineInterface::GEM_TYPE_STORY;
+        } else {
+            $record['record_type'] = SearchEngineInterface::GEM_TYPE_RECORD;
+        }
+
+        unset($record['parent_record_id']);
 
         return $record;
     }
@@ -124,10 +132,10 @@ class RecordFetcher
                  , r.originalname as original_name
                  , r.mime
                  , r.type
+                 , r.parent_record_id
                  , r.credate as created_on
                  , r.moddate as updated_on
                     FROM record r
-                    WHERE r.parent_record_id = 0
                     ORDER BY r.record_id ASC
                     LIMIT :offset, :limit
 SQL;
