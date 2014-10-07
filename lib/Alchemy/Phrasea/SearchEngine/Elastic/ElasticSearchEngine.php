@@ -467,32 +467,42 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $status_opts = $options->getStatus();
         foreach ($options->getDataboxes() as $databox) {
-            foreach ($databox->get_statusbits() as $n => $status) {
-                if (!array_key_exists($n, $status_opts)) {
+            foreach ($databox->get_statusbits() as $bit => $status) {
+                if (!array_key_exists($bit, $status_opts)) {
                     continue;
                 }
-                if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n])) {
+                if (!array_key_exists($databox->get_sbas_id(), $status_opts[$bit])) {
                     continue;
                 }
 
+                $key = RecordIndexer::normalizeFlagKey($status['labelon']);
                 $filters[] = [
                     'term' => [
-                        'status.status-'.$n => $status_opts[$n][$databox->get_sbas_id()],
+                        sprintf('flags.%s', $key) => (bool) $status_opts[$bit][$databox->get_sbas_id()],
                     ]
                 ];
             }
         }
 
-        $filters[] = [
-            'terms' => [
-                'base_id' => array_map(function (\collection $coll) { return $coll->get_base_id(); }, $options->getCollections())
-            ]
-        ];
+        $recordHelper = new RecordHelper($this->app['phraseanet.appbox']);
+        foreach ($options->getDataboxes() as $databox) {
+            $filters[] = [
+                'terms' => [
+                    'base_id' => array_map(function (\collection $coll) use ($recordHelper, $databox) {
+                        return $recordHelper->getUniqueCollectionId($databox->get_sbas_id(), $coll->get_base_id());
+                    }, $options->getCollections())
+                ]
+            ];
+        }
+
+
+
+        /** @todo move this, records & story are the same type!
         $filters[] = [
             'term' => [
                 '_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ? 'record' : 'story',
             ]
-        ];
+        ];*/
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
