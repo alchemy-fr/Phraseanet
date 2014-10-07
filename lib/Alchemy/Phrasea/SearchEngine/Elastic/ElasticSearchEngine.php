@@ -12,8 +12,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\QuotedTextNode;
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\TextNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -279,6 +277,8 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
     {
+        $options = $options ?: new SearchEngineOptions();
+
         $parser = new QueryParser();
         $ast = $parser->parse($string);
 
@@ -292,7 +292,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $termFiels = $this->expendToAnalyzedFieldsNames('value');
             $termsQuery = $ast->getQuery($termFiels);
 
-            $params = $this->createTermQueryParams($termsQuery, $options ?: new SearchEngineOptions());
+            $params = $this->createTermQueryParams($termsQuery, $options);
             $terms = $this->doExecute('search', $params);
 
             foreach ($terms['hits']['hits'] as $term) {
@@ -304,9 +304,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
             $pathsToFilter = array_unique($pathsToFilter);
         }
-
-        //print_r($pathsToFilter);
-        //print_r($collectFields);
 
         if (empty($collectFields)) {
             // @todo a list of field by default? all fields?
@@ -326,7 +323,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
 
         foreach ($pathsToFilter as $path => $score) {
-            // @todo switch to must??
+            // @todo switch to must?? Is match the good query??
             $recordQuery['bool']['should'][] = [
                 'match' => [
                     'concept_paths' => array(
@@ -337,9 +334,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             ];
         }
 
-        //print_r($recordQuery); die();
-
-        $params = $this->createRecordQueryParams($recordQuery, $options ?: new SearchEngineOptions());
+        $params = $this->createRecordQueryParams($recordQuery, $options, null);
         $params['from'] = $offset;
         $params['size'] = $perPage;
 
@@ -359,7 +354,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['_ast'] = (string) $ast;
         $query['_paths'] = $pathsToFilter;
         $query['_richFields'] = $collectFields;
-        $query['query'] = json_encode($recordQuery);
+        $query['query'] = json_encode($params);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
@@ -417,7 +412,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $params;
     }
 
-    private function createRecordQueryParams($query, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createRecordQueryParams($ESquery, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [
             'index' => $this->indexName,
@@ -428,10 +423,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             ]
         ];
 
-        $ESquery = $query; // = $this->createESQuery($query, $options);
-
         $filters = $this->createFilters($options);
-        $filters = [];
 
         if ($record) {
             $filters[] = [
@@ -467,81 +459,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         $params['body']['query'] = $ESquery;
 
         return $params;
-    }
-
-    private function createESQuery($query, SearchEngineOptions $options)
-    {
-        // $preg = preg_match('/\s?(recordid|storyid)\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
-
-        // $search = [];
-        // if ($preg > 0) {
-        //     $search['bool']['must'][] = [
-        //         'term' => [
-        //             'record_id' => $matches[2],
-        //         ],
-        //     ];
-        //     $query = '';
-        // }
-
-        if ('' !== $query) {
-            if (0 < count($options->getBusinessFieldsOn())) {
-                $fields = [];
-
-                foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
-                    foreach ($databox->get_meta_structure() as $dbField) {
-                        if ($dbField->isBusiness()) {
-                            $fields[$dbField->get_name()] = [
-                                'match' => [
-                                    'caption.'.$dbField->get_name() => $query,
-                                ]
-                            ];
-                        }
-                    }
-                }
-
-                if (count($fields) > 0) {
-                    foreach ($options->getBusinessFieldsOn() as $coll) {
-                        $search['bool']['should'][] = [
-                            'bool' => [
-                                'must' => [
-                                    [
-                                        'bool' => [
-                                            'should' => array_values($fields)
-                                        ]
-                                    ],[
-                                        'term' => [
-                                            'base_id' => $coll->get_base_id(),
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ];
-                    }
-                }
-            }
-
-            if ($options->getFields()) {
-                foreach ($options->getFields() as $field) {
-                    $search['bool']['should'][] = [
-                        'match' => [
-                            'caption.'.$field->get_name() => $query,
-                        ]
-                    ];
-                }
-            } else {
-                $search['bool']['should'][] = [
-                    'match' => [
-                        '_all' => $query,
-                    ]
-                ];
-            }
-        } else {
-            $search['bool']['should'][] = [
-                'match_all' => new \stdClass(),
-            ];
-        }
-
-        return $search;
     }
 
     private function createFilters(SearchEngineOptions $options)

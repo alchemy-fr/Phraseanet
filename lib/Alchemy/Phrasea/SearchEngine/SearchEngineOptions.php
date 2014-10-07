@@ -523,7 +523,7 @@ class SearchEngineOptions
                 case in_array($key, ['date_min', 'date_max']):
                     $value = \DateTime::createFromFormat(DATE_ATOM, $value);
                     break;
-                case $value instanceof stdClass:
+                case $value instanceof \stdClass:
                     $tmpvalue = (array) $value;
                     $value = [];
 
