@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d64dc123bcae1e42dbaaa028c8cd841d",
+    "hash": "2297d6dbf5453ec8d9d55a5f533decf0",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1242,16 +1242,16 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "dev-flatten-layer",
+            "version": "dev-0.6.1-flatten-layer",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nlegoff/Imagine.git",
-                "reference": "df2d9d8834d32943082fc52b89c5b11fde279b5a"
+                "url": "https://github.com/alchemy-fr/Imagine.git",
+                "reference": "e75d9495677b40e0868836e3510667178b2bd90a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nlegoff/Imagine/zipball/df2d9d8834d32943082fc52b89c5b11fde279b5a",
-                "reference": "df2d9d8834d32943082fc52b89c5b11fde279b5a",
+                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/e75d9495677b40e0868836e3510667178b2bd90a",
+                "reference": "e75d9495677b40e0868836e3510667178b2bd90a",
                 "shasum": ""
             },
             "require": {
@@ -2286,16 +2286,16 @@
         },
         {
             "name": "phpexiftool/phpexiftool",
-            "version": "0.4.1",
+            "version": "dev-0.4.1-mwg-metadata-copy",
             "source": {
                 "type": "git",
-                "url": "https://github.com/romainneutron/PHPExiftool.git",
-                "reference": "2581c6aac2cc23cd19bb4475536d83e3e33ff16c"
+                "url": "https://github.com/alchemy-fr/PHPExiftool.git",
+                "reference": "9a1ec0c98d5a3903411c554a7274b3163705b5b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/PHPExiftool/zipball/2581c6aac2cc23cd19bb4475536d83e3e33ff16c",
-                "reference": "2581c6aac2cc23cd19bb4475536d83e3e33ff16c",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/9a1ec0c98d5a3903411c554a7274b3163705b5b2",
+                "reference": "9a1ec0c98d5a3903411c554a7274b3163705b5b2",
                 "shasum": ""
             },
             "require": {
@@ -2326,7 +2326,6 @@
                     "PHPExiftool": "lib"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2342,7 +2341,10 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2014-09-18 23:00:26"
+            "support": {
+                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/dev"
+            },
+            "time": "2014-10-08 16:09:02"
         },
         {
             "name": "phpoption/phpoption",
@@ -4094,13 +4096,20 @@
         {
             "alias": "0.6.1",
             "alias_normalized": "0.6.1.0",
-            "version": "dev-flatten-layer",
+            "version": "dev-0.6.1-flatten-layer",
             "package": "imagine/imagine"
+        },
+        {
+            "alias": "0.4.1",
+            "alias_normalized": "0.4.1.0",
+            "version": "dev-0.4.1-mwg-metadata-copy",
+            "package": "phpexiftool/phpexiftool"
         }
     ],
     "minimum-stability": "stable",
     "stability-flags": {
         "imagine/imagine": 20,
+        "phpexiftool/phpexiftool": 20,
         "doctrine/data-fixtures": 20
     },
     "prefer-stable": false,

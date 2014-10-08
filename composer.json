@@ -12,7 +12,11 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/nlegoff/Imagine"
+            "url": "https://github.com/alchemy-fr/imagine"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/alchemy-fr/phpexiftool"
         }
     ],
     "require": {
@@ -28,7 +32,7 @@
         "alchemy/geonames-api-consumer"    : "~0.1.0",
         "goodby/csv"                       : "~1.0",
         "guzzle/guzzle"                    : "~3.0",
-        "imagine/imagine"                  : "dev-flatten-layer as 0.6.1",
+        "imagine/imagine"                  : "dev-0.6.1-flatten-layer as 0.6.1",
         "jms/serializer"                   : "~0.10",
         "justinrainbow/json-schema"        : "~1.3",
         "mediavorus/mediavorus"            : "~0.4.0",
@@ -42,7 +46,7 @@
         "neutron/temporary-filesystem"     : "~2.1",
         "php-ffmpeg/php-ffmpeg"            : "~0.5.0",
         "php-xpdf/php-xpdf"                : "~0.2.1",
-        "phpexiftool/phpexiftool"          : "~0.4",
+        "phpexiftool/phpexiftool"          : "dev-0.4.1-mwg-metadata-copy as 0.4.1",
         "silex/silex"                      : "~1.0.0",
         "silex/web-profiler"               : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",
