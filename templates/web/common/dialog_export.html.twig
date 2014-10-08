@@ -79,7 +79,14 @@
 {% if app['phraseanet.registry'].get('GV_needAuth2DL') and app['authentication'].getUser().is_guest() %}
     <script type="text/javascript">
         p4.Dialog.get(1).Close();
-        parent.login({act:"dwnl",lst:"{{ lst }}",SSTTID:"{{ ssttid }}"});
+        var $dialog = p4.Dialog.Create({
+            size : '500x100',
+            closeOnEscape : true,
+            closeButton:false,
+            title : "{{ "Unauthorized action"|trans }}"
+        }, 2);
+
+        $dialog.setContent("{{ "Guest, you must be authenticated to have the right to download."|trans }}");
     </script>
 {% else %}
     {% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
