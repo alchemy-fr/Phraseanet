@@ -45,17 +45,13 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 
 class V1 implements ControllerProviderInterface
 {
-    const VERSION = '1.3';
+    const VERSION = '1.4.1';
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
-    public static $extendedContentTypes = array(
-        'json' => array('application/vnd.phraseanet.record-extended+json'),
-        'yaml' => array('application/vnd.phraseanet.record-extended+yaml'),
-        'jsonp' => array('application/vnd.phraseanet.record-extended+jsonp'),
-    );
+    public static $extendedContentTypes = array('json' => array('application/vnd.phraseanet.record-extended+json'), 'yaml' => array('application/vnd.phraseanet.record-extended+yaml'), 'jsonp' => array('application/vnd.phraseanet.record-extended+jsonp'),);
 
     public function connect(SilexApplication $app)
     {
@@ -65,7 +61,8 @@ class V1 implements ControllerProviderInterface
 
         $controllers->before(function ($request) use ($app) {
             return $this->authenticate($app, $request);
-        });
+        })
+        ;
 
         $controllers->after(function (Request $request, Response $response) use ($app) {
             $token = $app['session']->get('token');
@@ -75,54 +72,38 @@ class V1 implements ControllerProviderInterface
             if (null !== $app['authentication']->getUser()) {
                 $app['authentication']->closeAccount();
             }
-        });
+        })
+        ;
 
-        $controllers->get('/monitor/scheduler/', 'controller.api.v1:get_scheduler')
-            ->before([$this, 'ensureAdmin']);
+        $controllers->get('/monitor/scheduler/', 'controller.api.v1:get_scheduler')->before([$this, 'ensureAdmin']);
 
-        $controllers->get('/monitor/tasks/', 'controller.api.v1:get_task_list')
-            ->before([$this, 'ensureAdmin']);
+        $controllers->get('/monitor/tasks/', 'controller.api.v1:get_task_list')->before([$this, 'ensureAdmin']);
 
-        $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')
-            ->convert('task', $app['converter.task-callback'])
-            ->before([$this, 'ensureAdmin'])
-            ->assert('task', '\d+');
+        $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin'])->assert('task', '\d+');
 
-        $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')
-            ->convert('task', $app['converter.task-callback'])
-            ->before([$this, 'ensureAdmin'])
-            ->assert('task', '\d+');
+        $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin'])->assert('task', '\d+');
 
-        $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')
-            ->convert('task', $app['converter.task-callback'])
-            ->before([$this, 'ensureAdmin']);
+        $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin']);
 
-        $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')
-            ->convert('task', $app['converter.task-callback'])
-            ->before([$this, 'ensureAdmin']);
+        $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin']);
 
-        $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')
-            ->before([$this, 'ensureAdmin']);
+        $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')->before([$this, 'ensureAdmin']);
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:get_databoxes');
 
-        $controllers->get('/databoxes/{databox_id}/collections/', 'controller.api.v1:get_databox_collections')
-            ->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/collections/', 'controller.api.v1:get_databox_collections')->before([$this, 'ensureAccessToDatabox'])->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/collections/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/databoxes/{databox_id}/status/', 'controller.api.v1:get_databox_status')
-            ->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/status/', 'controller.api.v1:get_databox_status')->before([$this, 'ensureAccessToDatabox'])->before([$this, 'ensureCanSeeDataboxStructure'])->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/status/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/databoxes/{databox_id}/metadatas/', 'controller.api.v1:get_databox_metadatas')
-            ->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/metadatas/', 'controller.api.v1:get_databox_metadatas')->before([$this, 'ensureAccessToDatabox'])->before([$this, 'ensureCanSeeDataboxStructure'])->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/metadatas/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/databoxes/{databox_id}/termsOfUse/', 'controller.api.v1:get_databox_terms')
-            ->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/termsOfUse/', 'controller.api.v1:get_databox_terms')->before([$this, 'ensureAccessToDatabox'])->assert('databox_id', '\d+');
 
         $controllers->get('/databoxes/{any_id}/termsOfUse/', 'controller.api.v1:getBadRequest');
 
@@ -130,54 +111,47 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/quarantine/item/{lazaret_id}/', 'controller.api.v1:list_quarantine_item');
 
+        $controllers->get('/quarantine/item/{any_id}/', 'controller.api.v1:getBadRequest');
+
         $controllers->post('/records/add/', 'controller.api.v1:add_record');
 
         $controllers->match('/search/', 'controller.api.v1:search');
 
         $controllers->match('/records/search/', 'controller.api.v1:search_records');
 
-        $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:caption_records')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:caption_records')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/caption/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', 'controller.api.v1:get_record_metadatas')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', 'controller.api.v1:get_record_metadatas')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/metadatas/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/status/', 'controller.api.v1:get_record_status')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/status/', 'controller.api.v1:get_record_status')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/status/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/related/', 'controller.api.v1:get_record_related')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/related/', 'controller.api.v1:get_record_related')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/related/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_record_embed')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_record_embed')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', 'controller.api.v1:set_record_metadatas')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', 'controller.api.v1:set_record_metadatas')->before([$this, 'ensureCanAccessToRecord'])->before([$this, 'ensureCanModifyRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/records/{any_id}/{anyother_id}/setmetadatas/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', 'controller.api.v1:set_record_status')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', 'controller.api.v1:set_record_status')->before([$this, 'ensureCanAccessToRecord'])->before([$this, 'ensureCanModifyRecordStatus'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/records/{any_id}/{anyother_id}/setstatus/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', 'controller.api.v1:set_record_collection')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', 'controller.api.v1:set_record_collection')->before([$this, 'ensureCanAccessToRecord'])->before([$this, 'ensureCanMoveRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:get_record')
-            ->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:get_record')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/records/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
@@ -185,31 +159,19 @@ class V1 implements ControllerProviderInterface
 
         $controllers->post('/baskets/add/', 'controller.api.v1:create_basket');
 
-        $controllers->get('/baskets/{basket}/content/', 'controller.api.v1:get_basket')
-            ->before($app['middleware.basket.converter'])
-            ->before($app['middleware.basket.user-access'])
-            ->assert('basket', '\d+');
+        $controllers->get('/baskets/{basket}/content/', 'controller.api.v1:get_basket')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-access'])->assert('basket', '\d+');
 
         $controllers->get('/baskets/{wrong_basket}/content/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/baskets/{basket}/setname/', 'controller.api.v1:set_basket_title')
-            ->before($app['middleware.basket.converter'])
-            ->before($app['middleware.basket.user-is-owner'])
-            ->assert('basket', '\d+');
+        $controllers->post('/baskets/{basket}/setname/', 'controller.api.v1:set_basket_title')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-is-owner'])->assert('basket', '\d+');
 
         $controllers->post('/baskets/{wrong_basket}/setname/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/baskets/{basket}/setdescription/', 'controller.api.v1:set_basket_description')
-            ->before($app['middleware.basket.converter'])
-            ->before($app['middleware.basket.user-is-owner'])
-            ->assert('basket', '\d+');
+        $controllers->post('/baskets/{basket}/setdescription/', 'controller.api.v1:set_basket_description')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-is-owner'])->assert('basket', '\d+');
 
         $controllers->post('/baskets/{wrong_basket}/setdescription/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/baskets/{basket}/delete/', 'controller.api.v1:delete_basket')
-            ->before($app['middleware.basket.converter'])
-            ->before($app['middleware.basket.user-is-owner'])
-            ->assert('basket', '\d+');
+        $controllers->post('/baskets/{basket}/delete/', 'controller.api.v1:delete_basket')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-is-owner'])->assert('basket', '\d+');
 
         $controllers->post('/baskets/{wrong_basket}/delete/', 'controller.api.v1:getBadRequest');
 
@@ -217,28 +179,19 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/feeds/content/', 'controller.api.v1:get_publications');
 
-        $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:get_feed_entry')
-            ->assert('entry_id', '\d+');
+        $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:get_feed_entry')->assert('entry_id', '\d+');
 
         $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/feeds/{feed_id}/content/', 'controller.api.v1:get_publication')
-            ->assert('feed_id', '\d+');
+        $controllers->get('/feeds/{feed_id}/content/', 'controller.api.v1:get_publication')->assert('feed_id', '\d+');
 
         $controllers->get('/feeds/{wrong_feed_id}/content/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/stories/{databox_id}/{story_id}/embed/', 'controller.api.v1:get_story_embed')
-            ->assert('databox_id', '\d+')->assert('story_id', '\d+');
+        $controllers->get('/stories/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_story_embed')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', 'controller.api.v1:get_story')
-            ->assert('databox_id', '\d+')->assert('story_id', '\d+');
-
-        $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
-
-        $controllers->get('/stories/{databox_id}/{story_id}/', 'controller.api.v1:get_story')
-            ->assert('databox_id', '\d+')->assert('story_id', '\d+');
+        $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v1:get_story')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
@@ -259,21 +212,14 @@ class V1 implements ControllerProviderInterface
      * Return an array of key-values informations about scheduler
      *
      * @param  Application $app The silex application
+     *
      * @return Response
      */
     public function get_scheduler(Application $app, Request $request)
     {
         $data = $app['task-manager.live-information']->getManager();
 
-        return Result::create($request, [
-            'scheduler' => [
-            'configuration' => $data['configuration'],
-            'state'         => $data['actual'],
-            'status'        => $data['actual'],
-            'pid'           => $data['process-id'],
-            'process-id'    => $data['process-id'],
-            'updated_on'    => (new \DateTime())->format(DATE_ATOM),
-        ]])->createResponse();
+        return Result::create($request, ['scheduler' => ['configuration' => $data['configuration'], 'state' => $data['actual'], 'status' => $data['actual'], 'pid' => $data['process-id'], 'process-id' => $data['process-id'], 'updated_on' => (new \DateTime())->format(DATE_ATOM),]])->createResponse();
     }
 
     /**
@@ -296,32 +242,15 @@ class V1 implements ControllerProviderInterface
     {
         $data = $app['task-manager.live-information']->getTask($task);
 
-        return [
-            'id'             => $task->getId(),
-            'title'          => $task->getName(),
-            'name'           => $task->getName(),
-            'state'          => $task->getStatus(),
-            'status'         => $task->getStatus(),
-            'actual-status'  => $data['actual'],
-            'process-id'     => $data['process-id'],
-            'pid'            => $data['process-id'],
-            'jobId'          => $task->getJobId(),
-            'period'         => $task->getPeriod(),
-            'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
-            'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
-            'updated'        => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null,
-            'created'        => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null,
-            'auto_start'     => $task->getStatus() === Task::STATUS_STARTED,
-            'crashed'        => $task->getCrashed(),
-            'status'         => $task->getStatus(),
-        ];
+        return ['id' => $task->getId(), 'title' => $task->getName(), 'name' => $task->getName(), 'state' => $task->getStatus(), 'status' => $task->getStatus(), 'actual-status' => $data['actual'], 'process-id' => $data['process-id'], 'pid' => $data['process-id'], 'jobId' => $task->getJobId(), 'period' => $task->getPeriod(), 'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null, 'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null, 'updated' => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null, 'created' => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null, 'auto_start' => $task->getStatus() === Task::STATUS_STARTED, 'crashed' => $task->getCrashed(), 'status' => $task->getStatus(),];
     }
 
     /**
      * Get informations about an identified task
      *
-     * @param  \Silex\Application $app  The API silex application
+     * @param  \Silex\Application $app The API silex application
      * @param  Task               $task
+     *
      * @return Response
      */
     public function get_task(Application $app, Request $request, Task $task)
@@ -334,6 +263,7 @@ class V1 implements ControllerProviderInterface
      *
      * @param  \Silex\Application $app  The API silex application
      * @param  Task               $task The task to start
+     *
      * @return Response
      */
     public function start_task(Application $app, Request $request, Task $task)
@@ -348,6 +278,7 @@ class V1 implements ControllerProviderInterface
      *
      * @param  \Silex\Application $app  The API silex application
      * @param  Task               $task The task to stop
+     *
      * @return Response
      */
     public function stop_task(Application $app, Request $request, Task $task)
@@ -364,6 +295,7 @@ class V1 implements ControllerProviderInterface
      *
      * @param  \Silex\Application $app  Silex application
      * @param  Task               $task The task
+     *
      * @return Response
      */
     public function set_task_property(Application $app, Request $request, $task)
@@ -389,27 +321,18 @@ class V1 implements ControllerProviderInterface
      * Get Information the cache system used by the instance
      *
      * @param  \Silex\Application $app the silex application
+     *
      * @return array
      */
     private function get_cache_info(Application $app)
     {
-        $caches = [
-            'main'               => $app['cache'],
-            'op_code'            => $app['opcode-cache'],
-            'doctrine_metadatas' => $app['EM']->getConfiguration()->getMetadataCacheImpl(),
-            'doctrine_query'     => $app['EM']->getConfiguration()->getQueryCacheImpl(),
-            'doctrine_result'    => $app['EM']->getConfiguration()->getResultCacheImpl(),
-        ];
+        $caches = ['main' => $app['cache'], 'op_code' => $app['opcode-cache'], 'doctrine_metadatas' => $app['EM']->getConfiguration()->getMetadataCacheImpl(), 'doctrine_query' => $app['EM']->getConfiguration()->getQueryCacheImpl(), 'doctrine_result' => $app['EM']->getConfiguration()->getResultCacheImpl(),];
 
         $ret = [];
 
         foreach ($caches as $name => $service) {
             if ($service instanceof CacheInterface) {
-                $ret['cache'][$name] = [
-                    'type'   => $service->getName(),
-                    'online' => $service->isOnline(),
-                    'stats'  => $service->getStats(),
-                ];
+                $ret['cache'][$name] = ['type' => $service->getName(), 'online' => $service->isOnline(), 'stats' => $service->getStats(),];
             } else {
                 $ret['cache'][$name] = null;
             }
@@ -422,16 +345,14 @@ class V1 implements ControllerProviderInterface
      * Provide information about phraseanet configuration
      *
      * @param  \Silex\Application $app the silex application
+     *
      * @return array
      */
     private function get_config_info(Application $app)
     {
         $ret = [];
 
-        $ret['phraseanet']['version'] = [
-            'name'   => $app['phraseanet.version']::getName(),
-            'number' => $app['phraseanet.version']::getNumber(),
-        ];
+        $ret['phraseanet']['version'] = ['name' => $app['phraseanet.version']::getName(), 'number' => $app['phraseanet.version']::getNumber(),];
 
         $ret['phraseanet']['environment'] = $app->getEnvironment();
         $ret['phraseanet']['debug'] = $app['debug'];
@@ -444,7 +365,9 @@ class V1 implements ControllerProviderInterface
 
     /**
      * Provide phraseanet global values
+     *
      * @param  \Silex\Application $app the silex application
+     *
      * @return array
      */
     private function get_gv_info(Application $app)
@@ -457,144 +380,7 @@ class V1 implements ControllerProviderInterface
 
         $binaries = $app['conf']->get(['main', 'binaries']);
 
-        return [
-            'global_values' => [
-                'serverName'  => $app['conf']->get('servername'),
-                'title'       => $app['conf']->get(['registry', 'general', 'title']),
-                'keywords'    => $app['conf']->get(['registry', 'general', 'keywords']),
-                'description' => $app['conf']->get(['registry', 'general', 'description']),
-                'httpServer'  => [
-                    'phpTimezone'     => ini_get('date.timezone'),
-                    'siteId'          => $app['conf']->get(['main', 'key']),
-                    'defaultLanguage' => $app['conf']->get(['languages', 'default']),
-                    'allowIndexing'   => $app['conf']->get(['registry', 'general', 'allow-indexation']),
-                    'modes'           => [
-                        'XsendFile'                     => $app['conf']->get(['xsendfile', 'enabled']),
-                        'XsendFileMapping'              => $app['conf']->get(['xsendfile', 'mapping']),
-                        'h264Streaming'                 => $app['conf']->get(['registry', 'executables', 'h264-streaming-enabled']),
-                        'authTokenDirectory'            => $app['conf']->get(['registry', 'executables', 'auth-token-directory']),
-                        'authTokenDirectoryPath'        => $app['conf']->get(['registry', 'executables', 'auth-token-directory-path']),
-                        'authTokenPassphrase'           => $app['conf']->get(['registry', 'executables', 'auth-token-passphrase']),
-                    ]
-                ],
-                'maintenance' => [
-                    'alertMessage'   => $app['conf']->get(['registry', 'maintenance', 'message']),
-                    'displayMessage' => $app['conf']->get(['registry', 'maintenance', 'enabled']),
-                ],
-                'webServices'    => [
-                    'googleApi'                   => $app['conf']->get(['registry', 'webservices', 'google-charts-enabled']),
-                    'googleAnalyticsId'           => $app['conf']->get(['registry', 'general', 'analytics']),
-                    'i18nWebService'              => $app['conf']->get(['registry', 'webservices', 'geonames-server']),
-                    'recaptacha'                  => [
-                        'active'     => $app['conf']->get(['registry', 'webservices', 'captcha-enabled']),
-                        'publicKey'  => $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']),
-                        'privateKey' => $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']),
-                    ],
-                    'youtube'    => [
-                        'active'       => $app['conf']->get(['main', 'bridge', 'youtube', 'enabled']),
-                        'clientId'     => $app['conf']->get(['main', 'bridge', 'youtube', 'client_id']),
-                        'clientSecret' => $app['conf']->get(['main', 'bridge', 'youtube', 'client_secret']),
-                        'devKey'       => $app['conf']->get(['main', 'bridge', 'youtube', 'developer_key']),
-                    ],
-                    'flickr'       => [
-                        'active'       => $app['conf']->get(['main', 'bridge', 'flickr', 'enabled']),
-                        'clientId'     => $app['conf']->get(['main', 'bridge', 'flickr', 'client_id']),
-                        'clientSecret' => $app['conf']->get(['main', 'bridge', 'flickr', 'client_secret']),
-                    ],
-                    'dailymtotion' => [
-                        'active'       => $app['conf']->get(['main', 'bridge', 'dailymotion', 'enabled']),
-                        'clientId'     => $app['conf']->get(['main', 'bridge', 'dailymotion', 'client_id']),
-                        'clientSecret' => $app['conf']->get(['main', 'bridge', 'dailymotion', 'client_secret']),
-                    ]
-                ],
-                'navigator'    => [
-                    'active'   => $app['conf']->get(['registry', 'api-clients', 'navigator-enabled']),
-                ],
-                'office-plugin' => [
-                    'active'    => $app['conf']->get(['registry', 'api-clients', 'office-enabled']),
-                ],
-                'homepage' => [
-                    'viewType' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),
-                ],
-                'report'   => [
-                    'anonymous' => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
-                ],
-                'storage'           => [
-                    'documents'        => $app['conf']->get(['main', 'storage', 'subdefs']),
-                ],
-                'searchEngine' => [
-                    'configuration' => [
-                        'defaultQuery'     => $app['conf']->get(['registry', 'searchengine', 'default-query']),
-                        'defaultQueryType' => $app['conf']->get(['registry', 'searchengine', 'default-query-type']),
-                        'minChar'          => $app['conf']->get(['registry', 'searchengine', 'min-letters-truncation']),
-                    ],
-                    'engine'            => [
-                        'type'          => $app['phraseanet.SE']->getName(),
-                        'status'        => $SEStatus,
-                        'configuration' => $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration(),
-                    ],
-                ],
-                'binary'  => [
-                    'phpCli'            => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
-                    'phpIni'            => $app['conf']->get(['registry', 'executables', 'php-conf-path']),
-                    'swfExtract'        => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
-                    'pdf2swf'           => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
-                    'swfRender'         => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
-                    'unoconv'           => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
-                    'ffmpeg'            => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
-                    'ffprobe'           => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
-                    'mp4box'            => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null,
-                    'pdftotext'         => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
-                    'recess'            => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null,
-                    'pdfmaxpages'       => $app['conf']->get(['registry', 'executables', 'pdf-max-pages']),],
-                'mainConfiguration' => [
-                    'viewBasAndCollName' => $app['conf']->get(['registry', 'actions', 'collection-display']),
-                    'chooseExportTitle'  => $app['conf']->get(['registry', 'actions', 'export-title-choice']),
-                    'defaultExportTitle' => $app['conf']->get(['registry', 'actions', 'default-export-title']),
-                    'socialTools'        => $app['conf']->get(['registry', 'actions', 'social-tools']),],
-                'modules'            => [
-                    'thesaurus'          => $app['conf']->get(['registry', 'modules', 'thesaurus']),
-                    'storyMode'          => $app['conf']->get(['registry', 'modules', 'stories']),
-                    'docSubsitution'     => $app['conf']->get(['registry', 'modules', 'doc-substitution']),
-                    'subdefSubstitution' => $app['conf']->get(['registry', 'modules', 'thumb-substitution']),],
-                'email'              => [
-                    'defaultMailAddress' => $app['conf']->get(['registry', 'email', 'emitter-email']),
-                    'smtp'               => [
-                        'active'   => $app['conf']->get(['registry', 'email', 'smtp-enabled']),
-                        'auth'     => $app['conf']->get(['registry', 'email', 'smtp-auth-enabled']),
-                        'host'     => $app['conf']->get(['registry', 'email', 'smtp-host']),
-                        'port'     => $app['conf']->get(['registry', 'email', 'smtp-port']),
-                        'secure'   => $app['conf']->get(['registry', 'email', 'smtp-secure-mode']),
-                        'user'     => $app['conf']->get(['registry', 'email', 'smtp-user']),
-                        'password' => $app['conf']->get(['registry', 'email', 'smtp-password']),
-                    ],
-                ],
-                'ftp'      => [
-                    'active'        => $app['conf']->get(['registry', 'ftp', 'ftp-enabled']),
-                    'activeForUser' => $app['conf']->get(['registry', 'ftp', 'ftp-user-access']),],
-                'client'        => [
-                    'maxSizeDownload'         => $app['conf']->get(['registry', 'actions', 'download-max-size']),
-                    'tabSearchMode'           => $app['conf']->get(['registry', 'classic', 'search-tab']),
-                    'tabAdvSearchPosition'    => $app['conf']->get(['registry', 'classic', 'adv-search-tab']),
-                    'tabTopicsPosition'       => $app['conf']->get(['registry', 'classic', 'topics-tab']),
-                    'tabOngActifPosition'     => $app['conf']->get(['registry', 'classic', 'active-tab']),
-                    'renderTopicsMode'        => $app['conf']->get(['registry', 'classic', 'render-topics']),
-                    'displayRolloverPreview'  => $app['conf']->get(['registry', 'classic', 'stories-preview']),
-                    'displayRolloverBasket'   => $app['conf']->get(['registry', 'classic', 'basket-rollover']),
-                    'collRenderMode'          => $app['conf']->get(['registry', 'classic', 'collection-presentation']),
-                    'viewSizeBaket'           => $app['conf']->get(['registry', 'classic', 'basket-size-display']),
-                    'clientAutoShowProposals' => $app['conf']->get(['registry', 'classic', 'auto-show-proposals']),
-                    'needAuth2DL'             => $app['conf']->get(['registry', 'actions', 'auth-required-for-export']),],
-                'inscription'             => [
-                    'autoSelectDB' => $app['conf']->get(['registry', 'registration', 'auto-select-collections']),
-                    'autoRegister' => $app['conf']->get(['registry', 'registration', 'auto-register-enabled']),
-                ],
-                'push'         => [
-                    'validationReminder' => $app['conf']->get(['registry', 'actions', 'validation-reminder-days']),
-                    'expirationValue'    => $app['conf']->get(['registry', 'actions', 'validation-expiration-days']),
-                ],
-            ]
-        ];
+        return ['global_values' => ['serverName' => $app['conf']->get('servername'), 'title' => $app['conf']->get(['registry', 'general', 'title']), 'keywords' => $app['conf']->get(['registry', 'general', 'keywords']), 'description' => $app['conf']->get(['registry', 'general', 'description']), 'httpServer' => ['phpTimezone' => ini_get('date.timezone'), 'siteId' => $app['conf']->get(['main', 'key']), 'defaultLanguage' => $app['conf']->get(['languages', 'default']), 'allowIndexing' => $app['conf']->get(['registry', 'general', 'allow-indexation']), 'modes' => ['XsendFile' => $app['conf']->get(['xsendfile', 'enabled']), 'XsendFileMapping' => $app['conf']->get(['xsendfile', 'mapping']), 'h264Streaming' => $app['conf']->get(['registry', 'executables', 'h264-streaming-enabled']), 'authTokenDirectory' => $app['conf']->get(['registry', 'executables', 'auth-token-directory']), 'authTokenDirectoryPath' => $app['conf']->get(['registry', 'executables', 'auth-token-directory-path']), 'authTokenPassphrase' => $app['conf']->get(['registry', 'executables', 'auth-token-passphrase']),]], 'maintenance' => ['alertMessage' => $app['conf']->get(['registry', 'maintenance', 'message']), 'displayMessage' => $app['conf']->get(['registry', 'maintenance', 'enabled']),], 'webServices' => ['googleApi' => $app['conf']->get(['registry', 'webservices', 'google-charts-enabled']), 'googleAnalyticsId' => $app['conf']->get(['registry', 'general', 'analytics']), 'i18nWebService' => $app['conf']->get(['registry', 'webservices', 'geonames-server']), 'recaptacha' => ['active' => $app['conf']->get(['registry', 'webservices', 'captcha-enabled']), 'publicKey' => $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']), 'privateKey' => $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']),], 'youtube' => ['active' => $app['conf']->get(['main', 'bridge', 'youtube', 'enabled']), 'clientId' => $app['conf']->get(['main', 'bridge', 'youtube', 'client_id']), 'clientSecret' => $app['conf']->get(['main', 'bridge', 'youtube', 'client_secret']), 'devKey' => $app['conf']->get(['main', 'bridge', 'youtube', 'developer_key']),], 'flickr' => ['active' => $app['conf']->get(['main', 'bridge', 'flickr', 'enabled']), 'clientId' => $app['conf']->get(['main', 'bridge', 'flickr', 'client_id']), 'clientSecret' => $app['conf']->get(['main', 'bridge', 'flickr', 'client_secret']),], 'dailymtotion' => ['active' => $app['conf']->get(['main', 'bridge', 'dailymotion', 'enabled']), 'clientId' => $app['conf']->get(['main', 'bridge', 'dailymotion', 'client_id']), 'clientSecret' => $app['conf']->get(['main', 'bridge', 'dailymotion', 'client_secret']),]], 'navigator' => ['active' => $app['conf']->get(['registry', 'api-clients', 'navigator-enabled']),], 'office-plugin' => ['active' => $app['conf']->get(['registry', 'api-clients', 'office-enabled']),], 'homepage' => ['viewType' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),], 'report' => ['anonymous' => $app['conf']->get(['registry', 'modules', 'anonymous-report']),], 'storage' => ['documents' => $app['conf']->get(['main', 'storage', 'subdefs']),], 'searchEngine' => ['configuration' => ['defaultQuery' => $app['conf']->get(['registry', 'searchengine', 'default-query']), 'defaultQueryType' => $app['conf']->get(['registry', 'searchengine', 'default-query-type']), 'minChar' => $app['conf']->get(['registry', 'searchengine', 'min-letters-truncation']),], 'engine' => ['type' => $app['phraseanet.SE']->getName(), 'status' => $SEStatus, 'configuration' => $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration(),],], 'binary' => ['phpCli' => isset($binaries['php_binary']) ? $binaries['php_binary'] : null, 'phpIni' => $app['conf']->get(['registry', 'executables', 'php-conf-path']), 'swfExtract' => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null, 'pdf2swf' => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null, 'swfRender' => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null, 'unoconv' => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null, 'ffmpeg' => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null, 'ffprobe' => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null, 'mp4box' => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null, 'pdftotext' => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null, 'recess' => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null, 'pdfmaxpages' => $app['conf']->get(['registry', 'executables', 'pdf-max-pages']),], 'mainConfiguration' => ['viewBasAndCollName' => $app['conf']->get(['registry', 'actions', 'collection-display']), 'chooseExportTitle' => $app['conf']->get(['registry', 'actions', 'export-title-choice']), 'defaultExportTitle' => $app['conf']->get(['registry', 'actions', 'default-export-title']), 'socialTools' => $app['conf']->get(['registry', 'actions', 'social-tools']),], 'modules' => ['thesaurus' => $app['conf']->get(['registry', 'modules', 'thesaurus']), 'storyMode' => $app['conf']->get(['registry', 'modules', 'stories']), 'docSubsitution' => $app['conf']->get(['registry', 'modules', 'doc-substitution']), 'subdefSubstitution' => $app['conf']->get(['registry', 'modules', 'thumb-substitution']),], 'email' => ['defaultMailAddress' => $app['conf']->get(['registry', 'email', 'emitter-email']), 'smtp' => ['active' => $app['conf']->get(['registry', 'email', 'smtp-enabled']), 'auth' => $app['conf']->get(['registry', 'email', 'smtp-auth-enabled']), 'host' => $app['conf']->get(['registry', 'email', 'smtp-host']), 'port' => $app['conf']->get(['registry', 'email', 'smtp-port']), 'secure' => $app['conf']->get(['registry', 'email', 'smtp-secure-mode']), 'user' => $app['conf']->get(['registry', 'email', 'smtp-user']), 'password' => $app['conf']->get(['registry', 'email', 'smtp-password']),],], 'ftp' => ['active' => $app['conf']->get(['registry', 'ftp', 'ftp-enabled']), 'activeForUser' => $app['conf']->get(['registry', 'ftp', 'ftp-user-access']),], 'client' => ['maxSizeDownload' => $app['conf']->get(['registry', 'actions', 'download-max-size']), 'tabSearchMode' => $app['conf']->get(['registry', 'classic', 'search-tab']), 'tabAdvSearchPosition' => $app['conf']->get(['registry', 'classic', 'adv-search-tab']), 'tabTopicsPosition' => $app['conf']->get(['registry', 'classic', 'topics-tab']), 'tabOngActifPosition' => $app['conf']->get(['registry', 'classic', 'active-tab']), 'renderTopicsMode' => $app['conf']->get(['registry', 'classic', 'render-topics']), 'displayRolloverPreview' => $app['conf']->get(['registry', 'classic', 'stories-preview']), 'displayRolloverBasket' => $app['conf']->get(['registry', 'classic', 'basket-rollover']), 'collRenderMode' => $app['conf']->get(['registry', 'classic', 'collection-presentation']), 'viewSizeBaket' => $app['conf']->get(['registry', 'classic', 'basket-size-display']), 'clientAutoShowProposals' => $app['conf']->get(['registry', 'classic', 'auto-show-proposals']), 'needAuth2DL' => $app['conf']->get(['registry', 'actions', 'auth-required-for-export']),], 'inscription' => ['autoSelectDB' => $app['conf']->get(['registry', 'registration', 'auto-select-collections']), 'autoRegister' => $app['conf']->get(['registry', 'registration', 'auto-register-enabled']),], 'push' => ['validationReminder' => $app['conf']->get(['registry', 'actions', 'validation-reminder-days']), 'expirationValue' => $app['conf']->get(['registry', 'actions', 'validation-expiration-days']),],]];
     }
 
     /**
@@ -604,6 +390,7 @@ class V1 implements ControllerProviderInterface
      *  - configuration informations
      *
      * @param  \Silex\Application $app the silex application
+     *
      * @return Response
      */
     public function get_phraseanet_monitor(Application $app, Request $request)
@@ -690,15 +477,9 @@ class V1 implements ControllerProviderInterface
         $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
         $fields = $record->get_caption()->get_fields();
 
-        $ret = [
-            'caption_metadatas' => array_map(function ($field) {
-                return [
-                    'meta_structure_id' => $field->get_meta_struct_id(),
-                    'name'              => $field->get_name(),
-                    'value'             => $field->get_serialized_values(";"),
-                ];
-            }, $fields)
-        ];
+        $ret = ['caption_metadatas' => array_map(function ($field) {
+            return ['meta_structure_id' => $field->get_meta_struct_id(), 'name' => $field->get_name(), 'value' => $field->get_serialized_values(";"),];
+        }, $fields)];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -772,9 +553,7 @@ class V1 implements ControllerProviderInterface
 
         $app['border-manager']->process($session, $Package, $callback, $behavior);
 
-        $ret = [
-            'entity' => null,
-        ];
+        $ret = ['entity' => null,];
 
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
@@ -807,11 +586,7 @@ class V1 implements ControllerProviderInterface
             return $this->list_lazaret_file($app, $lazaretFile);
         }, $lazaretFiles);
 
-        $ret = [
-            'offset_start'     => $offset_start,
-            'per_page'         => $per_page,
-            'quarantine_items' => $ret,
-        ];
+        $ret = ['offset_start' => $offset_start, 'per_page' => $per_page, 'quarantine_items' => $ret,];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -846,30 +621,16 @@ class V1 implements ControllerProviderInterface
             $usr_id = $user->getId();
         }
 
-        $session = [
-            'id'     => $file->getSession()->getId(),
-            'usr_id' => $usr_id,
-            'user'   => $user ? $this->list_user($user) : null,
-        ];
+        $session = ['id' => $file->getSession()->getId(), 'usr_id' => $usr_id, 'user' => $user ? $this->list_user($user) : null,];
 
-        return [
-            'id'                 => $file->getId(),
-            'quarantine_session' => $session,
-            'base_id'            => $file->getBaseId(),
-            'original_name'      => $file->getOriginalName(),
-            'sha256'             => $file->getSha256(),
-            'uuid'               => $file->getUuid(),
-            'forced'             => $file->getForced(),
-            'checks'             => $file->getForced() ? [] : $checks,
-            'created_on' => $file->getCreated()->format(DATE_ATOM),
-            'updated_on' => $file->getUpdated()->format(DATE_ATOM),
-        ];
+        return ['id' => $file->getId(), 'quarantine_session' => $session, 'base_id' => $file->getBaseId(), 'original_name' => $file->getOriginalName(), 'sha256' => $file->getSha256(), 'uuid' => $file->getUuid(), 'forced' => $file->getForced(), 'checks' => $file->getForced() ? [] : $checks, 'created_on' => $file->getCreated()->format(DATE_ATOM), 'updated_on' => $file->getUpdated()->format(DATE_ATOM),];
     }
 
     /**
      * Search for results
      *
-     * @param  Request  $request
+     * @param  Request $request
+     *
      * @return Response
      */
     public function search(Application $app, Request $request)
@@ -913,8 +674,8 @@ class V1 implements ControllerProviderInterface
     {
         $options = SearchEngineOptions::fromRequest($app, $request);
 
-        $offsetStart = (int) ($request->get('offset_start') ? : 0);
-        $perPage = (int) $request->get('per_page') ? : 10;
+        $offsetStart = (int) ($request->get('offset_start') ?: 0);
+        $perPage = (int) $request->get('per_page') ?: 10;
 
         $query = (string) $request->get('query');
         $app['phraseanet.SE']->resetCache();
@@ -927,29 +688,17 @@ class V1 implements ControllerProviderInterface
             $colls = array_map(function (\collection $collection) {
                 return $collection->get_coll_id();
             }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-             }));
+                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
+            }));
 
             $app['phraseanet.SE.logger']->log($databox, $search_result->getQuery(), $search_result->getTotal(), $colls);
         }
 
         $app['phraseanet.SE']->clearCache();
 
-        $ret = [
-            'offset_start'      => $offsetStart,
-            'per_page'          => $perPage,
-            'available_results' => $search_result->getAvailable(),
-            'total_results'     => $search_result->getTotal(),
-            'error'             => $search_result->getError(),
-            'warning'           => $search_result->getWarning(),
-            'query_time'        => $search_result->getDuration(),
-            'search_indexes'    => $search_result->getIndexes(),
-            'suggestions'       => array_map(function (SearchEngineSuggestion $suggestion) {
-                    return $suggestion->toArray();
-                }, $search_result->getSuggestions()->toArray()),
-            'results'           => [],
-            'query'             => $search_result->getQuery(),
-        ];
+        $ret = ['offset_start' => $offsetStart, 'per_page' => $perPage, 'available_results' => $search_result->getAvailable(), 'total_results' => $search_result->getTotal(), 'error' => $search_result->getError(), 'warning' => $search_result->getWarning(), 'query_time' => $search_result->getDuration(), 'search_indexes' => $search_result->getIndexes(), 'suggestions' => array_map(function (SearchEngineSuggestion $suggestion) {
+            return $suggestion->toArray();
+        }, $search_result->getSuggestions()->toArray()), 'results' => [], 'query' => $search_result->getQuery(),];
 
         return [$ret, $search_result];
     }
@@ -967,12 +716,8 @@ class V1 implements ControllerProviderInterface
     {
         $that = $this;
         $baskets = array_map(function (Basket $basket) use ($that, $app) {
-                return $that->list_basket($app, $basket);
-            }, (array) $app['phraseanet.appbox']
-                 ->get_databox($databox_id)
-                 ->get_record($record_id)
-                 ->get_container_baskets($app['EM'], $app['authentication']->getUser())
-        );
+            return $that->list_basket($app, $basket);
+        }, (array) $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id)->get_container_baskets($app['EM'], $app['authentication']->getUser()));
 
         $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
@@ -1011,9 +756,7 @@ class V1 implements ControllerProviderInterface
      */
     public function get_record_status(Application $app, Request $request, $databox_id, $record_id)
     {
-        $record = $app['phraseanet.appbox']
-            ->get_databox($databox_id)
-            ->get_record($record_id);
+        $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
         $ret = ["status" => $this->list_record_status($app['phraseanet.appbox']->get_databox($databox_id), $record->get_status())];
 
@@ -1054,11 +797,9 @@ class V1 implements ControllerProviderInterface
      *
      * @return Response
      */
-    public function get_story_embed(Application $app, Request $request, $databox_id, $story_id)
+    public function get_story_embed(Application $app, Request $request, $databox_id, $record_id)
     {
-        $record = $app['phraseanet.appbox']
-            ->get_databox($databox_id)
-            ->get_record($story_id);
+        $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
@@ -1089,13 +830,25 @@ class V1 implements ControllerProviderInterface
 
         $record->set_metadatas($metadatas);
 
-        /**
-         * Check wether the current user is Admin or not
-         */
-        $mustBeAdmin = function (Request $request) use ($app) {
-            $user = $app['token']->get_account()->get_user();
-            if (!$user->ACL()->is_admin()) {
-                throw new \API_V1_exception_unauthorized('You are not authorized');
+        return Result::create($request, ["record_metadatas" => $this->list_record_caption($record->get_caption())])->createResponse();
+    }
+
+    public function set_record_status(Application $app, Request $request, $databox_id, $record_id)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $record = $databox->get_record($record_id);
+        $status_bits = $databox->get_statusbits();
+
+        $status = $request->get('status');
+
+        $datas = strrev($record->get_status());
+
+        if (!is_array($status)) {
+            return $this->getBadRequest($app, $request);
+        }
+        foreach ($status as $n => $value) {
+            if ($n > 31 || $n < 4) {
+                return $this->getBadRequest($app, $request);
             }
             if (!in_array($value, ['0', '1'])) {
                 return $this->getBadRequest($app, $request);
@@ -1104,19 +857,8 @@ class V1 implements ControllerProviderInterface
                 return $this->getBadRequest($app, $request);
             }
 
-        /**
-         * Get scheduler informations
-         *
-         * Route : /monitor/scheduler/
-         *
-         * Method : GET
-         *
-         * Parameters :
-         *
-         */
-        $controllers->get('/monitor/scheduler/', function (SilexApplication $app, Request $request) {
-            return $app['api']->get_scheduler($app)->get_response();
-        })->before($mustBeAdmin);
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+        }
 
         $record->set_binary_status(strrev($datas));
         $app['phraseanet.SE']->updateRecord($record);
@@ -1129,9 +871,10 @@ class V1 implements ControllerProviderInterface
     /**
      * Move a record to another collection
      *
-     * @param  Request  $request
-     * @param  int      $databox_id
-     * @param  int      $record_id
+     * @param  Request $request
+     * @param  int     $databox_id
+     * @param  int     $record_id
+     *
      * @return Response
      */
     public function set_record_collection(Application $app, Request $request, $databox_id, $record_id)
@@ -1152,9 +895,10 @@ class V1 implements ControllerProviderInterface
     /**
      * Return detailed informations about one record
      *
-     * @param  Request  $request
-     * @param  int      $databox_id
-     * @param  int      $record_id
+     * @param  Request $request
+     * @param  int     $databox_id
+     * @param  int     $record_id
+     *
      * @return Response
      */
     public function get_record(Application $app, Request $request, $databox_id, $record_id)
@@ -1162,52 +906,41 @@ class V1 implements ControllerProviderInterface
         try {
             $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
-        /**
-         * Route /databoxes/DATABOX_ID/collections/
-         *
-         * Method : GET
-         *
-         * Parameters ;
-         *    DATABOX_ID : required INT
-         */
-        $controllers->get('/databoxes/{databox_id}/collections/', function (SilexApplication $app, $databox_id) {
-            return $app['api']
-                    ->get_databox_collections($app['request'], $databox_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+');
+            return Result::create($request, ['record' => $this->list_record($app, $record)])->createResponse();
+        } catch (NotFoundHttpException $e) {
+            return Result::createError($request, 404, $app->trans('Record Not Found'))->createResponse();
+        } catch (\Exception $e) {
+            return $this->getBadRequest($app, $request, $app->trans('An error occured'));
+        }
+    }
 
     /**
      * Return detailed informations about one story
      *
-     * @param  Request  $request
-     * @param  int      $databox_id
-     * @param  int      $story_id
+     * @param  Request $request
+     * @param  int     $databox_id
+     * @param  int     $record_id
+     *
      * @return Response
      */
-    public function get_story(Application $app, Request $request, $databox_id, $story_id)
+    public function get_story(Application $app, Request $request, $databox_id, $record_id)
     {
         try {
-            $story = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($story_id);
+            $story = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
-        /**
-         * Route /databoxes/DATABOX_ID/status/
-         *
-         * Method : GET
-         *
-         * Parameters ;
-         *    DATABOX_ID : required INT
-         *
-         */
-        $controllers->get('/databoxes/{databox_id}/status/', function (SilexApplication $app, $databox_id) {
-            return $app['api']
-                    ->get_databox_status($app['request'], $databox_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+');
+            return Result::create($request, ['story' => $this->list_story($app, $request, $story)])->createResponse();
+        } catch (NotFoundHttpException $e) {
+            return Result::createError($request, 404, $app->trans('Story Not Found'))->createResponse();
+        } catch (\Exception $e) {
+            return $this->getBadRequest($app, $request, $app->trans('An error occured'));
+        }
+    }
 
     /**
      * Return the baskets list of the authenticated user
      *
-     * @param  Request  $request
+     * @param  Request $request
+     *
      * @return Response
      */
     public function search_baskets(Application $app, Request $request)
@@ -1218,12 +951,14 @@ class V1 implements ControllerProviderInterface
     /**
      * Return a baskets list
      *
-     * @param  int   $usr_id
+     * @param  int $usr_id
+     *
      * @return array
      */
     private function list_baskets(Application $app)
     {
         $repo = $app['repo.baskets'];
+
         /* @var $repo BasketRepository */
 
         return array_map(function (Basket $basket) use ($app) {
@@ -1234,7 +969,8 @@ class V1 implements ControllerProviderInterface
     /**
      * Create a new basket
      *
-     * @param  Request  $request
+     * @param  Request $request
+     *
      * @return Response
      */
     public function create_basket(Application $app, Request $request)
@@ -1245,31 +981,22 @@ class V1 implements ControllerProviderInterface
             return $this->getBadRequest($app, $request, 'Missing basket name parameter');
         }
 
-        $controllers->get('/quarantine/list/', function (SilexApplication $app, Request $request) {
-            return $app['api']->list_quarantine($app, $request)->get_response();
-        });
+        $Basket = new Basket();
+        $Basket->setUser($app['authentication']->getUser());
+        $Basket->setName($name);
 
-        $controllers->get('/quarantine/item/{lazaret_id}/', function ($lazaret_id, SilexApplication $app, Request $request) {
-            return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
-        });
+        $app['EM']->persist($Basket);
+        $app['EM']->flush();
 
-        /**
-         * Route : /records/add/
-         *
-         * Method : POST
-         *
-         * Parameters :
-         *
-         */
-        $controllers->post('/records/add/', function (SilexApplication $app, Request $request) {
-            return $app['api']->add_record($app, $request)->get_response();
-        });
+        return Result::create($request, ["basket" => $this->list_basket($app, $Basket)])->createResponse();
+    }
 
     /**
      * Delete a basket
      *
      * @param  Request $request
      * @param  Basket  $basket
+     *
      * @return array
      */
     public function delete_basket(Application $app, Request $request, Basket $basket)
@@ -1280,189 +1007,111 @@ class V1 implements ControllerProviderInterface
         return $this->search_baskets($app, $request);
     }
 
-        $controllers->get('/records/{databox_id}/{record_id}/caption/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->caption_records($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+    /**
+     * Retrieve a basket
+     *
+     * @param  Request $request
+     * @param  Basket  $basket
+     *
+     * @return Response
+     */
+    public function get_basket(Application $app, Request $request, Basket $basket)
+    {
+        $ret = ["basket" => $this->list_basket($app, $basket), "basket_elements" => $this->list_basket_content($app, $basket)];
 
         return Result::create($request, $ret)->createResponse();
     }
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/metadatas/
-         *
-         * Method : GET
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->get_record_metadatas($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+    public function get_current_user(Application $app, Request $request)
+    {
+        $ret = ["user" => $this->list_user($app['authentication']->getUser())];
 
         return Result::create($request, $ret)->createResponse();
     }
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/status/
-         *
-         * Method : GET
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->get('/records/{databox_id}/{record_id}/status/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->get_record_status($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+    /**
+     * Retrieve elements of one basket
+     *
+     * @param  Basket $Basket
+     *
+     * @return type
+     */
+    private function list_basket_content(Application $app, Basket $Basket)
+    {
+        return array_map(function (BasketElement $element) use ($app) {
+            return $this->list_basket_element($app, $element);
+        }, iterator_to_array($Basket->getElements()));
+    }
 
     /**
      * Retrieve detailled informations about a basket element
      *
      * @param  BasketElement $basket_element
+     *
      * @return type
      */
     private function list_basket_element(Application $app, BasketElement $basket_element)
     {
-        $ret = [
-            'basket_element_id' => $basket_element->getId(),
-            'order'             => $basket_element->getOrd(),
-            'record'            => $this->list_record($app, $basket_element->getRecord($app)),
-            'validation_item'   => null != $basket_element->getBasket()->getValidation(),
-        ];
+        $ret = ['basket_element_id' => $basket_element->getId(), 'order' => $basket_element->getOrd(), 'record' => $this->list_record($app, $basket_element->getRecord($app)), 'validation_item' => null != $basket_element->getBasket()->getValidation(),];
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/related/
-         *
-         * Method : GET
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->get('/records/{databox_id}/{record_id}/related/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->get_record_related($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        if ($basket_element->getBasket()->getValidation()) {
+            $choices = [];
+            $agreement = null;
+            $note = '';
 
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
                 $participant = $validation_datas->getParticipant();
                 $user = $participant->getUser();
                 /* @var $validation_datas ValidationData */
-                $choices[] = [
-                    'validation_user' => [
-                        'usr_id'         => $user->getId(),
-                        'usr_name'       => $user->getDisplayName(),
-                        'confirmed'      => $participant->getIsConfirmed(),
-                        'can_agree'      => $participant->getCanAgree(),
-                        'can_see_others' => $participant->getCanSeeOthers(),
-                        'readonly'       => $user->getId() != $app['authentication']->getUser()->getId(),
-                        'user'           => $this->list_user($user),
-                    ],
-                    'agreement'      => $validation_datas->getAgreement(),
-                    'updated_on'     => $validation_datas->getUpdated()->format(DATE_ATOM),
-                    'note'           => null === $validation_datas->getNote() ? '' : $validation_datas->getNote(),
-                ];
+                $choices[] = ['validation_user' => ['usr_id' => $user->getId(), 'usr_name' => $user->getDisplayName(), 'confirmed' => $participant->getIsConfirmed(), 'can_agree' => $participant->getCanAgree(), 'can_see_others' => $participant->getCanSeeOthers(), 'readonly' => $user->getId() != $app['authentication']->getUser()->getId(), 'user' => $this->list_user($user),], 'agreement' => $validation_datas->getAgreement(), 'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM), 'note' => null === $validation_datas->getNote() ? '' : $validation_datas->getNote(),];
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/embed/
-         *
-         * Method : GET
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->get('/records/{databox_id}/{record_id}/embed/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->get_record_embed($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+                if ($user->getId() == $app['authentication']->getUser()->getId()) {
+                    $agreement = $validation_datas->getAgreement();
+                    $note = null === $validation_datas->getNote() ? '' : $validation_datas->getNote();
+                }
 
                 $ret['validation_choices'] = $choices;
             }
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/setmetadatas/
-         *
-         * Method : POST
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->set_record_metadatas($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+            $ret['agreement'] = $agreement;
+            $ret['note'] = $note;
+        }
 
         return $ret;
     }
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/setstatus/
-         *
-         * Method : POST
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->set_record_status($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+    /**
+     * Change the name of one basket
+     *
+     * @param  Request $request
+     * @param  Basket  $basket
+     *
+     * @return Response
+     */
+    public function set_basket_title(Application $app, Request $request, Basket $basket)
+    {
+        $basket->setName($request->get('name'));
 
         $app['EM']->persist($basket);
         $app['EM']->flush();
 
-        /**
-         * Route : /records/DATABOX_ID/RECORD_ID/setcollection/
-         *
-         * Method : POST
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->set_record_collection($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
+    }
 
     /**
      * Change the description of one basket
      *
-     * @param  Request  $request
-     * @param  Basket   $basket
+     * @param  Request $request
+     * @param  Basket  $basket
+     *
      * @return Response
      */
     public function set_basket_description(Application $app, Request $request, Basket $basket)
     {
         $basket->setDescription($request->get('description'));
 
-        $controllers->get('/records/{databox_id}/{record_id}/', function (SilexApplication $app, $databox_id, $record_id) {
-            return $app['api']
-                    ->get_record($app['request'], $databox_id, $record_id)
-                    ->get_response();
-        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $app['EM']->persist($basket);
+        $app['EM']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
     }
@@ -1470,8 +1119,9 @@ class V1 implements ControllerProviderInterface
     /**
      * List all avalaible feeds
      *
-     * @param  Request  $request
-     * @param  User     $user
+     * @param  Request $request
+     * @param  User    $user
+     *
      * @return Response
      */
     public function search_publications(Application $app, Request $request)
@@ -1489,9 +1139,10 @@ class V1 implements ControllerProviderInterface
     /**
      * Retrieve one feed
      *
-     * @param  Request  $request
-     * @param  int      $publication_id
-     * @param  User     $user
+     * @param  Request $request
+     * @param  int     $publication_id
+     * @param  User    $user
+     *
      * @return Response
      */
     public function get_publication(Application $app, Request $request, $feed_id)
@@ -1508,12 +1159,7 @@ class V1 implements ControllerProviderInterface
 
         $per_page = (($per_page >= 1) && ($per_page <= 100)) ? $per_page : 100;
 
-        $data = [
-            'feed'         => $this->list_publication($feed, $user),
-            'offset_start' => $offset_start,
-            'per_page'     => $per_page,
-            'entries'      => $this->list_publications_entries($app, $feed, $offset_start, $per_page),
-        ];
+        $data = ['feed' => $this->list_publication($feed, $user), 'offset_start' => $offset_start, 'per_page' => $per_page, 'entries' => $this->list_publications_entries($app, $feed, $offset_start, $per_page),];
 
         return Result::create($request, $data)->createResponse();
     }
@@ -1521,28 +1167,16 @@ class V1 implements ControllerProviderInterface
     public function get_publications(Application $app, Request $request)
     {
         $user = $app['authentication']->getUser();
-        $restrictions = (array) ($request->get('feeds') ? : []);
+        $restrictions = (array) ($request->get('feeds') ?: []);
 
         $feed = Aggregate::createFromUser($app, $user, $restrictions);
 
-        $controllers->get('/feeds/content/', function (SilexApplication $app) {
-            return $app['api']
-                    ->get_publications($app['request'], $app['authentication']->getUser())
-                    ->get_response();
-        });
+        $offset_start = (int) ($request->get('offset_start') ?: 0);
+        $per_page = (int) ($request->get('per_page') ?: 5);
 
-        $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
-            return $app['api']
-                    ->get_feed_entry($app['request'], $entry_id, $app['authentication']->getUser())
-                    ->get_response();
-        })->assert('entry_id', '\d+');
+        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 20;
 
-        $data = [
-            'total_entries' => $feed->getCountTotalEntries(),
-            'offset_start'  => $offset_start,
-            'per_page'      => $per_page,
-            'entries'       => $this->list_publications_entries($app, $feed, $offset_start, $per_page),
-        ];
+        $data = ['total_entries' => $feed->getCountTotalEntries(), 'offset_start' => $offset_start, 'per_page' => $per_page, 'entries' => $this->list_publications_entries($app, $feed, $offset_start, $per_page),];
 
         return Result::create($request, $data)->createResponse();
     }
@@ -1553,18 +1187,9 @@ class V1 implements ControllerProviderInterface
         $entry = $app['repo.feed-entries']->find($entry_id);
         $collection = $entry->getFeed()->getCollection($app);
 
-        /**
-         * Route : /stories/DATABOX_ID/RECORD_ID/embed/
-         *
-         * Method : GET
-         *
-         * Parameters :
-         *    DATABOX_ID : required INT
-         *    RECORD_ID : required INT
-         *
-         */
-        $controllers->get('/stories/{databox_id}/{story_id}/embed/', function ($databox_id, $story_id) use ($app) {
-                $result = $app['api']->get_story_embed($app['request'], $databox_id, $story_id);
+        if (null !== $collection && !$app['acl']->get($user)->has_access_to_base($collection->get_base_id())) {
+            return Result::createError($request, 403, 'You have not access to the parent feed')->createResponse();
+        }
 
         return Result::create($request, ['entry' => $this->list_publication_entry($app, $entry)])->createResponse();
     }
@@ -1572,24 +1197,14 @@ class V1 implements ControllerProviderInterface
     /**
      * Retrieve detailled informations about one feed
      *
-     * @param  Feed  $feed
-     * @param  type  $user
+     * @param  Feed $feed
+     * @param  type $user
+     *
      * @return array
      */
     private function list_publication(Feed $feed, $user)
     {
-        return [
-            'id'            => $feed->getId(),
-            'title'         => $feed->getTitle(),
-            'subtitle'      => $feed->getSubtitle(),
-            'total_entries' => $feed->getCountTotalEntries(),
-            'icon'          => $feed->getIconUrl(),
-            'public'        => $feed->isPublic(),
-            'readonly'      => !$feed->isPublisher($user),
-            'deletable'     => $feed->isOwner($user),
-            'created_on'    => $feed->getCreatedOn()->format(DATE_ATOM),
-            'updated_on'    => $feed->getUpdatedOn()->format(DATE_ATOM),
-        ];
+        return ['id' => $feed->getId(), 'title' => $feed->getTitle(), 'subtitle' => $feed->getSubtitle(), 'total_entries' => $feed->getCountTotalEntries(), 'icon' => $feed->getIconUrl(), 'public' => $feed->isPublic(), 'readonly' => !$feed->isPublisher($user), 'deletable' => $feed->isOwner($user), 'created_on' => $feed->getCreatedOn()->format(DATE_ATOM), 'updated_on' => $feed->getUpdatedOn()->format(DATE_ATOM),];
     }
 
     /**
@@ -1598,6 +1213,7 @@ class V1 implements ControllerProviderInterface
      * @param  FeedInterface $feed
      * @param  int           $offset_start
      * @param  int           $how_many
+     *
      * @return array
      */
     private function list_publications_entries(Application $app, FeedInterface $feed, $offset_start = 0, $how_many = 5)
@@ -1611,6 +1227,7 @@ class V1 implements ControllerProviderInterface
      * Retrieve detailled information about one feed entry
      *
      * @param  FeedEntry $entry
+     *
      * @return array
      */
     private function list_publication_entry(Application $app, FeedEntry $entry)
@@ -1619,40 +1236,26 @@ class V1 implements ControllerProviderInterface
             return $this->list_publication_entry_item($app, $item);
         }, iterator_to_array($entry->getItems()));
 
-        return [
-            'id'           => $entry->getId(),
-            'author_email' => $entry->getAuthorEmail(),
-            'author_name'  => $entry->getAuthorName(),
-            'created_on'   => $entry->getCreatedOn()->format(DATE_ATOM),
-            'updated_on'   => $entry->getUpdatedOn()->format(DATE_ATOM),
-            'title'        => $entry->getTitle(),
-            'subtitle'     => $entry->getSubtitle(),
-            'items'        => $items,
-            'feed_id'      => $entry->getFeed()->getId(),
-            'feed_title'      => $entry->getFeed()->getTitle(),
-            'feed_url'     => '/feeds/' . $entry->getFeed()->getId() . '/content/',
-            'url'          => '/feeds/entry/' . $entry->getId() . '/',
-        ];
+        return ['id' => $entry->getId(), 'author_email' => $entry->getAuthorEmail(), 'author_name' => $entry->getAuthorName(), 'created_on' => $entry->getCreatedOn()->format(DATE_ATOM), 'updated_on' => $entry->getUpdatedOn()->format(DATE_ATOM), 'title' => $entry->getTitle(), 'subtitle' => $entry->getSubtitle(), 'items' => $items, 'feed_id' => $entry->getFeed()->getId(), 'feed_title' => $entry->getFeed()->getTitle(), 'feed_url' => '/feeds/' . $entry->getFeed()->getId() . '/content/', 'url' => '/feeds/entry/' . $entry->getId() . '/',];
     }
 
     /**
      * Retrieve detailled informations about one feed  entry item
      *
      * @param  FeedItem $item
+     *
      * @return array
      */
     private function list_publication_entry_item(Application $app, FeedItem $item)
     {
-        return [
-            'item_id' => $item->getId(),
-            'record'  => $this->list_record($app, $item->getRecord($app)),
-        ];
+        return ['item_id' => $item->getId(), 'record' => $this->list_record($app, $item->getRecord($app)),];
     }
 
     /**
      * @retrieve detailled informations about one suddef
      *
      * @param  media_subdef $media
+     *
      * @return array
      */
     private function list_embedable_media(Application $app, \record_adapter $record, \media_subdef $media)
@@ -1665,7 +1268,10 @@ class V1 implements ControllerProviderInterface
             if ($media->get_name() !== 'document' && false === $app['acl']->get($app['authentication']->getUser())->has_access_to_subdef($record, $media->get_name())) {
                 return null;
             }
-        )->assert('databox_id', '\d+')->assert('story_id', '\d+');
+            if ($media->get_name() === 'document' && !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldhd') && !$app['acl']->get($app['authentication']->getUser())->has_hd_grant($record)) {
+                return null;
+            }
+        }
 
         if ($media->get_permalink() instanceof \media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink());
@@ -1673,39 +1279,50 @@ class V1 implements ControllerProviderInterface
             $permalink = null;
         }
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
-            $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
-
-            return $result->get_response();
-        })->assert('databox_id', '\d+')->assert('story_id', '\d+');
-
-        return [
-            'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
-            'id'           => $permalink->get_id(),
-            'is_activated' => $permalink->get_is_activated(),
-            /** @Ignore */
-            'label'        => $permalink->get_label(),
-            'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
-            'page_url'     => $permalink->get_page(),
-            'download_url' => (string) $downloadUrl,
-            'url'          => (string) $permalink->get_url()
-        ];
+        return ['name' => $media->get_name(), 'permalink' => $permalink, 'height' => $media->get_height(), 'width' => $media->get_width(), 'filesize' => $media->get_size(), 'devices' => $media->getDevices(), 'player_type' => $media->get_type(), 'mime_type' => $media->get_mime(),];
     }
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
-            $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
+    /**
+     * Retrieve detailled information about one permalink
+     *
+     * @param media_Permalink_Adapter $permalink
+     *
+     * @return type
+     */
+    private function list_permalink(\media_Permalink_Adapter $permalink)
+    {
+        $downloadUrl = $permalink->get_url();
+        $downloadUrl->getQuery()->set('download', '1');
 
-            return $result->get_response();
-        })->assert('databox_id', '\d+')->assert('story_id', '\d+');
-        $controllers->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
+        return ['created_on' => $permalink->get_created_on()->format(DATE_ATOM), 'id' => $permalink->get_id(), 'is_activated' => $permalink->get_is_activated(), /** @Ignore */
+            'label' => $permalink->get_label(), 'updated_on' => $permalink->get_last_modified()->format(DATE_ATOM), 'page_url' => $permalink->get_page(), 'download_url' => (string) $downloadUrl, 'url' => (string) $permalink->get_url()];
+    }
 
-        $controllers->get('/me/', function (SilexApplication $app, Request $request) {
-            $result = $app['api']->get_current_user($app, $request);
+    /**
+     * Retrieve detailled information about one status
+     *
+     * @param  \databox $databox
+     * @param  string   $status
+     *
+     * @return array
+     */
+    private function list_record_status(\databox $databox, $status)
+    {
+        $status = strrev($status);
+
+        $ret = [];
+        foreach ($databox->get_statusbits() as $bit => $status_datas) {
+            $ret[] = ['bit' => $bit, 'state' => !!substr($status, ($bit - 1), 1)];
+        }
+
+        return $ret;
+    }
 
     /**
      * List all field about a specified caption
      *
      * @param  caption_record $caption
+     *
      * @return array
      */
     private function list_record_caption(\caption_record $caption)
@@ -1724,58 +1341,30 @@ class V1 implements ControllerProviderInterface
      * Retrieve information about a caption field
      *
      * @param  caption_field $field
+     *
      * @return array
      */
     private function list_record_caption_field(\caption_Field_Value $value, \caption_field $field)
     {
-        return [
-            'meta_id'           => $value->getId(),
-            'meta_structure_id' => $field->get_meta_struct_id(),
-            'name'              => $field->get_name(),
-            'labels'           => [
-                'fr' => $field->get_databox_field()->get_label('fr'),
-                'en' => $field->get_databox_field()->get_label('en'),
-                'de' => $field->get_databox_field()->get_label('de'),
-                'nl' => $field->get_databox_field()->get_label('nl'),
-            ],
-            'value'             => $value->getValue(),
-        ];
+        return ['meta_id' => $value->getId(), 'meta_structure_id' => $field->get_meta_struct_id(), 'name' => $field->get_name(), 'labels' => ['fr' => $field->get_databox_field()->get_label('fr'), 'en' => $field->get_databox_field()->get_label('en'), 'de' => $field->get_databox_field()->get_label('de'), 'nl' => $field->get_databox_field()->get_label('nl'),], 'value' => $value->getValue(),];
     }
 
     /**
      * Retrieve information about one basket
      *
      * @param  Basket $basket
+     *
      * @return array
      */
     private function list_basket(Application $app, Basket $basket)
     {
-        $ret = [
-            'basket_id'         => $basket->getId(),
-            'owner'             => $this->list_user($basket->getUser()),
-            'created_on'        => $basket->getCreated()->format(DATE_ATOM),
-            'description'       => (string) $basket->getDescription(),
-            'name'              => $basket->getName(),
-            'pusher_usr_id'     => $basket->getPusher() ? $basket->getPusher()->getId() : null,
-            'pusher'            => $basket->getPusher() ? $this->list_user($basket->getPusher()) : null,
-            'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
-            'unread'            => !$basket->getIsRead(),
-            'validation_basket' => !!$basket->getValidation()
-        ];
+        $ret = ['basket_id' => $basket->getId(), 'owner' => $this->list_user($basket->getUser()), 'created_on' => $basket->getCreated()->format(DATE_ATOM), 'description' => (string) $basket->getDescription(), 'name' => $basket->getName(), 'pusher_usr_id' => $basket->getPusher() ? $basket->getPusher()->getId() : null, 'pusher' => $basket->getPusher() ? $this->list_user($basket->getPusher()) : null, 'updated_on' => $basket->getUpdated()->format(DATE_ATOM), 'unread' => !$basket->getIsRead(), 'validation_basket' => !!$basket->getValidation()];
 
         if ($basket->getValidation()) {
             $users = array_map(function ($participant) use ($app) {
                 $user = $participant->getUser();
 
-                return [
-                    'usr_id'         => $user->getId(),
-                    'usr_name'       => $user->getDisplayName(),
-                    'confirmed'      => $participant->getIsConfirmed(),
-                    'can_agree'      => $participant->getCanAgree(),
-                    'can_see_others' => $participant->getCanSeeOthers(),
-                    'readonly'       => $user->getId() != $app['authentication']->getUser()->getId(),
-                    'user'           => $this->list_user($user),
-                ];
+                return ['usr_id' => $user->getId(), 'usr_name' => $user->getDisplayName(), 'confirmed' => $participant->getIsConfirmed(), 'can_agree' => $participant->getCanAgree(), 'can_see_others' => $participant->getCanSeeOthers(), 'readonly' => $user->getId() != $app['authentication']->getUser()->getId(), 'user' => $this->list_user($user),];
             }, iterator_to_array($basket->getValidation()->getParticipants()));
 
             $expires_on_atom = $basket->getValidation()->getExpires();
@@ -1784,16 +1373,7 @@ class V1 implements ControllerProviderInterface
                 $expires_on_atom = $expires_on_atom->format(DATE_ATOM);
             }
 
-            $ret = array_merge(
-                [
-                    'validation_users'          => $users,
-                    'expires_on'                => $expires_on_atom,
-                    'validation_infos'          => $basket->getValidation()->getValidationString($app, $app['authentication']->getUser()),
-                    'validation_confirmed'      => $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsConfirmed(),
-                    'validation_initiator'      => $basket->getValidation()->isInitiator($app['authentication']->getUser()),
-                    'validation_initiator_user' => $this->list_user($basket->getValidation()->getInitiator()),
-                ], $ret
-            );
+            $ret = array_merge(['validation_users' => $users, 'expires_on' => $expires_on_atom, 'validation_infos' => $basket->getValidation()->getValidationString($app, $app['authentication']->getUser()), 'validation_confirmed' => $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsConfirmed(), 'validation_initiator' => $basket->getValidation()->isInitiator($app['authentication']->getUser()), 'validation_initiator_user' => $this->list_user($basket->getValidation()->getInitiator()),], $ret);
         }
 
         return $ret;
@@ -1803,33 +1383,17 @@ class V1 implements ControllerProviderInterface
      * Retrieve detailled informations about one record
      *
      * @param  \record_adapter $record
+     *
      * @return array
      */
     public function list_record(Application $app, \record_adapter $record)
     {
         $technicalInformation = [];
         foreach ($record->get_technical_infos() as $name => $value) {
-            $technicalInformation[] = [
-                'name'  => $name,
-                'value' => $value
-            ];
+            $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
-        return [
-            'databox_id'             => $record->get_sbas_id(),
-            'record_id'              => $record->get_record_id(),
-            'mime_type'              => $record->get_mime(),
-            'title'                  => $record->get_title(),
-            'original_name'          => $record->get_original_name(),
-            'updated_on'             => $record->get_modification_date()->format(DATE_ATOM),
-            'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
-            'collection_id'          => \phrasea::collFromBas($app, $record->get_base_id()),
-            'sha256'                 => $record->get_sha256(),
-            'thumbnail'              => $this->list_embedable_media($app, $record, $record->get_thumbnail()),
-            'technical_informations' => $technicalInformation,
-            'phrasea_type'           => $record->get_type(),
-            'uuid'                   => $record->get_uuid(),
-        ];
+        return ['databox_id' => $record->get_sbas_id(), 'record_id' => $record->get_record_id(), 'mime_type' => $record->get_mime(), 'title' => $record->get_title(), 'original_name' => $record->get_original_name(), 'updated_on' => $record->get_modification_date()->format(DATE_ATOM), 'created_on' => $record->get_creation_date()->format(DATE_ATOM), 'collection_id' => \phrasea::collFromBas($app, $record->get_base_id()), 'sha256' => $record->get_sha256(), 'thumbnail' => $this->list_embedable_media($app, $record, $record->get_thumbnail()), 'technical_informations' => $technicalInformation, 'phrasea_type' => $record->get_type(), 'uuid' => $record->get_uuid(),];
     }
 
     /**
@@ -1863,35 +1427,7 @@ class V1 implements ControllerProviderInterface
             return $field->get_serialized_values();
         };
 
-        return [
-            '@entity@'       => self::OBJECT_TYPE_STORY,
-            'databox_id'     => $story->get_sbas_id(),
-            'story_id'       => $story->get_record_id(),
-            'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
-            'created_on'     => $story->get_creation_date()->format(DATE_ATOM),
-            'collection_id'  => \phrasea::collFromBas($app, $story->get_base_id()),
-            'thumbnail'      => $this->list_embedable_media($app, $story, $story->get_thumbnail()),
-            'uuid'           => $story->get_uuid(),
-            'metadatas'      => [
-                '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
-                'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
-                'dc:coverage'    => $format($caption, \databox_Field_DCESAbstract::Coverage),
-                'dc:creator'     => $format($caption, \databox_Field_DCESAbstract::Creator),
-                'dc:date'        => $format($caption, \databox_Field_DCESAbstract::Date),
-                'dc:description' => $format($caption, \databox_Field_DCESAbstract::Description),
-                'dc:format'      => $format($caption, \databox_Field_DCESAbstract::Format),
-                'dc:identifier'  => $format($caption, \databox_Field_DCESAbstract::Identifier),
-                'dc:language'    => $format($caption, \databox_Field_DCESAbstract::Language),
-                'dc:publisher'   => $format($caption, \databox_Field_DCESAbstract::Publisher),
-                'dc:relation'    => $format($caption, \databox_Field_DCESAbstract::Relation),
-                'dc:rights'      => $format($caption, \databox_Field_DCESAbstract::Rights),
-                'dc:source'      => $format($caption, \databox_Field_DCESAbstract::Source),
-                'dc:subject'     => $format($caption, \databox_Field_DCESAbstract::Subject),
-                'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
-                'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
-            ],
-            'records'        => $records,
-        ];
+        return ['@entity@' => self::OBJECT_TYPE_STORY, 'databox_id' => $story->get_sbas_id(), 'story_id' => $story->get_record_id(), 'updated_on' => $story->get_modification_date()->format(DATE_ATOM), 'created_on' => $story->get_creation_date()->format(DATE_ATOM), 'collection_id' => \phrasea::collFromBas($app, $story->get_base_id()), 'thumbnail' => $this->list_embedable_media($app, $story, $story->get_thumbnail()), 'uuid' => $story->get_uuid(), 'metadatas' => ['@entity@' => self::OBJECT_TYPE_STORY_METADATA_BAG, 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor), 'dc:coverage' => $format($caption, \databox_Field_DCESAbstract::Coverage), 'dc:creator' => $format($caption, \databox_Field_DCESAbstract::Creator), 'dc:date' => $format($caption, \databox_Field_DCESAbstract::Date), 'dc:description' => $format($caption, \databox_Field_DCESAbstract::Description), 'dc:format' => $format($caption, \databox_Field_DCESAbstract::Format), 'dc:identifier' => $format($caption, \databox_Field_DCESAbstract::Identifier), 'dc:language' => $format($caption, \databox_Field_DCESAbstract::Language), 'dc:publisher' => $format($caption, \databox_Field_DCESAbstract::Publisher), 'dc:relation' => $format($caption, \databox_Field_DCESAbstract::Relation), 'dc:rights' => $format($caption, \databox_Field_DCESAbstract::Rights), 'dc:source' => $format($caption, \databox_Field_DCESAbstract::Source), 'dc:subject' => $format($caption, \databox_Field_DCESAbstract::Subject), 'dc:title' => $format($caption, \databox_Field_DCESAbstract::Title), 'dc:type' => $format($caption, \databox_Field_DCESAbstract::Type),], 'records' => $records,];
     }
 
     /**
@@ -1910,13 +1446,14 @@ class V1 implements ControllerProviderInterface
      * Retrieve CGU's for the specified \databox
      *
      * @param  \databox $databox
+     *
      * @return array
      */
     private function list_databox_terms(\databox $databox)
     {
         $ret = [];
         foreach ($databox->get_cgus() as $locale => $array_terms) {
-            $ret[] = ['locale' => $locale, 'terms'  => $array_terms['value']];
+            $ret[] = ['locale' => $locale, 'terms' => $array_terms['value']];
         }
 
         return $ret;
@@ -1924,29 +1461,21 @@ class V1 implements ControllerProviderInterface
 
     /**
      * Retrieve detailled informations about one \databox
+     *
      * @param  \databox $databox
+     *
      * @return array
      */
     private function list_databox(\databox $databox)
     {
-        return [
-            'databox_id' => $databox->get_sbas_id(),
-            'name'       => $databox->get_dbname(),
-            'viewname'   => $databox->get_viewname(),
-            'labels'     => [
-                'en' => $databox->get_label('en'),
-                'de' => $databox->get_label('de'),
-                'fr' => $databox->get_label('fr'),
-                'nl' => $databox->get_label('nl'),
-            ],
-            'version'    => $databox->get_version(),
-        ];
+        return ['databox_id' => $databox->get_sbas_id(), 'name' => $databox->get_dbname(), 'viewname' => $databox->get_viewname(), 'labels' => ['en' => $databox->get_label('en'), 'de' => $databox->get_label('de'), 'fr' => $databox->get_label('fr'), 'nl' => $databox->get_label('nl'),], 'version' => $databox->get_version(),];
     }
 
     /**
      * List all available collections for a specified \databox
      *
      * @param  \databox $databox
+     *
      * @return array
      */
     private function list_databox_collections(\databox $databox)
@@ -1960,49 +1489,26 @@ class V1 implements ControllerProviderInterface
      * Retrieve detailled informations about one collection
      *
      * @param  collection $collection
+     *
      * @return array
      */
     private function list_collection(\collection $collection)
     {
-        return [
-            'base_id'       => $collection->get_base_id(),
-            'collection_id' => $collection->get_coll_id(),
-            'name'          => $collection->get_name(),
-            'labels'        => [
-                'fr' => $collection->get_label('fr'),
-                'en' => $collection->get_label('en'),
-                'de' => $collection->get_label('de'),
-                'nl' => $collection->get_label('nl'),
-            ],
-            'record_amount' => $collection->get_record_amount(),
-        ];
+        return ['base_id' => $collection->get_base_id(), 'collection_id' => $collection->get_coll_id(), 'name' => $collection->get_name(), 'labels' => ['fr' => $collection->get_label('fr'), 'en' => $collection->get_label('en'), 'de' => $collection->get_label('de'), 'nl' => $collection->get_label('nl'),], 'record_amount' => $collection->get_record_amount(),];
     }
 
     /**
      * Retrieve informations for a list of status
      *
      * @param  array $status
+     *
      * @return array
      */
     private function list_databox_status(array $status)
     {
         $ret = [];
         foreach ($status as $n => $datas) {
-            $ret[] = [
-                'bit'        => $n,
-                'label_on'   => $datas['labelon'],
-                'label_off'  => $datas['labeloff'],
-                'labels'     => [
-                    'en' => $datas['labels_on_i18n']['en'],
-                    'fr' => $datas['labels_on_i18n']['fr'],
-                    'de' => $datas['labels_on_i18n']['de'],
-                    'nl' => $datas['labels_on_i18n']['nl'],
-                ],
-                'img_on'     => $datas['img_on'],
-                'img_off'    => $datas['img_off'],
-                'searchable' => !!$datas['searchable'],
-                'printable'  => !!$datas['printable'],
-            ];
+            $ret[] = ['bit' => $n, 'label_on' => $datas['labelon'], 'label_off' => $datas['labeloff'], 'labels' => ['en' => $datas['labels_on_i18n']['en'], 'fr' => $datas['labels_on_i18n']['fr'], 'de' => $datas['labels_on_i18n']['de'], 'nl' => $datas['labels_on_i18n']['nl'],], 'img_on' => $datas['img_on'], 'img_off' => $datas['img_off'], 'searchable' => !!$datas['searchable'], 'printable' => !!$datas['printable'],];
         }
 
         return $ret;
@@ -2012,6 +1518,7 @@ class V1 implements ControllerProviderInterface
      * List all metadatas field using a \databox meta structure
      *
      * @param  \databox_descriptionStructure $meta_struct
+     *
      * @return array
      */
     private function list_databox_metadatas_fields(\databox_descriptionStructure $meta_struct)
@@ -2022,33 +1529,15 @@ class V1 implements ControllerProviderInterface
     }
 
     /**
-     * Retirve informations about one \databox metadata field
+     * Retrieve informations about one \databox metadata field
      *
      * @param  \databox_field $databox_field
+     *
      * @return array
      */
     private function list_databox_metadata_field_properties(\databox_field $databox_field)
     {
-        return [
-            'id'               => $databox_field->get_id(),
-            'namespace'        => $databox_field->get_tag()->getGroupName(),
-            'source'           => $databox_field->get_tag()->getTagname(),
-            'tagname'          => $databox_field->get_tag()->getName(),
-            'name'             => $databox_field->get_name(),
-            'labels'           => [
-                'fr' => $databox_field->get_label('fr'),
-                'en' => $databox_field->get_label('en'),
-                'de' => $databox_field->get_label('de'),
-                'nl' => $databox_field->get_label('nl'),
-            ],
-            'separator'        => $databox_field->get_separator(),
-            'thesaurus_branch' => $databox_field->get_tbranch(),
-            'type'             => $databox_field->get_type(),
-            'indexable'        => $databox_field->is_indexable(),
-            'multivalue'       => $databox_field->is_multi(),
-            'readonly'         => $databox_field->is_readonly(),
-            'required'         => $databox_field->is_required(),
-        ];
+        return ['id' => $databox_field->get_id(), 'namespace' => $databox_field->get_tag()->getGroupName(), 'source' => $databox_field->get_tag()->getTagname(), 'tagname' => $databox_field->get_tag()->getName(), 'name' => $databox_field->get_name(), 'labels' => ['fr' => $databox_field->get_label('fr'), 'en' => $databox_field->get_label('en'), 'de' => $databox_field->get_label('de'), 'nl' => $databox_field->get_label('nl'),], 'separator' => $databox_field->get_separator(), 'thesaurus_branch' => $databox_field->get_tbranch(), 'type' => $databox_field->get_type(), 'indexable' => $databox_field->is_indexable(), 'multivalue' => $databox_field->is_multi(), 'readonly' => $databox_field->is_readonly(), 'required' => $databox_field->is_required(),];
     }
 
     private function authenticate(Application $app, Request $request)
@@ -2068,13 +1557,11 @@ class V1 implements ControllerProviderInterface
         $oAuth2Account = $token->getAccount();
         $oAuth2App = $oAuth2Account->getApplication();
 
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID
-            && !$app['conf']->get(['registry', 'api-clients', 'navigator-enabled'])) {
+        if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID && !$app['conf']->get(['registry', 'api-clients', 'navigator-enabled'])) {
             return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
         }
 
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
-            && ! $app['conf']->get(['registry', 'api-clients', 'office-enabled'])) {
+        if ($oAuth2App->getClientId() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID && !$app['conf']->get(['registry', 'api-clients', 'office-enabled'])) {
             return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
         }
 
@@ -2087,6 +1574,60 @@ class V1 implements ControllerProviderInterface
     {
         $user = $app['session']->get('token')->getAccount()->getUser();
         if (!$user->isAdmin()) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+    }
+
+    public function ensureAccessToDatabox(Request $request, Application $app)
+    {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        $databox = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'));
+
+        if (!$app['acl']->get($user)->has_access_to_sbas($databox->get_sbas_id())) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+    }
+
+    public function ensureCanAccessToRecord(Request $request, Application $app)
+    {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        $record = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'))->get_record($request->attributes->get('record_id'));
+        if (!$app['acl']->get($user)->has_access_to_record($record)) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+    }
+
+    public function ensureCanModifyRecord(Request $request, Application $app)
+    {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        if (!$app['acl']->get($user)->has_right('modifyrecord')) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+    }
+
+    public function ensureCanModifyRecordStatus(Request $request, Application $app)
+    {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        $record = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'))->get_record($request->attributes->get('record_id'));
+        if (!$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+    }
+
+    public function ensureCanSeeDataboxStructure(Request $request, Application $app)
+    {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        $databox = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'));
+        if (!$app['acl']->get($user)->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct')) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+    }
+
+    public function ensureCanMoveRecord(Request $request, Application $app)
+    {
+        $user = $app['session']->get('token')->getAccount()->getUser();
+        $record = $app['phraseanet.appbox']->get_databox($request->attributes->get('databox_id'))->get_record($request->attributes->get('record_id'));
+        if ((!$app['acl']->get($user)->has_right('addrecord') && !$app['acl']->get($user)->has_right('deleterecord')) || !$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'candeleterecord')) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
     }

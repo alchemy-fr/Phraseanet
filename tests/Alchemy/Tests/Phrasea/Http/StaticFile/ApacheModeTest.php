@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Http\StaticFile;
 use Alchemy\Phrasea\Http\StaticFile\Apache;
 use Symfony\Component\HttpFoundation\Request;
 
-class ApacheModeTest extends \PhraseanetPHPUnitAbstract
+class ApacheModeTest extends \PhraseanetWebTestCase
 {
     public function testGetVirtualHost()
     {

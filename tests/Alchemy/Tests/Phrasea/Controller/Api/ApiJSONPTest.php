@@ -39,7 +39,7 @@ class ApiJSONPTest extends ApiTestCase
 
     protected function unserialize($data)
     {
-        if (strpos($data, 'jsFunction(') !== 0) {
+        if (strpos($data, 'jsFunction(') !== 4) {
             $this->fail('Invalid JSONP response');
         }
 
@@ -47,7 +47,7 @@ class ApiJSONPTest extends ApiTestCase
             $this->fail('Invalid JSONP response');
         }
 
-        return json_decode(substr($data, 11, -2), true);
+        return json_decode(substr($data, 15, -2), true);
     }
 
     protected function getAcceptMimeType()

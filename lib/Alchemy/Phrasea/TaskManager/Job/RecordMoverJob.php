@@ -240,17 +240,19 @@ class RecordMoverJob extends AbstractJob
         }
 
         // set status ?
-        $x = $sxtask->to->status['mask'];
+        $x = trim($sxtask->to->status['mask']);
+        $x = preg_replace('/[^0-1]/', 'x', $x);
+
         $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));
         $ma = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $x)));
         if ($mx && $ma) {
-            $tws[] = '((status ^ ' . $connbas->quote('0b'.$mx) . ') & ' . $connbas->quote('0b'.$ma) . ')!=0';
+            $tws[] = '((status ^ 0b' . $mx . ') & 0b' . $ma . ')!=0';
         }
         elseif ($mx) {
-            $tws[] = '(status ^ ' . $connbas->quote('0b'.$mx) . ')!=0';
+            $tws[] = '(status ^ 0b' . $mx . ')!=0';
         }
         elseif ($ma) {
-            $tws[] = '(status & ' . $connbas->quote('0b'.$ma) . ')!=0';
+            $tws[] = '(status & 0b' . $ma . ')!=0';
         }
 
         // compute the 'where' clause
@@ -432,15 +434,17 @@ class RecordMoverJob extends AbstractJob
         }
 
         // criteria <status mask="XXXXX" />
-        $x = $sxtask->from->status['mask'];
+        $x = trim($sxtask->from->status['mask']);
+        $x = preg_replace('/[^0-1]/', 'x', $x);
+
         $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));
         $ma = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $x)));
         if ($mx && $ma) {
-            $tw[] = '((status ^ ' . $connbas->quote('0b'.$mx) . ') & ' . $connbas->quote('0b'.$ma) . ')=0';
+            $tw[] = '((status ^ 0b'. $mx . ') & 0b'. $ma . ')=0';
         } elseif ($mx) {
-            $tw[] = '(status ^ ' . $connbas->quote('0b'.$mx) . ')=0';
+            $tw[] = '(status ^ 0b' . $mx . ')=0';
         } elseif ($ma) {
-            $tw[] = '(status & ' . $connbas->quote('0b'.$ma) . ")=0";
+            $tw[] = '(status & 0b' . $ma . ")=0";
         }
 
         return array($tw, $join);
