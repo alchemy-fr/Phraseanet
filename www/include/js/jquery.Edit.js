@@ -381,7 +381,7 @@
                 arrayValues.push(values[v].getValue());
             }
 
-            return arrayValues.join(' ' + this.databoxField.getSeparator() + ' ');
+            return arrayValues.join(' ; ');
         },
         replaceValue: function (search, replace) {
 

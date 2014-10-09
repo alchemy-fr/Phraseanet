@@ -109,16 +109,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/prod/', $response->headers->get('location'));
     }
 
-    public function testLoginRedirectPostLog()
-    {
-        $this->logout(self::$DI['app']);
-
-        self::$DI['client']->request('GET', '/login/', ['postlog'  => '1', 'redirect' => 'prod']);
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/logout/?redirect=prod', $response->headers->get('location'));
-    }
-
     /**
      * @dataProvider provideFlashMessages
      */

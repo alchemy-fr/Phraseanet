@@ -52,9 +52,8 @@ class Prod extends Helper
                 ];
             }
 
-            $meta_struct = $databox->get_meta_structure();
-            foreach ($meta_struct as $meta) {
-                if ( ! $meta->is_indexable())
+            foreach ($databox->get_meta_structure() as $fieldMeta) {
+                if (!$fieldMeta->is_indexable()) {
                     continue;
                 $id = $meta->get_id();
                 $name = $meta->get_name();
@@ -64,9 +63,30 @@ class Prod extends Helper
                     else
                         $dates[$id] = ['sbas' => [$sbas_id], 'fieldname' => $name];
                 }
+                $id = $fieldMeta->get_id();
+                $name = $fieldMeta->get_name();
+                $type = $fieldMeta->get_type();
+
+                $data = array('sbas' => array($sbasId), 'fieldname' => $name, 'type' => $type, 'id' => $id);
+
+                if ($fieldMeta->get_type() === \databox_field::TYPE_DATE) {
+                    if (isset($dates[$id])) {
+                        $dates[$id]['sbas'][] = $sbasId;
+                    } else {
+                        $dates[$id] = $data;
+                    }
+                }
+
+                if ($fieldMeta->get_type() == \databox_field::TYPE_NUMBER || $fieldMeta->get_type() === \databox_field::TYPE_DATE) {
+                    if (isset($sort[$id])) {
+                        $sort[$id]['sbas'][] = $sbasId;
+                    } else {
+                        $sort[$id] = $data;
+                    }
+                }
 
                 if (isset($fields[$name])) {
-                    $fields[$name]['sbas'][] = $sbas_id;
+                    $fields[$name]['sbas'][] = $sbasId;
                 } else {
                     $fields[$name] = [
                         'sbas' => [$sbas_id]
@@ -77,7 +97,7 @@ class Prod extends Helper
                 }
             }
 
-            if (! $bases[$sbas_id]['thesaurus']) {
+            if (!$bases[$sbasId]['thesaurus']) {
                 continue;
             }
             if ( ! $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
@@ -85,15 +105,16 @@ class Prod extends Helper
             }
 
             if (false !== simplexml_load_string($databox->get_cterms())) {
-                $bases[$sbas_id]['cterms'] = true;
+                $bases[$sbasId]['cterms'] = true;
             }
         }
 
-        $search_datas['fields'] = $fields;
-        $search_datas['dates'] = $dates;
-        $search_datas['bases'] = $bases;
+        $searchData['fields'] = $fields;
+        $searchData['dates'] = $dates;
+        $searchData['bases'] = $bases;
+        $searchData['sort'] = $sort;
 
-        return $search_datas;
+        return $searchData;
     }
 
     public function getRandom()

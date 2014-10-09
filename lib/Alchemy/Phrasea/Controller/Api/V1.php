@@ -1089,25 +1089,13 @@ class V1 implements ControllerProviderInterface
 
         $record->set_metadatas($metadatas);
 
-        return Result::create($request, ["record_metadatas" => $this->list_record_caption($record->get_caption())])->createResponse();
-    }
-
-    public function set_record_status(Application $app, Request $request, $databox_id, $record_id)
-    {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-        $record = $databox->get_record($record_id);
-        $status_bits = $databox->get_statusbits();
-
-        $status = $request->get('status');
-
-        $datas = strrev($record->get_status());
-
-        if (!is_array($status)) {
-            return $this->getBadRequest($app, $request);
-        }
-        foreach ($status as $n => $value) {
-            if ($n > 31 || $n < 4) {
-                return $this->getBadRequest($app, $request);
+        /**
+         * Check wether the current user is Admin or not
+         */
+        $mustBeAdmin = function (Request $request) use ($app) {
+            $user = $app['token']->get_account()->get_user();
+            if (!$user->ACL()->is_admin()) {
+                throw new \API_V1_exception_unauthorized('You are not authorized');
             }
             if (!in_array($value, ['0', '1'])) {
                 return $this->getBadRequest($app, $request);
@@ -1116,8 +1104,19 @@ class V1 implements ControllerProviderInterface
                 return $this->getBadRequest($app, $request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
-        }
+        /**
+         * Get scheduler informations
+         *
+         * Route : /monitor/scheduler/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *
+         */
+        $controllers->get('/monitor/scheduler/', function (SilexApplication $app, Request $request) {
+            return $app['api']->get_scheduler($app)->get_response();
+        })->before($mustBeAdmin);
 
         $record->set_binary_status(strrev($datas));
         $app['phraseanet.SE']->updateRecord($record);
@@ -1163,13 +1162,19 @@ class V1 implements ControllerProviderInterface
         try {
             $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
-            return Result::create($request, ['record' => $this->list_record($app, $record)])->createResponse();
-        } catch (NotFoundHttpException $e) {
-            return Result::createError($request, 404, $app->trans('Record Not Found'))->createResponse();
-        } catch (\Exception $e) {
-            return $this->getBadRequest($app, $request, $app->trans('An error occured'));
-        }
-    }
+        /**
+         * Route /databoxes/DATABOX_ID/collections/
+         *
+         * Method : GET
+         *
+         * Parameters ;
+         *    DATABOX_ID : required INT
+         */
+        $controllers->get('/databoxes/{databox_id}/collections/', function (SilexApplication $app, $databox_id) {
+            return $app['api']
+                    ->get_databox_collections($app['request'], $databox_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+');
 
     /**
      * Return detailed informations about one story
@@ -1184,13 +1189,20 @@ class V1 implements ControllerProviderInterface
         try {
             $story = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($story_id);
 
-            return Result::create($request, ['story' => $this->list_story($app, $request, $story)])->createResponse();
-        } catch (NotFoundHttpException $e) {
-            return Result::createError($request, 404, $app->trans('Story Not Found'))->createResponse();
-        } catch (\Exception $e) {
-            return $this->getBadRequest($app, $request, $app->trans('An error occured'));
-        }
-    }
+        /**
+         * Route /databoxes/DATABOX_ID/status/
+         *
+         * Method : GET
+         *
+         * Parameters ;
+         *    DATABOX_ID : required INT
+         *
+         */
+        $controllers->get('/databoxes/{databox_id}/status/', function (SilexApplication $app, $databox_id) {
+            return $app['api']
+                    ->get_databox_status($app['request'], $databox_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+');
 
     /**
      * Return the baskets list of the authenticated user
@@ -1233,15 +1245,25 @@ class V1 implements ControllerProviderInterface
             return $this->getBadRequest($app, $request, 'Missing basket name parameter');
         }
 
-        $Basket = new Basket();
-        $Basket->setUser($app['authentication']->getUser());
-        $Basket->setName($name);
+        $controllers->get('/quarantine/list/', function (SilexApplication $app, Request $request) {
+            return $app['api']->list_quarantine($app, $request)->get_response();
+        });
 
-        $app['EM']->persist($Basket);
-        $app['EM']->flush();
+        $controllers->get('/quarantine/item/{lazaret_id}/', function ($lazaret_id, SilexApplication $app, Request $request) {
+            return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
+        });
 
-        return Result::create($request, ["basket" => $this->list_basket($app, $Basket)])->createResponse();
-    }
+        /**
+         * Route : /records/add/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *
+         */
+        $controllers->post('/records/add/', function (SilexApplication $app, Request $request) {
+            return $app['api']->add_record($app, $request)->get_response();
+        });
 
     /**
      * Delete a basket
@@ -1258,42 +1280,49 @@ class V1 implements ControllerProviderInterface
         return $this->search_baskets($app, $request);
     }
 
-    /**
-     * Retrieve a basket
-     *
-     * @param  Request  $request
-     * @param  Basket   $basket
-     * @return Response
-     */
-    public function get_basket(Application $app, Request $request, Basket $basket)
-    {
-        $ret = [
-            "basket"          => $this->list_basket($app, $basket),
-            "basket_elements" => $this->list_basket_content($app, $basket)
-        ];
+        $controllers->get('/records/{databox_id}/{record_id}/caption/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->caption_records($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         return Result::create($request, $ret)->createResponse();
     }
 
-    public function get_current_user(Application $app, Request $request)
-    {
-        $ret = ["user" => $this->list_user($app['authentication']->getUser())];
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/metadatas/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->get_record_metadatas($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         return Result::create($request, $ret)->createResponse();
     }
 
-    /**
-     * Retrieve elements of one basket
-     *
-     * @param  Basket $Basket
-     * @return type
-     */
-    private function list_basket_content(Application $app, Basket $Basket)
-    {
-        return array_map(function (BasketElement $element) use ($app) {
-            return $this->list_basket_element($app, $element);
-        }, iterator_to_array($Basket->getElements()));
-    }
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/status/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->get('/records/{databox_id}/{record_id}/status/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->get_record_status($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
     /**
      * Retrieve detailled informations about a basket element
@@ -1310,10 +1339,21 @@ class V1 implements ControllerProviderInterface
             'validation_item'   => null != $basket_element->getBasket()->getValidation(),
         ];
 
-        if ($basket_element->getBasket()->getValidation()) {
-            $choices = [];
-            $agreement = null;
-            $note = '';
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/related/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->get('/records/{databox_id}/{record_id}/related/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->get_record_related($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
                 $participant = $validation_datas->getParticipant();
@@ -1334,37 +1374,78 @@ class V1 implements ControllerProviderInterface
                     'note'           => null === $validation_datas->getNote() ? '' : $validation_datas->getNote(),
                 ];
 
-                if ($user->getId() == $app['authentication']->getUser()->getId()) {
-                    $agreement = $validation_datas->getAgreement();
-                    $note = null === $validation_datas->getNote() ? '' : $validation_datas->getNote();
-                }
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/embed/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->get('/records/{databox_id}/{record_id}/embed/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->get_record_embed($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
                 $ret['validation_choices'] = $choices;
             }
 
-            $ret['agreement'] = $agreement;
-            $ret['note'] = $note;
-        }
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/setmetadatas/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->set_record_metadatas($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         return $ret;
     }
 
-    /**
-     * Change the name of one basket
-     *
-     * @param  Request  $request
-     * @param  Basket   $basket
-     * @return Response
-     */
-    public function set_basket_title(Application $app, Request $request, Basket $basket)
-    {
-        $basket->setName($request->get('name'));
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/setstatus/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->set_record_status($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $app['EM']->persist($basket);
         $app['EM']->flush();
 
-        return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
-    }
+        /**
+         * Route : /records/DATABOX_ID/RECORD_ID/setcollection/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->set_record_collection($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
     /**
      * Change the description of one basket
@@ -1377,8 +1458,11 @@ class V1 implements ControllerProviderInterface
     {
         $basket->setDescription($request->get('description'));
 
-        $app['EM']->persist($basket);
-        $app['EM']->flush();
+        $controllers->get('/records/{databox_id}/{record_id}/', function (SilexApplication $app, $databox_id, $record_id) {
+            return $app['api']
+                    ->get_record($app['request'], $databox_id, $record_id)
+                    ->get_response();
+        })->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
     }
@@ -1441,10 +1525,17 @@ class V1 implements ControllerProviderInterface
 
         $feed = Aggregate::createFromUser($app, $user, $restrictions);
 
-        $offset_start = (int) ($request->get('offset_start') ? : 0);
-        $per_page = (int) ($request->get('per_page') ? : 5);
+        $controllers->get('/feeds/content/', function (SilexApplication $app) {
+            return $app['api']
+                    ->get_publications($app['request'], $app['authentication']->getUser())
+                    ->get_response();
+        });
 
-        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 20;
+        $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
+            return $app['api']
+                    ->get_feed_entry($app['request'], $entry_id, $app['authentication']->getUser())
+                    ->get_response();
+        })->assert('entry_id', '\d+');
 
         $data = [
             'total_entries' => $feed->getCountTotalEntries(),
@@ -1462,9 +1553,18 @@ class V1 implements ControllerProviderInterface
         $entry = $app['repo.feed-entries']->find($entry_id);
         $collection = $entry->getFeed()->getCollection($app);
 
-        if (null !== $collection && !$app['acl']->get($user)->has_access_to_base($collection->get_base_id())) {
-            return Result::createError($request, 403, 'You have not access to the parent feed')->createResponse();
-        }
+        /**
+         * Route : /stories/DATABOX_ID/RECORD_ID/embed/
+         *
+         * Method : GET
+         *
+         * Parameters :
+         *    DATABOX_ID : required INT
+         *    RECORD_ID : required INT
+         *
+         */
+        $controllers->get('/stories/{databox_id}/{story_id}/embed/', function ($databox_id, $story_id) use ($app) {
+                $result = $app['api']->get_story_embed($app['request'], $databox_id, $story_id);
 
         return Result::create($request, ['entry' => $this->list_publication_entry($app, $entry)])->createResponse();
     }
@@ -1565,12 +1665,7 @@ class V1 implements ControllerProviderInterface
             if ($media->get_name() !== 'document' && false === $app['acl']->get($app['authentication']->getUser())->has_access_to_subdef($record, $media->get_name())) {
                 return null;
             }
-            if ($media->get_name() === 'document'
-                && !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldhd')
-                    && !$app['acl']->get($app['authentication']->getUser())->has_hd_grant($record)) {
-                return null;
-            }
-        }
+        )->assert('databox_id', '\d+')->assert('story_id', '\d+');
 
         if ($media->get_permalink() instanceof \media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink());
@@ -1578,29 +1673,11 @@ class V1 implements ControllerProviderInterface
             $permalink = null;
         }
 
-        return [
-            'name'        => $media->get_name(),
-            'permalink'   => $permalink,
-            'height'      => $media->get_height(),
-            'width'       => $media->get_width(),
-            'filesize'    => $media->get_size(),
-            'devices'     => $media->getDevices(),
-            'player_type' => $media->get_type(),
-            'mime_type'   => $media->get_mime(),
-        ];
-    }
+        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
+            $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
 
-    /**
-     * Retrieve detailled information about one permalink
-     *
-     * @param media_Permalink_Adapter $permalink
-     *
-     * @return type
-     */
-    private function list_permalink(\media_Permalink_Adapter $permalink)
-    {
-        $downloadUrl = $permalink->get_url();
-        $downloadUrl->getQuery()->set('download', '1');
+            return $result->get_response();
+        })->assert('databox_id', '\d+')->assert('story_id', '\d+');
 
         return [
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
@@ -1615,24 +1692,15 @@ class V1 implements ControllerProviderInterface
         ];
     }
 
-    /**
-     * Retrieve detailled information about one status
-     *
-     * @param  \databox $databox
-     * @param  string   $status
-     * @return array
-     */
-    private function list_record_status(\databox $databox, $status)
-    {
-        $status = strrev($status);
+        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
+            $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
 
-        $ret = [];
-        foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[] = ['bit'   => $bit, 'state' => !!substr($status, ($bit - 1), 1)];
-        }
+            return $result->get_response();
+        })->assert('databox_id', '\d+')->assert('story_id', '\d+');
+        $controllers->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
 
-        return $ret;
-    }
+        $controllers->get('/me/', function (SilexApplication $app, Request $request) {
+            $result = $app['api']->get_current_user($app, $request);
 
     /**
      * List all field about a specified caption
