@@ -93,18 +93,6 @@ $(document).ready(function () {
 
 });
 
-
-function login(what) {
-    if (confirm(language.confirmRedirectAuth)) {
-        if (what != undefined) {
-            EcrireCookie('last_act', what, null, '/');
-        }
-        self.location.replace('/login/?postlog=1');
-    }
-    return false;
-}
-
-
 function EcrireCookie(nom, valeur) {
     var argv = EcrireCookie.arguments;
     var argc = EcrireCookie.arguments.length;
