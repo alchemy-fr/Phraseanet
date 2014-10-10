@@ -18,6 +18,10 @@
     <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
     <script type="text/javascript">
+
+        // Web socket flash fallback location
+        WEB_SOCKET_SWF_LOCATION = "/assets/web-socket-js/WebSocketMain.swf";
+
         var p4 = p4 || {};
         p4.users = {sel:[]};
 
