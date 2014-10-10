@@ -59,6 +59,8 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 
     public function startTest(PHPUnit_Framework_Test $test)
     {
+        echo $test->getName();
+        return;
         printf("'%s' started\n", self::generateName($test));
         if (!static::$enableDurationCapture) {
             return;
@@ -78,6 +80,7 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
+        return;
         if (!static::$enableDurationCapture) {
             return;
         }
