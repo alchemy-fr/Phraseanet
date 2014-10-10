@@ -41,6 +41,8 @@ class Nginx extends AbstractStaticMode implements StaticFileModeInterface
         $output = "\n";
         $output .= "    location " . $this->mapping['mount-point']. " {\n";
         $output .= "        alias ".$this->mapping['directory'].";\n";
+        $output .= "        types        { }";
+        $output .= "        default_type image/jpeg;";
         $output .= "    }\n";
 
         return $output;
