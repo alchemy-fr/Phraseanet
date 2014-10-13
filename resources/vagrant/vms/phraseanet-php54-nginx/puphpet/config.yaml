@@ -190,7 +190,6 @@ php:
             - zip
             - json
             - amqp
-            - mongo
             - APC
     ini:
         display_errors: On
@@ -256,7 +255,7 @@ sqlite:
     adminer: '0'
     databases: {  }
 mongodb:
-    install: '1'
+    install: '0'
     settings:
         auth: 1
         port: '27017'
