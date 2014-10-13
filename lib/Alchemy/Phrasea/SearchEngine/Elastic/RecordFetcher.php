@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Doctrine\DBAL\Connection;
 use databox;
 use PDO;
 
@@ -56,8 +57,8 @@ class RecordFetcher
         }
 
         // Fetch metadata
-        $statementMetadata = $this->statementMetadata();
-        $statementMetadata->execute(['ids' => implode(',', array_keys($records))]);
+        $statementMetadata = $this->execStatementMetadata(array_keys($records));
+
         while ($metadata = $statementMetadata->fetch()) {
             // Store metadata value
             $value = $metadata['metadata_value'];
@@ -149,26 +150,21 @@ SQL;
         return $this->statementRecords;
     }
 
-    private function statementMetadata()
+    private function execStatementMetadata($ids)
     {
-        if (!$this->statementMetadata) {
-            $sql = <<<SQL
-                SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, 'caption' AS metadata_type, ms.business AS metadata_private
-                FROM metadatas AS m
-                INNER JOIN metadatas_structure AS ms ON (ms.id = m.meta_struct_id)
-                WHERE record_id IN (:ids)
+        $sql = <<<SQL
+            (SELECT record_id, ms.name AS metadata_key, m.value AS metadata_value, 'caption' AS metadata_type, ms.business AS metadata_private
+            FROM metadatas AS m
+            INNER JOIN metadatas_structure AS ms ON (ms.id = m.meta_struct_id)
+            WHERE record_id IN (?))
 
-                UNION
+            UNION
 
-                SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, 'exif' AS metadata_type, 0 AS metadata_private
-                FROM technical_datas AS t
-                WHERE record_id IN (:ids)
+            (SELECT record_id, t.name AS metadata_key, t.value AS metadata_value, 'exif' AS metadata_type, 0 AS metadata_private
+            FROM technical_datas AS t
+            WHERE record_id IN (?))
 SQL;
 
-            $statement = $this->connection->prepare($sql);
-            $this->statementMetadata = $statement;
-        }
-
-        return $this->statementMetadata;
+        return $this->connection->executeQuery($sql, array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
     }
 }
