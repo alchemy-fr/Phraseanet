@@ -202,7 +202,7 @@ class RecordIndexer
                 // Business rules
                 $field['private'] = $fieldStructure->isBusiness();
                 $field['indexable'] = $fieldStructure->is_indexable();
-                $field['to_aggregate'] = false; // @todo, dev in progress
+                $field['to_aggregate'] = (bool) $fieldStructure->isAggregable();
 
                 // Thesaurus concept inference
                 // $xpath = "/thesaurus/te[@id='T26'] | /thesaurus/te[@id='T24']";
