@@ -404,7 +404,8 @@ class ElasticSearchEngine implements SearchEngineInterface
         $params = [
             'index' => $this->indexName,
             'type'  => TermIndexer::TYPE_NAME,
-            'body'  => []
+            'body'  => [],
+            'size'  => 20,
         ];
 
         $params['body']['query'] = $query;
