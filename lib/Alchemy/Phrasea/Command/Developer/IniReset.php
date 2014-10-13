@@ -112,7 +112,7 @@ class IniReset extends Command
         }
 
         // get data paths
-        $dataPath = $this->container['phraseanet.registry']->get('GV_base_datapath_noweb', $this->container['root.path'].'/datas');
+        $dataPath = $this->container['conf']->get(['main', 'storage', 'subdefs'], $this->container['root.path'].'/datas');
 
         $schema = $this->container['EM']->getConnection()->getSchemaManager();
         $output->writeln('Creating database "'.$dbs['ab'].'"...<info>OK</info>');
@@ -122,11 +122,27 @@ class IniReset extends Command
 
         // inject v3.1 fixtures
         if ($input->getOption('run-patches')) {
-            $this->container['filesystem']->copy($this->container['root.path'].'/hudson/connexion.inc', $this->container['root.path'].'/config/connexion.inc');
-            $this->container['filesystem']->copy($this->container['root.path'].'/hudson/_GV.php', $this->container['root.path'].'/config/_GV.php');
+            $content = file_get_contents($this->container['root.path'].'/resources/hudson/connexion.inc');
 
-            $content = file_get_contents($this->container['root.path'] . '/hudson/fixtures.sql');
+            $content = str_replace('{{dbname}}', $conf['main']['database']['dbname'], $content);
+            $content = str_replace('{{hostname}}', $conf['main']['database']['host'], $content);
+            $content = str_replace('{{port}}', $conf['main']['database']['port'], $content);
+            $content = str_replace('{{user}}', $conf['main']['database']['user'], $content);
+            $content = str_replace('{{password}}', $conf['main']['database']['password'], $content);
+
+            $tmpFile = tempnam(sys_get_temp_dir(), 'connexion.inc-v3.1-');
+            $this->container['filesystem']->dumpFile($tmpFile, $content);
+
+            $this->container['filesystem']->copy($tmpFile, $this->container['root.path'].'/config/connexion.inc');
+            $this->container['filesystem']->copy($this->container['root.path'].'/resources/hudson/_GV.php', $this->container['root.path'].'/config/_GV.php');
+
+            $content = file_get_contents($this->container['root.path'] . '/resources/hudson/fixtures.sql');
             $content = str_replace('{{APPLICATION_BOX}}', $dbs['ab'], $content);
+            $content = str_replace('{{DATA_BOX}}', $dbName, $content);
+            $content = str_replace('{{DB_HOST}}', $conf['main']['database']['host'], $content);
+            $content = str_replace('{{DB_PORT}}', $conf['main']['database']['port'], $content);
+            $content = str_replace('{{DB_USER}}', $conf['main']['database']['user'], $content);
+            $content = str_replace('{{DB_PASSWORD}}', $conf['main']['database']['password'], $content);
             $content = str_replace('{{DATA_BOX}}', $dbName, $content);
             $content = str_replace('{{USER_EMAIL}}', $input->getOption('email'), $content);
             $content = str_replace('{{USER_PASSWORD}}', hash('sha256', $input->getOption('password')), $content);
@@ -191,7 +207,7 @@ class IniReset extends Command
         ));
         $command->run($input, $output);
 
-        $this->container['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
+        $this->container['conf']->set(['main', 'storage', 'subdefs'], $dataPath);
 
         return 0;
     }

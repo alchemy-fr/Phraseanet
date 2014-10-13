@@ -379,8 +379,9 @@ class RegenerateSqliteDb extends Command
     private function generateCollection(\Pimple $DI)
     {
         $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
+        $databoxes = $this->container['phraseanet.appbox']->get_databoxes();
 
-        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($databoxes as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 if ($collection_no_acces instanceof \collection && !$collection_no_acces_by_status) {
                     $collection_no_acces_by_status = $collection;
@@ -403,13 +404,13 @@ class RegenerateSqliteDb extends Command
         $DI['coll'] = $coll;
 
         if (!$collection_no_acces instanceof collection) {
-            $collection_no_acces = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'BIBOO', $DI['user']);
+            $collection_no_acces = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'COLL_TEST_NO_ACCESS', $DI['user']);
         }
 
         $DI['coll_no_access'] = $collection_no_acces;
 
         if (!$collection_no_acces_by_status instanceof collection) {
-            $collection_no_acces_by_status = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'BIBOONOACCESBYSTATUS', $DI['user']);
+            $collection_no_acces_by_status = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'COLL_TEST_NO_ACCESS_BY_STATUS', $DI['user']);
         }
 
         $DI['coll_no_status'] = $collection_no_acces_by_status;

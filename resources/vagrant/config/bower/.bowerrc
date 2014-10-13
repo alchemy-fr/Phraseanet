@@ -1,4 +1,4 @@
 {
-    "directory" : "tmp-assets",
+    "directory": "www/assets",
     "interactive": false
 }

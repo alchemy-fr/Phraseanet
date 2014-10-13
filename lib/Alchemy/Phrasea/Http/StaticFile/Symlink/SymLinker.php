@@ -27,19 +27,17 @@ class SymLinker
     protected $encoder;
     protected $fs;
     protected $symlinkDir;
-    protected $registry;
 
     public static function create(Application $app)
     {
         return new SymLinker(
             $app['phraseanet.thumb-symlinker-encoder'],
             $app['filesystem'],
-            $app['phraseanet.registry'],
             isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : $app['root.path'] . '/tmp/symlinks'
         );
     }
 
-    public function __construct(SymLinkerEncoder $encoder, Filesystem $fs, \registryInterface $registry, $symlinkDir)
+    public function __construct(SymLinkerEncoder $encoder, Filesystem $fs, $symlinkDir)
     {
         $this->encoder = $encoder;
         $this->fs = $fs;

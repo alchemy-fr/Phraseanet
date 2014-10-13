@@ -496,7 +496,7 @@ class Migration31 implements MigrationInterface
 
         $stmt->execute([
             ':key'   => 'GV_sit',
-            ':value' => GV_sit,
+            ':value' => constant("GV_sit"),
             ':type'  => 'string',
         ]);
 
@@ -505,7 +505,6 @@ class Migration31 implements MigrationInterface
         rename(__DIR__ . '/../../../../../../config/_GV.php', __DIR__ . '/../../../../../../config/_GV.php.old');
         $servername = defined('GV_ServerName') ? constant('GV_ServerName') : '';
         file_put_contents(__DIR__ . '/../../../../../../config/config.inc', "<?php\n\$servername = \"" . str_replace('"', '\"', $servername) . "\";\n");
-
         return;
     }
 }

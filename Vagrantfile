@@ -7,7 +7,7 @@ end
 root = File.dirname(File.expand_path(__FILE__))
 
 Vagrant.configure("2") do |config|
-    Dir.glob(root+"/vagrant/vms/**/puphpet/config.yaml").each do|f|
+    Dir.glob(root+"/resources/vagrant/vms/**/puphpet/config.yaml").each do|f|
         dir = File.dirname(File.expand_path(f+"/.."))
         base_path = dir
         configValues = YAML.load_file(f)
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
             end
 
             if data['vm']['network']['private_network'].to_s != ''
-                node.vm.network "private_network", ip: "#{data['vm']['network']['private_network']}"
+                node.vm.network :private_network, ip: "#{data['vm']['network']['private_network']}"
             end
 
             data['vm']['network']['forwarded_port'].each do |i, port|

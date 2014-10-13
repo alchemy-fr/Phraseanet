@@ -583,20 +583,16 @@ class databox extends base
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ($row)
+        if ($row) {
             $ord = $row['ord'] + 1;
+        }
+
+        $params[':ord'] = $ord;
 
         $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([
-            ':ord'      => $ord
-            , ':host'     => $host
-            , ':port'     => $port
-            , ':dbname'   => $dbname
-            , ':user'     => $user
-            , ':password' => $password
-        ]);
+        $stmt->execute($params);
         $stmt->closeCursor();
         $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
 

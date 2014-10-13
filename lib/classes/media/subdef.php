@@ -765,7 +765,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             . "/" . $this->record->get_record_id() . "/"
             . $this->get_name() . "/");
 
-
         return;
     }
 

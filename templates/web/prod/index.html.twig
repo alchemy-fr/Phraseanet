@@ -340,7 +340,7 @@
                                             <select name="sort" class="input-small">
                                                 <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "No sort"|trans }}</option>
                                                 {% for sort in search_datas['sort'] %}
-                                                <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
+                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
                                                 {% endfor %}
                                             </select>
                                             <select name="ord" class="input-medium">
@@ -423,7 +423,7 @@
                                                                         {% set date_field_names = date_field_names|merge([field.fieldname]) %}
                                                                     {% endfor %}
                                                                     <option value="{{ date_field_names|join('|') }}" selected="selected">
-                                                                        {% trans 'rechercher dans tous les champs' %}
+                                                                        {{ 'rechercher dans tous les champs'| trans }}
                                                                     </option>
                                                                 </select>
                                                             </td>

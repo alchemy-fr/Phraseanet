@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 
 use Alchemy\Phrasea\Http\StaticFile\StaticFileFactory;
 
-class StaticFileFactoryTest extends \PhraseanetPHPUnitAbstract
+class StaticFileFactoryTest extends \PhraseanetWebTestCase
 {
     public function testFactoryCreation()
     {
