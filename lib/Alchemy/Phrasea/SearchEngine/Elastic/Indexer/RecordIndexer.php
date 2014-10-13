@@ -103,6 +103,7 @@ class RecordIndexer
         // Only search in the databox of the record itself
         $searchParams['body']['query']['filtered']['filter'] = array('term' => array('databox_id' => $record['databox_id']));
         $searchParams['body']['size'] = 20;
+        $searchParams['body']['fields'] = ['path'];
 
         $queryResponse = $client->search($searchParams);
 
