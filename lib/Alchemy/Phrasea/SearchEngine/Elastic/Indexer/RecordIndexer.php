@@ -102,6 +102,7 @@ class RecordIndexer
 
         // Only search in the databox of the record itself
         $searchParams['body']['query']['filtered']['filter'] = array('term' => array('databox_id' => $record['databox_id']));
+        $searchParams['body']['size'] = 20;
 
         $queryResponse = $client->search($searchParams);
 
@@ -187,7 +188,7 @@ class RecordIndexer
                         $field['type'] = 'date';
                         break;
                     case \databox_field::TYPE_NUMBER:
-                        $field['type'] = 'string'; // TODO integer, float, double ?
+                        $field['type'] = 'double';
                         break;
                     case \databox_field::TYPE_STRING:
                     case \databox_field::TYPE_TEXT:
