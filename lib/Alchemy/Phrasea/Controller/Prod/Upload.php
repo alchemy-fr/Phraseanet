@@ -248,7 +248,6 @@ class Upload implements ControllerProviderInterface
                 'id'      => $id,
             ];
         } catch (\Exception $e) {
-            throw $e;
             $datas['message'] = $app->trans('Unable to add file to Phraseanet');
         }
 
