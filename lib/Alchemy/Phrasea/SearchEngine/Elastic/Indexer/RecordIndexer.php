@@ -88,7 +88,7 @@ class RecordIndexer
             if (isset($record['caption'][$field]) && $options['thesaurus_concept_inference']) {
                 $shoulds[] = ["multi_match" => [
                     'fields' => $this->elasticSearchEngine->expendToAnalyzedFieldsNames(array('value', 'context')),
-                    'query'  => $record['caption'][$field],
+                    'query'  => is_string($record['caption'][$field]) ? mb_substr($record['caption'][$field], 0, 120) : $record['caption'][$field], // Cut short to avoid maxClauseCount
                     'operator' => 'and'
                 ]];
             }
