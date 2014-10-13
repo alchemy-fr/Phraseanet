@@ -57,32 +57,7 @@ class RecordFetcher
         }
 
         // Fetch metadata
-        $statementMetadata = $this->execStatementMetadata(array_keys($records));
-
-        while ($metadata = $statementMetadata->fetch()) {
-            // Store metadata value
-            $value = $metadata['metadata_value'];
-            $key = $metadata['metadata_key'];
-            $type = $metadata['metadata_type'];
-
-            // Do not keep empty values
-            if (empty($value)) {
-                continue;
-            }
-
-            if ($metadata['metadata_private']) {
-                $type = 'private_'.$type;
-            }
-
-            // Metadata can be multi-valued
-            if (!isset($records[$metadata['record_id']] [$type][$key])) {
-                $records[$metadata['record_id']] [$type][$key] = $value;
-            } elseif (is_array($records[$metadata['record_id']] [$type][$key])) {
-                $records[$metadata['record_id']] [$type][$key][] = $value;
-            } else {
-                $records[$metadata['record_id']] [$type][$key] = array($records[$metadata['record_id']] [$type][$key], $value);
-            }
-        }
+        $records = $this->addMetadataToRecords($records);
 
         // Hydrate records
         foreach ($records as $key => $record) {
@@ -90,6 +65,19 @@ class RecordFetcher
         }
 
         return $records;
+    }
+
+    public function fetchOne(\record_adapter $record_adapter)
+    {
+        $stmt = $this->statementRecord($record_adapter->get_record_id());
+        $stmt->execute();
+        $record = $stmt->fetchAll();
+        $records = $this->addMetadataToRecords($record);
+        foreach ($records as $key => $record) {
+            $records[$key] = $this->hydrate($record);
+        }
+
+        return array_pop($records);
     }
 
     public function setBatchSize($size)
@@ -150,6 +138,30 @@ SQL;
         return $this->statementRecords;
     }
 
+    private function statementRecord($id)
+    {
+        $sql = <<<SQL
+        SELECT r.record_id
+             , r.coll_id as collection_id
+             , r.uuid
+             , BIN(r.status) as bin_status
+             , r.sha256 -- TODO rename in "hash"
+             , r.originalname as original_name
+             , r.mime
+             , r.type
+             , r.parent_record_id
+             , r.credate as created_on
+             , r.moddate as updated_on
+                FROM record r
+                WHERE r.record_id = :id
+SQL;
+
+        $statement = $this->connection->prepare($sql);
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+
+        return $statement;
+    }
+
     private function execStatementMetadata($ids)
     {
         $sql = <<<SQL
@@ -166,5 +178,37 @@ SQL;
 SQL;
 
         return $this->connection->executeQuery($sql, array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
+    }
+
+    private function addMetadataToRecords($records)
+    {
+        $statementMetadata = $this->execStatementMetadata(array_keys($records));
+
+        while ($metadata = $statementMetadata->fetch()) {
+            // Store metadata value
+            $value = $metadata['metadata_value'];
+            $key = $metadata['metadata_key'];
+            $type = $metadata['metadata_type'];
+
+            // Do not keep empty values
+            if (empty($value)) {
+                continue;
+            }
+
+            if ($metadata['metadata_private']) {
+                $type = 'private_'.$type;
+            }
+
+            // Metadata can be multi-valued
+            if (!isset($records[$metadata['record_id']] [$type][$key])) {
+                $records[$metadata['record_id']] [$type][$key] = $value;
+            } elseif (is_array($records[$metadata['record_id']] [$type][$key])) {
+                $records[$metadata['record_id']] [$type][$key][] = $value;
+            } else {
+                $records[$metadata['record_id']] [$type][$key] = array($records[$metadata['record_id']] [$type][$key], $value);
+            }
+        }
+
+        return $records;
     }
 }

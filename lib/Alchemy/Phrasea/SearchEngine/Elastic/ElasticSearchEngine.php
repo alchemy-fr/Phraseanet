@@ -184,7 +184,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function addRecord(\record_adapter $record)
     {
-        $this->app['elasticsearch.indexer.record_indexer']->indexSingleRecord($record);
+        $this->app['elasticsearch.indexer.record_indexer']->indexSingleRecord($record, $this->indexName);
 
         return $this;
 

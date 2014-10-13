@@ -42,6 +42,8 @@ class RecordIndexer
      */
     private $locales;
 
+    private $dataStructure;
+
     public function __construct(Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox, array $locales)
     {
         $this->thesaurus = $thesaurus;
@@ -54,27 +56,38 @@ class RecordIndexer
     {
         // Helper to fetch record related data
         $recordHelper = new RecordHelper($this->appbox);
-        $structure = $this->getFieldsStructure();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             $fetcher = new RecordFetcher($databox, $recordHelper);
             $fetcher->setBatchSize(200);
             while ($records = $fetcher->fetch()) {
                 foreach ($records as $record) {
-                    $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
                     $params = array();
                     $params['id'] = $record['id'];
                     $params['type'] = self::TYPE_NAME;
-                    $params['body'] = $this->sanitize($record);
+                    $params['body'] = $this->transform($record);
                     $bulk->index($params);
                 }
             }
         }
     }
 
-    /**
-     * @todo Handle field related concepts
-     */
+    public function indexSingleRecord(\record_adapter $record_adapter, $indexName)
+    {
+        // Helper to fetch record related data
+        $recordHelper = new RecordHelper($this->appbox);
+        $fetcher = new RecordFetcher($record_adapter->get_databox(), $recordHelper);
+        $record = $fetcher->fetchOne($record_adapter);
+
+        $params = array();
+        $params['id'] = $record['id'];
+        $params['type'] = self::TYPE_NAME;
+        $params['index'] = $indexName;
+        $params['body'] = $this->transform($record);
+
+        return $this->elasticSearchEngine->getClient()->index($params);
+    }
+
     private function findLinkedConcepts($structure, array $record)
     {
         $client = $this->elasticSearchEngine->getClient();
@@ -108,7 +121,9 @@ class RecordIndexer
         $queryResponse = $client->search($searchParams);
 
         foreach ($queryResponse['hits']['hits'] as $hit) {
-            $paths[] = $hit['_source']['path'];
+            foreach ($hit['fields']['path'] as $path) {
+                $paths[] = $path;
+            }
         }
 
         return array_values(array_unique($paths));
@@ -177,6 +192,10 @@ class RecordIndexer
 
     private function getFieldsStructure()
     {
+        if (!empty($this->dataStructure)) {
+            return $this->dataStructure;
+        }
+
         $fields = array();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
@@ -240,7 +259,8 @@ class RecordIndexer
             }
         }
 
-        return $fields;
+        $this->dataStructure = $fields;
+        return $this->dataStructure;
     }
 
     // @todo Add call to addAnalyzedVersion ?
@@ -307,10 +327,10 @@ class RecordIndexer
      * @todo complete, with all the other transformations
      * @param $record
      */
-    private function sanitize($record)
+    private function transform($record)
     {
         $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
-
+        $structure = $this->getFieldsStructure();
         $fullStatus = str_pad($record['bin_status'], 32, "0", STR_PAD_LEFT);
 
         foreach ($this->appbox->get_databoxes() as $databox) {
@@ -335,6 +355,8 @@ class RecordIndexer
                 continue;
             }
         }
+
+        $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
 
         return $record;
     }
