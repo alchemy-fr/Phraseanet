@@ -35,9 +35,8 @@ class RecordHelper
         $col = $this->collectionMap();
 
         if (isset($col[$databoxId])) {
-            $index = array_search($collectionId, $col[$databoxId]);
-            if ($index !== false) {
-                return (int) $index;
+            if (isset($col[$databoxId][$collectionId])) {
+                return (int) $col[$databoxId][$collectionId];
             }
         }
 
@@ -61,7 +60,6 @@ class RecordHelper
 
             $this->collectionMap = $map;
         }
-
 
         return $this->collectionMap;
     }
