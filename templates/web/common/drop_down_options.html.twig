@@ -1,40 +1,40 @@
 {% macro prod(record, entry_id)%}
     {% if not entry_id %}
         <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger"
-        id="contextTrigger_{{record.get_base_id}}_{{record.get_record_id}}">&#9660;</a>
+        id="contextTrigger_{{record.baseId}}_{{record.recordId}}">&#9660;</a>
         <table cellspacing="0" cellpadding="0" style="display:none;"
-            id="answerContext_{{record.get_base_id}}_{{record.get_record_id}}" class="contextMenu answercontextmenu">
+            id="answerContext_{{record.baseId}}_{{record.recordId}}" class="contextMenu answercontextmenu">
             <tbody>
             <tr>
             <td>
                 <div class="context-menu context-menu-theme-vista">
-                {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'canputinalbum') and not record.is_grouping() %}
+                {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.baseId, 'canputinalbum') and not record.story %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
-                        onclick="evt_add_in_chutier('{{record.get_sbas_id}}','{{record.get_record_id}}',false,this);return(false);">
+                        onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
                     {{ 'action : ajouter au panier' | trans }}
                     </div>
                 </div>
                 {% endif %}
-                {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'candwnldpreview') or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'candwnldhd') %}
+                {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.baseId, 'candwnldpreview') or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.baseId, 'candwnldhd') %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
-                        onclick="evt_dwnl('{{record.get_sbas_id}}_{{record.get_record_id}}',false,this);return(false);">
+                        onclick="evt_dwnl('{{record.databoxId}}_{{record.recordId}}',false,this);return(false);">
                     {{ 'action : exporter' | trans }}
                     </div>
                 </div>
                 {% endif %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
-                        onclick="evt_print('{{record.get_sbas_id}}_{{record.get_record_id}}');return(false);">
+                        onclick="evt_print('{{record.databoxId}}_{{record.recordId}}');return(false);">
                     {{ 'action : print' | trans }}
                     </div>
                 </div>
-                {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all' or (app['conf'].get(['registry', 'actions', 'social-tools']) == 'publishers' and app['acl'].get(app['authentication'].getUser()).has_right_on_sbas(record.get_sbas_id(), 'bas_chupub')) %}
-                    {% if record.is_grouping() is empty %}
+                {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all' or (app['conf'].get(['registry', 'actions', 'social-tools']) == 'publishers' and app['acl'].get(app['authentication'].getUser()).has_right_on_sbas(record.databoxId, 'bas_chupub')) %}
+                    {% if record.story is empty %}
                     <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                            onclick="shareThis('{{record.get_base_id}}','{{record.get_record_id}}');">
+                            onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
                         {{ 'reponses:: partager' | trans }}
                         </div>
                     </div>

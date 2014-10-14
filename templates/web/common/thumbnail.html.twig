@@ -1,9 +1,9 @@
-{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload) %}
-        {% set record_type = thumbnail.get_type() %}
+{% macro format(record, url, thumb_w, thumb_h, box_w, box_h, extra_class, wrap, lazyload) %}
+        {% set record_type = record.type %}
         {% set box_w = box_w|round %}
         {% set box_h = box_h|default(box_w)|round %}
 
-        {% if record_type == 'AUDIO_MP3' %}
+        {% if record_type == 'AUDIO' %}
             {% set original_w = 320 %}
             {% set original_h = 60 %}
 
@@ -24,16 +24,14 @@
               "left": 0
             } %}
         {% else %}
-            {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
-            {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+            {% set original_h = thumb_h > 0 ? thumb_h : 120 %}
+            {% set original_w =thumb_w > 0 ? thumb_w : 120 %}
 
             {% set fit_size = fitIn(
                 {"width":original_w, "height":original_h},
                 {"width":box_w, "height":box_h}
             )%}
         {% endif %}
-
-        {% set url = app['authentication'].isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
 
         {% if wrap %}
         <div

@@ -1,6 +1,6 @@
 {% macro format(record)%}
-    {% set doctype = record.get_type() %}
-    {% if record.is_grouping() %}
+    {% set doctype = record.type %}
+    {% if record.story %}
       <img src="/skins/icons/icon_story.gif" title="{{ 'reportage' | trans }}" />
     {% elseif doctype == 'image' %}
       <img src="/skins/icons/icon_image.gif" title="{{ 'image' | trans }}" />
