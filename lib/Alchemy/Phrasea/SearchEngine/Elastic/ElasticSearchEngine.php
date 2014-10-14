@@ -327,8 +327,27 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
-        $params['from'] = $offset;
-        $params['size'] = $perPage;
+        $params['body']['from'] = $offset;
+        $params['body']['size'] = $perPage;
+
+        // Debug at the moment. See https://phraseanet.atlassian.net/browse/PHRAS-322
+        $params['body']['aggs'] = array (
+            'Keywords' => array ('terms' =>
+                array ('field' => 'caption.Keywords.raw', 'size' => 10),
+            ),
+            'Photographer' => array ('terms' =>
+                array ('field' => 'caption.Photographer.raw', 'size' => 10),
+            ),
+            'Headline' => array ('terms' =>
+                array ('field' => 'caption.Headline.raw', 'size' => 10),
+            ),
+            'City' => array ('terms' =>
+                array ('field' => 'caption.City.raw', 'size' => 10),
+            ),
+            'Country' => array ('terms' =>
+                array ('field' => 'caption.Country.raw', 'size' => 10),
+            ),
+        );
 
         $res = $this->doExecute('search', $params);
 
@@ -349,7 +368,8 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query'] = json_encode($params);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
-            $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
+            $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
+            $this->indexName, $res['aggregations']);
     }
 
     /**

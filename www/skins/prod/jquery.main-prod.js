@@ -472,8 +472,27 @@ function initAnswerForm() {
                     query = JSON.parse(query);
                 }
                 catch (e) {}
-                console.log('Parsed Query:', query);
 
+                console.info('All Details:', query);
+                console.debug('Paths:');
+                console.debug(query._paths);
+
+                var aggs = datas.aggregations;
+                try {
+                  aggs = JSON.parse(aggs);
+                }
+                catch (e) {}
+
+                console.debug('Aggregations:');
+                var toDisplay = [];
+                _.each(aggs, function(value, key) {
+                  _.each(value.buckets, function(bucket, keyBis) {
+                    if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
+                    toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
+                  });
+
+                });
+                console.table(toDisplay);
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
 

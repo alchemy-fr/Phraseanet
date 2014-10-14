@@ -26,8 +26,10 @@ class SearchEngineResult
     protected $suggestions;
     protected $propositions;
     protected $indexes;
+    protected $aggregations;
 
-    public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, ArrayCollection $suggestions, $propositions, $indexes)
+    public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error,
+        $warning, ArrayCollection $suggestions, $propositions, $indexes, $aggregations = array())
     {
         $this->results = $results;
         $this->query = $query;
@@ -40,6 +42,7 @@ class SearchEngineResult
         $this->suggestions = $suggestions;
         $this->propositions = $propositions;
         $this->indexes = $indexes;
+        $this->aggregations = $aggregations;
 
         return $this;
     }
@@ -171,5 +174,13 @@ class SearchEngineResult
     public function getIndexes()
     {
         return $this->indexes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAggregations()
+    {
+        return $this->aggregations;
     }
 }

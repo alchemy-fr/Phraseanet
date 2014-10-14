@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,6 +70,7 @@ class Query implements ControllerProviderInterface
             $page = 1;
         }
 
+        /** @var SearchEngineResult $result */
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage, $options);
 
         $app['manipulator.user']->logQuery($app['authentication']->getUser(), $result->getQuery());
@@ -191,7 +193,12 @@ class Query implements ControllerProviderInterface
         );
 
         $json['query'] = $query;
+
+        /** Debug */
         $json['parsed_query'] = $result->getQuery();
+        $json['aggregations'] = $result->getAggregations();
+        /** End debug */
+
         $json['phrasea_props'] = $proposals;
         $json['total_answers'] = (int) $result->getAvailable();
         $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
