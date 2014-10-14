@@ -490,12 +490,13 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $recordHelper = new RecordHelper($this->app['phraseanet.appbox']);
+
         foreach ($options->getDataboxes() as $databox) {
             $filters[] = [
                 'terms' => [
-                    'base_id' => array_map(function (\collection $coll) use ($recordHelper, $databox) {
+                    'base_id' => array_values(array_filter(array_map(function (\collection $coll) use ($recordHelper, $databox) {
                         return $recordHelper->getUniqueCollectionId($databox->get_sbas_id(), $coll->get_base_id());
-                    }, $options->getCollections())
+                    }, $options->getCollections())))
                 ]
             ];
         }

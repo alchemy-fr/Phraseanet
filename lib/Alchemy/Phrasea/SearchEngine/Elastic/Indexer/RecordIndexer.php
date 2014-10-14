@@ -199,7 +199,7 @@ class RecordIndexer
         $fields = array();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-            printf("Databox %d\n", $databox->get_sbas_id());
+            //printf("Databox %d\n", $databox->get_sbas_id());
             foreach ($databox->get_meta_structure() as $fieldStructure) {
                 $field = array();
                 // Field type
@@ -233,7 +233,7 @@ class RecordIndexer
 
                 $name = $fieldStructure->get_name();
 
-                printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
+                //printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
 
                 // Since mapping is merged between databoxes, two fields may
                 // have conflicting names. Indexing is the same for a given
@@ -252,7 +252,7 @@ class RecordIndexer
                     }
                     // TODO other structure incompatibilities
 
-                    printf("Merged with previous \"%s\" field\n", $name);
+                    //printf("Merged with previous \"%s\" field\n", $name);
                 }
 
                 $fields[$name] = $field;
