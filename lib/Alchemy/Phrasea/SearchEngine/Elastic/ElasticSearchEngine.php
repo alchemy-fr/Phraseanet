@@ -333,19 +333,19 @@ class ElasticSearchEngine implements SearchEngineInterface
         // Debug at the moment. See https://phraseanet.atlassian.net/browse/PHRAS-322
         $params['body']['aggs'] = array (
             'Keywords' => array ('terms' =>
-                array ('field' => 'caption.Keywords.raw', 'size' => 10),
+                array ('field' => 'caption.Keywords.raw', 'size' => 20),
             ),
             'Photographer' => array ('terms' =>
-                array ('field' => 'caption.Photographer.raw', 'size' => 10),
+                array ('field' => 'caption.Photographer.raw', 'size' => 20),
             ),
             'Headline' => array ('terms' =>
-                array ('field' => 'caption.Headline.raw', 'size' => 10),
+                array ('field' => 'caption.Headline.raw', 'size' => 20),
             ),
             'City' => array ('terms' =>
-                array ('field' => 'caption.City.raw', 'size' => 10),
+                array ('field' => 'caption.City.raw', 'size' => 20),
             ),
             'Country' => array ('terms' =>
-                array ('field' => 'caption.Country.raw', 'size' => 10),
+                array ('field' => 'caption.Country.raw', 'size' => 20),
             ),
         );
 
