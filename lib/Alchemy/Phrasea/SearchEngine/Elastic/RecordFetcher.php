@@ -56,7 +56,13 @@ class RecordFetcher
         }
 
         // Fetch metadata
-        $records = $this->addMetadataToRecords($records);
+        $records = $this->addMetadataToRecords(
+            // Fetch subdefs
+            $this->addSubdefsToRecord(
+                $records
+            )
+        );
+
 
         // Hydrate records
         foreach ($records as $key => $record) {
@@ -71,7 +77,11 @@ class RecordFetcher
         $stmt = $this->statementRecord($record_adapter->get_record_id());
         $stmt->execute();
         $record = $stmt->fetchAll();
-        $records = $this->addMetadataToRecords($record);
+        $records = $this->addSubdefsToRecord(
+            $this->addMetadataToRecords(
+                $record
+            )
+        );
         foreach ($records as $key => $record) {
             $records[$key] = $this->hydrate($record);
         }
@@ -209,5 +219,38 @@ SQL;
         }
 
         return $records;
+    }
+
+    private function addSubdefsToRecord($records)
+    {
+        $statementSubdef = $this->execStatementSubdefs(array_keys($records));
+
+        while ($subdefs = $statementSubdef->fetch()) {
+            $records[$subdefs['record_id']]['subdefs'][$subdefs['name']] = array(
+                'path' => $subdefs['path'],
+                'width' => $subdefs['width'],
+                'height' => $subdefs['height'],
+            );
+        }
+
+        return $records;
+    }
+
+    private function execStatementSubdefs($ids)
+    {
+        $sql = <<<SQL
+            SELECT
+              s.record_id,
+              s.name,
+              s.height,
+              s.width,
+              CONCAT(s.path, s.file) AS path
+            FROM subdef s
+            WHERE s.record_id IN (?)
+            AND s.name IN ('thumbnail', 'preview', 'thumbnailgif')
+SQL;
+
+        return $this->connection->executeQuery($sql, array($ids), array(Connection::PARAM_INT_ARRAY));
+
     }
 }
