@@ -306,15 +306,13 @@ class RecordIndexer
     private function getFlagsMapping()
     {
         $mapping = new Mapping();
-        $seen = array();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             foreach ($databox->get_statusbits() as $bit => $status) {
                 $key = self::normalizeFlagKey($status['labelon']);
                 // We only add to mapping new statuses
-                if (!in_array($key, $seen)) {
+                if (!$mapping->has($key)) {
                     $mapping->add($key, 'boolean');
-                    $seen[] = $key;
                 }
             }
         }
