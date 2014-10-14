@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -30,15 +29,13 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $client;
     private $dateFields;
     private $indexName;
-    private $serializer;
     private $configurationPanel;
     private $locales;
 
-    public function __construct(Application $app, Client $client, ESRecordSerializer $serializer, $indexName)
+    public function __construct(Application $app, Client $client, $indexName)
     {
         $this->app = $app;
         $this->client = $client;
-        $this->serializer = $serializer;
         $this->locales = array_keys($app['locales.available']);
 
         if ('' === trim($indexName)) {
@@ -185,15 +182,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function addRecord(\record_adapter $record)
     {
         $this->app['elasticsearch.indexer.record_indexer']->indexSingleRecord($record, $this->indexName);
-
-        return $this;
-
-        $this->doExecute('index', [
-            'body'  => $this->serializer->serialize($record),
-            'index' => $this->indexName,
-            'type'  => self::GEM_TYPE_RECORD,
-            'id'    => sprintf('%d-%d', $record->get_sbas_id(), $record->get_record_id()),
-        ]);
 
         return $this;
     }

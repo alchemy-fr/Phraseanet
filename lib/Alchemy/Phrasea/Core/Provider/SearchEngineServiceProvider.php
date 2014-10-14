@@ -64,7 +64,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new ElasticSearchEngine(
                 $app,
                 $app['elasticsearch.client'],
-                $app['serializer.es-record'],
                 $app['elasticsearch.options']['index']
             );
         });
