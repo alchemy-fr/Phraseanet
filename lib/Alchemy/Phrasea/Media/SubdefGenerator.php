@@ -72,6 +72,10 @@ class SubdefGenerator
             }
 
             $record->clearSubdefCache($subdefname);
+
+            if (in_array($subdefname, ['thumbnail', 'thumbnailgif', 'preview'])) {
+                $this->app['elasticsearch.engine']->updateRecord($record);
+            }
         }
 
         return $this;
