@@ -157,6 +157,18 @@ class RecordIndexer
                 ->analyzer('keyword', 'searching')
                 ->addRawVersion()
         ;
+        // Minimal subdefs mapping info for display purpose
+        $subdefMapping = new Mapping();
+        $subdefMapping->add('path', 'string')->notAnalyzed()->notIndexed();
+        $subdefMapping->add('height', 'integer')->notIndexed();
+        $subdefMapping->add('width', 'integer')->notIndexed();
+
+        $subdefsMapping = new Mapping();
+        $subdefsMapping->add('thumbnail', $subdefMapping);
+        $subdefsMapping->add('thumbnailgif', $subdefMapping);
+        $subdefsMapping->add('preview', $subdefMapping);
+
+        $mapping->add('subdefs', $subdefsMapping);
 
         // Caption mapping
         $captionMapping = new Mapping();
