@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\DBALException;
+use Alchemy\Phrasea\Model\Entities\RecordInterface;
 
 class ACL implements cache_cacheableInterface
 {
@@ -121,7 +122,7 @@ class ACL implements cache_cacheableInterface
      * @param  \record_adapter $record
      * @return boolean
      */
-    public function has_hd_grant(\Alchemy\Phrasea\Model\Entities\RecordInterface $record)
+    public function has_hd_grant(RecordInterface $record)
     {
 
         $this->load_hd_grant();
@@ -133,7 +134,7 @@ class ACL implements cache_cacheableInterface
         return false;
     }
 
-    public function grant_hd_on(\Alchemy\Phrasea\Model\Entities\RecordInterface $record, User $pusher, $action)
+    public function grant_hd_on(RecordInterface $record, User $pusher, $action)
     {
         $sql = 'REPLACE INTO records_rights
             (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)
@@ -157,7 +158,7 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    public function grant_preview_on(\Alchemy\Phrasea\Model\Entities\RecordInterface $record, User $pusher, $action)
+    public function grant_preview_on(RecordInterface $record, User $pusher, $action)
     {
         $sql = 'REPLACE INTO records_rights
             (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)
@@ -187,7 +188,7 @@ class ACL implements cache_cacheableInterface
      * @param  \record_adapter $record
      * @return boolean
      */
-    public function has_preview_grant(\Alchemy\Phrasea\Model\Entities\RecordInterface $record)
+    public function has_preview_grant(RecordInterface $record)
     {
         $this->load_hd_grant();
 
@@ -198,7 +199,7 @@ class ACL implements cache_cacheableInterface
         return false;
     }
 
-    public function has_access_to_record(\Alchemy\Phrasea\Model\Entities\RecordInterface $record)
+    public function has_access_to_record(RecordInterface $record)
     {
         if ($this->has_access_to_base($record->getBaseId()) && $this->has_status_access_to_record($record)) {
             return true;
@@ -207,12 +208,12 @@ class ACL implements cache_cacheableInterface
         return $this->has_preview_grant($record) || $this->has_hd_grant($record);
     }
 
-    public function has_status_access_to_record(\Alchemy\Phrasea\Model\Entities\RecordInterface $record)
+    public function has_status_access_to_record(RecordInterface $record)
     {
-        return 0 === ((bindec($record->getStatus()) ^ $this->get_mask_xor($record->getBaseId())) & $this->get_mask_and($record->get_base_id()));
+        return 0 === ((bindec($record->getStatus()) ^ $this->get_mask_xor($record->getBaseId())) & $this->get_mask_and($record->getBaseId()));
     }
 
-    public function has_access_to_subdef(\Alchemy\Phrasea\Model\Entities\RecordInterface $record, $subdef_name)
+    public function has_access_to_subdef(RecordInterface $record, $subdef_name)
     {
         if ($subdef_name == 'thumbnail') {
             return true;
