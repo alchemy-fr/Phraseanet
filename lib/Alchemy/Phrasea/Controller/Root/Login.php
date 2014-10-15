@@ -107,23 +107,6 @@ class Login implements ControllerProviderInterface
         $controllers->get('/', 'login.controller:login')
             ->before(function (Request $request) use ($app) {
                     if (null !== $response = $app['firewall']->requireNotAuthenticated()) {
-                        return $response;
-                    }
-
-                    if (null !== $request->query->get('postlog')) {
-
-                        // if isset postlog parameter, set cookie and log out current user
-                        // then post login operation like getting baskets from an invit session
-                        // could be done by Session_handler authentication process
-
-                        $params = [];
-
-                        if (null !== $redirect = $request->query->get('redirect')) {
-                            $params = ['redirect' => ltrim($redirect, '/')];
-                        }
-
-                        $response = $app->redirectPath('logout', $params);
-                        $response->headers->setCookie(new Cookie('postlog', 1));
 
                         return $response;
                     }
@@ -698,7 +681,6 @@ class Login implements ControllerProviderInterface
 
         $response->headers->clearCookie('persistent');
         $response->headers->clearCookie('last_act');
-        $response->headers->clearCookie('postlog');
 
         return $response;
     }
@@ -799,7 +781,6 @@ class Login implements ControllerProviderInterface
             $response = $app->redirectPath('prod');
         }
 
-        $response->headers->clearCookie('postlog');
         $response->headers->clearCookie('last_act');
 
         return $response;
@@ -1000,21 +981,6 @@ class Login implements ControllerProviderInterface
 
         $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
         $response->headers->clearCookie('invite-usr-id');
-
-        if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
-            if (!$user->isGuest() && $request->cookies->has('invite-usr_id')) {
-                if ($user->getId() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
-
-                    $repo = $app['repo.baskets'];
-                    $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
-
-                    foreach ($baskets as $basket) {
-                        $basket->setUser($user);
-                        $app['EM']->persist($basket);
-                    }
-                }
-            }
-        }
 
         if ($request->request->get('remember-me') == '1') {
             $nonce = $app['random.medium']->generateString(64);

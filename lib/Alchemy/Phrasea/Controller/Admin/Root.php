@@ -448,24 +448,6 @@ class Root implements ControllerProviderInterface
           ->assert('bit', '\d+')
           ->bind('database_submit_statusbit');
 
-        $controllers->get('/tests/connection/mysql/', function (Application $app, Request $request) {
-            $dbHelper = new DatabaseHelper($app, $request);
-
-            return $app->json($dbHelper->checkConnection());
-        });
-
-        $controllers->get('/tests/pathurl/path/', function (Application $app, Request $request) {
-            $pathHelper = new PathHelper($app, $request);
-
-            return $app->json($pathHelper->checkPath());
-        });
-
-        $controllers->get('/tests/pathurl/url/', function (Application $app, Request $request) {
-            $pathHelper = new PathHelper($app, $request);
-
-            return $app->json($pathHelper->checkUrl());
-        });
-
         return $controllers;
     }
 }

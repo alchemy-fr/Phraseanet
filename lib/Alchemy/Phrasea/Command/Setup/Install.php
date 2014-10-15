@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -110,6 +111,13 @@ class Install extends Command
 
         $this->container['phraseanet.installer']->setPhraseaIndexerPath($indexer);
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
+
+        if (null !== $this->getApplication()) {
+            $command = $this->getApplication()->find('crossdomain:generate');
+            $command->run(new ArrayInput(array(
+                'command' => 'crossdomain:generate'
+            )), $output);
+        }
 
         $output->writeln("<info>Install successful !</info>");
 

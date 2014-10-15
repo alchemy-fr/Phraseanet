@@ -24,7 +24,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->will($this->returnValue(true));
 
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/setup/');
+        $client->request('GET', '/setup/');
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/setup/installer/', $response->headers->get('location'));
@@ -150,7 +150,7 @@ class SetupTest extends \PhraseanetWebTestCase
             'hostname'       => $host,
             'port'           => $port,
             'user'           => $user,
-            'password'       => $password,
+            'db_password'       => $password,
             'ab_name'           => $abName,
             'db_name'           => $dbName,
             'db_template'       => 'en',
@@ -188,5 +188,99 @@ class SetupTest extends \PhraseanetWebTestCase
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->headers->get('content-type'));
+    }
+
+
+    public function testRouteMysql()
+    {
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
+                                                     ->method('isInstalled')
+                                                     ->will($this->returnValue(false));
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
+                                                     ->method('isBlank')
+                                                     ->will($this->returnValue(true));
+
+        $connexion = $this->app['phraseanet.configuration']['main']['database'];
+
+        $params = array(
+            "hostname" => $connexion['host'],
+            "port"     => $connexion['port'],
+            "user"     => $connexion['user'],
+            "password" => $connexion['password'],
+            "dbname"   => $connexion['dbname'],
+        );
+        
+        $client = $this->createClient();
+        $client->request("GET", "/setup/connection_test/mysql/", $params);
+        $response = $client->getResponse();
+        $this->assertTrue($response->isOk());
+    }
+
+    public function testRouteMysqlFailed()
+    {
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
+             ->method('isInstalled')
+             ->will($this->returnValue(false));
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
+             ->method('isBlank')
+             ->will($this->returnValue(true));
+
+        $connexion = $this->app['phraseanet.configuration']['main']['database'];
+
+        $params = array(
+            "hostname" => $connexion['host'],
+            "port"     => $connexion['port'],
+            "user"     => $connexion['user'],
+            "password" => "fakepassword",
+            "dbname"   => $connexion['dbname'],
+        );
+
+        $client = $this->createClient();
+        $client->request("GET", "/setup/connection_test/mysql/", $params);
+        $response = $client->getResponse();
+        $content = json_decode($client->getResponse()->getContent());
+        $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
+        $this->assertTrue($response->isOk());
+        $this->assertTrue(is_object($content));
+        $this->assertObjectHasAttribute('connection', $content);
+        $this->assertObjectHasAttribute('database', $content);
+        $this->assertObjectHasAttribute('is_empty', $content);
+        $this->assertObjectHasAttribute('is_appbox', $content);
+        $this->assertObjectHasAttribute('is_databox', $content);
+        $this->assertFalse($content->connection);
+    }
+
+    public function testRouteMysqlDbFailed()
+    {
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
+             ->method('isInstalled')
+             ->will($this->returnValue(false));
+        $this->app['phraseanet.configuration-tester']->expects($this->any())
+             ->method('isBlank')
+             ->will($this->returnValue(true));
+
+        $connexion = $this->app['phraseanet.configuration']['main']['database'];
+
+        $params = array(
+            "hostname" => $connexion['host'],
+            "port"     => $connexion['port'],
+            "user"     => $connexion['user'],
+            "password" => $connexion['password'],
+            "dbname"   => "fake-DTABASE-name"
+        );
+
+        $client = $this->createClient();
+        $client->request("GET", "/setup/connection_test/mysql/", $params);
+        $response = $client->getResponse();
+        $content = json_decode($client->getResponse()->getContent());
+        $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
+        $this->assertTrue($response->isOk());
+        $this->assertTrue(is_object($content));
+        $this->assertObjectHasAttribute('connection', $content);
+        $this->assertObjectHasAttribute('database', $content);
+        $this->assertObjectHasAttribute('is_empty', $content);
+        $this->assertObjectHasAttribute('is_appbox', $content);
+        $this->assertObjectHasAttribute('is_databox', $content);
+        $this->assertFalse($content->database);
     }
 }

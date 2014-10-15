@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
 use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
 use Alchemy\Phrasea\Command\SearchEngine\IndexDropCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexFull;
 use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
 use Alchemy\Phrasea\Command\WebsocketServer;
 use Alchemy\Phrasea\Core\Version;
@@ -32,6 +33,8 @@ use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\CheckConfig;
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
+use Alchemy\Phrasea\Command\Setup\StaticMappingGenerator;
+use Alchemy\Phrasea\Command\Setup\StaticConfigurationDumper;
 use Alchemy\Phrasea\Command\Task\SchedulerResumeTasks;
 use Alchemy\Phrasea\Command\Task\SchedulerState;
 use Alchemy\Phrasea\Command\Task\SchedulerPauseTasks;
@@ -117,6 +120,8 @@ $cli->command(new H264ConfigurationDumper());
 $cli->command(new H264MappingGenerator());
 $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
+$cli->command(new StaticConfigurationDumper());
+$cli->command(new StaticMappingGenerator());
 
 if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
     $cli->command(new IndexCreateCommand());

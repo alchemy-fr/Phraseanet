@@ -36,9 +36,6 @@ class Export implements ControllerProviderInterface
 
         $app['firewall']->addMandatoryAuthentication($controllers);
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireNotGuest();
-        });
 
         $controllers->post('/multi-export/', 'controller.prod.export:displayMultiExport')
             ->bind('export_multi_export');

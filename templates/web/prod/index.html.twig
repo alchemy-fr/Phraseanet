@@ -338,8 +338,9 @@
 
                                             <span>{{ 'Trier par' | trans }}</span>
                                             <select name="sort" class="input-small">
-                                                {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
-                                                <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort_name }}</option>
+                                                <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "No sort"|trans }}</option>
+                                                {% for sort in search_datas['sort'] %}
+                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
                                                 {% endfor %}
                                             </select>
                                             <select name="ord" class="input-medium">
@@ -412,12 +413,17 @@
                                                             <td colspan="2">{{ 'Rechercher dans un champ date' | trans }}</td>
                                                             <td colspan="2">
                                                                 <select name="date_field" class="input-medium">
-                                                                    {% for field in app['phraseanet.SE'].getAvailableDateFields() %}
+                                                                    {% for date in search_datas['dates'] %}
                                                                         <option onchange="checkFilters(true);"
-                                                                            class="" value="{{ field }}">{{ field }}</option>
+                                                                            class="" value="{{ date.fieldname }}">{{ date.fieldname }}</option>
                                                                     {% endfor %}
-                                                                    <option value="{{ app['phraseanet.SE'].getAvailableDateFields()|join('|') }}" selected="selected">
-                                                                        {{ 'rechercher dans tous les champs' | trans }}
+
+                                                                    {% set date_field_names = [] %}
+                                                                    {% for field in search_datas['dates'] %}
+                                                                        {% set date_field_names = date_field_names|merge([field.fieldname]) %}
+                                                                    {% endfor %}
+                                                                    <option value="{{ date_field_names|join('|') }}" selected="selected">
+                                                                        {{ 'rechercher dans tous les champs'| trans }}
                                                                     </option>
                                                                 </select>
                                                             </td>

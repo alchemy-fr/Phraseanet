@@ -16,19 +16,11 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/nlegoff/PHP-FFmpeg"
+            "url": "https://github.com/alchemy-fr/imagine"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/nlegoff/Mediavorus"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/nlegoff/Media-Alchemyst"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/nlegoff/Imagine"
+            "url": "https://github.com/alchemy-fr/phpexiftool"
         }
     ],
     "require": {
@@ -48,14 +40,14 @@
         "alchemy/geonames-api-consumer"    : "~0.1.0",
         "goodby/csv"                       : "~1.0",
         "guzzle/guzzle"                    : "~3.0",
-        "imagine/imagine"                  : "dev-flatten-layer as 0.6.1",
+        "imagine/imagine"                  : "dev-0.6.1-flatten-layer as 0.6.1",
         "igorw/get-in"                     : "~1.0",
         "ircmaxell/random-lib"             : "~1.0",
-        "jms/serializer"                   : "~0.10",
+       "jms/serializer"                   : "~0.10",
         "jms/translation-bundle"           : "~1.1",
         "justinrainbow/json-schema"        : "~1.3",
-        "mediavorus/mediavorus"            : "dev-fix-video-dim as 0.4.3",
-        "media-alchemyst/media-alchemyst"  : "0.4.x@dev",
+        "mediavorus/mediavorus"            : "~0.4.0",
+        "media-alchemyst/media-alchemyst"  : "~0.4.0",
         "monolog/monolog"                  : "~1.3",
         "mrclay/minify"                    : "~2.1.6",
         "neutron/process-manager"          : "2.0.x-dev@dev",
@@ -64,9 +56,9 @@
         "neutron/sphinxsearch-api"         : "~2.0.6",
         "neutron/recaptcha"                : "~0.1.0",
         "neutron/temporary-filesystem"     : "~2.1",
-        "php-ffmpeg/php-ffmpeg"            : "dev-fix-aspect-ratio as 0.4.4",
+        "php-ffmpeg/php-ffmpeg"            : "~0.5.0",
         "php-xpdf/php-xpdf"                : "~0.2.1",
-        "phpexiftool/phpexiftool"          : "~0.3",
+        "phpexiftool/phpexiftool"          : "dev-0.4.1-mwg-metadata-copy as 0.4.1",
         "react/zmq"                        : "~0.2",
         "rhumsaa/uuid"                     : "~2.7",
         "silex/silex"                      : "1.1.x-dev@dev",
