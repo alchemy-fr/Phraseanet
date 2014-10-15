@@ -56,10 +56,13 @@ class RecordFetcher
         }
 
         // Fetch metadata
-        $records = $this->addMetadataToRecords(
+        $records = $this->addSubdefsToRecord(
             // Fetch subdefs
-            $this->addSubdefsToRecord(
-                $records
+            $this->addMetadataToRecords(
+                // Fetch title
+                $this->addTitleToRecord(
+                    $records
+                )
             )
         );
 
@@ -79,7 +82,9 @@ class RecordFetcher
         $record = $stmt->fetchAll();
         $records = $this->addSubdefsToRecord(
             $this->addMetadataToRecords(
-                $record
+                $this->addTitleToRecord(
+                    $record
+                )
             )
         );
         foreach ($records as $key => $record) {
@@ -125,7 +130,7 @@ class RecordFetcher
             SELECT r.record_id
                  , r.coll_id as collection_id
                  , r.uuid
-                 , BIN(r.status) as bin_status
+                 , LPAD(BIN(r.status), 32, "0") as bin_status
                  , r.sha256 -- TODO rename in "hash"
                  , r.originalname as original_name
                  , r.mime
@@ -221,6 +226,35 @@ SQL;
         return $records;
     }
 
+    private function execStatementTitle($ids)
+    {
+        $sql = <<<SQL
+            SELECT
+                m.`record_id`,
+                CASE ms.`thumbtitle`
+                WHEN "1" THEN "default" ELSE ms.`thumbtitle`
+                END AS locale,
+                GROUP_CONCAT(m.value ORDER BY ms.`thumbtitle`, ms.`sorter` SEPARATOR " - ") AS title
+            FROM metadatas AS m FORCE INDEX(`record_id`)
+            STRAIGHT_JOIN metadatas_structure AS ms ON (ms.`id` = m.`meta_struct_id` AND ms.`thumbtitle` != "0")
+            WHERE record_id IN (?)
+            GROUP BY m.`record_id`, ms.`thumbtitle`
+SQL;
+
+        return $this->connection->executeQuery($sql, array($ids), array(Connection::PARAM_INT_ARRAY));
+    }
+
+    private function addTitleToRecord($records)
+    {
+        $statementTitle = $this->execStatementTitle(array_keys($records));
+
+        while ($row = $statementTitle->fetch()) {
+            $records[$row['record_id']]['title'][$row['locale']] = $row['title'];
+        }
+
+        return $records;
+    }
+
     private function addSubdefsToRecord($records)
     {
         $statementSubdef = $this->execStatementSubdefs(array_keys($records));
@@ -244,7 +278,7 @@ SQL;
               s.name,
               s.height,
               s.width,
-              CONCAT(s.path, s.file) AS path
+              CONCAT(TRIM(TRAILING '/' FROM s.path), '/', s.file) AS path
             FROM subdef s
             WHERE s.record_id IN (?)
             AND s.name IN ('thumbnail', 'preview', 'thumbnailgif')
