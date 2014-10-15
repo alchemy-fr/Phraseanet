@@ -20,9 +20,11 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
+use Alchemy\Phrasea\Model\Entities\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class record_adapter implements record_Interface, cache_cacheableInterface
+class record_adapter implements RecordInterface, cache_cacheableInterface
 {
     /**
      *
@@ -1838,5 +1840,269 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBaseId()
+    {
+        return $this->get_base_id();
+    }
+
+    /**
+     * @param mixed $baseId
+     */
+    public function setBaseId($baseId)
+    {
+        $this->base_id = $baseId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCollectionId()
+    {
+        return $this->get_collection()->get_coll_id();
+    }
+
+    /**
+     * @param mixed $collectionId
+     */
+    public function setCollectionId($collectionId)
+    {
+        // TODO: Implement setCollectionId() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreated()
+    {
+        return $this->get_creation_date();
+    }
+
+    /**
+     * @param mixed $created
+     */
+    public function setCreated($created)
+    {
+        $this->creation_date = $created;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataboxId()
+    {
+        $this->get_databox()->get_sbas_id();
+    }
+
+    /**
+     * @param mixed $databoxId
+     */
+    public function setDataboxId($databoxId)
+    {
+        // TODO: Implement setDataboxId() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isStory()
+    {
+        return $this->is_grouping();
+    }
+
+    /**
+     * @param mixed $isStory
+     */
+    public function setIsStory($isStory)
+    {
+        $this->grouping = (Boolean) $isStory;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMimeType()
+    {
+        return $this->get_mime();
+    }
+
+    /**
+     * @param mixed $mimeType
+     */
+    public function setMimeType($mimeType)
+    {
+        // TODO: Implement setMimeType() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalName()
+    {
+       return $this->get_original_name();
+    }
+
+    /**
+     * @param mixed $originalName
+     */
+    public function setOriginalName($originalName)
+    {
+        // TODO: Implement setOriginalName() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRecordId()
+    {
+        return $this->get_record_id();
+    }
+
+    /**
+     * @param mixed $recordId
+     */
+    public function setRecordId($recordId)
+    {
+        // TODO: Implement setRecordId() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSha256()
+    {
+        return $this->get_sha256();
+    }
+
+    /**
+     * @param mixed $sha256
+     */
+    public function setSha256($sha256)
+    {
+        // TODO: Implement setSha256() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->get_type();
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        // TODO: Implement setType() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdated()
+    {
+        return $this->get_modification_date();
+    }
+
+    /**
+     * @param mixed $updated
+     */
+    public function setUpdated($updated)
+    {
+        // TODO: Implement setUpdated() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->get_uuid();
+    }
+
+    /**
+     * @param mixed $uuid
+     */
+    public function setUuid($uuid)
+    {
+        // TODO: Implement setUuid() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExif()
+    {
+        return new ArrayCollection($this->get_technical_infos());
+    }
+
+    /**
+     * @param mixed $exif
+     */
+    public function setExif(\Doctrine\Common\Collections\ArrayCollection $exif)
+    {
+        // TODO: Implement setExif() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCaption()
+    {
+        $caption = array();
+
+        foreach ($this->get_caption()->get_fields() as $field) {
+            $fieldValues = $field->get_values();
+
+            if (0 === count($fieldValues)) {
+                continue;
+            }
+
+            if ($field->is_multi()) {
+                $caption[$field->get_name()] = array_map(function($fieldValue) {
+                    return $fieldValue->getValue();
+                }, $fieldValues);
+                continue;
+            }
+
+            $caption[$field->get_name()] = current($fieldValues)->getValue();
+        }
+
+        return new ArrayCollection($caption);
+    }
+
+    /**
+     * @param mixed $caption
+     */
+    public function setCaption(\Doctrine\Common\Collections\ArrayCollection $caption)
+    {
+        // TODO: Implement setCaption() method.
+    }
+
+    public function getId()
+    {
+        return $this->get_serialize_key();
+    }
+
+    /**
+     * @param $status
+     */
+    public function setStatus($status)
+    {
+        $this->set_binary_status($status);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->get_status();
     }
 }
