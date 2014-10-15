@@ -67,16 +67,15 @@
                 {% if rollover_thumbnail %}
                     {% set extraclass = 'rollover-gif-out' %}
                 {% endif %}
-                {# @todo thumbnail must be served using symbolic link, this feature is not yed merged #}
-                {#{% set thumb_path = thumbnail.path is defined ? thumbnail.path : "/path/to/subsitution" %}#}
-                {#{% set url = record|thumb_url(app, 'thumbnail', thumb_path) %}#}
+                {% set url = app['phraseanet.static-file'].getUrl(thumbnail.path) %}
 
-                {#{{thumbnail_macro.format(record, url, thumbnail.width, thumbnail.height, th_size, th_size, extraclass, true, true)}}#}
+                {{thumbnail_macro.format(record, url, thumbnail.width, thumbnail.height, th_size, th_size, extraclass, true, true)}}
 
                 {% if rollover_thumbnail and rollover_thumbnail.path is defined %}
-                    {#{% set url = record|thumb_url(app, 'thumbnailgif', thumb_path) %}#}
-                    {#{{thumbnail_macro.format(record, url, rollover_thumbnail.width, rollover_thumbnail.height, th_size, th_size, 'rollover-gif-hover', true, true)}}#}
-                {#{% endif %}#}
+                    {% set url = app['phraseanet.static-file'].getUrl(rollover_thumbnail.path) %}
+
+                    {{thumbnail_macro.format(record, url, rollover_thumbnail.width, rollover_thumbnail.height, th_size, th_size, 'rollover-gif-hover', true, true)}}
+                {% endif %}
                 </div>
             </div>
             <div style="height: 25px; position:relative; text-align:left;">
