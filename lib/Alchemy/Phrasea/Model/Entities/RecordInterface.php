@@ -101,16 +101,6 @@ interface RecordInterface
     /**
      * @return mixed
      */
-    public function getTitle();
-
-    /**
-     * @param mixed $title
-     */
-    public function setTitle($title);
-
-    /**
-     * @return mixed
-     */
     public function getType();
 
     /**
@@ -138,35 +128,13 @@ interface RecordInterface
      */
     public function setUuid($uuid);
 
+    /**
+     * @param $status
+     */
+    public function setStatus($status);
 
     /**
      * @return mixed
      */
-    public function getExif();
-
-    /**
-     * @param mixed $exif
-     */
-    public function setExif(ArrayCollection $exif);
-
-    /**
-     * @return mixed
-     */
-    public function getCaption();
-
-    /**
-     * @param mixed $caption
-     */
-    public function setCaption(ArrayCollection $caption);
-
-
-    /**
-     * @return mixed
-     */
-    public function getSubdefs();
-
-    /**
-     * @param mixed $subdefs
-     */
-    public function setSubdefs(ArrayCollection $subdefs);
+    public function getStatus();
 }
