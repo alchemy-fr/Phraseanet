@@ -1,4 +1,4 @@
-{% macro format(record, url, thumb_w, thumb_h, box_w, box_h, extra_class, wrap, lazyload) %}
+{% macro format(record, url, thumb_w, thumb_h, box_w, box_h, extra_class, wrap) %}
         {% set record_type = record.type %}
         {% set box_w = box_w|round %}
         {% set box_h = box_h|default(box_w)|round %}
@@ -50,9 +50,9 @@
             {% import 'common/players/audio.html.twig' as player %}
             {{ player.audio_player(thumbnail, url, original_w, original_h, fit_size) }}
         {% else %}
-          <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+          <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
-               src="{% if lazyload %}/skins/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
+               src="{{ url }}" ondragstart="return false;">
           <input type="hidden" name="width" value="{{original_w}}"/>
           <input type="hidden" name="height" value="{{original_h}}"/>
         {% endif %}

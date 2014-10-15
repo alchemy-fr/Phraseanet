@@ -103,12 +103,11 @@
 {% endmacro %}
 
 {% macro format_caption(record, highlight, search_engine, include_business, bounceable, technical_data) %}
-    {% for field in record.get_caption().get_highlight_fields(highlight, null, search_engine, include_business) %}
-        {% set extra_classes = ['pair'] %}
-        {% if loop.index is odd %}
-            {% set extra_classes = ['impair'] %}
-        {% endif %}
-        {{ _self.caption_field(field, bounceable|default(true), extra_classes) }}
+    {# @todo business fields are always included ... #}
+    {% for name, value in record.getCaption() %}
+        <div class="desc {{ cycle(['odd', 'even'], loop.index0) }}">
+            <b>{{ name }}</b> : {{ value is iterable ? value|join('; ') : value }}
+        </div>
     {% endfor %}
     {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') == 'group' %}
         <hr/>
