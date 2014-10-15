@@ -32,7 +32,8 @@ class ESRecordHydrator
         $record->setType(isset($data['record_type']) ? $data['record_type'] : null);
         $record->setUpdated(isset($data['updated_on']) ? new \DateTime($data['updated_on']) : null);
         $record->setUuid(isset($data['uuid']) ? $data['uuid'] : null);
-        //$record->setStatus(isset($data['bin_status']) ? $data['bin_status'] : null);
+        $record->setStatus(isset($data['bin_status']) ? $data['bin_status'] : null);
+        $record->setTitles(new ArrayCollection(isset($data['title']) ? (array) $data['title'] : ['default' => $record->getOriginalName()]));
         $record->setCaption(new ArrayCollection(isset($data['caption']) ? (array) $data['caption'] : []));
         $record->setExif(new ArrayCollection(isset($data['exif']) ? (array) $data['exif'] : []));
         $record->setSubdefs(new ArrayCollection(isset($data['subdefs']) ? (array) $data['subdefs'] : []));
