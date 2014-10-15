@@ -11,14 +11,14 @@
 
 namespace Alchemy\Phrasea\Model\Hydrator;
 
-use Alchemy\Phrasea\Model\Entities\Record;
+use Alchemy\Phrasea\Model\Entities\RecordES;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class ESRecordHydrator
 {
     public static function hydrate(array $data)
     {
-        $record = new Record();
+        $record = new RecordES();
         $record->setBaseId(isset($data['base_id']) ? $data['base_id'] : null);
         $record->setCollectionId(isset($data['collection_id']) ? $data['collection_id'] : null);
         $record->setCreated(isset($data['created_on']) ? new \DateTime($data['created_on']) : null);
@@ -26,7 +26,6 @@ class ESRecordHydrator
         $record->setIsStory(isset($data['type']) ? $data['type'] === 'story' : null);
         $record->setMimeType(isset($data['mime']) ? $data['mime'] : null);
         $record->setOriginalName(isset($data['original_name']) ? $data['original_name'] : null);
-        $record->setTitle(isset($data['original_name']) ? $data['original_name'] : null);
         $record->setRecordId(isset($data['record_id']) ? $data['record_id'] : null);
         $record->setSha256(isset($data['sha256']) ? $data['sha256'] : null);
         $record->setType(isset($data['record_type']) ? $data['record_type'] : null);
