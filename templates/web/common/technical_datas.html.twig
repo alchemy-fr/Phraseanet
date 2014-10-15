@@ -108,9 +108,9 @@
         {% endif %}
     {% endblock %}
     {% block td_duration %}
-        {% if record.get_formated_duration() %}
+        {% if record.exif.get(constant('media_subdef::TC_DATA_DURATION')) is not none %}
           {{ 'Duree' | trans }} :
-          {{ record.get_formated_duration() }}
+          {{ record.exif.get(constant('media_subdef::TC_DATA_DURATION')) }}
           <br />
         {% endif %}
     {% endblock %}
