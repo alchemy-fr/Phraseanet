@@ -939,7 +939,7 @@ class Application extends SilexApplication
 //            if ($app->getEnvironment() !== Application::ENV_PROD) {
 //                return $this['cache.dev.path'];
 //            }
-            $path = $this['root.path'].'/cache';
+            $path = $app['root.path'].'/cache';
             if ($app['phraseanet.configuration']->isSetup()) {
                 $path = $app['conf']->get(['main', 'storage', 'cache'], $path);
             }

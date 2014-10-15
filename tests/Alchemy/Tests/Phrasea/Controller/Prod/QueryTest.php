@@ -29,7 +29,6 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', $route);
 
         $response = self::$DI['client']->getResponse();
-
         $this->assertEquals('application/json', $response->headers->get('Content-type'));
         $data = json_decode($response->getContent(), true);
         $this->assertInternalType('array', $data);

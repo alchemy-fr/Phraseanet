@@ -1120,7 +1120,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
-            SET jeton = ' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . '
+            SET jeton = jeton | (' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ')
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->record_id]);
@@ -1439,6 +1439,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         foreach ($this->get_subdefs() as $subdef) {
             if (!$subdef->is_physically_present())
                 continue;
+
+            if ($subdef->get_name() === 'thumbnail' && $this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+                $this->app['filesystem']->remove($this->app['phraseanet.thumb-symlinker']->getSymlinkPath($subdef->get_pathfile()));
+            }
 
             $ftodel[] = $subdef->get_pathfile();
             $watermark = $subdef->get_path() . 'watermark_' . $subdef->get_file();

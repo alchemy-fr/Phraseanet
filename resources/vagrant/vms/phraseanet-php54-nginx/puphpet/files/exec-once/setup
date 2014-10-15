@@ -16,6 +16,51 @@ sudo sh -c 'echo "nl_NL.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo locale-gen en_US en_US.UTF-8 en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
 sudo dpkg-reconfigure -f noninteractive locales
 
+#ffmpeg
+sudo sh -c 'echo "deb http://www.deb-multimedia.org wheezy main non-free" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://www.deb-multimedia.org wheezy main non-free" >> /etc/apt/sources.list'
+
+sudo apt-get update
+sudo apt-get install --force-yes -y deb-multimedia-keyring
+sudo apt-get update
+sudo apt-get install --force-yes -y libfaac-dev
+
+cd /tmp
+wget –quiet https://www.ffmpeg.org/releases/ffmpeg-1.2.8.tar.gz
+tar -zxvf ffmpeg-1.2.8.tar.gz
+cd ffmpeg-1.2.8
+
+wget –quiet -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
+sudo -u vagrant unzip fdk-aac.zip
+cd mstorsjo-fdk-aac*
+autoreconf -fiv
+./configure --disable-shared
+make
+sudo make install
+make distclean
+cd ..
+
+./configure --enable-gpl \
+            --enable-nonfree \
+            --enable-libfaac \
+            --enable-libgsm \
+            --enable-libmp3lame \
+            --enable-libtheora \
+            --enable-libvorbis \
+            --enable-libx264 \
+            --enable-libxvid \
+            --enable-zlib \
+            --enable-postproc \
+            --enable-swscale \
+            --enable-pthreads \
+            --enable-x11grab \
+            --enable-libdc1394 \
+            --enable-version3 \
+            --enable-libopencore-amrnb \
+            --enable-libopencore-amrwb
+make
+sudo make install
+
 # node + npm
 cd /tmp
 wget –quiet "http://nodejs.org/dist/v0.10.29/node-v0.10.29-linux-x64.tar.gz"
@@ -28,6 +73,7 @@ sudo cp -rf * /usr/local/
 sudo npm install -g recess
 sudo npm install -g grunt-cli
 sudo npm install -g bower
+sudo npm install -g uglify-js
 
 # python tools
 sudo easy_install -U taschenmesser scour boto 
@@ -107,7 +153,7 @@ fi
 sudo sh -c 'echo "RUN=yes" > /etc/default/cachefilesd'
 
 # copy www.conf
-sudo sh -c "cat /vagrant/resources/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf"
+sudo sh -c 'cat /vagrant/resources/vagrant/config/nginx/php5-fpm-www.conf > /etc/php5/fpm/pool.d/www.conf'
 
 #setup phraseanet
 if [ ! -f /var/www/phraseanet/config/configuration.yml ]
@@ -116,13 +162,13 @@ then
     mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
     cp /vagrant/resources/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
     mv /var/www/phraseanet/.bowerrc /var/www/phraseanet/.bowerrc.bkp
-    cp /vagrant/resources/vagrant/config/bower/.bower.rc /var/www/phraseanet/.bowerrc
+    cp /vagrant/resources/vagrant/config/bower/.bowerrc /var/www/phraseanet/.bowerrc
     cd /var/www/phraseanet
-    composer install -n --prefer-source --dev
-    npm install
-    grunt install-assets
-    bin/developer assets:compile-less
-    rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
+    sudo -u vagrant composer install -n --prefer-source --dev
+    sudo -u vagrant npm install
+    sudo -u vagrant grunt install-assets
+    sudo -u vagrant bin/developer assets:compile-less
+    sudo -u vagrant rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
     rm -f /var/www/phraseanet/.bowerrc
     mv /www/phraseanet/.bowerrc.bkp /www/phraseanet/.bowerrc
     mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml

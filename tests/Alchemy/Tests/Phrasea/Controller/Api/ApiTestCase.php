@@ -2156,7 +2156,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('response', $content);
         $this->assertTrue(is_array($content['meta']), 'Le bloc meta est un array');
         $this->assertTrue(is_array($content['response']), 'Le bloc reponse est un array');
-        $this->assertEquals('1.3', $content['meta']['api_version']);
+        $this->assertEquals('1.4.1', $content['meta']['api_version']);
         $this->assertNotNull($content['meta']['response_time']);
         $this->assertEquals('UTF-8', $content['meta']['charset']);
     }

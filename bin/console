@@ -14,6 +14,7 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
+use Alchemy\Phrasea\Command\Setup\StaticConfigurationDumper;
 use Alchemy\Phrasea\Command\SearchEngine\IndexFull;
 use Alchemy\Phrasea\Command\WebsocketServer;
 use Alchemy\Phrasea\Core\Version;
@@ -30,6 +31,7 @@ use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\CheckConfig;
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
+use Alchemy\Phrasea\Command\Setup\StaticMappingGenerator;
 use Alchemy\Phrasea\Command\Task\SchedulerResumeTasks;
 use Alchemy\Phrasea\Command\Task\SchedulerState;
 use Alchemy\Phrasea\Command\Task\SchedulerPauseTasks;
@@ -115,11 +117,8 @@ $cli->command(new H264MappingGenerator());
 $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
 
-if ($cli['phraseanet.SE']->getName() === 'ElasticSearch') {
-    $cli->command(new IndexFull('searchengine:index'));
-}
-
-$cli->command(new WebsocketServer('ws-server:run'));
+$cli->command(new StaticConfigurationDumper());
+$cli->command(new StaticMappingGenerator());
 
 $cli->loadPlugins();
 

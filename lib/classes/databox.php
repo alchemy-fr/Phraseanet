@@ -454,6 +454,21 @@ class databox extends base
 
     public function unmount_databox()
     {
+        if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+            $sql = "SELECT path, file FROM subdef WHERE `name`='thumbnail'";
+            $stmt = $this->get_connection()->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            foreach ($rows as $row) {
+                $pathfile = $this->app['phraseanet.thumb-symlinker']->getSymlinkPath(sprintf(
+                    '%s/%s',
+                    rtrim($row['path'], '/'),
+                    $row['file']
+                ));
+                $this->app['filesystem']->remove($pathfile);
+            }
+        }
         foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($this->app);
         }
@@ -509,6 +524,7 @@ class databox extends base
         $stmt->closeCursor();
 
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         return;
     }
@@ -567,20 +583,16 @@ class databox extends base
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ($row)
+        if ($row) {
             $ord = $row['ord'] + 1;
+        }
+
+        $params[':ord'] = $ord;
 
         $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([
-            ':ord'      => $ord
-            , ':host'     => $host
-            , ':port'     => $port
-            , ':dbname'   => $dbname
-            , ':user'     => $user
-            , ':password' => $password
-        ]);
+        $stmt->execute($params);
         $stmt->closeCursor();
         $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
@@ -603,7 +615,6 @@ class databox extends base
      * @param  string      $user
      * @param  string      $password
      * @param  string      $dbname
-     * @param  registry    $registry
      * @return databox
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname)

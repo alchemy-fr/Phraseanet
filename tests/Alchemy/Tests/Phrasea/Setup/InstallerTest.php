@@ -52,7 +52,7 @@ class InstallerTest extends \PhraseanetTestCase
             'port'     => 3306,
             'user'     => $credentials['user'],
             'password' => $credentials['password'],
-            'dbname'   => 'ab_unitTests',
+            'dbname'   => 'ab_setup_test',
         ]);
         $abConn->connect();
         $dbConn = self::$DI['app']['dbal.provider']->get([
@@ -60,14 +60,14 @@ class InstallerTest extends \PhraseanetTestCase
             'port'     => 3306,
             'user'     => $credentials['user'],
             'password' => $credentials['password'],
-            'dbname'   => 'db_unitTests',
+            'dbname'   => 'db_setup_test',
         ]);
         $dbConn->connect();
 
         // empty databases
-        $stmt = $abConn->prepare('DROP DATABASE ab_unitTests; CREATE DATABASE ab_unitTests');
+        $stmt = $abConn->prepare('DROP DATABASE ab_setup_test; CREATE DATABASE ab_setup_test');
         $stmt->execute();
-        $stmt = $abConn->prepare('DROP DATABASE db_unitTests; CREATE DATABASE db_unitTests');
+        $stmt = $abConn->prepare('DROP DATABASE db_setup_test; CREATE DATABASE db_setup_test');
         $stmt->execute();
         unset($stmt);
 
@@ -81,7 +81,7 @@ class InstallerTest extends \PhraseanetTestCase
 
         $databoxes = $app['phraseanet.appbox']->get_databoxes();
         $databox = array_pop($databoxes);
-        $this->assertContains('<path>'.realpath($dataPath).'/db_unitTests/subdefs</path>', $databox->get_structure());
+        $this->assertContains('<path>'.realpath($dataPath).'/db_setup_test/subdefs</path>', $databox->get_structure());
 
         $conf = $app['configuration.store']->getConfig();
         $this->assertArrayHasKey('main', $conf);

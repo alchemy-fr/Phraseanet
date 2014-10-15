@@ -19,7 +19,7 @@ class DatabaseHelper extends Helper
         $port = (int) $this->request->query->get('port', 3306);
         $user = $this->request->query->get('user');
         $password = $this->request->query->get('password');
-        $dbname = $this->request->query->get('dbname');
+        $db_name = $this->request->query->get('db_name');
 
         $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
@@ -36,14 +36,14 @@ class DatabaseHelper extends Helper
 
         }
 
-        if (null !== $dbname && $connection_ok) {
+        if (null !== $db_name && $connection_ok) {
             try {
                 $conn = $this->app['dbal.provider']->get([
                     'host'     => $hostname,
                     'port'     => $port,
                     'user'     => $user,
                     'password' => $password,
-                    'dbname'   => $dbname,
+                    'dbname'   => $db_name,
                 ]);
 
                 $conn->connect();
