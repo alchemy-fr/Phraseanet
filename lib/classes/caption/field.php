@@ -38,11 +38,11 @@ class caption_field implements cache_cacheableInterface
      *
      * @param Application      $app
      * @param databox_field    $databox_field
-     * @param record_Interface $record
+     * @param record_adapter $record
      *
      * @return caption_field
      */
-    public function __construct(Application $app, databox_field $databox_field, record_Interface $record)
+    public function __construct(Application $app, databox_field $databox_field, \record_adapter $record)
     {
         $this->app = $app;
         $this->record = $record;
