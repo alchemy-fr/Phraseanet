@@ -1873,7 +1873,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setCreated(\DateTime $created)
+    public function setCreated(\DateTime $created = null)
     {
         throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }
@@ -1971,7 +1971,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(\DateTime $updated = null)
     {
         throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }

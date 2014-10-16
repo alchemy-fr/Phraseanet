@@ -77,7 +77,7 @@ class RecordES implements RecordInterface
     }
 
     /** {@inheritdoc} */
-    public function setCreated(\DateTime $created)
+    public function setCreated(\DateTime $created = null)
     {
         $this->created = $created;
     }
@@ -115,6 +115,9 @@ class RecordES implements RecordInterface
     /** {@inheritdoc} */
     public function setMimeType($mimeType)
     {
+        if (null === $mimeType || '' === $mimeType) {
+            $mimeType = 'application/octet-stream';
+        }
         $this->mimeType = $mimeType;
     }
 
@@ -155,7 +158,7 @@ class RecordES implements RecordInterface
     }
 
     /**
-     * @param null $locale
+     * @param string|null $locale
      *
      * @return string
      */
@@ -201,7 +204,7 @@ class RecordES implements RecordInterface
         return $this->updated;
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated = null)
     {
         $this->updated = $updated;
     }

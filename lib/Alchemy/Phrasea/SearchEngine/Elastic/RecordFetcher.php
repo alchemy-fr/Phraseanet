@@ -118,6 +118,10 @@ class RecordFetcher
             $record['record_type'] = SearchEngineInterface::GEM_TYPE_RECORD;
         }
 
+        if (false === (bool) $record['mime']) {
+            $record['mime'] = 'application/octet-stream';
+        }
+
         unset($record['parent_record_id']);
 
         return $record;

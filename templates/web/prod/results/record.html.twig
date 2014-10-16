@@ -62,17 +62,23 @@
                 </div>
                 <div class="{% if rollover_thumbnail %}rollovable{% endif %}">
                 {% set extraclass = '' %}
-                {% if rollover_thumbnail %}
-                    {% set extraclass = 'rollover-gif-out' %}
+
+                {% if thumbnail.path is defined and (thumbnail.path is not empty or thumbnail.path is not none) %}
+                    {% set path = thumbnail.path %}
+                {% else %}
+                    {% set path = app['root.path'] ~ '/www/skins/icons/' ~ record.mimeType|replace({'/': '_'} ~ '.png') %}
                 {% endif %}
-                {% set url = app['phraseanet.static-file'].getUrl(thumbnail.path) %}
+
+                {% set url = app['phraseanet.static-file'].getUrl(path) %}
 
                 {{thumbnail_macro.format(record, url, thumbnail.width, thumbnail.height, th_size, th_size, extraclass, true, true)}}
 
-                {% if rollover_thumbnail and rollover_thumbnail.path is defined %}
-                    {% set url = app['phraseanet.static-file'].getUrl(rollover_thumbnail.path) %}
-
-                    {{thumbnail_macro.format(record, url, rollover_thumbnail.width, rollover_thumbnail.height, th_size, th_size, 'rollover-gif-hover', true, true)}}
+                {% if rollover_thumbnail %}
+                    {% set extraclass = 'rollover-gif-out' %}
+                    {% if rollover_thumbnail.path is defined and (rollover_thumbnail.path is not empty or rollover_thumbnail.path is not none) %}
+                        {% set url = app['phraseanet.static-file'].getUrl(rollover_thumbnail.path) %}
+                        {{thumbnail_macro.format(record, url, rollover_thumbnail.width, rollover_thumbnail.height, th_size, th_size, 'rollover-gif-hover', true, true)}}
+                    {% endif %}
                 {% endif %}
                 </div>
             </div>
@@ -91,9 +97,9 @@
                     {% endif %}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
                     {{drop_down.prod(record, entry_id)}}
-                    {% if if preview and app['acl'].get(app['authentication'].user).has_access_to_subdef(record, 'preview') %}
+                    {% if preview and app['acl'].get(app['authentication'].user).has_access_to_subdef(record, 'preview') %}
                         <div tooltipsrc="{{ path('prod_tooltip_preview', { 'databoxId' : record.databoxId, 'recordId' : record.recordId }) }}" class="previewTips"></div>
-                    {% enif %}
+                    {% endif %}
                     {% if user_rollover_thumbnail == 'preview' %}
                     <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position }) }}" class="captionRolloverTips"></div>
                     {% endif %}

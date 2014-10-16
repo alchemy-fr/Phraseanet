@@ -113,7 +113,7 @@ interface RecordInterface
     public function getCreated();
 
     /** @param \DateTime $created */
-    public function setCreated(\DateTime $created);
+    public function setCreated(\DateTime $created = null);
 
     /**
      * The id of the databox where belong the record.
@@ -169,7 +169,7 @@ interface RecordInterface
     public function getUpdated();
 
     /** @param \DateTime $updated */
-    public function setUpdated(\DateTime $updated);
+    public function setUpdated(\DateTime $updated = null);
 
     /** @return string */
     public function getUuid();
