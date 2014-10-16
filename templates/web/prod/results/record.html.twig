@@ -68,7 +68,7 @@
                     {% set width = thumbnail.width %}
                     {% set height = thumbnail.height %}
                 {% else %}
-                    {% set path = app['root.path'] ~ '/www/skins/icons/' ~ record.mimeType|replace({'/': '_'}) ~ '.png' %}
+                    {% set path = app['root.path'] ~ '/www/skins/icons/substitution/' ~ record.mimeType|replace({'/': '_'}) ~ '.png' %}
                     {% set width = 256 %}
                     {% set height = 256 %}
                 {% endif %}
