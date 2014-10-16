@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-class Bridge_ElementTest extends \PhraseanetAuthenticatedTestCase
+class Bridge_ElementTest extends \PhraseanetTestCase
 {
     /**
      * @var Bridge_Element
@@ -63,11 +63,6 @@ class Bridge_ElementTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals($this->account->get_id(), $this->object->get_account()->get_id());
     }
 
-    public function testGet_id()
-    {
-
-    }
-
     public function testGet_record()
     {
         $this->assertInstanceOf('record_adapter', $this->object->get_record());
@@ -102,11 +97,6 @@ class Bridge_ElementTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_title()
     {
         $this->assertEquals($this->title, $this->object->get_title());
-    }
-
-    public function testGet_type()
-    {
-        $this->markTestIncomplete();
     }
 
     public function testSet_title()
@@ -149,30 +139,5 @@ class Bridge_ElementTest extends \PhraseanetAuthenticatedTestCase
         foreach ($elements as $element) {
             $this->assertInstanceOf('Bridge_Element', $element);
         }
-    }
-
-    public function testGet_connector_status()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testSet_connector_status()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testGet_datas()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testSet_datas()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function test()
-    {
-        $this->markTestIncomplete();
     }
 }

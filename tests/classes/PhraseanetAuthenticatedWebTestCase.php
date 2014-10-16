@@ -88,14 +88,15 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
     {
         $this->createDatabase();
 
-        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
+        $app = self::$DI['app'];
+        $info = $app['phraseanet.configuration']['main']['database'];
 
         try {
-            $conn = self::$DI['app']['dbal.provider']->get([
-                'host'     => $connexion['host'],
-                'port'     => $connexion['port'],
-                'user'     => $connexion['user'],
-                'password' => $connexion['password'],
+            $conn = $app['connection.pool.manager']->get([
+                'host'     => $info['host'],
+                'port'     => $info['port'],
+                'user'     => $info['user'],
+                'password' => $info['password'],
                 'dbname'   => 'unit_test_db',
             ]);
             $conn->connect();
@@ -104,7 +105,9 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         }
 
         $databox = \databox::create(
-                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml')
+            $app,
+            $conn,
+            new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml')
         );
 
         self::$createdDataboxes[] = $databox;
@@ -116,9 +119,9 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             , 'bas_chupub'        => '1'
         ];
 
-        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        $app['acl']->get($app['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
-        $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
+        $databox->registerAdmin($app['authentication']->getUser());
 
         return $databox;
     }

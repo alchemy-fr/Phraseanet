@@ -3,6 +3,9 @@
 namespace Alchemy\Tests\Phrasea;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -25,24 +28,16 @@ class ApplicationTest extends \PhraseanetTestCase
         $app = new Application('prod');
         $this->assertFalse($app['debug']);
 
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $this->assertTrue($app['debug']);
 
         $app = new Application('dev');
         $this->assertTrue($app['debug']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testTestLocale()
-    {
-        $app = new Application();
-    }
-
     public function testExceptionHandlerIsNotYetInstancied()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['exception_handler'] = new TestExceptionHandlerSubscriber();
 
         $app->get('/', function () {
@@ -149,7 +144,7 @@ class ApplicationTest extends \PhraseanetTestCase
      */
     public function testFlashSession()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $sessionId = null;
         $app->post('/prod/upload/', function (Application $app) use (&$sessionId) {
             $sessionId = $app['session']->getId();
@@ -167,7 +162,7 @@ class ApplicationTest extends \PhraseanetTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['url_generator'] = $generator;
 
         $ret = 'retval-' . mt_rand();
@@ -187,7 +182,7 @@ class ApplicationTest extends \PhraseanetTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['url_generator'] = $generator;
 
         $ret = 'retval-' . mt_rand();
@@ -205,7 +200,7 @@ class ApplicationTest extends \PhraseanetTestCase
     {
         $factory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
 
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['form.factory'] = $factory;
 
         $form = $this->getMockBuilder('Symfony\Component\Form\Form')
@@ -230,7 +225,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testAddSetFlash()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $this->assertEquals([], $app->getFlash('info'));
         $this->assertEquals(['BOUM'], $app->getFlash('info', ['BOUM']));
@@ -244,14 +239,14 @@ class ApplicationTest extends \PhraseanetTestCase
      */
     public function testAddSetFlashWithInvalidArgument()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $app->addFlash('caution', 'BAMBA');
     }
 
     public function testAddCaptcha()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getMock();
@@ -269,7 +264,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testAddUnlockLinkToUsrId()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $this->assertNull($app->getUnlockAccountData());
         $app->addUnlockAccountData(42);
@@ -279,7 +274,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testRootPath()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $this->assertFileExists($app['root.path'].'/LICENSE');
         $this->assertFileExists($app['root.path'].'/README.md');
@@ -289,7 +284,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testUrlGeneratorContext()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getMock();
@@ -304,7 +299,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testMaintenanceModeTriggers503s()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $app['phraseanet.configuration.config-path'] = __DIR__ . '/Core/Event/Subscriber/Fixtures/configuration-maintenance.yml';
         $app['phraseanet.configuration.config-compiled-path'] = __DIR__ . '/Core/Event/Subscriber/Fixtures/configuration-maintenance.php';
@@ -312,6 +307,16 @@ class ApplicationTest extends \PhraseanetTestCase
         if (is_file($app['phraseanet.configuration.config-compiled-path'])) {
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
+
+        $app['configuration.store'] = new HostConfiguration(new Configuration(
+            $app['phraseanet.configuration.yaml-parser'],
+            $app['phraseanet.configuration.compiler'],
+            $app['phraseanet.configuration.config-path'],
+            $app['phraseanet.configuration.config-compiled-path'],
+            $app['debug']
+        ));
+
+        $app['conf'] = new PropertyAccess($app['configuration.store']);
 
         $app->get('/', function (Application $app, Request $request) {
             return 'Hello';
@@ -330,7 +335,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testThatMediaAlachemystIsRegistered()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $this->assertSame($app['monolog'], $app['media-alchemyst.logger']);
         $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
@@ -364,7 +369,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     private function getPreparedApp($tempDir)
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['translator.cache-options'] = [
             'debug' => false,
             'cache_dir' => $tempDir,
@@ -408,7 +413,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     private function getAppThatReturnLocale()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $app->get('/', function (Application $app, Request $request) {
             return $app['locale'];
@@ -449,7 +454,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     private function getApp()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app->get('/', function (Application $app, Request $request) {
 
             $app['session']->set('usr_id', 5);

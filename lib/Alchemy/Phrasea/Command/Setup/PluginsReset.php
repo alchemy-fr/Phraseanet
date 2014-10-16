@@ -26,8 +26,8 @@ class PluginsReset extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->container['filesystem']->remove($this->container['plugins.directory']);
-        $this->container['filesystem']->mirror(__DIR__ . '/../../../../conf.d/plugins', $this->container['plugins.directory']);
+        $this->container['filesystem']->remove($this->container['plugin.path']);
+        $this->container['filesystem']->mirror(__DIR__ . '/../../../../conf.d/plugins', $this->container['plugin.path']);
 
         return 0;
     }

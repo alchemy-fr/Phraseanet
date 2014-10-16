@@ -10,12 +10,12 @@ class FinishedJobRemoverSubscriberTest extends \PhraseanetTestCase
 {
     public function testOnJobFinish()
     {
-        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
         $taskId = $task->getId();
 
-        $subscriber = new FinishedJobRemoverSubscriber(self::$DI['app']['EM']);
+        $subscriber = new FinishedJobRemoverSubscriber(self::$DI['app']['orm.em']);
         $subscriber->onJobFinish(new JobFinishedEvent($task));
 
-        $this->assertNull(self::$DI['app']['EM']->getRepository('Phraseanet:Task')->find($taskId));
+        $this->assertNull(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task')->find($taskId));
     }
 }

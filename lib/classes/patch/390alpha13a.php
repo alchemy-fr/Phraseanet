@@ -60,7 +60,7 @@ class patch_390alpha13a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $em = $app['EM'];
+        $em = $app['orm.em'];
 
         $sql = "SELECT date_modif, usr_id, base_id, en_cours, refuser
                 FROM demand";

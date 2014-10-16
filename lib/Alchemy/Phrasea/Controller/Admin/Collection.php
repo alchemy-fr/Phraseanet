@@ -537,7 +537,6 @@ class Collection implements ControllerProviderInterface
                 $msg = $app->trans('Successful removal');
             }
         } catch (\Exception $e) {
-
         }
 
         if ('json' === $app['request']->getRequestFormat()) {

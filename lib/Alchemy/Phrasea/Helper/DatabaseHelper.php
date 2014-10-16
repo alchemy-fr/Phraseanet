@@ -24,21 +24,23 @@ class DatabaseHelper extends Helper
         $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
-            $conn = $this->app['dbal.provider']->get([
+            $connection = $this->app['dbal.provider']([
                 'host'     => $hostname,
                 'port'     => $port,
                 'user'     => $user,
                 'password' => $password
             ]);
-            $conn->connect();
+            $connection->connect();
             $connection_ok = true;
+            $connection->close();
         } catch (\Exception $e) {
 
         }
+        unset($connection);
 
         if (null !== $db_name && $connection_ok) {
             try {
-                $conn = $this->app['dbal.provider']->get([
+                $connection = $this->app['dbal.provider']([
                     'host'     => $hostname,
                     'port'     => $port,
                     'user'     => $user,
@@ -46,12 +48,10 @@ class DatabaseHelper extends Helper
                     'dbname'   => $db_name,
                 ]);
 
-                $conn->connect();
-
                 $db_ok = true;
 
                 $sql = "SHOW TABLE STATUS";
-                $stmt = $conn->prepare($sql);
+                $stmt = $connection->prepare($sql);
                 $stmt->execute();
 
                 $empty = $stmt->rowCount() === 0;
@@ -67,10 +67,15 @@ class DatabaseHelper extends Helper
                         $is_databox = true;
                     }
                 }
+                $connection->close();
             } catch (\Exception $e) {
 
             }
+
+            unset($connection);
         }
+
+        $this->app['connection.pool.manager']->closeAll();
 
         return [
             'connection' => $connection_ok,

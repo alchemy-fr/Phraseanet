@@ -35,13 +35,13 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
 
         $this->assertEquals(5, $count);
         $this->assertEquals(302, $response->getStatusCode());
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT b FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT b FROM Phraseanet:Basket b');
         $result = $query->getResult();
 
         $basket = array_pop($result);
@@ -50,7 +50,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRootPostJSON()
     {
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
 
         $route = '/prod/baskets/';
@@ -70,7 +70,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
 
         $this->assertEquals($count + 1, $query->getSingleScalarResult());
         $this->assertEquals(200, $response->getStatusCode());
@@ -105,7 +105,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketGetAccessDenied()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 3);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 3);
         $route = sprintf('/prod/baskets/%s/', $basket->getId());
         self::$DI['client']->request('GET', $route);
         $response = self::$DI['client']->getResponse();
@@ -114,7 +114,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketDeleteElementPost()
     {
-        $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
+        $basketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $this->assertEquals(1, $basket->getElements()->count());
@@ -131,8 +131,8 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketDeldeteElementPostJSON()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
-        $basket_element = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket_element = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
 
         $route = sprintf(
             "/prod/baskets/%s/delete/%s/", $basket->getId(), $basket_element->getId()
@@ -144,20 +144,20 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         );
 
         $response = self::$DI['client']->getResponse();
-        self::$DI['app']['EM']->refresh($basket);
+        self::$DI['app']['orm.em']->refresh($basket);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(0, $basket->getElements()->count());
     }
 
     public function testBasketDeletePostUnauthorized()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 3);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 3);
         $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(403, $response->getStatusCode());
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
         $this->assertEquals(4, $count);
     }
@@ -167,7 +167,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $route = '/prod/baskets/1/delete/';
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
         $this->assertEquals(3, $count);
         $this->assertEquals(302, $response->getStatusCode());
@@ -178,7 +178,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $route = '/prod/baskets/1/delete/';
         self::$DI['client']->request('POST', $route, [], [], ["HTTP_ACCEPT" => "application/json"]);
         $response = self::$DI['client']->getResponse();
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
         $this->assertEquals(3, $count);
         $this->assertEquals(200, $response->getStatusCode());
@@ -186,7 +186,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketUpdatePost()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         self::$DI['client']->request(
@@ -203,7 +203,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketUpdatePostJSON()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         self::$DI['client']->request(
@@ -222,7 +222,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testReorderGet()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
 
         $route = sprintf("/prod/baskets/%s/reorder/", $basket->getId());
 
@@ -238,7 +238,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketUpdateGet()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
         $crawler = self::$DI['client']->request(
@@ -260,21 +260,21 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testBasketArchivedPost()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
         self::$DI['client']->request('POST', $route);
         $this->assertTrue($basket->getArchived());
         $route = sprintf('/prod/baskets/%s/archive/?archive=0', $basket->getId());
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
-        self::$DI['app']['EM']->refresh($basket);
+        self::$DI['app']['orm.em']->refresh($basket);
         $this->assertFalse($basket->getArchived());
         $this->assertEquals(302, $response->getStatusCode());
     }
 
     public function testBasketArchivedPostJSON()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
 
         self::$DI['client']->request(
@@ -293,14 +293,14 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         );
 
         $response = self::$DI['client']->getResponse();
-        self::$DI['app']['EM']->refresh($basket);
+        self::$DI['app']['orm.em']->refresh($basket);
         $this->assertFalse($basket->getArchived());
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testAddElementPost()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
         $records = [
@@ -324,9 +324,9 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAddElementToValidationPost()
     {
-        $countData = count(self::$DI['app']['EM']->getRepository('Phraseanet:ValidationData')->findAll());
+        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll());
 
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
         $this->assertCount(2, $basket->getElements());
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
@@ -347,13 +347,13 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(4, $basket->getElements());
-        $datas = self::$DI['app']['EM']->getRepository('Phraseanet:ValidationData')->findAll();
+        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll();
         $this->assertTrue($countData < count($datas), 'assert that ' . count($datas) . ' > ' . $countData);
     }
 
     public function testAddElementPostJSON()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = '/prod/baskets/1/addElements/';
 
         $records = [
@@ -371,10 +371,10 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteStealElements()
     {
-        $BasketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
+        $BasketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
 
         $Basket_1 = $BasketElement->getBasket();
-        $Basket_2 = self::$DI['app']['EM']->find('Phraseanet:Basket', 2);
+        $Basket_2 = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 2);
 
         $route = sprintf('/prod/baskets/%s/stealElements/', $Basket_2->getId());
 
@@ -394,11 +394,11 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteStealElementsJson()
     {
-        $BasketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
+        $BasketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
 
         $Basket_1 = $BasketElement->getBasket();
 
-        $Basket_2 = self::$DI['app']['EM']->find('Phraseanet:Basket', 2);
+        $Basket_2 = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 2);
 
         $route = sprintf('/prod/baskets/%s/stealElements/', $Basket_2->getId());
 
@@ -427,7 +427,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRemoveBasket()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
 
         $route = sprintf('/prod/baskets/%s/delete/', $basket->getId());
         self::$DI['client']->request('POST', $route, [], [], ["HTTP_ACCEPT" => "application/json"]);
@@ -442,16 +442,16 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationParticipant v');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationParticipant v');
         $this->assertEquals(0, $query->getSingleScalarResult());
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:BasketElement b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:BasketElement b');
         $this->assertEquals(1, $query->getSingleScalarResult());
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationSession v');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationSession v');
         $this->assertEquals(0, $query->getSingleScalarResult());
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $this->assertEquals(3, $query->getSingleScalarResult());
     }
 }

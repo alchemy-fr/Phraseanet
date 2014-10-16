@@ -70,10 +70,10 @@ class patch_390alpha3a extends patchAbstract
         $stmt->closeCursor();
 
         $n = 0;
-        $em = $app['EM'];
+        $em = $app['orm.em'];
 
         foreach ($rs as $row) {
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 

@@ -70,19 +70,19 @@ class patch_383alpha1a extends patchAbstract
 
         foreach ($rows as $row) {
             if (null !== $session = $app['repo.sessions']->find($row['id'])) {
-                $app['EM']->remove($session);
+                $app['orm.em']->remove($session);
             }
         }
 
         // Remove API sessions
-        $query = $app['EM']->createQuery('SELECT s FROM Phraseanet:Session s WHERE s.user_agent LIKE :guzzle');
+        $query = $app['orm.em']->createQuery('SELECT s FROM Phraseanet:Session s WHERE s.user_agent LIKE :guzzle');
         $query->setParameter(':guzzle', 'Guzzle%');
 
         foreach ($query->getResult() as $session) {
-            $app['EM']->remove($session);
+            $app['orm.em']->remove($session);
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return true;
     }
@@ -92,7 +92,7 @@ class patch_383alpha1a extends patchAbstract
         $rsm = (new ResultSetMapping())->addScalarResult('Name', 'Name');
         $ret = false;
 
-        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
+        foreach ($app['orm.em']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
             if ('Session' === $row['Name']) {
                 $ret = true;
                 break;

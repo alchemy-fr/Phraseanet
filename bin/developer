@@ -69,8 +69,8 @@ $cli = new CLI("
 
 if ($cli['configuration.store']->isSetup()) {
     $helpers = [
-        'db' => new ConnectionHelper($cli['EM']->getConnection()),
-        'em' => new EntityManagerHelper($cli['EM'])
+        'db' => new ConnectionHelper($cli['orm.em']->getConnection()),
+        'em' => new EntityManagerHelper($cli['orm.em'])
     ];
 
     $helperSet = $cli['console']->getHelperSet();

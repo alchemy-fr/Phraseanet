@@ -8,7 +8,7 @@ class ApiOauthTokenManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
         $nbTokens = count(self::$DI['app']['repo.api-oauth-tokens']->findAll());
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $manipulator->create($account);
@@ -17,7 +17,7 @@ class ApiOauthTokenManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $token = $manipulator->create($account);
         $countBefore = count(self::$DI['app']['repo.api-oauth-tokens']->findAll());
@@ -28,7 +28,7 @@ class ApiOauthTokenManipulatorTest extends \PhraseanetTestCase
     public function testUpdate()
     {
 
-        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $token = $manipulator->create($account);
         $token->setSessionId(123456);
@@ -39,7 +39,7 @@ class ApiOauthTokenManipulatorTest extends \PhraseanetTestCase
 
     public function testRenew()
     {
-        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiOauthTokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-tokens'], self::$DI['app']['random.medium']);
         $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $token = $manipulator->create($account);
         $oauthTokenBefore = $token->getOauthToken();

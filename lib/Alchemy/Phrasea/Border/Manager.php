@@ -129,7 +129,7 @@ class Manager
         $visa = new Visa();
 
         foreach ($this->checkers as $checker) {
-            $visa->addResponse($checker->check($this->app['EM'], $file));
+            $visa->addResponse($checker->check($this->app['orm.em'], $file));
         }
 
         return $visa;
@@ -361,7 +361,7 @@ class Manager
 
         $lazaretFile->setSession($session);
 
-        $this->app['EM']->persist($lazaretFile);
+        $this->app['orm.em']->persist($lazaretFile);
 
         foreach ($file->getAttributes() as $fileAttribute) {
             $attribute = new LazaretAttribute();
@@ -370,7 +370,7 @@ class Manager
             $attribute->setLazaretFile($lazaretFile);
             $lazaretFile->addAttribute($attribute);
 
-            $this->app['EM']->persist($attribute);
+            $this->app['orm.em']->persist($attribute);
         }
 
         foreach ($visa->getResponses() as $response) {
@@ -382,11 +382,11 @@ class Manager
 
                 $lazaretFile->addCheck($check);
 
-                $this->app['EM']->persist($check);
+                $this->app['orm.em']->persist($check);
             }
         }
 
-        $this->app['EM']->flush();
+        $this->app['orm.em']->flush();
 
         return $lazaretFile;
     }

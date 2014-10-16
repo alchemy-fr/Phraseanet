@@ -25,10 +25,10 @@ class FeedServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['feed.user-link-generator'] = $app->share(function ($app) {
-            return new FeedLinkGenerator($app['url_generator'], $app['EM'], $app['random.low']);
+            return new FeedLinkGenerator($app['url_generator'], $app['orm.em'], $app['random.low']);
         });
         $app['feed.aggregate-link-generator'] = $app->share(function ($app) {
-            return new AggregateLinkGenerator($app['url_generator'], $app['EM'], $app['random.medium']);
+            return new AggregateLinkGenerator($app['url_generator'], $app['orm.em'], $app['random.medium']);
         });
         $app['feed.link-generator-collection'] = $app->share(function ($app) {
             $collection = new LinkGeneratorCollection();

@@ -367,12 +367,12 @@ class Login implements ControllerProviderInterface
                         }
                     }
 
-                    $app['EM']->persist($user);
-                    $app['EM']->flush();
+                    $app['orm.em']->persist($user);
+                    $app['orm.em']->flush();
 
                     if (null !== $provider) {
-                        $this->attachProviderToUser($app['EM'], $provider, $user);
-                        $app['EM']->flush();
+                        $this->attachProviderToUser($app['orm.em'], $provider, $user);
+                        $app['orm.em']->flush();
                     }
 
                     $registrationsOK = [];
@@ -809,10 +809,10 @@ class Login implements ControllerProviderInterface
             $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_REMINDER, new ValidationEvent($participant, $basket, $url));
 
             $participant->setReminded(new \DateTime('now'));
-            $app['EM']->persist($participant);
+            $app['orm.em']->persist($participant);
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         $session = $app['authentication']->openAccount($user);
 
@@ -832,8 +832,8 @@ class Login implements ControllerProviderInterface
             ->setScreenHeight($height)
             ->setScreenWidth($width);
 
-        $app['EM']->persist($session);
-        $app['EM']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         return $session;
     }
@@ -883,8 +883,8 @@ class Login implements ControllerProviderInterface
         }
 
         if (null !== $user) {
-            $this->attachProviderToUser($app['EM'], $provider, $user);
-            $app['EM']->flush();
+            $this->attachProviderToUser($app['orm.em'], $provider, $user);
+            $app['orm.em']->flush();
 
             $this->postAuthProcess($app, $user);
 
@@ -900,8 +900,8 @@ class Login implements ControllerProviderInterface
         if ($app['authentication.providers.account-creator']->isEnabled()) {
             $user = $app['authentication.providers.account-creator']->create($app, $token->getId(), $token->getIdentity()->getEmail(), $token->getTemplates());
 
-            $this->attachProviderToUser($app['EM'], $provider, $user);
-            $app['EM']->flush();
+            $this->attachProviderToUser($app['orm.em'], $provider, $user);
+            $app['orm.em']->flush();
 
             $this->postAuthProcess($app, $user);
 
@@ -996,8 +996,8 @@ class Login implements ControllerProviderInterface
 
             $response->headers->setCookie(new Cookie('persistent', $token, time() + $app['phraseanet.configuration']['session']['lifetime']));
 
-            $app['EM']->persist($session);
-            $app['EM']->flush();
+            $app['orm.em']->persist($session);
+            $app['orm.em']->flush();
         }
 
         $event = new PostAuthenticate($request, $response, $user, $context);

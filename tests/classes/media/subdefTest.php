@@ -19,30 +19,31 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     private static $recordonbleu;
 
-    public function bootTestCase()
+    public function setUp()
     {
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
+        if (null === self::$recordonbleu) {
+            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
 
-        self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
-        self::$DI['app']['subdef.generator']->generateSubdefs(self::$recordonbleu);
+            self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
+            self::$DI['app']['subdef.generator']->generateSubdefs(self::$recordonbleu);
 
-        foreach (self::$recordonbleu->get_subdefs() as $subdef) {
+            foreach (self::$recordonbleu->get_subdefs() as $subdef) {
+                if ($subdef->get_name() == 'document') {
+                    continue;
+                }
 
-            if ($subdef->get_name() == 'document') {
-                continue;
+                if (! self::$objectPresent) {
+                    self::$objectPresent = $subdef;
+                    continue;
+                }
+                if (! self::$objectNotPresent) {
+                    self::$objectNotPresent = $subdef;
+                    continue;
+                }
             }
 
-            if (! self::$objectPresent) {
-                self::$objectPresent = $subdef;
-                continue;
-            }
-            if (! self::$objectNotPresent) {
-                self::$objectNotPresent = $subdef;
-                continue;
-            }
+            self::$objectNotPresent->remove_file();
         }
-
-        self::$objectNotPresent->remove_file();
     }
 
     public static function tearDownAfterClass()

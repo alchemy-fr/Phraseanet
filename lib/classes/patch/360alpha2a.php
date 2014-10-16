@@ -56,7 +56,7 @@ class patch_360alpha2a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['EM']->getConnection()->executeUpdate('UPDATE Users u SET u.email = NULL WHERE u.email IS NOT NULL AND u.deleted = 1');
+        $app['orm.em']->getConnection()->executeUpdate('UPDATE Users u SET u.email = NULL WHERE u.email IS NOT NULL AND u.deleted = 1');
 
         return true;
     }

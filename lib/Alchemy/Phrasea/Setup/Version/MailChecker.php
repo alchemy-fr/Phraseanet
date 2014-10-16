@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Version;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Version;
 
 /**
  * In version 3.9 the user table have been removed.
@@ -30,6 +31,10 @@ class MailChecker
      */
     public static function getWrongEmailUsers(Application $app, $table = 'usr')
     {
+        if (version_compare(Version::getNumber(), '3.9', '>')) {
+            return [];
+        }
+
         $sql = 'SELECT usr_mail, usr_id, last_conn, usr_login FROM '. $table .' WHERE usr_mail IS NOT NULL';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();

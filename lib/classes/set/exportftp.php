@@ -69,7 +69,7 @@ class set_exportftp extends set_export
             ->setLogin($login)
             ->setAddr($host);
 
-        $this->app['EM']->persist($export);
+        $this->app['orm.em']->persist($export);
 
         foreach ($this->list['files'] as $file) {
             foreach ($file['subdefs'] as $subdef => $properties) {
@@ -86,11 +86,11 @@ class set_exportftp extends set_export
                     ->setSubdef($subdef);
                 $export->addElement($element);
 
-                $this->app['EM']->persist($element);
+                $this->app['orm.em']->persist($element);
             }
         }
 
-        $this->app['EM']->flush();
+        $this->app['orm.em']->flush();
 
         return true;
     }

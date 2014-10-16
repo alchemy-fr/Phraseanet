@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Setup;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Setup\Installer;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
@@ -11,28 +12,20 @@ use Alchemy\Phrasea\Core\Configuration\Compiler;
 
 class InstallerTest extends \PhraseanetTestCase
 {
-
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     public function tearDown()
     {
-        parent::tearDown();
-    }
-
-    public static function tearDownAfterClass()
-    {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
         \phrasea::reset_baseDatas($app['phraseanet.appbox']);
-        parent::tearDownAfterClass();
+        parent::tearDown();
     }
 
     public function testInstall()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
+        \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
+        \phrasea::reset_baseDatas($app['phraseanet.appbox']);
+
         $app->bindRoutes();
 
         $parser = new Parser();
@@ -45,32 +38,36 @@ class InstallerTest extends \PhraseanetTestCase
         @unlink($configFile);
         @unlink($compiledFile);
 
-        $app['configuration.store'] = new Configuration(new Yaml(), new Compiler(), $configFile, $compiledFile, true);
+        $app['configuration.store'] = $app->share(function() use ($configFile, $compiledFile) {
+            return new Configuration(new Yaml(), new Compiler(), $configFile, $compiledFile, true);
+        });
 
-        $abConn = self::$DI['app']['dbal.provider']->get([
+        $app['conf'] = $app->share(function() use($app) {
+            return new PropertyAccess($app['configuration.store']);
+        });
+
+        $app['phraseanet.appbox'] = $app->share(function() use($app) {
+            return new \appbox($app);
+        });
+
+        $abInfo = [
             'host'     => 'localhost',
             'port'     => 3306,
             'user'     => $credentials['user'],
             'password' => $credentials['password'],
             'dbname'   => 'ab_setup_test',
-        ]);
-        $abConn->connect();
-        $dbConn = self::$DI['app']['dbal.provider']->get([
+        ];
+
+        $abConn = $app['dbal.provider']($abInfo);
+        $dbConn = $app['dbal.provider']([
             'host'     => 'localhost',
             'port'     => 3306,
             'user'     => $credentials['user'],
             'password' => $credentials['password'],
             'dbname'   => 'db_setup_test',
         ]);
-        $dbConn->connect();
-
-        // empty databases
-        $stmt = $abConn->prepare('DROP DATABASE ab_setup_test; CREATE DATABASE ab_setup_test');
-        $stmt->execute();
-        $stmt = $abConn->prepare('DROP DATABASE db_setup_test; CREATE DATABASE db_setup_test');
-        $stmt->execute();
-        unset($stmt);
-
+        $key = $app['orm.add']($abInfo);
+        $app['orm.ems.default'] = $key;
         $dataPath = __DIR__ . '/../../../../../datas/';
 
         $installer = new Installer($app);
@@ -79,8 +76,7 @@ class InstallerTest extends \PhraseanetTestCase
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
 
-        $databoxes = $app['phraseanet.appbox']->get_databoxes();
-        $databox = array_pop($databoxes);
+        $databox = current($app['phraseanet.appbox']->get_databoxes());
         $this->assertContains('<path>'.realpath($dataPath).'/db_setup_test/subdefs</path>', $databox->get_structure());
 
         $conf = $app['configuration.store']->getConfig();
@@ -90,5 +86,7 @@ class InstallerTest extends \PhraseanetTestCase
 
         @unlink($configFile);
         @unlink($compiledFile);
+
+        $app['connection.pool.manager']->closeAll();
     }
 }

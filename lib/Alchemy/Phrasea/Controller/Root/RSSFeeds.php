@@ -68,7 +68,7 @@ class RSSFeeds implements ControllerProviderInterface
 
             $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
-            $aggregate = new Aggregate($app['EM'], $feeds, $token);
+            $aggregate = new Aggregate($app['orm.em'], $feeds, $token);
 
             $request = $app['request'];
 

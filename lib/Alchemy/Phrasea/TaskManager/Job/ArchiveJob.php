@@ -1364,8 +1364,8 @@ class ArchiveJob extends AbstractJob
     {
         $lazaretSession = new LazaretSession();
 
-        $app['EM']->persist($lazaretSession);
-        $app['EM']->flush();
+        $app['orm.em']->persist($lazaretSession);
+        $app['orm.em']->flush();
 
         return $lazaretSession;
     }

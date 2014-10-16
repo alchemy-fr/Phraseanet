@@ -30,12 +30,13 @@ class JsFixtures extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $dbRefPath = sys_get_temp_dir() . '/db-ref.sqlite';
-        if (!file_exists($dbRefPath)) {
+        if (!file_exists($this->container['db.fixture.info']['path'])) {
             throw new RuntimeException('You must generate sqlite db first, run "bin/console phraseanet:regenerate-sqlite" command.');
         }
 
-        copy($dbRefPath, sys_get_temp_dir().'/db.sqlite');
+        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
+            return $app['orm.ems'][$app['db.fixture.hash.key']];
+        });
 
         $sbasId = current($this->container['phraseanet.appbox']->get_databoxes())->get_sbas_id();
         $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');
@@ -55,6 +56,7 @@ class JsFixtures extends Command
 
     private function deleteUser(User $user)
     {
+        $user = $this->container['orm.em']->find('Phraseanet:User', $user->getId());
         $this->container['manipulator.user']->delete($user);
     }
 
@@ -103,6 +105,9 @@ class JsFixtures extends Command
     {
         $environment = Application::ENV_TEST;
         $app = require __DIR__ . '/../../Application/Root.php';
+        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
+            return $app['orm.ems'][$app['db.fixture.hash.key']];
+        });
 
         $user = $this->createUser($app);
 

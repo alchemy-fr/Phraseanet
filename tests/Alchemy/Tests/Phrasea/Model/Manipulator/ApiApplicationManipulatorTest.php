@@ -10,7 +10,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateDesktopApplication()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $nbApps = count(self::$DI['app']['repo.api-applications']->findAll());
         $application = $manipulator->create(
             'desktop-app',
@@ -30,7 +30,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateWebApplication()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $nbApps = count(self::$DI['app']['repo.api-applications']->findAll());
         $application = $manipulator->create(
             'web-app',
@@ -53,7 +53,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
             'desktop-app2',
             ApiApplication::DESKTOP_TYPE,
@@ -75,7 +75,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testUpdate()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
             'desktop-app3',
             ApiApplication::DESKTOP_TYPE,
@@ -90,7 +90,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testSetType()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
             'desktop-app4',
             ApiApplication::DESKTOP_TYPE,
@@ -107,7 +107,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testSetRedirectUri()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
             'desktop-app5',
             ApiApplication::DESKTOP_TYPE,
@@ -136,7 +136,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testSetWebsiteUrl()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
         $application = $manipulator->create(
             'desktop-app6',
             ApiApplication::DESKTOP_TYPE,

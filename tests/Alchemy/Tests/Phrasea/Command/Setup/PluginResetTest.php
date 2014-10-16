@@ -21,10 +21,10 @@ class PluginResetTest extends \PhraseanetTestCase
             ->getMock();
         self::$DI['cli']['filesystem']->expects($this->once())
             ->method('remove')
-            ->with(self::$DI['cli']['plugins.directory']);
+            ->with(self::$DI['cli']['plugin.path']);
         self::$DI['cli']['filesystem']->expects($this->once())
             ->method('mirror')
-            ->with($this->isType('string'), self::$DI['cli']['plugins.directory'])
+            ->with($this->isType('string'), self::$DI['cli']['plugin.path'])
             ->will($this->returnCallback(function ($source, $target) use (&$capturedSource) {
                 $capturedSource = $source;
             }));

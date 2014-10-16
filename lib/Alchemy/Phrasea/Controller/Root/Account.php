@@ -267,7 +267,7 @@ class Account implements ControllerProviderInterface
             WHERE s.user = :usr_id
             ORDER BY s.created DESC';
 
-        $query = $app['EM']->createQuery($dql);
+        $query = $app['orm.em']->createQuery($dql);
         $query->setMaxResults(100);
         $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
         $sessions = $query->getResult();
@@ -393,10 +393,10 @@ class Account implements ControllerProviderInterface
             $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
             $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
 
-            $app['EM']->persist($ftpCredential);
-            $app['EM']->persist($app['authentication']->getUser());
+            $app['orm.em']->persist($ftpCredential);
+            $app['orm.em']->persist($app['authentication']->getUser());
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
             $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
         }
 

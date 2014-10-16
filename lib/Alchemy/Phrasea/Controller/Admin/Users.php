@@ -648,7 +648,7 @@ class Users implements ControllerProviderInterface
             }
 
             $basList = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']));
-            $models = $app['EM.native-query']->getModelForUser($app['authentication']->getUser(), $basList);
+            $models = $app['orm.em.native-query']->getModelForUser($app['authentication']->getUser(), $basList);
 
             return $app['twig']->render('/admin/user/import/view.html.twig', [
                 'nb_user_to_add'   => $nbUsrToAdd,

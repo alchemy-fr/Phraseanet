@@ -10,7 +10,7 @@ class BridgeExceptionSubscriberTest extends \PhraseanetTestCase
 {
     public function testErrorOnBridgeExceptions()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['bridge.account'] = $this->getMockBuilder('Bridge_Account')
             ->disableOriginalConstructor()
             ->getMock();
@@ -28,7 +28,7 @@ class BridgeExceptionSubscriberTest extends \PhraseanetTestCase
 
     public function testErrorOnOtherExceptions()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['bridge.account'] = $this->getMockBuilder('Bridge_Account')
             ->disableOriginalConstructor()
             ->getMock();

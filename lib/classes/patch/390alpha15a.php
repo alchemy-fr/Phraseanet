@@ -56,11 +56,11 @@ class patch_390alpha15a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        if (!$this->tableExists($app['EM'], 'tokens_backup')) {
+        if (!$this->tableExists($app['orm.em'], 'tokens_backup')) {
             return true;
         }
 
-        $app['EM']->getConnection()->executeUpdate('
+        $app['orm.em']->getConnection()->executeUpdate('
             INSERT INTO Tokens
             (
                 `value`, user_id, `type`,   `data`,

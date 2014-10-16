@@ -12,7 +12,7 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 {
     public function testAResponseIsReturned()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['exception_handler'] = new PhraseaExceptionHandlerSubscriber(PhraseaExceptionHandler::register());
         $app->get('/', function () {
             throw new \Exception();
@@ -26,7 +26,7 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 
     public function testANotFoundResponseIsReturned()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['exception_handler'] = new PhraseaExceptionHandlerSubscriber(PhraseaExceptionHandler::register());
         $app->get('/', function () {
             throw new NotFoundHttpException();
@@ -40,7 +40,7 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 
     public function testItCanBeDisabled()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['exception_handler'] = new PhraseaExceptionHandlerSubscriber(PhraseaExceptionHandler::register());
         $app->get('/', function () {
             throw new \Exception();

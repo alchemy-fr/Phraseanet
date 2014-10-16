@@ -28,12 +28,12 @@ class userTest extends \PhraseanetTestCase
         $provider->setProvider('custom-one');
         $provider->setUser($user);
 
-        self::$DI['app']['EM']->persist($provider);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($provider);
+        self::$DI['app']['orm.em']->flush();
 
         self::$DI['app']['manipulator.user']->delete($user);
 
-        $this->assertNull(self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')->findWithProviderAndId('custom-one', 12345));
+        $this->assertNull(self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrAuthProvider')->findWithProviderAndId('custom-one', 12345));
     }
 
     public function testDeleteSetMailToNullAndRemovesSessions()
@@ -45,12 +45,12 @@ class userTest extends \PhraseanetTestCase
         $session = new \Alchemy\Phrasea\Model\Entities\Session();
         $session->setUser($user)->setUserAgent('');
 
-        self::$DI['app']['EM']->persist($session);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($session);
+        self::$DI['app']['orm.em']->flush();
 
         self::$DI['app']['manipulator.user']->delete($user);
 
-        $repo = self::$DI['app']['EM']->getRepository('Phraseanet:Session');
+        $repo = self::$DI['app']['orm.em']->getRepository('Phraseanet:Session');
         $this->assertCount(0, $repo->findByUser($user));
     }
 

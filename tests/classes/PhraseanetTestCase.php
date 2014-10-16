@@ -16,6 +16,7 @@ use Alchemy\Tests\Tools\TranslatorMockTrait;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Guzzle\Http\Client as Guzzle;
+use Symfony\Component\Filesystem\Filesystem;
 
 abstract class PhraseanetTestCase extends WebTestCase
 {
@@ -28,35 +29,16 @@ abstract class PhraseanetTestCase extends WebTestCase
     const USER_AGENT_IE6 = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 1.1.4322)';
     const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
 
-    public $app;
 
-    /**
-     * @var \Pimple
-     */
     protected static $DI;
 
     private static $recordsInitialized = false;
-
-    /**
-     * Tell if tables were updated with new schemas
-     * @var boolean
-     */
     private static $booted;
-    private static $testCaseBooted;
-
     private static $fixtureIds = [];
 
-    protected function initializeSqliteDB($path = null)
+    public function createApplication()
     {
-        if (null === $path) {
-            $path = sys_get_temp_dir().'/db.sqlite';
-        }
-        $path = $path . getmypid();
 
-        if (is_file($path)) {
-            unlink($path);
-        }
-        copy(sys_get_temp_dir().'/db-ref.sqlite', $path);
     }
 
     public function getApplicationPath()
@@ -64,26 +46,9 @@ abstract class PhraseanetTestCase extends WebTestCase
         return '/lib/Alchemy/Phrasea/Application/Root.php';
     }
 
-    public function createApplication()
-    {
-
-    }
-
-    /**
-     * Delete all ressources created during the test
-     */
-    public function __destruct()
-    {
-        self::deleteResources();
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        if (null !== self::$DI) {
-            unset(self::$DI['app']['dbal.provider']);
-        }
 
         self::$DI = new \Pimple();
 
@@ -262,7 +227,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         }
 
         self::$DI['lazaret_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['EM']->find('Phraseanet:LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
+            return $DI['app']['orm.em']->find('Phraseanet:LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
         });
 
         foreach (range(1, 7) as $i) {
@@ -316,23 +281,12 @@ abstract class PhraseanetTestCase extends WebTestCase
         self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
             return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_by_status_resolver']());
         });
-
-        if (!self::$testCaseBooted) {
-            $this->bootTestCase();
-        }
-        self::$testCaseBooted = true;
     }
 
     public static function tearDownAfterClass()
     {
-        self::$testCaseBooted = false;
         gc_collect_cycles();
         parent::tearDownAfterClass();
-    }
-
-    protected function bootTestCase()
-    {
-
     }
 
     protected function loadCLI($environment = Application::ENV_TEST)
@@ -351,9 +305,17 @@ abstract class PhraseanetTestCase extends WebTestCase
             $app = new Application($environment);
         }
 
+        $this->loadDb($app);
         $this->addMocks($app);
 
         return $app;
+    }
+
+    protected function loadDb($app)
+    {
+        // copy db.ref.sqlite to db.sqlite to re-initialize db with empty values
+        $app['filesystem']->copy($app['db.fixture.info']['path'], $app['db.test.info']['path'], true);
+
     }
 
     protected function addMocks(Application $app)
@@ -385,19 +347,10 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->method('getSubscribedEvents')
             ->will($this->returnValue([]));
 
-        $app['EM.dbal-conf'] = $app->share($app->extend('EM.dbal-conf', function ($conf, $app) {
-            if (isset($conf['path'])) {
-                $conf['path'] = $conf['path'].getmypid();
-            }
+        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
 
-            return $conf;
-        }));
-
-        $app['EM'] = $app->share($app->extend('EM', function ($em) {
-            $this->initializeSqliteDB();
-
-            return $em;
-        }));
+            return $app['orm.ems'][$app['db.test.hash.key']];
+        });
 
         $app['browser'] = $app->share($app->extend('browser', function ($browser) {
             $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
@@ -426,6 +379,11 @@ abstract class PhraseanetTestCase extends WebTestCase
         \databox_field::purge();
         \databox_status::purge();
         \thesaurus_xpath::purge();
+
+        self::deleteResources();
+
+        // close all connection
+        self::$DI['app']['connection.pool.manager']->closeAll();
 
         /**
          * Kris Wallsmith pro-tip
@@ -533,6 +491,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     public static function giveRightsToUser(Application $app, User $user, $base_ids = null, $force = false)
     {
         $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
+        $app['acl']->get($user)->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -554,12 +513,12 @@ abstract class PhraseanetTestCase extends WebTestCase
 
                 $base_id = $collection->get_base_id();
 
-                $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
 
                 if ($app['acl']->get($user)->has_access_to_base($base_id) && false === $force) {
                     continue;
                 }
 
+                $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
                 $app['acl']->get($user)->give_access_to_base([$base_id]);
                 $app['acl']->get($user)->update_rights_to_base($base_id, ['order_master' => true]);
 
@@ -595,35 +554,14 @@ abstract class PhraseanetTestCase extends WebTestCase
      */
     private static function deleteResources()
     {
-        if (self::$recordsInitialized !== false) {
+        if (!empty(self::$recordsInitialized)) {
+
             foreach (self::$recordsInitialized as $i) {
                 self::$DI['record_' . $i]->delete();
             }
 
             self::$recordsInitialized = [];
         }
-
-        $duration = PhraseanetPHPUnitListener::getDurationByTest();
-        $tests = [];
-
-        foreach ($duration as $name => $data) {
-            $tests[$name . '(total : '.$data['time'].' and '.$data['executions'].' executions)'] = $data['time'] / $data['executions'];
-        }
-
-        asort($tests);
-
-        $csvData = PhraseanetPHPUnitListener::getCsv();
-        if (count($csvData) > 0) {
-            foreach ($csvData as $data) {
-                file_put_contents(__DIR__ . '/../../report.csv', "\"".implode('","', array_map(function ($value) {
-                    return str_replace('"', '""', $value);
-                }, $data))."\"\n", FILE_APPEND);
-            }
-        }
-
-        PhraseanetPHPUnitListener::resetDuration();
-
-        return;
     }
 
     /**
@@ -641,8 +579,8 @@ abstract class PhraseanetTestCase extends WebTestCase
         $session = new Session();
         $session->setUser(self::$DI['user']);
         $session->setUserAgent('');
-        self::$DI['app']['EM']->persist($session);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($session);
+        self::$DI['app']['orm.em']->flush();
 
         $app['session']->set('session_id', $session->getId());
 
@@ -733,8 +671,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function removeUser(Application $app, User $user)
     {
-        $app['EM']->remove($user);
-        $app['EM']->flush();
+        $app['orm.em']->remove($user);
+        $app['orm.em']->flush();
     }
 
     protected function createLoggerMock()

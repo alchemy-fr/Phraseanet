@@ -48,8 +48,8 @@ class WorkZone extends Helper
             $basket->setName($this->app->trans('Default basket'));
             $basket->setUser($this->app['authentication']->getUser());
 
-            $this->app['EM']->persist($basket);
-            $this->app['EM']->flush();
+            $this->app['orm.em']->persist($basket);
+            $this->app['orm.em']->flush();
             $baskets = [$basket];
         }
 

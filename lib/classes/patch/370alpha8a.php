@@ -212,9 +212,9 @@ class patch_370alpha8a extends patchAbstract
                 ->setSettings($settings)
                 ->setPeriod($period)
                 ->setStatus(Task::STATUS_STARTED);
-            $app['EM']->persist($task);
+            $app['orm.em']->persist($task);
         }
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return true;
     }

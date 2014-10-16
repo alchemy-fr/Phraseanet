@@ -36,6 +36,7 @@ class IniReset extends Command
             ->addOption('db-name', null, InputOption::VALUE_OPTIONAL, 'Databox name to reset, in case of multiple databox are mounted', null)
             ->addOption('dependencies', null, InputOption::VALUE_NONE, 'Fetch dependencies', null)
             ->addOption('run-patches', null, InputOption::VALUE_NONE, 'Reset in v3.1 states & apply all patches', null)
+            ->addOption('no-setup-dbs', null, InputOption::VALUE_NONE, 'Do not create dbs for setup tests used in phpunit test suite', null)
         ;
     }
 
@@ -114,7 +115,7 @@ class IniReset extends Command
         // get data paths
         $dataPath = $this->container['conf']->get(['main', 'storage', 'subdefs'], $this->container['root.path'].'/datas');
 
-        $schema = $this->container['EM']->getConnection()->getSchemaManager();
+        $schema = $this->container['orm.em']->getConnection()->getSchemaManager();
         $output->writeln('Creating database "'.$dbs['ab'].'"...<info>OK</info>');
         $schema->dropAndCreateDatabase($dbs['ab']);
         $output->writeln('Creating database "'.$dbName.'"...<info>OK</info>');
@@ -176,6 +177,7 @@ class IniReset extends Command
                 $conf['main']['database']['port']
             );
             $process = new Process($cmd);
+            $process->setTimeout(300);
             $process->run(function ($type, $buffer) {
                 if ('err' === $type) {
                     echo 'ERR > ' . $buffer;
@@ -206,26 +208,38 @@ class IniReset extends Command
             $output->writeln('Mounting database "'.$databox->get_dbname().'"...<info>OK</info>');
         }
 
-        $output->writeln('Upgrading from v3.1 to v'.Version::getNumber());
-        $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';
-        $process = new Process($cmd);
-        $process->run(function ($type, $buffer) {
-            if ('err' === $type) {
-                echo 'ERR > ' . $buffer;
+        if ($input->getOption('run-patches') || false === $this->container['phraseanet.configuration']->isUpToDate()) {
+            if ($input->getOption('run-patches')) {
+                $output->write(sprintf('Upgrading... from version <info>3.1.21</info> to <info>%s</info>', Version::getNumber()), true);
+            } else {
+                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app['phraseanet.appbox']->get_version(), Version::getNumber()), true);
             }
-        });
-        if (false === $process->isSuccessful()) {
-            $output->writeln('<error>Failed to execute the following command "'.$cmd.'"</error>');
+            
+            $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';
+            $process = new Process($cmd);
+            $process->setTimeout(600);
+            $process->run(function ($type, $buffer) {
+                if ('err' === $type) {
+                    echo 'ERR > ' . $buffer;
+                }
+            })
+            ;
+            if (false === $process->isSuccessful()) {
+                $output->writeln('<error>Failed to execute the following command "' . $cmd . '"</error>');
 
-            return 1;
+                return 1;
+            }
         }
 
-        // create setup dbs
-        $command = $this->getApplication()->find('ini:setup-tests-dbs');
-        $input = new ArrayInput(array(
-            'command' => 'ini:setup-tests-dbs'
-        ));
-        $command->run($input, $output);
+
+        if (!$input->getOption('no-setup-dbs')) {
+            // create setup dbs
+            $command = $this->getApplication()->find('ini:setup-tests-dbs');
+            $input = new ArrayInput(array(
+                'command' => 'ini:setup-tests-dbs'
+            ));
+            $command->run($input, $output);
+        }
 
         $this->container['conf']->set(['main', 'storage', 'subdefs'], $dataPath);
 

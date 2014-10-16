@@ -37,7 +37,7 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.manager'] = $app->share(function (Application $app) {
-            return new PluginManager($app['plugins.directory'], $app['plugins.plugins-validator'], $app['conf']);
+            return new PluginManager($app['plugin.path'], $app['plugins.plugins-validator'], $app['conf']);
         });
     }
 

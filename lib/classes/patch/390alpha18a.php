@@ -56,33 +56,33 @@ class patch_390alpha18a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['EM']->getConnection()->executeUpdate('
+        $app['orm.em']->getConnection()->executeUpdate('
             DELETE lf FROM LazaretFiles lf
             INNER JOIN LazaretSessions ls ON (ls.id = lf.lazaret_session_id)
             LEFT JOIN Users u ON (ls.user_id = u.id)
             WHERE u.id IS NULL'
         );
 
-        $app['EM']->getConnection()->executeUpdate('
+        $app['orm.em']->getConnection()->executeUpdate('
           DELETE ls FROM LazaretSessions AS ls
             LEFT JOIN Users u ON (ls.user_id = u.id)
             WHERE u.id IS NULL'
         );
 
-        $app['EM']->getConnection()->executeUpdate('
+        $app['orm.em']->getConnection()->executeUpdate('
             DELETE fi FROM FeedItems AS fi
             INNER JOIN FeedEntries fe ON (fe.id = fi.entry_id)
             LEFT JOIN Users u ON (fe.publisher_id = u.id)
             WHERE u.id IS NULL'
         );
 
-        $app['EM']->getConnection()->executeUpdate('
+        $app['orm.em']->getConnection()->executeUpdate('
             DELETE fe FROM FeedEntries AS fe
             LEFT JOIN Users u ON (fe.publisher_id = u.id)
             WHERE u.id IS NULL'
         );
 
-        $app['EM']->getConnection()->executeUpdate(
+        $app['orm.em']->getConnection()->executeUpdate(
             'DELETE se FROM Sessions AS se
              LEFT JOIN Users u ON (se.user_id = u.id)
              WHERE u.id IS NULL'

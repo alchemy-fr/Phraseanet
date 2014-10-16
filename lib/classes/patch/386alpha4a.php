@@ -42,7 +42,7 @@ class patch_386alpha4a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array();
+        return array('user-list');
     }
 
     /**
@@ -58,12 +58,12 @@ class patch_386alpha4a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $repo = $app['EM']->getRepository('Phraseanet:UsrList');
-        foreach ($app['EM']->getRepository('Phraseanet:User')->findDeleted() as $user) {
+        $repo = $app['orm.em']->getRepository('Phraseanet:UsrList');
+        foreach ($app['orm.em']->getRepository('Phraseanet:User')->findDeleted() as $user) {
             foreach ($repo->findUserLists($user) as $list) {
-                $app['EM']->remove($list);
+                $app['orm.em']->remove($list);
             }
-            $app['EM']->flush();
+            $app['orm.em']->flush();
         }
 
         return true;

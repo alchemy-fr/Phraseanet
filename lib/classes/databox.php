@@ -121,7 +121,7 @@ class databox extends base
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $this->connection = $app['dbal.provider']->get([
+        $this->connection = $app['db.provider']([
             'host'     => $connection_params[$sbas_id]['host'],
             'port'     => $connection_params[$sbas_id]['port'],
             'user'     => $connection_params[$sbas_id]['user'],
@@ -489,14 +489,14 @@ class databox extends base
         }
 
         foreach ($this->app['repo.story-wz']->findByDatabox($this->app, $this) as $story) {
-            $this->app['EM']->remove($story);
+            $this->app['orm.em']->remove($story);
         }
 
         foreach ($this->app['repo.basket-elements']->findElementsByDatabox($this) as $element) {
-            $this->app['EM']->remove($element);
+            $this->app['orm.em']->remove($element);
         }
 
-        $this->app['EM']->flush();
+        $this->app['orm.em']->flush();
 
         $params = [':site_id' => $this->app['conf']->get(['main', 'key'])];
 
@@ -593,10 +593,19 @@ class databox extends base
         $stmt->closeCursor();
         $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
+        $app['orm.add']([
+            'host'     => $host,
+            'port'     => $port,
+            'dbname'   => $dbname,
+            'user'     => $user,
+            'password' => $password
+        ]);
+
         $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $databox->insert_datas();
+
         $databox->setNewStructure(
             $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
@@ -616,7 +625,7 @@ class databox extends base
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname)
     {
-        $conn = $app['dbal.provider']->get([
+        $conn = $app['db.provider']([
             'host'     => $host,
             'port'     => $port,
             'user'     => $user,

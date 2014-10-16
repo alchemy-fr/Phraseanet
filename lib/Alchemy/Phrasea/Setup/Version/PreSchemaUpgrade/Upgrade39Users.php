@@ -65,7 +65,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
      */
     public function isApplyable(Application $app)
     {
-        return false === $this->tableExists($app['EM'], 'Users');
+        return false === $this->tableExists($app['orm.em'], 'Users');
     }
 
     /**
@@ -248,7 +248,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             ],
             "ValidationSessions" => [
                 "referenced_by" => [
-                    "ValidationParticipants" => "ValidationSession_id"
+                    "ValidationParticipants" => "validation_session_id"
                 ],
                 'field' => ['initiator_id'],
             ],

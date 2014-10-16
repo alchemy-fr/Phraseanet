@@ -49,11 +49,11 @@ class ComposerInstall extends Command
 
         try {
             if ($input->getOption('no-dev')) {
-                $output->write("Installing dependencies <info>without</info> developer packages ");
+                $output->write("Installing composer dependencies <info>without</info> developer packages ");
                 $composer->command(array_merge($commands, ['--no-dev']));
                 $output->writeln("<comment>OK</comment>");
             } else {
-                $output->write("Installing dependencies <info>with</info> developer packages ");
+                $output->write("Installing composer dependencies <info>with</info> developer packages ");
                 $composer->command(array_merge($commands, ['--dev']));
                 $output->writeln("<comment>OK</comment>");
             }
