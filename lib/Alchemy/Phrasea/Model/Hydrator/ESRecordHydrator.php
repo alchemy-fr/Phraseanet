@@ -16,9 +16,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class ESRecordHydrator
 {
-    public static function hydrate(array $data)
+    public static function hydrate(array $data, $position)
     {
         $record = new RecordES();
+
+        $record->setPosition($position);
         $record->setBaseId(isset($data['base_id']) ? $data['base_id'] : null);
         $record->setCollectionId(isset($data['collection_id']) ? $data['collection_id'] : null);
         $record->setCreated(isset($data['created_on']) ? new \DateTime($data['created_on']) : null);
@@ -32,7 +34,7 @@ class ESRecordHydrator
         $record->setUpdated(isset($data['updated_on']) ? new \DateTime($data['updated_on']) : null);
         $record->setUuid(isset($data['uuid']) ? $data['uuid'] : null);
         $record->setStatus(isset($data['bin_status']) ? $data['bin_status'] : null);
-        $record->setTitles(new ArrayCollection(isset($data['title']) ? (array) $data['title'] : ['default' => $record->getOriginalName()]));
+        $record->setTitles(new ArrayCollection(isset($data['title']) ? (array) $data['title'] : []));
         $record->setCaption(new ArrayCollection(isset($data['caption']) ? (array) $data['caption'] : []));
         $record->setExif(new ArrayCollection(isset($data['exif']) ? (array) $data['exif'] : []));
         $record->setSubdefs(new ArrayCollection(isset($data['subdefs']) ? (array) $data['subdefs'] : []));

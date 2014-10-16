@@ -109,7 +109,7 @@
             <b>{{ name }}</b> : {{ value is iterable ? value|join('; ') : value }}
         </div>
     {% endfor %}
-    {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') == 'group' %}
+    {% if technical_data|default(true) and app['authentication'].user is not none and app['settings'].getUserSetting(app['authentication'].user, 'technical_display') == 'group' %}
         <hr/>
         {% include 'common/technical_datas.html.twig' %}
     {% endif %}

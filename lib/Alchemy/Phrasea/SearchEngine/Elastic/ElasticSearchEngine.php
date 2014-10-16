@@ -370,8 +370,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
 
+        $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
-            $results[] = ESRecordHydrator::hydrate($hit['_source']);
+            $results[] = ESRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
         $query['_ast'] = $searchQuery->dump();

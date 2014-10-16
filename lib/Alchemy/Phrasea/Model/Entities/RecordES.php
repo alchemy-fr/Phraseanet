@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Record entity that represents data from elastic search data
+ * Record entity from elastic search
  */
 class RecordES implements RecordInterface
 {
@@ -29,174 +29,153 @@ class RecordES implements RecordInterface
     private $created;
     private $sha256;
     private $uuid;
+    private $position;
     private $type;
     private $status;
     private $isStory;
+    /** @var ArrayCollection */
     private $caption;
+    /** @var ArrayCollection */
     private $exif;
+    /** @var ArrayCollection */
     private $subdefs;
 
+    /** {@inheritdoc} */
     public function getId()
     {
         return sprintf('%s_%s', $this->getDataboxId(), $this->getRecordId());
     }
-    /**
-     * @return mixed
-     */
+
+    /** {@inheritdoc} */
     public function getBaseId()
     {
         return $this->baseId;
     }
 
-    /**
-     * @param mixed $baseId
-     */
+    /** {@inheritdoc} */
     public function setBaseId($baseId)
     {
         $this->baseId = $baseId;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getCollectionId()
     {
         return $this->collectionId;
     }
 
-    /**
-     * @param mixed $collectionId
-     */
+    /** {@inheritdoc} */
     public function setCollectionId($collectionId)
     {
         $this->collectionId = $collectionId;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getCreated()
     {
         return $this->created;
     }
 
-    /**
-     * @param mixed $created
-     */
-    public function setCreated($created)
+    /** {@inheritdoc} */
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getDataboxId()
     {
         return $this->databoxId;
     }
 
-    /**
-     * @param mixed $databoxId
-     */
+    /** {@inheritdoc} */
     public function setDataboxId($databoxId)
     {
         $this->databoxId = $databoxId;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function isStory()
     {
         return $this->isStory;
     }
 
-    /**
-     * @param mixed $isStory
-     */
+    /** {@inheritdoc} */
     public function setIsStory($isStory)
     {
-        $this->isStory = $isStory;
+        $this->isStory = (bool) $isStory;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getMimeType()
     {
         return $this->mimeType;
     }
 
-    /**
-     * @param mixed $mimeType
-     */
+    /** {@inheritdoc} */
     public function setMimeType($mimeType)
     {
         $this->mimeType = $mimeType;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getOriginalName()
     {
         return $this->originalName;
     }
 
-    /**
-     * @param mixed $originalName
-     */
+    /** {@inheritdoc} */
     public function setOriginalName($originalName)
     {
         $this->originalName = $originalName;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getRecordId()
     {
         return $this->recordId;
     }
 
-    /**
-     * @param mixed $recordId
-     */
+    /** {@inheritdoc} */
     public function setRecordId($recordId)
     {
         $this->recordId = $recordId;
     }
 
-    /**
-     * @return mixed
-     */
+    /** {@inheritdoc} */
     public function getSha256()
     {
         return $this->sha256;
     }
 
-    /**
-     * @param mixed $sha256
-     */
+    /** {@inheritdoc} */
     public function setSha256($sha256)
     {
         $this->sha256 = $sha256;
     }
 
     /**
-     * @return mixed
+     * @param null $locale
+     *
+     * @return string
      */
     public function getTitle($locale = null)
     {
         if ($locale && $this->title->containsKey($locale)) {
             return $this->title->get($locale);
         }
-        return $this->title->get('default');
+
+        if ($this->title->containsKey('default')) {
+            return $this->title->get('default');
+        }
+
+        return $this->getOriginalName();
     }
 
     /**
-     * @param mixed $title
+     * Sets a collection of titles
+     *
+     * @param ArrayCollection $titles
      */
     public function setTitles(ArrayCollection $titles)
     {
@@ -204,72 +183,51 @@ class RecordES implements RecordInterface
     }
 
     /**
-     * @return mixed
+     * Available types are ['document', 'audio', 'video', 'image', 'flash', 'map', 'unknown']
      */
     public function getType()
     {
         return $this->type;
     }
 
-    /**
-     * @param mixed $type
-     */
     public function setType($type)
     {
         $this->type = $type;
     }
 
-    /**
-     * @return mixed
-     */
+    /**  @return \DateTime */
     public function getUpdated()
     {
         return $this->updated;
     }
 
-    /**
-     * @param mixed $updated
-     */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
     }
 
-    /**
-     * @return mixed
-     */
     public function getUuid()
     {
         return $this->uuid;
     }
 
-    /**
-     * @param mixed $uuid
-     */
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return ArrayCollection */
     public function getCaption()
     {
         return $this->caption;
     }
 
-    /**
-     * @param mixed $caption
-     */
     public function setCaption(ArrayCollection $caption)
     {
         $this->caption = $caption;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return ArrayCollection */
     public function getExif()
     {
         return $this->exif;
@@ -283,35 +241,45 @@ class RecordES implements RecordInterface
         $this->exif = $exif;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return ArrayCollection */
     public function getSubdefs()
     {
         return $this->subdefs;
     }
 
-    /**
-     * @param mixed $subdefs
-     */
+    /** @return ArrayCollection */
     public function setSubdefs(ArrayCollection $subdefs)
     {
         $this->subdefs = $subdefs;
     }
 
-    /**
-     * @param $status
-     */
     public function setStatus($status)
     {
         $this->status = $status;
     }
 
     /**
-     * @return mixed
+     * Get status of current current as 32 bits binary string
+     *
+     * Eg: 00000000001011100000000000011111
+     *
+     * Where the
      */
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Returns the position of the record in the result set
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    public function setPosition($position)
+    {
+        $this->position = $position;
     }
 }

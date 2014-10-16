@@ -2,16 +2,13 @@
     {% import 'common/thumbnail.html.twig' as thumbnail_macro %}
     {% import 'common/doctype_icons.html.twig' as doctype_icons %}
     {% import 'common/drop_down_options.html.twig' as drop_down %}
-    {% set th_size = app['settings'].getUserSetting(app['authentication'].getUser(), 'images_size')%}
-
-    {# @todo retrieve current position of record in result set #}
-    {% set number = 1 %}
+    {% set th_size = app['settings'].getUserSetting(app['authentication'].user, 'images_size')%}
 
     {% if entry_id %}
         <div style="width:{{th_size+30}}px;" sbas="{{record.databoxId}}"
             id="{{ prefix|default('IMGT') }}_{{record.databoxId}}_{{record.recordId}}"
             class="IMGT diapo type-{{record.type}}"
-            onDblClick="openPreview('FEED',{{number}},{{entry_id}});">
+            onDblClick="openPreview('FEED',{{record.position}},{{entry_id}});">
     {% elseif record.story %}
         <div style="width:{{th_size+30}}px;" sbas="{{record.databoxId}}"
             id="{{ prefix|default('IMGT') }}_{{record.databoxId}}_{{record.recordId}}"
@@ -21,12 +18,13 @@
         <div style="width:{{th_size+30}}px;" sbas="{{record.databoxId}}"
             id="{{ prefix|default('IMGT') }}_{{record.databoxId}}_{{record.recordId}}"
             class="IMGT diapo type-{{record.type}}"
-            onDblClick="openPreview('RESULT',{{ number }});">
+            onDblClick="openPreview('RESULT',{{record.position}});">
     {% endif %}
         <div style="padding: 4px;">
             <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
-                <div class="title" style="max-height:100%" title="{{ record.title|default(record.originalName) }}">
-                    {{ record.title|default(record.originalName) }}
+                {# @todo title should be localized #}
+                <div class="title" style="max-height:100%" title="{{ record.title }}">
+                    {{ record.title }}
                 </div>
                 <div class="status">
                 {# @todo find a proper way to map lifted flag to status icon img path #}
@@ -37,23 +35,23 @@
             {% set preview = record.subdefs.containsKey('preview') ? record.subdefs.get('preview') : null %}
             {% set rollover_thumbnail = record.subdefs.containsKey('thumbnailgif') ? record.subdefs.get('thumbnailgif') : null %}
 
-            {% set user_technical_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') %}
-            {% set user_rollover_thumbnail = app['settings'].getUserSetting(app['authentication'].getUser(), 'rollover_thumbnail') %}
+            {% set user_technical_display = app['settings'].getUserSetting(app['authentication'].user, 'technical_display') %}
+            {% set user_rollover_thumbnail = app['settings'].getUserSetting(app['authentication'].user, 'rollover_thumbnail') %}
 
             {% set extraclass = '' %}
             {% if user_rollover_thumbnail == 'caption' and searchEngine is not null %}
                 {% set extraclass = extraclass ~ ' captionTips' %}
-                {% set tooltipsrc = path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : number }) %}
+                {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position }) %}
             {% elseif user_rollover_thumbnail == 'caption' and searchEngine is null %}
                 {% set extraclass = extraclass ~ ' captionTips' %}
-                {% set tooltipsrc = path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'publi' }) %}
+                {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'publi' }) %}
             {% elseif user_rollover_thumbnail == 'preview' %}
                 {% set extraclass = extraclass ~ ' captionTips' %}
-                {% set tooltipsrc = path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) %}
+                {% set tooltip = path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) %}
             {% endif %}
-            <div class="thumb {{extraclass}} " tooltipsrc="{{tooltipsrc}}" style="height:{{th_size}}px; z-index:90;">
+            <div class="thumb {{extraclass}} " tooltipsrc="{{tooltip}}" style="height:{{th_size}}px; z-index:90;">
                 <div class="doc_infos">
-                {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'doctype_display') == '1' %}
+                {% if app['settings'].getUserSetting(app['authentication'].user, 'doctype_display') == '1' %}
                 {{doctype_icons.format(record)}}
                 {% endif %}
                 <span class="duration">
@@ -93,12 +91,11 @@
                     {% endif %}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
                     {{drop_down.prod(record, entry_id)}}
-                        {# @todo acl methods should accept RecordInterface Object as parameter #}
-                    {#{% if preview and app['acl'].get(app['authentication'].getUser()).has_access_to_subdef(record, 'preview') %}#}
-                    {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'databoxId' : record.databoxId, 'recordId' : record.recordId }) }}" class="previewTips"></div>#}
-                    {#{% endif %}#}
+                    {% if if preview and app['acl'].get(app['authentication'].user).has_access_to_subdef(record, 'preview') %}
+                        <div tooltipsrc="{{ path('prod_tooltip_preview', { 'databoxId' : record.databoxId, 'recordId' : record.recordId }) }}" class="previewTips"></div>
+                    {% enif %}
                     {% if user_rollover_thumbnail == 'preview' %}
-                    <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.get_number() }) }}" class="captionRolloverTips"></div>
+                    <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position }) }}" class="captionRolloverTips"></div>
                     {% endif %}
                     {% if user_technical_display == '1' %}
                     <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" src="/skins/icons/info.gif"/>

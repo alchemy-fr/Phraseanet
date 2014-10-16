@@ -158,12 +158,14 @@ class RecordIndexer
                 ->addRawVersion()
         ;
 
+        // Index title
         $titleMapping = new Mapping();
         $titleMapping->add('default', 'string')->notAnalyzed()->notIndexed();
         foreach ($this->locales as $locale) {
             $titleMapping->add($locale, 'string')->notAnalyzed()->notIndexed();
         }
         $mapping->add('title', $titleMapping);
+
         // Minimal subdefs mapping info for display purpose
         $subdefMapping = new Mapping();
         $subdefMapping->add('path', 'string')->notAnalyzed()->notIndexed();
