@@ -705,6 +705,9 @@ abstract class task_abstract
 
             $rowsdone ++;
 
+            // force free memory
+            gc_collect_cycles();
+
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
                 $this->log(sprintf("Max memory (%s M) reached (actual is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), self::LOG_DEBUG);
