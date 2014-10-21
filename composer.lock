@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2297d6dbf5453ec8d9d55a5f533decf0",
+    "hash": "21f40dfe13f0a9507d9c36b25c54d4f1",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1297,7 +1297,7 @@
             "support": {
                 "source": "https://github.com/nlegoff/Imagine/tree/flatten-layer"
             },
-            "time": "2014-07-07 17:04:15"
+            "time": "2014-10-08 16:23:33"
         },
         {
             "name": "jms/metadata",
@@ -1524,16 +1524,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.6",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0145a40c01b67268a29ee3863e1ce7be4ad60ac8"
+                "reference": "62fec183416ce6dfdf22e832f0de3c7442a23598"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0145a40c01b67268a29ee3863e1ce7be4ad60ac8",
-                "reference": "0145a40c01b67268a29ee3863e1ce7be4ad60ac8",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/62fec183416ce6dfdf22e832f0de3c7442a23598",
+                "reference": "62fec183416ce6dfdf22e832f0de3c7442a23598",
                 "shasum": ""
             },
             "require": {
@@ -1593,7 +1593,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2014-09-10 09:44:33"
+            "time": "2014-10-20 07:22:23"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -4109,6 +4109,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "imagine/imagine": 20,
+        "media-alchemyst/media-alchemyst": 20,
         "phpexiftool/phpexiftool": 20,
         "doctrine/data-fixtures": 20
     },
