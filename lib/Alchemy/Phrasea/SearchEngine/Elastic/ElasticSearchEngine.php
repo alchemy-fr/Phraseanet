@@ -271,6 +271,15 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
+        $ast = $this->app['query_parser']->parse($string);
+
+        $searchQuery = SearchQuery::fromAST($ast);
+
+        $dump = new \Hoa\Compiler\Visitor\Dump();
+        echo $dump->visit($ast);
+
+        die();
+
         $parser = new QueryParser();
         $ast = $parser->parse($string);
 
