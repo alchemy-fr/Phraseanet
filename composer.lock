@@ -4,21 +4,15 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "69bf40de460d2f7a3407f1b905dde913",
+    "hash": "73cfb65537610dfd0edc9cf6485c4ebb",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
             "version": "6.0.039",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
+                "url": "https://github.com/alchemy-fr/tcpdf-clone",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/tcpdf-clone/zipball/2ba0248a7187f1626df6c128750650416267f0e7",
-                "reference": "2ba0248a7187f1626df6c128750650416267f0e7",
-                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -66,10 +60,6 @@
                 "qrcode",
                 "tcpdf"
             ],
-            "support": {
-                "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
-                "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
-            },
             "time": "2013-10-13 16:11:17"
         },
         {
@@ -113,7 +103,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "nlegoff",
+                    "name": "Nicolas Le Goff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -301,7 +291,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2014-07-07 16:25:07"
+            "time": "2014-07-07 14:01:51"
         },
         {
             "name": "alchemy/task-manager",
@@ -372,12 +362,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Zippy.git",
-                "reference": "08008f82957b7dc2b54574b506687b33ecfe0589"
+                "reference": "d2f5e88f2436b9c1294e8819d951822abe39e9a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Zippy/zipball/08008f82957b7dc2b54574b506687b33ecfe0589",
-                "reference": "08008f82957b7dc2b54574b506687b33ecfe0589",
+                "url": "https://api.github.com/repos/alchemy-fr/Zippy/zipball/d2f5e88f2436b9c1294e8819d951822abe39e9a7",
+                "reference": "d2f5e88f2436b9c1294e8819d951822abe39e9a7",
                 "shasum": ""
             },
             "require": {
@@ -426,7 +416,7 @@
                 "tar",
                 "zip"
             ],
-            "time": "2014-09-03 08:10:41"
+            "time": "2014-05-05 13:39:00"
         },
         {
             "name": "cboden/ratchet",
@@ -747,7 +737,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -935,8 +925,7 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/",
-                    "role": "Creator"
+                    "homepage": "http://www.jwage.com/"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -954,7 +943,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1008,7 +997,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1026,12 +1015,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "1a9dffa64e33fdc10f4b4c3f5d7230b74d4a1021"
+                "reference": "4256449c5e2603a6b6ee5a78c7c4521d4d4430b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/1a9dffa64e33fdc10f4b4c3f5d7230b74d4a1021",
-                "reference": "1a9dffa64e33fdc10f4b4c3f5d7230b74d4a1021",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/4256449c5e2603a6b6ee5a78c7c4521d4d4430b8",
+                "reference": "4256449c5e2603a6b6ee5a78c7c4521d4d4430b8",
                 "shasum": ""
             },
             "require": {
@@ -1062,12 +1051,14 @@
             ],
             "authors": [
                 {
-                    "name": "Benjamin Eberlei",
-                    "email": "kontakt@beberlei.de"
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
-                    "name": "Jonathan Wage",
-                    "email": "jonwage@gmail.com"
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
                 }
             ],
             "description": "Database Schema migrations using Doctrine DBAL",
@@ -1076,7 +1067,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2014-08-18 18:03:07"
+            "time": "2014-07-09 07:58:02"
         },
         {
             "name": "doctrine/orm",
@@ -1213,13 +1204,13 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/igorw/evenement.git",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d"
+                "url": "https://github.com/igorw/evenement",
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
+                "url": "https://github.com/igorw/evenement/zipball/v1.0.0",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -1246,7 +1237,7 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 15:01:08"
+            "time": "2012-05-30 08:01:08"
         },
         {
             "name": "facebook/php-sdk",
@@ -1299,12 +1290,12 @@
             "version": "v2.3.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
+                "url": "https://github.com/l3pp4rd/DoctrineExtensions.git",
                 "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
+                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
                 "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
                 "shasum": ""
             },
@@ -1372,7 +1363,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2014-01-12 16:34:06"
+            "time": "2013-08-18 07:18:44"
         },
         {
             "name": "goodby/csv",
@@ -1429,7 +1420,7 @@
                 "export",
                 "import"
             ],
-            "time": "2013-11-22 19:10:34"
+            "time": "2014-01-12 16:34:06"
         },
         {
             "name": "guzzle/guzzle",
@@ -1524,6 +1515,433 @@
             "time": "2014-08-11 04:32:36"
         },
         {
+            "name": "hoa/compiler",
+            "version": "2.14.09.23",
+            "target-dir": "Hoa/Compiler",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Compiler.git",
+                "reference": "51cdc8b21d13f2fcaa3f3a0d114247534849f8cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Compiler/zipball/51cdc8b21d13f2fcaa3f3a0d114247534849f8cb",
+                "reference": "51cdc8b21d13f2fcaa3f3a0d114247534849f8cb",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0",
+                "hoa/file": "~0.0",
+                "hoa/iterator": "~0.0",
+                "hoa/math": "~0.0",
+                "hoa/visitor": "~0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Compiler": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Compiler library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "algebraic",
+                "ast",
+                "compiler",
+                "context-free",
+                "coverage",
+                "exhaustive",
+                "grammar",
+                "isotropic",
+                "language",
+                "lexer",
+                "library",
+                "ll1",
+                "llk",
+                "parser",
+                "pp",
+                "random",
+                "regular",
+                "rule",
+                "sampler",
+                "syntax",
+                "token",
+                "trace",
+                "uniform"
+            ],
+            "time": "2014-09-23 09:50:46"
+        },
+        {
+            "name": "hoa/core",
+            "version": "2.14.09.23",
+            "target-dir": "Hoa/Core",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Core.git",
+                "reference": "e50354e69e451478223d1d0c1ce4f5d741ea7576"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Core/zipball/e50354e69e451478223d1d0c1ce4f5d741ea7576",
+                "reference": "e50354e69e451478223d1d0c1ce4f5d741ea7576",
+                "shasum": ""
+            },
+            "require": {
+                "ext-spl": "*",
+                "php": ">=5.4.0"
+            },
+            "suggest": {
+                "ext-mbstring": "ext/mbstring must be present (or a third implementation).",
+                "hoa/console": "To use the `hoa` script.",
+                "hoa/dispatcher": "To use the `hoa` script.",
+                "hoa/router": "To use the `hoa` script."
+            },
+            "bin": [
+                "Bin/hoa"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Core": "."
+                },
+                "files": [
+                    "Core.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Core library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "consistency",
+                "core",
+                "data",
+                "event",
+                "library",
+                "listener",
+                "parameter",
+                "protocol"
+            ],
+            "time": "2014-09-23 09:45:22"
+        },
+        {
+            "name": "hoa/file",
+            "version": "0.14.09.23",
+            "target-dir": "Hoa/File",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/File.git",
+                "reference": "a39f62a28256180606115416cf27774966cf73e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/File/zipball/a39f62a28256180606115416cf27774966cf73e9",
+                "reference": "a39f62a28256180606115416cf27774966cf73e9",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0",
+                "hoa/iterator": "~0.0",
+                "hoa/stream": "~0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\File": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\File library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "Socket",
+                "directory",
+                "file",
+                "finder",
+                "library",
+                "link",
+                "temporary"
+            ],
+            "time": "2014-09-23 09:50:42"
+        },
+        {
+            "name": "hoa/iterator",
+            "version": "0.14.09.23",
+            "target-dir": "Hoa/Iterator",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Iterator.git",
+                "reference": "1ca570cab25ca359a1a9f4b4c449d49771fc6a5e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Iterator/zipball/1ca570cab25ca359a1a9f4b4c449d49771fc6a5e",
+                "reference": "1ca570cab25ca359a1a9f4b4c449d49771fc6a5e",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Iterator": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Iterator library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "iterator",
+                "library"
+            ],
+            "time": "2014-09-23 09:50:40"
+        },
+        {
+            "name": "hoa/math",
+            "version": "0.14.09.23",
+            "target-dir": "Hoa/Math",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Math.git",
+                "reference": "b52764f602095b4595658f581a504f039cef8d56"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Math/zipball/b52764f602095b4595658f581a504f039cef8d56",
+                "reference": "b52764f602095b4595658f581a504f039cef8d56",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/compiler": "~2.0",
+                "hoa/core": "~2.0",
+                "hoa/iterator": "~0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Math": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Math library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "arrangement",
+                "combination",
+                "combinatorics",
+                "counting",
+                "library",
+                "math",
+                "permutation",
+                "sampler",
+                "set"
+            ],
+            "time": "2014-09-23 14:02:37"
+        },
+        {
+            "name": "hoa/stream",
+            "version": "0.14.09.23",
+            "target-dir": "Hoa/Stream",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Stream.git",
+                "reference": "eaf9bfeb633b8a6bf0fba55e9c035db431024869"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Stream/zipball/eaf9bfeb633b8a6bf0fba55e9c035db431024869",
+                "reference": "eaf9bfeb633b8a6bf0fba55e9c035db431024869",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Stream": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Stream library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "Context",
+                "bucket",
+                "composite",
+                "filter",
+                "in",
+                "library",
+                "out",
+                "protocol",
+                "stream",
+                "wrapper"
+            ],
+            "time": "2014-09-23 09:50:38"
+        },
+        {
+            "name": "hoa/visitor",
+            "version": "0.14.09.23",
+            "target-dir": "Hoa/Visitor",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Visitor.git",
+                "reference": "071523b6677466979e57a9f9ef61a46b76221935"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Visitor/zipball/071523b6677466979e57a9f9ef61a46b76221935",
+                "reference": "071523b6677466979e57a9f9ef61a46b76221935",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Visitor": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Visitor library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "library",
+                "structure",
+                "visit",
+                "visitor"
+            ],
+            "time": "2014-09-23 09:50:51"
+        },
+        {
             "name": "igorw/get-in",
             "version": "v1.0.2",
             "source": {
@@ -1596,7 +2014,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.7-dev"
+                    "dev-develop": "0.6-dev"
                 }
             },
             "autoload": {
@@ -1623,7 +2041,7 @@
                 "image processing"
             ],
             "support": {
-                "source": "https://github.com/nlegoff/Imagine/tree/flatten-layer"
+                "source": "https://github.com/alchemy-fr/Imagine/tree/0.6.1-flatten-layer"
             },
             "time": "2014-10-08 16:23:33"
         },
@@ -1932,9 +2350,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2249,7 +2667,7 @@
             ],
             "authors": [
                 {
-                    "name": "Steve Clay",
+                    "name": "Stephen Clay",
                     "email": "steve@mrclay.org",
                     "homepage": "http://www.mrclay.org/",
                     "role": "Developer"
@@ -2435,21 +2853,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084"
+                "reference": "0.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084",
+                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.2",
+                "reference": "0.1.2",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": "~1.0"
+                "silex/silex": ">=1.0,<2.0"
             },
             "require-dev": {
-                "symfony/browser-kit": "~2.0"
+                "symfony/browser-kit": ">=2.0,<3.0"
             },
             "type": "library",
             "autoload": {
@@ -2963,7 +3381,7 @@
                 "metadata"
             ],
             "support": {
-                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/dev"
+                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/0.4.1-mwg-metadata-copy"
             },
             "time": "2014-10-08 16:09:02"
         },
@@ -3001,9 +3419,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -3560,7 +3978,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -3607,9 +4025,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Chris Corbyn"
@@ -4521,6 +4937,242 @@
                 "scraper"
             ],
             "time": "2014-10-09 15:52:51"
+        },
+        {
+            "name": "hoa/console",
+            "version": "2.14.09.23",
+            "target-dir": "Hoa/Console",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Console.git",
+                "reference": "8466f74ddb5bd323357fe5464629c948a1fd8d25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Console/zipball/8466f74ddb5bd323357fe5464629c948a1fd8d25",
+                "reference": "8466f74ddb5bd323357fe5464629c948a1fd8d25",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0",
+                "hoa/stream": "~0.0",
+                "hoa/string": "~2.0"
+            },
+            "suggest": {
+                "ext-pcntl": "To enable hoa://Event/Console/Window:resize.",
+                "hoa/dispatcher": "To use the console kit.",
+                "hoa/router": "To use the console kit."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Console": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Console library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "autocompletion",
+                "chrome",
+                "cli",
+                "console",
+                "cursor",
+                "getoption",
+                "library",
+                "option",
+                "parser",
+                "processus",
+                "readline",
+                "terminfo",
+                "tput",
+                "window"
+            ],
+            "time": "2014-09-23 14:17:08"
+        },
+        {
+            "name": "hoa/dispatcher",
+            "version": "0.14.09.23",
+            "target-dir": "Hoa/Dispatcher",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Dispatcher.git",
+                "reference": "82924823fa9cedad9775f1ab4d51075e980ac2c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Dispatcher/zipball/82924823fa9cedad9775f1ab4d51075e980ac2c6",
+                "reference": "82924823fa9cedad9775f1ab4d51075e980ac2c6",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "suggest": {
+                "hoa/router": "Provide routers.",
+                "hoa/view": "Provide view interface."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Dispatcher": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Dispatcher library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "dispatcher",
+                "kit",
+                "library"
+            ],
+            "time": "2014-09-23 14:12:43"
+        },
+        {
+            "name": "hoa/router",
+            "version": "2.14.09.23",
+            "target-dir": "Hoa/Router",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Router.git",
+                "reference": "8937785aecf7ca3b6dbd5f668eb97e15c672758d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Router/zipball/8937785aecf7ca3b6dbd5f668eb97e15c672758d",
+                "reference": "8937785aecf7ca3b6dbd5f668eb97e15c672758d",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\Router": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Router library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "cli",
+                "http",
+                "library",
+                "router"
+            ],
+            "time": "2014-09-23 09:50:57"
+        },
+        {
+            "name": "hoa/string",
+            "version": "2.14.09.23",
+            "target-dir": "Hoa/String",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/String.git",
+                "reference": "c385ffb1382d919c63ab97acd6f62058179c5f2a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/String/zipball/c385ffb1382d919c63ab97acd6f62058179c5f2a",
+                "reference": "c385ffb1382d919c63ab97acd6f62058179c5f2a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "hoa/core": "~2.0"
+            },
+            "suggest": {
+                "ext-intl": "To get a better Hoa\\String::toAscii() and Hoa\\String::compareTo()."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Hoa\\String": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\String library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "library",
+                "search",
+                "string",
+                "unicode"
+            ],
+            "time": "2014-09-23 09:55:55"
         },
         {
             "name": "instaclick/php-webdriver",
