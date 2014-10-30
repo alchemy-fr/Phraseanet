@@ -1515,7 +1515,7 @@ class API_V1_adapter extends API_V1_Abstract
         $status = strrev($status);
         $ret = array();
         foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[] = array('bit'   => $bit, 'state' => !!substr($status, ($bit - 1), 1));
+            $ret[] = array('bit'   => $bit, 'state' => !!substr($status, $bit, 1));
         }
 
         return $ret;
