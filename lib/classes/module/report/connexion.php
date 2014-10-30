@@ -38,7 +38,8 @@ class module_report_connexion extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+    //    parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
         $this->title = _('report::Connexions');
     }
 
@@ -150,11 +151,18 @@ class module_report_connexion extends module_report
         $finalfilter = $datefilter['sql'] . ' AND ';
         $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log_date.site = :site_id';
-
+/*
         $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb
                 FROM log as log_date FORCE INDEX (date_site)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $finalfilter;
+*/
+        $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb\n"
+            . " FROM log as log_date FORCE INDEX (date_site)\n"
+            . "    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)\n"
+            . " WHERE " . $finalfilter . "\n";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

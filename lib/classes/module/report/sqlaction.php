@@ -55,6 +55,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                     WHERE (" . $filter['sql'] . ") AND (d.action = :action)
                 ) AS tt";
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+
             $customFieldMap = array(
                 'log.usrid'     => 'tt.usrid',
                 'log.user'      => 'tt.user',
@@ -89,6 +91,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 GROUP BY " . $this->groupby . "
                 ORDER BY nombre";
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
             $this->total_row = $stmt->rowCount();
@@ -115,6 +119,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 WHERE (" . $filter['sql'] . ")
                 AND (d.action = :action)
             ) AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '');
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
         return array('sql' => $this->sql, 'params' => $this->params);
     }
