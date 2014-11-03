@@ -84,10 +84,10 @@ class module_report_sqlfilter
             $sql .= $this->filter['collection']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['collection']['params']);
         }
-/*
+
         $sql .= ' log.site = :log_site';
-*/
-        $sql .= ' log.site=' . $this->conn->quote($this->app['phraseanet.configuration']['main']['key']);
+
+//        $sql .= ' log.site=' . $this->conn->quote($this->app['phraseanet.configuration']['main']['key']);
 
         return array('sql' => $sql, 'params' => $params);
     }
@@ -95,19 +95,19 @@ class module_report_sqlfilter
     public function getGvSitFilter()
     {
         $params = array();
-/*
+
         $sql = 'log.site = :log_site_gv_filter';
         $params[':log_site_gv_filter'] = $this->app['phraseanet.configuration']['main']['key'];
-*/
-        $sql = "log.site=" . $this->conn->quote($this->app['phraseanet.configuration']['main']['key']);
+
+//        $sql = "log.site=" . $this->conn->quote($this->app['phraseanet.configuration']['main']['key']);
 
         return array('sql' => $sql, 'params' => $params);
     }
 
     public function getUserIdFilter($id)
     {
-//        return array('sql' => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
-        return array('sql' => "log.usrid=" . (int)$id, 'params' => array());
+        return array('sql' => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
+//        return array('sql' => "log.usrid=" . (int)$id, 'params' => array());
     }
 
     public function getDateFilter()
