@@ -40,25 +40,6 @@ class module_report_sqlfilter
         );
     }
 
-    public static function constructCollectionFilter(Application $app, $list_coll_id)
-    {
-        $ret = array('sql'    => '', 'params' => array());
-        $coll_filter = array();
-        foreach (array_filter(explode(',', $list_coll_id)) as $val) {
-            $val = \phrasea::collFromBas($app, $val);
-            if ($val) {
-                $coll_filter[] =  'log_colls.coll_id = ' . $val;
-            }
-        }
-        $collections = array_unique($coll_filter);
-
-        if (count($collections) > 0) {
-            $ret['sql'] = ' (' . implode(' OR ', $collections) . ') ';
-        }
-
-        return $ret;
-    }
-
     public function getCorFilter()
     {
         return $this->cor_query;
@@ -67,11 +48,8 @@ class module_report_sqlfilter
     public function getReportFilter()
     {
         $sql = '';
-/*
-        $params = array(':log_site' => $this->app['phraseanet.configuration']['main']['key']);
-*/
-        $params = array();
 
+        $params = array(':log_site' => $this->app['phraseanet.configuration']['main']['key']);
         if ($this->filter['date'] && $this->filter['date']['sql'] !== '') {
             $sql .= $this->filter['date']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['date']['params']);
@@ -80,14 +58,8 @@ class module_report_sqlfilter
             $sql .= $this->filter['user']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['user']['params']);
         }
-        if ($this->filter['collection'] && $this->filter['collection']['sql'] !== '') {
-            $sql .= $this->filter['collection']['sql'] . ' AND ';
-            $params = array_merge($params, $this->filter['collection']['params']);
-        }
 
         $sql .= ' log.site = :log_site';
-
-//        $sql .= ' log.site=' . $this->conn->quote($this->app['phraseanet.configuration']['main']['key']);
 
         return array('sql' => $sql, 'params' => $params);
     }
@@ -98,8 +70,6 @@ class module_report_sqlfilter
 
         $sql = 'log.site = :log_site_gv_filter';
         $params[':log_site_gv_filter'] = $this->app['phraseanet.configuration']['main']['key'];
-
-//        $sql = "log.site=" . $this->conn->quote($this->app['phraseanet.configuration']['main']['key']);
 
         return array('sql' => $sql, 'params' => $params);
     }
@@ -118,11 +88,6 @@ class module_report_sqlfilter
     public function getUserFilter()
     {
         return $this->filter['user'];
-    }
-
-    public function getCollectionFilter()
-    {
-        return $this->filter['collection'];
     }
 
     public function getRecordFilter()
@@ -212,35 +177,6 @@ class module_report_sqlfilter
         return;
     }
 
-    private function collectionFilter(module_report $report)
-    {
-        $this->filter['collection'] = false;
-        $coll_filter = array();
-
-        if ($report->getUserId() == '') {
-            return;
-        }
-
-        $tab = array_filter(explode(",", $report->getListCollId()));
-
-        if (count($tab) > 0) {
-            foreach ($tab as $val) {
-                $val = \phrasea::collFromBas($this->app, $val);
-                if (!!$val) {
-                    $coll_filter[] =  'log_colls.coll_id = ' . $val;
-                }
-            }
-
-            $collections = array_unique($coll_filter);
-
-            if (count($collections) > 0) {
-                $this->filter['collection'] = array('sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => array());
-            }
-        }
-
-        return;
-    }
-
     private function recordFilter(module_report $report)
     {
         $this->filter['record'] = false;
@@ -295,7 +231,6 @@ class module_report_sqlfilter
         $this->orderFilter($report);
         $this->recordFilter($report);
         $this->userFilter($report);
-        $this->collectionFilter($report);
 
         return;
     }

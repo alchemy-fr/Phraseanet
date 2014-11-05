@@ -92,7 +92,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                         SELECT DISTINCT(log.id), TRIM(' . $field . ') AS ' . $name . '
                         FROM log FORCE INDEX (date_site)
                         INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                         INNER JOIN record ON (log_docs.record_id = record.record_id)
                         INNER JOIN subdef ON ( log_docs.record_id = subdef.record_id)';
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
@@ -103,7 +102,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                         SELECT DISTINCT(log.id), TRIM( ' . $this->getTransQuery($this->groupby) . ') AS ' . $name . '
                         FROM log FORCE INDEX (date_site)
                         INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                         INNER JOIN record ON (log_docs.record_id = record.record_id)
                         INNER JOIN subdef ON (record.record_id = subdef.record_id)';
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
@@ -149,7 +147,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                 SELECT DISTINCT(log.id), ' . $this->getTransQuery($field) . ' AS val
                 FROM log FORCE INDEX (date_site)
                     INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (log_docs.record_id = record.record_id)
                     INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)
                 WHERE (' . $filter['sql'] . ')
