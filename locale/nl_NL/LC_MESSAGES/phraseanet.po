@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: phraseanettranslation\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-09-05 17:30+0100\n"
+"PO-Revision-Date: 2014-11-06 14:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: Dutch <nl@li.org>\n"
 "Language: nl_NL\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Launchpad-Export-Date: 2014-02-24 14:56+0000\n"
-"X-POOTLE-MTIME: 1406297687.000000\n"
+"X-POOTLE-MTIME: 1413879886.000000\n"
 
 #: lib/classes/appbox.php:300 lib/classes/appbox.php:385
 msgid "Flushing cache"
@@ -4369,28 +4369,6 @@ msgstr "Onmogelijk om te connecteren met de MySQL server"
 msgid "Bonjour, vous etes sur le point d'installer Phraseanet."
 msgstr "Goededag, u staat op het punt Phraseanet te installeren."
 
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:423
-msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
-msgstr "Raadpleeg online de voorwaarden en de configuratie van de webserver"
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:429
-msgid ""
-"Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage "
-"pour vos documents, et de configurer votre serveur web pour qu'il publie "
-"certains de ces dossiers de stockage."
-msgstr ""
-"U dient een MySQL server, mappen voor de opslag van uw documenten te "
-"specifieren, en uw webserver configureren dat die bepaalde opslag mappen kan "
-"publiceren"
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:439
-msgid ""
-"Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
-"continuer sans corriger ces problèmes."
-msgstr ""
-"Alvorens door te gaan, neem nota van onderstaande punten. U kunt zonder "
-"correctie van deze nota's doorgaan."
-
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:499
 msgid "Review system configuration"
 msgstr "Herbekijk de systeem configuratie"
@@ -4523,32 +4501,9 @@ msgstr "Database"
 msgid "boutton::tester"
 msgstr "Tester"
 
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:887
-msgid ""
-"Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage "
-"d'options%fin_lien%"
-msgstr ""
-"Als u meerdere parameters nodig hebt, %debut_lien%Toon meer keuzez%fin_lien%"
-
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:906
 msgid "ApplicationBox is a Mysql database."
 msgstr "ApplicationBox is een Mysql database."
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:912
-msgid ""
-"It stores users datas, rights, and references to DataBoxes where records are "
-"stored."
-msgstr ""
-"Het bewaart gebruikers datas, rechten, en verwijzingen naar DataBoxes waar "
-"records bewaart worden."
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:924
-msgid ""
-"Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
-"replacement for MySQL."
-msgstr ""
-"Phraseanet raadt ten sterkste het gebruik van %link_start%MariaDB%link_end% "
-"ter vervanging van MySQL."
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:968
 msgid "setup::Configuration des repertoires de stockage"
@@ -8018,22 +7973,6 @@ msgstr "Iconographe (beschrijving bij de rollover)"
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1764
 msgid "Graphiste (preview au rollover)"
 msgstr "Graficus (preview au rollover)"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1774
-msgid "Informations techniques"
-msgstr "Technische informaties"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1785
-msgid "Afficher"
-msgstr "Tonen"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1797
-msgid "Afficher dans la notice"
-msgstr "In de nota tonen"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1809
-msgid "Ne pas afficher"
-msgstr "Niet tonen"
 
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1819
 msgid "Type de documents"
@@ -11590,16 +11529,178 @@ msgstr "Onmogelijk om een gebruiker aan te maken."
 
 #: ../lib/Alchemy/Phrasea/Media/Subdef/Image.php:37
 msgid "Flatten layers"
-msgstr ""
+msgstr "Lagen samenvoegen"
 
 #: ../lib/conf.d/_GV_template.inc:278
 msgid "Set force authentication option to see push content as mandatory"
 msgstr ""
+"Zet de geforceerde authenticatie optie aan om de push inhoud te zien als "
+"verplichtend"
 
 #: ../lib/conf.d/_GV_template.inc:279
 msgid ""
 "Disallow the possibility for the end user to disable push authentication"
 msgstr ""
+"Weiger de mogelijkheid van de eindgebruiker om de push authenticatie af te "
+"zetten"
+
+#: ../lib/Alchemy/Phrasea/Command/Developer/IniReset.php:67
+msgid "Please enter the databox name to reset or create"
+msgstr "Gelieve de databox naam in te vullen om aan te maken of om te nullen"
+
+#: ../lib/classes/task/period/subdef.php:276
+msgid "Databox"
+msgstr "Databox"
+
+#: ../lib/classes/task/period/subdef.php:293
+msgid "recordtype"
+msgstr "recordtype"
+
+#: ../lib/classes/task/period/subdef.php:308
+msgid "flash"
+msgstr "knipperen"
+
+#: ../lib/classes/task/period/subdef.php:311
+msgid "unknown"
+msgstr "onbekend"
+
+#: ../lib/classes/task/period/writemeta.php:198
+msgid "task::writemeta:Compatibilité MWG"
+msgstr "task::writemeta:MWG Compatibiliteit"
+
+#: ../tmp/cache_twig/17/69/d713df4829d1537684cbaaf41ea8632bbf3bfc6073f5466bf533c87ae448.php:40
+msgid "Unauthorized action"
+msgstr "Niet toegestane actie"
+
+#: ../tmp/cache_twig/17/69/d713df4829d1537684cbaaf41ea8632bbf3bfc6073f5466bf533c87ae448.php:46
+msgid "Guest, you must be authenticated to have the right to download."
+msgstr "Gast, u moet ingelogd zijn om te kunnen downloaden."
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1830
+msgid "Display technical data"
+msgstr "Toon technische data"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1841
+msgid "In the answer grid"
+msgstr "In het antwoord raster"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1853
+msgid "After metadata"
+msgstr "Na metadata"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1865
+msgid "Do not display"
+msgstr "Niet weergeven"
+
+#: ../tmp/cache_twig/3c/5b/ac6d72e9b6784d9f922e0cb9f1aa2fcbe12a455b39a9cf98facfbeba38d8.php:129
+msgid "admin::base: subdefs to be created :"
+msgstr "admin::base: aan te maken thumbnails :"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:392
+msgid ""
+"Consultez en ligne les pré-requis et la\n"
+"                                                configuration du serveur web"
+msgstr ""
+"Raadpleeg online de instellingen en de\n"
+"configuratie van de webserver"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:400
+msgid ""
+"Vous aurez besoin de spécifier un serveur MySQL, des\n"
+"                                                repertoires de stockage pour "
+"vos documents, et de\n"
+"                                                configurer votre serveur web "
+"pour qu'il publie\n"
+"                                                certains de ces dossiers de "
+"stockage."
+msgstr ""
+"U dient een MySQL server te specifieren,\n"
+"de mappen voor opslag van uw documenten,\n"
+"en uw webserver configureren om bepaalde\n"
+" van die opslag mappen te publiceren."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:413
+msgid ""
+"Avant de continuer, prenez connaissance des\n"
+"                                                    points ci-dessous. Vous "
+"pouvez continuer sans\n"
+"                                                    corriger ces problèmes."
+msgstr ""
+"Alvorens verder te gaan, neem nota\n"
+" van onderstaande punten. U kunt verdergaan\n"
+"zonder deze problemen op te lossen."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:883
+msgid ""
+"Si vous aviez besoin de plus de\n"
+"                                                parametres, %debut_lien"
+"%Afficher d'avantage\n"
+"                                                d'options%fin_lien%"
+msgstr ""
+"Als u meerdere parameters nodig hebt,\n"
+"%debut_lien%Toon eerst de weergave\n"
+"opties%fin_lien%"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:911
+msgid ""
+"It stores users data, rights, and references to DataBoxes where records are "
+"stored."
+msgstr ""
+"Het slaat gebruikers data, rechten en referenties in DataBoxes op waar "
+"records zijn opgeslagen."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:924
+msgid ""
+"Phraseanet strongly recommends the use of %link_start%\n"
+"                                    MariaDB%link_end% as a replacement for "
+"MySQL."
+msgstr ""
+"Phraseanet raadt ten sterkste het gebruik van %link_start%\n"
+"MariaDB%link_end% aan als alternatief voor MySQL."
+
+#: ../tmp/cache_twig/73/dc/b5372755b0841c387ee3bedb5d2abcc352c406460175dcbb77b7ece2b792.php:469
+msgid ""
+"Changes for rotation will be applied only on the sub-definitions of \"image"
+"\" type."
+msgstr ""
+"Rotatie aanpassingen zullen enkel op thumbnails van het type \"beeld\" "
+"worden toegpast."
+
+#: ../tmp/cache_twig/b8/a7/8d90b368cf6dff8f0eb23688fe74348d06755a6bfed068fd57879824c7a8.php:57
+msgid "Le panier demande nexiste plus"
+msgstr "Het aanvraagmandje bestaat niet meer"
+
+#: ../tmp/cache_twig/b8/a7/8d90b368cf6dff8f0eb23688fe74348d06755a6bfed068fd57879824c7a8.php:67
+msgid "Retour a l'accueil"
+msgstr "Terug naar login"
+
+#: ../tmp/cache_twig/b8/bb/181afef0c90384a1cf49ab8388f0b3d9243584330eae982fa41fcc37234e.php:88
+msgid "%entry_length% documents"
+msgstr "%entry_length% documenten"
+
+#: ../tmp/cache_twig/d3/00/2bbe2898667d9376b834b648de676220402fd85a7a3e95ad06c36aae01b2.php:85
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:144
+msgid "Back"
+msgstr "Terug"
+
+#: ../tmp/cache_twig/e9/5c/636c4c2d006bb38590ba27401f9edb4ae6f601ad3f0212354dcb41f20fd6.php:56
+msgid "validation:: note"
+msgstr "validation:: nota"
+
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:70
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:114
+msgid "a propos"
+msgstr "over"
+
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:101
+msgid "Deconnexion"
+msgstr "Uitloggen"
+
+#: ../lib/conf.d/_GV_template.inc:285
+msgid "Enable possibility to notify users when publishing a new feed entry"
+msgstr ""
+"Zet de mogelijkheid aan om gebruikers in te lichten wanneer een nieuwe post "
+"wordt gepubliceerd"
 
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Maak H264 stream mode actief"
@@ -11623,5 +11724,57 @@ msgstr ""
 #~ msgid "Defined in Apache configuration"
 #~ msgstr "Gedefinieerd in de Apache configuratie"
 
+#~ msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
+#~ msgstr "Raadpleeg online de voorwaarden en de configuratie van de webserver"
+
+#~ msgid ""
+#~ "Vous aurez besoin de spécifier un serveur MySQL, des repertoires de "
+#~ "stockage pour vos documents, et de configurer votre serveur web pour "
+#~ "qu'il publie certains de ces dossiers de stockage."
+#~ msgstr ""
+#~ "U dient een MySQL server, mappen voor de opslag van uw documenten te "
+#~ "specifieren, en uw webserver configureren dat die bepaalde opslag mappen "
+#~ "kan publiceren"
+
+#~ msgid ""
+#~ "Avant de continuer, prenez connaissance des points ci-dessous. Vous "
+#~ "pouvez continuer sans corriger ces problèmes."
+#~ msgstr ""
+#~ "Alvorens door te gaan, neem nota van onderstaande punten. U kunt zonder "
+#~ "correctie van deze nota's doorgaan."
+
+#~ msgid ""
+#~ "Si vous aviez besoin de plus de parametres, %debut_lien%Afficher "
+#~ "d'avantage d'options%fin_lien%"
+#~ msgstr ""
+#~ "Als u meerdere parameters nodig hebt, %debut_lien%Toon meer keuzez"
+#~ "%fin_lien%"
+
+#~ msgid ""
+#~ "It stores users datas, rights, and references to DataBoxes where records "
+#~ "are stored."
+#~ msgstr ""
+#~ "Het bewaart gebruikers datas, rechten, en verwijzingen naar DataBoxes "
+#~ "waar records bewaart worden."
+
+#~ msgid ""
+#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% "
+#~ "as a replacement for MySQL."
+#~ msgstr ""
+#~ "Phraseanet raadt ten sterkste het gebruik van %link_start%MariaDB%link_end"
+#~ "% ter vervanging van MySQL."
+
 #~ msgid "Monter"
 #~ msgstr "Tonen"
+
+#~ msgid "Informations techniques"
+#~ msgstr "Technische informaties"
+
+#~ msgid "Afficher"
+#~ msgstr "Tonen"
+
+#~ msgid "Afficher dans la notice"
+#~ msgstr "In de nota tonen"
+
+#~ msgid "Ne pas afficher"
+#~ msgstr "Niet tonen"
