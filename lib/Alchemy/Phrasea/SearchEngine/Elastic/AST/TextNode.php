@@ -30,4 +30,9 @@ class TextNode extends Node
     {
         return true;
     }
+
+    public function getText()
+    {
+        return $this->text;
+    }
 }

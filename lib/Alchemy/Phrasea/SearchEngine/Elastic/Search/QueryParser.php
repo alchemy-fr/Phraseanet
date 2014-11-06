@@ -23,6 +23,16 @@ class QueryParser
 
         $dump = new \Hoa\Compiler\Visitor\Dump();
         echo $dump->visit($ast);
+
+        // Create query from syntax tree
+        $visitor = new QueryVisitor();
+        $query = $visitor->visit($ast);
+
+        echo "--------------------\n";
+        echo (string) $query . "\n";
+        echo "--------------------\n";
+
+        return $query;
     }
 }
 
