@@ -39,7 +39,8 @@ class module_report_question extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+//        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
         $this->title = _('report:: question');
     }
 

@@ -44,7 +44,8 @@ class module_report_download extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+    //     parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
         $this->title = _('report:: telechargements');
     }
 
@@ -55,9 +56,12 @@ class module_report_download extends module_report
      */
     protected function buildReq($groupby = false, $on = false)
     {
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+ini_set('display_errors', true);
         $sql = $this->sqlBuilder('download')
                 ->setOn($on)->setGroupBy($groupby)->buildSql();
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
         $this->req = $sql->getSql();
         $this->params = $sql->getParams();
         $this->total = $sql->getTotalRows();
@@ -102,6 +106,7 @@ class module_report_download extends module_report
     {
         $i = 0;
         $pref = parent::getPreff($app, $this->sbas_id);
+//// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($rs, true)), FILE_APPEND);
 
         foreach ($rs as $row) {
             if ($this->enable_limit && ($i > $this->nb_record))
@@ -112,23 +117,28 @@ class module_report_download extends module_report
             }
 
             if (array_key_exists('record_id', $row)) {
+//// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, $row['record_id']), FILE_APPEND);
                 try {
                     $record = new \record_adapter($app, $this->sbas_id, $row['record_id']);
+                    $caption = $record->get_caption();
+                    foreach ($pref as $field) {
+//// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, $field), FILE_APPEND);
+                        try {
+                            $this->result[$i][$field] = $caption
+                                ->get_field($field)
+                                ->get_serialized_values();
+                        } catch (\Exception $e) {
+                            $this->result[$i][$field] = '';
+                        }
+                    }
                 } catch (\Exception_Record_AdapterNotFound $e) {
-                    continue;
-                }
-
-                foreach ($pref as $field) {
-                    try {
-                        $this->result[$i][$field] = $record->get_caption()
-                            ->get_field($field)
-                            ->get_serialized_values();
-                    } catch (\Exception $e) {
+                    foreach ($pref as $field) {
                         $this->result[$i][$field] = '';
                     }
                 }
             }
             $i ++;
+//// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
         }
     }
 
@@ -176,13 +186,14 @@ class module_report_download extends module_report
 
         $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+//        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
+//        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+        $params = array_merge($params, $datefilter['params']);
 
         $finalfilter = $datefilter['sql'] . ' AND ';
-        $finalfilter .= $collfilter['sql'] . ' AND ';
+//        $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log.site = :site_id';
-
+/*
         $sql = '
             SELECT SUM(1) AS nb
             FROM (
@@ -197,6 +208,18 @@ class module_report_download extends module_report
                 )
             ) AS tt
         ';
+*/
+        $sql = "SELECT SUM(1) AS nb\n"
+            . " FROM (\n"
+            . "    SELECT DISTINCT(log.id)\n"
+            . "    FROM log FORCE INDEX (date_site)\n"
+            . "        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)\n"
+            . "    WHERE " . $finalfilter . "\n"
+            . "    AND ( log_date.action = 'download' OR log_date.action = 'mail' )\n"
+            . " ) AS tt";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -224,7 +247,7 @@ class module_report_download extends module_report
         $finalfilter .= $datefilter['sql'] . ' AND ';
         $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log.site = :site_id';
-
+/*
         $sql = '
             SELECT tt.id, tt.name, SUM(1) AS nb
             FROM (
@@ -243,6 +266,20 @@ class module_report_download extends module_report
             ) AS tt
             GROUP BY id, name
         ';
+*/
+        $sql = "SELECT tt.id, tt.name, SUM(1) AS nb\n"
+            . " FROM (\n"
+            . "    SELECT DISTINCT(log.id) AS log_id, log_date.record_id as id, subdef.name\n"
+            . "    FROM ( log )\n"
+            . "        INNER JOIN log_docs as log_date  ON (log.id = log_date.log_id)\n"
+            . "        INNER JOIN subdef ON (log_date.record_id = subdef.record_id)\n"
+            . "    WHERE (" . $finalfilter . ")\n"
+            . "    AND ( log_date.action = 'download' OR log_date.action = 'mail' )\n"
+            . "    AND subdef.name = log_date.final\n"
+            . " ) AS tt\n"
+            . " GROUP BY id, name\n";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
