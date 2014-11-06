@@ -8,9 +8,10 @@ class QuotedTextNode extends TextNode
     {
         return array(
             'multi_match' => array(
+                'type'      => 'phrase',
                 'fields'    => $fields,
                 'query'     => $this->text,
-                'operator'  => 'and'
+                // 'operator'  => 'and'
             )
         );
     }

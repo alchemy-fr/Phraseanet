@@ -2,9 +2,9 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
-class OrExpression extends BinaryOperator
+class ExceptExpression extends BinaryOperator
 {
-    protected $operator = 'OR';
+    protected $operator = 'EXCEPT';
 
     public function getQuery($fields = ['_all'])
     {
@@ -13,7 +13,8 @@ class OrExpression extends BinaryOperator
 
         return array(
             'bool' => array(
-                'should' => array($left, $right)
+                'must' => $left,
+                'must_not' => $right
             )
         );
     }
