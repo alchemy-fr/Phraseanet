@@ -548,7 +548,6 @@ class module_report_nav extends module_report
             FROM (
                 SELECT DISTINCT (log.id), version
                 FROM log FORCE INDEX (date_site, nav, version)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE nav = :browser
                 AND ". $report_filter['sql'] . "
             ) AS tt

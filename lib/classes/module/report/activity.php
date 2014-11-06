@@ -352,7 +352,7 @@ class module_report_activity extends module_report
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, var_export($this->result, true)), FILE_APPEND);
         foreach($this->result as $k=>$row) {
             $_row = array();
-            foreach($tab as $k2=>$f) {
+            foreach((array) $tab as $k2=>$f) {
                 $_row[$k2] = array_key_exists($k2, $row) ? $row[$k2] : '';
             }
             $this->result[$k] = $_row;
@@ -571,7 +571,7 @@ class module_report_activity extends module_report
 
         foreach($this->result as $k=>$row) {
             $_row = array();
-            foreach($tab as $k2=>$f) {
+            foreach((array) $tab as $k2=>$f) {
                 $_row[$k2] = array_key_exists($k2, $row) ? $row[$k2] : '';
             }
             $_row['usrid'] = array_key_exists('usrid', $row) ? $row['usrid'] : '';

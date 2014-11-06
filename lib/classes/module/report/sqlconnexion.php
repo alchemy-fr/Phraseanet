@@ -60,7 +60,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 FROM (
                     SELECT DISTINCT(log.id),  TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
                     FROM  log FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     WHERE (" . $filter['sql'] .")
                 ) AS tt
                 GROUP BY " . $this->groupby. "
@@ -87,7 +86,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
             FROM (
                 SELECT DISTINCT(log.id), ' . $this->getTransQuery($field) . ' AS val
                 FROM log FORCE INDEX (date_site)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE (' . $filter['sql'] . ')
             ) AS tt ORDER BY val ASC';
 

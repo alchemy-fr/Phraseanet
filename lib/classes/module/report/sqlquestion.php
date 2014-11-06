@@ -49,7 +49,6 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
                     SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
                     FROM (`log_search`)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     WHERE (" . $filter['sql'] .")
                 ) AS tt
                 GROUP BY " . $this->groupby ."
@@ -77,7 +76,6 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
                 SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val
                 FROM (`log_search`)
                 INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE (" . $filter['sql'] . ")
             ) as tt
             ORDER BY tt.val ASC";

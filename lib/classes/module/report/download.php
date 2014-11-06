@@ -21,7 +21,6 @@ class module_report_download extends module_report
         'activite'  => 'log.activite',
         'fonction'  => 'log.fonction',
         'usrid'     => 'log.usrid',
-        'coll_id'   => 'log_colls.coll_id',
         'ddate'     => "log_docs.date",
         'id'        => 'log_docs.id',
         'log_id'    => 'log_docs.log_id',
@@ -186,12 +185,9 @@ ini_set('display_errors', true);
 
         $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-//        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-//        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
         $params = array_merge($params, $datefilter['params']);
 
         $finalfilter = $datefilter['sql'] . ' AND ';
-//        $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log.site = :site_id';
 /*
         $sql = '
@@ -213,7 +209,6 @@ ini_set('display_errors', true);
             . " FROM (\n"
             . "    SELECT DISTINCT(log.id)\n"
             . "    FROM log FORCE INDEX (date_site)\n"
-            . "        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)\n"
             . "    WHERE " . $finalfilter . "\n"
             . "    AND ( log_date.action = 'download' OR log_date.action = 'mail' )\n"
             . " ) AS tt";
@@ -235,8 +230,7 @@ ini_set('display_errors', true);
 
         $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+        $params = array_merge($params, $datefilter['params']);
 
         $finalfilter = "";
         $array = array(
@@ -245,7 +239,6 @@ ini_set('display_errors', true);
         );
 
         $finalfilter .= $datefilter['sql'] . ' AND ';
-        $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log.site = :site_id';
 /*
         $sql = '
