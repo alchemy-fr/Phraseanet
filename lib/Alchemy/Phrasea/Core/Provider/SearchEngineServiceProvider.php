@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryParser;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
@@ -139,8 +140,9 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['query_parser'] = $app->share(function ($app) {
             $grammarPath = $app['query_parser.grammar_path'];
+            $parser = Llk::load(new Read($grammarPath));
 
-            return Llk::load(new Read($grammarPath));
+            return new QueryParser($parser);
         });
     }
 
