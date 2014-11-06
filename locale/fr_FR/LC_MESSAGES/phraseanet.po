@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-09-05 17:30+0100\n"
+"PO-Revision-Date: 2014-11-06 14:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -11,12 +11,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Launchpad-Export-Date: 2014-02-24 14:56+0000\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1409915751.000000\n"
+"X-POOTLE-MTIME: 1413799471.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -4386,28 +4386,6 @@ msgstr "Connexion impossible avec le serveur MySQL"
 msgid "Bonjour, vous etes sur le point d'installer Phraseanet."
 msgstr "Bonjour, vous êtes sur le point d'installer Phraseanet."
 
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:423
-msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
-msgstr "Consultez en ligne les pré-requis et la configuration du serveur web"
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:429
-msgid ""
-"Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage "
-"pour vos documents, et de configurer votre serveur web pour qu'il publie "
-"certains de ces dossiers de stockage."
-msgstr ""
-"Vous aurez besoin de spécifier un serveur MySQL, des répertoires de stockage "
-"pour vos documents, et de configurer votre serveur web pour qu'il publie "
-"certains de ces répertoires de stockage."
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:439
-msgid ""
-"Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
-"continuer sans corriger ces problèmes."
-msgstr ""
-"Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
-"continuer sans corriger ces problèmes."
-
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:499
 msgid "Review system configuration"
 msgstr "Examen de la configuration du système"
@@ -4540,31 +4518,9 @@ msgstr "Base de données"
 msgid "boutton::tester"
 msgstr "Tester"
 
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:887
-msgid ""
-"Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage "
-"d'options%fin_lien%"
-msgstr "%debut_lien%Afficher davantage d'options%fin_lien%"
-
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:906
 msgid "ApplicationBox is a Mysql database."
-msgstr "l'ApplicationBox est une base de données  Mysql ."
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:912
-msgid ""
-"It stores users datas, rights, and references to DataBoxes where records are "
-"stored."
-msgstr ""
-"Elle stocke les informations utilisateurs et les références vers les "
-"DataBoxes où les documents sont stockés"
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:924
-msgid ""
-"Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
-"replacement for MySQL."
-msgstr ""
-"Phraseanet recommande fortement l'utilisation de %link_start%MariaDB%link_end"
-"% à la place de MySQL."
+msgstr "L'ApplicationBox est une base de données MySQL."
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:968
 msgid "setup::Configuration des repertoires de stockage"
@@ -8070,22 +8026,6 @@ msgstr "Iconographe (description au rollover)"
 msgid "Graphiste (preview au rollover)"
 msgstr "Graphiste (prévisualisation au rollover)"
 
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1774
-msgid "Informations techniques"
-msgstr "Informations techniques"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1785
-msgid "Afficher"
-msgstr "Afficher"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1797
-msgid "Afficher dans la notice"
-msgstr "Afficher dans la notice"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1809
-msgid "Ne pas afficher"
-msgstr "Ne pas afficher"
-
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1819
 msgid "Type de documents"
 msgstr "Type de document"
@@ -9342,32 +9282,31 @@ msgstr "A propos"
 
 #: lib/Alchemy/Phrasea/Border/Checker/Colorspace.php:65
 msgid "The file does not match available color"
-msgstr "Ce fichier ne correspond pas aux espaces couleurs autorisés"
+msgstr "Le fichier ne correspond pas aux espaces couleurs autorisés"
 
 #: lib/Alchemy/Phrasea/Border/Checker/Dimension.php:57
 msgid "The file does not match required dimension"
-msgstr "Ce fichier ne correspond pas aux dimensions spatiales requises"
+msgstr "Le fichier ne correspond pas aux dimensions requises"
 
 #: lib/Alchemy/Phrasea/Border/Checker/Extension.php:45
 msgid "The file does not match available extensions"
-msgstr "Ce fichier ne correspond pas aux formats d'extensions acceptés"
+msgstr "Le fichier ne correspond pas aux extensions autorisées"
 
 #: lib/Alchemy/Phrasea/Border/Checker/Filename.php:58
 msgid "A file with the same filename already exists in database"
-msgstr "Un fichier avec le même nom existe déjà dans la base de données"
+msgstr "Un fichier portant le même nom existe déjà dans la base"
 
 #: lib/Alchemy/Phrasea/Border/Checker/MediaType.php:53
 msgid "The file does not match required media type"
-msgstr "Ce fichier ne correspond pas aux types de médias acceptés"
+msgstr "Le fichier ne correspond pas aux types de médias acceptés"
 
 #: lib/Alchemy/Phrasea/Border/Checker/Sha256.php:47
 msgid "A file with the same checksum already exists in database"
-msgstr ""
-"Un fichier avec la même somme de contrôle existe déjà dans la base de données"
+msgstr "Un fichier avec la même somme de contrôle existe déjà dans la base"
 
 #: lib/Alchemy/Phrasea/Border/Checker/UUID.php:46
 msgid "A file with the same UUID already exists in database"
-msgstr "Un fichier avec le même UUID existe déjà dans la base de données"
+msgstr "Un fichier portant le même UUID existe déjà dans la base"
 
 #: lib/Alchemy/Phrasea/Controller/Lightbox.php:38
 msgid "The URL you used is out of date, please login"
@@ -9420,12 +9359,12 @@ msgstr "Format de fichier incorrect"
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:410
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:426
 msgid "The file is too big"
-msgstr "Le fichier est trop gros"
+msgstr "Le fichier est trop volumineux"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:413
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:880
 msgid "Empty the collection before removing"
-msgstr "Videz la collection avant de la supprimer"
+msgstr "Vider la collection avant de la supprimer"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:496
 msgid "Collection empty successful"
@@ -9434,7 +9373,8 @@ msgstr "Collection vidée avec succès"
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:502
 msgid "A task has been creted, please run it to complete empty collection"
 msgstr ""
-"Une tâche de suppression a été créée, lancez la pour vider la collection"
+"Une tâche de suppression a été créée. Lancer celle-ci pour vider la "
+"collection"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:548
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:583
@@ -9511,7 +9451,7 @@ msgstr "Serveur injoignable"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:153
 msgid "Veuillez arreter le planificateur avant la mise a jour"
-msgstr "Veuillez arrêter le planificateur avant la mise à jour"
+msgstr "Veuillez arrêter le planificateur avant la mise à jour."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:156
 msgid "The upgrade is already started"
@@ -9519,16 +9459,16 @@ msgstr "Une mise à jour est déjà en cours"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:162
 msgid "Please fix the database before starting"
-msgstr "Merci de corriger les erreurs de base de données avant de continuer"
+msgstr "Merci de corriger les erreurs de base de données avant de continuer."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:165
 msgid "Database name can not contains special characters"
 msgstr ""
-"Le nom de la base de données ne peut pas contenir de caractères spéciaux"
+"Le nom de la base de données ne peut pas contenir de caractères spéciaux."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:168
 msgid "Base could not be created"
-msgstr "La base ne peut pas être créée"
+msgstr "La base ne peut être créée."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:171
 msgid "Database does not exists or can not be accessed"
@@ -9542,7 +9482,7 @@ msgstr "Le base de données ne peut pas être vide"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:177
 msgid "Database could not be mounted"
-msgstr "Le base de données ne peut pas être montée"
+msgstr "Le base de données ne peut pas être montée."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Fields.php:129
 msgid "Something wrong happened, please try again or contact an admin."
@@ -9593,53 +9533,53 @@ msgstr "La configuration a été sauvegardée avec succès."
 #: lib/Alchemy/Phrasea/Controller/Admin/Publications.php:91
 msgid "You are not the owner of this feed, you can not edit it"
 msgstr ""
-"Vous n'êtes pas le propriétaire de ce flux, vous ne pouvez pas l'éditer"
+"Vous n'êtes pas le propriétaire de ce flux, vous ne pouvez pas l'éditer."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Publications.php:157
 #: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:290
 msgid "Unable to add file to Phraseanet"
-msgstr "Impossible d'ajouter des fichiers à Phraseanet"
+msgstr "Impossible d'ajouter des fichiers à Phraseanet."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:171
 msgid "Missing tests parameter"
-msgstr "Paramètre de test manquant"
+msgstr "Paramètre de test manquant."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:175
 msgid "Missing path parameter"
-msgstr "Paramètre Path (Chemin d'accès) manquant"
+msgstr "Paramètre Path (Chemin d'accès) manquant."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:231
 msgid "Missing \"structure\" parameter"
-msgstr "Paramètre structure manquant"
+msgstr "Paramètre structure manquant."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:273
 msgid "You do not enough rights to update status"
-msgstr "Vous ne disposez pas des droits suffisants pour changer les Status"
+msgstr "Vous ne disposez pas des droits suffisants pour changer les Status."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:276
 msgid "File is too big : 64k max"
-msgstr "Le poids du fichier ne peut dépasser 64 Ko"
+msgstr "Le poids du fichier ne peut dépasser 64 Ko."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:279
 msgid "Status icon upload failed : upload error"
-msgstr "L'ajout de l'icône de Status a échoué"
+msgstr "L'ajout de l'icône de Status a échoué."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:282
 msgid "Status icon upload failed : can not write on disk"
 msgstr ""
-"L'ajout de l'icône de Status a échoué, impossible d'écrire sur le disque"
+"L'ajout de l'icône de Status a échoué, impossible d'écrire sur le disque."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:285
 msgid "Something wrong happend"
-msgstr "Un problème est survenu"
+msgstr "Un problème est survenu."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Setup.php:90
 msgid "Update succeed"
-msgstr "La mise à jour a réussi"
+msgstr "La mise à jour a réussi."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Setup.php:92
 msgid "Update failed"
-msgstr "La mise à jour a échoué"
+msgstr "La mise à jour a échoué."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/TaskManager.php:109
 #: lib/Alchemy/Phrasea/Controller/Admin/TaskManager.php:149
@@ -11695,6 +11635,157 @@ msgstr ""
 "Supprime le choix des options d'authentification dans les formulaires "
 "d'envoi."
 
+#: ../lib/Alchemy/Phrasea/Command/Developer/IniReset.php:67
+msgid "Please enter the databox name to reset or create"
+msgstr ""
+
+#: ../lib/classes/task/period/subdef.php:276
+msgid "Databox"
+msgstr "Databox"
+
+#: ../lib/classes/task/period/subdef.php:293
+msgid "recordtype"
+msgstr "Type d'enregistrement"
+
+#: ../lib/classes/task/period/subdef.php:308
+msgid "flash"
+msgstr "flash"
+
+#: ../lib/classes/task/period/subdef.php:311
+msgid "unknown"
+msgstr "inconnu"
+
+#: ../lib/classes/task/period/writemeta.php:198
+msgid "task::writemeta:Compatibilité MWG"
+msgstr "Ecriture de métadonnées compatibles MWG"
+
+#: ../tmp/cache_twig/17/69/d713df4829d1537684cbaaf41ea8632bbf3bfc6073f5466bf533c87ae448.php:40
+msgid "Unauthorized action"
+msgstr "Action non autorisée"
+
+#: ../tmp/cache_twig/17/69/d713df4829d1537684cbaaf41ea8632bbf3bfc6073f5466bf533c87ae448.php:46
+msgid "Guest, you must be authenticated to have the right to download."
+msgstr "Vous devez vous authentifier pour télécharger."
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1830
+msgid "Display technical data"
+msgstr "Afficher les informations techniques"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1841
+msgid "In the answer grid"
+msgstr "Dans la zone d'affichage"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1853
+msgid "After metadata"
+msgstr "Après les métadonnées"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1865
+msgid "Do not display"
+msgstr "Ne pas afficher"
+
+#: ../tmp/cache_twig/3c/5b/ac6d72e9b6784d9f922e0cb9f1aa2fcbe12a455b39a9cf98facfbeba38d8.php:129
+msgid "admin::base: subdefs to be created :"
+msgstr "Nombre de sous-définitions à créer :"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:392
+msgid ""
+"Consultez en ligne les pré-requis et la\n"
+"                                                configuration du serveur web"
+msgstr "Consultez les prérequis et les notes de configuration du serveur web."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:400
+msgid ""
+"Vous aurez besoin de spécifier un serveur MySQL, des\n"
+"                                                repertoires de stockage pour "
+"vos documents, et de\n"
+"                                                configurer votre serveur web "
+"pour qu'il publie\n"
+"                                                certains de ces dossiers de "
+"stockage."
+msgstr ""
+"Vous devrez indiquer un serveur MySQL, des répertoires de stockage pour les "
+"documents et configurer le serveur Web pour en publier certains."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:413
+#, fuzzy
+msgid ""
+"Avant de continuer, prenez connaissance des\n"
+"                                                    points ci-dessous. Vous "
+"pouvez continuer sans\n"
+"                                                    corriger ces problèmes."
+msgstr ""
+"Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
+"poursuivre sans corriger les points listés."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:883
+msgid ""
+"Si vous aviez besoin de plus de\n"
+"                                                parametres, %debut_lien"
+"%Afficher d'avantage\n"
+"                                                d'options%fin_lien%"
+msgstr "Si nécessaire, %debut_lien%afficher plus d'options%fin_lien%"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:911
+msgid ""
+"It stores users data, rights, and references to DataBoxes where records are "
+"stored."
+msgstr ""
+"Elle stocke les données des utilisateurs, leurs droits ainsi que les "
+"références aux Databoxes où les documents sont référencés."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:924
+msgid ""
+"Phraseanet strongly recommends the use of %link_start%\n"
+"                                    MariaDB%link_end% as a replacement for "
+"MySQL."
+msgstr ""
+"Les développeurs de Phraseanet recommandent l'utilisation de %link_start"
+"%MariaDB%link_end% en remplacement de MySQL."
+
+#: ../tmp/cache_twig/73/dc/b5372755b0841c387ee3bedb5d2abcc352c406460175dcbb77b7ece2b792.php:469
+msgid ""
+"Changes for rotation will be applied only on the sub-definitions of \"image"
+"\" type."
+msgstr ""
+"Les rotations ne sont appliquées qu'aux sous-définitions des documents de "
+"type image."
+
+#: ../tmp/cache_twig/b8/a7/8d90b368cf6dff8f0eb23688fe74348d06755a6bfed068fd57879824c7a8.php:57
+msgid "Le panier demande nexiste plus"
+msgstr "Le panier demandé n'existe plus."
+
+#: ../tmp/cache_twig/b8/a7/8d90b368cf6dff8f0eb23688fe74348d06755a6bfed068fd57879824c7a8.php:67
+msgid "Retour a l'accueil"
+msgstr "Retour à l'accueil"
+
+#: ../tmp/cache_twig/b8/bb/181afef0c90384a1cf49ab8388f0b3d9243584330eae982fa41fcc37234e.php:88
+msgid "%entry_length% documents"
+msgstr "%entry_length% documents"
+
+#: ../tmp/cache_twig/d3/00/2bbe2898667d9376b834b648de676220402fd85a7a3e95ad06c36aae01b2.php:85
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:144
+msgid "Back"
+msgstr "Précédent"
+
+#: ../tmp/cache_twig/e9/5c/636c4c2d006bb38590ba27401f9edb4ae6f601ad3f0212354dcb41f20fd6.php:56
+msgid "validation:: note"
+msgstr "Note"
+
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:70
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:114
+msgid "a propos"
+msgstr "A propos"
+
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:101
+msgid "Deconnexion"
+msgstr "Déconnexion"
+
+#: ../lib/conf.d/_GV_template.inc:285
+msgid "Enable possibility to notify users when publishing a new feed entry"
+msgstr ""
+"Permettre de notifier les utilisateurs lors de la publication d'une nouvelle "
+"entrée dans un flux."
+
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Activer H264 en mode flux continu (lecture en streaming)"
 
@@ -11717,5 +11808,56 @@ msgstr ""
 #~ msgid "Defined in Apache configuration"
 #~ msgstr "Définie dans la configuration de Apache."
 
+#~ msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
+#~ msgstr ""
+#~ "Consultez en ligne les pré-requis et la configuration du serveur web"
+
+#~ msgid ""
+#~ "Vous aurez besoin de spécifier un serveur MySQL, des repertoires de "
+#~ "stockage pour vos documents, et de configurer votre serveur web pour "
+#~ "qu'il publie certains de ces dossiers de stockage."
+#~ msgstr ""
+#~ "Vous aurez besoin de spécifier un serveur MySQL, des répertoires de "
+#~ "stockage pour vos documents, et de configurer votre serveur web pour "
+#~ "qu'il publie certains de ces répertoires de stockage."
+
+#~ msgid ""
+#~ "Avant de continuer, prenez connaissance des points ci-dessous. Vous "
+#~ "pouvez continuer sans corriger ces problèmes."
+#~ msgstr ""
+#~ "Avant de continuer, prenez connaissance des points ci-dessous. Vous "
+#~ "pouvez continuer sans corriger ces problèmes."
+
+#~ msgid ""
+#~ "Si vous aviez besoin de plus de parametres, %debut_lien%Afficher "
+#~ "d'avantage d'options%fin_lien%"
+#~ msgstr "%debut_lien%Afficher davantage d'options%fin_lien%"
+
+#~ msgid ""
+#~ "It stores users datas, rights, and references to DataBoxes where records "
+#~ "are stored."
+#~ msgstr ""
+#~ "Elle stocke les informations utilisateurs et les références vers les "
+#~ "DataBoxes où les documents sont stockés"
+
+#~ msgid ""
+#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% "
+#~ "as a replacement for MySQL."
+#~ msgstr ""
+#~ "Phraseanet recommande fortement l'utilisation de %link_start%MariaDB"
+#~ "%link_end% à la place de MySQL."
+
 #~ msgid "Monter"
 #~ msgstr "Monter"
+
+#~ msgid "Informations techniques"
+#~ msgstr "Informations techniques"
+
+#~ msgid "Afficher"
+#~ msgstr "Afficher"
+
+#~ msgid "Afficher dans la notice"
+#~ msgstr "Afficher dans la notice"
+
+#~ msgid "Ne pas afficher"
+#~ msgstr "Ne pas afficher"

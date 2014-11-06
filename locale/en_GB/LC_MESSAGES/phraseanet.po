@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-09-05 17:30+0100\n"
+"PO-Revision-Date: 2014-11-06 14:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -11,12 +11,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Launchpad-Export-Date: 2014-02-24 14:56+0000\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1409915813.000000\n"
+"X-POOTLE-MTIME: 1413802599.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -4351,25 +4351,6 @@ msgstr "Unable to connect to MySQL server"
 msgid "Bonjour, vous etes sur le point d'installer Phraseanet."
 msgstr "Welcome, You are about to install Phraseanet"
 
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:423
-msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
-msgstr "Check Online for required list of components and web server setup"
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:429
-msgid ""
-"Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage "
-"pour vos documents, et de configurer votre serveur web pour qu'il publie "
-"certains de ces dossiers de stockage."
-msgstr ""
-"You will need  a MySQL server, documents storage folders, and  setup web "
-"server to publish some of these folders"
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:439
-msgid ""
-"Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
-"continuer sans corriger ces problèmes."
-msgstr "Please take notice of the followings points, and finish installation."
-
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:499
 msgid "Review system configuration"
 msgstr "System configuration review"
@@ -4501,35 +4482,13 @@ msgstr "Database"
 msgid "boutton::tester"
 msgstr "Test"
 
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:887
-msgid ""
-"Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage "
-"d'options%fin_lien%"
-msgstr "If you need more parameters, %debut_lien%show more options%fin_lien%"
-
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:906
 msgid "ApplicationBox is a Mysql database."
-msgstr "ApplicationBox is a Mysql database."
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:912
-msgid ""
-"It stores users datas, rights, and references to DataBoxes where records are "
-"stored."
-msgstr ""
-"It stores users datas, rights, and references to DataBoxes where records are "
-"stored."
-
-#: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:924
-msgid ""
-"Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
-"replacement for MySQL."
-msgstr ""
-"Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
-"replacement for MySQL."
+msgstr "ApplicationBox is a MySQL database."
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:968
 msgid "setup::Configuration des repertoires de stockage"
-msgstr "Storage folders Setup"
+msgstr "Storage folders setup"
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:980
 msgid "Repertoire de stockage des fichiers"
@@ -4600,12 +4559,12 @@ msgid ""
 "ApplicationBox."
 msgstr ""
 "Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet "
-"ApplicationBox."
+"Applicationbox."
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:1181
 msgid "Databoxes store records, metadatas and their classifications"
 msgstr ""
-"Databoxes are used to store records, metadatas and their classifications"
+"Databoxes are used to store records, metadata and their classifications"
 
 #: tmp/cache_twig/46/55/f06deef9c88078a96d5f417995fb10abb60b737f5cb22e5d278ec0f88586.php:1202
 msgid "button::Install"
@@ -7972,22 +7931,6 @@ msgstr "Iconograph (caption on rollover)"
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1764
 msgid "Graphiste (preview au rollover)"
 msgstr "Graphist (preview on rollover)"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1774
-msgid "Informations techniques"
-msgstr "Technical informations"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1785
-msgid "Afficher"
-msgstr "Display"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1797
-msgid "Afficher dans la notice"
-msgstr "Display in caption"
-
-#: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1809
-msgid "Ne pas afficher"
-msgstr "Hide"
 
 #: tmp/cache_twig/d9/2f/355ae9eea3054ec32f40555d4efd829847edaa9dae340c739983fc278435.php:1819
 msgid "Type de documents"
@@ -11518,6 +11461,155 @@ msgid ""
 "Disallow the possibility for the end user to disable push authentication"
 msgstr "Removes the choice of authentication options in submission forms."
 
+#: ../lib/Alchemy/Phrasea/Command/Developer/IniReset.php:67
+msgid "Please enter the databox name to reset or create"
+msgstr ""
+
+#: ../lib/classes/task/period/subdef.php:276
+msgid "Databox"
+msgstr "Databox"
+
+#: ../lib/classes/task/period/subdef.php:293
+msgid "recordtype"
+msgstr "Record type"
+
+#: ../lib/classes/task/period/subdef.php:308
+msgid "flash"
+msgstr "flash"
+
+#: ../lib/classes/task/period/subdef.php:311
+msgid "unknown"
+msgstr "unknown"
+
+#: ../lib/classes/task/period/writemeta.php:198
+msgid "task::writemeta:Compatibilité MWG"
+msgstr "Write MWG compliant metadata"
+
+#: ../tmp/cache_twig/17/69/d713df4829d1537684cbaaf41ea8632bbf3bfc6073f5466bf533c87ae448.php:40
+msgid "Unauthorized action"
+msgstr "Unauthorized action"
+
+#: ../tmp/cache_twig/17/69/d713df4829d1537684cbaaf41ea8632bbf3bfc6073f5466bf533c87ae448.php:46
+msgid "Guest, you must be authenticated to have the right to download."
+msgstr "You must be login to download."
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1830
+msgid "Display technical data"
+msgstr "Display technical metadata"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1841
+msgid "In the answer grid"
+msgstr "In the display area"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1853
+msgid "After metadata"
+msgstr "After metadata"
+
+#: ../tmp/cache_twig/26/e5/8a93a6fc75485e746b89a36fb4f8d051b2fa2f27a623564e5eb436cd634e.php:1865
+msgid "Do not display"
+msgstr "Do not display"
+
+#: ../tmp/cache_twig/3c/5b/ac6d72e9b6784d9f922e0cb9f1aa2fcbe12a455b39a9cf98facfbeba38d8.php:129
+msgid "admin::base: subdefs to be created :"
+msgstr "Subviews to be created:"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:392
+msgid ""
+"Consultez en ligne les pré-requis et la\n"
+"                                                configuration du serveur web"
+msgstr "View prerequisites and Web server configuration notes."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:400
+msgid ""
+"Vous aurez besoin de spécifier un serveur MySQL, des\n"
+"                                                repertoires de stockage pour "
+"vos documents, et de\n"
+"                                                configurer votre serveur web "
+"pour qu'il publie\n"
+"                                                certains de ces dossiers de "
+"stockage."
+msgstr ""
+"You'll need to specify the database server parameters, storage path for "
+"documents, and configure the web server to publish some of these folders."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:413
+msgid ""
+"Avant de continuer, prenez connaissance des\n"
+"                                                    points ci-dessous. Vous "
+"pouvez continuer sans\n"
+"                                                    corriger ces problèmes."
+msgstr ""
+"Please, pay attention about the following points. You can continue without "
+"fixing these."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:883
+msgid ""
+"Si vous aviez besoin de plus de\n"
+"                                                parametres, %debut_lien"
+"%Afficher d'avantage\n"
+"                                                d'options%fin_lien%"
+msgstr "%debut_lien%Display more parameters%fin_lien%"
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:911
+msgid ""
+"It stores users data, rights, and references to DataBoxes where records are "
+"stored."
+msgstr ""
+"It stores users data, rights, and references to Databoxes where records are "
+"stored."
+
+#: ../tmp/cache_twig/62/38/e849db7ce4de8ceb39e777a3b85a9e2dbbb09e76b94693d836d13b27dade.php:924
+msgid ""
+"Phraseanet strongly recommends the use of %link_start%\n"
+"                                    MariaDB%link_end% as a replacement for "
+"MySQL."
+msgstr ""
+"The Phraseanet developers team strongly recommends the use of %link_start"
+"%MariaDB%link_end% as a replacement for MySQL."
+
+#: ../tmp/cache_twig/73/dc/b5372755b0841c387ee3bedb5d2abcc352c406460175dcbb77b7ece2b792.php:469
+#, fuzzy
+msgid ""
+"Changes for rotation will be applied only on the sub-definitions of \"image"
+"\" type."
+msgstr ""
+"Changes for rotation will be only applied on subviews of image record type."
+
+#: ../tmp/cache_twig/b8/a7/8d90b368cf6dff8f0eb23688fe74348d06755a6bfed068fd57879824c7a8.php:57
+msgid "Le panier demande nexiste plus"
+msgstr "The requested basket no longer exists."
+
+#: ../tmp/cache_twig/b8/a7/8d90b368cf6dff8f0eb23688fe74348d06755a6bfed068fd57879824c7a8.php:67
+msgid "Retour a l'accueil"
+msgstr "Back home"
+
+#: ../tmp/cache_twig/b8/bb/181afef0c90384a1cf49ab8388f0b3d9243584330eae982fa41fcc37234e.php:88
+msgid "%entry_length% documents"
+msgstr "%entry_length% documents"
+
+#: ../tmp/cache_twig/d3/00/2bbe2898667d9376b834b648de676220402fd85a7a3e95ad06c36aae01b2.php:85
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:144
+msgid "Back"
+msgstr "Back"
+
+#: ../tmp/cache_twig/e9/5c/636c4c2d006bb38590ba27401f9edb4ae6f601ad3f0212354dcb41f20fd6.php:56
+msgid "validation:: note"
+msgstr "Note"
+
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:70
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:114
+msgid "a propos"
+msgstr "About"
+
+#: ../tmp/cache_twig/fc/ed/5c03dd23c354d02675c3fba46d314a3650ee32fdede7bbeb704b3c26cec9.php:101
+#, fuzzy
+msgid "Deconnexion"
+msgstr "Logout"
+
+#: ../lib/conf.d/_GV_template.inc:285
+msgid "Enable possibility to notify users when publishing a new feed entry"
+msgstr "Enable possibility to notify users when publishing a news feed entry."
+
 #~ msgid "Enable H264 stream mode"
 #~ msgstr "Enable H264 stream mode"
 
@@ -11540,5 +11632,54 @@ msgstr "Removes the choice of authentication options in submission forms."
 #~ msgid "Defined in Apache configuration"
 #~ msgstr "Defined in Apache configuration."
 
+#~ msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
+#~ msgstr "Check Online for required list of components and web server setup"
+
+#~ msgid ""
+#~ "Vous aurez besoin de spécifier un serveur MySQL, des repertoires de "
+#~ "stockage pour vos documents, et de configurer votre serveur web pour "
+#~ "qu'il publie certains de ces dossiers de stockage."
+#~ msgstr ""
+#~ "You will need  a MySQL server, documents storage folders, and  setup web "
+#~ "server to publish some of these folders"
+
+#~ msgid ""
+#~ "Avant de continuer, prenez connaissance des points ci-dessous. Vous "
+#~ "pouvez continuer sans corriger ces problèmes."
+#~ msgstr ""
+#~ "Please take notice of the followings points, and finish installation."
+
+#~ msgid ""
+#~ "Si vous aviez besoin de plus de parametres, %debut_lien%Afficher "
+#~ "d'avantage d'options%fin_lien%"
+#~ msgstr ""
+#~ "If you need more parameters, %debut_lien%show more options%fin_lien%"
+
+#~ msgid ""
+#~ "It stores users datas, rights, and references to DataBoxes where records "
+#~ "are stored."
+#~ msgstr ""
+#~ "It stores users datas, rights, and references to DataBoxes where records "
+#~ "are stored."
+
+#~ msgid ""
+#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% "
+#~ "as a replacement for MySQL."
+#~ msgstr ""
+#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% "
+#~ "as a replacement for MySQL."
+
 #~ msgid "Monter"
 #~ msgstr "Mount"
+
+#~ msgid "Informations techniques"
+#~ msgstr "Technical informations"
+
+#~ msgid "Afficher"
+#~ msgstr "Display"
+
+#~ msgid "Afficher dans la notice"
+#~ msgstr "Display in caption"
+
+#~ msgid "Ne pas afficher"
+#~ msgstr "Hide"
