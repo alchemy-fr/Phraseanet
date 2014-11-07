@@ -48,7 +48,8 @@ class module_report_nav extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+//        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
     }
 
     private function setTotalPourcent()
@@ -60,12 +61,11 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-            SELECT SUM(1) AS total FROM (
-                SELECT DISTINCT (log.id)
+            SELECT COUNT(log.id) AS total
                 FROM log FORCE INDEX (date_site)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE ' . $report_filter['sql'] . ' AND nav != ""
-            ) AS tt';
+                WHERE ' . $report_filter['sql'] . ' AND nav != "" AND !ISNULL(usrid)';
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -112,15 +112,13 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-            SELECT tt.nav, SUM(1) AS nb, ROUND((SUM(1) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
-            FROM (
-                SELECT DISTINCT(log.id), nav
+            SELECT nav, SUM(1) AS nb, ROUND((SUM(1) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
                 FROM log FORCE INDEX (date_site, nav)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE ' . $report_filter['sql'] . ' AND nav != ""
-            ) AS tt
-            GROUP BY tt.nav
+                WHERE ' . $report_filter['sql'] . ' AND nav != "" AND !ISNULL(usrid)
+            GROUP BY nav
             ORDER BY nb DESC';
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $this->initialize();
 
@@ -171,15 +169,15 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-            SELECT tt.os, COUNT(os) AS nb, ROUND((COUNT(os)/' . $this->total_pourcent . '*100),1) AS pourcent
-            FROM (
-                SELECT DISTINCT(log.id), os
+            SELECT os, COUNT(os) AS nb, ROUND((COUNT(os)/' . $this->total_pourcent . '*100),1) AS pourcent
+
                 FROM log FORCE INDEX (date_site, os)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE '. $report_filter['sql'] . ' AND os != ""
-            ) AS tt
-            GROUP BY tt.os
+                WHERE '. $report_filter['sql'] . ' AND os != "" AND !ISNULL(usrid)
+
+            GROUP BY os
             ORDER BY nb DESC';
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $this->initialize();
 
@@ -229,16 +227,16 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-            SELECT tt.res, COUNT(res) AS nb, ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
-            FROM (
-                SELECT DISTINCT(log.id), res
+            SELECT res, COUNT(res) AS nb, ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
+
                 FROM log FORCE INDEX (date_site, res)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE '. $report_filter['sql'] . ' AND res != ""
-            ) AS tt
-            GROUP BY tt.res
+                WHERE '. $report_filter['sql'] . ' AND res != "" AND !ISNULL(usrid)
+
+            GROUP BY res
             ORDER BY nb DESC
             LIMIT 0, 10';
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $this->initialize();
 
@@ -291,14 +289,15 @@ class module_report_nav extends module_report
         $sql = "
             SELECT tt.combo, COUNT( tt.combo ) AS nb, ROUND((COUNT(tt.combo)/" . $this->total_pourcent . "*100), 1) AS pourcent
             FROM (
-                SELECT DISTINCT(log.id), CONCAT( nav, '-', os ) AS combo
+                SELECT CONCAT( nav, '-', os ) AS combo
                 FROM log FORCE INDEX (date_site, os_nav)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE ". $report_filter['sql'] ."  AND nav != '' AND os != ''
+                WHERE ". $report_filter['sql'] ."  AND nav != '' AND os != '' AND !ISNULL(usrid)
             ) AS tt
             GROUP BY tt.combo
             ORDER BY nb DESC
             LIMIT 0 , 10";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $this->initialize();
 
@@ -351,14 +350,12 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-            SELECT tt.appli
-            FROM (
-                SELECT DISTINCT(log.id), appli
+            SELECT appli
                 FROM log FORCE INDEX (date_site, appli)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE ' . $report_filter['sql'] . ' AND appli != \'a:0:{}\'
-            ) AS tt
-            GROUP BY tt.appli';
+                WHERE ' . $report_filter['sql'] . ' AND appli != \'a:0:{}\' AND !ISNULL(usrid)
+            GROUP BY appli';
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $this->initialize();
 
@@ -451,6 +448,8 @@ class module_report_nav extends module_report
                  FROM usr
                  WHERE (usr_id = :value)';
         }
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $params2 = array(':value' => $val);
         $stmt = $conn->prepare($sql);
@@ -549,12 +548,13 @@ class module_report_nav extends module_report
             FROM (
                 SELECT DISTINCT (log.id), version
                 FROM log FORCE INDEX (date_site, nav, version)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE nav = :browser
                 AND ". $report_filter['sql'] . "
             ) AS tt
             GROUP BY version
             ORDER BY nb DESC";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

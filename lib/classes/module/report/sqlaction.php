@@ -50,10 +50,11 @@ class module_report_sqlaction extends module_report_sql implements module_report
                     SELECT DISTINCT(log.id), log.usrid, log.user, d.final, d.comment, d.record_id, d.date, record.mime, record.originalname as file
                     FROM (log_docs AS d)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (record.record_id = d.record_id)
                     WHERE (" . $filter['sql'] . ") AND (d.action = :action)
                 ) AS tt";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
             $customFieldMap = array(
                 'log.usrid'     => 'tt.usrid',
@@ -80,7 +81,6 @@ class module_report_sqlaction extends module_report_sql implements module_report
                     SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . " , log.usrid , d.final,  d.record_id, d.date
                     FROM (log_docs as d)
                         INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
-                        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                         INNER JOIN record ON (record.record_id = d.record_id)
                         WHERE (" . $filter['sql'] . ") AND (d.action = :action)
                 ) AS tt
@@ -88,6 +88,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 WHERE s.name='document'
                 GROUP BY " . $this->groupby . "
                 ORDER BY nombre";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
@@ -109,12 +111,13 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val
                 FROM (log_docs as d)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (record.record_id = d.record_id)
                     LEFT JOIN subdef as s ON (s.record_id=d.record_id AND s.name='document')
                 WHERE (" . $filter['sql'] . ")
                 AND (d.action = :action)
             ) AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '');
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
         return array('sql' => $this->sql, 'params' => $this->params);
     }

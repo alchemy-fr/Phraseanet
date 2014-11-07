@@ -90,18 +90,6 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
-    public function testCollectionFilter()
-    {
-        if ($this->report->getUserId() == '') {
-            $this->assertFalse($this->filter->getCollectionFilter());
-        } elseif (count(explode(",", $this->report->getListCollId()) > 0)) {
-            $filter = $this->filter->getCollectionFilter();
-            $this->checkFilter($filter);
-        } else {
-            $this->assertFalse($this->filter->getCollectionFilter());
-        }
-    }
-
     public function testRecordFilter()
     {
         if ($this->report->getUserId() == '') {
