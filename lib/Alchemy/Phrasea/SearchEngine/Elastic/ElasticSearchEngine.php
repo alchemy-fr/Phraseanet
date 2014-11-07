@@ -270,7 +270,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
     {
         $options = $options ?: new SearchEngineOptions();
-
         $parser = new QueryParser();
         $ast = $parser->parse($string);
 
@@ -281,13 +280,18 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         // Only search in thesaurus for full text search
         if ($ast->isFullTextOnly()) {
-            $termFiels = $this->expendToAnalyzedFieldsNames('value');
-            $termsQuery = $ast->getQuery($termFiels);
+            $termFields = $this->expendToAnalyzedFieldsNames('value', null, $this->app['locale']);
+            $termsQuery = $ast->getQuery($termFields);
 
             $params = $this->createTermQueryParams($termsQuery, $options);
             $terms = $this->doExecute('search', $params);
 
             foreach ($terms['hits']['hits'] as $term) {
+                // Skip paths with very low score
+                if ($term['_score'] < 1) {
+                    continue;
+                }
+
                 $pathsToFilter[$term['_source']['path']] = $term['_score'];
 
                 foreach ($term['_source']['fields'] as $field) {
@@ -304,7 +308,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $searchFieldNames = array_keys($collectFields);
         }
 
-        $recordFields = $this->expendToAnalyzedFieldsNames($searchFieldNames);
+        $recordFields = $this->expendToAnalyzedFieldsNames($searchFieldNames, null, $this->app['locale']);
 
         $recordQuery = [
             'bool' => [
@@ -570,13 +574,12 @@ class ElasticSearchEngine implements SearchEngineInterface
     }
 
     /**
-     * @todo Add a booster on the lang the use is using?
-     *
-     * @param array|string  $fields
-     * @param array|null    $locales
+     * @param array|string $fields
+     * @param array|null $locales
+     * @param null $currentLocale
      * @return array
      */
-    public function expendToAnalyzedFieldsNames($fields, $locales = null)
+    public function expendToAnalyzedFieldsNames($fields, $locales = null, $currentLocale = null)
     {
         $fieldsExpended = [];
 
@@ -586,9 +589,15 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         foreach ((array) $fields as $field) {
             foreach ($locales as $locale) {
-                $fieldsExpended[] = sprintf('%s.%s', $field, $locale);
+                $boost = "";
+
+                if ($locale === $currentLocale) {
+                    $boost = "^5";
+                }
+
+                $fieldsExpended[] = sprintf('%s.%s%s', $field, $locale, $boost);
             }
-            $fieldsExpended[] = sprintf('%s.%s', $field, 'light');
+            $fieldsExpended[] = sprintf('%s.%s', $field, 'light^10');
         }
 
         return $fieldsExpended;
