@@ -1808,5 +1808,6 @@ if hash_key_equals($elasticsearch_values, 'install', 1) {
 
   # Custom plugins
   elasticsearch::plugin{'mobz/elasticsearch-head': module_dir => 'head' }
+  elasticsearch::plugin{'elasticsearch/marvel/latest': module_dir => 'marvel' }
   elasticsearch::plugin{'elasticsearch/elasticsearch-analysis-icu/2.3.0': module_dir => 'analysis-icu' }
 }
