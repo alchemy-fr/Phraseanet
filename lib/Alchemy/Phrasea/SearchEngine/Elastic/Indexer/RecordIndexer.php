@@ -101,8 +101,11 @@ class RecordIndexer
             if (isset($record['caption'][$field]) && $options['thesaurus_concept_inference']) {
                 $shoulds[] = ["multi_match" => [
                     'fields' => $this->elasticSearchEngine->expendToAnalyzedFieldsNames(array('value', 'context')),
-                    'query'  => is_string($record['caption'][$field]) ? mb_substr($record['caption'][$field], 0, 120) : $record['caption'][$field], // Cut short to avoid maxClauseCount
-                    'operator' => 'and'
+                    'query'  =>
+                        is_string($record['caption'][$field])
+                            ? mb_substr($record['caption'][$field], 0, 120) // Cut short to avoid maxClauseCount
+                            : implode(' ', $record['caption'][$field]),
+                    'operator' => is_array($record['caption'][$field]) ? 'or' : 'and',
                 ]];
             }
         }
@@ -219,6 +222,8 @@ class RecordIndexer
                         break;
                 }
 
+                $name = $fieldStructure->get_name();
+
                 // Business rules
                 $field['private'] = $fieldStructure->isBusiness();
                 $field['indexable'] = $fieldStructure->is_indexable();
@@ -227,11 +232,11 @@ class RecordIndexer
                 // Thesaurus concept inference
                 // $xpath = "/thesaurus/te[@id='T26'] | /thesaurus/te[@id='T24']";
                 $helper = new ThesaurusHelper();
-                // TODO Find thesaurus path prefixes
-                $field['thesaurus_concept_inference'] = true;
-                $field['thesaurus_prefix'] = '/categories';
 
-                $name = $fieldStructure->get_name();
+                // TODO Not the real option yet
+                $field['thesaurus_concept_inference'] = $field['type'] === 'string';
+                // TODO Find thesaurus path prefixes
+                $field['thesaurus_prefix'] = '/categories';
 
                 //printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
 
