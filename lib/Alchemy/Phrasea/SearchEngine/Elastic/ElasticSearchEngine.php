@@ -319,11 +319,21 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
 
         foreach ($pathsToFilter as $path => $score) {
-            // @todo switch to must?? Is match the good query??
+            // Also match incomplete path. /a/b/c will return /a/b/c/d records
             $recordQuery['bool']['should'][] = [
                 'match' => [
                     'concept_paths' => array(
                         'query' => $path,
+                        'boost' => $score,
+                    )
+                ]
+            ];
+
+            // Add signal for exact path only
+            $recordQuery['bool']['should'][] = [
+                'term' => [
+                    'concept_paths.raw' => array(
+                        'value' => $path,
                         'boost' => $score,
                     )
                 ]

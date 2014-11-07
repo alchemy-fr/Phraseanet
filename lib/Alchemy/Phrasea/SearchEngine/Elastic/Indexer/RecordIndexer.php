@@ -155,6 +155,7 @@ class RecordIndexer
             ->add('concept_paths', 'string')
                 ->analyzer('thesaurus_path', 'indexing')
                 ->analyzer('keyword', 'searching')
+                ->addRawVersion()
         ;
 
         // Caption mapping
