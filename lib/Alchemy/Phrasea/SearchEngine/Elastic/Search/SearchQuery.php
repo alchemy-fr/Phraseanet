@@ -24,4 +24,9 @@ class SearchQuery
     {
         return (string) $this->root;
     }
+
+    public function dump()
+    {
+        return (string) $this;
+    }
 }
