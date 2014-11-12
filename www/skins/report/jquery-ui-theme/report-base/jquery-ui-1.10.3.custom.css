@@ -823,7 +823,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
 	border: 1px solid #202020;
-	background: #313131 url(images/ui-bg_flat_75_313131_40x100.png) 50% 50% repeat-x;
+	background: #313131 url(images/ui-bg_flat_75_d2d1cf_40x100.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #ffffff;
 }
@@ -855,7 +855,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
 	border: 1px solid #202020;
-	background: #555555 url(images/ui-bg_flat_65_555555_40x100.png) 50% 50% repeat-x;
+	background: #555555 url(images/ui-bg_flat_75_d2d1cf_40x100.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #ff9000;
 }
