@@ -92,6 +92,8 @@ class DoDownload implements ControllerProviderInterface
      */
     public function prepareDownload(Application $app, Request $request, $token)
     {
+
+
         $datas = $app['tokens']->helloToken($token);
 
         if (false === $list = @unserialize((string) $datas['datas'])) {
@@ -207,12 +209,12 @@ class DoDownload implements ControllerProviderInterface
         $app['session']->save();
         ignore_user_abort(true);
 
-        \set_export::build_zip(
-            $app,
-            $token,
-            $list,
-            sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']) // Dest file
-        );
+        if ($list['count'] > 1) {
+            \set_export::build_zip($app, $token, $list, sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']));
+        } else {
+            $list['complete'] = true;
+            $app['tokens']->updateToken($token, serialize($list));
+        }
 
         return $app->json(array(
             'success' => true,

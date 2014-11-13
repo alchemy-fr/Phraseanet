@@ -345,7 +345,7 @@ class Activity implements ControllerProviderInterface
             'ddate'     => array(_('report:: jour'), 0, 0, 0, 0),
             'total'     => array(_('report:: total des telechargements'), 0, 0, 0, 0),
             'preview'   => array(_('report:: preview'), 0, 0, 0, 0),
-            'document'  => array(_('report:: document original'), 0, 0, 0, 0)
+            'document'  => array(_('report:: document'), 0, 0, 0, 0)
         );
 
         $activity = new \module_report_activity(

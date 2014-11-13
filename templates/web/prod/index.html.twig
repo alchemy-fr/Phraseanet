@@ -334,9 +334,9 @@
 
                                             <span>{% trans 'Trier par ' %}</span>
                                             <select name="sort" class="input-small">
-                                                <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "No sort"|trans }}</option>
+                                                <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected" class="default-selection"{% endif %}>{{ "No sort"|trans }}</option>
                                                 {% for sort in search_datas['sort'] %}
-                                                <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
+                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort.fieldname }}</option>
                                                 {% endfor %}
                                             </select>
                                             <select name="ord" class="input-medium">

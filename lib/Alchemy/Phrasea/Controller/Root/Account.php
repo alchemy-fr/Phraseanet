@@ -145,7 +145,7 @@ class Account implements ControllerProviderInterface
         }
 
         $date = new \DateTime('1 day');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $email);
         $url = $app->url('account_reset_email', array('token' => $token));
 
         try {

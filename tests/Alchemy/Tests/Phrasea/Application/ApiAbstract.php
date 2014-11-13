@@ -1308,7 +1308,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $tochange = array();
         foreach ($status_bits as $n => $datas) {
-            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
+            $tochange[$n] = substr($record_status, ($n), 1) == '0' ? '1' : '0';
         }
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -2709,7 +2709,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertTrue(is_int($status['bit']));
             $this->assertTrue(is_bool($status['state']));
 
-            $retrieved = !!substr($r_status, ($status['bit'] - 1), 1);
+            $retrieved = !!substr($r_status, ($status['bit']), 1);
 
             $this->assertEquals($retrieved, $status['state']);
         }
