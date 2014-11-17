@@ -32,10 +32,10 @@ class module_report_sqlfilter
         $this->report = $report;
     }
 
-    public static function constructDateFilter($dmin, $dmax)
+    public static function constructDateFilter($dmin, $dmax, $dateField = 'log_date.date')
     {
         return array(
-            'sql' => ($dmin && $dmax ? ' log_date.date > :date_min AND log_date.date < :date_max ' : false)
+            'sql' => ($dmin && $dmax ? ' '.$dateField.' > :date_min AND '.$dateField.' < :date_max ' : false)
         , 'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
         );
     }
@@ -125,13 +125,13 @@ class module_report_sqlfilter
 */
         $sql = "";
         if($report->getDmin()) {
-            $sql = "log.date>=" . $this->conn->quote($report->getDmin());
+            $sql = $report->getDateField().">=" . $this->conn->quote($report->getDmin());
         }
         if($report->getDmax()) {
             if($sql != "") {
                 $sql .= " AND ";
             }
-            $sql .= "log.date<=" . $this->conn->quote($report->getDmax());
+            $sql .= $report->getDateField()."<=" . $this->conn->quote($report->getDmax());
         }
         $this->filter['date'] = array(
             'sql' => $sql, 'params' => array()

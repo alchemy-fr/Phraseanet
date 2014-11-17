@@ -154,6 +154,7 @@ class module_report_activity extends module_report
         $this->report['value2'] = array();
 
         $sqlBuilder = new module_report_sql($this->app, $this);
+        $this->setDateField('log_search.date');
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
@@ -278,21 +279,18 @@ class module_report_activity extends module_report
     public function getDownloadByBaseByDay($tab = false)
     {
         $this->title = _('report:: telechargements par jour');
-
+        $this->setDateField('log_docs.date');
         $sqlBuilder = new module_report_sql($this->app, $this);
-        $filter = $sqlBuilder->getFilters()->getGvSitFilter();
-        $params = array_merge(array(
-            ':ld_date_max' => $this->getDmax(),
-            ':ld_date_min' => $this->getDmin(),
-        ), $filter['params']);
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
         $sql = "
-            SELECT tt.record_id, DATE_FORMAT(tt.the_date, GET_FORMAT(DATE, 'INTERNAL')) AS ddate, tt.final, SUM(1) AS nb
+            SELECT tt.record_id, tt.the_date AS ddate, tt.final, SUM(1) AS nb
             FROM (
                 SELECT DISTINCT(log.id), log_docs.date AS the_date, log_docs.final, log_docs.record_id
                 FROM (log_docs)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
-                WHERE (" . $filter['sql'] . ") AND (log_docs.date >= :ld_date_min AND log_docs.date <= :ld_date_max) AND !ISNULL(usrid)
+                WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
                     AND (log_docs.action =  'download' OR log_docs.action =  'mail')
                     AND (log_docs.final = 'preview' OR log_docs.final = 'document')
             ) AS tt
@@ -469,6 +467,7 @@ class module_report_activity extends module_report
         $this->title = _('report:: Detail des telechargements');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
+        $this->setDateField('log_search.date');
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
@@ -603,7 +602,7 @@ class module_report_activity extends module_report
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
 
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
         $params = array_merge($params, $datefilter['params']);
 /*
         $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid
@@ -798,7 +797,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
@@ -849,7 +848,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
@@ -958,7 +957,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax,'log_docs.date');
 
         $params = array();
         $params = array_merge($params, $datefilter['params']);
@@ -1006,7 +1005,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
 
         $params = array();
         $params = array_merge($params, $datefilter['params']);
@@ -1054,7 +1053,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
 
         $params = array();
         $params = array_merge($params, $datefilter['params']);
