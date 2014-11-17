@@ -984,6 +984,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $this->app['EM']->remove($session);
         }
 
+        $repo = $this->app['EM']->getRepository('Entities\UsrList');
+
+        foreach ($repo->findUserLists($this) as $list) {
+            $this->app['EM']->remove($list);
+        }
+
         $this->app['EM']->flush();
 
         $sql = 'UPDATE usr SET usr_login = :usr_login , usr_mail = null
