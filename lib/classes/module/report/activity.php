@@ -153,8 +153,8 @@ class module_report_activity extends module_report
         $this->report['value'] = array();
         $this->report['value2'] = array();
 
-        $sqlBuilder = new module_report_sql($this->app, $this);
         $this->setDateField('log_search.date');
+        $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
@@ -466,8 +466,8 @@ class module_report_activity extends module_report
         //set title
         $this->title = _('report:: Detail des telechargements');
 
-        $sqlBuilder = new module_report_sql($this->app, $this);
         $this->setDateField('log_search.date');
+        $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
@@ -978,10 +978,10 @@ class module_report_activity extends module_report
 */
         $sql = "SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity\n"
             . " FROM (\n"
-            . "     SELECT DISTINCT(log.id), DATE_FORMAT(log_date.date, '%Y-%m-%d') AS ddate\n"
-            . "     FROM (log_docs AS log_date)\n"
-            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)\n"
-            . "     WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'"
+            . "     SELECT DISTINCT(log.id), DATE_FORMAT(log_docs.date, '%Y-%m-%d') AS ddate\n"
+            . "     FROM (log_docs)\n"
+            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)\n"
+            . "     WHERE " . $datefilter['sql'] . " AND log_docs.action = 'add'"
             . " ) AS tt\n"
             . " GROUP BY tt.ddate\n"
             . " ORDER BY activity ASC ";
@@ -1025,10 +1025,10 @@ class module_report_activity extends module_report
 */
         $sql = "SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity\n"
             . " FROM (\n"
-            . "     SELECT DISTINCT(log.id), DATE_FORMAT( log_date.date, '%Y-%m-%d') AS ddate\n"
-            . "     FROM (log_docs AS log_date)\n"
-            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)\n"
-            . "     WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'"
+            . "     SELECT DISTINCT(log.id), DATE_FORMAT( log_docs.date, '%Y-%m-%d') AS ddate\n"
+            . "     FROM (log_docs)\n"
+            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)\n"
+            . "     WHERE " . $datefilter['sql'] . " AND log_docs.action = 'edit'"
             . ") AS tt\n"
             . " GROUP BY tt.ddate\n"
             . " ORDER BY activity ASC ";
@@ -1075,9 +1075,9 @@ class module_report_activity extends module_report
             . " SELECT tt.usrid, tt.user, sum( 1 ) AS nb\n"
             . " FROM (\n"
             . "     SELECT DISTINCT(log.id), log.usrid, log.user\n"
-            . "     FROM (log_docs AS log_date)\n"
-            . "     INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)\n"
-            . "     WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'"
+            . "     FROM (log_docs)\n"
+            . "     INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)\n"
+            . "     WHERE " . $datefilter['sql'] . " AND log_docs.action = 'add'"
             . ") AS tt\n"
             . " GROUP BY tt.usrid\n"
             . " ORDER BY nb ASC ";
