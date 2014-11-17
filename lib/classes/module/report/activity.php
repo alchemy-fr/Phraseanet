@@ -280,8 +280,11 @@ class module_report_activity extends module_report
         $this->title = _('report:: telechargements par jour');
 
         $sqlBuilder = new module_report_sql($this->app, $this);
-        $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $filter = $sqlBuilder->getFilters()->getGvSitFilter();
+        $params = array_merge(array(
+            ':ld_date_max' => $this->getDmax(),
+            ':ld_date_min' => $this->getDmin(),
+        ), $filter['params']);
 
         $sql = "
             SELECT tt.record_id, DATE_FORMAT(tt.the_date, GET_FORMAT(DATE, 'INTERNAL')) AS ddate, tt.final, SUM(1) AS nb
@@ -289,7 +292,7 @@ class module_report_activity extends module_report
                 SELECT DISTINCT(log.id), log_docs.date AS the_date, log_docs.final, log_docs.record_id
                 FROM (log_docs)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
-                WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
+                WHERE (" . $filter['sql'] . ") AND (log_docs.date >= :ld_date_min AND log_docs.date <= :ld_date_max) AND !ISNULL(usrid)
                     AND (log_docs.action =  'download' OR log_docs.action =  'mail')
                     AND (log_docs.final = 'preview' OR log_docs.final = 'document')
             ) AS tt
