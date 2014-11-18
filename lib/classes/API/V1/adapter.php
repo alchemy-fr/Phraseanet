@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
 
 class API_V1_adapter extends API_V1_Abstract
 {
@@ -503,6 +505,8 @@ class API_V1_adapter extends API_V1_Abstract
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
             $app['phraseanet.SE']->addRecord($output);
+
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
         }
         if ($output instanceof \Entities\LazaretFile) {
             $ret['entity'] = '1';
@@ -806,6 +810,9 @@ class API_V1_adapter extends API_V1_Abstract
             }
 
             $record->set_metadatas($metadatas);
+
+            $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+
             $result->set_datas(array("record_metadatas" => $this->list_record_caption($record->get_caption())));
         } catch (\Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occurred'));
@@ -856,6 +863,8 @@ class API_V1_adapter extends API_V1_Abstract
             $record->set_binary_status($data);
 
             $this->app['phraseanet.SE']->updateRecord($record);
+
+            $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
             $result->set_datas(array("status" => $this->list_record_status($databox, $record->get_status())));
         } catch (\Exception $e) {

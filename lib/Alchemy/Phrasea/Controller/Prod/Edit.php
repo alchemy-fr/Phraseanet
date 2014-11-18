@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
@@ -311,17 +313,10 @@ class Edit implements ControllerProviderInterface
                 return $app->json(array('message' => '', 'error'   => false));
             }
 
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($records));
+
             $databoxes = $records->databoxes();
             $databox = array_pop($databoxes);
-
-            $meta_struct = $databox->get_meta_structure();
-            $write_edit_el = false;
-            $date_obj = new \DateTime();
-            foreach ($meta_struct->get_elements() as $meta_struct_el) {
-                if ($meta_struct_el->get_tag() instanceof TfEditdate) {
-                    $write_edit_el = $meta_struct_el;
-                }
-            }
 
             $elements = $records->toArray();
 
@@ -349,31 +344,6 @@ class Edit implements ControllerProviderInterface
 
                 if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                     $record->set_metadatas($rec['metadatas']);
-                }
-
-                /**
-                 * todo : this should not work
-                 */
-                if ($write_edit_el instanceof \databox_field) {
-                    $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()), true);
-                    $field = array_pop($fields);
-
-                    $meta_id = null;
-
-                    if ($field && !$field->is_multi()) {
-                        $values = $field->get_values();
-                        $meta_id = array_pop($values)->getId();
-                    }
-
-                    $metas = array(
-                        array(
-                            'meta_struct_id' => $write_edit_el->get_id(),
-                            'meta_id'        => $meta_id,
-                            'value'          => $date_obj->format('Y-m-d h:i:s'),
-                        )
-                    );
-
-                    $record->set_metadatas($metas, true);
                 }
 
                 $newstat = $record->get_status();

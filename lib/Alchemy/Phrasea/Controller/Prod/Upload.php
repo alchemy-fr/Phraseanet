@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
 use Entities\LazaretSession;
@@ -246,6 +248,8 @@ class Upload implements ControllerProviderInterface
                 $element = 'record';
                 $message = _('The record was successfully created');
                 $app['phraseanet.SE']->addRecord($elementCreated);
+
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {
