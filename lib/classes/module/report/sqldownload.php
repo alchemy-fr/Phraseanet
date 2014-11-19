@@ -54,7 +54,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                     )
                     LEFT JOIN
                     record ON (record.record_id=log_docs.record_id)
-                WHERE (" .$filter['sql'] . ") AND (log_docs.action = 'download' OR log_docs.action = 'mail')";
+                WHERE (" .$filter['sql'] . ")
+                AND (log_docs.action = 'download' OR log_docs.action = 'mail')
+                AND (log_docs.final = 'preview' OR log_docs.final = 'document')";
 
             if ($this->restrict) {
                 $this->sql .= ' AND (log_docs.final = "document" OR log_docs.final = "preview")';
