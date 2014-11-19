@@ -523,6 +523,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostEmptyCollectionWithHighRecordAmount()
     {
+        $this->markTestSkipped('This tests lasts for 40 sec.');
+
         $this->setAdmin(true);
 
         $collection = $this->createOneCollection();

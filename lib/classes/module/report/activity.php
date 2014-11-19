@@ -466,7 +466,7 @@ class module_report_activity extends module_report
         //set title
         $this->title = _('report:: Detail des telechargements');
 
-        $this->setDateField('log_search.date');
+        $this->setDateField('log_docs.date');
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
@@ -602,7 +602,7 @@ class module_report_activity extends module_report
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
 
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = array_merge($params, $datefilter['params']);
 /*
         $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid
@@ -623,11 +623,11 @@ class module_report_activity extends module_report
 */
         $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid\n"
             . " FROM (\n"
-            . "        SELECT DISTINCT(log.id), log.usrid, user, final, log_date.record_id\n"
-            . "        FROM (log_docs AS log_date)\n"
-            . "            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_date.log_id)\n"
+            . "        SELECT DISTINCT(log.id), log.usrid, user, final, log_docs.record_id\n"
+            . "        FROM (log_docs)\n"
+            . "            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)\n"
             . "            WHERE log.site = :site_id\n"
-            . "            AND log_date.action = 'download'\n"
+            . "            AND log_docs.action = 'download'\n"
             . "            AND (" . $datefilter['sql'] . ")\n"
             . ") AS tt\n"
             . "LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)\n"

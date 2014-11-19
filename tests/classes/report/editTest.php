@@ -34,7 +34,6 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
             'record_id' => array("", 1, 1, 1, 1),
             'file' => array("", 1, 0, 1, 1),
             'mime' => array("", 1, 0, 1, 1),
-            'size' => array("", 1, 0, 1, 1)
         );
 
         foreach ($this->ret as $sbasid => $collections) {
@@ -160,7 +159,6 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
         if (! $groupby) {
             foreach ($report['result'] as $row) {
                 foreach ($conf as $key => $value) {
-
                     $this->assertArrayHasKey($key, $row);
                     $condition = is_string($row[$key]) || is_int($row[$key]);
                     $this->assertTrue($condition);
