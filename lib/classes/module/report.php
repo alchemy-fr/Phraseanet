@@ -232,6 +232,7 @@ class module_report
     /**
      *
      */
+    protected $dateField = 'log.date';
     protected $cor_query = array();
     protected $isInformative;
 
@@ -802,6 +803,18 @@ class module_report
                 $this->display[$column] = $config;
             }
         }
+    }
+
+    public function setDateField($dateField)
+    {
+        $this->dateField = $dateField;
+
+        return $this;
+    }
+
+    public function getDateField()
+    {
+        return $this->dateField;
     }
 
     /**

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-11-06 14:00+0100\n"
+"PO-Revision-Date: 2014-11-17 18:54+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1413799471.000000\n"
+"X-POOTLE-MTIME: 1415894720.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -1489,7 +1489,7 @@ msgstr "Nombre d'enregistrements à traiter par lot"
 #: lib/classes/task/period/subdef.php:235
 #: lib/classes/task/period/writemeta.php:187
 msgid "Restart the task every X records"
-msgstr "Redemarrer la tâche tous les n enregistrements"
+msgstr "Redémarrer la tâche tous les n enregistrements"
 
 #: lib/classes/task/period/subdef.php:241
 msgid "Restart the task if memory reaches"
@@ -6677,7 +6677,7 @@ msgstr "recordId"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:428
 msgid "report:: toutes les questions"
-msgstr "Historique des questions"
+msgstr "Toutes les questions"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:438
 msgid "report:: Les questions les plus posees"
@@ -8496,7 +8496,7 @@ msgstr "Ecrire un fichier de Log"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1710
 msgid "Nom des fichiers a l'export"
-msgstr "Nom des fichiers à l'export"
+msgstr "Choix des noms des fichiers pour l'export"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1727
 msgid "export::titre: titre du documument"
@@ -10476,7 +10476,7 @@ msgstr "Historique des téléchargements"
 
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:130
 msgid "report:: historique des questions"
-msgstr "Historique des questions"
+msgstr "Toutes les questions"
 
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:253
 msgid "report::version "

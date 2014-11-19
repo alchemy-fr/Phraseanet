@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-14 14:10+0100\n"
-"PO-Revision-Date: 2014-11-06 14:00+0100\n"
+"PO-Revision-Date: 2014-11-17 18:53+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-POOTLE-MTIME: 1413802599.000000\n"
+"X-POOTLE-MTIME: 1415895143.000000\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
@@ -1065,7 +1065,7 @@ msgstr "Unanswered questions"
 
 #: lib/classes/module/report/activity.php:213
 msgid "report:: questions les plus posees"
-msgstr "Top questions"
+msgstr "Most asked questions"
 
 #: lib/classes/module/report/activity.php:316
 #, php-format
@@ -6616,17 +6616,17 @@ msgstr "recordId"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:428
 msgid "report:: toutes les questions"
-msgstr "Top questions"
+msgstr "All questions"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:438
 msgid "report:: Les questions les plus posees"
-msgstr "Top questions"
+msgstr "The most asked questions"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:468
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:53
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:298
 msgid "report:: document"
-msgstr "document"
+msgstr "Documents"
 
 #: tmp/cache_twig/a0/72/1e49ccee500b6d7a08b9fd3e09e7c918ec3d7746c184703f6a72e4685f0e.php:475
 msgid "report:: pushe"
@@ -8394,7 +8394,7 @@ msgstr "Write a log file"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1710
 msgid "Nom des fichiers a l'export"
-msgstr "FIles name to use for Download"
+msgstr "Select filenames option for Download"
 
 #: tmp/cache_twig/e0/dd/b1907cdd101f86af2e081e1302dc44d6ef84d81307a71967e96f2b37df75.php:1727
 msgid "export::titre: titre du documument"
@@ -10330,7 +10330,7 @@ msgstr "Downloads"
 
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:130
 msgid "report:: historique des questions"
-msgstr "Query log"
+msgstr "All questions"
 
 #: lib/Alchemy/Phrasea/Controller/Report/Informations.php:253
 msgid "report::version "
@@ -11462,8 +11462,9 @@ msgid ""
 msgstr "Removes the choice of authentication options in submission forms."
 
 #: ../lib/Alchemy/Phrasea/Command/Developer/IniReset.php:67
+#, fuzzy
 msgid "Please enter the databox name to reset or create"
-msgstr ""
+msgstr "Please give a name to the Databox to create or reset"
 
 #: ../lib/classes/task/period/subdef.php:276
 msgid "Databox"

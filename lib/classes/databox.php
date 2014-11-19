@@ -672,6 +672,8 @@ class databox extends base
      */
     public function get_meta_structure()
     {
+        $metaStructData = array();
+
         if ($this->meta_struct) {
             return $this->meta_struct;
         }
@@ -685,13 +687,15 @@ class databox extends base
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            $metaStructData = $rs;
-            $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
+            if ($rs) {
+                $metaStructData = $rs;
+                $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
+            }
         }
 
         $this->meta_struct = new databox_descriptionStructure();
 
-        foreach ($metaStructData as $row) {
+        foreach ((array) $metaStructData as $row) {
             $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
         }
 

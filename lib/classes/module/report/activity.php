@@ -153,6 +153,7 @@ class module_report_activity extends module_report
         $this->report['value'] = array();
         $this->report['value2'] = array();
 
+        $this->setDateField('log_search.date');
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
@@ -278,13 +279,13 @@ class module_report_activity extends module_report
     public function getDownloadByBaseByDay($tab = false)
     {
         $this->title = _('report:: telechargements par jour');
-
+        $this->setDateField('log_docs.date');
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
         $sql = "
-            SELECT tt.record_id, DATE_FORMAT(tt.the_date, GET_FORMAT(DATE, 'INTERNAL')) AS ddate, tt.final, SUM(1) AS nb
+            SELECT tt.record_id, tt.the_date AS ddate, tt.final, SUM(1) AS nb
             FROM (
                 SELECT DISTINCT(log.id), log_docs.date AS the_date, log_docs.final, log_docs.record_id
                 FROM (log_docs)
@@ -465,6 +466,7 @@ class module_report_activity extends module_report
         //set title
         $this->title = _('report:: Detail des telechargements');
 
+        $this->setDateField('log_docs.date');
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
@@ -600,7 +602,7 @@ class module_report_activity extends module_report
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
 
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = array_merge($params, $datefilter['params']);
 /*
         $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid
@@ -621,11 +623,11 @@ class module_report_activity extends module_report
 */
         $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid\n"
             . " FROM (\n"
-            . "        SELECT DISTINCT(log.id), log.usrid, user, final, log_date.record_id\n"
-            . "        FROM (log_docs AS log_date)\n"
-            . "            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_date.log_id)\n"
+            . "        SELECT DISTINCT(log.id), log.usrid, user, final, log_docs.record_id\n"
+            . "        FROM (log_docs)\n"
+            . "            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)\n"
             . "            WHERE log.site = :site_id\n"
-            . "            AND log_date.action = 'download'\n"
+            . "            AND log_docs.action = 'download'\n"
             . "            AND (" . $datefilter['sql'] . ")\n"
             . ") AS tt\n"
             . "LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)\n"
@@ -795,7 +797,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
@@ -846,7 +848,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
 
         $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
@@ -955,7 +957,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax,'log_docs.date');
 
         $params = array();
         $params = array_merge($params, $datefilter['params']);
@@ -976,10 +978,10 @@ class module_report_activity extends module_report
 */
         $sql = "SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity\n"
             . " FROM (\n"
-            . "     SELECT DISTINCT(log.id), DATE_FORMAT(log_date.date, '%Y-%m-%d') AS ddate\n"
-            . "     FROM (log_docs AS log_date)\n"
-            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)\n"
-            . "     WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'"
+            . "     SELECT DISTINCT(log.id), DATE_FORMAT(log_docs.date, '%Y-%m-%d') AS ddate\n"
+            . "     FROM (log_docs)\n"
+            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)\n"
+            . "     WHERE " . $datefilter['sql'] . " AND log_docs.action = 'add'"
             . " ) AS tt\n"
             . " GROUP BY tt.ddate\n"
             . " ORDER BY activity ASC ";
@@ -1003,7 +1005,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
 
         $params = array();
         $params = array_merge($params, $datefilter['params']);
@@ -1023,10 +1025,10 @@ class module_report_activity extends module_report
 */
         $sql = "SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity\n"
             . " FROM (\n"
-            . "     SELECT DISTINCT(log.id), DATE_FORMAT( log_date.date, '%Y-%m-%d') AS ddate\n"
-            . "     FROM (log_docs AS log_date)\n"
-            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)\n"
-            . "     WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'"
+            . "     SELECT DISTINCT(log.id), DATE_FORMAT( log_docs.date, '%Y-%m-%d') AS ddate\n"
+            . "     FROM (log_docs)\n"
+            . "         INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)\n"
+            . "     WHERE " . $datefilter['sql'] . " AND log_docs.action = 'edit'"
             . ") AS tt\n"
             . " GROUP BY tt.ddate\n"
             . " ORDER BY activity ASC ";
@@ -1051,7 +1053,7 @@ class module_report_activity extends module_report
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
 
         $params = array();
         $params = array_merge($params, $datefilter['params']);
@@ -1073,9 +1075,9 @@ class module_report_activity extends module_report
             . " SELECT tt.usrid, tt.user, sum( 1 ) AS nb\n"
             . " FROM (\n"
             . "     SELECT DISTINCT(log.id), log.usrid, log.user\n"
-            . "     FROM (log_docs AS log_date)\n"
-            . "     INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)\n"
-            . "     WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'"
+            . "     FROM (log_docs)\n"
+            . "     INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)\n"
+            . "     WHERE " . $datefilter['sql'] . " AND log_docs.action = 'add'"
             . ") AS tt\n"
             . " GROUP BY tt.usrid\n"
             . " ORDER BY nb ASC ";

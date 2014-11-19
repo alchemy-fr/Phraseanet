@@ -25,4 +25,7 @@ final class PhraseaEvents
     const API_RESULT = 'api.result';
 
     const COLLECTION_CREATE = 'collection.create';
+
+    const RECORD_EDIT = 'record.edit';
+    const RECORD_UPLOAD = 'record.upload';
 }
