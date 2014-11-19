@@ -79,7 +79,6 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         } catch (\Exception $e) {
 
         }
-
         $tmp = new self($app, $sbasid, $sbas_coll, $dmin, $dmax);
 
         $app['phraseanet.appbox']->set_data_to_cache($tmp, $cache_id);
@@ -138,6 +137,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['nb_dl'] = module_report_download::getNbDl(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
+
             //Get Number of connexions
             $this->report['nb_conn'] = module_report_connexion::getNbConn(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection

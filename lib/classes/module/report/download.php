@@ -55,8 +55,8 @@ class module_report_download extends module_report
      */
     protected function buildReq($groupby = false, $on = false)
     {
+        $this->setDateField('log_docs.date');
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-ini_set('display_errors', true);
         $sql = $this->sqlBuilder('download')
                 ->setOn($on)->setGroupBy($groupby)->buildSql();
 
@@ -184,7 +184,7 @@ ini_set('display_errors', true);
         $conn = connection::getPDOConnection($app, $sbas_id);
 
         $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = array_merge($params, $datefilter['params']);
 
         $finalfilter = $datefilter['sql'] . ' AND ';
@@ -208,9 +208,10 @@ ini_set('display_errors', true);
         $sql = "SELECT SUM(1) AS nb\n"
             . " FROM (\n"
             . "    SELECT DISTINCT(log.id)\n"
-            . "    FROM log FORCE INDEX (date_site)\n"
+            . "    FROM log FORCE INDEX (date_site)"
+            . "    INNER JOIN log_docs"
             . "    WHERE " . $finalfilter . "\n"
-            . "    AND ( log_date.action = 'download' OR log_date.action = 'mail' )\n"
+            . "    AND ( log_docs.action = 'download' OR log_docs.action = 'mail' )\n"
             . " ) AS tt";
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
@@ -229,7 +230,7 @@ ini_set('display_errors', true);
         $conn = $databox->get_connection();
 
         $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = array_merge($params, $datefilter['params']);
 
         $finalfilter = "";
@@ -262,13 +263,13 @@ ini_set('display_errors', true);
 */
         $sql = "SELECT tt.id, tt.name, SUM(1) AS nb\n"
             . " FROM (\n"
-            . "    SELECT DISTINCT(log.id) AS log_id, log_date.record_id as id, subdef.name\n"
+            . "    SELECT DISTINCT(log.id) AS log_id, log_docs.record_id as id, subdef.name\n"
             . "    FROM ( log )\n"
-            . "        INNER JOIN log_docs as log_date  ON (log.id = log_date.log_id)\n"
-            . "        INNER JOIN subdef ON (log_date.record_id = subdef.record_id)\n"
+            . "        INNER JOIN log_docs  ON (log.id = log_docs.log_id)\n"
+            . "        INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)\n"
             . "    WHERE (" . $finalfilter . ")\n"
-            . "    AND ( log_date.action = 'download' OR log_date.action = 'mail' )\n"
-            . "    AND subdef.name = log_date.final\n"
+            . "    AND ( log_docs.action = 'download' OR log_docs.action = 'mail' )\n"
+            . "    AND subdef.name = log_docs.final\n"
             . " ) AS tt\n"
             . " GROUP BY id, name\n";
 
