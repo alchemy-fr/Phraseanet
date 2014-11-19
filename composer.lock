@@ -1246,12 +1246,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Imagine.git",
-                "reference": "e75d9495677b40e0868836e3510667178b2bd90a"
+                "reference": "372f36e2d76e4ca1fbdccda57c23b8483ed700b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/e75d9495677b40e0868836e3510667178b2bd90a",
-                "reference": "e75d9495677b40e0868836e3510667178b2bd90a",
+                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/372f36e2d76e4ca1fbdccda57c23b8483ed700b1",
+                "reference": "372f36e2d76e4ca1fbdccda57c23b8483ed700b1",
                 "shasum": ""
             },
             "require": {
@@ -1268,7 +1268,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.7-dev"
+                    "dev-develop": "0.6-dev"
                 }
             },
             "autoload": {
@@ -1295,9 +1295,9 @@
                 "image processing"
             ],
             "support": {
-                "source": "https://github.com/nlegoff/Imagine/tree/flatten-layer"
+                "source": "https://github.com/alchemy-fr/Imagine/tree/0.6.1-flatten-layer"
             },
-            "time": "2014-10-08 16:23:33"
+            "time": "2014-11-19 14:31:17"
         },
         {
             "name": "jms/metadata",
