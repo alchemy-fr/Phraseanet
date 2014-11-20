@@ -6,7 +6,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\AndOperator;
 use Hoa\Compiler\Llk\TreeNode;
 
-class SearchQuery
+class Query
 {
     private $root;
 

@@ -47,7 +47,7 @@ class QueryVisitor implements Visit
                         $root = $node;
                     }
                 }
-                return new SearchQuery($root);
+                return new Query($root);
 
             case self::NODE_TYPE_IN_EXPR:
                 if ($element->getChildrenNumber() !== 2) {
