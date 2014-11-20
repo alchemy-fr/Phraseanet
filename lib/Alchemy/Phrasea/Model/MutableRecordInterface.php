@@ -11,7 +11,7 @@ interface MutableRecordInterface
     public function setSha256($sha256);
 
     /** @param integer $recordId */
-    public function setRecordId($recordId);;
+    public function setRecordId($recordId);
 
     /** @param string $originalName */
     public function setOriginalName($originalName);

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\DBALException;
-use Alchemy\Phrasea\Model\Entities\RecordInterface;
+use Alchemy\Phrasea\Model\RecordInterface;
 
 class ACL implements cache_cacheableInterface
 {
