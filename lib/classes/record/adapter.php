@@ -1862,7 +1862,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** {@inheritdoc} */
     public function getDataboxId()
     {
-        $this->get_databox()->get_sbas_id();
+        return $this->get_databox()->get_sbas_id();
     }
 
     /** {@inheritdoc} */
