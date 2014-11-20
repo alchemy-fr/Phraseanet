@@ -118,7 +118,7 @@ class RecordFetcher
             $record['record_type'] = SearchEngineInterface::GEM_TYPE_RECORD;
         }
 
-        if (false === (bool) $record['mime']) {
+        if (false == $record['mime']) {
             $record['mime'] = 'application/octet-stream';
         }
 
@@ -162,7 +162,7 @@ SQL;
         SELECT r.record_id
              , r.coll_id as collection_id
              , r.uuid
-             , BIN(r.status) as bin_status
+             , LPAD(BIN(r.status), 32, "0") as bin_status
              , r.sha256 -- TODO rename in "hash"
              , r.originalname as original_name
              , r.mime

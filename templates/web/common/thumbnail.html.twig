@@ -25,7 +25,7 @@
             } %}
         {% else %}
             {% set original_h = thumb_h > 0 ? thumb_h : 120 %}
-            {% set original_w =thumb_w > 0 ? thumb_w : 120 %}
+            {% set original_w = thumb_w > 0 ? thumb_w : 120 %}
 
             {% set fit_size = fitIn(
                 {"width":original_w, "height":original_h},

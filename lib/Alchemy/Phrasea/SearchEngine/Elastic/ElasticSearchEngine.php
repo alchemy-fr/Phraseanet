@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Model\Hydrator\ESRecordHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchRecordHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\SearchQuery;
@@ -372,7 +372,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
-            $results[] = ESRecordHydrator::hydrate($hit['_source'], $n++);
+            $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
         $query['_ast'] = $searchQuery->dump();

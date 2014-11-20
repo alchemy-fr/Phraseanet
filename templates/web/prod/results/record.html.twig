@@ -6,17 +6,17 @@
 
     {% if entry_id %}
         <div style="width:{{th_size+30}}px;" sbas="{{record.databoxId}}"
-            id="{{ prefix|default('IMGT') }}_{{record.databoxId}}_{{record.recordId}}"
+            id="{{ prefix|default('IMGT') }}_{{record.id}}"
             class="IMGT diapo type-{{record.type}}"
             onDblClick="openPreview('FEED',{{record.position}},{{entry_id}});">
     {% elseif record.story %}
         <div style="width:{{th_size+30}}px;" sbas="{{record.databoxId}}"
-            id="{{ prefix|default('IMGT') }}_{{record.databoxId}}_{{record.recordId}}"
+            id="{{ prefix|default('IMGT') }}_{{record.id}}"
             class="IMGT diapo grouping type-{{record.type}}"
             onDblClick="openPreview('REG','0','{{record.id}}');">
     {% else %}
         <div style="width:{{th_size+30}}px;" sbas="{{record.databoxId}}"
-            id="{{ prefix|default('IMGT') }}_{{record.databoxId}}_{{record.recordId}}"
+            id="{{ prefix|default('IMGT') }}_{{record.id}}"
             class="IMGT diapo type-{{record.type}}"
             onDblClick="openPreview('RESULT',{{record.position}});">
     {% endif %}

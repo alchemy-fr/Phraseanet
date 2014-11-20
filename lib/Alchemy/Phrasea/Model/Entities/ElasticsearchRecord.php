@@ -12,11 +12,13 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Alchemy\Phrasea\Model\RecordInterface;
+use Alchemy\Phrasea\Model\MutableRecordInterface;
 
 /**
  * Record entity from elastic search
  */
-class RecordES implements RecordInterface
+class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
 {
     private $databoxId;
     private $recordId;

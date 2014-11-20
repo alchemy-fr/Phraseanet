@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Model\Hydrator;
+namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Model\Entities\RecordES;
+use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class ESRecordHydrator
+class ElasticsearchRecordHydrator
 {
     public static function hydrate(array $data, $position)
     {
-        $record = new RecordES();
+        $record = new ElasticsearchRecord();
 
         $record->setPosition($position);
         $record->setBaseId(isset($data['base_id']) ? $data['base_id'] : 0);

@@ -20,9 +20,8 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
-use Alchemy\Phrasea\Model\Entities\RecordInterface;
+use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -1849,21 +1848,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setBaseId($baseId)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
-    }
-
-    /** {@inheritdoc} */
     public function getCollectionId()
     {
         return $this->get_collection()->get_coll_id();
-    }
-
-    /** {@inheritdoc} */
-    public function setCollectionId($collectionId)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }
 
     /** {@inheritdoc} */
@@ -1873,21 +1860,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setCreated(\DateTime $created = null)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
-    }
-
-    /** {@inheritdoc} */
     public function getDataboxId()
     {
         $this->get_databox()->get_sbas_id();
-    }
-
-    /** {@inheritdoc} */
-    public function setDataboxId($databoxId)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }
 
     /** {@inheritdoc} */
@@ -1897,21 +1872,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setIsStory($isStory)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
-    }
-
-    /** {@inheritdoc} */
     public function getMimeType()
     {
         return $this->get_mime();
-    }
-
-    /** {@inheritdoc} */
-    public function setMimeType($mimeType)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }
 
     /** {@inheritdoc} */
@@ -1933,21 +1896,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setRecordId($recordId)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
-    }
-
-    /** {@inheritdoc} */
     public function getSha256()
     {
         return $this->get_sha256();
-    }
-
-    /** {@inheritdoc} */
-    public function setSha256($sha256)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }
 
     /** {@inheritdoc} */
@@ -1956,24 +1907,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->get_type();
     }
 
-    /**
-     * @param mixed $type
-     */
-    public function setType($type)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
-    }
 
     /** {@inheritdoc} */
     public function getUpdated()
     {
         return $this->get_modification_date();
-    }
-
-    /** {@inheritdoc} */
-    public function setUpdated(\DateTime $updated = null)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
     }
 
     /** {@inheritdoc} */
@@ -1983,18 +1921,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function setUuid($uuid)
-    {
-        throw new \BadMethodCallException(sprintf('Method %s::%s is not implemented', __CLASS__, __METHOD__));
-    }
-
-    /** {@inheritdoc} */
     public function getId()
     {
         return $this->get_serialize_key();
     }
 
-    /** {@inheritdoc} */
     public function setStatus($status)
     {
         $this->set_binary_status($status);
