@@ -4,9 +4,8 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Hoa\Compiler\Llk\Parser;
-use Hoa\Visitor\Element;
+use Hoa\Compiler\Visitor\Dump as DumpVisitor;
 use Hoa\Visitor\Visit;
-
 
 class QueryParser
 {
@@ -17,22 +16,24 @@ class QueryParser
         $this->parser = $parser;
     }
 
+    /**
+     * Creates a Query object from a string
+     */
     public function parse($string)
+    {
+        return $this->visitString($string, new QueryVisitor());
+    }
+
+    public function dump($string)
+    {
+        return $this->visitString($string, new DumpVisitor());
+    }
+
+    private function visitString($string, Visit $visitor)
     {
         $ast = $this->parser->parse($string);
 
-        $dump = new \Hoa\Compiler\Visitor\Dump();
-        echo $dump->visit($ast);
-
-        // Create query from syntax tree
-        $visitor = new QueryVisitor();
-        $query = $visitor->visit($ast);
-
-        echo "--------------------\n";
-        echo (string) $query . "\n";
-        echo "--------------------\n";
-
-        return $query;
+        return $visitor->visit($ast);
     }
 }
 

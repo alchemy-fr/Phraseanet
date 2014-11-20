@@ -20,13 +20,8 @@ class SearchQuery
         return $this->root->getQuery();
     }
 
-    public function __toString()
-    {
-        return (string) $this->root;
-    }
-
     public function dump()
     {
-        return (string) $this;
+        return $this->root->__toString();
     }
 }
