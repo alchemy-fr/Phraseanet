@@ -370,16 +370,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $this;
     }
 
-    public function get_url()
-    {
-        $url = parent::get_url();
-        if (null !== $this->getEtag()) {
-            $url->getQuery()->set('etag', $this->getEtag());
-        }
-
-        return $url;
-    }
-
     /**
      *
      * @return int
@@ -766,10 +756,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             }
         }
 
-        $this->url = Url::factory("/datafiles/" . $this->record->get_sbas_id()
-            . "/" . $this->record->get_record_id() . "/"
-            . $this->get_name() . "/");
-
+        $this->url = $this->app->path('datafile', array(
+            'sbas_id' => $this->record->get_sbas_id(),
+            'record_id' => $this->record->get_record_id(),
+            'subdef' => $this->get_name()
+        ));
 
         return;
     }
