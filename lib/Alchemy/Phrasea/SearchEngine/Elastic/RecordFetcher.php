@@ -20,7 +20,6 @@ class RecordFetcher
 {
     private $connection;
     private $statementRecords;
-    private $statementMetadata;
     private $helper;
 
     private $offset = 0;

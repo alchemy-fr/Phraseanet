@@ -128,8 +128,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableSort()
     {
         return [
-            'score' => $this->app->trans('pertinence'),
-            'created_on' => $this->app->trans('date dajout'),
+            SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
+            SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
         ];
     }
 
@@ -138,7 +138,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getDefaultSort()
     {
-        return 'score';
+        return SearchEngineOptions::SORT_RELEVANCE;
     }
 
     /**
@@ -155,8 +155,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableOrder()
     {
         return [
-            'desc' => $this->app->trans('descendant'),
-            'asc'  => $this->app->trans('ascendant'),
+            SearchEngineOptions::SORT_MODE_DESC => $this->app->trans('descendant'),
+            SearchEngineOptions::SORT_MODE_ASC  => $this->app->trans('ascendant'),
         ];
     }
 
@@ -194,7 +194,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->doExecute('delete', [
             'index' => $this->indexName,
             'type'  => self::GEM_TYPE_RECORD,
-            'id'    => sprintf('%s-%s', $record->get_sbas_id(), $record->get_record_id()),
+            'id'    => sprintf('%s_%s', $record->get_sbas_id(), $record->get_record_id()), // @todo use RecordHelper::getUniqueRecordId
         ]);
 
         return $this;
@@ -534,10 +534,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(DATE_ATOM);
+                $range['lte'] = $options->getMaxDate()->format(Mapping::DATE_FORMAT_CAPTION_PHP);
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(DATE_ATOM);
+                $range['gte'] = $options->getMinDate()->format(Mapping::DATE_FORMAT_CAPTION_PHP);
             }
 
             foreach ($options->getDateFields() as $dateField) {
@@ -563,7 +563,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createSortQueryParams(SearchEngineOptions $options)
     {
         $sort = [];
-        if ($options->getSortBy() === 'score') {
+        if ($options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
             $sort['_score'] = $options->getSortOrder();
         } else {
             $sort['created_on'] = $options->getSortOrder();

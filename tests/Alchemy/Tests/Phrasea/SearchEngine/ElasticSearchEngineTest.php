@@ -15,26 +15,39 @@ class ElasticSearchEngineTest extends SearchEngineAbstractTest
 
         parent::setUp();
 
-        $es = ElasticSearchEngine::create(self::$DI['app']);
-        $indexer = new Indexer($es, self::$DI['app']['monolog'], self::$DI['app']['phraseanet.appbox']);
+        /** @var Indexer $indexer */
+        $indexer = self::$DI['app']['elasticsearch.indexer'];
+
+        // Re-index everything
+        ob_start();
+        $indexer->deleteIndex();
         $indexer->createIndex();
-        $indexer->reindexAll();
+        $indexer->populateIndex();
+        ob_end_clean();
     }
 
     public function initialize()
     {
-        self::$searchEngine = ElasticSearchEngine::create(self::$DI['app']);
+        // Change the index name
+        self::$DI['app']['conf']->set(['main', 'search-engine', 'options', 'index'], 'test');
+
+        self::$searchEngine = $es = new ElasticSearchEngine(
+            self::$DI['app'],
+            self::$DI['app']['elasticsearch.client'],
+            self::$DI['app']['elasticsearch.options']['index']
+        );
+
         self::$searchEngineClass = 'Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine';
     }
 
     public function testAutocomplete()
     {
-
+        $this->markTestSkipped("Not implemented yet.");
     }
 
     protected function updateIndex(array $stemms = [])
     {
-        $searchEngine = ElasticSearchEngine::create(self::$DI['app']);
-        $searchEngine->getClient()->indices()->refresh(['index' => 'phraseanet']);
+        $client = self::$searchEngine->getClient();
+        $client->indices()->refresh();
     }
 }

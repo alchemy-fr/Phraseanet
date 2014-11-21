@@ -21,7 +21,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
 
     public function initialize()
     {
-        self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
+        self::$searchEngine = new PhraseaEngine(self::$DI['app']);
         self::$searchEngineClass = 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine';
     }
 
