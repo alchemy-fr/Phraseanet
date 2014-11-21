@@ -27,7 +27,7 @@ interface DeliverDataInterface
      * @param string|null $mimeType
      * @param integer     $cacheDuration
      */
-    public function deliverFile($file, $filename = null, $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = 3600);
+    public function deliverFile($file, $filename = null, $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = null);
 
     /**
      * Return a HTTP Response ready to deliver data
@@ -38,5 +38,5 @@ interface DeliverDataInterface
      * @param string  $disposition
      * @param integer $cacheDuration
      */
-    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = 3600);
+    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = null);
 }
