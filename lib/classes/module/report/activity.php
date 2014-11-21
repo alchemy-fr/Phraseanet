@@ -294,7 +294,7 @@ class module_report_activity extends module_report
                     AND (log_docs.action =  'download' OR log_docs.action =  'mail')
                     AND (log_docs.final = 'preview' OR log_docs.final = 'document')
             ) AS tt
-            INNER JOIN record ON (record.record_id = tt.record_id)
+            LEFT JOIN record ON (record.record_id = tt.record_id)
             LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)
             WHERE s.name = tt.final
             GROUP BY tt.final, ddate
@@ -480,7 +480,7 @@ class module_report_activity extends module_report
                 WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
                 AND (log_docs.action = 'download' OR log_docs.action = 'mail')
             ) AS tt
-            INNER JOIN record ON (record.record_id = tt.record_id)
+            LEFT JOIN record ON (record.record_id = tt.record_id)
             LEFT JOIN subdef FORCE INDEX (unicite) ON (tt.record_id = subdef.record_id)
             WHERE subdef.name = tt.final
             GROUP BY " . $on . ", usrid
