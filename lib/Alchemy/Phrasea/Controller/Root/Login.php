@@ -880,9 +880,11 @@ class Login implements ControllerProviderInterface
 
         $width = $height = null;
         if ($app['request']->cookies->has('screen')) {
-            $data = explode('x', $app['request']->cookies->get('screen'));
-            $width = $data[0];
-            $height = $data[1];
+            $data = array_filter((explode('x', $app['request']->cookies->get('screen', ''))));
+            if (count($data) === 2) {
+                $width = $data[0];
+                $height = $data[1];
+            }
         }
         $session->setIpAddress($app['request']->getClientIp())
             ->setScreenHeight($height)
