@@ -133,7 +133,7 @@ class patch_390alpha17a extends patchAbstract
             (
                 SELECT
                 a.api_log_id,       a.api_account_id,       a.api_log_route,  a.api_log_error_message,
-                a.api_log_date,     a.api_log_status_code,  a.api_log_format, a.api_log_ressource,
+                a.api_log_date,     a.api_log_status_code,  a.api_log_format, a.api_log_resource,
                 a.api_log_general,  a.api_log_aspect,       a.api_log_action, a.api_log_error_code
                 FROM api_logs a
                 INNER JOIN api_accounts b ON (b.api_account_id = a.api_account_id)
