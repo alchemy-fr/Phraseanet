@@ -38,7 +38,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
         $response = $app['phraseanet.file-serve']->deliverFile($pathOut, $file->get_file(), $disposition, $file->get_mime());
 
-        if (in_array(array('document', 'preview'), $subdef)) {
+        if (in_array($subdef, array('document', 'preview'))) {
             $response->setPrivate();
             $this->logView($app, $record, $request);
         } elseif ($subdef !== 'thumbnail') {

@@ -106,7 +106,7 @@ class Firewall
     {
         $params = array();
         if (null !== $request) {
-            $params['redirect'] = '..' . $request->getPathInfo();
+            $params['redirect'] = '..' . $request->getPathInfo().'?'.$request->getQueryString();
         }
         if (!$this->app['authentication']->isAuthenticated()) {
             return new RedirectResponse($this->app->path('homepage', $params));
