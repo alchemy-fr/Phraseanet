@@ -52,7 +52,7 @@ class H264MappingGenerator extends Command
         $conf = array(
             'enabled' => $enabled,
             'type' => $type,
-            'mapping' => array_replace_recursive($mode->getMapping(), $currentMapping),
+            'mapping' => $mode->getMapping(),
         );
 
         if ($input->getOption('write')) {
@@ -77,7 +77,11 @@ class H264MappingGenerator extends Command
         $ret = array();
 
         foreach ($paths as $path) {
-            $ret[$path] = $this->pathsToConf($path);
+            $sanitizedPath = rtrim($path, '/');
+            if (array_key_exists($sanitizedPath, $ret)) {
+                continue;
+            }
+            $ret[$sanitizedPath] = $this->pathsToConf($sanitizedPath);
         }
 
         return $ret;
