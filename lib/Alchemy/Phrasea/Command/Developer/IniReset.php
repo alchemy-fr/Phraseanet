@@ -171,7 +171,7 @@ class IniReset extends Command
                 $conf['main']['database']['password'],
                 $dbName,
                 $dbs['ab'],
-                $conf['main']['servername'],
+                $conf['servername'],
                 $conf['main']['database']['host'],
                 $conf['main']['database']['port']
             ));
