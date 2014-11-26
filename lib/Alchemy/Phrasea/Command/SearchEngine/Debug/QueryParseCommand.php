@@ -31,6 +31,12 @@ class QueryParseCommand extends Command
                 'The query to debug'
             )
             ->addOption(
+                'compiler-dump',
+                false,
+                InputOption::VALUE_NONE,
+                'Output underlying compiler AST before visitor processing'
+            )
+            ->addOption(
                 'raw',
                 false,
                 InputOption::VALUE_NONE,
@@ -49,8 +55,13 @@ class QueryParseCommand extends Command
             $output->writeln(str_repeat('-', 20));
         }
 
-        $query = $this->container['query_parser']->parse($string);
-        $dump = $query->dump();
+        $parser = $this->container['query_parser'];
+        if ($input->getOption('compiler-dump')) {
+            $dump = $parser->dump($string);
+        } else {
+            $query = $parser->parse($string);
+            $dump = $query->dump();
+        }
 
         if (!$raw) {
             $output->writeln($dump);
