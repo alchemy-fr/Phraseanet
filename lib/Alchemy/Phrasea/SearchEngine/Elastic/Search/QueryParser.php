@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Hoa\Compiler\Exception\Exception as CompilerException;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Visitor\Dump as DumpVisitor;
 use Hoa\Visitor\Visit;
@@ -31,7 +33,11 @@ class QueryParser
 
     private function visitString($string, Visit $visitor)
     {
-        $ast = $this->parser->parse($string);
+        try {
+            $ast = $this->parser->parse($string);
+        } catch (CompilerException $e) {
+            throw new QueryException('Provided query is not valid', 0, $e);
+        }
 
         return $visitor->visit($ast);
     }
