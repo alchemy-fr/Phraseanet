@@ -6,7 +6,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
 
-
 class QueryVisitor implements Visit
 {
     const NODE_TYPE_QUERY    = '#query';
@@ -19,14 +18,25 @@ class QueryVisitor implements Visit
     const NODE_TYPE_TOKEN    = 'token';
     const NODE_TOKEN_WORD    = 'word';
     const NODE_TOKEN_STRING  = 'string';
+    const NODE_TOKEN_EXCEPT  = 'except';
+
+    private $leftNode;
+    private $leftOp;
 
     public function visit(Element $element, &$handle = null, $eldnah = null)
     {
         if (null !== $value = $element->getValue()) {
             return $this->visitToken($value['token'], $value['value']);
-        } else {
-            return $this->visitNode($element);
         }
+
+        $node = $this->visitNode($element);
+        if ($this->leftOp) {
+            $node = $this->leftOp->__invoke($node);
+            $this->leftOp = null;
+        }
+        $this->leftNode = $node;
+
+        return $node;
     }
 
     private function visitToken($token, $value)
@@ -37,6 +47,20 @@ class QueryVisitor implements Visit
 
             case self::NODE_TOKEN_STRING:
                 return new AST\QuotedTextNode($value);
+
+            case self::NODE_TOKEN_EXCEPT:
+                // Schedule the operation at the next node visit using also
+                // previous node to build the "except" expression.
+                // (we don't have the next node yet).
+                //
+                // Tokens taking part in an "except" expression are emited by
+                // the compiler as a flat list, not a tree, because we can't
+                // maintain left-associativity required by EXCEPT operator.
+                $left = $this->leftNode;
+                $this->leftOp = function ($right) use ($left) {
+                    return new AST\ExceptExpression($left, $right);
+                };
+                break;
 
             default:
                 // Generic handling off other tokens for unresctricted text
@@ -70,14 +94,8 @@ class QueryVisitor implements Visit
 
     private function visitQuery(Element $element)
     {
-        $root = null;
         foreach ($element->getChildren() as $child) {
-            $node = $child->accept($this);
-            if ($root) {
-                $root = new AST\AndExpression($root, $node);
-            } else {
-                $root = $node;
-            }
+            $root = $child->accept($this);
         }
         return new Query($root);
     }
@@ -94,19 +112,19 @@ class QueryVisitor implements Visit
 
     private function visitAndNode(Element $element)
     {
-        return $this->handleBinaryNode($element, function($left, $right) {
+        return $this->handleBinaryOperator($element, function($left, $right) {
             return new AST\AndExpression($left, $right);
         });
     }
 
     private function visitOrNode(Element $element)
     {
-        return $this->handleBinaryNode($element, function($left, $right) {
+        return $this->handleBinaryOperator($element, function($left, $right) {
             return new AST\OrExpression($left, $right);
         });
     }
 
-    private function handleBinaryNode(Element $element, \Closure $factory)
+    private function handleBinaryOperator(Element $element, \Closure $factory)
     {
         if ($element->getChildrenNumber() !== 2) {
             throw new \Exception('Binary expression can only have 2 childs.');

@@ -17,7 +17,12 @@
     primary()
 
 primary:
-    secondary() ( ::except:: #except primary() )?
+    secondary() primary_prime()
+
+// primary_prime rule is used to remove left-recursion at the expense
+// of losing associativity
+primary_prime:
+    ( <except> primary() )?
 
 secondary:
     ternary() ( ::or:: #or primary() )?
