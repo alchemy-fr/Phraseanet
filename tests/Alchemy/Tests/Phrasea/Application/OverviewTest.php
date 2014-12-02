@@ -26,7 +26,7 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    public function testEtag()
+    public function testLastModified()
     {
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
@@ -43,7 +43,6 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         /* @var $response \Symfony\Component\HttpFoundation\Response */
         $this->assertTrue($response->isOk());
-        $this->assertNotNull($response->getEtag());
         $this->assertInstanceOf('DateTime', $response->getLastModified());
         $this->assertEquals(0, $response->getMaxAge());
         $this->assertEquals(0, $response->getTtl());
