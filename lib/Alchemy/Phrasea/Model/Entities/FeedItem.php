@@ -216,7 +216,7 @@ class FeedItem
      */
     public function setLastInFeedItem()
     {
-        $this->setOrd($this->getEntry()->getItems()->count() + 1);
+        $this->setOrd($this->getEntry()->getItems()->count());
     }
 
     /**
