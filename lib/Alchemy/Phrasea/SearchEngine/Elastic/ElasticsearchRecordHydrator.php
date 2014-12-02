@@ -30,7 +30,7 @@ class ElasticsearchRecordHydrator
         $record->setOriginalName(isset($data['original_name']) ? $data['original_name'] : '');
         $record->setRecordId(isset($data['record_id']) ? $data['record_id'] : 0);
         $record->setSha256(isset($data['sha256']) ? $data['sha256'] : '');
-        $record->setType(isset($data['record_type']) ? $data['record_type'] : 'unknown');
+        $record->setType(isset($data['type']) ? $data['type'] : 'unknown');
         $record->setUpdated(isset($data['updated_on']) ? new \DateTime($data['updated_on']) : null);
         $record->setUuid(isset($data['uuid']) ? $data['uuid'] : '');
         $record->setStatus(isset($data['bin_status']) ? $data['bin_status'] : str_repeat("0", 32));
