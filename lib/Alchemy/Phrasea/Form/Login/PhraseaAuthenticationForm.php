@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Silex\Application;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PhraseaAuthenticationForm extends AbstractType
 {
@@ -70,5 +71,16 @@ class PhraseaAuthenticationForm extends AbstractType
     public function getName()
     {
         return null;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $csrf = true;
+        if (isset($this->app['phraseanet.configuration']['auth-csrf-protection'])) {
+            $csrf = (Boolean) $this->app['phraseanet.configuration']['auth-csrf-protection'];
+        }
+        $resolver->setDefaults(array(
+            'csrf_protection' => $csrf,
+        ));
     }
 }

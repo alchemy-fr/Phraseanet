@@ -46,22 +46,15 @@ class module_report_sqldownload extends module_report_sql implements module_repo
             $this->sql = "
                 SELECT log.id, log.user, log.societe, log.pays, log.activite, record.coll_id,
                 log.fonction, log.usrid, log_docs.date AS ddate, log_docs.record_id, log_docs.final, log_docs.comment
-                FROM
-                    (
-                        log_docs
-                        INNER JOIN
-                        log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
-                    )
-                    LEFT JOIN
-                    record ON (record.record_id=log_docs.record_id)
+                FROM log_docs
+                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
+                LEFT JOIN record ON (record.record_id=log_docs.record_id)
+                LEFT JOIN subdef ON (log_docs.record_id = subdef.record_id)
                 WHERE (" .$filter['sql'] . ")
                 AND !ISNULL(usrid)
                 AND (log_docs.action = 'download' OR log_docs.action = 'mail')
                 AND (log_docs.final = 'preview' OR log_docs.final = 'document')";
 
-            if ($this->restrict) {
-                $this->sql .= ' AND (log_docs.final = "document" OR log_docs.final = "preview")';
-            }
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
         } else {
             $name = $this->groupby;
@@ -110,7 +103,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
             }
 
-            $this->sql .= ' WHERE (subdef.name = log_docs.final) AND ' . $filter['sql'] . ' ';
+            $this->sql .= ' WHERE ' . $filter['sql'] . ' ';
             $this->sql .= 'AND ( log_docs.action = \'download\' OR log_docs.action = \'mail\') ';
             $this->sql .= $this->on == 'DOC' ? 'AND subdef.name =  \'document\' ' : '';
             $this->sql .= ') as tt';
