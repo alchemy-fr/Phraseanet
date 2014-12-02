@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Doctrine\Common\Collections\ArrayCollection;
+use igorw;
 
 class ElasticsearchRecordHydrator
 {
@@ -21,23 +22,25 @@ class ElasticsearchRecordHydrator
         $record = new ElasticsearchRecord();
 
         $record->setPosition($position);
-        $record->setBaseId(isset($data['base_id']) ? $data['base_id'] : 0);
-        $record->setCollectionId(isset($data['collection_id']) ? $data['collection_id'] : 0);
-        $record->setCreated(isset($data['created_on']) ? new \DateTime($data['created_on']) : null);
-        $record->setDataboxId(isset($data['databox_id']) ? $data['databox_id'] : 0);
-        $record->setIsStory(isset($data['type']) ? $data['type'] === 'story' : null);
-        $record->setMimeType(isset($data['mime']) ? $data['mime'] : 'application/octet-stream');
-        $record->setOriginalName(isset($data['original_name']) ? $data['original_name'] : '');
-        $record->setRecordId(isset($data['record_id']) ? $data['record_id'] : 0);
-        $record->setSha256(isset($data['sha256']) ? $data['sha256'] : '');
-        $record->setType(isset($data['type']) ? $data['type'] : 'unknown');
-        $record->setUpdated(isset($data['updated_on']) ? new \DateTime($data['updated_on']) : null);
-        $record->setUuid(isset($data['uuid']) ? $data['uuid'] : '');
-        $record->setStatus(isset($data['bin_status']) ? $data['bin_status'] : str_repeat("0", 32));
-        $record->setTitles(new ArrayCollection(isset($data['title']) ? (array) $data['title'] : []));
-        $record->setCaption(new ArrayCollection(isset($data['caption']) ? (array) $data['caption'] : []));
-        $record->setExif(new ArrayCollection(isset($data['exif']) ? (array) $data['exif'] : []));
-        $record->setSubdefs(new ArrayCollection(isset($data['subdefs']) ? (array) $data['subdefs'] : []));
+        $record->setBaseId(igorw\get_in($data, ['base_id'], 0));
+        $record->setCollectionId(igorw\get_in($data, ['collection_id'], 0));
+        $createdOn = igorw\get_in($data, ['created_on']);
+        $record->setCreated($createdOn ? new \DateTime($createdOn) : $createdOn);
+        $record->setDataboxId(igorw\get_in($data, ['databox_id'], 0));
+        $record->setIsStory(igorw\get_in($data, ['type']) === 'story');
+        $record->setMimeType(igorw\get_in($data, ['mime'], 'application/octet-stream'));
+        $record->setOriginalName(igorw\get_in($data, ['original_name'], ''));
+        $record->setRecordId(igorw\get_in($data, ['record_id'], 0));
+        $record->setSha256(igorw\get_in($data, ['sha256'], ''));
+        $record->setType(igorw\get_in($data, ['type'], 'unknown'));
+        $updatedOn = igorw\get_in($data, ['updated_on']);
+        $record->setUpdated($updatedOn ? new \DateTime($updatedOn) : $updatedOn);
+        $record->setUuid(igorw\get_in($data, ['uuid'], ''));
+        $record->setStatus(igorw\get_in($data, ['bin_status'], str_repeat('0', 32)));
+        $record->setTitles(new ArrayCollection((array) igorw\get_in($data, ['title'], [])));
+        $record->setCaption(new ArrayCollection((array) igorw\get_in($data, ['caption'], [])));
+        $record->setExif(new ArrayCollection((array) igorw\get_in($data, ['exif'], [])));
+        $record->setSubdefs(new ArrayCollection((array) igorw\get_in($data, ['subdefs'], [])));
 
         return $record;
     }
