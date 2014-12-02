@@ -128,6 +128,7 @@ use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use FFMpeg\FFMpegServiceProvider;
 use Monolog\Logger;
@@ -645,6 +646,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new Fit());
                 $twig->addExtension(new Camelize());
                 $twig->addExtension(new BytesConverter());
+                $twig->addExtension(new PhraseanetExtension($app));
 
                 $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                 $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
