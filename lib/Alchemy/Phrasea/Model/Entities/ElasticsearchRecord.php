@@ -267,8 +267,6 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
      * Get status of current current as 32 bits binary string
      *
      * Eg: 00000000001011100000000000011111
-     *
-     * Where the
      */
     public function getStatus()
     {

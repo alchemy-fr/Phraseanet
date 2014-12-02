@@ -1,16 +1,16 @@
-{% if record.isStory %}
+{% if record.story %}
   {{ 'Story_id' | trans }} : {{ record.recordId }}<br/>
 {% else %}
   {{ 'Record_id' | trans }} : {{ record.recordId }}<br/>
 {% endif %}
 
-{% if not record.isStory %}
+{% if not record.story %}
     {% block td_original_name %}
-        {{ 'Nom Original' | trans }} : {{ record.getOriginalName }}
+        {{ 'Nom Original' | trans }} : {{ record.originalName }}
     {% endblock %}
 
     {%  block td_mime %}
-        {{ record.getMimeType }}
+        {{ record.mimeType }}
     {% endblock %}
 
     {% block td_weight %}
