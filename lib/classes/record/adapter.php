@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
 use Alchemy\Phrasea\Model\RecordInterface;
@@ -740,7 +741,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_technical_infos($data = false)
     {
-
         if (!$this->technical_datas) {
             try {
                 $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
@@ -1907,7 +1907,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->get_type();
     }
 
-
     /** {@inheritdoc} */
     public function getUpdated()
     {
@@ -1935,5 +1934,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getStatus()
     {
         return $this->get_status();
+    }
+
+    /** {@inheritdoc} */
+    public function getExif()
+    {
+        return new ArrayCollection($this->get_technical_infos());
     }
 }

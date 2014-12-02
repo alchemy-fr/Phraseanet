@@ -57,4 +57,7 @@ interface RecordInterface
 
     /** @return string */
     public function getStatus();
+
+    /** @return ArrayCollection */
+    public function getExif();
 }
