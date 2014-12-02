@@ -55,17 +55,9 @@ class RecordFetcher
             return false; // End
         }
 
-        // Fetch metadata
-        $records = $this->addSubdefsToRecord(
-            // Fetch subdefs
-            $this->addMetadataToRecords(
-                // Fetch title
-                $this->addTitleToRecord(
-                    $records
-                )
-            )
-        );
-
+        $this->addTitleToRecord($records);
+        $this->addMetadataToRecords($records);
+        $this->addSubdefsToRecord($records);
 
         // Hydrate records
         foreach ($records as $key => $record) {
@@ -79,14 +71,12 @@ class RecordFetcher
     {
         $stmt = $this->statementRecord($record_adapter->get_record_id());
         $stmt->execute();
-        $record = $stmt->fetchAll();
-        $records = $this->addSubdefsToRecord(
-            $this->addMetadataToRecords(
-                $this->addTitleToRecord(
-                    $record
-                )
-            )
-        );
+
+        $records = $stmt->fetchAll();
+        $this->addTitleToRecord($records);
+        $this->addMetadataToRecords($records);
+        $this->addSubdefsToRecord($records);
+
         foreach ($records as $key => $record) {
             $records[$key] = $this->hydrate($record);
         }
@@ -105,7 +95,7 @@ class RecordFetcher
     private function hydrate(array $record)
     {
         // Some casting
-        $record['record_id']     = (int) $record['record_id'];
+        $record['record_id'] = (int) $record['record_id'];
         $record['collection_id'] = (int) $record['collection_id'];
         // Some identifiers
         $record['id'] = $this->helper->getUniqueRecordId($this->databoxId, $record['record_id']);
@@ -198,7 +188,7 @@ SQL;
         return $this->connection->executeQuery($sql, array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
     }
 
-    private function addMetadataToRecords($records)
+    private function addMetadataToRecords(&$records)
     {
         $statementMetadata = $this->execStatementMetadata(array_keys($records));
 
@@ -219,15 +209,13 @@ SQL;
 
             // Metadata can be multi-valued
             if (!isset($records[$metadata['record_id']] [$type][$key])) {
-                $records[$metadata['record_id']] [$type][$key] = $value;
+                $records[$metadata['record_id']][$type][$key] = $value;
             } elseif (is_array($records[$metadata['record_id']] [$type][$key])) {
-                $records[$metadata['record_id']] [$type][$key][] = $value;
+                $records[$metadata['record_id']][$type][$key][] = $value;
             } else {
-                $records[$metadata['record_id']] [$type][$key] = array($records[$metadata['record_id']] [$type][$key], $value);
+                $records[$metadata['record_id']][$type][$key] = array($records[$metadata['record_id']][$type][$key], $value);
             }
         }
-
-        return $records;
     }
 
     private function execStatementTitle($ids)
@@ -248,18 +236,16 @@ SQL;
         return $this->connection->executeQuery($sql, array($ids), array(Connection::PARAM_INT_ARRAY));
     }
 
-    private function addTitleToRecord($records)
+    private function addTitleToRecord(&$records)
     {
         $statementTitle = $this->execStatementTitle(array_keys($records));
 
         while ($row = $statementTitle->fetch()) {
             $records[$row['record_id']]['title'][$row['locale']] = $row['title'];
         }
-
-        return $records;
     }
 
-    private function addSubdefsToRecord($records)
+    private function addSubdefsToRecord(&$records)
     {
         $statementSubdef = $this->execStatementSubdefs(array_keys($records));
 
@@ -270,8 +256,6 @@ SQL;
                 'height' => $subdefs['height'],
             );
         }
-
-        return $records;
     }
 
     private function execStatementSubdefs($ids)
