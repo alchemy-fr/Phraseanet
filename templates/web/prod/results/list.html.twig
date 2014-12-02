@@ -4,17 +4,17 @@
     <div class='list ui-corner-all'>
         <table style='width:100%;' cellspacing='0' cellpadding='0' border='0'>
             <tr>
-                <td valign="top" style='width:{{th_size+50}}px'>
+                <td valign="top" style='width:{{ settings.images_size + 50 }}px'>
                     {% include 'prod/results/record.html.twig' with {
-                        'record': item,
+                        'record': record,
                         'settings': settings
-                    }%}
+                    } %}
                 </td>
                 <td valign="middle">
-                    <div class='desc' style='max-height:{{th_size+70}}px;overflow-y:auto;'>
+                    <div class='desc' style='max-height:{{ settings.images_size + 70 }}px;overflow-y:auto;'>
                         <div class="fixeddesc">
-                            {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.baseId(), 'canmodifrecord') %}
-                            {{ macro.format_caption(record, highlight, searchEngine, searchOptions, business, true, true) }}
+                            {% set business = granted_on_collection(record.baseId, 'canmodifrecord') %}
+                            {{ macro.caption(record, business) }}
                         </div>
                     </div>
                 </td>

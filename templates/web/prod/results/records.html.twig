@@ -20,11 +20,10 @@
         {% set doctype_display = user_setting('doctype_display') %}
 
         <div class="selectable" style="margin:10px 0; float:left;">
-            {% for item in results.results %}
+            {% for record in results.results %}
                 {% block content_item %}
                     {% include (user_setting('view', 'thumbs') == 'thumbs') ? 'prod/results/grid.html.twig' : 'prod/results/list.html.twig' with {
-                        'record': item,
-                        'context': context,
+                        'record': record,
                         'settings': {
                             'images_size': images_size,
                             'technical_display': technical_display,

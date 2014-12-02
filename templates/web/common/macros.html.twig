@@ -115,3 +115,21 @@
         {% include 'common/technical_datas.html.twig' %}
     {% endif %}
 {% endmacro %}
+
+{% macro caption(record, business, technical) %}
+    {# @todo handle business fields #}
+    {% for name, value in record.caption %}
+        <div class="desc {{ loop.index is odd ? 'impair' : 'pair' }}">
+            <b>{{ name }}</b> :
+            {% if value is iterable %}
+                {{ value | join(' ; ') }}
+            {% else %}
+                {{ value }}
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% if technical|default(true) and app['authentication'].user is not none and user_setting('technical_display') == 'group' %}
+        <hr/>
+        {% include 'common/technical_datas.html.twig' %}
+    {% endif %}
+{% endmacro %}
