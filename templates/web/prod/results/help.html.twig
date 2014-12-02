@@ -1,85 +1,73 @@
 {% block  content %}
-{% if results.getError() %}
-<div>{{results.getError()}}</div>
-{% else %}
-  {% if results.getWarning() %}
-    <div>{{results.getWarning()}}</div>
-  {% endif %}
-{% endif %}
+    {% if results.error %}
+        <div>{{ results.error }}</div>
+    {% elseif results.warning %}
+        <div>{{ results.warning }}</div>
+    {% endif %}
 
-<p>
-  {{ 'Votre recherche ne retourne aucun resultat' | trans }}
-</p>
+    <p>
+      {{ 'Votre recherche ne retourne aucun resultat' | trans }}
+    </p>
 
 
-{% if suggestions %}
-  {% set link = '<a href="#" onclick="doSpecialSearch(\'' ~ suggestions ~ '\');return false;">' ~ suggestions ~ '</a>' %}
-  {% trans with {'%link%' : link} %}Voulez-vous dire %link% ?{% endtrans %}
-  <br/>
-{% endif %}
-
-{% set th_size = app['settings'].getUserSetting(app['authentication'].getUser(), 'images_size')%}
-
-{% if app['locale'] == 'fr' %}
     <div class="client_help">
-    <h5>{{ 'La recherche s\'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l\'écran.' | trans }}
-    {{ 'Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :' | trans }}</h5>
-    <h5 style="border:#CCCCCC 2px solid">{{ '* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , LAST , ALL)' | trans }}</h5>
+        <h5>{{ 'La recherche s\'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l\'écran.' | trans }}
+        {{ 'Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :' | trans }}</h5>
+        <h5 style="border:#CCCCCC 2px solid">{{ '* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , LAST , ALL)' | trans }}</h5>
 
-    <H5>{{ 'Caractères de troncature' | trans }}</H5>
+        <h5>{{ 'Caractères de troncature' | trans }}</h5>
 
-    <table>
-        <tr>
-            <td valign="top"><kbd class="ky">{{ 'auto*' | trans }}</kbd></td>
-            <td valign="top"> {{ 'retourne "automobile", "automate", "autoroute", ...' | trans }}</td>
-        </tr>
-        <tr>
-            <td valign="top"><kbd class="ky">{{ 'dé?it' | trans }}</kbd></td>
-            <td valign="top"> {{ 'retourne "délit", "débit", ...' | trans }}</td>
-        </tr>
-    </table>
+        <table>
+            <tr>
+                <td valign="top"><kbd class="ky">{{ 'auto*' | trans }}</kbd></td>
+                <td valign="top"> {{ 'retourne "automobile", "automate", "autoroute", ...' | trans }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><kbd class="ky">{{ 'dé?it' | trans }}</kbd></td>
+                <td valign="top"> {{ 'retourne "délit", "débit", ...' | trans }}</td>
+            </tr>
+        </table>
 
-    <H5>{{ 'Visualiser tous les enregistrements / les derniers enregistrements' | trans }}</H5>
-    <table>
-        <tr>
-            <td valign="top"><kbd class="ky"><b>{{ 'TOUT' | trans }}</b></kbd></td>
-            <td valign="top">{{ 'retourne tous les enregistrements des collections selectionnees' | trans }}</td>
-        </tr>
-        <tr>
-            <td valign="top"><kbd class="ky"><b>{{ 'LAST 20' | trans }}</b></kbd></td>
-            <td valign="top">{{ 'retourne les 20 derniers enregistrements archives dans les collections selectionnees' | trans }}</td>
-        </tr>
-    </table>
+        <h5>{{ 'Visualiser tous les enregistrements / les derniers enregistrements' | trans }}</h5>
+        <table>
+            <tr>
+                <td valign="top"><kbd class="ky"><b>{{ 'TOUT' | trans }}</b></kbd></td>
+                <td valign="top">{{ 'retourne tous les enregistrements des collections selectionnees' | trans }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><kbd class="ky"><b>{{ 'LAST 20' | trans }}</b></kbd></td>
+                <td valign="top">{{ 'retourne les 20 derniers enregistrements archives dans les collections selectionnees' | trans }}</td>
+            </tr>
+        </table>
 
-    <H5>{{ 'Recherche multicritères' | trans }}</H5>
-    {{ 'Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou DANS' | trans }}<br>
-    <table>
-        <tr>
-            <td valign="top"><kbd class="ky">{{ 'sport' | trans }} <b>ET</b> {{ 'automobile' | trans }}</kbd></td>
-            <td valign="top">{{ 'retourne les documents comprenant les deux mots.' | trans }}</td>
-        </tr>
-        <tr>
-            <td valign="top"><kbd class="ky">{{ 'journal OU jt' | trans }}</kbd></td>
-            <td valign="top">{{ 'retourne les documents comprenant un mot et/ou l\'autre.' | trans }}</td>
-        </tr>
-        <tr>
-            <td valign="top"><kbd class="ky">{{ 'cannes SAUF festival' | trans }}</kbd></td>
-            <td valign="top">{{ 'retourne les documents comprenant cannes sans le mot festival.' | trans }}</td>
-        </tr>
-        <tr>
-            <td valign="top"><kbd class="ky">{{ 'thalassa DANS titre' | trans }}</kbd></td>
-            <td valign="top">{{ 'retourne les documents où le terme est au moins présent dans le titre, en évitant par exemple celles où le terme est uniquement cité dans la légende.' | trans }}</td>
-        </tr>
-    </table>
+        <h5>{{ 'Recherche multicritères' | trans }}</h5>
+        {{ 'Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou DANS' | trans }}<br>
+        <table>
+            <tr>
+                <td valign="top"><kbd class="ky">{{ 'sport' | trans }} <b>ET</b> {{ 'automobile' | trans }}</kbd></td>
+                <td valign="top">{{ 'retourne les documents comprenant les deux mots.' | trans }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><kbd class="ky">{{ 'journal OU jt' | trans }}</kbd></td>
+                <td valign="top">{{ 'retourne les documents comprenant un mot et/ou l\'autre.' | trans }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><kbd class="ky">{{ 'cannes SAUF festival' | trans }}</kbd></td>
+                <td valign="top">{{ 'retourne les documents comprenant cannes sans le mot festival.' | trans }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><kbd class="ky">{{ 'thalassa DANS titre' | trans }}</kbd></td>
+                <td valign="top">{{ 'retourne les documents où le terme est au moins présent dans le titre, en évitant par exemple celles où le terme est uniquement cité dans la légende.' | trans }}</td>
+            </tr>
+        </table>
 
-    <center>
-    <h3 style="background-color:#CCCCCC; color:#000000">{{ 'Attention' | trans }}</h3>
-    <h4> {{ 'pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les guillemets :' | trans }}</h4>
-    <kbd class='tx'><i>"</i>{{ 'C dans l\'air' | trans }}<i>"</i></kbd>
-    ,  <kbd class='tx'><i>"</i>{{ 'Et Dieu créa la femme' | trans }}<i>"</i></kbd>
-    , <kbd class='tx'><i>"</i>{{ 'bijou en or' | trans }}<i>"</i></kbd>
-    , <kbd class='tx'><i>"</i>{{ 'tout le sport' | trans }}<i>"</i></kbd>
-    </center>
+        <center>
+            <h3 style="background-color:#CCCCCC; color:#000000">{{ 'Attention' | trans }}</h3>
+            <h4> {{ 'pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les guillemets :' | trans }}</h4>
+            <kbd class='tx'><i>"</i>{{ 'C dans l\'air' | trans }}<i>"</i></kbd>
+            ,  <kbd class='tx'><i>"</i>{{ 'Et Dieu créa la femme' | trans }}<i>"</i></kbd>
+            , <kbd class='tx'><i>"</i>{{ 'bijou en or' | trans }}<i>"</i></kbd>
+            , <kbd class='tx'><i>"</i>{{ 'tout le sport' | trans }}<i>"</i></kbd>
+        </center>
     </div>
-{% endif %}
 {% endblock %}

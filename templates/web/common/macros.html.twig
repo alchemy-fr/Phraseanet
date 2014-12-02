@@ -4,7 +4,7 @@
             theme : 'custom',
             custom_theme_widget: 'recaptcha_widget',
             lang : '{{ app['locale'] }}'
-         };
+        };
     </script>
 
     <div class="row-fluid">
@@ -46,7 +46,7 @@
                                 </td>
                             </tr>
                         </table>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,9 +54,9 @@
     {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
     <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k={{ app['recaptcha'].getPublicKey() }}"></script>
     <noscript>
-       <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>
-       <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-       <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+        <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>
+        <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+        <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
     </noscript>
 {% endmacro %}
 
@@ -103,13 +103,14 @@
 {% endmacro %}
 
 {% macro format_caption(record, highlight, search_engine, include_business, bounceable, technical_data) %}
-    {# @todo business fields are always included ... #}
-    {% for name, value in record.getCaption() %}
-        <div class="desc {{ cycle(['odd', 'even'], loop.index0) }}">
-            <b>{{ name }}</b> : {{ value is iterable ? value|join('; ') : value }}
-        </div>
+    {% for field in record.get_caption().get_highlight_fields(highlight, null, search_engine, include_business) %}
+        {% set extra_classes = ['pair'] %}
+        {% if loop.index is odd %}
+            {% set extra_classes = ['impair'] %}
+        {% endif %}
+        {{ _self.caption_field(field, bounceable|default(true), extra_classes) }}
     {% endfor %}
-    {% if technical_data|default(true) and app['authentication'].user is not none and app['settings'].getUserSetting(app['authentication'].user, 'technical_display') == 'group' %}
+    {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') == 'group' %}
         <hr/>
         {% include 'common/technical_datas.html.twig' %}
     {% endif %}
