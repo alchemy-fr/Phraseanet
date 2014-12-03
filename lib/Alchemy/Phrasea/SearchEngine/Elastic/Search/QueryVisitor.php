@@ -8,59 +8,23 @@ use Hoa\Visitor\Visit;
 
 class QueryVisitor implements Visit
 {
-    const NODE_TYPE_QUERY    = '#query';
-    const NODE_TYPE_IN_EXPR  = '#in';
-    const NODE_TYPE_AND_EXPR = '#and';
-    const NODE_TYPE_OR_EXPR  = '#or';
-    const NODE_TYPE_FIELD    = '#field';
-    const NODE_TYPE_TEXT     = '#text';
-    const NODE_TYPE_UNRESTRICTED_TEXT = '#unrestricted_text';
-    const NODE_TYPE_TOKEN    = 'token';
-    const NODE_TOKEN_WORD    = 'word';
-    const NODE_TOKEN_STRING  = 'string';
-    const NODE_TOKEN_EXCEPT  = 'except';
-
-    private $leftNode;
-    private $leftOp;
-
     public function visit(Element $element, &$handle = null, $eldnah = null)
     {
         if (null !== $value = $element->getValue()) {
             return $this->visitToken($value['token'], $value['value']);
         }
 
-        $node = $this->visitNode($element);
-        if ($this->leftOp) {
-            $node = $this->leftOp->__invoke($node);
-            $this->leftOp = null;
-        }
-        $this->leftNode = $node;
-
-        return $node;
+        return $this->visitNode($element);
     }
 
     private function visitToken($token, $value)
     {
         switch ($token) {
-            case self::NODE_TOKEN_WORD:
+            case NodeTypes::TOKEN_WORD:
                 return new AST\TextNode($value);
 
-            case self::NODE_TOKEN_STRING:
+            case NodeTypes::TOKEN_STRING:
                 return new AST\QuotedTextNode($value);
-
-            case self::NODE_TOKEN_EXCEPT:
-                // Schedule the operation at the next node visit using also
-                // previous node to build the "except" expression.
-                // (we don't have the next node yet).
-                //
-                // Tokens taking part in an "except" expression are emited by
-                // the compiler as a flat list, not a tree, because we can't
-                // maintain left-associativity required by EXCEPT operator.
-                $left = $this->leftNode;
-                $this->leftOp = function ($right) use ($left) {
-                    return new AST\ExceptExpression($left, $right);
-                };
-                break;
 
             default:
                 // Generic handling off other tokens for unresctricted text
@@ -71,20 +35,22 @@ class QueryVisitor implements Visit
     private function visitNode(Element $element)
     {
         switch ($element->getId()) {
-            case self::NODE_TYPE_QUERY:
+            case NodeTypes::QUERY:
                 return $this->visitQuery($element);
 
-            case self::NODE_TYPE_IN_EXPR:
+            case NodeTypes::IN_EXPR:
                 return $this->visitInNode($element);
 
-            case self::NODE_TYPE_AND_EXPR:
+            case NodeTypes::AND_EXPR:
                 return $this->visitAndNode($element);
 
-            case self::NODE_TYPE_OR_EXPR:
+            case NodeTypes::OR_EXPR:
                 return $this->visitOrNode($element);
 
-            case self::NODE_TYPE_TEXT:
-            case self::NODE_TYPE_UNRESTRICTED_TEXT:
+            case NodeTypes::EXCEPT_EXPR:
+                return $this->visitExceptNode($element);
+
+            case NodeTypes::TEXT:
                 return $this->visitText($element);
 
             default:
@@ -121,6 +87,13 @@ class QueryVisitor implements Visit
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
             return new AST\OrExpression($left, $right);
+        });
+    }
+
+    private function visitExceptNode(Element $element)
+    {
+        return $this->handleBinaryOperator($element, function($left, $right) {
+            return new AST\ExceptExpression($left, $right);
         });
     }
 
