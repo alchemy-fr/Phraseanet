@@ -32,13 +32,19 @@ class QueryParseCommand extends Command
             )
             ->addOption(
                 'compiler-dump',
-                false,
+                'd',
                 InputOption::VALUE_NONE,
                 'Output underlying compiler AST before visitor processing'
             )
             ->addOption(
+                'no-compiler-postprocessing',
+                'p',
+                InputOption::VALUE_NONE,
+                'Prevent AST optimization before visitor processing'
+            )
+            ->addOption(
                 'raw',
-                false,
+                null,
                 InputOption::VALUE_NONE,
                 'Only output query dump'
             )
@@ -55,11 +61,13 @@ class QueryParseCommand extends Command
             $output->writeln(str_repeat('-', 20));
         }
 
+        $postprocessing = !$input->getOption('no-compiler-postprocessing');
+
         $parser = $this->container['query_parser'];
         if ($input->getOption('compiler-dump')) {
-            $dump = $parser->dump($string);
+            $dump = $parser->dump($string, $postprocessing);
         } else {
-            $query = $parser->parse($string);
+            $query = $parser->parse($string, $postprocessing);
             $dump = $query->dump();
         }
 

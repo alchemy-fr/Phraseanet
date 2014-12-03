@@ -28,17 +28,17 @@ class QueryParser
     /**
      * Creates a Query object from a string
      */
-    public function parse($string)
+    public function parse($string, $postprocessing = true)
     {
-        return $this->visitString($string, new QueryVisitor());
+        return $this->visitString($string, new QueryVisitor(), $postprocessing);
     }
 
-    public function dump($string)
+    public function dump($string, $postprocessing = true)
     {
-        return $this->visitString($string, new DumpVisitor());
+        return $this->visitString($string, new DumpVisitor(), $postprocessing);
     }
 
-    private function visitString($string, Visit $visitor)
+    private function visitString($string, Visit $visitor, $postprocessing = true)
     {
         try {
             $ast = $this->parser->parse($string);
@@ -46,8 +46,9 @@ class QueryParser
             throw new QueryException('Provided query is not valid', 0, $e);
         }
 
-
-        $this->fixOperatorAssociativity($ast);
+        if ($postprocessing) {
+            $this->fixOperatorAssociativity($ast);
+        }
 
         return $visitor->visit($ast);
     }
