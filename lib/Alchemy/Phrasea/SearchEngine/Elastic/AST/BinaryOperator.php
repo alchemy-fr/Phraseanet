@@ -21,12 +21,7 @@ abstract class BinaryOperator extends Node
 
     public function isFullTextOnly()
     {
-        foreach ($this->members as $member) {
-            if (!$member->isFullTextOnly()) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->left->isFullTextOnly()
+            && $this->right->isFullTextOnly();
     }
 }
