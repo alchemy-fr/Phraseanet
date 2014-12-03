@@ -18,10 +18,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryParser;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
+use Hoa\Compiler\Llk\Llk;
+use Hoa\File\Read;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Silex\Application;
@@ -125,6 +128,21 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.client'],
                 $app['elasticsearch.options']['index']
             );
+        });
+
+        $app['query_parser.grammar_path'] = function ($app) {
+            $configPath = ['registry', 'searchengine', 'query-grammar-path'];
+            $grammarPath = $app['conf']->get($configPath, 'grammar/query.pp');
+            $projectRoot = '../../../../..';
+
+            return realpath(implode('/', [__DIR__, $projectRoot, $grammarPath]));
+        };
+
+        $app['query_parser'] = $app->share(function ($app) {
+            $grammarPath = $app['query_parser.grammar_path'];
+            $parser = Llk::load(new Read($grammarPath));
+
+            return new QueryParser($parser);
         });
     }
 

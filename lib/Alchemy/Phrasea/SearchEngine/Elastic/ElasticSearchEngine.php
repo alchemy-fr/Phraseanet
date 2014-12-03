@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\SearchQuery;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -270,8 +271,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
     {
         $options = $options ?: new SearchEngineOptions();
-        $parser = new QueryParser();
-        $ast = $parser->parse($string);
+
+        $searchQuery = $this->app['query_parser']->parse($string);
 
         // Contains the full thesaurus paths to search on
         $pathsToFilter = [];
@@ -279,9 +280,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         $collectFields = [];
 
         // Only search in thesaurus for full text search
-        if ($ast->isFullTextOnly()) {
+        if ($searchQuery->isFullTextOnly()) {
             $termFields = $this->expendToAnalyzedFieldsNames('value', null, $this->app['locale']);
-            $termsQuery = $ast->getQuery($termFields);
+            $termsQuery = $searchQuery->getElasticsearchQuery($termFields);
 
             $params = $this->createTermQueryParams($termsQuery, $options);
             $terms = $this->doExecute('search', $params);
@@ -313,7 +314,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $recordQuery = [
             'bool' => [
                 'should' => [
-                    $ast->getQuery($recordFields)
+                    $searchQuery->getElasticsearchQuery($recordFields)
                 ]
             ]
         ];
@@ -376,7 +377,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
         }
 
-        $query['_ast'] = (string) $ast;
+        $query['_ast'] = $searchQuery->dump();
         $query['_paths'] = $pathsToFilter;
         $query['_richFields'] = $collectFields;
         $query['query'] = json_encode($params);

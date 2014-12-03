@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
-class KeywordNode extends Node
+class FieldNode extends Node
 {
     protected $keyword;
 
