@@ -274,24 +274,15 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $searchQuery = $this->app['query_parser']->parse($string);
 
-        $esQuery = $searchQuery->getElasticsearchQuery();
-
-        echo json_encode($esQuery, JSON_PRETTY_PRINT);
-
-        die();
-
-        $parser = new QueryParser();
-        $ast = $parser->parse($string);
-
         // Contains the full thesaurus paths to search on
         $pathsToFilter = [];
         // Contains the thesaurus values by fields (synonyms, translations, etc)
         $collectFields = [];
 
         // Only search in thesaurus for full text search
-        if ($ast->isFullTextOnly()) {
+        if ($searchQuery->isFullTextOnly()) {
             $termFiels = $this->expendToAnalyzedFieldsNames('value');
-            $termsQuery = $ast->getQuery($termFiels);
+            $termsQuery = $searchQuery->getElasticsearchQuery($termFiels);
 
             $params = $this->createTermQueryParams($termsQuery, $options);
             $terms = $this->doExecute('search', $params);
@@ -318,7 +309,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $recordQuery = [
             'bool' => [
                 'should' => [
-                    $ast->getQuery($recordFields)
+                    $searchQuery->getElasticsearchQuery($recordFields)
                 ]
             ]
         ];
@@ -371,7 +362,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
         }
 
-        $query['_ast'] = (string) $ast;
+        $query['_ast'] = $searchQuery->dump();
         $query['_paths'] = $pathsToFilter;
         $query['_richFields'] = $collectFields;
         $query['query'] = json_encode($params);

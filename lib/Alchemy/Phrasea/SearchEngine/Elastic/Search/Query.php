@@ -15,9 +15,19 @@ class Query
         $this->root = $root;
     }
 
-    public function getElasticsearchQuery()
+    /*
+     * This method seems weird to me, the implementation returns true when the
+     * query doesn't contain IN statements, but that doesn't define a full text
+     * search.
+     */
+    public function isFullTextOnly()
     {
-        return $this->root->getQuery();
+        return $this->root->isFullTextOnly();
+    }
+
+    public function getElasticsearchQuery($fields = array())
+    {
+        return $this->root->getQuery($fields);
     }
 
     public function dump()
