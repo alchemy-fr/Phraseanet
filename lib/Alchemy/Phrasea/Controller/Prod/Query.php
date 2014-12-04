@@ -52,8 +52,6 @@ class Query implements ControllerProviderInterface
     {
         $query = (string) $request->request->get('qry');
 
-        $mod = $app['settings']->getUserSetting($app['authentication']->getUser(), 'view');
-
         $json = [];
 
         $options = SearchEngineOptions::fromRequest($app, $request);
@@ -176,21 +174,10 @@ class Query implements ControllerProviderInterface
         if ($result->getTotal() === 0) {
             $template = 'prod/results/help.html.twig';
         } else {
-            if ($mod == 'thumbs') {
-                $template = 'prod/results/answergrid.html.twig';
-            } else {
-                $template = 'prod/results/answerlist.html.twig';
-            }
+            $template = 'prod/results/records.html.twig';
         }
 
-        $json['results'] = $app['twig']->render($template, [
-            'results'         => $result,
-            'highlight'       => $result->getQuery(),
-            'searchEngine'    => $app['phraseanet.SE'],
-            'searchOptions'   => $options,
-            'suggestions'     => $prop
-            ]
-        );
+        $json['results'] = $app['twig']->render($template, ['results'=> $result]);
 
         $json['query'] = $query;
 

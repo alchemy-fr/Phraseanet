@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchRecordHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\SearchQuery;
@@ -368,13 +369,10 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
+
         $n = 0;
-
         foreach ($res['hits']['hits'] as $hit) {
-            $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
-
-            $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
-            $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
+            $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
         $query['_ast'] = $searchQuery->dump();
@@ -446,7 +444,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             'index' => $this->indexName,
             'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
-                'fields' => ['databox_id', 'record_id'],
                 'sort'   => $this->createSortQueryParams($options),
             ]
         ];

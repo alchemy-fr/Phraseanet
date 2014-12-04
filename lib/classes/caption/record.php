@@ -38,12 +38,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
     /**
      *
      * @param Application      $app
-     * @param record_Interface $record
+     * @param record_adapter $record
      * @param databox          $databox
      *
      * @return caption_record
      */
-    public function __construct(Application $app, record_Interface $record, databox $databox)
+    public function __construct(Application $app, \record_adapter $record, databox $databox)
     {
         $this->app = $app;
         $this->sbas_id = $record->get_sbas_id();

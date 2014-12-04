@@ -158,6 +158,27 @@ class RecordIndexer
                 ->addRawVersion()
         ;
 
+        // Index title
+        $titleMapping = new Mapping();
+        $titleMapping->add('default', 'string')->notAnalyzed()->notIndexed();
+        foreach ($this->locales as $locale) {
+            $titleMapping->add($locale, 'string')->notAnalyzed()->notIndexed();
+        }
+        $mapping->add('title', $titleMapping);
+
+        // Minimal subdefs mapping info for display purpose
+        $subdefMapping = new Mapping();
+        $subdefMapping->add('path', 'string')->notAnalyzed()->notIndexed();
+        $subdefMapping->add('height', 'integer')->notIndexed();
+        $subdefMapping->add('width', 'integer')->notIndexed();
+
+        $subdefsMapping = new Mapping();
+        $subdefsMapping->add('thumbnail', $subdefMapping);
+        $subdefsMapping->add('thumbnailgif', $subdefMapping);
+        $subdefsMapping->add('preview', $subdefMapping);
+
+        $mapping->add('subdefs', $subdefsMapping);
+
         // Caption mapping
         $captionMapping = new Mapping();
         $mapping->add('caption', $captionMapping);
@@ -306,15 +327,13 @@ class RecordIndexer
     private function getFlagsMapping()
     {
         $mapping = new Mapping();
-        $seen = array();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             foreach ($databox->get_statusbits() as $bit => $status) {
                 $key = self::normalizeFlagKey($status['labelon']);
                 // We only add to mapping new statuses
-                if (!in_array($key, $seen)) {
+                if (!$mapping->has($key)) {
                     $mapping->add($key, 'boolean');
-                    $seen[] = $key;
                 }
             }
         }
@@ -337,14 +356,13 @@ class RecordIndexer
     {
         $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
         $structure = $this->getFieldsStructure();
-        $fullStatus = str_pad($record['bin_status'], 32, "0", STR_PAD_LEFT);
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             foreach ($databox->get_statusbits() as $bit => $status) {
                 $key = self::normalizeFlagKey($status['labelon']);
                 $position = 31-$bit;
 
-                $record['flags'][$key] = isset($fullStatus{$position}) ? (bool) $fullStatus{$position} : null;
+                $record['flags'][$key] = isset($record['bin_status']{$position}) ? (bool) $record['bin_status']{$position} : null;
             }
         }
 

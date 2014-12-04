@@ -176,6 +176,11 @@ class Mapping
         return $this;
     }
 
+    public function has($name)
+    {
+        return isset($this->fields[$name]);
+    }
+
     protected function &currentField()
     {
         if (null === $this->current) {

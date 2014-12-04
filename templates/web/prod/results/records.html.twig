@@ -1,0 +1,38 @@
+{% if results.error %}
+    {% block result_error %}
+        <div>
+            {{ results.error }}
+        </div>
+    {% endblock %}
+{% else %}
+    {% if results.warning %}
+        {% block result_warning %}
+            <div>
+                {{ results.warning }}
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {% block content %}
+        {% set images_size = user_setting('images_size') %}
+        {% set technical_display = user_setting('technical_display') %}
+        {% set rollover_thumbnail = user_setting('rollover_thumbnail') %}
+        {% set doctype_display = user_setting('doctype_display') %}
+
+        <div class="selectable" style="margin:10px 0; float:left;">
+            {% for record in results.results %}
+                {% block content_item %}
+                    {% include (user_setting('view', 'thumbs') == 'thumbs') ? 'prod/results/grid.html.twig' : 'prod/results/list.html.twig' with {
+                        'record': record,
+                        'settings': {
+                            'images_size': images_size,
+                            'technical_display': technical_display,
+                            'rollover_thumbnail': rollover_thumbnail,
+                            'doctype_display': doctype_display
+                        }
+                    } %}
+                {% endblock %}
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endif %}

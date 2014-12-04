@@ -18,11 +18,13 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
+use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
-class record_adapter implements record_Interface, cache_cacheableInterface
+class record_adapter implements RecordInterface, cache_cacheableInterface
 {
     /**
      *
@@ -739,7 +741,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_technical_infos($data = false)
     {
-
         if (!$this->technical_datas) {
             try {
                 $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
@@ -1838,5 +1839,106 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /** {@inheritdoc} */
+    public function getBaseId()
+    {
+        return $this->get_base_id();
+    }
+
+    /** {@inheritdoc} */
+    public function getCollectionId()
+    {
+        return $this->get_collection()->get_coll_id();
+    }
+
+    /** {@inheritdoc} */
+    public function getCreated()
+    {
+        return $this->get_creation_date();
+    }
+
+    /** {@inheritdoc} */
+    public function getDataboxId()
+    {
+        return $this->get_databox()->get_sbas_id();
+    }
+
+    /** {@inheritdoc} */
+    public function isStory()
+    {
+        return $this->is_grouping();
+    }
+
+    /** {@inheritdoc} */
+    public function getMimeType()
+    {
+        return $this->get_mime();
+    }
+
+    /** {@inheritdoc} */
+    public function getOriginalName()
+    {
+       return $this->get_original_name();
+    }
+
+    /** {@inheritdoc} */
+    public function setOriginalName($originalName)
+    {
+        $this->set_original_name($originalName);
+    }
+
+    /** {@inheritdoc} */
+    public function getRecordId()
+    {
+        return $this->get_record_id();
+    }
+
+    /** {@inheritdoc} */
+    public function getSha256()
+    {
+        return $this->get_sha256();
+    }
+
+    /** {@inheritdoc} */
+    public function getType()
+    {
+        return $this->get_type();
+    }
+
+    /** {@inheritdoc} */
+    public function getUpdated()
+    {
+        return $this->get_modification_date();
+    }
+
+    /** {@inheritdoc} */
+    public function getUuid()
+    {
+        return $this->get_uuid();
+    }
+
+    /** {@inheritdoc} */
+    public function getId()
+    {
+        return $this->get_serialize_key();
+    }
+
+    public function setStatus($status)
+    {
+        $this->set_binary_status($status);
+    }
+
+    /** {@inheritdoc} */
+    public function getStatus()
+    {
+        return $this->get_status();
+    }
+
+    /** {@inheritdoc} */
+    public function getExif()
+    {
+        return new ArrayCollection($this->get_technical_infos());
     }
 }

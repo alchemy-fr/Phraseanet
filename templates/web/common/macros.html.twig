@@ -4,7 +4,7 @@
             theme : 'custom',
             custom_theme_widget: 'recaptcha_widget',
             lang : '{{ app['locale'] }}'
-         };
+        };
     </script>
 
     <div class="row-fluid">
@@ -46,7 +46,7 @@
                                 </td>
                             </tr>
                         </table>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,9 +54,9 @@
     {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
     <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k={{ app['recaptcha'].getPublicKey() }}"></script>
     <noscript>
-       <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>
-       <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-       <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+        <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>
+        <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+        <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
     </noscript>
 {% endmacro %}
 
@@ -111,6 +111,24 @@
         {{ _self.caption_field(field, bounceable|default(true), extra_classes) }}
     {% endfor %}
     {% if technical_data|default(true) and app['authentication'].getUser() is not none and app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') == 'group' %}
+        <hr/>
+        {% include 'common/technical_datas.html.twig' %}
+    {% endif %}
+{% endmacro %}
+
+{% macro caption(record, business, technical) %}
+    {# @todo handle business fields #}
+    {% for name, value in record.caption %}
+        <div class="desc {{ loop.index is odd ? 'impair' : 'pair' }}">
+            <b>{{ name }}</b> :
+            {% if value is iterable %}
+                {{ value | join(' ; ') }}
+            {% else %}
+                {{ value }}
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% if technical|default(true) and app['authentication'].user is not none and user_setting('technical_display') == 'group' %}
         <hr/>
         {% include 'common/technical_datas.html.twig' %}
     {% endif %}
