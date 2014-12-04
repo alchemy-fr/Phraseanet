@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -135,6 +137,8 @@ class Story implements ControllerProviderInterface
                 $n++;
             }
 
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
+
             $data = array(
                 'success' => true
                 , 'message' => sprintf(_('%d records added'), $n)
@@ -161,6 +165,9 @@ class Story implements ControllerProviderInterface
                 'success' => true
                 , 'message' => _('Record removed from story')
             );
+
+
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
 
             if ($request->getRequestFormat() == 'json') {
                 return $app->json($data);
@@ -223,6 +230,8 @@ class Story implements ControllerProviderInterface
                 }
 
                 $stmt->closeCursor();
+
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
                 $ret = array('success' => true, 'message' => _('Story updated'));
             } catch (ControllerException $e) {
