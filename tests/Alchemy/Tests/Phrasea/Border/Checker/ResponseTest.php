@@ -51,19 +51,4 @@ class ResponseTest extends \PhraseanetTestCase
     {
         $this->assertSame($this->mock, $this->object->getChecker());
     }
-
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Response::getMessage
-     */
-    public function testGetMessage()
-    {
-        $this->mock
-            ->staticExpects($this->any())
-            ->method('getMessage')
-            ->will($this->returnValue('Hello World'));
-
-        $this->object = new Response(true, $this->mock);
-
-        $this->assertEquals('Hello World', $this->object->getMessage($this->createTranslatorMock()));
-    }
 }

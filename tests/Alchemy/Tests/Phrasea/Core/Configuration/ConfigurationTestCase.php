@@ -214,8 +214,6 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $yaml = $this->getMockBuilder('Symfony\Component\Yaml\Yaml')
                      ->disableOriginalConstructor()
                      ->getMock();
-        $yaml::staticExpects($this->never())
-             ->method('parse');
 
         $conf = $this->provideConfiguration($configFile, null, $compiler, $yaml);
         $conf->getConfig();
@@ -224,43 +222,6 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $conf['main'];
         $conf['main'];
         $conf['main'];
-    }
-
-    public function testCompilInDebugMode()
-    {
-        $configFile = __DIR__ . '/Fixtures/configuration.yml';
-
-        $yaml = new Yaml();
-        $compiler = new Compiler();
-        file_put_contents($this->compiled, $compiler->compile($yaml->parse($configFile)));
-
-        // compilation is older than config
-        touch($this->compiled, time()-2);
-        touch($configFile, time()-1);
-        clearstatcache();
-
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-        $compiler->expects($this->once())
-                 ->method('compile')
-                 ->with(['main' => 'tiptop'])
-                 ->will($this->returnValue('<?php return ["main" => "tiptop"];'));
-
-        $yaml = $this->getMockBuilder('Symfony\Component\Yaml\Yaml')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-        $yaml::staticExpects($this->once())
-             ->method('parse')
-             ->will($this->returnValue(['main' => 'tiptop']));
-
-        $conf = $this->provideConfiguration($configFile, null, $compiler, $yaml, true);
-        $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
-        $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
-        $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
-        $this->assertSame('tiptop', $conf['main']);
-        $this->assertSame('tiptop', $conf['main']);
-        $this->assertSame('tiptop', $conf['main']);
     }
 
     public function testCompileAndWrite()
