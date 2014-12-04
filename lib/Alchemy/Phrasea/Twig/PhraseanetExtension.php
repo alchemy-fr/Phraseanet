@@ -164,12 +164,11 @@ class PhraseanetExtension extends \Twig_Extension
             }
         }
 
-        $path = sprintf('%s/www/skins/icons/substitution/%s.png',
-            $this->app['root.path'],
+        $path = sprintf('/skins/icons/substitution/%s.png',
             str_replace('/', '_', $record->getMimeType())
         );
 
-        return $this->app['phraseanet.static-file']->getUrl($path);
+        return $path;
     }
 
     public function getUserSetting($setting, $default = null)
