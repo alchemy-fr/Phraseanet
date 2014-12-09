@@ -26,10 +26,7 @@ class module_report_download extends module_report
         'log_id'    => 'log_docs.log_id',
         'record_id' => 'log_docs.record_id',
         'final'     => 'log_docs.final',
-        'comment'   => 'log_docs.comment',
-        'size'      => 'subdef.size',
-        'mime'      => 'subdef.mime',
-        'file'      => 'subdef.file'
+        'comment'   => 'log_docs.comment'
     );
 
     /**
