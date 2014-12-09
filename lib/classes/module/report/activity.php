@@ -470,7 +470,7 @@ class module_report_activity extends module_report
         $params = array_merge(array(), $filter['params']);
 
         $sql = "
-                SELECT TRIM(" . $on . ") AS " . $on . ", SUM( log_docs.record_id ) AS nb, log_docs.final, log.usrid
+                SELECT TRIM(" . $on . ") AS " . $on . ", SUM(1) AS nb, log_docs.final, log.usrid
                 FROM log_docs
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
                     LEFT JOIN record ON (record.record_id = log_docs.record_id)
