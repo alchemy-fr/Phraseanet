@@ -314,18 +314,9 @@ class Root implements ControllerProviderInterface
             $request->request->get('collection')
         );
 
-<<<<<<< HEAD
         $conf_pref = [];
-=======
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
-        $conf_pref = array();
->>>>>>> 3.8
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
         foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
-<<<<<<< HEAD
             $conf_pref[strtolower($field)] = [$field, 0, 0, 0, 0];
         }
 
@@ -341,28 +332,6 @@ class Root implements ControllerProviderInterface
             'pays'      => [$app->trans('report:: pays'), 1, 1, 1, 1],
             'societe'   => [$app->trans('report:: societe'), 1, 1, 1, 1]
         ], $conf_pref);
-=======
-//            $conf_pref[strtolower($field)] = array($field, 0, 0, 0, 0);
-            $conf_pref[$field] = array($field, 0, 0, 0, 0);
-        }
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
-        $conf = array_merge(array(
-            'user'      => array(_('report:: utilisateurs'), 1, 1, 1, 1),
-            'ddate'     => array(_('report:: date'), 1, 0, 1, 1),
-            'record_id' => array(_('report:: record id'), 1, 1, 1, 1),
-            'final'     => array(_('phrseanet:: sous definition'), 1, 0, 1, 1),
-            'coll_id'   => array(_('report:: collections'), 1, 0, 1, 1),
-            'comment'   => array(_('report:: commentaire'), 1, 0, 0, 0),
-            'fonction'  => array(_('report:: fonction'), 1, 1, 1, 1),
-            'activite'  => array(_('report:: activite'), 1, 1, 1, 1),
-            'pays'      => array(_('report:: pays'), 1, 1, 1, 1),
-            'societe'   => array(_('report:: societe'), 1, 1, 1, 1)
-        ), $conf_pref);
->>>>>>> 3.8
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
         if ($request->request->get('printcsv') == 'on') {
             $download->setHasLimit(false);
@@ -390,21 +359,14 @@ class Root implements ControllerProviderInterface
             return $report;
         }
 
-<<<<<<< HEAD
         return $app->json([
                 'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-=======
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
-        return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
->>>>>>> 3.8
-                'result'      => isset($report['report']) ? $report['report'] : $report,
-                'is_infouser' => false,
-                'is_nav'      => false,
-                'is_groupby'  => false,
-                'is_plot'     => false,
-                'is_doc'      => false
+                    'result'      => isset($report['report']) ? $report['report'] : $report,
+                    'is_infouser' => false,
+                    'is_nav'      => false,
+                    'is_groupby'  => false,
+                    'is_plot'     => false,
+                    'is_doc'      => false
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -436,12 +398,7 @@ class Root implements ControllerProviderInterface
         $conf_pref = [];
 
         foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
-<<<<<<< HEAD
-            $conf_pref[strtolower($field)] = [$field, 0, 0, 0, 0];
-=======
-//            $conf_pref[strtolower($field)] = array($field, 0, 0, 0, 0);
             $conf_pref[$field] = array($field, 0, 0, 0, 0);
->>>>>>> 3.8
         }
 
         $conf = array_merge([
@@ -701,15 +658,8 @@ class Root implements ControllerProviderInterface
                 $groupField = isset($conf[strtolower($groupby)]['title']) ? $conf[strtolower($groupby)]['title'] : '';
             }
 
-<<<<<<< HEAD
             return $app->json([
                 'rs' => $app['twig']->render('report/ajax_data_content.html.twig', [
-=======
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
-            return $app->json(array(
-                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', array(
->>>>>>> 3.8
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,

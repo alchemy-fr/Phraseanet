@@ -42,6 +42,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
 
 class V1 implements ControllerProviderInterface
 {
@@ -559,6 +560,8 @@ class V1 implements ControllerProviderInterface
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
             $app['phraseanet.SE']->addRecord($output);
+
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -861,7 +864,10 @@ class V1 implements ControllerProviderInterface
         }
 
         $record->set_binary_status(strrev($datas));
+
         $app['phraseanet.SE']->updateRecord($record);
+
+        $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         $ret = ["status" => $this->list_record_status($databox, $record->get_status())];
 
@@ -1312,7 +1318,7 @@ class V1 implements ControllerProviderInterface
 
         $ret = [];
         foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[] = ['bit' => $bit, 'state' => !!substr($status, ($bit - 1), 1)];
+            $ret[] = ['bit' => $bit, 'state' => !!substr($status, ($bit), 1)];
         }
 
         return $ret;

@@ -13,12 +13,9 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-<<<<<<< HEAD
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
-=======
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
->>>>>>> 3.8
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -137,13 +134,9 @@ class Story implements ControllerProviderInterface
                 $n++;
             }
 
-<<<<<<< HEAD
-            $data = [
-=======
             $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
 
-            $data = array(
->>>>>>> 3.8
+            $data = [
                 'success' => true
                 , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
             ];
@@ -235,13 +228,9 @@ class Story implements ControllerProviderInterface
 
                 $stmt->closeCursor();
 
-<<<<<<< HEAD
                 $ret = ['success' => true, 'message' => $app->trans('Story updated')];
-=======
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
-                $ret = array('success' => true, 'message' => _('Story updated'));
->>>>>>> 3.8
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
             } catch (ControllerException $e) {
                 $ret = ['success' => false, 'message' => $e->getMessage()];
             } catch (\Exception $e) {

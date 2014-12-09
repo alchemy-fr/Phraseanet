@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Minifier;
+use Alchemy\Phrasea\Controller\Permalink;
 use Alchemy\Phrasea\Controller\Datafiles;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiCorsSubscriber;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -110,6 +112,8 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/api/oauthv2', new Oauth2());
     $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
+    $app->mount('/permalink/', new Permalink());
+    $app->mount('/include/minify/', new Minifier());
 
     $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
         $dispatcher->addSubscriber(new ApiOauth2ErrorsSubscriber($app['phraseanet.exception_handler'], $app['translator']));

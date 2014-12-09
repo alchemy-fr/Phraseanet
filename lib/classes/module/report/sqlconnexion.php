@@ -89,12 +89,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 WHERE (' . $filter['sql'] . ')
             ) AS tt ORDER BY val ASC';
 
-<<<<<<< HEAD
         return ['sql' => $this->sql, 'params' => $this->params];
-=======
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
-
-        return array('sql' => $this->sql, 'params' => $this->params);
->>>>>>> 3.8
     }
 }

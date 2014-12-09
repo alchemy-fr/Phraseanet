@@ -206,7 +206,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = $row['mime'];
             $this->file = $row['file'];
             $this->path = p4string::addEndSlash($row['path']);
-            $this->etag = $row['etag'] !== null ? $row['etag'] : sha1_file($this->get_pathfile());
+            $this->etag = $row['etag'] !== null ? $row['etag'] : file_exists($this->get_pathfile()) ? sha1_file($this->get_pathfile()) : null;
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
 
@@ -753,11 +753,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $this->url = Url::factory("/datafiles/" . $this->record->get_sbas_id()
             . "/" . $this->record->get_record_id() . "/"
-<<<<<<< HEAD
-            . $this->get_name() . "/");
-=======
             . $this->get_name() . "/?etag=".$this->getEtag());
->>>>>>> 3.8
 
         return;
     }

@@ -141,7 +141,6 @@ class module_report_activity extends module_report
         return $this->report;
     }
 
-<<<<<<< HEAD
     /**
      * Get all questions by user
      *
@@ -195,8 +194,6 @@ class module_report_activity extends module_report
 
         return $this->result;
     }
-=======
->>>>>>> 3.8
 
     // ================== Site activity : Top questions (le second radio ...) ================
     /**
@@ -334,13 +331,8 @@ class module_report_activity extends module_report
      */
     public function getDownloadByBaseByDay($tab = false)
     {
-<<<<<<< HEAD
         $this->title = $this->app->trans('report:: telechargements par jour');
-
-=======
-        $this->title = _('report:: telechargements par jour');
         $this->setDateField('log_docs.date');
->>>>>>> 3.8
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge([], $filter['params']);
@@ -410,9 +402,7 @@ class module_report_activity extends module_report
             $this->result[$nb_row]['preview'] = '<b>' . $total['tot_prev'] . '</b>';
             $this->result[$nb_row]['total'] = '<b>' . $total['tot_dl'] . '</b>';
         }
-<<<<<<< HEAD
-        $this->calculatePages();
-=======
+
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, var_export($this->result, true)), FILE_APPEND);
         foreach($this->result as $k=>$row) {
             $_row = array();
@@ -423,8 +413,7 @@ class module_report_activity extends module_report
         }
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, var_export($this->result, true)), FILE_APPEND);
 
-        $this->calculatePages($rs);
->>>>>>> 3.8
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -752,27 +741,15 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-<<<<<<< HEAD
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $res = [];
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = [':site_id' => $app['conf']->get(['main', 'key'])];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $conn = connection::getPDOConnection($app, $sbas_id);
-        $res = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.id, HOUR(tt.heures) AS heures
             FROM (
@@ -826,15 +803,9 @@ class module_report_activity extends module_report
         $res = array();
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
 
-<<<<<<< HEAD
         $params = [':site_id' => $app['conf']->get(['main', 'key'])];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity
             FROM (
@@ -879,27 +850,13 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-<<<<<<< HEAD
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
-        $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
 
         $params = [':site_id' => $app['conf']->get(['main', 'key'])];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
-
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
-        $params = array_merge($params, $datefilter['params']);
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.usrid, tt.user, sum(1) AS nb
             FROM (
@@ -944,27 +901,15 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-<<<<<<< HEAD
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
-        $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
 
         $params = [':site_id' => $app['conf']->get(['main', 'key'])];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_search.date');
-
-        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params']);
+
 /*
->>>>>>> 3.8
         $sql = "
             SELECT TRIM(tt.search) AS question, tt.usrid, tt.user, SUM(1) AS nb
             FROM (
@@ -1017,15 +962,11 @@ class module_report_activity extends module_report
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
 
-<<<<<<< HEAD
         $params = [];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $params = array();
         $params = array_merge($params, $datefilter['params']);
+
+
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.referrer, SUM(1) AS nb_view
             FROM (
@@ -1074,25 +1015,14 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteAddedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-<<<<<<< HEAD
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-
         $params = [];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax,'log_docs.date');
-
-        $params = array();
         $params = array_merge($params, $datefilter['params']);
+
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity
             FROM (
@@ -1134,25 +1064,14 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteEditedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-<<<<<<< HEAD
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-
         $params = [];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
-
-        $params = array();
         $params = array_merge($params, $datefilter['params']);
+
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity
             FROM (
@@ -1194,25 +1113,14 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteAddedTopTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-<<<<<<< HEAD
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = [];
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-
-=======
-        $conn = connection::getPDOConnection($app, $sbas_id);
-        $result = array();
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
-
-        $params = array();
         $params = array_merge($params, $datefilter['params']);
 /*
->>>>>>> 3.8
         $sql = "
             SELECT tt.usrid, tt.user, sum( 1 ) AS nb
             FROM (

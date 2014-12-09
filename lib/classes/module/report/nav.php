@@ -450,13 +450,7 @@ class module_report_nav extends module_report
                  WHERE (id = :value)';
         }
 
-<<<<<<< HEAD
         $params2 = [':value' => $val];
-=======
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
-
-        $params2 = array(':value' => $val);
->>>>>>> 3.8
         $stmt = $conn->prepare($sql);
         $stmt->execute($params2);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

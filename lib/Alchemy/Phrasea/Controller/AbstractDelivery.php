@@ -21,10 +21,6 @@ abstract class AbstractDelivery implements ControllerProviderInterface
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)
     {
         $file = $record->get_subdef($subdef);
-<<<<<<< HEAD
-
-=======
->>>>>>> 3.8
         $pathOut = $file->get_pathfile();
 
         if ($watermark === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
@@ -33,25 +29,6 @@ abstract class AbstractDelivery implements ControllerProviderInterface
             $pathOut = \recordutils_image::stamp($app, $file);
         }
 
-<<<<<<< HEAD
-        $log_id = null;
-        try {
-            $logger = $app['phraseanet.logger']($record->get_databox());
-            $log_id = $logger->get_id();
-
-            $referrer = 'NO REFERRER';
-
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                $referrer = $_SERVER['HTTP_REFERER'];
-            }
-
-            $record->log_view($log_id, $referrer, $app['conf']->get(['main', 'key']));
-        } catch (\Exception $e) {
-
-        }
-
-=======
->>>>>>> 3.8
         $disposition = $request->query->get('download') ? DeliverDataInterface::DISPOSITION_ATTACHMENT : DeliverDataInterface::DISPOSITION_INLINE;
 
         $response = $app['phraseanet.file-serve']->deliverFile($pathOut, $file->get_file(), $disposition, $file->get_mime());

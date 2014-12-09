@@ -38,14 +38,8 @@ class module_report_connexion extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-<<<<<<< HEAD
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, '');
         $this->title = $this->app->trans('report::Connexions');
-=======
-    //    parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
-        $this->title = _('report::Connexions');
->>>>>>> 3.8
     }
 
     /**
@@ -146,18 +140,10 @@ class module_report_connexion extends module_report
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
 
-<<<<<<< HEAD
         $params = array_merge([
                 ':site_id' => $app['conf']->get(['main', 'key'])
             ],
-            $datefilter['params'],
-            $collfilter['params']
-=======
-        $params = array_merge(array(
-                ':site_id' => $app['phraseanet.configuration']['main']['key']
-            ),
             $datefilter['params']
->>>>>>> 3.8
         );
 
         $finalfilter = $datefilter['sql'] . ' AND ';

@@ -343,21 +343,12 @@ class Activity implements ControllerProviderInterface
      */
     public function doReportSiteActiviyPerDays(Application $app, Request $request)
     {
-<<<<<<< HEAD
         $conf = [
             'ddate'     => [$app->trans('report:: jour'), 0, 0, 0, 0],
             'total'     => [$app->trans('report:: total des telechargements'), 0, 0, 0, 0],
             'preview'   => [$app->trans('report:: preview'), 0, 0, 0, 0],
-            'document'  => [$app->trans('report:: document original'), 0, 0, 0, 0]
+            'document'  => [$app->trans('report:: document'), 0, 0, 0, 0]
         ];
-=======
-        $conf = array(
-            'ddate'     => array(_('report:: jour'), 0, 0, 0, 0),
-            'total'     => array(_('report:: total des telechargements'), 0, 0, 0, 0),
-            'preview'   => array(_('report:: preview'), 0, 0, 0, 0),
-            'document'  => array(_('report:: document'), 0, 0, 0, 0)
-        );
->>>>>>> 3.8
 
         $activity = new \module_report_activity(
             $app,

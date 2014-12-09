@@ -13,12 +13,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
-<<<<<<< HEAD
 use Alchemy\Phrasea\Core\Event\LazaretEvent;
-=======
-use Alchemy\Phrasea\Core\Event\RecordEdit;
->>>>>>> 3.8
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEdit;use Alchemy\Phrasea\Core\PhraseaEvents;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;

@@ -26,12 +26,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function buildSql()
     {
-<<<<<<< HEAD
         $customFieldMap = [];
-=======
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-        $customFieldMap = array();
->>>>>>> 3.8
 
         $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
         $this->params = array_merge([], $filter['params']);
@@ -82,12 +77,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                     'subdef.file'       => 'tt.file',
                     'subdef.mime'       => 'tt.mime',
                     'log_docs.final'    => 'tt.final',
-<<<<<<< HEAD
                 ];
-=======
-                );
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
->>>>>>> 3.8
 
             } elseif ($this->on == 'DOC') {
                 $this->sql = '

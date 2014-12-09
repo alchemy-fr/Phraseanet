@@ -53,7 +53,7 @@ class H264MappingGenerator extends Command
             'enabled' => $enabled,
             'type' => $type,
             'mapping' => $mode->getMapping(),
-        );
+        ];
 
         if ($input->getOption('write')) {
             $output->write("Writing configuration ...");

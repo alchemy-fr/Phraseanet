@@ -29,23 +29,27 @@ final class PhraseaEvents
     const ORDER_CREATE = 'order.create';
     const ORDER_DELIVER = 'order.deliver';
     const ORDER_DENY = 'order.deny';
+
     const COLLECTION_CREATE = 'collection.create';
-<<<<<<< HEAD
+
     const FEED_ENTRY_CREATE = 'feed-entry.create';
+
     const REGISTRATION_CREATE = 'registration.create';
     const REGISTRATION_AUTOREGISTER = 'registration.autoregister';
+
     const BASKET_PUSH = 'basket.push';
+
     const VALIDATION_CREATE = 'validation.create';
     const VALIDATION_DONE = 'validation.done';
     const VALIDATION_REMINDER = 'validation.reminder';
 
     const LAZARET_CREATE = 'lazaret.create';
+
     const BRIDGE_UPLOAD_FAILURE = 'bridge.upload-failure';
+
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
-=======
 
     const RECORD_EDIT = 'record.edit';
     const RECORD_UPLOAD = 'record.upload';
->>>>>>> 3.8
 }

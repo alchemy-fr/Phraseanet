@@ -43,14 +43,8 @@ class module_report_download extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-<<<<<<< HEAD
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, '');
         $this->title = $this->app->trans('report:: telechargements');
-=======
-    //     parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
-        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
-        $this->title = _('report:: telechargements');
->>>>>>> 3.8
     }
 
     /**
@@ -189,16 +183,9 @@ class module_report_download extends module_report
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
 
-<<<<<<< HEAD
         $params = [':site_id'  => $app['conf']->get(['main', 'key'])];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-=======
-        $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = array_merge($params, $datefilter['params']);
->>>>>>> 3.8
 
         $finalfilter = $datefilter['sql'] . ' AND ';
         $finalfilter .= 'log.site = :site_id';
@@ -242,16 +229,9 @@ class module_report_download extends module_report
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $conn = $databox->get_connection();
 
-<<<<<<< HEAD
         $params = [':site_id'  => $app['conf']->get(['main', 'key'])];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
-=======
-        $params = array(':site_id'  => $app['phraseanet.configuration']['main']['key']);
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = array_merge($params, $datefilter['params']);
->>>>>>> 3.8
 
         $finalfilter = "";
         $array = [

@@ -34,40 +34,12 @@ class module_report_sqlfilter
 
     public static function constructDateFilter($dmin, $dmax, $dateField = 'log_date.date')
     {
-<<<<<<< HEAD
-        return [
-            'sql' => ($dmin && $dmax ? ' log_date.date > :date_min AND log_date.date < :date_max ' : false)
-            , 'params' => ($dmin && $dmax ? [':date_min' => $dmin, ':date_max' => $dmax] : [])
-        ];
-    }
-
-    public static function constructCollectionFilter(Application $app, $list_coll_id)
-    {
-        $ret = ['sql'    => '', 'params' => []];
-        $coll_filter = [];
-        foreach (array_filter(explode(',', $list_coll_id)) as $val) {
-            $val = \phrasea::collFromBas($app, $val);
-            if ($val) {
-                $coll_filter[] =  'log_colls.coll_id = ' . $val;
-            }
-        }
-        $collections = array_unique($coll_filter);
-
-        if (count($collections) > 0) {
-            $ret['sql'] = ' (' . implode(' OR ', $collections) . ') ';
-        }
-
-        return $ret;
-    }
-
-=======
         return array(
             'sql' => ($dmin && $dmax ? ' '.$dateField.' > :date_min AND '.$dateField.' < :date_max ' : false)
         , 'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
         );
     }
 
->>>>>>> 3.8
     public function getCorFilter()
     {
         return $this->cor_query;
@@ -77,12 +49,8 @@ class module_report_sqlfilter
     {
         $sql = '';
 
-<<<<<<< HEAD
         $params = [':log_site' => $this->app['conf']->get(['main', 'key'])];
 
-=======
-        $params = array(':log_site' => $this->app['phraseanet.configuration']['main']['key']);
->>>>>>> 3.8
         if ($this->filter['date'] && $this->filter['date']['sql'] !== '') {
             $sql .= $this->filter['date']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['date']['params']);
@@ -92,13 +60,9 @@ class module_report_sqlfilter
             $params = array_merge($params, $this->filter['user']['params']);
         }
 
-<<<<<<< HEAD
-        return ['sql' => $finalfilter, 'params' => $params];
-=======
         $sql .= ' log.site = :log_site';
 
         return array('sql' => $sql, 'params' => $params);
->>>>>>> 3.8
     }
 
     public function getGvSitFilter()
@@ -113,12 +77,7 @@ class module_report_sqlfilter
 
     public function getUserIdFilter($id)
     {
-<<<<<<< HEAD
-        return ['sql' => "log.usrid = :usr_id_filter", 'params' => [':usr_id_filter' => $id]];
-=======
         return array('sql' => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
-//        return array('sql' => "log.usrid=" . (int)$id, 'params' => array());
->>>>>>> 3.8
     }
 
     public function getDateFilter()
@@ -153,25 +112,6 @@ class module_report_sqlfilter
     private function dateFilter(module_report $report)
     {
         $this->filter['date'] = false;
-/*
-        if ($report->getDmin() && $report->getDmax()) {
-            $this->filter['date'] = [
-                'sql'    => ' (log.date > :date_min_f AND log.date < :date_max_f) '
-<<<<<<< HEAD
-                , 'params' => [
-                    ':date_min_f' => $report->getDmin()
-                    , ':date_max_f' => $report->getDmax()
-                ]
-            ];
-=======
-            , 'params' => array(
-                    ':date_min_f' => $report->getDmin()
-                , ':date_max_f' => $report->getDmax()
-                )
-            );
->>>>>>> 3.8
-        }
-*/
         $sql = "";
         if($report->getDmin()) {
             $sql = $report->getDateField().">=" . $this->conn->quote($report->getDmin());
@@ -225,39 +165,6 @@ class module_report_sqlfilter
 
         return;
     }
-
-<<<<<<< HEAD
-    private function collectionFilter(module_report $report)
-    {
-        $this->filter['collection'] = false;
-        $coll_filter = [];
-
-        if ($report->getUserId() == '') {
-            return;
-        }
-
-        $tab = array_filter(explode(",", $report->getListCollId()));
-
-        if (count($tab) > 0) {
-            foreach ($tab as $val) {
-                $val = \phrasea::collFromBas($this->app, $val);
-                if (!!$val) {
-                    $coll_filter[] =  'log_colls.coll_id = ' . $val;
-                }
-            }
-
-            $collections = array_unique($coll_filter);
-
-            if (count($collections) > 0) {
-                $this->filter['collection'] = array('sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => array());
-            }
-        }
-
-        return;
-    }
-
-=======
->>>>>>> 3.8
     private function recordFilter(module_report $report)
     {
         $this->filter['record'] = false;

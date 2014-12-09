@@ -100,8 +100,8 @@
             background-color: #{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection-disabled', '333333')}}};
         }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
-            color: #{{app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF')}};
-            background-color: #{{app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
+            color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF')}};
+            background-color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
         }
     </style>
 {% endblock %}
@@ -117,7 +117,7 @@
             <div style="margin:0 10px 10px; font-family:Helvetica,Arial,sans-serif; font-size:18px; color:#1A1A1A; text-align:left;">Phraseanet</div>
             <div style="text-align:center;">{{ 'Chargement' | trans }}</div>
             <div style="width:220px; height:19px; margin:20px auto;">
-                <div id="loader_bar" style="height:19px;width:10%;background-image:url(/skins/icons/main-loader.gif)"></div>
+                <div id="loader_bar" style="height:19px;width:10%;background-image:url('/skins/icons/main-loader.gif')"></div>
             </div>
         </div>
     </div>
@@ -340,11 +340,7 @@
                                             <select name="sort" class="input-small">
                                                 <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected" class="default-selection"{% endif %}>{{ "No sort"|trans }}</option>
                                                 {% for sort in search_datas['sort'] %}
-<<<<<<< HEAD
-                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
-=======
                                                     <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort.fieldname }}</option>
->>>>>>> 3.8
                                                 {% endfor %}
                                             </select>
                                             <select name="ord" class="input-medium">
