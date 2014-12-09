@@ -290,13 +290,11 @@ class module_report_activity extends module_report
                 SELECT DISTINCT(log.id), log_docs.date AS the_date, log_docs.final, log_docs.record_id
                 FROM (log_docs)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
+                    LEFT JOIN record ON (log_docs.record_id = record.record_id)
                 WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
                     AND (log_docs.action =  'download' OR log_docs.action =  'mail')
                     AND (log_docs.final = 'preview' OR log_docs.final = 'document')
             ) AS tt
-            LEFT JOIN record ON (record.record_id = tt.record_id)
-            LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)
-            WHERE s.name = tt.final
             GROUP BY tt.final, ddate
             ORDER BY tt.the_date DESC";
 
@@ -472,19 +470,14 @@ class module_report_activity extends module_report
         $params = array_merge(array(), $filter['params']);
 
         $sql = "
-            SELECT tt.usrid, TRIM(" . $on . ") AS " . $on . ", tt.final, sum(1) AS nb, sum(size) AS poid
-            FROM (
-                SELECT DISTINCT(log.id), TRIM(" . $on . ") AS " . $on . ", log_docs.record_id, log_docs.final, log.usrid
+                SELECT TRIM(" . $on . ") AS " . $on . ", SUM( log_docs.record_id ) AS nb, log_docs.final, log.usrid
                 FROM log_docs
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
+                    LEFT JOIN record ON (record.record_id = log_docs.record_id)
                 WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
                 AND (log_docs.action = 'download' OR log_docs.action = 'mail')
-            ) AS tt
-            LEFT JOIN record ON (record.record_id = tt.record_id)
-            LEFT JOIN subdef FORCE INDEX (unicite) ON (tt.record_id = subdef.record_id)
-            WHERE subdef.name = tt.final
-            GROUP BY " . $on . ", usrid
-            ORDER BY nb DESC;";
+                AND (log_docs.final = 'preview' OR log_docs.final = 'document')
+                GROUP BY usrid";
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
@@ -497,9 +490,7 @@ class module_report_activity extends module_report
         $i = -1;
         $total = array(
             'nbdoc'    => 0,
-            'poiddoc'  => 0,
             'nbprev'   => 0,
-            'poidprev' => 0
         );
 
         $this->setChamp($rs);
@@ -510,47 +501,36 @@ class module_report_activity extends module_report
             $user = $row[$on];
             if (($save_user != $user) && ! is_null($user) && ! empty($user)) {
                 if ($i >= 0) {
-                    if (($this->result[$i]['nbprev'] + $this->result[$i]['nbdoc']) == 0 || ($this->result[$i]['poiddoc'] + $this->result[$i]['poidprev']) == 0) {
+                    if (($this->result[$i]['nbprev'] + $this->result[$i]['nbdoc']) == 0) {
                         unset($this->result[$i]);
-                    }
-
-                    if (isset($this->result[$i]['poiddoc']) && isset($this->result[$i]['poidprev'])) {
-                        $this->result[$i]['poiddoc'] = p4string::format_octets($this->result[$i]['poiddoc']);
-                        $this->result[$i]['poidprev'] = p4string::format_octets($this->result[$i]['poidprev']);
                     }
                 }
 
                 $i ++;
 
                 $this->result[$i]['nbprev'] = 0;
-                $this->result[$i]['poidprev'] = 0;
                 $this->result[$i]['nbdoc'] = 0;
-                $this->result[$i]['poiddoc'] = 0;
             }
 
             //doc info
             if ($row['final'] == 'document' &&
                 ! is_null($user) && ! is_null($row['usrid'])) {
                 $this->result[$i]['nbdoc'] = ( ! is_null($row['nb']) ? $row['nb'] : 0);
-                $this->result[$i]['poiddoc'] = ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['user'] = empty($row[$on]) ?
                     "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
                 $total['nbdoc'] += $this->result[$i]['nbdoc'];
-                $total['poiddoc'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['usrid'] = $row['usrid'];
             }
             //preview info
-            if (($row['final'] == 'preview' || $row['final'] == 'thumbnail') &&
+            if (($row['final'] == 'preview') &&
                 ! is_null($user) &&
                 ! is_null($row['usrid'])) {
 
                 $this->result[$i]['nbprev'] += ( ! is_null($row['nb']) ? $row['nb'] : 0);
-                $this->result[$i]['poidprev'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
 
                 $this->result[$i]['user'] = empty($row[$on]) ?
                     "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
                 $total['nbprev'] += ( ! is_null($row['nb']) ? $row['nb'] : 0);
-                $total['poidprev'] += ( ! is_null($row['poid']) ? $row['poid'] : 0);
                 $this->result[$i]['usrid'] = $row['usrid'];
             }
 
@@ -564,11 +544,7 @@ class module_report_activity extends module_report
         if ($this->total > 0) {
             $this->result[$nb_row]['user'] = '<b>TOTAL</b>';
             $this->result[$nb_row]['nbdoc'] = '<b>' . $total['nbdoc'] . '</b>';
-            $this->result[$nb_row]['poiddoc'] =
-                '<b>' . p4string::format_octets($total['poiddoc']) . '</b>';
             $this->result[$nb_row]['nbprev'] = '<b>' . $total['nbprev'] . '</b>';
-            $this->result[$nb_row]['poidprev'] =
-                '<b>' . p4string::format_octets($total['poidprev']) . '</b>';
         }
 
         foreach($this->result as $k=>$row) {
