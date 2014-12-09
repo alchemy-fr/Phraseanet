@@ -25,11 +25,12 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
         $this->params = array_merge([], $filter['params']);
 
         if ($this->groupby == false) {
-            $this->sql ="
-                SELECT DISTINCT(log.id), log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction
+            $this->sql =" SELECT log.id, log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction
                 FROM log_search
-                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id) WHERE (" . $filter['sql'] .")";
+                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id) AND !ISNULL(usrid)
+                WHERE (" . $filter['sql'] .")";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -48,11 +49,12 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
                     SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
                     FROM (`log_search`)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     WHERE (" . $filter['sql'] .")
                 ) AS tt
                 GROUP BY " . $this->groupby ."
                 ORDER BY nb DESC";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -74,7 +76,6 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
                 SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val
                 FROM (`log_search`)
                 INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE (" . $filter['sql'] . ")
             ) as tt
             ORDER BY tt.val ASC";

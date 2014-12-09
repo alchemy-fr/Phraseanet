@@ -28,6 +28,7 @@ class report_editTest extends \PhraseanetAuthenticatedTestCase
 
     public function testBuildReport()
     {
+<<<<<<< HEAD
         $conf = [
             'user' => ["", 1, 0, 1, 1],
             'date' => ["", 1, 0, 1, 1],
@@ -36,6 +37,15 @@ class report_editTest extends \PhraseanetAuthenticatedTestCase
             'mime' => ["", 1, 0, 1, 1],
             'size' => ["", 1, 0, 1, 1]
         ];
+=======
+        $conf = array(
+            'user' => array("", 1, 0, 1, 1),
+            'date' => array("", 1, 0, 1, 1),
+            'record_id' => array("", 1, 1, 1, 1),
+            'file' => array("", 1, 0, 1, 1),
+            'mime' => array("", 1, 0, 1, 1),
+        );
+>>>>>>> 3.8
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_edit(
@@ -160,7 +170,6 @@ class report_editTest extends \PhraseanetAuthenticatedTestCase
         if (! $groupby) {
             foreach ($report['result'] as $row) {
                 foreach ($conf as $key => $value) {
-
                     $this->assertArrayHasKey($key, $row);
                     $condition = is_string($row[$key]) || is_int($row[$key]);
                     $this->assertTrue($condition);

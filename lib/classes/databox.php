@@ -682,6 +682,8 @@ class databox extends base
      */
     public function get_meta_structure()
     {
+        $metaStructData = array();
+
         if ($this->meta_struct) {
             return $this->meta_struct;
         }
@@ -703,10 +705,15 @@ class databox extends base
 
         $this->meta_struct = new databox_descriptionStructure();
 
+<<<<<<< HEAD
         if ($metaStructData) {
             foreach ($metaStructData as $row) {
                 $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
             }
+=======
+        foreach ((array) $metaStructData as $row) {
+            $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
+>>>>>>> 3.8
         }
 
         return $this->meta_struct;

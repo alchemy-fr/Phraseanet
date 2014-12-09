@@ -60,8 +60,6 @@ class report_activityTest extends \PhraseanetAuthenticatedTestCase
             $this->activity($report, $sbasid, $colllist);
             $this->activityDay($report, $sbasid, $colllist);
             $this->activityQuestion($report, $sbasid, $colllist);
-            $this->allDownloadByUserBase($report);
-            $this->allQuestion($report);
             $this->detailDownload($report);
             $this->downloadByBaseByDay($report);
             $this->otherTest($report);
@@ -82,12 +80,15 @@ class report_activityTest extends \PhraseanetAuthenticatedTestCase
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $activityHours);
     }
 
+<<<<<<< HEAD
     public function allQuestion($report)
     {
         $allQuestion = $report->getAllQuestionByUser(self::$DI['user']->getId(), 'usrid');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allQuestion);
     }
 
+=======
+>>>>>>> 3.8
     public function topQuestion($report)
     {
         $topQuestion = $report->getTopQuestion();
@@ -96,12 +97,15 @@ class report_activityTest extends \PhraseanetAuthenticatedTestCase
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $topQuestion2);
     }
 
+<<<<<<< HEAD
     public function allDownloadByUserBase($report)
     {
         $allDownload = $report->getAllDownloadByUserBase(self::$DI['user']->getId());
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allDownload);
     }
 
+=======
+>>>>>>> 3.8
     public function downloadByBaseByDay($report)
     {
         $dlBaseDay = $report->getDownloadByBaseByDay();

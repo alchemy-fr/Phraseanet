@@ -32,8 +32,9 @@ class module_report_sqlfilter
         $this->report = $report;
     }
 
-    public static function constructDateFilter($dmin, $dmax)
+    public static function constructDateFilter($dmin, $dmax, $dateField = 'log_date.date')
     {
+<<<<<<< HEAD
         return [
             'sql' => ($dmin && $dmax ? ' log_date.date > :date_min AND log_date.date < :date_max ' : false)
             , 'params' => ($dmin && $dmax ? [':date_min' => $dmin, ':date_max' => $dmax] : [])
@@ -59,6 +60,14 @@ class module_report_sqlfilter
         return $ret;
     }
 
+=======
+        return array(
+            'sql' => ($dmin && $dmax ? ' '.$dateField.' > :date_min AND '.$dateField.' < :date_max ' : false)
+        , 'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
+        );
+    }
+
+>>>>>>> 3.8
     public function getCorFilter()
     {
         return $this->cor_query;
@@ -66,25 +75,30 @@ class module_report_sqlfilter
 
     public function getReportFilter()
     {
-        $finalfilter = '';
+        $sql = '';
 
+<<<<<<< HEAD
         $params = [':log_site' => $this->app['conf']->get(['main', 'key'])];
 
+=======
+        $params = array(':log_site' => $this->app['phraseanet.configuration']['main']['key']);
+>>>>>>> 3.8
         if ($this->filter['date'] && $this->filter['date']['sql'] !== '') {
-            $finalfilter .= $this->filter['date']['sql'] . ' AND ';
+            $sql .= $this->filter['date']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['date']['params']);
         }
         if ($this->filter['user'] && $this->filter['user']['sql'] !== '') {
-            $finalfilter .= $this->filter['user']['sql'] . ' AND ';
+            $sql .= $this->filter['user']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['user']['params']);
         }
-        if ($this->filter['collection'] && $this->filter['collection']['sql'] !== '') {
-            $finalfilter .= $this->filter['collection']['sql'] . ' AND ';
-            $params = array_merge($params, $this->filter['collection']['params']);
-        }
-        $finalfilter .= ' log.site = :log_site';
 
+<<<<<<< HEAD
         return ['sql' => $finalfilter, 'params' => $params];
+=======
+        $sql .= ' log.site = :log_site';
+
+        return array('sql' => $sql, 'params' => $params);
+>>>>>>> 3.8
     }
 
     public function getGvSitFilter()
@@ -99,7 +113,12 @@ class module_report_sqlfilter
 
     public function getUserIdFilter($id)
     {
+<<<<<<< HEAD
         return ['sql' => "log.usrid = :usr_id_filter", 'params' => [':usr_id_filter' => $id]];
+=======
+        return array('sql' => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
+//        return array('sql' => "log.usrid=" . (int)$id, 'params' => array());
+>>>>>>> 3.8
     }
 
     public function getDateFilter()
@@ -110,11 +129,6 @@ class module_report_sqlfilter
     public function getUserFilter()
     {
         return $this->filter['user'];
-    }
-
-    public function getCollectionFilter()
-    {
-        return $this->filter['collection'];
     }
 
     public function getRecordFilter()
@@ -139,15 +153,38 @@ class module_report_sqlfilter
     private function dateFilter(module_report $report)
     {
         $this->filter['date'] = false;
+/*
         if ($report->getDmin() && $report->getDmax()) {
             $this->filter['date'] = [
                 'sql'    => ' (log.date > :date_min_f AND log.date < :date_max_f) '
+<<<<<<< HEAD
                 , 'params' => [
                     ':date_min_f' => $report->getDmin()
                     , ':date_max_f' => $report->getDmax()
                 ]
             ];
+=======
+            , 'params' => array(
+                    ':date_min_f' => $report->getDmin()
+                , ':date_max_f' => $report->getDmax()
+                )
+            );
+>>>>>>> 3.8
         }
+*/
+        $sql = "";
+        if($report->getDmin()) {
+            $sql = $report->getDateField().">=" . $this->conn->quote($report->getDmin());
+        }
+        if($report->getDmax()) {
+            if($sql != "") {
+                $sql .= " AND ";
+            }
+            $sql .= $report->getDateField()."<=" . $this->conn->quote($report->getDmax());
+        }
+        $this->filter['date'] = array(
+            'sql' => $sql, 'params' => array()
+        );
 
         return;
     }
@@ -189,6 +226,7 @@ class module_report_sqlfilter
         return;
     }
 
+<<<<<<< HEAD
     private function collectionFilter(module_report $report)
     {
         $this->filter['collection'] = false;
@@ -218,6 +256,8 @@ class module_report_sqlfilter
         return;
     }
 
+=======
+>>>>>>> 3.8
     private function recordFilter(module_report $report)
     {
         $this->filter['record'] = false;
@@ -272,7 +312,6 @@ class module_report_sqlfilter
         $this->orderFilter($report);
         $this->recordFilter($report);
         $this->userFilter($report);
-        $this->collectionFilter($report);
 
         return;
     }

@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
@@ -309,17 +311,10 @@ class Edit implements ControllerProviderInterface
                 return $app->json(['message' => '', 'error'   => false]);
             }
 
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($records));
+
             $databoxes = $records->databoxes();
             $databox = array_pop($databoxes);
-
-            $meta_struct = $databox->get_meta_structure();
-            $write_edit_el = false;
-            $date_obj = new \DateTime();
-            foreach ($meta_struct->get_elements() as $meta_struct_el) {
-                if ($meta_struct_el->get_tag() instanceof TfEditdate) {
-                    $write_edit_el = $meta_struct_el;
-                }
-            }
 
             $elements = $records->toArray();
 
@@ -349,6 +344,7 @@ class Edit implements ControllerProviderInterface
                     $record->set_metadatas($rec['metadatas']);
                 }
 
+<<<<<<< HEAD
                 /**
                  * todo : this should not work
                  */
@@ -374,6 +370,8 @@ class Edit implements ControllerProviderInterface
                     $record->set_metadatas($metas, true);
                 }
 
+=======
+>>>>>>> 3.8
                 $newstat = $record->get_status();
                 $statbits = ltrim($statbits, 'x');
                 if (!in_array($statbits, ['', 'null'])) {

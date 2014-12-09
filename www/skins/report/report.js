@@ -64,7 +64,8 @@ function bindEvents() {
     $('#dminDash, #dmaxDash').datepicker({
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy',
+//        dateFormat: 'dd-mm-yy',
+        dateFormat: 'yy-mm-dd',
         numberOfMonths: 1,
         maxDate: "-0d"
     });
@@ -119,7 +120,8 @@ function reportDatePicker() {
         defaultDate: -10,
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy',
+//        dateFormat: 'dd-mm-yy',
+        dateFormat: 'yy-mm-dd',
         numberOfMonths: 3,
         maxDate: "-0d",
         onSelect: function (selectedDate, instance) {
@@ -136,7 +138,8 @@ function dashboardDatePicker() {
             defaultDate: -3,
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-mm-yy',
+//            dateFormat: 'dd-mm-yy',
+            dateFormat: 'yy-mm-dd',
             numberOfMonths: 3,
             maxDate: "-0d"
         });

@@ -54,7 +54,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    public function testEtag()
+    public function testLastModified()
     {
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
@@ -83,7 +83,6 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
-        $this->assertNotNull($response->getEtag());
         $this->assertInstanceOf('DateTime', $response->getLastModified());
         $this->assertEquals(0, $response->getMaxAge());
         $this->assertEquals(0, $response->getTtl());

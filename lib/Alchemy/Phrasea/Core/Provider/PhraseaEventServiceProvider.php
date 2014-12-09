@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\RecordEditSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -41,6 +42,9 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
         });
         $app['phraseanet.content-negotiation-subscriber'] = $app->share(function (Application $app) {
             return new ContentNegotiationSubscriber($app);
+        });
+        $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
+            return new RecordEditSubscriber();
         });
     }
 

@@ -3817,68 +3817,6 @@
         <engine>InnoDB</engine>
       </table>
 
-      <table name="log_thumb">
-        <fields>
-          <field>
-            <name>date</name>
-            <type>datetime</type>
-            <null></null>
-            <extra></extra>
-            <default>0000-00-00 00:00:00</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>record_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>site_id</name>
-            <type>varchar(256)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>counter</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>1</default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>date</name>
-            <type>INDEX</type>
-            <fields>
-              <field>date</field>
-            </fields>
-          </index>
-          <index>
-            <name>record_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>record_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>site_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>record_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-
-
       <table name="permalinks">
         <fields>
           <field>

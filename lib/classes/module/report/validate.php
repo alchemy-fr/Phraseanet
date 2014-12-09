@@ -54,7 +54,7 @@ class module_report_validate extends module_report
     protected function buildReq($groupby = false, $on = false)
     {
         $sqlBuilder = $this->sqlBuilder('action')->setGroupBy($groupby)->setOn($on)
-                ->setAction('validate')->buildSql();
+                ->setAction('push')->buildSql();
         $this->req = $sqlBuilder->getSql();
         $this->params = $sqlBuilder->getParams();
         $this->total = $sqlBuilder->getTotalRows();
@@ -62,7 +62,7 @@ class module_report_validate extends module_report
 
     public function colFilter($field, $on = false)
     {
-        $sqlBuilder = $this->sqlBuilder('action')->setAction('validate');
+        $sqlBuilder = $this->sqlBuilder('action')->setAction('push');
         $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];

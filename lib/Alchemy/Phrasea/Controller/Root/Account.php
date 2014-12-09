@@ -139,8 +139,14 @@ class Account implements ControllerProviderInterface
             return $app->redirectPath('account_reset_email');
         }
 
+<<<<<<< HEAD
         $token = $app['manipulator.token']->createResetEmailToken($app['authentication']->getUser(), $email);
         $url = $app->url('account_reset_email', ['token' => $token->getValue()]);
+=======
+        $date = new \DateTime('1 day');
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $email);
+        $url = $app->url('account_reset_email', array('token' => $token));
+>>>>>>> 3.8
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());

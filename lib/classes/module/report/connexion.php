@@ -38,8 +38,14 @@ class module_report_connexion extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
+<<<<<<< HEAD
         parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->title = $this->app->trans('report::Connexions');
+=======
+    //    parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, "");
+        $this->title = _('report::Connexions');
+>>>>>>> 3.8
     }
 
     /**
@@ -139,23 +145,34 @@ class module_report_connexion extends module_report
         $conn = $databox->get_connection();
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
+<<<<<<< HEAD
         $params = array_merge([
                 ':site_id' => $app['conf']->get(['main', 'key'])
             ],
             $datefilter['params'],
             $collfilter['params']
+=======
+        $params = array_merge(array(
+                ':site_id' => $app['phraseanet.configuration']['main']['key']
+            ),
+            $datefilter['params']
+>>>>>>> 3.8
         );
 
         $finalfilter = $datefilter['sql'] . ' AND ';
-        $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log_date.site = :site_id';
-
+/*
         $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb
                 FROM log as log_date FORCE INDEX (date_site)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $finalfilter;
+*/
+        $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb\n"
+            . " FROM log as log_date FORCE INDEX (date_site)\n"
+            . " WHERE " . $finalfilter . "\n";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

@@ -60,10 +60,18 @@ class DoDownload implements ControllerProviderInterface
      */
     public function prepareDownload(Application $app, Request $request, Token $token)
     {
+<<<<<<< HEAD
         if (false === $list = @unserialize($token->getData())) {
             $app->abort(500, 'Invalid datas');
         }
         if (!is_array($list)) {
+=======
+
+
+        $datas = $app['tokens']->helloToken($token);
+
+        if (false === $list = @unserialize((string) $datas['datas'])) {
+>>>>>>> 3.8
             $app->abort(500, 'Invalid datas');
         }
 
@@ -180,12 +188,21 @@ class DoDownload implements ControllerProviderInterface
         $app['session']->save();
         ignore_user_abort(true);
 
+<<<<<<< HEAD
         \set_export::build_zip(
             $app,
             $token,
             $list,
             sprintf($app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
         );
+=======
+        if ($list['count'] > 1) {
+            \set_export::build_zip($app, $token, $list, sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']));
+        } else {
+            $list['complete'] = true;
+            $app['tokens']->updateToken($token, serialize($list));
+        }
+>>>>>>> 3.8
 
         return $app->json([
             'success' => true,

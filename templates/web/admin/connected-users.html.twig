@@ -67,12 +67,9 @@
             <td  class="colValue" >{{ data['applications'][5] }}</td>
         </tr>
         <tr>
+            {# module witj id 7 has been removed keep it for bc #}
             <td  class="colTitle" >{{ 'admin::monitor: module comparateur' | trans }}</td>
-            <td  class="colValue" >{{ data['applications'][6] }}</td>
-        </tr>
-        <tr>
-            <td  class="colTitle" >{{ 'admin::monitor: module validation' | trans }}</td>
-            <td  class="colValue" >{{ data['applications'][7] }}</td>
+            <td  class="colValue" >{{ data['applications'][6] + data['applications'][7] }}</td>
         </tr>
         {% if data['applications'][0] != 0 %}
         <tr>

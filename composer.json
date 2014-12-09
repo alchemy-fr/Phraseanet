@@ -47,7 +47,7 @@
         "jms/translation-bundle"           : "~1.1",
         "justinrainbow/json-schema"        : "~1.3",
         "mediavorus/mediavorus"            : "~0.4.0",
-        "media-alchemyst/media-alchemyst"  : "~0.4.0",
+        "media-alchemyst/media-alchemyst"  : "dev-master",
         "monolog/monolog"                  : "~1.3",
         "mrclay/minify"                    : "~2.1.6",
         "neutron/process-manager"          : "2.0.x-dev@dev",

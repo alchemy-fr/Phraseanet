@@ -486,6 +486,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
+<<<<<<< HEAD
                 $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
                 $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
                 $dispatcher->addSubscriber(new RegistrationSubscriber($app));
@@ -495,6 +496,9 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new BasketSubscriber($app));
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
+=======
+                $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+>>>>>>> 3.8
 
                 return $dispatcher;
             })
