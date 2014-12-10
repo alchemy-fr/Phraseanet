@@ -856,6 +856,8 @@ class module_report_activity extends module_report
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
 
         $params = [':site_id' => $app['conf']->get(['main', 'key'])];
+        $params = array_merge($params, $datefilter['params']);
+
 /*
         $sql = "
             SELECT tt.usrid, tt.user, sum(1) AS nb
@@ -1018,7 +1020,7 @@ class module_report_activity extends module_report
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = [];
         $params = array_merge($params, $datefilter['params']);
 
@@ -1067,7 +1069,7 @@ class module_report_activity extends module_report
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
         $params = [];
         $params = array_merge($params, $datefilter['params']);
 
@@ -1116,7 +1118,7 @@ class module_report_activity extends module_report
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
 
         $params = [];
         $params = array_merge($params, $datefilter['params']);

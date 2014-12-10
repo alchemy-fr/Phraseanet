@@ -867,7 +867,7 @@ class V1 implements ControllerProviderInterface
 
         $app['phraseanet.SE']->updateRecord($record);
 
-        $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         $ret = ["status" => $this->list_record_status($databox, $record->get_status())];
 
