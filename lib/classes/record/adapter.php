@@ -1564,7 +1564,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             if (!$subdef->is_physically_present())
                 continue;
 
-            if ($subdef->get_name() === 'thumbnail' && $this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+            if ($subdef->get_name() === 'thumbnail') {
                 $this->app['filesystem']->remove($this->app['phraseanet.thumb-symlinker']->getSymlinkPath($subdef->get_pathfile()));
             }
 

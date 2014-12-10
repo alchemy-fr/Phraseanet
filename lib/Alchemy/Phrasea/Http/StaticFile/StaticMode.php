@@ -15,15 +15,13 @@ use Alchemy\Phrasea\Http\AbstractServerMode;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Guzzle\Http\Url;
 
-abstract class AbstractStaticMode extends AbstractServerMode
+class StaticMode
 {
     protected $symlinker;
 
-    public function __construct(array $mapping, SymLinker $symlinker)
+    public function __construct(SymLinker $symlinker)
     {
         $this->symlinker = $symlinker;
-
-        parent::__construct($mapping);
     }
 
     /**
@@ -33,7 +31,7 @@ abstract class AbstractStaticMode extends AbstractServerMode
     {
         $this->ensureSymlink($pathFile);
 
-        return Url::factory(sprintf('%s/%s',  $this->mapping['mount-point'], $this->symlinker->getSymlinkBasePath($pathFile)));
+        return Url::factory(sprintf('/thumbnails/%s', $this->symlinker->getSymlinkBasePath($pathFile)));
     }
 
     /**
