@@ -297,6 +297,7 @@ class Edit implements ControllerProviderInterface
 
                         $media = $app['mediavorus']->guess($value->get_pathfile());
                         $reg_record->substitute_subdef($name, $media, $app);
+                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
                         $app['phraseanet.logger']($reg_record->get_databox())->log(
                             $reg_record,
                             \Session_Logger::EVENT_SUBSTITUTE,
@@ -312,8 +313,6 @@ class Edit implements ControllerProviderInterface
             if (!is_array($request->request->get('mds'))) {
                 return $app->json(array('message' => '', 'error'   => false));
             }
-
-            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($records));
 
             $databoxes = $records->databoxes();
             $databox = array_pop($databoxes);
@@ -344,6 +343,7 @@ class Edit implements ControllerProviderInterface
 
                 if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                     $record->set_metadatas($rec['metadatas']);
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
                 }
 
                 $newstat = $record->get_status();
