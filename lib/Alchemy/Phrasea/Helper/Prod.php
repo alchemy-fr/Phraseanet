@@ -25,7 +25,7 @@ class Prod extends Helper
 
         $bases = $fields = $dates = $sort = array();
 
-        if (!$this->app['authentication']->getUser() instanceof \User_Adapter) {
+        if (!$this->app['authentication']->getUser()) {
             return $searchData;
         }
 
