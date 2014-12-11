@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Notification;
 
 use Alchemy\Phrasea\Notification\Attachment;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 class AttachmentTest extends \PHPUnit_Framework_TestCase
 {
