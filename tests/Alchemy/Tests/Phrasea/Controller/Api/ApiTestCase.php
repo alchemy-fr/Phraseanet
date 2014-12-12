@@ -2438,7 +2438,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->assertTrue(is_int($status['bit']));
             $this->assertTrue(is_bool($status['state']));
 
-            $retrieved = !!substr($r_status, ($status['bit'] - 1), 1);
+            $retrieved = !!substr($r_status, ($status['bit']), 1);
 
             $this->assertEquals($retrieved, $status['state']);
         }

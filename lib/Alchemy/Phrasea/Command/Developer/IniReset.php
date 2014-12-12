@@ -163,7 +163,7 @@ class IniReset extends Command
                 'command' => 'system:uninstall'
             )), $output);
 
-            $process = new Process(sprintf('php ' . __DIR__ . '/../../../../../bin/setup system:install --email=%s --password=%s --db-user=%s --db-template=%s --db-password=%s --databox=%s --appbox=%s --server-name=%s --db-host=%s --db-port=%s -y',
+            $cmd = sprintf('php ' . __DIR__ . '/../../../../../bin/setup system:install --email=%s --password=%s --db-user=%s --db-template=%s --db-password=%s --databox=%s --appbox=%s --server-name=%s --db-host=%s --db-port=%s -y',
                 $input->getOption('email'),
                 $input->getOption('password'),
                 $conf['main']['database']['user'],
@@ -174,9 +174,18 @@ class IniReset extends Command
                 $conf['servername'],
                 $conf['main']['database']['host'],
                 $conf['main']['database']['port']
-            ));
-            $process->run();
+            );
+            $process = new Process($cmd);
+            $process->run(function ($type, $buffer) {
+                if ('err' === $type) {
+                    echo 'ERR > ' . $buffer;
+                }
+            });
+            if (false === $process->isSuccessful()) {
+                $output->writeln('<error>Failed to execute the following command "'.$cmd.'"</error>');
 
+                return 1;
+            }
             $output->writeln("<info>Install successful !</info>");
         }
 
@@ -197,8 +206,19 @@ class IniReset extends Command
             $output->writeln('Mounting database "'.$databox->get_dbname().'"...<info>OK</info>');
         }
 
-        $process = new Process(('php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f'));
-        $process->run();
+        $output->writeln('Upgrading from v3.1 to v'.Version::getNumber());
+        $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f';
+        $process = new Process($cmd);
+        $process->run(function ($type, $buffer) {
+            if ('err' === $type) {
+                echo 'ERR > ' . $buffer;
+            }
+        });
+        if (false === $process->isSuccessful()) {
+            $output->writeln('<error>Failed to execute the following command "'.$cmd.'"</error>');
+
+            return 1;
+        }
 
         // create setup dbs
         $command = $this->getApplication()->find('ini:setup-tests-dbs');

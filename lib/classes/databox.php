@@ -214,11 +214,7 @@ class databox extends base
         $ret = [];
 
         foreach ($this->get_available_collections() as $coll_id) {
-            try {
-                $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
-            } catch (\Exception $e) {
-
-            }
+            $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
         }
 
         return $ret;
@@ -248,6 +244,7 @@ class databox extends base
         foreach ($rs as $row) {
             $ret[] = (int) $row['server_coll_id'];
         }
+
         $this->set_data_to_cache($ret, self::CACHE_COLLECTIONS);
 
         return $ret;

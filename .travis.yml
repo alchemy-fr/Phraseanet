@@ -61,8 +61,6 @@ script:
               bin/developer ini:setup-tests-dbs -v;
             fi"
   - php resources/hudson/cleanupSubdefs.php
-  #sqlite db generation should occur once Phraseanet is up to date :
   - bin/developer phraseanet:regenerate-sqlite
   - ./node_modules/.bin/grunt test
-  #ls -d tests/Alchemy/Tests/Phrasea/*/ | parallel --gnu 'bin/phpunit {};'
   - bin/phpunit
