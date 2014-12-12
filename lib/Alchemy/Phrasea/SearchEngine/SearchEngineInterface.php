@@ -211,7 +211,7 @@ interface SearchEngineInterface
      *
      * @return EventSubscriberInterface
      */
-    public static function createSubscriber(Application $app);
+    public function getSubscriber();
 
     /**
      * Creates the adapter.

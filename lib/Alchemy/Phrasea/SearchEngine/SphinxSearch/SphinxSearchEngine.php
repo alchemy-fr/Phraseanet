@@ -535,7 +535,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      *
      * @return SphinxSearchEngineSubscriber
      */
-    public static function createSubscriber(Application $app)
+    public function getSubscriber()
     {
         return new SphinxSearchEngineSubscriber();
     }
