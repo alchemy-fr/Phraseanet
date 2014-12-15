@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
 use Alchemy\Phrasea\Command\SearchEngine\IndexDropCommand;
 use Alchemy\Phrasea\Command\SearchEngine\IndexFull;
 use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
+use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
 use Alchemy\Phrasea\Command\WebsocketServer;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
@@ -129,6 +130,7 @@ if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
     $cli->command(new IndexDropCommand());
     $cli->command(new IndexPopulateCommand());
     $cli->command(new QueryParseCommand());
+    $cli->command(new FindConceptsCommand());
 }
 
 $cli->command(new WebsocketServer('ws-server:run'));

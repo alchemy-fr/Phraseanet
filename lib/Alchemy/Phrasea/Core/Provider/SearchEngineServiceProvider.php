@@ -123,7 +123,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return array_replace($defaults, $options);
         });
 
-        $app['elasticsearch.thesaurus'] = $app->share(function ($app) {
+        $app['thesaurus'] = $app->share(function ($app) {
             return new Thesaurus(
                 $app['elasticsearch.client'],
                 $app['elasticsearch.options']['index']
