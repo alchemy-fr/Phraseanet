@@ -207,7 +207,7 @@ class IniReset extends Command
         }
 
         $output->writeln('Upgrading from v3.1 to v'.Version::getNumber());
-        $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f';
+        $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';
         $process = new Process($cmd);
         $process->run(function ($type, $buffer) {
             if ('err' === $type) {

@@ -51,6 +51,16 @@ class UserRepository extends EntityRepository
     }
 
     /**
+     * Finds deleted users.
+     *
+     * @return User[]
+     */
+    public function findDeleted()
+    {
+        return $this->findBy(['deleted' => true]);
+    }
+
+    /**
      * Finds a user by email.
      *
      * @param string $email

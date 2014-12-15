@@ -58,22 +58,13 @@ class patch_386alpha4a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'SELECT usr_id FROM usr WHERE usr_login LIKE "(#deleted_%"';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-
-        $repo = $app['EM']->getRepository('Entities\UsrList');
-
-        $users = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        foreach ($users as $user) {
-            foreach ($repo->findUserLists(new \User_Adapter($user['usr_id'], $app)) as $list) {
+        $repo = $app['EM']->getRepository('Phraseanet:UsrList');
+        foreach ($app['EM']->getRepository('Phraseanet:User')->findDeleted() as $user) {
+            foreach ($repo->findUserLists($user) as $list) {
                 $app['EM']->remove($list);
             }
             $app['EM']->flush();
         }
-
-        $stmt->closeCursor();
 
         return true;
     }
