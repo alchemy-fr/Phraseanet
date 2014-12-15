@@ -61,7 +61,7 @@
         "phpexiftool/phpexiftool"          : "dev-0.4.1-mwg-metadata-copy as 0.4.1",
         "react/zmq"                        : "~0.2",
         "rhumsaa/uuid"                     : "~2.7",
-        "silex/silex"                      : "1.1.x-dev@dev",
+        "silex/silex"                      : "~1.2",
         "silex/web-profiler"               : "~1.0.0@dev",
         "sorien/silex-dbal-profiler"       : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",
