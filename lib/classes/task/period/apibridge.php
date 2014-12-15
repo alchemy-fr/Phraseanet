@@ -78,6 +78,7 @@ class task_period_apibridge extends task_appboxAbstract
                 $this->update_element($element);
             }
         } catch (\Exception $e) {
+            $this->log("process error: " . $e->getMessage());
             $sql = 'UPDATE bridge_elements SET status = :status WHERE id = :id';
 
             $params = array(

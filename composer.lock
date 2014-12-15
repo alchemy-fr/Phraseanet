@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "21f40dfe13f0a9507d9c36b25c54d4f1",
+    "hash": "fadb1c02db78a5cbeec681a90b45fdf8",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -282,16 +282,16 @@
         },
         {
             "name": "alchemy/phlickr",
-            "version": "0.2.8",
+            "version": "0.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Phlickr.git",
-                "reference": "26b7764fd45c15062cb1b21c9389aff919e8c2bd"
+                "reference": "f9af93e27e9235db43e61ce2f9588d8ce9859b68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/26b7764fd45c15062cb1b21c9389aff919e8c2bd",
-                "reference": "26b7764fd45c15062cb1b21c9389aff919e8c2bd",
+                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/f9af93e27e9235db43e61ce2f9588d8ce9859b68",
+                "reference": "f9af93e27e9235db43e61ce2f9588d8ce9859b68",
                 "shasum": ""
             },
             "type": "library",
@@ -301,7 +301,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2014-07-07 16:25:07"
+            "time": "2014-12-15 14:27:57"
         },
         {
             "name": "dailymotion/sdk",
