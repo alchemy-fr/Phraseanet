@@ -133,9 +133,7 @@ class Activity implements ControllerProviderInterface
         $conf = [
             'user'      => [$app->trans('report:: utilisateur'), 0, 1, 0, 0],
             'nbdoc'     => [$app->trans('report:: nombre de documents'), 0, 0, 0, 0],
-            'poiddoc'   => [$app->trans('report:: poids des documents'), 0, 0, 0, 0],
             'nbprev'    => [$app->trans('report:: nombre de preview'), 0, 0, 0, 0],
-            'poidprev'  => [$app->trans('report:: poids des previews'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(

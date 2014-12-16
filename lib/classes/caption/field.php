@@ -282,7 +282,7 @@ class caption_field implements cache_cacheableInterface
         return $values;
     }
 
-    public static function rename_all_metadatas(databox_field $databox_field)
+    public static function rename_all_metadatas(Application $app, databox_field $databox_field)
     {
         $sql = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
@@ -317,10 +317,6 @@ class caption_field implements cache_cacheableInterface
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $record->set_metadatas([]);
-
-                    /**
-                     * TODO NEUTRON add App
-                     */
                     $app['phraseanet.SE']->updateRecord($record);
                     unset($record);
                 } catch (\Exception $e) {
