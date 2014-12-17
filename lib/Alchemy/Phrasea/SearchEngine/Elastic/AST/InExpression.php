@@ -18,6 +18,11 @@ class InExpression extends Node
         return $this->expression->getQuery($this->field->getValue());
     }
 
+    public function getTextNodes()
+    {
+        return $this->expression->getTextNodes();
+    }
+
     public function __toString()
     {
         return sprintf('(%s IN %s)', $this->expression, $this->field);

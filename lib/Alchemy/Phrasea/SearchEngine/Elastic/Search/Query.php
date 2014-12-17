@@ -18,6 +18,11 @@ class Query
         $this->root = $root;
     }
 
+    public function getTextNodes()
+    {
+        return $this->root->getTextNodes();
+    }
+
     /*
      * This method seems weird to me, the implementation returns true when the
      * query doesn't contain IN statements, but that doesn't define a full text

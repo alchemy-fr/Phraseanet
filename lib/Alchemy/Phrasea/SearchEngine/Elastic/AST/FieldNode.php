@@ -21,6 +21,11 @@ class FieldNode extends Node
         throw new \LogicException("A keyword can't be converted to a query.");
     }
 
+    public function getTextNodes()
+    {
+        throw new \LogicException("A keyword can't contain text nodes.");
+    }
+
     public function __toString()
     {
         return sprintf('<%s>', $this->keyword);

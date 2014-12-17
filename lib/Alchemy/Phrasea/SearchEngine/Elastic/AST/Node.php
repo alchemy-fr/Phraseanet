@@ -13,4 +13,6 @@ abstract class Node
      * @return bool  Tell if the node and it's child are full-text queries only
      */
     abstract public function isFullTextOnly();
+
+    abstract public function getTextNodes();
 }

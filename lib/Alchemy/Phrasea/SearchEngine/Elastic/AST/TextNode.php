@@ -21,6 +21,11 @@ class TextNode extends Node
         );
     }
 
+    public function getTextNodes()
+    {
+        return array($this);
+    }
+
     public function __toString()
     {
         return sprintf('"%s"', $this->text);
