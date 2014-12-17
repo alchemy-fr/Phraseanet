@@ -60,6 +60,7 @@ class QueryVisitor implements Visit
 
     private function visitQuery(Element $element)
     {
+        $root = null;
         foreach ($element->getChildren() as $child) {
             $root = $child->accept($this);
         }
