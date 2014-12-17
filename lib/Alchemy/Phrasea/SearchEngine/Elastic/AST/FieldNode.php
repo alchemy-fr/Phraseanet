@@ -28,7 +28,7 @@ class FieldNode extends Node
 
     public function __toString()
     {
-        return sprintf('<%s>', $this->keyword);
+        return sprintf('<field:%s>', $this->keyword);
     }
 
     public function isFullTextOnly()
