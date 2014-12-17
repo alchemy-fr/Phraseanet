@@ -278,6 +278,18 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $searchQuery = $this->app['query_parser']->parse($string);
 
+        $query['_ast'] = $searchQuery->dump();
+
+        $thesaurus = $this->app['thesaurus'];
+        foreach ($searchQuery->getTextNodes() as $textNode) {
+            $text = $textNode->getText();
+            $concepts = $thesaurus->findConcepts($text);
+            $query['_thesaurus_concepts'][$text] = $concepts;
+        }
+
+        // $concepts = $thesaurus->findConceptsBulk($terms);
+
+
         // Contains the full thesaurus paths to search on
         $pathsToFilter = [];
         // Contains the thesaurus values by fields (synonyms, translations, etc)

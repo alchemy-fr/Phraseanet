@@ -113,7 +113,9 @@ class TermIndexer
         $mapping = new Mapping();
         $mapping
             ->add('raw_value', 'string')->notAnalyzed()
-            ->add('value', 'string')->addAnalyzedVersion($this->locales)
+            ->add('value', 'string')
+                ->analyzer('general_light')
+                ->addAnalyzedVersion($this->locales)
             ->add('context', 'string')->addAnalyzedVersion($this->locales)
             ->add('path', 'string')->notAnalyzed()
             ->add('lang', 'string')->notAnalyzed()
