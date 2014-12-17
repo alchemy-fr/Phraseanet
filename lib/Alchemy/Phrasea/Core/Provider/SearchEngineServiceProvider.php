@@ -87,7 +87,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             return new RecordIndexer(
-                $app['elasticsearch.thesaurus'],
+                $app['thesaurus'],
                 $app['elasticsearch.engine'],
                 $app['phraseanet.appbox'],
                 array_keys($app['locales.available'])
