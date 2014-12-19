@@ -28,7 +28,7 @@
         "alchemy/oauth2php"                : "1.0.0",
         "alchemy/phlickr"                  : "0.2.9",
         "alchemy/task-manager"             : "2.0.x-dev@dev",
-        "alchemy/zippy"                    : "0.2.x-dev@dev",
+        "alchemy/zippy"                    : "~0.2",
         "cboden/ratchet"                   : "~0.3",
         "dailymotion/sdk"                  : "~1.5",
         "data-uri/data-uri"                : "~0.1.0",
