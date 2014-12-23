@@ -124,7 +124,7 @@ class RecordFetcher
             SELECT r.record_id
                  , r.coll_id as collection_id
                  , r.uuid
-                 , LPAD(BIN(r.status), 32, "0") as bin_status
+                 , r.status as flags_bitmask
                  , r.sha256 -- TODO rename in "hash"
                  , r.originalname as original_name
                  , r.mime
@@ -152,7 +152,7 @@ SQL;
         SELECT r.record_id
              , r.coll_id as collection_id
              , r.uuid
-             , LPAD(BIN(r.status), 32, "0") as bin_status
+             , r.status as flags_bitmask
              , r.sha256 -- TODO rename in "hash"
              , r.originalname as original_name
              , r.mime

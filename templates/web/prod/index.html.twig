@@ -373,29 +373,29 @@
                                                 <div class="status_filter">
                                                     <span>{{ 'Status des documents a rechercher' | trans }}</span>
                                                     <table style="width: 100%;">
-                                                        {% for n, stat in search_status %}
-                                                            {% for s in stat %}
+                                                        {% for sbas_id, bits in search_status %}
+                                                            {% for n, bit in bits %}
                                                             <tr>
                                                                 <td>
-                                                                    {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale']]}}" />
+                                                                    {% if bit['imgoff'] %}
+                                                                        <img src="{{bit['imgoff']}}" title="{{bit['labels_off_i18n'][app['locale']]}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
-                                                                        n="{{n}}" name="status[{{n}}][off][]" />
-                                                                        {{s['labels_off_i18n'][app['locale']]}}
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{sbas_id}}"
+                                                                        type="checkbox" value="0"
+                                                                        n="{{n}}" name="status[{{sbas_id}}][{{n}}]" />
+                                                                        {{bit['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
-                                                                    {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale']]}}" />
+                                                                    {% if bit['imgon'] %}
+                                                                        <img src="{{bit['imgon']}}" title="{{bit['labels_on_i18n'][app['locale']]}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
-                                                                        n="{{n}}" name="status[{{n}}][on][]"/>
-                                                                        {{s['labels_on_i18n'][app['locale']]}}
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{sbas_id}}"
+                                                                        type="checkbox" value="1"
+                                                                        n="{{n}}" name="status[{{sbas_id}}][{{n}}]"/>
+                                                                        {{bit['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                             </tr>

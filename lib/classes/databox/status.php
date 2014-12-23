@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -155,13 +156,10 @@ class databox_status
 
     public static function getSearchStatus(Application $app)
     {
-        $statuses = [];
+        $statuses = $see_all = [];
+        $databoxes = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
 
-        $sbas_ids = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
-
-        $see_all = [];
-
-        foreach ($sbas_ids as $databox) {
+        foreach ($databoxes as $databox) {
             $see_all[$databox->get_sbas_id()] = false;
 
             foreach ($databox->get_collections() as $collection) {
@@ -170,6 +168,7 @@ class databox_status
                     break;
                 }
             }
+
             try {
                 $statuses[$databox->get_sbas_id()] = $databox->get_statusbits();
             } catch (\Exception $e) {
@@ -179,55 +178,25 @@ class databox_status
 
         $stats = [];
 
-        foreach ($statuses as $sbas_id => $status) {
+        foreach ($statuses as $databox_id => $status) {
+            $canSeeAll = isset($see_all[$databox_id]) ? $see_all[$databox_id] : false;
+            $canSeeThis = $app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct');
 
-            $see_this = isset($see_all[$sbas_id]) ? $see_all[$sbas_id] : false;
-
-            if ($app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-                $see_this = true;
-            }
+            $canAccess = $canSeeAll || $canSeeThis;
 
             foreach ($status as $bit => $props) {
-
-                if ($props['searchable'] == 0 && ! $see_this)
+                if (!$props['searchable'] && !$canAccess) {
                     continue;
-
-                $set = false;
-                if (isset($stats[$bit])) {
-                    foreach ($stats[$bit] as $k => $s_desc) {
-                        if (mb_strtolower($s_desc['labelon']) == mb_strtolower($props['labelon'])
-                            && mb_strtolower($s_desc['labeloff']) == mb_strtolower($props['labeloff'])) {
-                            $stats[$bit][$k]['sbas'][] = $sbas_id;
-                            $set = true;
-                        }
-                    }
-                    if (! $set) {
-                        $stats[$bit][] = [
-                            'sbas'            => [$sbas_id],
-                            'labeloff'        => $props['labeloff'],
-                            'labelon'         => $props['labelon'],
-                            'labels_on_i18n'  => $props['labels_on_i18n'],
-                            'labels_off_i18n' => $props['labels_off_i18n'],
-                            'imgoff'          => $props['img_off'],
-                            'imgon'           => $props['img_on']
-                        ];
-                        $set = true;
-                    }
                 }
-
-                if (! $set) {
-                    $stats[$bit] = [
-                        [
-                            'sbas'            => [$sbas_id],
-                            'labeloff'        => $props['labeloff'],
-                            'labelon'         => $props['labelon'],
-                            'labels_on_i18n'  => $props['labels_on_i18n'],
-                            'labels_off_i18n' => $props['labels_off_i18n'],
-                            'imgoff'          => $props['img_off'],
-                            'imgon'           => $props['img_on']
-                        ]
-                    ];
-                }
+                $stats[$databox_id][$bit] = array(
+                    'name'            => RecordHelper::normalizeFlagKey($props['labelon']),
+                    'labeloff'        => $props['labeloff'],
+                    'labelon'         => $props['labelon'],
+                    'labels_on_i18n'  => $props['labels_on_i18n'],
+                    'labels_off_i18n' => $props['labels_off_i18n'],
+                    'imgoff'          => $props['img_off'],
+                    'imgon'           => $props['img_on']
+                );
             }
         }
 
@@ -635,5 +604,10 @@ class databox_status
     public static function purge()
     {
         self::$_status = self::$_statuses = [];
+    }
+
+    public static function bitIsSet($bitMask, $nthBit)
+    {
+        return (bool) ($bitMask & (1 << $nthBit));
     }
 }

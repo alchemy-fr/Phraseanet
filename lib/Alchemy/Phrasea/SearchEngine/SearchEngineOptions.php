@@ -319,26 +319,9 @@ class SearchEngineOptions
      * @param  array               $status
      * @return SearchEngineOptions
      */
-    public function setStatus(Array $status)
+    public function setStatus(array $status)
     {
-        $tmp = [];
-        foreach ($status as $n => $options) {
-            if (count($options) > 1) {
-                continue;
-            }
-            if (isset($options['on'])) {
-                foreach ($options['on'] as $sbas_id) {
-                    $tmp[$n][$sbas_id] = 1;
-                }
-            }
-            if (isset($options['off'])) {
-                foreach ($options['off'] as $sbas_id) {
-                    $tmp[$n][$sbas_id] = 0;
-                }
-            }
-        }
-
-        $this->status = $tmp;
+        $this->status = $status;
 
         return $this;
     }
@@ -661,6 +644,7 @@ class SearchEngineOptions
 
             $options->allowBusinessFieldsOn($BF);
         }
+
 
         $status = is_array($request->get('status')) ? $request->get('status') : [];
         $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
