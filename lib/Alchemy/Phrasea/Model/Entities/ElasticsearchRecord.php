@@ -24,6 +24,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $recordId;
     private $collectionId;
     private $baseId;
+    private $collectionName;
     private $mimeType;
     private $title;
     private $originalName;
@@ -121,6 +122,22 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
             $mimeType = 'application/octet-stream';
         }
         $this->mimeType = $mimeType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollectionName()
+    {
+        return $this->collectionName;
+    }
+
+    /**
+     * @param string $collectionName
+     */
+    public function setCollectionName($collectionName)
+    {
+        $this->collectionName = $collectionName;
     }
 
     /** {@inheritdoc} */

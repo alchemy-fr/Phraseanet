@@ -123,6 +123,7 @@ class RecordFetcher
             $sql = <<<SQL
             SELECT r.record_id
                  , r.coll_id as collection_id
+                 , c.asciiname as collection_name
                  , r.uuid
                  , LPAD(BIN(r.status), 32, "0") as bin_status
                  , r.sha256 -- TODO rename in "hash"
@@ -133,6 +134,7 @@ class RecordFetcher
                  , r.credate as created_on
                  , r.moddate as updated_on
                     FROM record r
+                    INNER JOIN coll c ON (c.coll_id = r.coll_id)
                     ORDER BY r.record_id ASC
                     LIMIT :offset, :limit
 SQL;
@@ -151,6 +153,7 @@ SQL;
         $sql = <<<SQL
         SELECT r.record_id
              , r.coll_id as collection_id
+             , c.asciiname as collection_name
              , r.uuid
              , LPAD(BIN(r.status), 32, "0") as bin_status
              , r.sha256 -- TODO rename in "hash"
@@ -161,6 +164,7 @@ SQL;
              , r.credate as created_on
              , r.moddate as updated_on
                 FROM record r
+                INNER JOIN coll c ON (c.coll_id = r.coll_id)
                 WHERE r.record_id = :id
 SQL;
 
