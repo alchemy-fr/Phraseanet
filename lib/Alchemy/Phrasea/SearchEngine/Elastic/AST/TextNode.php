@@ -49,7 +49,7 @@ class TextNode extends Node implements TermInterface
 
     public function __toString()
     {
-        return sprintf('"%s"', $this->text);
+        return sprintf('<text:"%s">', $this->text);
     }
 
 

@@ -17,4 +17,9 @@ class QuotedTextNode extends TextNode
             )
         );
     }
+
+    public function __toString()
+    {
+        return sprintf('<exact_text:"%s">', $this->text);
+    }
 }
