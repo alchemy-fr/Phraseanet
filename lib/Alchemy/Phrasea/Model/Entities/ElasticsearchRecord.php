@@ -42,6 +42,8 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $exif;
     /** @var ArrayCollection */
     private $subdefs;
+    /** @var ArrayCollection */
+    private $flags;
 
     /** {@inheritdoc} */
     public function getId()
@@ -273,6 +275,22 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setSubdefs(ArrayCollection $subdefs)
     {
         $this->subdefs = $subdefs;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFlags()
+    {
+        return $this->flags;
+    }
+
+    /**
+     * @param ArrayCollection $flags
+     */
+    public function setFlags(ArrayCollection $flags)
+    {
+        $this->flags = $flags;
     }
 
     public function setStatus($status)

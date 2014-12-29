@@ -42,6 +42,7 @@ class ElasticsearchRecordHydrator
         $record->setCaption(new ArrayCollection((array) igorw\get_in($data, ['caption'], [])));
         $record->setExif(new ArrayCollection((array) igorw\get_in($data, ['exif'], [])));
         $record->setSubdefs(new ArrayCollection((array) igorw\get_in($data, ['subdefs'], [])));
+        $record->setFlags(new ArrayCollection((array) igorw\get_in($data, ['flags'], [])));
 
         return $record;
     }
