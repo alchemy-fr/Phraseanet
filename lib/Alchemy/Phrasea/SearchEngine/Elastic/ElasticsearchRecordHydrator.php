@@ -23,6 +23,7 @@ class ElasticsearchRecordHydrator
 
         $record->setPosition($position);
         $record->setBaseId(igorw\get_in($data, ['base_id'], 0));
+        $record->setCollectionName(igorw\get_in($data, ['collection_name'], null));
         $record->setCollectionId(igorw\get_in($data, ['collection_id'], 0));
         $createdOn = igorw\get_in($data, ['created_on']);
         $record->setCreated($createdOn ? new \DateTime($createdOn) : $createdOn);
