@@ -381,9 +381,9 @@ abstract class PhraseanetTestCase extends WebTestCase
         $app['translator'] = $this->createTranslatorMock();
 
         $app['phraseanet.SE.subscriber'] = $this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface');
-        $app['phraseanet.SE.subscriber']::staticExpects($this->any())
-            ->method('getSubscribedEvents')
-            ->will($this->returnValue([]));
+        //$app['phraseanet.SE.subscriber']::staticExpects($this->any())
+        //    ->method('getSubscribedEvents')
+        //    ->will($this->returnValue([]));
 
         $app['EM.dbal-conf'] = $app->share($app->extend('EM.dbal-conf', function ($conf, $app) {
             if (isset($conf['path'])) {
@@ -783,8 +783,8 @@ abstract class PhraseanetTestCase extends WebTestCase
         $mock->expects($this->any())
             ->method('getStatus')
             ->will($this->returnValue([]));
-        $mock->staticExpects($this->any())
-            ->method('createSubscriber')
+        $mock->expects($this->any())
+            ->method('getSubscriber')
             ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
 
         return $mock;

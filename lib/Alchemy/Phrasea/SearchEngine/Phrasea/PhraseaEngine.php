@@ -508,9 +508,9 @@ class PhraseaEngine implements SearchEngineInterface
      *
      * @return PhraseaEngineSubscriber
      */
-    public static function createSubscriber(Application $app)
+    public function getSubscriber()
     {
-        return new PhraseaEngineSubscriber($app);
+        return new PhraseaEngineSubscriber($this->app);
     }
 
     /**

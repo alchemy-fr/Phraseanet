@@ -8,6 +8,11 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
     private static $csv = [];
     private static $durationByTest = [];
 
+
+    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    {
+    }
+
     public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
     }

@@ -43,7 +43,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.SE.subscriber'] = $app->share(function ($app) {
-            return $app['phraseanet.SE.engine-class']::createSubscriber($app);
+            return $app['phraseanet.SE']->getSubscriber();
         });
 
         $app['ES.indexer'] = $app->share(function ($app) {

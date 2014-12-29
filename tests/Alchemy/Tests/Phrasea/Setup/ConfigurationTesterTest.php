@@ -86,17 +86,6 @@ class ConfigurationTesterTest extends AbstractSetupTester
 
         $app = new Application('test');
 
-        $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /**
-         * Must return version + 1
-         */
-        $app['phraseanet.version']::staticExpects($this->any())
-            ->method('getNumber')
-            ->will($this->returnValue('3.10'));
-
         $tester = $this->getTester($app);
 
         $tester->registerVersionProbe($probe);
@@ -126,17 +115,6 @@ class ConfigurationTesterTest extends AbstractSetupTester
     public function testUpgradable()
     {
         $app = new Application('test');
-
-        $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /**
-         * Must return version + 1
-         */
-        $app['phraseanet.version']::staticExpects($this->any())
-            ->method('getNumber')
-            ->will($this->returnValue('3.10'));
 
         $tester = $this->getTester($app);
 

@@ -336,7 +336,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public static function createSubscriber(Application $app)
+    public function getSubscriber()
     {
         return new ElasticSearchEngineSubscriber();
     }
