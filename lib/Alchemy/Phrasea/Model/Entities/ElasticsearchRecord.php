@@ -44,6 +44,8 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $subdefs;
     /** @var ArrayCollection */
     private $flags;
+    /** @var ArrayCollection */
+    private $highlight;
 
     /** {@inheritdoc} */
     public function getId()
@@ -318,5 +320,21 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setPosition($position)
     {
         $this->position = $position;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHighlight()
+    {
+        return $this->highlight;
+    }
+
+    /**
+     * @param ArrayCollection $highlight
+     */
+    public function setHighlight(ArrayCollection $highlight)
+    {
+        $this->highlight = $highlight;
     }
 }

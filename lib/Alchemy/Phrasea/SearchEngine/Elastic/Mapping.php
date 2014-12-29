@@ -210,6 +210,15 @@ class Mapping
         return $this;
     }
 
+    public function highlight()
+    {
+        $field = &$this->currentField();
+
+        $field['term_vector'] = 'with_positions_offsets';
+
+        return $this;
+    }
+
     public function has($name)
     {
         return isset($this->fields[$name]);

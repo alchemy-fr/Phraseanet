@@ -1,4 +1,5 @@
 {% import 'prod/results/macro.html.twig' as result_macro %}
+{% import 'common/macros.html.twig' as macro %}
 
 <div style="width:{{ settings.images_size + 30}}px;"
      sbas="{{ record.databoxId }}"
@@ -7,9 +8,8 @@
      onDblClick="openPreview('{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');">
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
-            {# @todo title should be localized #}
-            <div class="title" style="max-height:100%" title="{{ record.title }}">
-                {{ record.title }}
+            <div class="title" style="max-height:100%" title="{{ record.title(app.locale) }}">
+                {{ record.title(app.locale)|highlight }}
             </div>
             <div class="status">
                 {% for flag in record_flags(record) %}
@@ -18,13 +18,12 @@
             </div>
         </div>
 
-        {% if settings.rollover_thumbnail == 'caption' %}
-            {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) %}
-        {% elseif settings.rollover_thumbnail == 'preview' %}
-            {% set tooltip = path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) %}
-        {% endif %}
+        {% set can_see_business = granted_on_collection(record.baseId, 'canmodifrecord') %}
 
-        <div class="thumb captionTips" tooltipsrc="{{ tooltip }}" style="height:{{ settings.images_size }}px; z-index:90;">
+        <div class="thumb captionTips"
+             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro.caption(record, can_see_business, false) | e }}"{% endif %}
+             {% if settings.rollover_thumbnail == 'preview' %}tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"{% endif %}
+             style="height:{{ settings.images_size }}px; z-index:90;">
             <div class="doc_infos">
                 {% if settings.doctype_display == '1' %}
                     {{ record_doctype_icon(record) }}

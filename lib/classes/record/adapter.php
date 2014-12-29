@@ -763,6 +763,21 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return new caption_record($this->app, $this, $this->get_databox());
     }
 
+    public function getCaption()
+    {
+        $collection = new ArrayCollection();
+
+        foreach ($this->get_caption()->get_fields() as $field) {
+            $values = array_map(function($fieldValue) {
+                return $fieldValue->getValue();
+            }, $field->get_values());
+
+            $collection->set($field->get_name(), $values);
+        }
+
+        return $collection;
+    }
+
     /**
      *
      * @return string
