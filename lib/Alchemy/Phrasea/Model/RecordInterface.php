@@ -60,4 +60,7 @@ interface RecordInterface
 
     /** @return ArrayCollection */
     public function getExif();
+
+    /** @return ArrayCollection */
+    public function getCaption();
 }

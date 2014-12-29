@@ -17,8 +17,11 @@ use igorw;
 
 class ElasticsearchRecordHydrator
 {
-    public static function hydrate(array $data, $position)
+    public static function hydrate(array $hit, $position)
     {
+        $data = $hit['_source'];
+        $highlight = isset($hit['highlight']) ? $hit['highlight'] : [];
+
         $record = new ElasticsearchRecord();
 
         $record->setPosition($position);
@@ -43,6 +46,7 @@ class ElasticsearchRecordHydrator
         $record->setExif(new ArrayCollection((array) igorw\get_in($data, ['exif'], [])));
         $record->setSubdefs(new ArrayCollection((array) igorw\get_in($data, ['subdefs'], [])));
         $record->setFlags(new ArrayCollection((array) igorw\get_in($data, ['flags'], [])));
+        $record->setHighlight(new ArrayCollection($highlight));
 
         return $record;
     }

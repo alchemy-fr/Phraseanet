@@ -1,20 +1,21 @@
 {% import 'common/macros.html.twig' as macro %}
 
-{% set business = false %}
-{% if app['authentication'].getUser() is not none %}
-    {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
-{% endif %}
+{% set business = granted_on_collection(record.baseId, 'canmodifrecord') %}
+{% set display_exif = true %}
 
 {% if view == 'answer' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, false, true) }}
+    {{ macro.caption(record, business, display_exif) }}
 {% elseif view == 'lazaret' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, true, true) }}
+    {{ macro.caption(record, business, display_exif) }}
 {% elseif view == 'preview' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, true, false) }}
+    {% set display_exif = false %}
+    {{ macro.caption(record, business, display_exif) }}
 {% elseif view == 'basket' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, true, false) }}
+    {% set display_exif = false %}
+    {{ macro.caption(record, business, display_exif) }}
 {% elseif view == 'overview' %}
-    {{ macro.format_caption(record, highlight|default(''), searchEngine|default(null), business, false, false) }}
+    {% set display_exif = false %}
+    {{ macro.caption(record, business, display_exif) }}
 {% elseif view == 'publi' %}
-    {{ macro.format_caption(record, '', null, business, true, true) }}
+    {{ macro.caption(record, business, display_exif) }}
 {% endif %}

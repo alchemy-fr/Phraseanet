@@ -1,8 +1,11 @@
 {% import 'common/macros.html.twig' as macro %}
 
-  {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'canmodifrecord') %}
+  {% set can_edit = granted_on_collection(record.baseId, 'canmodifrecord') %}
+  {% set can_see_business = can_edit %}
+
+  {% if can_edit %}
     <div class="edit_button" style="text-align:right">
-      <a href="#" onclick="editThis('IMGT','{{record.get_serialize_key()}}');">
+        <a href="#" onclick="editThis('IMGT','{{ record.get_serialize_key }}');">
         <img style="vertical-align:middle" src="/skins/prod/000000/images/ppen_history.png" width="16"/>
         {{ 'action : editer' | trans }}
       </a>
@@ -13,9 +16,9 @@
       <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
     {% endfor %}
   </div>
-  {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+
   {% if record.is_from_reg()  %}
-    {{macro.format_caption(record, '', null, null, business, false, true)}}
+    {{macro.caption(record, can_see_business)}}
   {% else %}
-    {{macro.format_caption(record, null, null, business, false, true)}}
+    {{macro.caption(record, can_see_business)}}
   {% endif %}
