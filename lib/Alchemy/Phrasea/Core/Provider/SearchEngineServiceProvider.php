@@ -112,10 +112,16 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.options'] = $app->share(function($app) {
             $options = $app['conf']->get(['main', 'search-engine', 'options']);
+
+            $indexName = sprintf('phraseanet_%s', str_replace(
+                array('/', '.'), array('', ''),
+                $app['conf']->get(['main', 'key'])
+            ));
+
             $defaults = [
                 'host'     => '127.0.0.1',
                 'port'     => 9200,
-                'index'    => 'phraseanet',
+                'index'    => $indexName,
                 'shards'   => 3,
                 'replicas' => 0
             ];
