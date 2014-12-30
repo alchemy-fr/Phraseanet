@@ -273,29 +273,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $queryContext = new QueryContext($this->locales, $this->app['locale'], $searchableFields);
         $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
 
-
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
+
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
 
-        // Debug at the moment. See https://phraseanet.atlassian.net/browse/PHRAS-322
-        $params['body']['aggs'] = array (
-            'Keywords' => array ('terms' =>
-                array ('field' => 'caption.Keywords.raw', 'size' => 20),
-            ),
-            'Photographer' => array ('terms' =>
-                array ('field' => 'caption.Photographer.raw', 'size' => 20),
-            ),
-            'Headline' => array ('terms' =>
-                array ('field' => 'caption.Headline.raw', 'size' => 20),
-            ),
-            'City' => array ('terms' =>
-                array ('field' => 'caption.City.raw', 'size' => 20),
-            ),
-            'Country' => array ('terms' =>
-                array ('field' => 'caption.Country.raw', 'size' => 20),
-            ),
-        );
+        if (0 !== count($aggs = $this->getAggregationQueryParams($options, $recordHelper))) {
+            $params['body']['aggs'] = $aggs;
+        }
 
         $res = $this->doExecute('search', $params);
 
@@ -312,9 +297,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
 
+        $queryyy = $recordQuery;
+        // $queryyy = $params['body'];
+        $query['query'] = $queryyy;
+        $query['query_as_string'] = json_encode($queryyy);
+
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
-            $this->indexName, $res['aggregations']);
+            $this->indexName, isset($res['aggregations']) ? $res['aggregations'] : []);
     }
 
     /**
@@ -394,6 +384,53 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $params['body']['query'] = $ESQuery;
+
+        return $params;
+    }
+
+    private function getAggregationQueryParams(SearchEngineOptions $options, RecordHelper $recordHelper)
+    {
+        $acl = null;
+        if ($this->app['authentication']->isAuthenticated()) {
+            $acl = $this->app['acl']->get($this->app['authentication']->getUser());
+        }
+
+        // get business field access rights for current user
+        $rights = [];
+        foreach ($options->getDataboxes() as $databox) {
+            $can_see_business = (null !== $acl && $acl->can_see_business_fields($databox));
+            $rights[$databox->get_sbas_id()] = $can_see_business;
+        }
+
+        $hasRightOnDatabox = function($databox_id) use ($rights) {
+            return isset($rights[$databox_id]) && $rights[$databox_id];
+        };
+
+        $params = [];
+        foreach ($recordHelper->getFieldsStructure() as $fieldName => $field) {
+            // skip if field is not searchable or not aggregated
+            if (!$field['searchable'] || !$field['to_aggregate']) {
+                continue;
+            }
+
+            $allowed_databoxes = $field['databox_ids'];
+            $searchField = 'caption';
+
+            if ($field['private']) {
+                // restrict access to authorized databoxes  
+                $allowed_databoxes = array_filter($allowed_databoxes, $hasRightOnDatabox);
+                $searchField = 'private_caption';
+            }
+
+            $searchField = sprintf('%s.%s.raw', $searchField, $fieldName);
+
+            $params[$fieldName] = [
+                // filter aggregation to allowed databoxes
+                'filter' => ['term' => ['databox_id' => $allowed_databoxes]],
+                // declare aggregation on current field
+                'aggs' => ['distinct_occurrence' => ['terms' => ['field' => $searchField]]]
+            ];
+        }
 
         return $params;
     }

@@ -479,29 +479,32 @@ function initAnswerForm() {
 
                 console.debug('Aggregations:');
                 var toDisplay = [];
-                _.each(aggs, function(value, key) {
-                    _.each(value.buckets, function(bucket, keyBis) {
-                        if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
-                        toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
+                _.each(aggs, function(field_aggs, key) {
+                    _.each(field_aggs, function(value) {
+                        _.each(value.buckets, function(bucket, keyBis) {
+                            if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
+                            toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
+                        });
                     });
-
                 });
 
                 console.table(toDisplay);
 
                 var treeData = [];
-                _.each(aggs, function(value, key) {
+                _.each(aggs, function(field_aggs, key) {
                     var entry = {
                         "title" : key,
                         "key": key,
                         "folder": true,
                         "children" : []
                     };
-                    _.each(value.buckets, function(bucket) {
-                        entry.children.push({
-                            "title": bucket.key + ' ('+ bucket.doc_count + ')',
-                            "key": bucket.key,
-                            "query": bucket.key + " IN " + key
+                    _.each(field_aggs, function (agg) {
+                        _.each(agg.buckets, function(bucket) {
+                            entry.children.push({
+                                "title": bucket.key + ' ('+ bucket.doc_count + ')',
+                                "key": bucket.key,
+                                "query": '"'+ bucket.key + '" IN ' + key
+                            });
                         });
                     });
                     treeData.push(entry);
@@ -523,11 +526,24 @@ function initAnswerForm() {
                             if (typeof node.data.query === "undefined") {
                                 return;
                             }
-                            $('form[name="phrasea_query"] input[name="qry"]').val(node.data.query);
+
+                            var $input = $('form[name="phrasea_query"] input[name="qry"]');
+                            var current_query = $input.val();
+                            var query = node.data.query;
+
+                            if (current_query != '') {
+                                query = '('+current_query+') AND ('+query+')';
+                            }
+                            $input.val(query);
+
                             checkFilters();
                             newSearch();
                             $('searchForm').trigger('submit');
                         }
+                    });
+
+                    $tree.fancytree("getRootNode").visit(function(node){
+                        node.setExpanded(true);
                     });
                 }
 

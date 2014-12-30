@@ -121,6 +121,7 @@ class RecordHelper
                 }
 
                 $name = $fieldStructure->get_name();
+                $field['databox_ids'][] = $databox->get_sbas_id();
 
                 // Business rules
                 $field['private'] = $fieldStructure->isBusiness();
@@ -142,8 +143,15 @@ class RecordHelper
                 // have conflicting names. Indexing is the same for a given
                 // type so we reject only those with different types.
                 if (isset($fields[$name])) {
+                    // keep tracks of databox_id's where the field belongs to
+                    $fields[$name]['databox_ids'][] = $databox->get_sbas_id();
+
                     if ($fields[$name]['type'] !== $field['type']) {
                         throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $fields[$name]['type'], $field['type']));
+                    }
+
+                    if ($fields[$name]['private'] !== $field['private']) {
+                        throw new MergeException(sprintf("Field %s can't be merged, could not mix private and public fields with same name", $name));
                     }
 
                     if ($fields[$name]['searchable'] !== $field['searchable']) {
@@ -162,7 +170,6 @@ class RecordHelper
             }
         }
 
-        $this->fieldsStructure = $fields;
-        return $this->fieldsStructure;
+        return $this->fieldsStructure = $fields;
     }
 }
