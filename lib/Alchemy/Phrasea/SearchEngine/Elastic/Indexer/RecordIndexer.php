@@ -331,7 +331,7 @@ class RecordIndexer
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             foreach ($databox->get_statusbits() as $bit => $status) {
-                $key = self::normalizeFlagKey($status['labelon']);
+                $key = RecordHelper::normalizeFlagKey($status['labelon']);
                 // We only add to mapping new statuses
                 if (!$mapping->has($key)) {
                     $mapping->add($key, 'boolean');
@@ -340,11 +340,6 @@ class RecordIndexer
         }
 
         return $mapping;
-    }
-
-    public static function normalizeFlagKey($key)
-    {
-        return StringUtils::slugify($key, '_');
     }
 
     /**
@@ -357,14 +352,12 @@ class RecordIndexer
     {
         $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
         $structure = $this->getFieldsStructure();
+        $databox = $this->appbox->get_databox($record['databox_id']);
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_statusbits() as $bit => $status) {
-                $key = self::normalizeFlagKey($status['labelon']);
-                $position = 31-$bit;
+        foreach ($databox->get_statusbits() as $bit => $status) {
+            $key = RecordHelper::normalizeFlagKey($status['labelon']);
 
-                $record['flags'][$key] = isset($record['bin_status']{$position}) ? (bool) $record['bin_status']{$position} : null;
-            }
+            $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bitmask'], $bit);
         }
 
         foreach ($dateFields as $field) {

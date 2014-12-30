@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchRecordHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\SearchQuery;
@@ -26,6 +25,10 @@ use Elasticsearch\Client;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
+    const FLAG_ALLOW_BOTH = 'allow_both';
+    const FLAG_SET_ONLY = 'set_only';
+    const FLAG_UNSET_ONLY = 'unset_only';
+
     private $app;
     /** @var Client */
     private $client;
@@ -438,7 +441,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $params;
     }
 
-    private function createRecordQueryParams($ESquery, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [
             'index' => $this->indexName,
@@ -448,86 +451,54 @@ class ElasticSearchEngine implements SearchEngineInterface
             ]
         ];
 
-        $filters = $this->createFilters($options);
+        $query_filters = $this->createQueryFilters($options);
+        $acl_filters = $this->createACLFilters();
 
-        if ($record) {
-            $filters[] = [
-                'term' => [
-                    '_id' => sprintf('%s-%s', $record->get_sbas_id(), $record->get_record_id()),
-                ]
-            ];
+        $ESQuery = ['filtered' => ['query' => $ESQuery]];
 
-            $fields = [];
-
-            foreach ($record->get_databox()->get_meta_structure() as $dbField) {
-                $fields['caption.'.$dbField->get_name()] = new \stdClass();
-            }
-
-            $params['body']['highlight'] = [
-                "pre_tags"  => ["[[em]]"],
-                "post_tags" => ["[[/em]]"],
-                "fields"    => $fields,
-            ];
+        if (count($query_filters) > 0) {
+            $ESQuery['filtered']['filter']['bool']['must'][] = $query_filters;
         }
 
-        if (count($filters) > 0) {
-            $ESquery = [
-                'filtered' => [
-                    'query' => $ESquery,
-                    'filter' => [
-                        'and' => $filters
-                    ]
-                ]
-            ];
+        if (count($acl_filters) > 0) {
+            $ESQuery['filtered']['filter']['bool']['must'][] = $acl_filters;
         }
 
-        $params['body']['query'] = $ESquery;
+        $params['body']['query'] = $ESQuery;
 
         return $params;
     }
 
-    private function createFilters(SearchEngineOptions $options)
+    private function createACLFilters()
+    {
+        // No ACLs if no user
+        if (false === $this->app['authentication']->isAuthenticated()) {
+            return [];
+        }
+
+        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
+
+        $grantedCollections = array_keys($acl->get_granted_base(['actif']));
+
+        if (count($grantedCollections) === 0) {
+            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+        }
+
+        $flagNamesMap = $this->getFlagsKey($this->app['phraseanet.appbox']);
+        // Get flags rules
+        $flagRules = $this->getFlagsRules($acl, $grantedCollections);
+        // Get intersection between collection ACLs and collection chosen by end user
+        $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
+
+        return $this->buildACLsFilters($aclRules);
+    }
+
+    private function createQueryFilters(SearchEngineOptions $options)
     {
         $filters = [];
 
-        $status_opts = $options->getStatus();
-        foreach ($options->getDataboxes() as $databox) {
-            foreach ($databox->get_statusbits() as $bit => $status) {
-                if (!array_key_exists($bit, $status_opts)) {
-                    continue;
-                }
-                if (!array_key_exists($databox->get_sbas_id(), $status_opts[$bit])) {
-                    continue;
-                }
-
-                $key = RecordIndexer::normalizeFlagKey($status['labelon']);
-                $filters[] = [
-                    'term' => [
-                        sprintf('flags.%s', $key) => (bool) $status_opts[$bit][$databox->get_sbas_id()],
-                    ]
-                ];
-            }
-        }
-
-        $base_ids = [];
-        foreach ($options->getCollections() as $collection) {
-            $base_ids[] = $collection->get_base_id();
-        }
-
-        if (count($base_ids) > 0) {
-            $filters[] = [
-                'terms' => [
-                    'base_id' => array_values(array_filter($base_ids))
-                ]
-            ];
-        }
-
-        $filters[] = [
-            'term' => [
-                'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
-                    SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY,
-            ]
-        ];
+        $filters[]['term']['record_type'] = $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                    SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
@@ -539,20 +510,40 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
 
             foreach ($options->getDateFields() as $dateField) {
-                $filters[] = [
-                    'range' => [
-                        'caption.'.$dateField->get_name() => $range
-                    ]
-                ];
+                $filters[]['range']['caption.'.$dateField->get_name()] = $range;
             }
         }
 
         if ($options->getRecordType()) {
-            $filters[] = [
-                'term' => [
-                    'phrasea_type' => $options->getRecordType(),
-                ]
-            ];
+            $filters[]['term']['phrasea_type'] = $options->getRecordType();
+        }
+
+        if (count($options->getCollections()) > 0) {
+            $filters[]['terms']['base_id'] = array_map(function($collection) {
+                return $collection->get_base_id();
+            }, $options->getCollections());
+        }
+
+        if (count($options->getStatus()) > 0) {
+            $status_filters = [];
+            $flagNamesMap = $this->getFlagsKey($this->app['phraseanet.appbox']);
+
+            foreach ($options->getStatus() as $databoxId => $status) {
+                $status_filter = $databox_status =[];
+                $status_filter[] = ['term' => ['databox_id' => $databoxId]];
+                foreach ($status as $n => $v) {
+                    if (!isset($flagNamesMap[$databoxId][$n])) {
+                        continue;
+                    }
+
+                    $label = $flagNamesMap[$databoxId][$n];
+                    $databox_status[] = ['term' => [sprintf('flags.%s', $label) => (bool) $v]];
+                };
+                $status_filter[] = $databox_status;
+
+                $status_filters[] = ['bool' => ['must' => $status_filter]];
+            }
+            $filters[]['bool']['should'] = $status_filters;
         }
 
         return $filters;
@@ -609,5 +600,121 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $fieldsExpended;
+    }
+
+    private function getFlagsKey(\appbox $appbox)
+    {
+        $flags = [];
+        foreach ($appbox->get_databoxes() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+            $status = $databox->get_statusbits();
+            foreach($status as $bit => $stat) {
+                $flags[$databoxId][$bit] = RecordHelper::normalizeFlagKey($stat['labelon']);
+            }
+        }
+
+        return $flags;
+    }
+
+    private function getFlagsRules(\ACL $acl, array $collections)
+    {
+        $rules = [];
+        foreach ($collections as $collectionId) {
+            $databoxId = \phrasea::sbasFromBas($this->app, $collectionId);
+            foreach (range(0, 31) as $bit) {
+                $rules[$databoxId][$collectionId][$bit] = $this->computeAccess(
+                    $acl->get_mask_xor($collectionId),
+                    $acl->get_mask_and($collectionId),
+                    $bit
+                );
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     *    Truth table for status rights
+     *
+     *    +-----------+
+     *    | and | xor |
+     *    +-----------+
+     *    |  0  |  0  | -> BOTH STATES ARE CHECKED
+     *    +-----------+
+     *    |  1  |  0  | -> UNSET STATE IS CHECKED
+     *    +-----------+
+     *    |  0  |  1  | -> UNSET STATE IS CHECKED (not possible)
+     *    +-----------+
+     *    |  1  |  1  | -> SET STATE IS CHECKED
+     *    +-----------+
+     *
+     */
+    private function computeAccess($and, $xor, $bit)
+    {
+        $xorBit = \databox_status::bitIsSet($xor, $bit);
+        $andBit = \databox_status::bitIsSet($and, $bit);
+
+        if (!$xorBit && !$andBit) {
+            return self::FLAG_ALLOW_BOTH;
+        }
+
+        if ($xorBit && $andBit) {
+            return self::FLAG_SET_ONLY;
+        }
+
+        // otherwise there is a restriction for this status when it is not raised
+        return self::FLAG_UNSET_ONLY;
+    }
+
+    private function getACLsByCollection(array $flagACLs, array $flagNamesMap)
+    {
+        $rules = [];
+
+        foreach ($flagACLs as $databoxId => $bases) {
+            foreach ($bases as $baseId => $bit) {
+                $rules[$baseId] = [];
+                foreach ($bit as $n => $rule) {
+                    if (!isset($flagNamesMap[$databoxId][$n])) {
+                        continue;
+                    }
+
+                    $label = $flagNamesMap[$databoxId][$n];
+                    $rules[$baseId][$label] = $rule;
+                }
+            }
+        }
+
+        return $rules;
+    }
+
+    private function buildACLsFilters(array $aclRules)
+    {
+        $filters = [];
+
+        foreach ($aclRules as $baseId => $flagsRules) {
+            $ruleFilter = $baseFilter = [];
+
+            // filter on base
+            $baseFilter['term']['base_id'] = $baseId;
+            $ruleFilter['bool']['must'][] = $baseFilter;
+
+            // filter by flags
+            foreach ($flagsRules as $flagName => $flagRule) {
+                // only add filter if one of the status state is not allowed / allowed
+                if ($flagRule === self::FLAG_ALLOW_BOTH) {
+                    continue;
+                }
+                $flagFilter = [];
+
+                $flagField = sprintf('flags.%s', $flagName);
+                $flagFilter['term'][$flagField] = $flagRule === self::FLAG_SET_ONLY ? true : false;
+
+                $ruleFilter['bool']['must'][] = $flagFilter;
+            }
+
+            $filters[] = $ruleFilter;
+        }
+
+        return $filters;
     }
 }

@@ -37,7 +37,7 @@ class ElasticsearchRecordHydrator
         $updatedOn = igorw\get_in($data, ['updated_on']);
         $record->setUpdated($updatedOn ? new \DateTime($updatedOn) : $updatedOn);
         $record->setUuid(igorw\get_in($data, ['uuid'], ''));
-        $record->setStatus(igorw\get_in($data, ['bin_status'], str_repeat('0', 32)));
+        $record->setStatus(igorw\get_in($data, ['flags_bitmask'], 0));
         $record->setTitles(new ArrayCollection((array) igorw\get_in($data, ['title'], [])));
         $record->setCaption(new ArrayCollection((array) igorw\get_in($data, ['caption'], [])));
         $record->setExif(new ArrayCollection((array) igorw\get_in($data, ['exif'], [])));

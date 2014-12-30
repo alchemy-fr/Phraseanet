@@ -63,4 +63,9 @@ class RecordHelper
 
         return $this->collectionMap;
     }
+
+    public static function normalizeFlagKey($key)
+    {
+        return StringUtils::slugify($key, '_');
+    }
 }
