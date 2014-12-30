@@ -337,11 +337,14 @@
                                             </div>
 
                                             <span>{{ 'Trier par' | trans }}</span>
-                                            <select name="sort" class="input-small">
-                                                <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "No sort"|trans }}</option>
+                                            <select name="sort" class="input-medium">
+                                                <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
+                                                <optgroup label="{{ 'By field'|trans }}">
                                                 {% for sort in search_datas['sort'] %}
                                                     <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
                                                 {% endfor %}
+                                                </optgroup>
                                             </select>
                                             <select name="ord" class="input-medium">
                                                 {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
