@@ -121,7 +121,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             $defaults = [
                 'host'     => '127.0.0.1',
                 'port'     => 9200,
-                'index'    => $indexName,
+                'index'    => strtolower($indexName),
                 'shards'   => 3,
                 'replicas' => 0
             ];
