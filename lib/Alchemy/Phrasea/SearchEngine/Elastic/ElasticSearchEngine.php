@@ -662,7 +662,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             return self::FLAG_SET_ONLY;
         }
 
-        // otherwise there is a restriction for this status when it is not raised
         return self::FLAG_UNSET_ONLY;
     }
 
@@ -715,6 +714,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             $filters[] = $ruleFilter;
         }
 
-        return $filters;
+        return ['bool' => ['should' => $filters]];
     }
 }
