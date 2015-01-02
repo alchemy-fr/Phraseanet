@@ -134,7 +134,7 @@ class Thesaurus implements ControllerProviderInterface
         if ($request->get("typ") == "TH" || $request->get("typ") == "CT") {
             try {
                 $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-                $databox->get_connection();
+                $connbas = $databox->get_connection();
 
                 if ($request->get("typ") == "TH") {
                     $domth = $databox->get_dom_thesaurus();

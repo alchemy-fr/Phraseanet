@@ -42,6 +42,7 @@ class TermIndexer
         foreach ($this->appbox->get_databoxes() as $databox) {
             /** @var databox $databox */
             $databoxId              = $databox->get_sbas_id();
+
             $document               = self::thesaurusFromDatabox($databox);
             $dedicatedFieldTerms    = $this->getDedicatedFieldTerms($databox, $document);
 
@@ -50,7 +51,9 @@ class TermIndexer
                 // Term structure
                 $id = $term['id'];
                 unset($term['id']);
+
                 $term['databox_id'] = $databoxId;
+                $term['branch_id'] = $id;
 
                 // @todo move to the TermVisitor? dunno.
                 $term['fields'] = null;
@@ -64,9 +67,10 @@ class TermIndexer
 
                 // Index request
                 $params = array();
-                $params['id'] = $id;
+                $params['id'] = sprintf('%s_%s', $databoxId, $id);
                 $params['type'] = self::TYPE_NAME;
                 $params['body'] = $term;
+
                 $bulk->index($params);
             });
 
@@ -113,6 +117,7 @@ class TermIndexer
             ->add('context', 'string')->addAnalyzedVersion($this->locales)
             ->add('path', 'string')->notAnalyzed()
             ->add('lang', 'string')->notAnalyzed()
+            ->add('branch_id', 'string')->notAnalyzed()
             ->add('databox_id', 'integer')
             ->add('fields', 'string')->notAnalyzed()
         ;
