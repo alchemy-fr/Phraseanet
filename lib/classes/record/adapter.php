@@ -23,6 +23,7 @@ use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -485,8 +486,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->base_id = $collection->get_base_id();
-
-        $this->app['phraseanet.SE']->updateRecord($this);
 
         $this->app['phraseanet.logger']($this->get_databox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
@@ -972,8 +971,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         );
         $stmt->closeCursor();
 
-        $this->reindex();
-
         return $this;
     }
 
@@ -1067,22 +1064,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
 
         $this->set_xml($xml);
-        $this->reindex();
-
         unset($xml);
-
-        return $this;
-    }
-
-    /**
-     * Reindex the record
-     *
-     * @return record_adapter
-     */
-    public function reindex()
-    {
-        $this->app['phraseanet.SE']->updateRecord($this);
-        $this->delete_data_from_cache(self::CACHE_STATUS);
 
         return $this;
     }
@@ -1095,7 +1077,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
-        $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::TOKEN_MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
         $stmt->closeCursor();
@@ -1112,7 +1094,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
-            SET jeton = jeton | (' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ')
+            SET jeton = jeton | (' . (PhraseaTokens::TOKEN_WRITE_META_DOC | PhraseaTokens::TOKEN_WRITE_META_SUBDEF) . ')
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->record_id]);
@@ -1928,6 +1910,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function setStatus($status)
     {
         $this->set_binary_status($status);
+
+        $this->delete_data_from_cache(self::CACHE_STATUS);
     }
 
     /** {@inheritdoc} */

@@ -12,7 +12,8 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
+use Alchemy\Phrasea\Core\Event\RecordEvent\BuildSubDefEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\MediaVorus;
@@ -74,9 +75,7 @@ class SubdefGenerator
 
             $record->clearSubdefCache($subdefname);
 
-            if ($this->app['phraseanet.SE'] instanceof ElasticSearchEngine && in_array($subdefname, ['thumbnail', 'thumbnailgif', 'preview'])) {
-                $this->app['phraseanet.SE']->updateRecord($record);
-            }
+            $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_BUILD_SUB_DEFINITION, new BuildSubDefEvent($record, $subDefName));
         }
 
         return $this;

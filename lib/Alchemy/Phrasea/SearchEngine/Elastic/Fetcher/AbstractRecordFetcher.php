@@ -9,79 +9,75 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\Fetcher;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\DBAL\Connection;
 use databox;
-use PDO;
 
-class RecordFetcher
+abstract class AbstractRecordFetcher
 {
-    private $connection;
-    private $statementRecords;
+    protected $statementRecords;
+    protected $connection;
+
+    protected $offset = 0;
+    protected $batchSize = 1;
+
     private $helper;
+    private $databox;
 
-    private $offset = 0;
-    private $batchSize = 1;
-
-    private $databoxId;
+    private $postFetch;
 
     public function __construct(databox $databox, RecordHelper $helper)
     {
         $this->connection = $databox->get_connection();
-        $this->databoxId  = $databox->get_sbas_id();
-        $this->helper     = $helper;
+        $this->databox  = $databox;
+        $this->helper = $helper;
     }
 
     public function fetch()
     {
         $statementRecords = $this->statementRecords();
 
-        // Fetch records rows
-        $statementRecords->execute();
-        printf("Query %d/%d -> %d rows\n", $this->offset, $this->batchSize, $statementRecords->rowCount());
+        if (php_sapi_name() === 'cli' && ($this->offset !== 0 || $statementRecords->rowCount() <= 0)) {
+            printf("Query %d/%d -> %d rows on database %s\n", $this->offset, $this->batchSize, $statementRecords->rowCount(), $this->databox->get_dbname());
+        }
+
         $records = [];
 
         while ($record = $statementRecords->fetch()) {
             $records[$record['record_id']] = $record;
-            printf("Record found (#%d)\n", $record['record_id']);
             $this->offset++;
         }
 
         if (count($records) < 1) {
-            printf("End of records\n");
+            if (php_sapi_name() === 'cli') {
+                printf("End of records\n");
+            }
 
-            return false; // End
+            return false;
         }
 
         $this->addTitleToRecord($records);
         $this->addMetadataToRecords($records);
-        $this->addSubdefsToRecord($records);
+        $this->addSubDefinitionsToRecord($records);
 
         // Hydrate records
         foreach ($records as $key => $record) {
             $records[$key] = $this->hydrate($record);
         }
 
+        if (is_callable($this->postFetch)) {
+            call_user_func($this->postFetch, $records);
+        }
+
         return $records;
     }
 
-    public function fetchOne(\record_adapter $record_adapter)
+    public function setPostFetch(\Closure $callable)
     {
-        $stmt = $this->statementRecord($record_adapter->get_record_id());
-        $stmt->execute();
-
-        $records = $stmt->fetchAll();
-        $this->addTitleToRecord($records);
-        $this->addMetadataToRecords($records);
-        $this->addSubdefsToRecord($records);
-
-        foreach ($records as $key => $record) {
-            $records[$key] = $this->hydrate($record);
-        }
-
-        return array_pop($records);
+        $this->postFetch = $callable;
     }
 
     public function setBatchSize($size)
@@ -98,9 +94,9 @@ class RecordFetcher
         $record['record_id'] = (int) $record['record_id'];
         $record['collection_id'] = (int) $record['collection_id'];
         // Some identifiers
-        $record['id'] = $this->helper->getUniqueRecordId($this->databoxId, $record['record_id']);
-        $record['base_id'] = $this->helper->getUniqueCollectionId($this->databoxId, $record['collection_id']);
-        $record['databox_id'] = $this->databoxId;
+        $record['id'] = $this->helper->getUniqueRecordId($this->databox->get_sbas_id(), $record['record_id']);
+        $record['base_id'] = $this->helper->getUniqueCollectionId($this->databox->get_sbas_id(), $record['collection_id']);
+        $record['databox_id'] = $this->databox->get_sbas_id();
 
         if ((int) $record['parent_record_id'] === 1) {
             $record['record_type'] = SearchEngineInterface::GEM_TYPE_STORY;
@@ -115,63 +111,6 @@ class RecordFetcher
         unset($record['parent_record_id']);
 
         return $record;
-    }
-
-    private function statementRecords()
-    {
-        if (!$this->statementRecords) {
-            $sql = <<<SQL
-            SELECT r.record_id
-                 , r.coll_id as collection_id
-                 , c.asciiname as collection_name
-                 , r.uuid
-                 , r.status as flags_bitmask
-                 , r.sha256 -- TODO rename in "hash"
-                 , r.originalname as original_name
-                 , r.mime
-                 , r.type
-                 , r.parent_record_id
-                 , r.credate as created_on
-                 , r.moddate as updated_on
-                    FROM record r
-                    INNER JOIN coll c ON (c.coll_id = r.coll_id)
-                    ORDER BY r.record_id ASC
-                    LIMIT :offset, :limit
-SQL;
-
-            $statement = $this->connection->prepare($sql);
-            $statement->bindParam(':offset', $this->offset, PDO::PARAM_INT);
-            $statement->bindParam(':limit', $this->batchSize, PDO::PARAM_INT);
-            $this->statementRecords = $statement;
-        }
-
-        return $this->statementRecords;
-    }
-
-    private function statementRecord($id)
-    {
-        $sql = <<<SQL
-        SELECT r.record_id
-             , r.coll_id as collection_id
-             , c.asciiname as collection_name
-             , r.uuid
-             , r.status as flags_bitmask
-             , r.sha256 -- TODO rename in "hash"
-             , r.originalname as original_name
-             , r.mime
-             , r.type
-             , r.parent_record_id
-             , r.credate as created_on
-             , r.moddate as updated_on
-                FROM record r
-                INNER JOIN coll c ON (c.coll_id = r.coll_id)
-                WHERE r.record_id = :id
-SQL;
-
-        $statement = $this->connection->prepare($sql);
-        $statement->bindValue(':id', $id, PDO::PARAM_INT);
-
-        return $statement;
     }
 
     private function execStatementMetadata($ids)
@@ -255,20 +194,20 @@ SQL;
         }
     }
 
-    private function addSubdefsToRecord(&$records)
+    private function addSubDefinitionsToRecord(&$records)
     {
-        $statementSubdef = $this->execStatementSubdefs(array_keys($records));
+        $statementSubDef = $this->execStatementSubDefinitions(array_keys($records));
 
-        while ($subdefs = $statementSubdef->fetch()) {
-            $records[$subdefs['record_id']]['subdefs'][$subdefs['name']] = array(
-                'path' => $subdefs['path'],
-                'width' => $subdefs['width'],
-                'height' => $subdefs['height'],
+        while ($subDefinitions = $statementSubDef->fetch()) {
+            $records[$subDefinitions['record_id']]['subdefs'][$subDefinitions['name']] = array(
+                'path' => $subDefinitions['path'],
+                'width' => $subDefinitions['width'],
+                'height' => $subDefinitions['height'],
             );
         }
     }
 
-    private function execStatementSubdefs($ids)
+    private function execStatementSubDefinitions($ids)
     {
         $sql = <<<SQL
             SELECT
@@ -285,4 +224,7 @@ SQL;
         return $this->connection->executeQuery($sql, array($ids), array(Connection::PARAM_INT_ARRAY));
 
     }
+
+    /** Provides PDO Statement that fetches records */
+    abstract protected function statementRecords();
 }

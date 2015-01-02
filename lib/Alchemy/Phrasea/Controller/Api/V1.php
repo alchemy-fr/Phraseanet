@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Core\Event\ChangeStatusEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\CreateRecordEvent;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -558,7 +561,8 @@ class V1 implements ControllerProviderInterface
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
-            $app['phraseanet.SE']->addRecord($output);
+
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATE, new CreateRecordEvent($output));
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -829,6 +833,7 @@ class V1 implements ControllerProviderInterface
         });
 
         $record->set_metadatas($metadatas);
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
 
         return Result::create($request, ["record_metadatas" => $this->list_record_caption($record->get_caption())])->createResponse();
     }
@@ -861,7 +866,8 @@ class V1 implements ControllerProviderInterface
         }
 
         $record->set_binary_status(strrev($datas));
-        $app['phraseanet.SE']->updateRecord($record);
+
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($record));
 
         $ret = ["status" => $this->list_record_status($databox, $record->get_status())];
 

@@ -11,6 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\CreateRecordEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
@@ -195,7 +199,7 @@ class Lazaret implements ControllerProviderInterface
                 $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
             );
 
-            $app['phraseanet.SE']->addRecord($record);
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATE, new CreateRecordEvent($record));
 
             if ($keepAttributes) {
                 //add attribute
@@ -229,6 +233,8 @@ class Lazaret implements ControllerProviderInterface
                             break;
                         case AttributeInterface::NAME_STATUS:
                             $record->set_binary_status($attribute->getValue());
+
+                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($record));
                             break;
                         case AttributeInterface::NAME_METAFIELD:
                             $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
@@ -241,6 +247,8 @@ class Lazaret implements ControllerProviderInterface
 
                 $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
                 $record->set_metadatas($fields);
+
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
             }
 
             //Delete lazaret file

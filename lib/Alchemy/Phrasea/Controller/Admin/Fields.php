@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Core\Event\DataboxEvent\UpdateStructureFieldEvent;
+use Alchemy\Phrasea\Core\Event\DataboxEvent\DeleteStructureFieldEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\TagProvider;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use JMS\TranslationBundle\Annotation\Ignore;
@@ -114,6 +117,8 @@ class Fields implements ControllerProviderInterface
                 $this->updateFieldWithData($app, $field, $jsonField);
                 $field->save();
                 $fields[] = $field->toArray();
+
+                $app['dispatcher']->dispatch(PhraseaEvents::DATABOX_UPDATE_FIELD, new UpdateStructureFieldEvent($field, $jsonField));
             } catch (\Exception $e) {
                 $connection->rollback();
                 $app->abort(500, $app->trans('Field %name% could not be saved, please try again or contact an admin.', ['%name%' => $jsonField['name']]));
@@ -278,13 +283,18 @@ class Fields implements ControllerProviderInterface
         $this->updateFieldWithData($app, $field, $data);
         $field->save();
 
+        $app['dispatcher']->dispatch(PhraseaEvents::DATABOX_UPDATE_FIELD, new UpdateStructureFieldEvent($databox, $field, $jsonField));
+
         return $app->json($field->toArray());
     }
 
     public function deleteField(Application $app, $sbas_id, $id)
     {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        \databox_field::get_instance($app, $databox, $id)->delete();
+        $field = \databox_field::get_instance($app, $databox, $id);
+        $field->delete();
+
+        $app['dispatcher']->dispatch(PhraseaEvents::DATABOX_DELETE_FIELD, new DeleteStructureFieldEvent($databox, $field));
 
         return new Response('', 204);
     }
@@ -321,6 +331,7 @@ class Fields implements ControllerProviderInterface
 
     private function updateFieldWithData(Application $app, \databox_field $field, array $data)
     {
+
         $field
             ->set_name($data['name'])
             ->set_thumbtitle($data['thumbtitle'])

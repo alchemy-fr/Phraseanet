@@ -12,10 +12,12 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SubdefSubstituer
@@ -24,12 +26,13 @@ class SubdefSubstituer
     private $fs;
     private $mediavorus;
 
-    public function __construct(Application $app, Filesystem $fs, Alchemyst $alchemyst, MediaVorus $mediavorus)
+    public function __construct(Application $app, Filesystem $fs, Alchemyst $alchemyst, MediaVorus $mediavorus, EventDispatcherInterface $dispatcher)
     {
         $this->alchemyst = $alchemyst;
         $this->app = $app;
         $this->fs = $fs;
         $this->mediavorus = $mediavorus;
+        $this->dispatcher = $dispatcher;
     }
 
     public function substitute(\record_adapter $record, $name, MediaInterface $media)
@@ -92,5 +95,7 @@ class SubdefSubstituer
         if ($name == 'document') {
             $record->rebuild_subdefs();
         }
+
+        $this->dispatcher->dispatch(PhraseaEvents::RECORD_SUBSTITUTE, new SubstituteRecordEvent($record));
     }
 }

@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeCollectionEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,10 +95,15 @@ class MoveCollection implements ControllerProviderInterface
             foreach ($records as $record) {
                 $record->move_to_collection($collection, $app['phraseanet.appbox']);
 
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_COLLECTION, new ChangeCollectionEvent($record));
+
                 if ($request->request->get("chg_coll_son") == "1") {
                     foreach ($record->get_children() as $child) {
                         if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
                             $child->move_to_collection($collection, $app['phraseanet.appbox']);
+
+
+                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_COLLECTION, new ChangeCollectionEvent($child));
                         }
                     }
                 }

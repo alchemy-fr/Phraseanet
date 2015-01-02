@@ -12,9 +12,17 @@
 namespace Alchemy\Phrasea\Metadata;
 
 use PHPExiftool\Driver\Metadata\Metadata;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseanetMetadataSetter
 {
+    private $dispatcher;
+
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->disptatcher = $dispatcher;
+    }
+
     public function replaceMetadata($metadataCollection, \record_adapter $record)
     {
         $metadatas = [];
@@ -93,6 +101,8 @@ class PhraseanetMetadataSetter
 
         if (count($metas) > 0) {
             $record->set_metadatas($metas, true);
+
+            $this->disptatcher->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
         }
     }
 }

@@ -15,8 +15,11 @@ use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\AbstractRecordFetcher;
+use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\RecordPoolFetcher;
+use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\SingleRecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
+use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
@@ -64,6 +67,7 @@ class RecordIndexer
                     $params = array();
                     $params['id'] = $record['id'];
                     $params['type'] = self::TYPE_NAME;
+                    $params['index'] = $this->elasticSearchEngine->getIndexName();
                     $params['body'] = $this->transform($record);
                     $bulk->index($params);
                 }
@@ -71,18 +75,54 @@ class RecordIndexer
         }
     }
 
-    public function indexSingleRecord(\record_adapter $record_adapter, $indexName)
+    public function index(BulkOperation $bulk, AbstractRecordFetcher $fetcher)
     {
-        $fetcher = new RecordFetcher($record_adapter->get_databox(), $this->helper);
-        $record = $fetcher->fetchOne($record_adapter);
+        while ($records = $fetcher->fetch()) {
+            foreach ($records as $record) {
+                $params = array();
+                // header
+                $params['id'] = $record['id'];
+                $params['type'] = self::TYPE_NAME;
+                $params['index'] = $this->elasticSearchEngine->getIndexName();
+                // body
+                $params['body'] = $this->transform($record);
+                $bulk->index($params);
+            }
+        }
+        $bulk->flush();
+    }
 
-        $params = array();
-        $params['id'] = $record['id'];
-        $params['type'] = self::TYPE_NAME;
-        $params['index'] = $indexName;
-        $params['body'] = $this->transform($record);
+    public function update(BulkOperation $bulk, AbstractRecordFetcher $fetcher)
+    {
+        while ($records = $fetcher->fetch()) {
+            foreach ($records as $record) {
+                $params = array();
+                // header
+                $params['id'] = $record['id'];
+                $params['type'] = self::TYPE_NAME;
+                $params['index'] = $this->elasticSearchEngine->getIndexName();
+                // doc
+                $params['doc'] = $this->transform($record);
+                $bulk->update($params);
+            }
+        }
+        $bulk->flush();
+    }
 
-        return $this->elasticSearchEngine->getClient()->index($params);
+    public function delete(BulkOperation $bulk, AbstractRecordFetcher $fetcher)
+    {
+        while ($records = $fetcher->fetch()) {
+            foreach ($records as $record) {
+                $params = array();
+                // header
+                $params['id'] = $record['id'];
+                $params['type'] = self::TYPE_NAME;
+                $params['index'] = $this->elasticSearchEngine->getIndexName();
+
+                $bulk->delete($params);
+            }
+        }
+        $bulk->flush();
     }
 
     private function findLinkedConcepts($structure, array $record)
@@ -258,6 +298,7 @@ class RecordIndexer
     private function transform($record)
     {
         $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
+
         $structure = $this->getFieldsStructure();
         $databox = $this->appbox->get_databox($record['databox_id']);
 

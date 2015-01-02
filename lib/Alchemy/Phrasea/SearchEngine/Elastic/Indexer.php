@@ -122,7 +122,7 @@ class Indexer
         }
 
         $event = $stopwatch->stop('populate');
-        printf("Indexation finished in %s min (Mem. %s)", ($event->getDuration()/1000/60), $event->getMemory());
+        printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
     }
 
     private function disableShardRefreshing()

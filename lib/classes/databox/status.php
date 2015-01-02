@@ -128,6 +128,7 @@ class databox_status
         if ( ! isset(self::$_status[$sbas_id]))
             self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
 
+
         return self::$_status[$sbas_id]->status;
     }
 
@@ -265,7 +266,7 @@ class databox_status
 
     public static function updateStatus(Application $app, $sbas_id, $bit, $properties)
     {
-         self::getStatus($app, $sbas_id);
+        self::getStatus($app, $sbas_id);
 
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 

@@ -29,7 +29,6 @@ final class PhraseaEvents
     const ORDER_CREATE = 'order.create';
     const ORDER_DELIVER = 'order.deliver';
     const ORDER_DENY = 'order.deny';
-    const COLLECTION_CREATE = 'collection.create';
     const FEED_ENTRY_CREATE = 'feed-entry.create';
     const REGISTRATION_CREATE = 'registration.create';
     const REGISTRATION_AUTOREGISTER = 'registration.autoregister';
@@ -42,4 +41,31 @@ final class PhraseaEvents
     const BRIDGE_UPLOAD_FAILURE = 'bridge.upload-failure';
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
+
+    const RECORD_CREATE = 'record.create';
+    const RECORD_DELETE = 'record.delete';
+    const STORY_CREATE = 'story.create';
+    const STORY_DELETE = 'story.delete';
+    const RECORD_CHANGE_COLLECTION = 'record.collection';
+    const RECORD_CHANGE_METADATA = 'record.metadata';
+    const RECORD_CHANGE_ORIGINAL_NAME = 'record.original_name';
+    const RECORD_CHANGE_STATUS = 'record.status';
+    const RECORD_BUILD_SUB_DEFINITION = 'record.sub_definition';
+    const RECORD_SUBSTITUTE = 'record.substitute';
+
+    const DATABOX_UPDATE_FIELD = 'databox.update.field';
+    const DATABOX_DELETE_FIELD = 'databox.delete.field';
+
+    const DATABOX_UPDATE_STATUS = 'databox.create.status';
+    const DATABOX_DELETE_STATUS = 'databox.delete.status';
+
+    const COLLECTION_CHANGE_NAME = 'collection.name';
+    const COLLECTION_CREATE = 'collection.create';
+
+    const INDEX_NEW_RECORD = 'index.new.record';
+    const INDEX_UPDATE_RECORD = 'index.update.record';
+    const INDEX_REMOVE_RECORD = 'index.remove.record';
+    const INDEX_COLLECTION = 'index.collection';
+    const INDEX_DATABOX = 'index.databox';
+    const INDEX_THESAURUS = 'index.thesaurus';
 }

@@ -49,12 +49,27 @@ class BulkOperation
 
     public function index(array $params)
     {
-        $header = array();
-        $header['_id']    = igorw\get_in($params, ['id']);
-        $header['_index'] = igorw\get_in($params, ['index']);
-        $header['_type']  = igorw\get_in($params, ['type']);
-        $this->stack[] = ['index' => $header];
+        $this->stack[] = ['index' => $this->getBulkHeader($params)];
         $this->stack[] = igorw\get_in($params, ['body']);
+
+        if ($this->flushLimit === count($this->stack) / 2) {
+            $this->flush();
+        }
+    }
+
+    public function update(array $params)
+    {
+        $this->stack[] = ['update' => $this->getBulkHeader($params)];
+        $this->stack[] = ['doc' => igorw\get_in($params, ['doc'])];
+
+        if ($this->flushLimit === count($this->stack) / 2) {
+            $this->flush();
+        }
+    }
+
+    public function delete(array $params)
+    {
+        $this->stack[] = ['delete' => $this->getBulkHeader($params)];
 
         if ($this->flushLimit === count($this->stack) / 2) {
             $this->flush();
@@ -76,7 +91,11 @@ class BulkOperation
             }
         }
         $params['body'] = $this->stack;
-        printf("ES Bulk query with %d items\n", count($this->stack) / 2);
+
+        if (php_sapi_name() === 'cli') {
+            printf("ES Bulk query with %d items\n", count($this->stack) / 2);
+        }
+
         $response = $this->client->bulk($params);
         $this->stack = array();
 
@@ -89,4 +108,15 @@ class BulkOperation
             throw new Exception('Errors occurred during bulk indexing request, index may be in an inconsistent state');
         }
     }
+
+    private function getBulkHeader(array $params)
+    {
+        $header = [];
+        $header['_id']    = igorw\get_in($params, ['id']);
+        $header['_index'] = igorw\get_in($params, ['index']);
+        $header['_type']  = igorw\get_in($params, ['type']);
+
+        return $header;
+    }
+
 }
