@@ -340,7 +340,6 @@ function search_doubles() {
 }
 
 function newSearch() {
-    $('#proposals').empty();
     p4.Results.Selection.empty();
 
     clearAnswers();
@@ -486,15 +485,56 @@ function initAnswerForm() {
                 console.debug('Aggregations:');
                 var toDisplay = [];
                 _.each(aggs, function(value, key) {
-                  _.each(value.buckets, function(bucket, keyBis) {
-                    if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
-                    toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
-                  });
+                    _.each(value.buckets, function(bucket, keyBis) {
+                        if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
+                        toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
+                    });
 
                 });
+
                 console.table(toDisplay);
 
+                var treeData = [];
+                _.each(aggs, function(value, key) {
+                    var entry = {
+                        "title" : key,
+                        "key": key,
+                        "folder": true,
+                        "children" : []
+                    };
+                    _.each(value.buckets, function(bucket) {
+                        entry.children.push({
+                            "title": bucket.key + ' ('+ bucket.doc_count + ')',
+                            "key": bucket.key,
+                            "query": bucket.key + " IN " + key
+                        });
+                    });
+                    treeData.push(entry);
+                });
+
                 $('#answers').empty().append(datas.results).removeClass('loading');
+
+                var $tree = $("#proposals");
+
+                if ($tree.data("ui-fancytree")) {
+                    $tree.fancytree("destroy");
+                }
+
+                if (treeData.length > 0) {
+                    $tree.fancytree({
+                        source: treeData,
+                        activate: function(event, data){
+                            var node = data.node;
+                            if (typeof node.data.query === "undefined") {
+                                return;
+                            }
+                            $('form[name="phrasea_query"] input[name="qry"]').val(node.data.query);
+                            checkFilters();
+                            newSearch();
+                            $('searchForm').trigger('submit');
+                        }
+                    });
+                }
 
                 $("#answers img.lazyload").lazyload({
                     container: $('#answers')
@@ -506,10 +546,6 @@ function initAnswerForm() {
                     $('#IMGT_' + el).addClass('selected');
                 });
 
-                if (datas.phrasea_props && $.trim(datas.phrasea_props) !== '') {
-                    $('#proposals').empty().append(datas.phrasea_props);
-                    $('#idFrameC li.proposals_WZ').addClass('active');
-                }
                 p4.tot = datas.total_answers;
                 p4.tot_options = datas.form;
                 p4.tot_query = datas.query;
