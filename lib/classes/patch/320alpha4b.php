@@ -81,7 +81,7 @@ class patch_320alpha4b implements patchInterface
         foreach ($rs as $row) {
             $user = User_Adapter::getInstance($row['usr_id'], $app);
 
-            $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink']);
+            $feed = $this->get_feed($app, $appbox, $user, $row['pub_restrict'], $row['homelink']);
 
             if (! $feed instanceof Feed_Adapter) {
                 continue;
@@ -138,7 +138,7 @@ class patch_320alpha4b implements patchInterface
     }
     protected static $feeds = array();
 
-    protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink)
+    protected function get_feed(Application $app, appbox $appbox, User_Adapter $user, $pub_restrict, $homelink)
     {
         $user_key = 'user_' . $user->get_id();
         if ($homelink == '1')
