@@ -1067,7 +1067,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed']));
 
         //access to all subdefs
-        $this->assertArrayHasKey('document', $embedTypes);
         $this->assertArrayHasKey('preview', $embedTypes);
         $this->assertArrayHasKey('thumbnail', $embedTypes);
 
