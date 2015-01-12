@@ -45,7 +45,7 @@ class RootController extends Controller
      */
     public function getClientAction(Request $request)
     {
-        $this->getSession()->getFlashBag()->add('client_deprecated');
+        $this->getSession()->getFlashBag()->add('client_deprecated', '');
 
         if (!$this->getAuthenticator()->isAuthenticated() && null !== $request->query->get('nolog')) {
             return $this->app->redirectPath('login_authenticate_as_guest', ['redirect' => 'client']);
