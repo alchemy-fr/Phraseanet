@@ -63,7 +63,7 @@
         "doctrine/data-fixtures"           : "1.0.x@dev",
         "phpunit/phpunit"                  : "~3.7",
         "behat/behat"                      : "~2.4",
-        "behat/mink"                       : "~1.4",
+        "behat/mink"                      : "~1.4",
         "behat/mink-extension"             : "~1.0",
         "behat/mink-goutte-driver"         : "~1.0",
         "behat/mink-selenium2-driver"      : "~1.0",
