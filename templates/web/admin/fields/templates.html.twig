@@ -96,7 +96,7 @@
                         </ul>
                     </ul>
                     <% _.each(field.labels, function(value, code) { %>
-                        <input type="text" value="<%= value %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === 'fr' ? '' : 'style="display:none"'%> >
+                        <input type="text" value="<%= value %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === lng ? '' : 'style="display:none"'%> >
                     <% }); %>
                 </td>
             </tr>
