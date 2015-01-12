@@ -212,7 +212,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = $row['mime'];
             $this->file = $row['file'];
             $this->path = p4string::addEndSlash($row['path']);
-            $this->etag = $row['etag'] !== null ? $row['etag'] : sha1_file($this->get_pathfile());
+            $file = new SplFileInfo($this->get_pathfile());
+            if ($file->isFile()) {
+                $this->is_physically_present = true;
+
+                $this->etag = $row['etag'] !== null ? $row['etag'] : md5($file->getMTime());
+            }
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
 
@@ -221,7 +226,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             if ($row['created_on'])
                 $this->creation_date = new DateTime($row['created_on']);
 
-            $this->is_physically_present = true;
         } elseif ($substitute === false) {
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
@@ -352,7 +356,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function getEtag()
     {
         if (!$this->etag && $this->is_physically_present()) {
-            $this->setEtag(sha1_file($this->get_pathfile()));
+            $file = new SplFileInfo($this->get_pathfile());
+            if ($file->isFile()) {
+                $this->setEtag(md5($file->getMTime()));
+            }
         }
 
         return $this->etag;
