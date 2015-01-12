@@ -657,10 +657,6 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         foreach ($this->users as $usr_id) {
             $user = \User_adapter::getInstance($usr_id, $this->app);
 
-            if ($user->is_template()) {
-                continue;
-            }
-
             $user->ACL()->apply_model($template, $base_ids);
         }
 
