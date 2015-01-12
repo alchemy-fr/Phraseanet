@@ -92,6 +92,11 @@ class Install extends Command
         }
 
         $abConn = $this->getABConn($input, $output, $dialog);
+
+        if (false === $abConn->supportInnoDB()){
+            throw new \Exception('Database server does not support InnoDB storage engine');
+        }
+
         list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);

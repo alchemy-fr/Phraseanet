@@ -178,6 +178,9 @@ class Databoxes implements ControllerProviderInterface
             case 'mount-failed' :
                 $errorMsg = _('Database could not be mounted');
                 break;
+            case 'innodb-support' :
+                $errorMsg = _('Database server does not support InnoDB storage engine');
+                break;
         }
 
         $upgrader = new \Setup_Upgrade($app);
@@ -228,6 +231,10 @@ class Databoxes implements ControllerProviderInterface
                 return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'database-failed'));
             }
 
+            if (false === $connbas->supportInnoDB()){
+                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'innodb-support'));
+            }
+
             try {
                 $base = \databox::create($app, $connbas, $dataTemplate, $app['phraseanet.registry']);
                 $base->registerAdmin($app['authentication']->getUser());
@@ -250,6 +257,11 @@ class Databoxes implements ControllerProviderInterface
             try {
                 $data_template = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $app['debug']);
+
+                if (false === $connbas->supportInnoDB()){
+                    return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'innodb-support'));
+                }
+
                 try {
                     $base = \databox::create($app, $connbas, $data_template, $app['phraseanet.registry']);
                     $base->registerAdmin($app['authentication']->getUser());

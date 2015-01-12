@@ -618,6 +618,10 @@ class databox extends base
     {
         $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $app['debug']);
 
+        if (false === $connection->supportInnoDB()) {
+            throw new \Exception('Database server does not support InnoDB storage engine');
+        }
+
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
         $stmt = $conn->prepare($sql);

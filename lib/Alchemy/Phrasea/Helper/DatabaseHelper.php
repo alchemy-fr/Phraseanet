@@ -23,10 +23,12 @@ class DatabaseHelper extends Helper
         $password = $this->request->query->get('password');
         $db_name = $this->request->query->get('db_name');
 
-        $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
+        $connection_ok = $innodb = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
-            new \connection_pdo('test', $hostname, $port, $user, $password, $db_name, array(), false);
+            $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $db_name, array(), false);
+            $innodb = $conn->supportInnoDB();
+
             $connection_ok = true;
         } catch (\Exception $e) {
 
@@ -61,6 +63,7 @@ class DatabaseHelper extends Helper
 
         return array(
             'connection' => $connection_ok,
+            'innodb'     => $innodb,
             'database'   => $db_ok,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,
