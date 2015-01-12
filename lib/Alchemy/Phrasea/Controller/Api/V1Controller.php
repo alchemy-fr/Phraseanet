@@ -1019,6 +1019,17 @@ class V1Controller extends Controller
             }
         }
 
+        $databox = $record->getDatabox();
+        try {
+            $subDefDefinition = $databox->get_subdef_structure()->get_subdef($record->getType(), $media->get_name());
+        } catch (\Exception_Databox_SubdefNotFound $e) {
+            return null;
+        }
+
+        if (false === $subDefDefinition->is_downloadable()) {
+            return null;
+        }
+
         if ($media->get_permalink() instanceof \media_Permalink_Adapter) {
             $permalink = $this->listPermalink($media->get_permalink());
         } else {
