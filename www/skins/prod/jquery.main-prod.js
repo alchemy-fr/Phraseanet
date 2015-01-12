@@ -756,6 +756,16 @@ function HueToRgb(m1, m2, hue) {
 
 $(document).ready(function () {
 
+    $('input[name=search_type]').bind('click', function () {
+        var $this = $(this);
+        var $record_types = $('#recordtype_sel');
+        if ($this.hasClass('mode_type_reg')) {
+            $record_types.attr('disabled', true);
+        } else {
+            $record_types.removeAttr('disabled');
+        }
+    });
+
     $('.adv_search_button').live('click', function () {
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();

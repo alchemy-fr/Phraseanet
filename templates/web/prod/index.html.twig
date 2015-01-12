@@ -303,11 +303,11 @@
                             <div class="controls">
                                 {% if GV_multiAndReport %}
                                     <label for="mode_type_doc" class="radio inline">
-                                        <input type="radio" value="0" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
+                                        <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
                                         {% trans 'phraseanet::type:: documents' %}
                                     </label>
                                     <label for="mode_type_reg" class="radio inline">
-                                        <input type="radio" value="1" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
+                                        <input type="radio" value="1" class="mode_type_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
                                         {% trans 'phraseanet::type:: reportages' %}
                                     </label>
                                 {% else %}

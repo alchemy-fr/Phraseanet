@@ -34,7 +34,7 @@ class Root implements ControllerProviderInterface
              *
              * Redirect to production with a nice message
              */
-            $app['session']->getFlashBag()->add('client_deprecated');
+            $app['session']->getFlashBag()->add('client_deprecated', '');
 
             return $app->redirectPath('prod');
 
