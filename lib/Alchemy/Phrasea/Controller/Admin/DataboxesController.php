@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -88,7 +87,7 @@ class DataboxesController extends Controller
                 $errorMsg = $this->app->trans('Database could not be mounted');
                 break;
             case 'innodb-support' :
-                $errorMsg = _('Database server does not support InnoDB storage engine');
+                $errorMsg = $this->app->trans('Database server does not support InnoDB storage engine');
                 break;
         }
 
