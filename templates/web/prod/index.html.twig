@@ -185,7 +185,6 @@
                 $('#clientModal').modal();
             </script>
         {% endif %}
-        
         {% set ratio = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}

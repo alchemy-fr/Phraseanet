@@ -174,7 +174,7 @@
     </div>
 </div>
 
- {% if app.getAuthenticator().isAuthenticated()  and (module == "client" or module == "prod") %}
+ {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
     <div style="display:none;z-index:30000;" id="notification_box">
         {% set notifications = app['events-manager'].get_notifications %}
         {% include 'prod/notifications.html.twig' %}

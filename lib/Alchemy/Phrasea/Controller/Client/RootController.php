@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Security\Firewall;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class RootController extends Controller
 {
@@ -25,13 +26,27 @@ class RootController extends Controller
     }
 
     /**
-     * Gets client main page
+     * @return Session
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
+    }
+
+    /**
+     * /!\/!\/!\/!\/!\/!\/!\/!\/!\
+     *
+     * Client is no longer used
+     *
+     * Redirect to production with a nice message
      *
      * @param Request $request
      * @return Response
      */
     public function getClientAction(Request $request)
     {
+        $this->getSession()->getFlashBag()->add('client_deprecated');
+
         if (!$this->getAuthenticator()->isAuthenticated() && null !== $request->query->get('nolog')) {
             return $this->app->redirectPath('login_authenticate_as_guest', ['redirect' => 'client']);
         }
