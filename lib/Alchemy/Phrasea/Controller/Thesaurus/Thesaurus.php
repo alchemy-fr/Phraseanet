@@ -40,10 +40,8 @@ class Thesaurus implements ControllerProviderInterface
         $controllers->match('linkfield2.php', $this->call('linkFieldStep2'));
         $controllers->match('linkfield3.php', $this->call('linkFieldStep3'));
         $controllers->match('loadth.php', $this->call('loadThesaurus'))->bind('thesaurus_loadth');
-        $controllers->match('newsy_dlg.php', $this->call('newSynonymDialog'));
         $controllers->match('newterm.php', $this->call('newTerm'));
         $controllers->match('properties.php', $this->call('properties'));
-        $controllers->match('search.php', $this->call('search'));
         $controllers->match('thesaurus.php', $this->call('thesaurus'))->bind('thesaurus_thesaurus');
 
         $controllers->match('xmlhttp/accept.x.php', $this->call('acceptXml'));
@@ -1121,23 +1119,6 @@ class Thesaurus implements ControllerProviderInterface
         ));
     }
 
-    public function newSynonymDialog(Application $app, Request $request)
-    {
-        $languages = array();
-
-        foreach ($app['locales.available'] as $lng_code => $lng) {
-            $lng_code = explode('_', $lng_code);
-            $languages[$lng_code[0]] = $lng;
-        }
-
-        return $app['twig']->render('thesaurus/new-synonym-dialog.html.twig', array(
-            'piv'       => $request->get('piv'),
-            'typ'       => $request->get('typ'),
-            'languages' => $languages,
-        ));
-    }
-
-
     public function newTerm(Application $app, Request $request)
     {
         list($term, $context) = $this->splitTermAndContext($request->get("t"));
@@ -1218,11 +1199,6 @@ class Thesaurus implements ControllerProviderInterface
             'hits' => $hits,
             'synonyms' => $synonyms,
         ));
-    }
-
-    public function search(Application $app, Request $request)
-    {
-        return $app['twig']->render('thesaurus/search.html.twig');
     }
 
     public function thesaurus(Application $app, Request $request)
