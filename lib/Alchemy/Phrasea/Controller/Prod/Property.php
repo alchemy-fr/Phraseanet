@@ -244,6 +244,7 @@ class Property implements ControllerProviderInterface
     public function changeType(Application $app, Request $request)
     {
         $typeLst = $request->request->get('types', array());
+        $mimeLst = $request->request->get('mimes', array());
         $records = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
         $forceType = $request->request->get('force_types', '');
         $updated = array();
@@ -251,10 +252,16 @@ class Property implements ControllerProviderInterface
         foreach ($records as $record) {
             try {
                 $recordType = !empty($forceType) ? $forceType : (isset($typeLst[$record->get_serialize_key()]) ? $typeLst[$record->get_serialize_key()] : null);
+                $mimeType = isset($mimeLst[$record->get_serialize_key()]) ? $mimeLst[$record->get_serialize_key()] : null;
 
                 if ($recordType) {
                     $record->set_type($recordType);
-                    $updated[$record->get_serialize_key()] = $recordType;
+                    $updated[$record->get_serialize_key()]['record_type'] = $recordType;
+                }
+
+                if ($mimeType) {
+                    $record->set_mime($mimeType);
+                    $updated[$record->get_serialize_key()]['mime_type'] = $mimeType;
                 }
             } catch (\Exception $e) {
 

@@ -319,6 +319,32 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this;
     }
 
+    public function set_mime($mime)
+    {
+        $old_mime = $this->get_mime();
+
+        // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
+        if (!preg_match("/^[a-zA-Z0-9!#$%^&\*_\-\+{}\|'.`~]+\/[a-zA-Z0-9!#$%^&\*_\-\+{}\|'.`~]+$/", $mime)) {
+            throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
+        }
+
+        $connection = connection::getPDOConnection($this->app, $this->get_sbas_id());
+
+        $sql = 'UPDATE record SET mime = :mime WHERE record_id = :record_id';
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(array(':mime' => $mime, ':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        if ($mime !== $old_mime) {
+            $this->rebuild_subdefs();
+        }
+
+        $this->mime = $mime;
+        $this->delete_data_from_cache();
+
+        return $this;
+    }
+
     /**
      * Return true if the record is a grouping
      *
@@ -1176,7 +1202,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return record_adapter
      */
-    public function rebuild_subdefs()
+    public function     rebuild_subdefs()
     {
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
