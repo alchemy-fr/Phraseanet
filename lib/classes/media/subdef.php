@@ -749,7 +749,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         if ($this->get_name() === 'thumbnail') {
             if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled() && null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
-                $this->url = $url;
+                $this->url = $url. "?etag=".$this->getEtag();
 
                 return;
             }
