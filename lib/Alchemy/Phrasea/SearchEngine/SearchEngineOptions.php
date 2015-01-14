@@ -323,21 +323,35 @@ class SearchEngineOptions
     {
         $tmp = array();
         foreach ($status as $n => $options) {
-            if (count($options) > 1) {
-                continue;
-            }
             if (isset($options['on'])) {
                 foreach ($options['on'] as $sbas_id) {
-                    $tmp[$n][$sbas_id] = 1;
+                    if(!isset($tmp[$n][$sbas_id])) {
+                        $tmp[$n][$sbas_id] = array();
+                    }
+                    $tmp[$n][$sbas_id][] = 1;
                 }
             }
             if (isset($options['off'])) {
                 foreach ($options['off'] as $sbas_id) {
-                    $tmp[$n][$sbas_id] = 0;
+                    if(!isset($tmp[$n][$sbas_id])) {
+                        $tmp[$n][$sbas_id] = array();
+                    }
+                    $tmp[$n][$sbas_id][] = 0;
                 }
             }
         }
-
+        foreach($tmp as $n=>$bas) {
+            foreach($bas as $sbas_id=>$values) {
+                if(count($values) > 1) {
+                    unset($tmp[$n][$sbas_id]);
+                } else {
+                    $tmp[$n][$sbas_id] = $values[0];
+                }
+            }
+            if(count($tmp[$n]) == 0) {
+                unset($tmp[$n]);
+            }
+        }
         $this->status = $tmp;
 
         return $this;

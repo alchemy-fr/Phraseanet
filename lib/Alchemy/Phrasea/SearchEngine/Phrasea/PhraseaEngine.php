@@ -383,10 +383,6 @@ class PhraseaEngine implements SearchEngineInterface
             $query = "all";
         }
 
-        if ($this->options->getRecordType()) {
-            $query .= ' AND recordtype=' . $this->options->getRecordType();
-        }
-
         $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
@@ -683,50 +679,72 @@ class PhraseaEngine implements SearchEngineInterface
      */
     private function addQuery($query)
     {
+        if ($this->options->getFields()) {
+            $fields = array_map(function (\databox_field $field) {
+                return $field->get_name();
+            }, $this->options->getFields());
+            if(count($fields) == 1) {
+                $query .= ' IN ' . $fields[0];
+            }
+            else if(count($fields) > 1) {
+                $query .= ' IN (' . implode(' OR ', $fields) . ')';
+            }
+        }
+
         foreach ($this->options->getDataboxes() as $databox) {
-            $this->queries[$databox->get_sbas_id()] = $query;
+            $this->queries[$databox->get_sbas_id()] = '';
         }
 
         $status = $this->options->getStatus();
 
         foreach ($this->queries as $sbas => $qs) {
-            if ($status) {
-                $requestStat = 'xxxx';
+            $clauses = array();
 
-                for ($i = 4; ($i <= 32); $i++) {
-                    if (!isset($status[$i])) {
-                        $requestStat = 'x' . $requestStat;
-                        continue;
-                    }
+            // the main query
+            $clauses[] = $query;
+
+            // status
+            if ($status) {
+                $requestStat = '';
+                for ($i = 31; $i >= 4; $i--) {
                     $val = 'x';
-                    if (isset($status[$i][$sbas])) {
+                    if (isset($status[$i]) && isset($status[$i][$sbas])) {
                         if ($status[$i][$sbas] == '0') {
                             $val = '0';
                         } elseif ($status[$i][$sbas] == '1') {
                             $val = '1';
                         }
                     }
-                    $requestStat = $val . $requestStat;
+                    $requestStat .= $val;
                 }
-
-                $requestStat = ltrim($requestStat, 'x');
+                $requestStat = ltrim($requestStat.'xxxx', 'x');
 
                 if ($requestStat !== '') {
-                    $this->queries[$sbas] .= ' AND (recordstatus=' . $requestStat . ')';
+                    $clauses[] = 'recordstatus=' . $requestStat . '';
                 }
             }
-            if ($this->options->getFields()) {
-                $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function (\databox_field $field) {
-                                            return $field->get_name();
-                                        }, $this->options->getFields())) . ')';
-            }
+
+            // date
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' ) ';
+                    $clauses[] = implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d');
                 }
                 if ($this->options->getMaxDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' ) ';
+                    $clauses[] = implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d');
                 }
+            }
+
+            // record type
+            if ($this->options->getRecordType()) {
+                $clauses[] = 'recordtype=' . $this->options->getRecordType();
+            }
+
+            // join clauses to build a query
+            if(count($clauses) == 1) {
+                $this->queries[$sbas] = $clauses[0];
+            }
+            else{
+                $this->queries[$sbas] = '(' . join(') AND (', $clauses) . ')';
             }
         }
 
