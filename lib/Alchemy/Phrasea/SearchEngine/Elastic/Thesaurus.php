@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 use Elasticsearch\Client;
 
 class Thesaurus
@@ -30,24 +33,34 @@ class Thesaurus
     public function findConceptsBulk(array $terms, $lang = null)
     {
         // TODO Use bulk queries for performance
+        $concepts = array();
+        foreach ($terms as $term) {
+            $concepts[] = $this->findConcepts($term, $lang);
+        }
+
+        return $concepts;
     }
 
-    public function findConcepts($term, $context = null, $lang = null)
+    public function findConcepts($term, $lang = null)
     {
+        if (!($term instanceof TermInterface)) {
+            $term = new Term($term);
+        }
+
         // TODO Check that term queries are ok with multiple words
         $query = array();
         $field = $lang ? sprintf('value.%s', $lang) : 'value.light';
-        $query['match'][$field]['query'] = $term;
+        $query['match'][$field]['query'] = $term->getValue();
         $query['match'][$field]['operator'] = 'and';
         // Allow 25% of non-matching tokens
         // (not exactly the same that 75% of matching tokens)
         // $query['match'][$field]['minimum_should_match'] = '-25%';
 
-        if ($context) {
+        if ($term->hasContext()) {
             $term_query = $query;
             $query = array();
             $query['bool']['must'][0] = $term_query;
-            $query['bool']['must'][1]['term']['context'] = $context;
+            $query['bool']['must'][1]['term']['context'] = $term->getContext();
         }
 
         if ($lang) {
@@ -86,7 +99,7 @@ class Thesaurus
         $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
         foreach ($buckets as $bucket) {
             if (isset($bucket['key'])) {
-                $concepts[] = $bucket['key'];
+                $concepts[] = new Concept($bucket['key']);
             }
         }
 

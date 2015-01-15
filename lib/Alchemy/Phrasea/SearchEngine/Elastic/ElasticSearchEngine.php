@@ -13,7 +13,9 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\SearchQuery;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -280,82 +282,25 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $query['_ast'] = $searchQuery->dump();
 
+
+
         $thesaurus = $this->app['thesaurus'];
-        foreach ($searchQuery->getTextNodes() as $textNode) {
-            $text = $textNode->getText();
-            $concepts = $thesaurus->findConcepts($text);
-            $query['_thesaurus_concepts'][$text] = $concepts;
+        $textNodes = $searchQuery->getTextNodes();
+        $concepts = $thesaurus->findConceptsBulk($textNodes);
+
+        foreach ($concepts as $index => $termConcepts) {
+            $node = $textNodes[$index];
+            $node->setConcepts($termConcepts);
+            $term = Term::dump($node);
+            $query['_thesaurus_concepts'][$term] = Concept::toPathArray($termConcepts);
         }
 
-        // $concepts = $thesaurus->findConceptsBulk($terms);
+        $recordHelper = $this->app['elasticsearch.record_helper'];
+        // TODO Pass options to getFields to include/exclude private fields
+        $searchableFields = $recordHelper->getFields();
+        $queryContext = new QueryContext($searchableFields, $this->locales, $this->app['locale']);
+        $recordQuery = $searchQuery->build($queryContext);
 
-
-        // Contains the full thesaurus paths to search on
-        $pathsToFilter = [];
-        // Contains the thesaurus values by fields (synonyms, translations, etc)
-        $collectFields = [];
-
-        // Only search in thesaurus for full text search
-        if ($searchQuery->isFullTextOnly()) {
-            $termFields = $this->expendToAnalyzedFieldsNames('value', null, $this->app['locale']);
-            $termsQuery = $searchQuery->getElasticsearchQuery($termFields);
-
-            $params = $this->createTermQueryParams($termsQuery, $options);
-            $terms = $this->doExecute('search', $params);
-
-            foreach ($terms['hits']['hits'] as $term) {
-                // Skip paths with very low score
-                if ($term['_score'] < 1) {
-                    continue;
-                }
-
-                $pathsToFilter[$term['_source']['path']] = $term['_score'];
-
-                foreach ($term['_source']['fields'] as $field) {
-                    $collectFields['caption.'.$field][] = $term['_source']['value'];
-                }
-            }
-            $pathsToFilter = array_unique($pathsToFilter);
-        }
-
-        if (empty($collectFields)) {
-            // @todo a list of field by default? all fields?
-            $searchFieldNames = ['caption.*'];
-        } else {
-            $searchFieldNames = array_keys($collectFields);
-        }
-
-        $recordFields = $this->expendToAnalyzedFieldsNames($searchFieldNames, null, $this->app['locale']);
-
-        $recordQuery = [
-            'bool' => [
-                'should' => [
-                    $searchQuery->getElasticsearchQuery($recordFields)
-                ]
-            ]
-        ];
-
-        foreach ($pathsToFilter as $path => $score) {
-            // Also match incomplete path. /a/b/c will return /a/b/c/d records
-            $recordQuery['bool']['should'][] = [
-                'match' => [
-                    'concept_paths' => array(
-                        'query' => $path,
-                        'boost' => $score,
-                    )
-                ]
-            ];
-
-            // Add signal for exact path only
-            $recordQuery['bool']['should'][] = [
-                'term' => [
-                    'concept_paths.raw' => array(
-                        'value' => $path,
-                        'boost' => $score,
-                    )
-                ]
-            ];
-        }
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
         $params['body']['from'] = $offset;
@@ -390,10 +335,15 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
+        $query['_searchable_fields'] = $searchableFields;
         $query['_ast'] = $searchQuery->dump();
-        $query['_paths'] = $pathsToFilter;
-        $query['_richFields'] = $collectFields;
-        $query['query'] = json_encode($params);
+        // $query['_paths'] = $pathsToFilter;
+        // $query['_richFields'] = $collectFields;
+
+        $queryyy = $recordQuery;
+        // $queryyy = $params['body'];
+        $query['query'] = $queryyy;
+        $query['query_as_string'] = json_encode($queryyy);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
@@ -582,36 +532,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $res;
-    }
-
-    /**
-     * @param array|string $fields
-     * @param array|null $locales
-     * @param null $currentLocale
-     * @return array
-     */
-    public function expendToAnalyzedFieldsNames($fields, $locales = null, $currentLocale = null)
-    {
-        $fieldsExpended = [];
-
-        if (!$locales) {
-            $locales = $this->locales;
-        }
-
-        foreach ((array) $fields as $field) {
-            foreach ($locales as $locale) {
-                $boost = "";
-
-                if ($locale === $currentLocale) {
-                    $boost = "^5";
-                }
-
-                $fieldsExpended[] = sprintf('%s.%s%s', $field, $locale, $boost);
-            }
-            $fieldsExpended[] = sprintf('%s.%s', $field, 'light^10');
-        }
-
-        return $fieldsExpended;
     }
 
     private function getFlagsKey(\appbox $appbox)

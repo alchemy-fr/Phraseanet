@@ -2,14 +2,16 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class AndExpression extends BinaryOperator
 {
     protected $operator = 'AND';
 
-    public function getQuery($fields = ['_all'])
+    public function buildQuery(QueryContext $context)
     {
-        $left  = $this->left->getQuery($fields);
-        $right = $this->right->getQuery($fields);
+        $left  = $this->left->buildQuery($context);
+        $right = $this->right->buildQuery($context);
 
         return array(
             'bool' => array(

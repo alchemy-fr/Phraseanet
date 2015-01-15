@@ -23,19 +23,9 @@ class Query
         return $this->root->getTextNodes();
     }
 
-    /*
-     * This method seems weird to me, the implementation returns true when the
-     * query doesn't contain IN statements, but that doesn't define a full text
-     * search.
-     */
-    public function isFullTextOnly()
+    public function build(QueryContext $context)
     {
-        return $this->root->isFullTextOnly();
-    }
-
-    public function getElasticsearchQuery($fields = array())
-    {
-        return $this->root->getQuery($fields);
+        return $this->root->buildQuery($context);
     }
 
     public function dump()

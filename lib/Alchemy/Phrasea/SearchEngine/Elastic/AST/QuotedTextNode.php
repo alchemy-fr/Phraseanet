@@ -2,22 +2,19 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class QuotedTextNode extends TextNode
 {
-    public function getQuery($fields = ['_all'])
+    public function buildQuery(QueryContext $context)
     {
         return array(
             'multi_match' => array(
                 'type'      => 'phrase',
-                'fields'    => $fields,
+                'fields'    => $context->getLocalizedFields(),
                 'query'     => $this->text,
                 // 'operator'  => 'and'
             )
         );
-    }
-
-    public function isFullTextOnly()
-    {
-        return true;
     }
 }

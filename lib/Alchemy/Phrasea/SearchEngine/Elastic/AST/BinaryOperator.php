@@ -26,10 +26,4 @@ abstract class BinaryOperator extends Node
             $this->right->getTextNodes()
         );
     }
-
-    public function isFullTextOnly()
-    {
-        return $this->left->isFullTextOnly()
-            && $this->right->isFullTextOnly();
-    }
 }

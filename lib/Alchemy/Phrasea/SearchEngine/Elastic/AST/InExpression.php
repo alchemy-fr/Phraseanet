@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class InExpression extends Node
 {
     protected $field;
@@ -13,9 +15,11 @@ class InExpression extends Node
         $this->expression = $expression;
     }
 
-    public function getQuery()
+    public function buildQuery(QueryContext $context)
     {
-        return $this->expression->getQuery($this->field->getValue());
+        $fields = array($this->field->getValue());
+
+        return $this->expression->buildQuery($context->narrowToFields($fields));
     }
 
     public function getTextNodes()
@@ -26,11 +30,5 @@ class InExpression extends Node
     public function __toString()
     {
         return sprintf('(%s IN %s)', $this->expression, $this->field);
-    }
-
-    public function isFullTextOnly()
-    {
-        // In expressions are never full-text
-        return false;
     }
 }
