@@ -1202,7 +1202,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return record_adapter
      */
-    public function     rebuild_subdefs()
+    public function rebuild_subdefs()
     {
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
@@ -1211,6 +1211,38 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         return $this;
+    }
+
+    public function get_missing_subdefs()
+    {
+        $databox = $this->get_databox();
+
+        try {
+            $this->get_hd_file();
+        } catch (\Exception $e) {
+            return array();
+        }
+
+        $subDefDefinitions = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
+        if (!$subDefDefinitions) {
+            return array();
+        }
+
+        $record = $this;
+        $wanted_subdefs = array_map(function($subDef) {
+           return  $subDef->get_name();
+        }, array_filter($subDefDefinitions, function($subDef) use ($record) {
+            return !$record->has_subdef($subDef->get_name());
+        }));
+
+
+        $missing_subdefs = array_map(function($subDef) {
+            return $subDef->get_name();
+        }, array_filter($this->get_subdefs(), function($subdef) {
+            return !$subdef->is_physically_present();
+        }));
+
+        return array_values(array_merge($wanted_subdefs, $missing_subdefs));
     }
 
     /**

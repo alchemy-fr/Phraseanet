@@ -90,10 +90,11 @@ class Tools implements ControllerProviderInterface
         $controllers->post('/image/', function (Application $app, Request $request) {
             $return = array('success' => true);
 
+            $force = $request->request->get('force_substitution') == '1';
+
             $selection = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
 
             foreach ($selection as $record) {
-
                 $substituted = false;
                 foreach ($record->get_subdefs() as $subdef) {
                     if ($subdef->is_substituted()) {
@@ -102,10 +103,11 @@ class Tools implements ControllerProviderInterface
                     }
                 }
 
-                if (!$substituted || $request->request->get('ForceThumbSubstit') == '1') {
+                if (!$substituted || $force) {
                     $record->rebuild_subdefs();
                 }
             }
+
 
             return $app->json($return);
         })->bind('prod_tools_image');

@@ -70,25 +70,20 @@
                     <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
                     {% if nbThumbSubstitute > 0 %}
                         <div style="color:#A00;">
-                            {% trans "Attention, certain documents ont des sous-definitions substituees"%}
+                            {% trans "Attention, certain documents ont des sous-definitions substituees" %}
                         </div>
                         <label for="FTS" class="checkbox">
-                            <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
+                            <input type="checkbox" name="force_substitution" value="1" id="FTS" />
                             {% trans "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" %}
                         </label>
                         <br/>
                     {% else %}
-                        <input type="hidden" name="ForceThumbSubstit" value="1">
+                        <input type="hidden" name="force_substitution" value="1">
                     {% endif %}
                     <div>
-                        <select name="rebuild">
-                            <option selected="selected" value="none">
-                                {% trans "recreer aucune sous-definitions" %}
-                            </option>
-                            <option value="all">
-                                {% trans "recreer toutes les sous-definitions" %}
-                            </option>
-                        </select>
+                        <p>
+                            {{ 'Are you sure you want to rebuild the sub-definitions of selected records?' }}
+                        </p>
                     </div>
                     <input type="hidden" name="ACT" value="SEND" />
                     <input type="hidden" name="lst" value="{{records.serializedList()}}" />
