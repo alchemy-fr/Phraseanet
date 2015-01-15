@@ -373,10 +373,10 @@
                                                             {% for s in stat %}
                                                             <tr>
                                                                 <td>
+                                                                    <label class="checkbox inline">
                                                                     {% if s['imgoff'] %}
                                                                         <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale.I18n']]}}" />
                                                                     {% endif %}
-                                                                    <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
@@ -384,10 +384,10 @@
                                                                     </label>
                                                                 </td>
                                                                 <td>
+                                                                    <label class="checkbox inline">
                                                                     {% if s['imgoff'] %}
                                                                         <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale.I18n']]}}" />
                                                                     {% endif %}
-                                                                    <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
