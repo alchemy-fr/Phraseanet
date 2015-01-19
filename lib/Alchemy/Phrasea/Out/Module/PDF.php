@@ -243,19 +243,24 @@ class PDF
             $wimg = $himg = 50;
             // 1px = 3.77952 mm
             $finalWidth = round($subdef->get_width() / 3.779528, 2);
-            $finalheight = round($subdef->get_height() / 3.779528, 2);
-            if ($finalWidth > 0 && $finalheight > 0) {
-                if ($finalWidth > $finalheight && ($wimg < $finalWidth))
-                    $finalheight = $wimg * $finalheight / $finalWidth;
-                else if ($finalheight > $finalWidth && $himg < $finalheight)
-                    $finalWidth = $himg * $finalWidth / $finalheight;
-                else if ($finalheight == $finalWidth && $himg < $finalheight) {
-                    $finalheight = $wimg * $finalheight / $finalWidth;
-                    $finalWidth = $himg * $finalWidth / $finalheight;
+            $finalHeight = round($subdef->get_height() / 3.779528, 2);
+            $aspectH = $finalWidth/$finalHeight;
+            $aspectW = $finalHeight/$finalWidth;
+
+            if ($finalWidth > 0 && $finalHeight > 0) {
+                if ($finalWidth > $finalHeight && $finalWidth > $wimg) {
+                    $finalWidth = $wimg;
+                    $finalHeight = $wimg * $aspectW;
+                } else if ($finalHeight > $finalWidth && $finalHeight > $himg) {
+                    $finalHeight = $himg;
+                    $finalWidth = $himg * $aspectH;
+                } else if ($finalHeight == $finalWidth & $finalWidth > $wimg) {
+                    $finalHeight = $wimg;
+                    $finalWidth = $himg;
                 }
             }
 
-            if ($this->pdf->GetY() > $this->pdf->getPageHeight() - (6 + $finalheight + 20))
+            if ($this->pdf->GetY() > $this->pdf->getPageHeight() - (6 + $finalHeight + 20))
                 $this->pdf->AddPage();
 
             $title = "record : " . $rec->get_title();
@@ -292,7 +297,7 @@ class PDF
 
             if ($fimg) {
                 $y = $this->pdf->GetY();
-                $this->pdf->Image($fimg, $lmargin, $y, $finalWidth, $finalheight);
+                $this->pdf->Image($fimg, $lmargin, $y, $finalWidth, $finalHeight);
                 $this->pdf->SetY($y + 3);
             }
 
@@ -312,8 +317,8 @@ class PDF
                 $this->pdf->Write(6, "\n");
                 $nf++;
             }
-            if ($this->pdf->PageNo() == $p0 && ($this->pdf->GetY() - $y0) < $finalheight)
-                $this->pdf->SetY($y0 + $finalheight);
+            if ($this->pdf->PageNo() == $p0 && ($this->pdf->GetY() - $y0) < $finalHeight)
+                $this->pdf->SetY($y0 + $finalHeight);
             $ndoc++;
         }
         $this->pdf->SetLeftMargin($lmargin);
@@ -447,28 +452,34 @@ class PDF
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
                 $f = \recordutils_image::watermark($this->app, $subdef);
 
+            // original height / original width x new width = new height
             $wimg = $himg = 150; // preview dans un carre de 150 mm
             // 1px = 3.77952 mm
             $finalWidth = round($subdef->get_width() / 3.779528, 2);
-            $finalheight = round($subdef->get_height() / 3.779528, 2);
-            if ($finalWidth > 0 && $finalheight > 0) {
-                if ($finalWidth > $finalheight && ($wimg < $finalWidth))
-                    $finalheight = $wimg * $finalheight / $finalWidth;
-                else if ($finalheight > $finalWidth && $himg < $finalheight)
-                    $finalWidth = $himg * $finalWidth / $finalheight;
-                else if ($finalheight == $finalWidth && $himg < $finalheight) {
-                    $finalheight = $wimg * $finalheight / $finalWidth;
-                    $finalWidth = $himg * $finalWidth / $finalheight;
+            $finalHeight = round($subdef->get_height() / 3.779528, 2);
+            $aspectH = $finalWidth/$finalHeight;
+            $aspectW = $finalHeight/$finalWidth;
+
+            if ($finalWidth > 0 && $finalHeight > 0) {
+                if ($finalWidth > $finalHeight && $finalWidth > $wimg) {
+                    $finalWidth = $wimg;
+                    $finalHeight = $wimg * $aspectW;
+                } else if ($finalHeight > $finalWidth && $finalHeight > $himg) {
+                    $finalHeight = $himg;
+                    $finalWidth = $himg * $aspectH;
+                } else if ($finalHeight == $finalWidth & $finalWidth > $wimg) {
+                    $finalHeight = $wimg;
+                    $finalWidth = $himg;
                 }
             }
 
-            $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalheight);
+            $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalHeight);
 
             if ($miniConv != NULL) {
                 foreach ($miniConv as $oneF)
                     unlink($oneF);
             }
-            $this->pdf->SetXY($lmargin, $y += ( $finalheight + 5));
+            $this->pdf->SetXY($lmargin, $y += ( $finalHeight + 5));
 
             $nf = 0;
             if ($write_caption) {
