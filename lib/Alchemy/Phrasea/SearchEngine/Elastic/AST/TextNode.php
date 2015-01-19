@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 
 class TextNode extends Node implements TermInterface
@@ -31,7 +32,7 @@ class TextNode extends Node implements TermInterface
 
         if ($this->concepts) {
             $shoulds = array($query);
-            foreach ($this->concepts as $concept) {
+            foreach (Concept::pruneNarrowConcepts($this->concepts) as $concept) {
                 $shoulds[]['term']['concept_paths'] = $concept->getPath();
             }
             $query = array();

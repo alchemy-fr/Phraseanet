@@ -301,7 +301,7 @@ class RecordIndexer
             }
         }
 
-        $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
+        // $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
 
         return $record;
     }

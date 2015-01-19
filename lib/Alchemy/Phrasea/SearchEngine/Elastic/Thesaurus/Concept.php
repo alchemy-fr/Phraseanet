@@ -25,6 +25,12 @@ class Concept
         return $this->path;
     }
 
+    public function isNarrowerThan(Concept $other)
+    {
+        // A concept is the child of another if it begins with the other
+        return 0 === strpos($this->getPath(), $other->getPath() . '/');
+    }
+
     public function __toString()
     {
         return $this->path;
@@ -35,6 +41,29 @@ class Concept
         foreach ($concepts as $index => $concept) {
             $concepts[$index] = $concept->getPath();
         }
+        return $concepts;
+    }
+
+    public static function pruneNarrowConcepts($concepts)
+    {
+        // Build a map with paths as keys
+        $concepts = array_combine(Concept::toPathArray($concepts), $concepts);
+        // Paths are sorted in advance to keep search O(n)
+        ksort($concepts);
+        // With sorting, the first element can't be a child
+        $broad = current($concepts);
+        next($concepts);
+        // Start prunning concepts narrower than current broad one
+        while ($concept = current($concepts)) {
+            if ($concept->isNarrowerThan($broad)) {
+                unset($concepts[key($concepts)]);
+            } else {
+                // End of prunable childs, beginning of a new concept
+                $broad = $concept;
+                next($concepts);
+            }
+        }
+
         return $concepts;
     }
 }

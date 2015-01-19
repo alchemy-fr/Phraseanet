@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Thesaurus;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,6 +44,12 @@ class FindConceptsCommand extends Command
                 'Specify input locale'
             )
             ->addOption(
+                'broad',
+                null,
+                InputOption::VALUE_NONE,
+                'Keep broad concepts (discards narrower concepts)'
+            )
+            ->addOption(
                 'raw',
                 null,
                 InputOption::VALUE_NONE,
@@ -70,6 +77,10 @@ class FindConceptsCommand extends Command
         $term = new Term($term, $context);
         $locale = $input->getOption('locale');
         $concepts = $thesaurus->findConcepts($term, $locale);
+
+        if ($input->getOption('broad')) {
+            $concepts = Concept::pruneNarrowConcepts($concepts);
+        }
 
         if (count($concepts)) {
             $output->writeln($concepts);
