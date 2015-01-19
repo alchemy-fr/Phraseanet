@@ -118,6 +118,7 @@ class task_period_apibridge extends task_appboxAbstract
         try {
             $dist_id = $account->get_api()->upload($element->get_record(), $element->get_datas());
             $element->set_uploaded_on(new DateTime());
+            $element->set_status(Bridge_Element::STATUS_DONE);
         } catch (\Exception $e) {
             $this->log('Error while uploading : ' . $e->getMessage());
             $element->set_status(Bridge_Element::STATUS_ERROR);
