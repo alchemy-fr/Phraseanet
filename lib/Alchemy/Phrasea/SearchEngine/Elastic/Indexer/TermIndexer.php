@@ -41,39 +41,28 @@ class TermIndexer
     {
         foreach ($this->appbox->get_databoxes() as $databox) {
             /** @var databox $databox */
-            $databoxId              = $databox->get_sbas_id();
+            $databoxId = $databox->get_sbas_id();
 
-            $document               = self::thesaurusFromDatabox($databox);
-            $dedicatedFieldTerms    = $this->getDedicatedFieldTerms($databox, $document);
+            $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId) {
+                // Path and id are prefixed with a databox identifier to not
+                // collide with other databoxes terms
 
-            $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId, $dedicatedFieldTerms) {
-                //printf("- %s (%s)\n", $term['path'], $term['value']);
                 // Term structure
-                $id = $term['id'];
+                $id = sprintf('%s_%s', $databoxId, $term['id']);
                 unset($term['id']);
-
+                $term['path'] = sprintf('/%s%s', $databoxId, $term['path']);
                 $term['databox_id'] = $databoxId;
-                $term['branch_id'] = $id;
-
-                // @todo move to the TermVisitor? dunno.
-                $term['fields'] = null;
-                foreach ($dedicatedFieldTerms as $partialId => $fields) {
-                    if (strpos($id, $partialId) === 0) {
-                        foreach ($fields as $field) {
-                            $term['fields'][] = $field;
-                        }
-                    }
-                }
 
                 // Index request
                 $params = array();
-                $params['id'] = sprintf('%s_%s', $databoxId, $id);
+                $params['id'] = $id;
                 $params['type'] = self::TYPE_NAME;
                 $params['body'] = $term;
 
                 $bulk->index($params);
             });
 
+            $document  = self::thesaurusFromDatabox($databox);
             $this->navigator->walk($document, $visitor);
         }
     }
@@ -88,26 +77,6 @@ class TermIndexer
         return $dom;
     }
 
-    private function getDedicatedFieldTerms(databox $databox, DOMDocument $document)
-    {
-        $xpath = new \DOMXpath($document);
-        $dedicatedFieldTerms = [];
-
-        foreach ($databox->get_meta_structure() as $f) {
-            if ($f->get_tbranch()) {
-                $elements = $xpath->query($f->get_tbranch());
-
-                if ($elements) {
-                    foreach ($elements as $element) {
-                        $dedicatedFieldTerms[$element->getAttribute('id')][] = $f->get_name();
-                    }
-                }
-            }
-        }
-
-        return $dedicatedFieldTerms;
-    }
-
     public function getMapping()
     {
         $mapping = new Mapping();
@@ -119,9 +88,7 @@ class TermIndexer
             ->add('context', 'string')->addAnalyzedVersion($this->locales)
             ->add('path', 'string')->notAnalyzed()
             ->add('lang', 'string')->notAnalyzed()
-            ->add('branch_id', 'string')->notAnalyzed()
             ->add('databox_id', 'integer')
-            ->add('fields', 'string')->notAnalyzed()
         ;
 
         return $mapping->export();
