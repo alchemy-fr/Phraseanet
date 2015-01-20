@@ -137,13 +137,13 @@ class RecordIndexer
             ->add('record_id', 'integer')  // Compound primary key
             ->add('databox_id', 'integer') // Compound primary key
             ->add('base_id', 'integer') // Unique collection ID
-            ->add('collection_id', 'integer') // Useless collection ID (local to databox)
-            ->add('collection_name', 'string')->notAnalyzed() // Collection name
-            ->add('uuid', 'string')->notAnalyzed()
-            ->add('sha256', 'string')->notAnalyzed()
+            ->add('collection_id', 'integer')->notIndexed() // Useless collection ID (local to databox)
+            ->add('collection_name', 'string')->notIndexed() // Collection name
+            ->add('uuid', 'string')->notIndexed()
+            ->add('sha256', 'string')->notIndexed()
             // Mandatory metadata
-            ->add('original_name', 'string')->notAnalyzed()
-            ->add('mime', 'string')->notAnalyzed()
+            ->add('original_name', 'string')->notIndexed()
+            ->add('mime', 'string')->notIndexed()
             ->add('type', 'string')->notAnalyzed()
             ->add('record_type', 'string')->notAnalyzed() // record or story
             // Dates
@@ -154,17 +154,14 @@ class RecordIndexer
                 ->analyzer('thesaurus_path', 'indexing')
                 ->analyzer('keyword', 'searching')
                 ->addRawVersion()
-            // Keep subdefs arround for display purpose
+            // EXIF
+            ->add('exif', $this->getExifMapping())
+            // Status
+            ->add('flags', $this->getFlagsMapping())
+            // Keep some fields arround for display purpose
             ->add('subdefs', Mapping::disabledMapping())
+            ->add('title', Mapping::disabledMapping())
         ;
-
-        // Index title
-        $titleMapping = new Mapping();
-        $titleMapping->add('default', 'string')->notAnalyzed()->notIndexed();
-        foreach ($this->locales as $locale) {
-            $titleMapping->add($locale, 'string')->notAnalyzed()->notIndexed();
-        }
-        $mapping->add('title', $titleMapping);
 
         // Caption mapping
         $captionMapping = new Mapping();
@@ -191,12 +188,6 @@ class RecordIndexer
                 }
             }
         }
-
-        // EXIF
-        $mapping->add('exif', $this->getExifMapping());
-
-        // Status
-        $mapping->add('flags', $this->getFlagsMapping());
 
         return $mapping->export();
     }
