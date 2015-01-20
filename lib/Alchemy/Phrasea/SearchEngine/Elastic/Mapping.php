@@ -146,21 +146,29 @@ class Mapping
         return $this;
     }
 
-    public function addAnalyzedVersion(array $langs)
+    /**
+     * @deprecated
+     */
+    public function addAnalyzedVersion(array $locales)
     {
         $field = &$this->currentField();
-
-        foreach ($langs as $lang) {
-            $field['fields'][$lang] = [
-                'type' => $field['type'],
-                'analyzer' => sprintf('%s_full', $lang)
-            ];
-        }
-
         $field['fields']['light'] = [
             'type' => $field['type'],
             'analyzer' => 'general_light'
         ];
+
+        return $this->addLocalizedSubfields($locales);
+    }
+
+    public function addLocalizedSubfields(array $locales)
+    {
+        $field = &$this->currentField();
+
+        foreach ($locales as $locale) {
+            $field['fields'][$locale] = array();
+            $field['fields'][$locale]['type'] = $field['type'];
+            $field['fields'][$locale]['analyzer'] = sprintf('%s_full', $locale);
+        }
 
         return $this;
     }
