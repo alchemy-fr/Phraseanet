@@ -967,7 +967,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     /**
-     * @todo close all open session
      * @return type
      */
     public function delete()
@@ -1037,6 +1036,24 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();
+
+        // delete created app
+        $oauthApps = API_OAuth2_Application::load_dev_app_by_user($this->app, $this);
+
+        // delete accounts for thos app
+        foreach ($oauthApps as $oauthApp) {
+            $account = API_OAuth2_Account::load_with_user($this->app, $oauthApp, $this);
+            $account->delete();
+            $oauthApp->delete();
+        }
+
+        // delete any other account
+        $oauthApps = API_OAuth2_Application::load_app_by_user($this->app, $this);
+
+        foreach ($oauthApps as $oauthApp) {
+            $account = API_OAuth2_Account::load_with_user($this->app, $oauthApp, $this);
+            $account->delete();
+        }
 
         unset(self::$_instance[$this->get_id()]);
 
