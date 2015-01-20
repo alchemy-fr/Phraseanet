@@ -72,6 +72,13 @@ class Mapping
         return $this;
     }
 
+    public function addDisabled($name)
+    {
+        $this->add($name, new self())->disable();
+
+        return $this;
+    }
+
     public function export()
     {
         return ['properties' => $this->exportProperties()];
@@ -130,6 +137,22 @@ class Mapping
     {
         $field = &$this->currentField();
         $field['index'] = 'no';
+
+        return $this;
+    }
+
+    /**
+     * Allows to disable parsing and indexing a named object completely.
+     * This is handy when a portion of the JSON document contains arbitrary JSON
+     * which should not be indexed, nor added to the mapping.
+     */
+    public function disable()
+    {
+        $field = &$this->currentField();
+        if ($field['type'] !== self::TYPE_OBJECT) {
+            throw new LogicException('Only object fields can be disabled');
+        }
+        $field['enabled'] = false;
 
         return $this;
     }

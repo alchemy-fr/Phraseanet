@@ -154,6 +154,8 @@ class RecordIndexer
                 ->analyzer('thesaurus_path', 'indexing')
                 ->analyzer('keyword', 'searching')
                 ->addRawVersion()
+            // Keep subdefs arround for display purpose
+            ->addDisabled('subdefs');
         ;
 
         // Index title
@@ -163,19 +165,6 @@ class RecordIndexer
             $titleMapping->add($locale, 'string')->notAnalyzed()->notIndexed();
         }
         $mapping->add('title', $titleMapping);
-
-        // Minimal subdefs mapping info for display purpose
-        $subdefMapping = new Mapping();
-        $subdefMapping->add('path', 'string')->notAnalyzed()->notIndexed();
-        $subdefMapping->add('height', 'integer')->notIndexed();
-        $subdefMapping->add('width', 'integer')->notIndexed();
-
-        $subdefsMapping = new Mapping();
-        $subdefsMapping->add('thumbnail', $subdefMapping);
-        $subdefsMapping->add('thumbnailgif', $subdefMapping);
-        $subdefsMapping->add('preview', $subdefMapping);
-
-        $mapping->add('subdefs', $subdefsMapping);
 
         // Caption mapping
         $captionMapping = new Mapping();
