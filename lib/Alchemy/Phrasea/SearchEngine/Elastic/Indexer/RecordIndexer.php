@@ -155,7 +155,7 @@ class RecordIndexer
                 ->analyzer('keyword', 'searching')
                 ->addRawVersion()
             // Keep subdefs arround for display purpose
-            ->addDisabled('subdefs');
+            ->add('subdefs', Mapping::disabledMapping())
         ;
 
         // Index title

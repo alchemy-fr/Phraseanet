@@ -18,6 +18,7 @@ class Mapping
 {
     private $fields = array();
     private $current;
+    private $enabled = true;
 
     const DATE_FORMAT_MYSQL = 'yyyy-MM-dd HH:mm:ss';
     const DATE_FORMAT_CAPTION = 'yyyy/MM/dd'; // ES format
@@ -54,7 +55,7 @@ class Mapping
         $field = array();
         if ($type instanceof self) {
             $field['type'] = self::TYPE_OBJECT;
-            $field['properties'] = $type;
+            $field['mapping'] = $type;
         }
         elseif (in_array($type, self::$types)) {
             $field['type'] = $type;
@@ -72,29 +73,21 @@ class Mapping
         return $this;
     }
 
-    public function addDisabled($name)
-    {
-        $this->add($name, new self())->disable();
-
-        return $this;
-    }
-
     public function export()
     {
-        return ['properties' => $this->exportProperties()];
-    }
-
-    public function exportProperties()
-    {
-        $properties = array();
+        $mapping = array();
         foreach ($this->fields as $name => $field) {
-            $properties[$name] = $field;
             if ($field['type'] === self::TYPE_OBJECT) {
-                $properties[$name]['properties'] = $field['properties']->exportProperties();
+                $field = $field['mapping']->export();
             }
+            $mapping['properties'][$name] = $field;
         }
 
-        return $properties;
+        if (!$this->enabled) {
+            $mapping['enabled'] = false;
+        }
+
+        return $mapping;
     }
 
     public function analyzer($analyzer, $type = null)
@@ -141,18 +134,19 @@ class Mapping
         return $this;
     }
 
+    public static function disabledMapping()
+    {
+        return (new self())->disable();
+    }
+
     /**
      * Allows to disable parsing and indexing a named object completely.
      * This is handy when a portion of the JSON document contains arbitrary JSON
      * which should not be indexed, nor added to the mapping.
      */
-    public function disable()
+    private function disable()
     {
-        $field = &$this->currentField();
-        if ($field['type'] !== self::TYPE_OBJECT) {
-            throw new LogicException('Only object fields can be disabled');
-        }
-        $field['enabled'] = false;
+        $this->enabled = false;
 
         return $this;
     }
