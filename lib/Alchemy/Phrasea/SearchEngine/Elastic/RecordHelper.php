@@ -82,7 +82,7 @@ class RecordHelper
                 continue;
             }
             // Skip not searchable fields
-            if ($onlySearchable && !$options['indexable']) {
+            if ($onlySearchable && !$options['searchable']) {
                 continue;
             }
             $fields[] = $name;
@@ -124,7 +124,7 @@ class RecordHelper
 
                 // Business rules
                 $field['private'] = $fieldStructure->isBusiness();
-                $field['indexable'] = $fieldStructure->is_indexable();
+                $field['searchable'] = $fieldStructure->is_indexable();
                 $field['to_aggregate'] = (bool) $fieldStructure->isAggregable();
 
                 // Thesaurus concept inference
@@ -146,8 +146,8 @@ class RecordHelper
                         throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $fields[$name]['type'], $field['type']));
                     }
 
-                    if ($fields[$name]['indexable'] !== $field['indexable']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible indexable state", $name));
+                    if ($fields[$name]['searchable'] !== $field['searchable']) {
+                        throw new MergeException(sprintf("Field %s can't be merged, incompatible searchable state", $name));
                     }
 
                     if ($fields[$name]['to_aggregate'] !== $field['to_aggregate']) {

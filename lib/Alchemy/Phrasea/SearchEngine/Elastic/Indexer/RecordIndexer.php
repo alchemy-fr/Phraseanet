@@ -191,9 +191,9 @@ class RecordIndexer
             }
 
             if ($params['type'] === Mapping::TYPE_STRING) {
-                if (!$params['indexable'] && !$params['to_aggregate']) {
+                if (!$params['searchable'] && !$params['to_aggregate']) {
                     $m->notIndexed();
-                } elseif (!$params['indexable'] && $params['to_aggregate']) {
+                } elseif (!$params['searchable'] && $params['to_aggregate']) {
                     $m->notAnalyzed();
                     $m->addRawVersion();
                 } else {
