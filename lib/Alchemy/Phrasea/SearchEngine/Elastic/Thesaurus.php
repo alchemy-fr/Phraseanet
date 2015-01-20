@@ -91,6 +91,8 @@ class Thesaurus
         // We also need to disable TF/IDF on terms, and try to boost score only
         // when the search match nearly all tokens of term's value field.
         $params['body']['min_score'] = self::MIN_SCORE;
+        // No need to get any hits since we extract data from aggs
+        $params['body']['size'] = 0;
 
         $response = $this->client->search($params);
 
