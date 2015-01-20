@@ -514,10 +514,13 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createSortQueryParams(SearchEngineOptions $options)
     {
         $sort = [];
+
         if ($options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
             $sort['_score'] = $options->getSortOrder();
-        } else {
+        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
             $sort['created_on'] = $options->getSortOrder();
+        } else {
+            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
         }
 
         return $sort;
