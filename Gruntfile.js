@@ -69,6 +69,15 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/backbone-amd/",
                 "flatten": true
             },
+            "fancytree": {
+                "expand": true,
+                "src": [
+                    "dist/*",
+                    "dist/**/*"
+                ],
+                "cwd": "<%= path.bower %>/fancytree",
+                "dest": "<%= path.asset %>/fancytree/"
+            },
             "blueimp": {
                 "expand": true,
                 "src": "js/load-image.js",

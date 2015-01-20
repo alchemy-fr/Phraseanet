@@ -28,7 +28,8 @@
         "autobahnjs": "~0.8.0",
         "when": "~2.7.0",
         "web-socket-js": "~1.0.1",
-        "jquery.treeview": "1.4.1"
+        "jquery.treeview": "1.4.1",
+        "fancytree": "~2.7"
     },
     "devDependencies": {
         "mocha": "latest",
