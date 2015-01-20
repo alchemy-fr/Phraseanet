@@ -19,9 +19,11 @@ abstract class BinaryOperator extends Node
         return sprintf('(%s %s %s)', $this->left, $this->operator, $this->right);
     }
 
-    public function isFullTextOnly()
+    public function getTextNodes()
     {
-        return $this->left->isFullTextOnly()
-            && $this->right->isFullTextOnly();
+        return array_merge(
+            $this->left->getTextNodes(),
+            $this->right->getTextNodes()
+        );
     }
 }

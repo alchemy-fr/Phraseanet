@@ -2,9 +2,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class NullQueryNode extends Node
 {
-    public function getQuery()
+    public function buildQuery(QueryContext $context)
     {
         return array('match_all' => array());
     }
@@ -17,10 +19,5 @@ class NullQueryNode extends Node
     public function __toString()
     {
         return '<NULL>';
-    }
-
-    public function isFullTextOnly()
-    {
-        return false;
     }
 }

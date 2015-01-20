@@ -20,12 +20,15 @@ use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
 use media_subdef;
 
 class RecordIndexer
 {
     const TYPE_NAME = 'record';
+
+    private $helper;
+
+    private $thesaurus;
 
     /**
      * @var \appbox
@@ -42,10 +45,9 @@ class RecordIndexer
      */
     private $locales;
 
-    private $dataStructure;
-
-    public function __construct(Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox, array $locales)
+    public function __construct(RecordHelper $helper, Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox, array $locales)
     {
+        $this->helper = $helper;
         $this->thesaurus = $thesaurus;
         $this->appbox = $appbox;
         $this->elasticSearchEngine = $elasticSearchEngine;
@@ -54,11 +56,8 @@ class RecordIndexer
 
     public function populateIndex(BulkOperation $bulk)
     {
-        // Helper to fetch record related data
-        $recordHelper = new RecordHelper($this->appbox);
-
         foreach ($this->appbox->get_databoxes() as $databox) {
-            $fetcher = new RecordFetcher($databox, $recordHelper);
+            $fetcher = new RecordFetcher($databox, $this->helper);
             $fetcher->setBatchSize(200);
             while ($records = $fetcher->fetch()) {
                 foreach ($records as $record) {
@@ -74,9 +73,7 @@ class RecordIndexer
 
     public function indexSingleRecord(\record_adapter $record_adapter, $indexName)
     {
-        // Helper to fetch record related data
-        $recordHelper = new RecordHelper($this->appbox);
-        $fetcher = new RecordFetcher($record_adapter->get_databox(), $recordHelper);
+        $fetcher = new RecordFetcher($record_adapter->get_databox(), $this->helper);
         $record = $fetcher->fetchOne($record_adapter);
 
         $params = array();
@@ -140,13 +137,13 @@ class RecordIndexer
             ->add('record_id', 'integer')  // Compound primary key
             ->add('databox_id', 'integer') // Compound primary key
             ->add('base_id', 'integer') // Unique collection ID
-            ->add('collection_id', 'integer') // Useless collection ID (local to databox)
-            ->add('collection_name', 'string')->notAnalyzed() // Collection name
-            ->add('uuid', 'string')->notAnalyzed()
-            ->add('sha256', 'string')->notAnalyzed()
+            ->add('collection_id', 'integer')->notIndexed() // Useless collection ID (local to databox)
+            ->add('collection_name', 'string')->notIndexed() // Collection name
+            ->add('uuid', 'string')->notIndexed()
+            ->add('sha256', 'string')->notIndexed()
             // Mandatory metadata
-            ->add('original_name', 'string')->notAnalyzed()
-            ->add('mime', 'string')->notAnalyzed()
+            ->add('original_name', 'string')->notIndexed()
+            ->add('mime', 'string')->notIndexed()
             ->add('type', 'string')->notAnalyzed()
             ->add('record_type', 'string')->notAnalyzed() // record or story
             // Dates
@@ -157,28 +154,14 @@ class RecordIndexer
                 ->analyzer('thesaurus_path', 'indexing')
                 ->analyzer('keyword', 'searching')
                 ->addRawVersion()
+            // EXIF
+            ->add('exif', $this->getExifMapping())
+            // Status
+            ->add('flags', $this->getFlagsMapping())
+            // Keep some fields arround for display purpose
+            ->add('subdefs', Mapping::disabledMapping())
+            ->add('title', Mapping::disabledMapping())
         ;
-
-        // Index title
-        $titleMapping = new Mapping();
-        $titleMapping->add('default', 'string')->notAnalyzed()->notIndexed();
-        foreach ($this->locales as $locale) {
-            $titleMapping->add($locale, 'string')->notAnalyzed()->notIndexed();
-        }
-        $mapping->add('title', $titleMapping);
-
-        // Minimal subdefs mapping info for display purpose
-        $subdefMapping = new Mapping();
-        $subdefMapping->add('path', 'string')->notAnalyzed()->notIndexed();
-        $subdefMapping->add('height', 'integer')->notIndexed();
-        $subdefMapping->add('width', 'integer')->notIndexed();
-
-        $subdefsMapping = new Mapping();
-        $subdefsMapping->add('thumbnail', $subdefMapping);
-        $subdefsMapping->add('thumbnailgif', $subdefMapping);
-        $subdefsMapping->add('preview', $subdefMapping);
-
-        $mapping->add('subdefs', $subdefsMapping);
 
         // Caption mapping
         $captionMapping = new Mapping();
@@ -194,9 +177,9 @@ class RecordIndexer
             }
 
             if ($params['type'] === Mapping::TYPE_STRING) {
-                if (!$params['indexable'] && !$params['to_aggregate']) {
+                if (!$params['searchable'] && !$params['to_aggregate']) {
                     $m->notIndexed();
-                } elseif (!$params['indexable'] && $params['to_aggregate']) {
+                } elseif (!$params['searchable'] && $params['to_aggregate']) {
                     $m->notAnalyzed();
                     $m->addRawVersion();
                 } else {
@@ -206,89 +189,13 @@ class RecordIndexer
             }
         }
 
-        // EXIF
-        $mapping->add('exif', $this->getExifMapping());
-
-        // Status
-        $mapping->add('flags', $this->getFlagsMapping());
-
         return $mapping->export();
     }
 
 
     private function getFieldsStructure()
     {
-        if (!empty($this->dataStructure)) {
-            return $this->dataStructure;
-        }
-
-        $fields = array();
-
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            //printf("Databox %d\n", $databox->get_sbas_id());
-            foreach ($databox->get_meta_structure() as $fieldStructure) {
-                $field = array();
-                // Field type
-                switch ($fieldStructure->get_type()) {
-                    case \databox_field::TYPE_DATE:
-                        $field['type'] = 'date';
-                        break;
-                    case \databox_field::TYPE_NUMBER:
-                        $field['type'] = 'double';
-                        break;
-                    case \databox_field::TYPE_STRING:
-                    case \databox_field::TYPE_TEXT:
-                        $field['type'] = 'string';
-                        break;
-                    default:
-                        throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $fieldStructure->get_type()));
-                        break;
-                }
-
-                $name = $fieldStructure->get_name();
-
-                // Business rules
-                $field['private'] = $fieldStructure->isBusiness();
-                $field['indexable'] = $fieldStructure->is_indexable();
-                $field['to_aggregate'] = (bool) $fieldStructure->isAggregable();
-
-                // Thesaurus concept inference
-                // $xpath = "/thesaurus/te[@id='T26'] | /thesaurus/te[@id='T24']";
-                $helper = new ThesaurusHelper();
-
-                // TODO Not the real option yet
-                $field['thesaurus_concept_inference'] = $field['type'] === 'string';
-                // TODO Find thesaurus path prefixes
-                $field['thesaurus_prefix'] = '/categories';
-
-                //printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
-
-                // Since mapping is merged between databoxes, two fields may
-                // have conflicting names. Indexing is the same for a given
-                // type so we reject only those with different types.
-                if (isset($fields[$name])) {
-                    if ($fields[$name]['type'] !== $field['type']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $fields[$name]['type'], $field['type']));
-                    }
-
-                    if ($fields[$name]['indexable'] !== $field['indexable']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible indexable state", $name));
-                    }
-
-                    if ($fields[$name]['to_aggregate'] !== $field['to_aggregate']) {
-                        throw new MergeException(sprintf("Field %s can't be merged, incompatible to_aggregate state", $name));
-                    }
-                    // TODO other structure incompatibilities
-
-                    //printf("Merged with previous \"%s\" field\n", $name);
-                }
-
-                $fields[$name] = $field;
-            }
-        }
-
-        $this->dataStructure = $fields;
-        return $this->dataStructure;
+        return $this->helper->getFieldsStructure();
     }
 
     // @todo Add call to addAnalyzedVersion ?
@@ -374,7 +281,7 @@ class RecordIndexer
             }
         }
 
-        $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
+        // $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
 
         return $record;
     }

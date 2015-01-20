@@ -18,6 +18,7 @@ class Mapping
 {
     private $fields = array();
     private $current;
+    private $enabled = true;
 
     const DATE_FORMAT_MYSQL = 'yyyy-MM-dd HH:mm:ss';
     const DATE_FORMAT_CAPTION = 'yyyy/MM/dd'; // ES format
@@ -54,7 +55,7 @@ class Mapping
         $field = array();
         if ($type instanceof self) {
             $field['type'] = self::TYPE_OBJECT;
-            $field['properties'] = $type;
+            $field['mapping'] = $type;
         }
         elseif (in_array($type, self::$types)) {
             $field['type'] = $type;
@@ -74,20 +75,19 @@ class Mapping
 
     public function export()
     {
-        return ['properties' => $this->exportProperties()];
-    }
-
-    public function exportProperties()
-    {
-        $properties = array();
+        $mapping = array();
         foreach ($this->fields as $name => $field) {
-            $properties[$name] = $field;
             if ($field['type'] === self::TYPE_OBJECT) {
-                $properties[$name]['properties'] = $field['properties']->exportProperties();
+                $field = $field['mapping']->export();
             }
+            $mapping['properties'][$name] = $field;
         }
 
-        return $properties;
+        if (!$this->enabled) {
+            $mapping['enabled'] = false;
+        }
+
+        return $mapping;
     }
 
     public function analyzer($analyzer, $type = null)
@@ -134,6 +134,23 @@ class Mapping
         return $this;
     }
 
+    public static function disabledMapping()
+    {
+        return (new self())->disable();
+    }
+
+    /**
+     * Allows to disable parsing and indexing a named object completely.
+     * This is handy when a portion of the JSON document contains arbitrary JSON
+     * which should not be indexed, nor added to the mapping.
+     */
+    private function disable()
+    {
+        $this->enabled = false;
+
+        return $this;
+    }
+
     public function addRawVersion()
     {
         $field = &$this->currentField();
@@ -146,21 +163,29 @@ class Mapping
         return $this;
     }
 
-    public function addAnalyzedVersion(array $langs)
+    /**
+     * @deprecated
+     */
+    public function addAnalyzedVersion(array $locales)
     {
         $field = &$this->currentField();
-
-        foreach ($langs as $lang) {
-            $field['fields'][$lang] = [
-                'type' => $field['type'],
-                'analyzer' => sprintf('%s_full', $lang)
-            ];
-        }
-
         $field['fields']['light'] = [
             'type' => $field['type'],
             'analyzer' => 'general_light'
         ];
+
+        return $this->addLocalizedSubfields($locales);
+    }
+
+    public function addLocalizedSubfields(array $locales)
+    {
+        $field = &$this->currentField();
+
+        foreach ($locales as $locale) {
+            $field['fields'][$locale] = array();
+            $field['fields'][$locale]['type'] = $field['type'];
+            $field['fields'][$locale]['analyzer'] = sprintf('%s_full', $locale);
+        }
 
         return $this;
     }

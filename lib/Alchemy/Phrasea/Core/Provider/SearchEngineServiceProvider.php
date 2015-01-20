@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryParser;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
@@ -87,11 +88,16 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             return new RecordIndexer(
+                $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
                 $app['elasticsearch.engine'],
                 $app['phraseanet.appbox'],
                 array_keys($app['locales.available'])
             );
+        });
+
+        $app['elasticsearch.record_helper'] = $app->share(function ($app) {
+            return new RecordHelper($app['phraseanet.appbox']);
         });
 
         $app['elasticsearch.client'] = $app->share(function($app) {

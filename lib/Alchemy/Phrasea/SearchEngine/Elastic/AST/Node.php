@@ -2,15 +2,14 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 abstract class Node
 {
     /**
      * @return array The Elasticsearch formatted query
      */
-    abstract public function getQuery();
+    abstract public function buildQuery(QueryContext $context);
 
-    /**
-     * @return bool  Tell if the node and it's child are full-text queries only
-     */
-    abstract public function isFullTextOnly();
+    abstract public function getTextNodes();
 }

@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class FieldNode extends Node
 {
     protected $keyword;
@@ -16,18 +18,18 @@ class FieldNode extends Node
         return $this->keyword;
     }
 
-    public function getQuery()
+    public function buildQuery(QueryContext $context)
     {
         throw new \LogicException("A keyword can't be converted to a query.");
     }
 
-    public function __toString()
+    public function getTextNodes()
     {
-        return sprintf('<%s>', $this->keyword);
+        throw new \LogicException("A keyword can't contain text nodes.");
     }
 
-    public function isFullTextOnly()
+    public function __toString()
     {
-        return false;
+        return sprintf('<field:%s>', $this->keyword);
     }
 }

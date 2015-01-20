@@ -119,7 +119,7 @@ class QueryVisitor implements Visit
                 if ($root instanceof AST\TextNode &&
                     !$root instanceof AST\QuotedTextNode &&
                     !$node instanceof AST\QuotedTextNode) {
-                    $root = new AST\TextNode(sprintf('%s %s', $root->getText(), $node->getText()));
+                    $root = new AST\TextNode(sprintf('%s %s', $root->getValue(), $node->getValue()));
                 } else {
                     $root = new AST\AndExpression($root, $node);
                 }
