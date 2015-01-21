@@ -4253,3 +4253,11 @@ ui-dialog-titlebar {
     position: relative;
     float: left;
 }
+
+#clientModal,  #clientModal .modal-footer {
+    background-color: #404040;
+}
+
+#clientModal .close {
+    color: #fff;
+}

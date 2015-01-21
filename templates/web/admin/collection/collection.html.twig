@@ -226,15 +226,6 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
-        <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_banner', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <span class="btn btn-success fileinput-button">
-                <i class="icon-plus icon-white"></i>
-                <span>{% trans %}Select files...{% endtrans %}</span>
-                <input name="newBanner" type="file" accept="image/*" />
-            </span>
-        </form>
     {% endif %}
 </div>
 

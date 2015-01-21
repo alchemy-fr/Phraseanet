@@ -659,7 +659,8 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException(_('Invalid email address'));
                     }
 
-                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+                    $expirationDate = new \DateTime('+1 day');
+                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expirationDate);
 
                     if (!$token) {
                         return $app->abort(500, 'Unable to generate a token');
@@ -670,6 +671,7 @@ class Login implements ControllerProviderInterface
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
                     $mail->setLogin($user->get_login());
                     $mail->setButtonUrl($url);
+                    $mail->setExpiration($expirationDate);
 
                     $app['notification.deliverer']->deliver($mail);
                     $app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
