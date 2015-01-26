@@ -42,10 +42,11 @@ final class PhraseaEvents
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
 
+    const STORY_CREATED = 'story.created';
+    const STORY_DELETED = 'story.deleted';
+
     const RECORD_CREATED = 'record.created';
     const RECORD_DELETED = 'record.deleted';
-    const STORY_CREATE = 'story.create';
-    const STORY_DELETE = 'story.delete';
     const RECORD_CHANGE_COLLECTION = 'record.collection';
     const RECORD_CHANGE_METADATA = 'record.metadata';
     const RECORD_CHANGE_ORIGINAL_NAME = 'record.original_name';
