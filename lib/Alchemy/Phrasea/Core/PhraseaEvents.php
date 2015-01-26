@@ -44,11 +44,14 @@ final class PhraseaEvents
 
     const STORY_CREATED = 'story.created';
     const STORY_DELETED = 'story.deleted';
+    const STORY_METADATA_CHANGED = 'story.metadata_changed';
 
+    // Record lifecycle
     const RECORD_CREATED = 'record.created';
     const RECORD_DELETED = 'record.deleted';
-    const RECORD_CHANGE_COLLECTION = 'record.collection';
-    const RECORD_CHANGE_METADATA = 'record.metadata';
+    // Record change
+    const RECORD_COLLECTION_CHANGED = 'record.collection_changed';
+    const RECORD_METADATA_CHANGED = 'record.metadata_changed';
     const RECORD_CHANGE_ORIGINAL_NAME = 'record.original_name';
     const RECORD_CHANGE_STATUS = 'record.status';
     const RECORD_BUILD_SUB_DEFINITION = 'record.sub_definition';

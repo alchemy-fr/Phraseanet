@@ -10,8 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class caption_field implements cache_cacheableInterface
@@ -321,7 +321,7 @@ class caption_field implements cache_cacheableInterface
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $record->set_metadatas([]);
 
-                    $dispatcher->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
+                    $dispatcher->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
                     unset($record);
                 } catch (\Exception $e) {
@@ -375,7 +375,7 @@ class caption_field implements cache_cacheableInterface
                     $caption_field->delete();
                     $record->set_metadatas([]);
 
-                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
                     unset($caption_field);
                     unset($record);

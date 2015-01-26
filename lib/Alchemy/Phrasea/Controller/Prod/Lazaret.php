@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -248,7 +248,7 @@ class Lazaret implements ControllerProviderInterface
                 $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
                 $record->set_metadatas($fields);
 
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
             }
 
             //Delete lazaret file

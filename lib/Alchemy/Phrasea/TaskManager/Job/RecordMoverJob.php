@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeCollectionEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordDeletedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -84,7 +84,7 @@ class RecordMoverJob extends AbstractJob
                     $coll = \collection::get_from_coll_id($app, $databox, $row['coll']);
                     $rec->move_to_collection($coll, $app['phraseanet.appbox']);
 
-                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_COLLECTION, new ChangeCollectionEvent($rec));
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_COLLECTION_CHANGED, new RecordCollectionChangedEvent($rec));
 
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));

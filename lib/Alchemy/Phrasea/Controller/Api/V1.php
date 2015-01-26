@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Core\Event\ChangeStatusEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
@@ -833,7 +833,7 @@ class V1 implements ControllerProviderInterface
         });
 
         $record->set_metadatas($metadatas);
-        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
         return Result::create($request, ["record_metadatas" => $this->list_record_caption($record->get_caption())])->createResponse();
     }

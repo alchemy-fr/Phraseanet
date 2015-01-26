@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -20,7 +21,7 @@ class PhraseanetMetadataSetter
 
     public function __construct(EventDispatcherInterface $dispatcher)
     {
-        $this->disptatcher = $dispatcher;
+        $this->dispatcher = $dispatcher;
     }
 
     public function replaceMetadata($metadataCollection, \record_adapter $record)
@@ -102,7 +103,7 @@ class PhraseanetMetadataSetter
         if (count($metas) > 0) {
             $record->set_metadatas($metas, true);
 
-            $this->disptatcher->dispatch(PhraseaEvents::RECORD_CHANGE_METADATA, new ChangeMetadataEvent($record));
+            $this->dispatcher->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
         }
     }
 }
