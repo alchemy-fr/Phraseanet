@@ -76,6 +76,7 @@ class Mapping
     public function export()
     {
         $mapping = array();
+        $mapping['properties'] = array();
         foreach ($this->fields as $name => $field) {
             if ($field['type'] === self::TYPE_OBJECT) {
                 $field = $field['mapping']->export();
