@@ -11,17 +11,18 @@
 
 namespace Alchemy\Phrasea\Core\Event\RecordEvent;
 
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Alchemy\Phrasea\Model\RecordInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class RecordEvent extends SfEvent
+abstract class RecordEvent extends Event
 {
-    public function __construct(\record_adapter $record)
+    public function __construct(RecordInterface $record)
     {
         $this->record = $record;
     }
 
     /**
-     * @return \record_adapter
+     * @return RecordInterface
      */
     public function getRecord()
     {

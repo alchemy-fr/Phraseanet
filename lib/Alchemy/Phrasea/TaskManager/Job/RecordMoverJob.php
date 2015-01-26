@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeCollectionEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\DeleteRecordEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordDeletedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
@@ -114,7 +114,7 @@ class RecordMoverJob extends AbstractJob
                     foreach ($rec->get_children() as $child) {
                         $child->delete();
 
-                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_DELETE, new DeleteRecordEvent($child));
+                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_DELETED, new RecordDeletedEvent($child));
 
                         if ($logsql) {
                             $this->log('debug', sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->get_record_id()));
@@ -122,7 +122,7 @@ class RecordMoverJob extends AbstractJob
                     }
                 }
                 $rec->delete();
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_DELETE, new DeleteRecordEvent($rec));
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_DELETED, new RecordDeletedEvent($rec));
                 if ($logsql) {
                     $this->log('debug', sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->get_record_id()));
                 }

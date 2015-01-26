@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Core\Event\ChangeStatusEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\CreateRecordEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -562,7 +562,7 @@ class V1 implements ControllerProviderInterface
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
 
-            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATE, new CreateRecordEvent($output));
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreatedEvent($output));
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';

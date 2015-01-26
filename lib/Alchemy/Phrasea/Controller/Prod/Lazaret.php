@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeMetadataEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\CreateRecordEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
@@ -199,7 +199,7 @@ class Lazaret implements ControllerProviderInterface
                 $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
             );
 
-            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATE, new CreateRecordEvent($record));
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreatedEvent($record));
 
             if ($keepAttributes) {
                 //add attribute

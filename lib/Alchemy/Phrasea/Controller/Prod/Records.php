@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEvent\DeleteStoryEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordDeletedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Silex\Application;
@@ -180,7 +181,7 @@ class Records implements ControllerProviderInterface
                 if ($record->isStory()) {
                     $app['dispatcher']->dispatch(PhraseaEvents::STORY_DELETE, new DeleteStoryEvent($record));
                 } else {
-                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_DELETE, new DeleteRecordEvent($record));
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_DELETED, new RecordDeletedEvent($record));
                 }
             } catch (\Exception $e) {
 

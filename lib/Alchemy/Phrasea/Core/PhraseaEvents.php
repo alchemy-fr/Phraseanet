@@ -42,8 +42,8 @@ final class PhraseaEvents
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
 
-    const RECORD_CREATE = 'record.create';
-    const RECORD_DELETE = 'record.delete';
+    const RECORD_CREATED = 'record.created';
+    const RECORD_DELETED = 'record.deleted';
     const STORY_CREATE = 'story.create';
     const STORY_DELETE = 'story.delete';
     const RECORD_CHANGE_COLLECTION = 'record.collection';

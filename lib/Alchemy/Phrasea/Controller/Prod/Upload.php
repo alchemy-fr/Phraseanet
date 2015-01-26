@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Core\Event\LazaretEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\CreateRecordEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
@@ -209,7 +209,7 @@ class Upload implements ControllerProviderInterface
                 $element = 'record';
                 $message = $app->trans('The record was successfully created');
 
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATE, new CreateRecordEvent($elementCreated));
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreatedEvent($elementCreated));
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {

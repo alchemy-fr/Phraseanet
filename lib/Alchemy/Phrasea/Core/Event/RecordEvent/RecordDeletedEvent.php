@@ -11,10 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Event\RecordEvent;
 
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Symfony\Component\EventDispatcher\Event as SfEvent;
-
-class CreateRecordEvent extends RecordEvent
+class RecordDeletedEvent extends RecordEvent
 {
-
 }
