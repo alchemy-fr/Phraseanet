@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordSubDefinitionCreatedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\MediaVorus;
@@ -75,7 +75,7 @@ class SubdefGenerator
 
             $record->clearSubdefCache($subdefname);
 
-            $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_SUB_DEFINITION_CREATED, new RecordSubDefinitionCreatedEvent($record, $subDefName));
+            $this->app['dispatcher']->dispatch(RecordEvents::SUB_DEFINITION_CREATED, new RecordSubDefinitionCreatedEvent($record, $subDefName));
         }
 
         return $this;

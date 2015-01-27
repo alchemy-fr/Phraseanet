@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -1497,7 +1497,7 @@ class Xmlhttp implements ControllerProviderInterface
                             if (!$request->get('debug')) {
                                 $record->set_metadatas($metadatasd, true);
 
-                                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
+                                $app['dispatcher']->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
                                 $ret['nRecsUpdated']++;
                             }

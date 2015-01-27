@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCollectionChangedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,7 +95,7 @@ class MoveCollection implements ControllerProviderInterface
             foreach ($records as $record) {
                 $record->move_to_collection($collection, $app['phraseanet.appbox']);
 
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_COLLECTION_CHANGED, new RecordCollectionChangedEvent($record));
+                $app['dispatcher']->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($record));
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     foreach ($record->get_children() as $child) {
@@ -103,7 +103,7 @@ class MoveCollection implements ControllerProviderInterface
                             $child->move_to_collection($collection, $app['phraseanet.appbox']);
 
 
-                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_COLLECTION_CHANGED, new RecordCollectionChangedEvent($child));
+                            $app['dispatcher']->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($child));
                         }
                     }
                 }

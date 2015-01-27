@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -199,7 +200,7 @@ class Lazaret implements ControllerProviderInterface
                 $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
             );
 
-            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreatedEvent($record));
+            $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
 
             if ($keepAttributes) {
                 //add attribute
@@ -234,7 +235,7 @@ class Lazaret implements ControllerProviderInterface
                         case AttributeInterface::NAME_STATUS:
                             $record->set_binary_status($attribute->getValue());
 
-                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($record));
+                            $app['dispatcher']->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($record));
                             break;
                         case AttributeInterface::NAME_METAFIELD:
                             $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
@@ -248,7 +249,7 @@ class Lazaret implements ControllerProviderInterface
                 $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
                 $record->set_metadatas($fields);
 
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_METADATA_CHANGED, new RecordMetadataChangedEvent($record));
+                $app['dispatcher']->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
             }
 
             //Delete lazaret file

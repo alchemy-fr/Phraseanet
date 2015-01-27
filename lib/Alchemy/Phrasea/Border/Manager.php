@@ -13,8 +13,8 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -290,7 +290,7 @@ class Manager
                 case AttributeInterface::NAME_STATUS:
                     $element->set_binary_status(decbin(bindec($element->get_status()) | bindec($attribute->getValue())));
 
-                    $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($element));
+                    $this->app['dispatcher']->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($element));
 
                     break;
                 case AttributeInterface::NAME_STORY:

@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Command;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Symfony\Component\Console\Input\InputArgument;
@@ -117,7 +117,7 @@ class RecordAdd extends Command
                     "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale']), $elementCreated->get_databox()->get_label($this->container['locale'])
                 )
             );
-            $this->container['dispatcher']->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreatedEvent($elementCreated));
+            $this->container['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($elementCreated));
         } elseif ($elementCreated instanceof LazaretFile) {
             $output->writeln(
                 sprintf("Quarantine item id <info>%d</info> has been created", $elementCreated->getId())

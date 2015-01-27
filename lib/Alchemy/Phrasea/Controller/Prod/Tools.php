@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\RecordOriginalNameChangedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordOriginalNameChangedEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use DataURI;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
@@ -152,7 +152,7 @@ class Tools implements ControllerProviderInterface
                         if ((int) $request->request->get('ccfilename') === 1) {
                             $record->set_original_name($fileName);
 
-                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($record));
+                            $app['dispatcher']->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($record));
                         }
                         unlink($tempoFile);
                         rmdir($tempoDir);

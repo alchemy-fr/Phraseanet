@@ -46,17 +46,6 @@ final class PhraseaEvents
     const STORY_DELETED = 'story.deleted';
     const STORY_METADATA_CHANGED = 'story.metadata_changed';
 
-    // Record lifecycle
-    const RECORD_CREATED = 'record.created';
-    const RECORD_DELETED = 'record.deleted';
-    // Record change
-    const RECORD_COLLECTION_CHANGED = 'record.collection_changed';
-    const RECORD_METADATA_CHANGED = 'record.metadata_changed';
-    const RECORD_ORIGINAL_NAME_CHANGED = 'record.original_name_changed';
-    const RECORD_STATUS_CHANGED = 'record.status_changed';
-    // Record sub-definitions
-    const RECORD_SUB_DEFINITION_CREATED = 'record.sub_definition_created';
-    const RECORD_SUB_DEFINITION_SUBSTITUTED = 'record.sub_definition_substituted';
 
     const DATABOX_UPDATE_FIELD = 'databox.update.field';
     const DATABOX_DELETE_FIELD = 'databox.delete.field';
