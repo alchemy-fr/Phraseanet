@@ -1460,25 +1460,25 @@ class API_V1_adapter extends API_V1_Abstract
             return null;
         }
 
-
         if ($this->app['authentication']->isAuthenticated()) {
-           if ($media->get_name() !== 'document' && false === $this->app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $media->get_name())) {
+            if ($media->get_name() !== 'document' && false === $this->app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $media->get_name())) {
                 return null;
             } else if ($media->get_name() === 'document'
-               && !$this->app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd')
+                && !$this->app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd')
                 && !$this->app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
                 return null;
             }
         }
-
-        $databox = $record->get_databox();
-        try {
-            $subDefDefinition = $databox->get_subdef_structure()->get_subdef($record->get_type(), $media->get_name());
-        } catch (Exception_Databox_SubdefNotFound $e) {
-            return null;
+        if($media->get_name() != 'document') {
+            $databox = $record->get_databox();
+            try {
+                $subDefDefinition = $databox->get_subdef_structure()->get_subdef($record->get_type(), $media->get_name());
+            } catch (Exception_Databox_SubdefNotFound $e) {
+                return null;
+            }
         }
 
-        if (false === $subDefDefinition->is_downloadable()) {
+        if ($media->get_name() != 'document' && false === $subDefDefinition->is_downloadable()) {
             return null;
         }
 
