@@ -4,21 +4,15 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "51c29e26e9366f0675b21bc0f69ecac5",
+    "hash": "10842ebc1702e5e2e097fe883063b20d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
             "version": "6.0.039",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
+                "url": "https://github.com/alchemy-fr/tcpdf-clone",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/tcpdf-clone/zipball/2ba0248a7187f1626df6c128750650416267f0e7",
-                "reference": "2ba0248a7187f1626df6c128750650416267f0e7",
-                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -66,10 +60,6 @@
                 "qrcode",
                 "tcpdf"
             ],
-            "support": {
-                "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
-                "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
-            },
             "time": "2013-10-13 16:11:17"
         },
         {
@@ -113,7 +103,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "nlegoff",
+                    "name": "Nicolas Le Goff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -769,8 +759,7 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/",
-                    "role": "Creator"
+                    "homepage": "http://www.jwage.com/"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -788,7 +777,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -842,7 +831,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -930,13 +919,13 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/igorw/evenement.git",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d"
+                "url": "https://github.com/igorw/evenement",
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
+                "url": "https://github.com/igorw/evenement/zipball/v1.0.0",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -963,7 +952,7 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 15:01:08"
+            "time": "2012-05-30 08:01:08"
         },
         {
             "name": "facebook/php-sdk",
@@ -1242,16 +1231,16 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "dev-0.6.1-flatten-layer",
+            "version": "dev-alchemy-0.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Imagine.git",
-                "reference": "372f36e2d76e4ca1fbdccda57c23b8483ed700b1"
+                "reference": "6605d13e3b24f335fe80099c193546671158c041"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/372f36e2d76e4ca1fbdccda57c23b8483ed700b1",
-                "reference": "372f36e2d76e4ca1fbdccda57c23b8483ed700b1",
+                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/6605d13e3b24f335fe80099c193546671158c041",
+                "reference": "6605d13e3b24f335fe80099c193546671158c041",
                 "shasum": ""
             },
             "require": {
@@ -1268,7 +1257,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.6-dev"
+                    "dev-develop": "0.7-dev"
                 }
             },
             "autoload": {
@@ -1295,9 +1284,9 @@
                 "image processing"
             ],
             "support": {
-                "source": "https://github.com/alchemy-fr/Imagine/tree/0.6.1-flatten-layer"
+                "source": "https://github.com/alchemy-fr/Imagine/tree/alchemy-0.6.2"
             },
-            "time": "2014-11-19 14:31:17"
+            "time": "2015-01-13 18:12:26"
         },
         {
             "name": "jms/metadata",
@@ -1749,7 +1738,7 @@
             ],
             "authors": [
                 {
-                    "name": "Steve Clay",
+                    "name": "Stephen Clay",
                     "email": "steve@mrclay.org",
                     "homepage": "http://www.mrclay.org/",
                     "role": "Developer"
@@ -1853,21 +1842,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084"
+                "reference": "0.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084",
+                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.2",
+                "reference": "0.1.2",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": "~1.0"
+                "silex/silex": ">=1.0,<2.0"
             },
             "require-dev": {
-                "symfony/browser-kit": "~2.0"
+                "symfony/browser-kit": ">=2.0,<3.0"
             },
             "type": "library",
             "autoload": {
@@ -2342,7 +2331,7 @@
                 "metadata"
             ],
             "support": {
-                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/dev"
+                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/0.4.1-mwg-metadata-copy"
             },
             "time": "2014-10-08 16:09:02"
         },
@@ -2400,12 +2389,12 @@
             "version": "v1.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Pimple.git",
+                "url": "https://github.com/silexphp/Pimple.git",
                 "reference": "2019c145fe393923f3441b23f29bbdfaa5c58c4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Pimple/zipball/2019c145fe393923f3441b23f29bbdfaa5c58c4d",
+                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/2019c145fe393923f3441b23f29bbdfaa5c58c4d",
                 "reference": "2019c145fe393923f3441b23f29bbdfaa5c58c4d",
                 "shasum": ""
             },
@@ -2430,9 +2419,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
@@ -2654,7 +2641,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -2701,9 +2688,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Chris Corbyn"
@@ -2921,12 +2906,12 @@
             "version": "v1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig-extensions.git",
+                "url": "https://github.com/twigphp/Twig-extensions.git",
                 "reference": "c0ab818595338dd5569369bfce2552d02cec5d50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/c0ab818595338dd5569369bfce2552d02cec5d50",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/c0ab818595338dd5569369bfce2552d02cec5d50",
                 "reference": "c0ab818595338dd5569369bfce2552d02cec5d50",
                 "shasum": ""
             },
@@ -2951,9 +2936,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Common additional features for Twig that do not directly belong in core",
@@ -2969,12 +2952,12 @@
             "version": "v1.16.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
+                "url": "https://github.com/twigphp/Twig.git",
                 "reference": "8ce37115802e257a984a82d38254884085060024"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
                 "reference": "8ce37115802e257a984a82d38254884085060024",
                 "shasum": ""
             },
@@ -4092,9 +4075,9 @@
     ],
     "aliases": [
         {
-            "alias": "0.6.1",
-            "alias_normalized": "0.6.1.0",
-            "version": "dev-0.6.1-flatten-layer",
+            "alias": "0.6.2",
+            "alias_normalized": "0.6.2.0",
+            "version": "dev-alchemy-0.6.2",
             "package": "imagine/imagine"
         },
         {
@@ -4111,7 +4094,6 @@
         "doctrine/data-fixtures": 20
     },
     "prefer-stable": false,
-    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.3"
     },
