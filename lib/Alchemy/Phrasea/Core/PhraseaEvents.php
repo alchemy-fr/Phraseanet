@@ -42,9 +42,6 @@ final class PhraseaEvents
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
 
-    const STORY_CREATED = 'story.created';
-    const STORY_DELETED = 'story.deleted';
-    const STORY_METADATA_CHANGED = 'story.metadata_changed';
 
 
     const DATABOX_UPDATE_FIELD = 'databox.update.field';
