@@ -13,8 +13,8 @@ namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Symfony\Component\Console\Input\InputArgument;

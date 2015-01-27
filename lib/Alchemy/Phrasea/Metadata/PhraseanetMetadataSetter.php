@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

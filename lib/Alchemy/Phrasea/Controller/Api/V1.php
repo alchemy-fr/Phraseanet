@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;

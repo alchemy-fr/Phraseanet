@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\DataboxEvent;
+namespace Alchemy\Phrasea\Core\Event\Record\Structure;
 
-class DeleteStructureFieldEvent extends DataboxEvent
+abstract class FieldEvent extends RecordStructureEvent
 {
     private $field;
 
     public function __construct(\databox $databox, \databox_field $field)
     {
-        $this->field = $field;
-
         parent::__construct($databox);
+
+        $this->field = $field;
     }
 
     /**

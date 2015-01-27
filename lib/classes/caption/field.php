@@ -10,8 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class caption_field implements cache_cacheableInterface

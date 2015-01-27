@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\RecordEvent;
+namespace Alchemy\Phrasea\Core\Event\Record;
 
 class RecordSubDefinitionCreatedEvent extends RecordEvent
 {

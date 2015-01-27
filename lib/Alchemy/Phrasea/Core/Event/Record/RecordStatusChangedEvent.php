@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\RecordEvent;
+namespace Alchemy\Phrasea\Core\Event\Record;
 
-class RecordDeletedEvent extends RecordEvent
+class RecordStatusChangedEvent extends RecordEvent
 {
 }

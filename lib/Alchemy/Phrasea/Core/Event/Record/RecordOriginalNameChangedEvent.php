@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\DataboxEvent;
+namespace Alchemy\Phrasea\Core\Event\Record;
 
-class DataboxIndexEvent extends DataboxEvent
+class RecordOriginalNameChangedEvent extends RecordEvent
 {
-
 }

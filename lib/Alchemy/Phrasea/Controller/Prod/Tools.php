@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordOriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use DataURI;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;

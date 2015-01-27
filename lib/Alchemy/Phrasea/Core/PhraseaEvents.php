@@ -42,14 +42,6 @@ final class PhraseaEvents
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
 
-
-
-    const DATABOX_UPDATE_FIELD = 'databox.update.field';
-    const DATABOX_DELETE_FIELD = 'databox.delete.field';
-
-    const DATABOX_UPDATE_STATUS = 'databox.create.status';
-    const DATABOX_DELETE_STATUS = 'databox.delete.status';
-
     const COLLECTION_CHANGE_NAME = 'collection.name';
     const COLLECTION_CREATE = 'collection.create';
 

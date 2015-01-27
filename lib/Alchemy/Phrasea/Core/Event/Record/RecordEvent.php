@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\RecordEvent;
+namespace Alchemy\Phrasea\Core\Event\Record;
 
 use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\EventDispatcher\Event;

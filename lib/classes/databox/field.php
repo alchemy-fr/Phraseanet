@@ -10,6 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\Structure\FieldDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\Structure\FieldEvent;
+use Alchemy\Phrasea\Core\Event\Record\Structure\FieldUpdatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
@@ -359,6 +363,8 @@ class databox_field implements cache_cacheableInterface
         $this->delete_data_from_cache();
         $this->databox->saveStructure($dom_struct);
 
+        $this->dispatchEvent(RecordStructureEvents::FIELD_DELETED, new FieldDeletedEvent($databox, $this));
+
         return;
     }
 
@@ -467,7 +473,14 @@ class databox_field implements cache_cacheableInterface
         $this->delete_data_from_cache();
         $this->databox->saveStructure($dom_struct);
 
+        $this->dispatchEvent(RecordStructureEvents::FIELD_UPDATED, new FieldUpdatedEvent($databox, $this));
+
         return $this;
+    }
+
+    private function dispatchEvent($eventName, FieldEvent $event = null)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     /**

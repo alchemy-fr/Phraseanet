@@ -11,9 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Core\Event\DataboxEvent\DeleteStatusEvent;
-use Alchemy\Phrasea\Core\Event\DataboxEvent\UpdateStatusEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Helper\DatabaseHelper;
 use Alchemy\Phrasea\Helper\PathHelper;
@@ -325,16 +322,11 @@ class Root implements ControllerProviderInterface
 
             $error = false;
 
-            $status = \databox_status::getStatus($app, $databox_id)[$bit];
-            $databox = $app['phraseanet.appbox']->get_databox((int) $databox_id);
-
             try {
                 \databox_status::deleteStatus($app, $app['phraseanet.appbox']->get_databox($databox_id), $bit);
             } catch (\Exception $e) {
                 $error = true;
             }
-
-            $app['dispatcher']->dispatch(PhraseaEvents::DATABOX_DELETE_STATUS, new DeleteStatusEvent($databox, $status));
 
             return $app->json(['success' => !$error]);
         })
@@ -356,8 +348,6 @@ class Root implements ControllerProviderInterface
                 'labels_on'  => $request->request->get('labels_on', []),
                 'labels_off' => $request->request->get('labels_off', []),
             ];
-
-            $databox = $app['phraseanet.appbox']->get_databox((int) $databox_id);
 
             \databox_status::updateStatus($app, $databox_id, $bit, $properties);
 
@@ -452,10 +442,6 @@ class Root implements ControllerProviderInterface
                     ]);
                 }
             }
-
-            $status = \databox_status::getStatus($app, $databox_id)[$bit];
-
-            $app['dispatcher']->dispatch(PhraseaEvents::DATABOX_UPDATE_STATUS, new UpdateStatusEvent($databox, $status));
 
             return $app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
         })->assert('databox_id', '\d+')

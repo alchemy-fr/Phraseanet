@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\DataboxEvent;
+namespace Alchemy\Phrasea\Core\Event\Record\Structure;
 
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Component\EventDispatcher\Event;
 
-class DataboxEvent extends SfEvent
+abstract class RecordStructureEvent extends Event
 {
     private $databox;
 

@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordSubDefinitionCreatedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordSubDefinitionCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\MediaVorus;
