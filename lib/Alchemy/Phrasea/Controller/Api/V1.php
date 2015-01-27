@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
-use Alchemy\Phrasea\Core\Event\ChangeStatusEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -867,7 +867,7 @@ class V1 implements ControllerProviderInterface
 
         $record->set_binary_status(strrev($datas));
 
-        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($record));
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($record));
 
         $ret = ["status" => $this->list_record_status($databox, $record->get_status())];
 

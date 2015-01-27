@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\ChangeOriginalNameEvent;
+use Alchemy\Phrasea\Core\Event\RecordOriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use DataURI;
@@ -152,7 +152,7 @@ class Tools implements ControllerProviderInterface
                         if ((int) $request->request->get('ccfilename') === 1) {
                             $record->set_original_name($fileName);
 
-                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_ORIGINAL_NAME, new ChangeOriginalNameEvent($record));
+                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($record));
                         }
                         unlink($tempoFile);
                         rmdir($tempoDir);

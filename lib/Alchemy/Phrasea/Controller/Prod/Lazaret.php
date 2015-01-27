@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
@@ -234,7 +234,7 @@ class Lazaret implements ControllerProviderInterface
                         case AttributeInterface::NAME_STATUS:
                             $record->set_binary_status($attribute->getValue());
 
-                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($record));
+                            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($record));
                             break;
                         case AttributeInterface::NAME_METAFIELD:
                             $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
@@ -96,6 +97,6 @@ class SubdefSubstituer
             $record->rebuild_subdefs();
         }
 
-        $this->dispatcher->dispatch(PhraseaEvents::RECORD_SUBSTITUTE, new SubstituteRecordEvent($record));
+        $this->dispatcher->dispatch(PhraseaEvents::RECORD_SUB_DEFINITION_SUBSTITUTED, new RecordMediaSubstitutedEvent($record));
     }
 }

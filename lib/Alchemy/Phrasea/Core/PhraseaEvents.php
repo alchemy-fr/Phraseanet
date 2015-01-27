@@ -52,10 +52,11 @@ final class PhraseaEvents
     // Record change
     const RECORD_COLLECTION_CHANGED = 'record.collection_changed';
     const RECORD_METADATA_CHANGED = 'record.metadata_changed';
-    const RECORD_CHANGE_ORIGINAL_NAME = 'record.original_name';
-    const RECORD_CHANGE_STATUS = 'record.status';
-    const RECORD_BUILD_SUB_DEFINITION = 'record.sub_definition';
-    const RECORD_SUBSTITUTE = 'record.substitute';
+    const RECORD_ORIGINAL_NAME_CHANGED = 'record.original_name_changed';
+    const RECORD_STATUS_CHANGED = 'record.status_changed';
+    // Record sub-definitions
+    const RECORD_SUB_DEFINITION_CREATED = 'record.sub_definition_created';
+    const RECORD_SUB_DEFINITION_SUBSTITUTED = 'record.sub_definition_substituted';
 
     const DATABOX_UPDATE_FIELD = 'databox.update.field';
     const DATABOX_DELETE_FIELD = 'databox.delete.field';

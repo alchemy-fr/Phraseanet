@@ -13,8 +13,8 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordCollectionChangedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
@@ -101,7 +101,7 @@ class RecordMoverJob extends AbstractJob
                     }
                     $rec->set_binary_status(implode('', $status));
 
-                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($rec));
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($rec));
 
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));

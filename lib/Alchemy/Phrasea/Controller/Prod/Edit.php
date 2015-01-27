@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\Event\RecordEvent\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Controller\RecordsRequest;
@@ -397,7 +397,7 @@ class Edit implements ControllerProviderInterface
 
                     $record->set_binary_status($newstat);
 
-                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($record));
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($record));
                 }
 
                 $record

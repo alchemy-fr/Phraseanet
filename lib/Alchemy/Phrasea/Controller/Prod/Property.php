@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\RecordEvent\ChangeStatusEvent;
+use Alchemy\Phrasea\Core\Event\RecordEvent\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -177,7 +177,7 @@ class Property implements ControllerProviderInterface
                 foreach ($record->get_children() as $child) {
                     if (null !== $updatedStatus = $this->updateRecordStatus($child, $postStatus)) {
                         $updated[$record->get_serialize_key()] = $updatedStatus;
-                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_CHANGE_STATUS, new ChangeStatusEvent($record));
+                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_STATUS_CHANGED, new RecordStatusChangedEvent($record));
                     }
                 }
             }
