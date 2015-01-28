@@ -760,9 +760,9 @@ $(document).ready(function () {
         var $this = $(this);
         var $record_types = $('#recordtype_sel');
         if ($this.hasClass('mode_type_reg')) {
-            $record_types.attr('disabled', true);
+            $record_types.hide();
         } else {
-            $record_types.removeAttr('disabled');
+            $record_types.show();
         }
     });
 
