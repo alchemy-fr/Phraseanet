@@ -34,14 +34,20 @@ class ftpclient
             throw new Exception('Nom d\'hote incorrect ' . $host);
         }
 
-        if ($ssl === true) {
-            if (($this->connexion = ftp_ssl_connect($host, $port, $timeout)) === false) {
-                throw new Exception('Impossible de se connecter au serveur FTP en SSL');
+        try {
+            if ($ssl === true) {
+                if (($this->connexion = @ftp_ssl_connect($host, $port, $timeout)) === false) {
+                    throw new Exception('Impossible de se connecter au serveur FTP en SSL');
+                }
+            } else {
+                if (($this->connexion = @ftp_connect($host, $port, $timeout)) === false) {
+                    throw new Exception('Impossible de se connecter au serveur FTP ' . $host . ":$port $timeout");
+                }
             }
-        } else {
-            if (($this->connexion = ftp_connect($host, $port, $timeout)) === false) {
-                throw new Exception('Impossible de se connecter au serveur FTP ' . $host . ":$port $timeout");
-            }
+        }
+        catch(\Exception $e) {
+            // any unknown pb
+            throw $e;
         }
 
         return $this;
