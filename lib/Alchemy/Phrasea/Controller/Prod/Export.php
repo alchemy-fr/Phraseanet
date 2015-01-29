@@ -140,6 +140,8 @@ class Export implements ControllerProviderInterface
         }
 
         $success = false;
+        $msg = _('Error while connecting to FTP');
+
         try {
             $ftpClient = $app['phraseanet.ftp.client']($request->request->get('addr', ''), 21, 90, !!$request->request->get('ssl'));
             $ftpClient->login($request->request->get('login', ''), $request->request->get('pwd', ''));
@@ -147,7 +149,6 @@ class Export implements ControllerProviderInterface
             $msg = _('Connection to FTP succeed');
             $success = true;
         } catch (\Exception $e) {
-            $msg = sprintf(_('Error while connecting to FTP'));
         }
 
         return $app->json(array(
