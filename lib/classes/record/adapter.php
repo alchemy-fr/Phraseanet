@@ -704,10 +704,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 continue;
             }
 
-            if ($subdef->is_substituted()) {
-                continue;
-            }
-
             $subdefs[$subdef->get_name()] = $subdef;
         }
 
@@ -1050,7 +1046,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $app['filesystem']->chmod($subdefFile, 0760);
         $media = $app['mediavorus']->guess($subdefFile);
 
-        media_subdef::create($app, $this, $name, $media);
+        $subdef = media_subdef::create($app, $this, $name, $media);
+        $subdef->set_substituted(true);
 
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 

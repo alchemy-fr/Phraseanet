@@ -373,6 +373,23 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $this;
     }
 
+    public function set_substituted($substit)
+    {
+        $this->is_substituted = !!$substit;
+
+        $sql = "UPDATE subdef SET substit = :substit, updated_on=NOW() WHERE subdef_id = :subdef_id";
+        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute(array(
+            ':subdef_id' => $this->subdef_id,
+            ':substit'   => $this->is_substituted
+        ));
+        $stmt->closeCursor();
+
+        $this->delete_data_from_cache();
+
+        return $this;
+    }
+
     /**
      *
      * @return int
