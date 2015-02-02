@@ -1412,7 +1412,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 
         $record->insertTechnicalDatas($app['mediavorus']);
-        $record->rebuild_subdefs();
 
         return $record;
     }
