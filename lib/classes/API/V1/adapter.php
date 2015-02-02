@@ -494,7 +494,7 @@ class API_V1_adapter extends API_V1_Abstract
                 throw new API_V1_exception_badrequest(sprintf('Invalid forceBehavior value `%s`', $request->get('forceBehavior')));
                 break;
         }
-        $app['border-manager']->process($session, $Package, $callback, $behavior, $request->get('nosubdef')==='');
+        $app['border-manager']->process($session, $Package, $callback, $behavior, $request->get('nosubdefs')==='');
 
         $ret = array(
             'entity' => null,
