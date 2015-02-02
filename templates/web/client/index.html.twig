@@ -195,7 +195,7 @@
                                                                             <img onclick="removeFilters({{ sbasId }});" id="filter_danger{{ sbasId }}" class="filter_danger" src="/skins/icons/alert.png" title="{{ "client::recherche: cliquez ici pour desactiver tous les filtres de cette base" | trans }}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                                         </div>
                                                                         {% set status_bit_filters = '' %}
-                                                                        {% for bit, data in databox.get_statusbits() if data['searchable'] %}
+                                                                        {% for bit, data in databox.getStatusStructure.getStatuses if data['searchable'] %}
                                                                             {% set html_status_bit %}
                                                                                 <div style="text-align:center;overflow:hidden;">
                                                                                     <table style="table-layout:fixed;width:90%;text-align:left;" cellspacing="0" cellpadding="0">

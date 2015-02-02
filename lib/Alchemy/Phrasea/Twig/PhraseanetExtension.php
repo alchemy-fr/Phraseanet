@@ -37,7 +37,39 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('collection_logo', array($this, 'getCollectionLogo'), array(
                 'is_safe' => array('html')
             )),
+            new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags'))
         );
+    }
+
+    public function getRecordFlags(RecordInterface $record)
+    {
+        $recordStatuses = [];
+        $databox = $this->app['phraseanet.appbox']->get_databox($record->getDataboxId());
+
+        $structure = $databox->getStatusStructure()->toArray();
+
+        if (!$this->isGrantedOnCollection($record->getBaseId(), 'chgstatus')) {
+            $structure = array_filter($structure, function($status) {
+                return  (bool) $status['printable'];
+            });
+        }
+
+        $bitValue = $record->getStatusBitField();
+
+        foreach ($structure as $status) {
+            $on = \databox_status::bitIsSet($bitValue, $status['bit']);
+
+            if (null === ($on ? $status['img_on'] : $status['img_off'])) {
+                continue;
+            }
+
+            $recordStatuses[] = [
+                'path' => ($on ? $status['img_on'] : $status['img_off']),
+                'labels' => ($on ? $status['labels_on_i18n'] : $status['labels_off_i18n'])
+            ];
+        }
+
+        return $recordStatuses;
     }
 
     public function isGrantedOnDatabox($databoxId, $rights)

@@ -307,9 +307,9 @@ class databox extends base
      *
      * @return databox_status
      */
-    public function get_statusbits()
+    public function getStatusStructure()
     {
-        return databox_status::getStatus($this->app, $this->id);
+        return $this->app['factory.status-structure']->getStructure($this);
     }
 
     /**

@@ -263,7 +263,7 @@ class Root implements ControllerProviderInterface
 
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-            $status = $databox->get_statusbits();
+            $statusStructure = $databox->getStatusStructure();
 
             switch ($errorMsg = $request->query->get('error')) {
                 case 'rights':
@@ -283,8 +283,8 @@ class Root implements ControllerProviderInterface
                     break;
             }
 
-            if (isset($status[$bit])) {
-                $status = $status[$bit];
+            if ($statusStructure->hasStatus($bit)) {
+                $status = $statusStructure->getStatus($bit);
             } else {
                 $status = [
                     "labeloff" => '',
@@ -320,10 +320,12 @@ class Root implements ControllerProviderInterface
                 $app->abort(403);
             }
 
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
             $error = false;
 
             try {
-                \databox_status::deleteStatus($app, $app['phraseanet.appbox']->get_databox($databox_id), $bit);
+                $app['status.provider']->deleteStatus($databox->getStatusStructure(), $bit);
             } catch (\Exception $e) {
                 $error = true;
             }
@@ -349,7 +351,9 @@ class Root implements ControllerProviderInterface
                 'labels_off' => $request->request->get('labels_off', []),
             ];
 
-            \databox_status::updateStatus($app, $databox_id, $bit, $properties);
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
+            $app['status.provider']->updateStatus($databox->getStatusStructure(), $bit, $properties);
 
             if (null !== $request->request->get('delete_icon_off')) {
                 \databox_status::deleteIcon($app, $databox_id, $bit, 'off');

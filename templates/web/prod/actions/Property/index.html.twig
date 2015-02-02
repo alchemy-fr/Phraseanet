@@ -4,45 +4,50 @@
 
 <div id='tabs-records-property'>
 
-    {# This value is fetched when click on 2nd tab #}
-    <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
+    {# if multi databox edit abort #}
+    {% if records.databoxes() | length > 1 %}
+        <div class="well-small">
+            {{ 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' | trans }}
+        </div>
+    {% else %}
 
-    <ul>
-        <li><a href="#property-statut">{{ 'Records Statut' | trans }}</a></li>
-        {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
-        <li><a href="{{ path('display_type_property', { 'lst' : records.serializedList() } ) }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
-    </ul>
+        {% set databox = records.databoxes|first %}
+        {# This value is fetched when click on 2nd tab #}
+        <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
 
-    <div id='property-statut'>
-        <p class="header">
-            <h4 style='text-align:center;'>
-                {% if nbReceivedDocuments == 1 %}
-                    {% trans %}You have selected one record.{% endtrans %}
-                {% else %}
-                    {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}You have selected %nbReceivedDocuments% records.{% endtrans %}
-                {% endif %}
+        <ul>
+            <li><a href="#property-statut">{{ 'Records Statut' | trans }}</a></li>
+            {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+            <li><a href="{{ path('display_type_property', { 'lst' : records.serializedList() } ) }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
+        </ul>
 
-                  {% if nbEditableDocuments == 0 %}
-                    {% trans %}None of the records can be modified.{% endtrans %}
-                  {% else %}
-                    {% if nbEditableDocuments < nbReceivedDocuments %}
-                        {% if nbEditableDocuments == 1 %}
-                            {% trans %}Only one record can be modified.{% endtrans %}
-                        {% else %}
-                            {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}Only %nbEditableDocuments% records can be modified.{% endtrans %}
-                        {% endif %}
-                  {% endif %}
-                {% endif %}
-            </h4>
-        </p>
+        <div id='property-statut'>
+            <p class="header">
+                <h4 style='text-align:center;'>
+                    {% if nbReceivedDocuments == 1 %}
+                        {% trans %}You have selected one record.{% endtrans %}
+                    {% else %}
+                        {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}You have selected %nbReceivedDocuments% records.{% endtrans %}
+                    {% endif %}
 
-        <form style='padding:15px;' name="change-records-status" action="{{ path('change_status') }}" method="POST">
-            <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
-            {% for databox in records.databoxes() %}
+                      {% if nbEditableDocuments == 0 %}
+                        {% trans %}None of the records can be modified.{% endtrans %}
+                      {% else %}
+                        {% if nbEditableDocuments < nbReceivedDocuments %}
+                            {% if nbEditableDocuments == 1 %}
+                                {% trans %}Only one record can be modified.{% endtrans %}
+                            {% else %}
+                                {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}Only %nbEditableDocuments% records can be modified.{% endtrans %}
+                            {% endif %}
+                      {% endif %}
+                    {% endif %}
+                </h4>
+            </p>
+
+            <form style='padding:15px;' name="change-records-status" action="{{ path('change_status') }}" method="POST">
+                <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
                 {% set sbasId = databox.get_sbas_id() %}
-                {% set nbItems = attribute(nRec, sbasId) %}
-                {% set nbRecords = nbItems['records'] %}
-                {% set nbStories = nbItems['stories'] %}
+
                 <table style='width:auto;margin:0 auto'>
                     <thead>
                         <tr>
@@ -54,22 +59,10 @@
                     <tbody>
                         <tr style='border-bottom:1px solid #FFF;'>
                             <td colspan="6" style='font-size:11px;text-align:center'>
-                                {% if nbRecords == 0 and nbStories > 0 %}
-                                    <i>({% trans %}Stories status edition{% endtrans %})</i>
-                                {% elseif nbRecords > 0 and nbStories == 0 %}
-                                    <i>({% trans %}Records status edition{% endtrans %})</i>
-                                {% endif %}
+                               {% trans %}Status edition{% endtrans %}</i>
                             </td>
                         </tr>
-                        {% set databoxStatus = attribute(statusBit, sbasId) %}
-                        {% for bit,values in databoxStatus %}
-                            {% set inverse = 0 %}
-
-                            {% if values["status"] == "2" %}
-                                {% set inverse = 2 %}
-                            {% elseif values["status"] == "0" %}
-                                {% set inverse = 1 %}
-                            {% endif %}
+                        {% for bit,values in status %}
                             <tr>
                                 <td style='text-align:right'>
                                     {% if values['img_off'] is not empty %}
@@ -79,18 +72,18 @@
                                     {% endif %}
                                 </td>
                                 <td style='text-align:right'>
-                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if values['flag'] == 2 %}style='color:#FF3333'{% endif%}>
                                         {{ values['labels_off_i18n'][app['locale']] }}
                                     </label>
                                 </td>
                                 <td style='text-align:right'>
-                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" value="0" {% if inverse == 1 %}checked="checked"{% endif %}/>
+                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" {% if values['flag'] == 0 %}checked="checked"{% endif%} value="0"/>
                                 </td>
                                 <td style='text-align:left'>
-                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" value="1" {% if inverse == 0 %}checked="checked"{% endif %}/>
+                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" {% if values['flag'] == 1 %}checked="checked"{% endif%} value="1"/>
                                 </td>
                                 <td style='text-align:left'>
-                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if values['flag'] == 2 %}style='color:#FF3333'{% endif%}>
                                         {{ values['labels_on_i18n'][app['locale']] }}
                                     </label>
                                 </td>
@@ -105,89 +98,85 @@
                         {% endfor %}
                     </tbody>
                     <tfoot>
-                        {% if nbStories > 0 %}
+                        {% if records.stories.count > 0 %}
                             <tr>
                                 <td colspan="6">
                                     <input type="checkbox" name="apply_to_children[{{ sbasId }}]"/>
-                                    {% if nbStories == 1 %}
-                                        {% trans %}Apply status on stories children.{% endtrans %}
-                                    {% elseif nbStories > 0 %}
-                                        {% trans %}Apply status on story children.{% endtrans %}
-                                    {% endif %}
+                                    {% trans %}Apply status on story children.{% endtrans %}
                                 </td>
                             </tr>
                         {% endif %}
                     </tfoot>
                 </table>
-            {% endfor %}
-            <div class="form-actions" style="background:transparent">
-            {% if nbEditableDocuments > 0 %}
-                <button type="button" class="btn btn-primary submiter">{{ "Apply changes" | trans }}</button>
-            {% endif %}
-                <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
-                <span class="form-action-loader" style="display:none;">
-                    <img src="../skins/icons/loader414141.gif" />
-                </span>
-            </div>
-        </form>
+                <div class="form-actions" style="background:transparent">
+                {% if nbEditableDocuments > 0 %}
+                    <button type="button" class="btn btn-primary submiter">{{ "Apply changes" | trans }}</button>
+                {% endif %}
+                    <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+                    <span class="form-action-loader" style="display:none;">
+                        <img src="../skins/icons/loader414141.gif" />
+                    </span>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#tabs-records-property").tabs({
-           beforeLoad: function( event, ui ) {
-               ui.ajaxSettings.data = {
-                   lst: $("input[name=original_selection]", $(this)).val()
-               };
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#tabs-records-property").tabs({
+               beforeLoad: function( event, ui ) {
+                   ui.ajaxSettings.data = {
+                       lst: $("input[name=original_selection]", $(this)).val()
+                   };
 
-               // load template only once
-               if ( ui.tab.data( "loaded" ) ) {
-                    event.preventDefault();
-                    return;
-               }
+                   // load template only once
+                   if ( ui.tab.data( "loaded" ) ) {
+                        event.preventDefault();
+                        return;
+                   }
 
-               ui.jqXHR.success(function() {
-                    ui.tab.data( "loaded", true );
-               });
+                   ui.jqXHR.success(function() {
+                        ui.tab.data( "loaded", true );
+                   });
 
-               ui.tab.find('span').html("<i>{{ 'Loading'|trans }}...</i>");
-           },
-            load: function(event, ui)
-            {
-                ui.tab.find('span').empty();
-            }
-        });
-
-        var $dialog = p4.Dialog.get(1);
-        var $dialogBox = $dialog.getDomElement();
-
-        $("button.cancel", $dialogBox).bind("click", function(){
-            $dialog.Close();
-        });
-
-        $("button.submiter", $dialogBox).bind("click", function(){
-            var $this = $(this);
-            var form = $(this).closest("form");
-            var loader = form.find("form-action-loader");
-
-            $.ajax({
-                type: form.attr("method"),
-                url: form.attr("action"),
-                data: form.serializeArray(),
-                dataType: 'json',
-                beforeSend:function(){
-                    $this.attr("disabled", true);
-                    loader.show();
-                },
-                success: function(data){
-                    $dialog.Close();
-                },
-                complete: function(){
-                    $this.attr("disabled", false);
-                    loader.hide();
+                   ui.tab.find('span').html("<i>{{ 'Loading'|trans }}...</i>");
+               },
+                load: function(event, ui)
+                {
+                    ui.tab.find('span').empty();
                 }
             });
+
+            var $dialog = p4.Dialog.get(1);
+            var $dialogBox = $dialog.getDomElement();
+
+            $("button.cancel", $dialogBox).bind("click", function(){
+                $dialog.Close();
+            });
+
+            $("button.submiter", $dialogBox).bind("click", function(){
+                var $this = $(this);
+                var form = $(this).closest("form");
+                var loader = form.find("form-action-loader");
+
+                $.ajax({
+                    type: form.attr("method"),
+                    url: form.attr("action"),
+                    data: form.serializeArray(),
+                    dataType: 'json',
+                    beforeSend:function(){
+                        $this.attr("disabled", true);
+                        loader.show();
+                    },
+                    success: function(data){
+                        $dialog.Close();
+                    },
+                    complete: function(){
+                        $this.attr("disabled", false);
+                        loader.hide();
+                    }
+                });
+            });
         });
-    });
-</script>
+    </script>
+{% endif %}

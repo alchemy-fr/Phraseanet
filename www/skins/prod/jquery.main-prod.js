@@ -197,8 +197,6 @@ function checkFilters(save) {
 
     $('input.field_switch:checked', container).removeAttr('checked');
 
-    $('input.field_switch:checkbox', container).parent().hide();
-
     filters.removeClass('danger');
 
     var nbSelectedColls = 0;

@@ -379,33 +379,31 @@
                                                 <div class="status_filter">
                                                     <span>{{ 'Status des documents a rechercher' | trans }}</span>
                                                     <table style="width: 100%;">
-                                                        {% for sbas_id, bits in search_status %}
-                                                            {% for n, bit in bits %}
+                                                        {% for databox_id, flag in search_status %}
                                                             <tr>
                                                                 <td>
-                                                                    {% if bit['imgoff'] %}
-                                                                        <img src="{{bit['imgoff']}}" title="{{bit['labels_off_i18n'][app['locale']]}}" />
-                                                                    {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{sbas_id}}"
+                                                                        {% if flag['img_off'] %}
+                                                                            <img src="{{flag['img_off']}}" title="{{flag['labels_off_i18n'][app['locale']]}}" />
+                                                                        {% endif %}
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
                                                                         type="checkbox" value="0"
-                                                                        n="{{n}}" name="status[{{sbas_id}}][{{n}}]" />
-                                                                        {{bit['labels_off_i18n'][app['locale']]}}
+                                                                        n="{{flag['bit']}}" name="status[{{databox_id}}][{{flag['bit']}}]" />
+                                                                        {{flag['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
-                                                                    {% if bit['imgon'] %}
-                                                                        <img src="{{bit['imgon']}}" title="{{bit['labels_on_i18n'][app['locale']]}}" />
-                                                                    {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{sbas_id}}"
+                                                                        {% if flag['img_on'] %}
+                                                                            <img src="{{flag['img_on']}}" title="{{flag['labels_on_i18n'][app['locale']]}}" />
+                                                                        {% endif %}
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
                                                                         type="checkbox" value="1"
-                                                                        n="{{n}}" name="status[{{sbas_id}}][{{n}}]"/>
-                                                                        {{bit['labels_on_i18n'][app['locale']]}}
+                                                                        n="{{flag['bit']}}" name="status[{{databox_id}}][{{flag['bit']}}]"/>
+                                                                        {{flag['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                             </tr>
-                                                            {% endfor %}
                                                         {% endfor %}
                                                     </table>
                                                 </div>

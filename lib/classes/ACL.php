@@ -210,7 +210,7 @@ class ACL implements cache_cacheableInterface
 
     public function has_status_access_to_record(RecordInterface $record)
     {
-        return 0 === ((bindec($record->getStatus()) ^ $this->get_mask_xor($record->getBaseId())) & $this->get_mask_and($record->getBaseId()));
+        return 0 === ((bindec($record->getStatusBitField()) ^ $this->get_mask_xor($record->getBaseId())) & $this->get_mask_and($record->getBaseId()));
     }
 
     public function has_access_to_subdef(RecordInterface $record, $subdef_name)

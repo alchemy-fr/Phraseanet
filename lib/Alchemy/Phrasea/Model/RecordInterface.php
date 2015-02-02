@@ -55,8 +55,8 @@ interface RecordInterface
     /** @return string */
     public function getUuid();
 
-    /** @return string */
-    public function getStatus();
+    /** @return integer */
+    public function getStatusBitField();
 
     /** @return ArrayCollection */
     public function getExif();

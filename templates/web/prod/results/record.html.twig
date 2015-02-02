@@ -12,8 +12,9 @@
                 {{ record.title }}
             </div>
             <div class="status">
-                {# @todo find a proper way to map lifted flag to status icon img path #}
-                {#{{record.get_status_icons|raw}}#}
+                {% for flag in record_flags(record) %}
+                    <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+                {% endfor %}
             </div>
         </div>
 
