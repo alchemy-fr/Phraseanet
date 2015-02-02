@@ -39,7 +39,7 @@ class Factory
                 $cache = $this->createMemcache($options);
                 break;
             case 'memcached':
-            case 'memcachecached':
+            case 'memcachedcache':
                 $cache = $this->createMemcached($options);
                 break;
             case 'redis':
