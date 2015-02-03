@@ -42,9 +42,6 @@ final class PhraseaEvents
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
 
-    const COLLECTION_CHANGE_NAME = 'collection.name';
-    const COLLECTION_CREATE = 'collection.create';
-
     const INDEX_NEW_RECORD = 'index.new.record';
     const INDEX_UPDATE_RECORD = 'index.update.record';
     const INDEX_REMOVE_RECORD = 'index.remove.record';

@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event\CollectionEvent;
+namespace Alchemy\Phrasea\Core\Event\Collection;
 
-class ChangeNameEvent extends CollectionEvent
+final class CollectionEvents
 {
-
+    const CREATED = 'collection.created';
+    const NAME_CHANGED = 'collection.name_changed';
 }

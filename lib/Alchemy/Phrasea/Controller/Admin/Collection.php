@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Core\Event\CollectionEvent\ChangeNameEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -720,8 +718,6 @@ class Collection implements ControllerProviderInterface
         try {
             $collection->set_name($name);
             $success = true;
-
-            $app['dispatcher']->dispatch(PhraseaEvents::COLLECTION_CHANGE_NAME, new ChangeNameEvent($collection));
         } catch (\Exception $e) {
 
         }

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Event;
+namespace Alchemy\Phrasea\Core\Event\Collection;
 
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Component\EventDispatcher\Event;
 
-class CollectionCreateEvent extends SfEvent
+abstract class CollectionEvent extends Event
 {
     private $collection;
 
@@ -22,6 +22,9 @@ class CollectionCreateEvent extends SfEvent
         $this->collection = $collection;
     }
 
+    /**
+     * @return \collection
+     */
     public function getCollection()
     {
         return $this->collection;
