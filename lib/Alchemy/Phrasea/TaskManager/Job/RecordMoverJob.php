@@ -12,13 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
-use JMS\Serializer\EventDispatcher\EventDispatcher;
 
 class RecordMoverJob extends AbstractJob
 {
@@ -84,9 +78,6 @@ class RecordMoverJob extends AbstractJob
                 if (array_key_exists('coll', $row)) {
                     $coll = \collection::get_from_coll_id($app, $databox, $row['coll']);
                     $rec->move_to_collection($coll, $app['phraseanet.appbox']);
-
-                    $app['dispatcher']->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($rec));
-
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }
@@ -101,9 +92,6 @@ class RecordMoverJob extends AbstractJob
                         }
                     }
                     $rec->set_binary_status(implode('', $status));
-
-                    $app['dispatcher']->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($rec));
-
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }
@@ -114,16 +102,12 @@ class RecordMoverJob extends AbstractJob
                 if ($row['deletechildren'] && $rec->is_grouping()) {
                     foreach ($rec->get_children() as $child) {
                         $child->delete();
-
-                        $app['dispatcher']->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($child));
-
                         if ($logsql) {
                             $this->log('debug', sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->get_record_id()));
                         }
                     }
                 }
                 $rec->delete();
-                $app['dispatcher']->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($rec));
                 if ($logsql) {
                     $this->log('debug', sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->get_record_id()));
                 }

@@ -11,9 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
@@ -350,8 +347,6 @@ class Edit implements ControllerProviderInterface
 
                 if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                     $record->set_metadatas($rec['metadatas']);
-
-                    $app['dispatcher']->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
                 }
 
                 /**
@@ -377,8 +372,6 @@ class Edit implements ControllerProviderInterface
                     ];
 
                     $record->set_metadatas($metas, true);
-
-                    $app['dispatcher']->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
                 }
 
                 $newstat = $record->get_status();
@@ -396,8 +389,6 @@ class Edit implements ControllerProviderInterface
                     }
 
                     $record->set_binary_status($newstat);
-
-                    $app['dispatcher']->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($record));
                 }
 
                 $record

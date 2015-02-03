@@ -14,8 +14,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
 
 class module_console_fieldsMerge extends Command
 {
@@ -197,8 +195,6 @@ class module_console_fieldsMerge extends Command
                             'value'          => $data,
                         ]], true);
                 }
-
-                $this->getService('dispatcher')->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
                 unset($record);
             }

@@ -13,8 +13,6 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -75,8 +73,6 @@ class Story implements ControllerProviderInterface
             }
 
             $Story->set_metadatas($metadatas)->rebuild_subdefs();
-
-            $app['dispatcher']->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($Story));
 
             $StoryWZ = new StoryWZ();
             $StoryWZ->setUser($app['authentication']->getUser());

@@ -428,7 +428,7 @@ class databox_field implements cache_cacheableInterface
         $stmt->closeCursor();
 
         if ($this->renamed) {
-            caption_field::rename_all_metadata($this->app['dispatcher'], $this);
+            caption_field::rename_all_metadatas($this);
             $this->renamed = false;
         }
 

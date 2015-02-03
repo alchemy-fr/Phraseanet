@@ -284,8 +284,7 @@ class Fields implements ControllerProviderInterface
     public function deleteField(Application $app, $sbas_id, $id)
     {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $field = \databox_field::get_instance($app, $databox, $id);
-        $field->delete();
+        \databox_field::get_instance($app, $databox, $id)->delete();
 
         return new Response('', 204);
     }

@@ -11,6 +11,14 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -492,6 +500,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($this));
+
         return $this;
     }
 
@@ -854,6 +864,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
+        $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($this));
+
         return $this;
     }
 
@@ -1066,6 +1078,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->set_xml($xml);
         unset($xml);
 
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($this));
+
         return $this;
     }
 
@@ -1135,7 +1149,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($this));
+
         return $this;
+    }
+
+    private function dispatch($eventName, RecordEvent $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     /**
@@ -1190,6 +1211,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         } catch (\Exception $e) {
             unset($e);
         }
+
+        $this->dispatchCreatedEvent()
 
         return $story;
     }
@@ -1260,7 +1283,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $record->insertTechnicalDatas($app['mediavorus']);
         $record->rebuild_subdefs();
 
+        $this->dispatchCreatedEvent()
+
         return $record;
+    }
+
+    private function dispatchCreatedEvent()
+    {
+        $this->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($this));
     }
 
     /**
@@ -1507,6 +1537,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app['filesystem']->remove($ftodel);
 
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+        $this->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($record));
 
         return array_keys($ftodel);
     }

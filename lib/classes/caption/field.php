@@ -10,9 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class caption_field implements cache_cacheableInterface
 {
@@ -285,7 +282,7 @@ class caption_field implements cache_cacheableInterface
         return $values;
     }
 
-    public static function rename_all_metadata(EventDispatcherInterface $dispatcher, databox_field $databox_field)
+    public static function rename_all_metadatas(databox_field $databox_field)
     {
         $sql = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
@@ -320,8 +317,6 @@ class caption_field implements cache_cacheableInterface
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $record->set_metadatas([]);
-
-                    $dispatcher->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
                     unset($record);
                 } catch (\Exception $e) {
@@ -374,8 +369,6 @@ class caption_field implements cache_cacheableInterface
                     $caption_field = new caption_field($app, $databox_field, $record);
                     $caption_field->delete();
                     $record->set_metadatas([]);
-
-                    $app['dispatcher']->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($record));
 
                     unset($caption_field);
                     unset($record);

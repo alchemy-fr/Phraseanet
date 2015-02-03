@@ -12,8 +12,6 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -176,8 +174,6 @@ class Records implements ControllerProviderInterface
 
                 $deleted[] = $record->get_serialize_key();
                 $record->delete();
-
-                $app['dispatcher']->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($record));
             } catch (\Exception $e) {
 
             }

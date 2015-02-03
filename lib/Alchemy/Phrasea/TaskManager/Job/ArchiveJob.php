@@ -12,8 +12,6 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\TaskManager\Editor\ArchiveEditor;
@@ -1017,8 +1015,6 @@ class ArchiveJob extends AbstractJob
 
         $story->set_binary_status(\databox_status::operation_or($app, $stat0, $stat1));
         $story->rebuild_subdefs();
-
-        $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($story));
 
         unset($media);
 
