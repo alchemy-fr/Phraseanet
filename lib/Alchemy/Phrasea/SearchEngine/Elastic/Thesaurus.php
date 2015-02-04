@@ -49,7 +49,7 @@ class Thesaurus
 
         // TODO Check that term queries are ok with multiple words
         $query = array();
-        $field = $lang ? sprintf('value.%s', $lang) : 'value.light';
+        $field = $lang ? sprintf('value.%s', $lang) : 'value';
         $query['match'][$field]['query'] = $term->getValue();
         $query['match'][$field]['operator'] = 'and';
         // Allow 25% of non-matching tokens
