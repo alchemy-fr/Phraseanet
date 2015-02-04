@@ -623,7 +623,7 @@ class collection implements cache_cacheableInterface
             $collection->set_admin($new_bas, $user);
         }
 
-        $this->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
+        $app['dispatcher']->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
 
         return $collection;
     }

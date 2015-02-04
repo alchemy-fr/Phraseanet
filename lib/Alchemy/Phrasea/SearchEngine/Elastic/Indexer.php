@@ -11,12 +11,14 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
 use Symfony\Component\Stopwatch\Stopwatch;
+use SplObjectStorage;
 
 class Indexer
 {
@@ -28,6 +30,9 @@ class Indexer
 
     private $recordIndexer;
     private $termIndexer;
+
+    private $indexQueue;
+    private $deleteQueue;
 
     private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
 
@@ -41,6 +46,9 @@ class Indexer
         $this->termIndexer = $termIndexer;
         $this->recordIndexer = $recordIndexer;
         $this->logger   = $logger;
+
+        $this->indexQueue = new SplObjectStorage();
+        $this->deleteQueue = new SplObjectStorage();
     }
 
     public function createIndex($withMapping = true)
@@ -123,6 +131,43 @@ class Indexer
 
         $event = $stopwatch->stop('populate');
         printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
+    }
+
+    public function migrateMappingForDatabox($databox)
+    {
+        // TODO Migrate mapping
+        // - Create a new index
+        // - Dump records using scroll API
+        // - Insert them in created index (except those in the changed databox)
+        // - Reindex databox's records from DB
+        // - Make alias point to new index
+        // - Delete old index
+
+        // $this->updateMapping();
+        // RecordQueuer::queueRecordsFromDatabox($databox);
+    }
+
+    public function queueCollectionRecordsForIndexing(\collection $collection)
+    {
+        RecordQueuer::queueRecordsFromCollection($collection);
+    }
+
+    public function queueRecordForIndexing(RecordInterface $record)
+    {
+        $this->indexQueue->attach($record);
+    }
+
+    public function queueRecordForDeletion(RecordInterface $record)
+    {
+        $this->deleteQueue->attach($record);
+    }
+
+    public function flushQueue()
+    {
+        // Do not reindex records modified then deleted in the request
+        $this->indexQueue->removeAll($this->deleteQueue);
+
+        // TODO Some stuff like in populateIndex()
     }
 
     private function disableShardRefreshing()

@@ -41,11 +41,4 @@ final class PhraseaEvents
     const BRIDGE_UPLOAD_FAILURE = 'bridge.upload-failure';
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
-
-    const INDEX_NEW_RECORD = 'index.new.record';
-    const INDEX_UPDATE_RECORD = 'index.update.record';
-    const INDEX_REMOVE_RECORD = 'index.remove.record';
-    const INDEX_COLLECTION = 'index.collection';
-    const INDEX_DATABOX = 'index.databox';
-    const INDEX_THESAURUS = 'index.thesaurus';
 }

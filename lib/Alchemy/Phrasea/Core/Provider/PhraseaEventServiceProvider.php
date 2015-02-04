@@ -47,27 +47,6 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
         $app['phraseanet.content-negotiation-subscriber'] = $app->share(function (Application $app) {
             return new ContentNegotiationSubscriber($app);
         });
-        $app['phraseanet.record-subscriber'] = $app->share(function (Application $app) {
-            return new RecordSubscriber($app['elasticsearch.indexer.record_indexer']);
-        });
-        $app['phraseanet.story-subscriber'] = $app->share(function (Application $app) {
-            return new StorySubscriber($app['elasticsearch.indexer.record_indexer']);
-        });
-        $app['phraseanet.elasticsearch-subscriber'] = $app->share(function (Application $app) {
-            return new ElasticSearchSubscriber(
-                $app['elasticsearch.indexer.record_indexer'],
-                $app['elasticsearch.indexer.term_indexer'],
-                $app['elasticsearch.client'],
-                $app['phraseanet.appbox'],
-                $app['elasticsearch.options']['index']
-            );
-        });
-        $app['phraseanet.databox-subscriber'] = $app->share(function (Application $app) {
-            return new DataboxSubscriber();
-        });
-        $app['phraseanet.collection-subscriber'] = $app->share(function (Application $app) {
-            return new CollectionSubscriber();
-        });
     }
 
     public function boot(Application $app)

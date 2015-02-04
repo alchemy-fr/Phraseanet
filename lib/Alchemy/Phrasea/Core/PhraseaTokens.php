@@ -13,6 +13,14 @@ namespace Alchemy\Phrasea\Core;
 
 final class PhraseaTokens
 {
+    const MAKE_SUBDEF = 1;
+    const WRITE_META_DOC = 1 << 1;
+    const WRITE_META_SUBDEF = 1 << 2;
+    const WRITE_META = self::WRITE_META_DOC & self::WRITE_META_SUBDEF;
+    const TO_INDEX = 1 << 3;
+    const INDEXING = 1 << 4;
+
+    // TODO Replace usages of below constants
     const TOKEN_MAKE_SUBDEF = 0x01;
     const TOKEN_WRITE_META_DOC = 0x02;
     const TOKEN_WRITE_META_SUBDEF = 0x04;

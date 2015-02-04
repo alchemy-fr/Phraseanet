@@ -484,11 +484,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.record-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.story-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.elasticsearch-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.databox-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.collection-subscriber']);
                 $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
                 $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
                 $dispatcher->addSubscriber(new RegistrationSubscriber($app));
