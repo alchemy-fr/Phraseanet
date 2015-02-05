@@ -42,19 +42,22 @@ module.exports = function(grunt) {
             dist: {
                 options: {
                     components: {
-                        "bootstrap": ["npm", {"make": "bootstrap"}]
+                        "jquery.ui": ["npm", {"../../node_modules/.bin/grunt": "build"}],
+                        "jquery-mobile": ["npm", {"../../node_modules/.bin/grunt": "dist"}],
+                        "bootstrap": ["npm", {"make": "bootstrap"}],
+                        "autobahnjs": [{"make":"build"}]
                     }
                 }
             }
         },
         copy: {
-            "autobahn": {
+            "autobahnjs": {
                 "expand": true,
                 "src": [
-                    "<%= path.bower %>/autobahn/autobahn.js",
-                    "<%= path.bower %>/autobahn/LICENSE"
+                    "<%= path.bower %>/autobahnjs/build/autobahn.js",
+                    "<%= path.bower %>/autobahnjs/LICENSE"
                 ],
-                "dest": "<%= path.asset %>/autobahn/",
+                "dest": "<%= path.asset %>/autobahnjs/",
                 "flatten": true
             },
             "backbone": {
@@ -102,6 +105,12 @@ module.exports = function(grunt) {
                 "src": "<%= path.bower %>/chai/chai.js",
                 "dest": "<%= path.asset %>/chai/",
                 "flatten": true
+            },
+            "deps-when": {
+                "expand": true,
+                "cwd": "<%= path.bower %>/autobahnjs",
+                "src": "../when/when.js",
+                "dest": "<%= path.bower %>/autobahnjs/when"
             },
             "font-awesome": {
                 "expand": true,
@@ -172,13 +181,12 @@ module.exports = function(grunt) {
             },
             "jquery-mobile": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/jquery-mobile-bower/",
+                "cwd": "<%= path.bower %>/jquery-mobile/dist",
                 "src": [
                     "images/*",
-                    "css/jquery.mobile-1.3.2.css",
-                    "js/jquery.mobile-1.3.2.js"
+                    "jquery.mobile.css",
+                    "jquery.mobile.js"
                 ],
-                "flatten": true,
                 "dest": "<%= path.asset %>/jquery-mobile/"
             },
             "jquery.cookie": {
@@ -191,17 +199,18 @@ module.exports = function(grunt) {
             },
             "jquery-ui": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/jquery-ui",
+                "cwd": "<%= path.bower %>/jquery.ui",
                 "src": [
-                    "ui/i18n/*",
-                    "ui/*",
+                    "dist/i18n/*",
+                    "dist/images/*",
                     "themes/base/*",
                     "themes/base/images/*",
+                    "dist/jquery-ui.css",
+                    "dist/jquery-ui.js",
                     "MIT-LICENSE.txt"
                 ],
                 "rename": function(dest, src) {
-                    var dest =  dest + src.replace("ui/", "/");
-                    return dest.replace("themes/base/", "/")
+                    return dest + src.replace("dist", "");
                 },
                 "dest": "<%= path.asset %>/jquery.ui/"
             },
@@ -395,8 +404,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-bower-postinst");
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
+    // This task is here to copy bower module into an other bower module
+    // Because bower removes .git folder you can not use git submodule update
+    // So fetch them with bower and copy them to appropriate path
+    grunt.registerTask("copy-deps", [
+        "copy:deps-when"
+    ]);
+
     grunt.registerTask("copy-assets", [
-        "copy:autobahn",
+        "copy:autobahnjs",
         "copy:backbone",
         "copy:blueimp",
         "copy:bootstrap",
@@ -433,6 +449,7 @@ module.exports = function(grunt) {
     grunt.registerTask("install-assets", [
         "clean:assets",
         "bower",
+        "copy-deps",
         "bower_postinst",
         "copy-assets",
         "clean:bower"
