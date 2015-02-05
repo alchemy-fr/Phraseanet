@@ -245,7 +245,7 @@
                         return;
                     }
                     if (false === data.innodb) {
-                        el_message.empty().append("{% trans 'Database server does not support InnoDB storage engine' %}");
+                        el_message.empty().append("{{ 'Database server does not support InnoDB storage engine' | trans }}");
 
                         return;
                     }

@@ -434,7 +434,7 @@
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div>
-                            <p>{% trans 'export::mail: fichiers joint' %}</p>
+                            <p>{{  'export::mail: fichiers joint' | trans }}</p>
                             {% for name, values in download.get_display_ftp() %}
                                 {% if values.available > 0 %}
                                     <div class="well-small">
