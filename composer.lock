@@ -1513,16 +1513,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.7",
+            "version": "0.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0d7b04a5367929efd95edd68ab361dffa70bb8b5"
+                "reference": "cf1fdacbaf0d54440fa7b61c750234d0befde0c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0d7b04a5367929efd95edd68ab361dffa70bb8b5",
-                "reference": "0d7b04a5367929efd95edd68ab361dffa70bb8b5",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/cf1fdacbaf0d54440fa7b61c750234d0befde0c8",
+                "reference": "cf1fdacbaf0d54440fa7b61c750234d0befde0c8",
                 "shasum": ""
             },
             "require": {
@@ -1582,7 +1582,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2015-01-14 15:28:58"
+            "time": "2015-02-03 16:25:38"
         },
         {
             "name": "mediavorus/mediavorus",
