@@ -80,6 +80,8 @@ class Upload implements ControllerProviderInterface
          */
         $controllers->get('/flash-version/', $this->call('getFlashUploadForm'))
             ->bind('upload_flash_form');
+        $controllers->get('/html5-version/', $this->call('getHtml5UploadForm'))
+            ->bind('upload_html5_form');
 
         /**
          * UPLOAD route
@@ -119,11 +121,24 @@ class Upload implements ControllerProviderInterface
 
         return $app['twig']->render(
             'prod/upload/upload-flash.html.twig', array(
-            'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
-            'maxFileSize'         => $maxFileSize,
-            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            ));
+    }
+
+    public function getHtml5UploadForm(Application $app, Request $request)
+    {
+        $maxFileSize = $this->getUploadMaxFileSize();
+
+        return $app['twig']->render(
+            'prod/upload/upload.html.twig', array(
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            ));
     }
 
     /**
