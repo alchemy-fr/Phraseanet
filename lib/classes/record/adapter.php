@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -307,6 +307,32 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->rebuild_subdefs();
 
         $this->type = $type;
+        $this->delete_data_from_cache();
+
+        return $this;
+    }
+
+    public function set_mime($mime)
+    {
+        $old_mime = $this->get_mime();
+
+        // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
+        if (!preg_match("/^[a-zA-Z0-9!#$%^&\*_\-\+{}\|'.`~]+\/[a-zA-Z0-9!#$%^&\*_\-\+{}\|'.`~]+$/", $mime)) {
+            throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
+        }
+
+        $connection = connection::getPDOConnection($this->app, $this->get_sbas_id());
+
+        $sql = 'UPDATE record SET mime = :mime WHERE record_id = :record_id';
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(array(':mime' => $mime, ':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        if ($mime !== $old_mime) {
+            $this->rebuild_subdefs();
+        }
+
+        $this->mime = $mime;
         $this->delete_data_from_cache();
 
         return $this;
@@ -671,10 +697,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 continue;
             }
 
-            if ($subdef->is_substituted()) {
-                continue;
-            }
-
             $subdefs[$subdef->get_name()] = $subdef;
         }
 
@@ -962,6 +984,77 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this->get_databox()->get_sbas_id();
     }
 
+    public function substitute_subdef($name, MediaInterface $media, Application $app)
+    {
+        $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
+
+        $base_url = '';
+
+        $subdef_def = false;
+
+        if ($name == 'document') {
+            $baseprefs = $this->get_databox()->get_sxml_structure();
+
+            $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
+
+            $filehd = $this->get_record_id() . "_document." . strtolower($media->getFile()->getExtension());
+            $pathhd = databox::dispatch($app['filesystem'], $pathhd);
+
+            $app['filesystem']->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
+
+            $subdefFile = $pathhd . $filehd;
+
+            $meta_writable = true;
+        } else {
+            $type = $this->is_grouping() ? 'image' : $this->get_type();
+
+            $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($type, $name);
+
+            if ($this->has_subdef($name) && $this->get_subdef($name)->is_physically_present()) {
+
+                $path_file_dest = $this->get_subdef($name)->get_pathfile();
+                $this->get_subdef($name)->remove_file();
+                $this->clearSubdefCache($name);
+            } else {
+                $path = databox::dispatch($app['filesystem'], $subdef_def->get_path());
+                $app['filesystem']->mkdir($path, 0750);
+                $path_file_dest = $path . $newfilename;
+            }
+
+            try {
+                $app['media-alchemyst']->turnInto(
+                    $media->getFile()->getRealPath(),
+                    $path_file_dest,
+                    $subdef_def->getSpecs()
+                );
+            } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
+                return $this;
+            }
+
+            $subdefFile = $path_file_dest;
+
+            $meta_writable = $subdef_def->meta_writeable();
+        }
+
+        $app['filesystem']->chmod($subdefFile, 0760);
+        $media = $app['mediavorus']->guess($subdefFile);
+
+        $subdef = media_subdef::create($app, $this, $name, $media);
+        $subdef->set_substituted(true);
+
+        $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+        if ($meta_writable) {
+            $this->write_metas();
+        }
+
+        if ($name == 'document') {
+            $this->rebuild_subdefs();
+        }
+
+        return $this;
+    }
+
     /**
      *
      * @param  DOMDocument    $dom_doc
@@ -1109,6 +1202,38 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         return $this;
+    }
+
+    public function get_missing_subdefs()
+    {
+        $databox = $this->get_databox();
+
+        try {
+            $this->get_hd_file();
+        } catch (\Exception $e) {
+            return array();
+        }
+
+        $subDefDefinitions = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
+        if (!$subDefDefinitions) {
+            return array();
+        }
+
+        $record = $this;
+        $wanted_subdefs = array_map(function($subDef) {
+           return  $subDef->get_name();
+        }, array_filter($subDefDefinitions, function($subDef) use ($record) {
+            return !$record->has_subdef($subDef->get_name());
+        }));
+
+
+        $missing_subdefs = array_map(function($subDef) {
+            return $subDef->get_name();
+        }, array_filter($this->get_subdefs(), function($subdef) {
+            return !$subdef->is_physically_present();
+        }));
+
+        return array_values(array_merge($wanted_subdefs, $missing_subdefs));
     }
 
     /**
@@ -1284,7 +1409,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 
         $record->insertTechnicalDatas($app['mediavorus']);
-        $record->rebuild_subdefs();
 
         return $record;
     }

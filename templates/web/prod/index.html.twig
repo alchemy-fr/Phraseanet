@@ -123,6 +123,21 @@
     </div>
 
     <div id="desktop" class="PNB" style="overflow:hidden;">
+        {% if app.flash('client_deprecated') %}
+            <div id="clientModal" class="modal hide fade"   >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>{{ 'Client application is deprecated'|trans }}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'You have been redirected to production application.'|trans }}</p>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $('#clientModal').modal();
+            </script>
+        {% endif %}
+        
         {% set ratio = app['settings'].getUserSetting(app['authentication'].getUser(), 'search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
@@ -293,11 +308,11 @@
                             <div class="controls">
                                 {% if GV_multiAndReport %}
                                     <label for="mode_type_doc" class="radio inline">
-                                        <input type="radio" value="0" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
+                                        <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
                                         {{ 'phraseanet::type:: documents' | trans }}
                                     </label>
                                     <label for="mode_type_reg" class="radio inline">
-                                        <input type="radio" value="1" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
+                                        <input type="radio" value="1" class="mode_type_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
                                         {{ 'phraseanet::type:: reportages' | trans }}
                                     </label>
                                 {% else %}
@@ -377,10 +392,10 @@
                                                             {% for s in stat %}
                                                             <tr>
                                                                 <td>
+                                                                    <label class="checkbox inline">
                                                                     {% if s['imgoff'] %}
                                                                         <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale']]}}" />
                                                                     {% endif %}
-                                                                    <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
@@ -388,10 +403,10 @@
                                                                     </label>
                                                                 </td>
                                                                 <td>
+                                                                    <label class="checkbox inline">
                                                                     {% if s['imgoff'] %}
                                                                         <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale']]}}" />
                                                                     {% endif %}
-                                                                    <label class="checkbox inline">
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
@@ -931,7 +946,13 @@
         <div class="PNB" style="right:180px;">
             <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
                 <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
-                    <span id="SPANTITLE" class="PNB10"> </span>
+                    <div style="padding-top: 0px; padding-left: 5px;">
+                        <span id="PREVIEWTITLE_COLLLOGO"> </span>
+                        &nbsp;
+                        <span id="PREVIEWTITLE_COLLNAME"> </span>
+                        &nbsp;
+                        <span id="SPANTITLE"> </span>
+                    </div>
                 </div>
             </div>
             <div class="PNB" style="top:55px;">

@@ -46,7 +46,7 @@
                                             {{ 'Your browser does not support all HTML5 features properly.' | trans }}
                                         {% endif %}
                                     </p>
-                                    <a href="{{ path('upload_flash_form') }}" class="dialog full-dialog">{{ 'Use the Flash uploader' | trans }}</a>
+                                    <a id="UPLOAD_FLASH_LINK" href="{{ path('upload_flash_form') }}" class="dialog full-dialog">{{ 'Use the Flash uploader' | trans }}</a>
                                 </td>
                             </tr>
                         </table>
@@ -143,6 +143,21 @@
 <script>
 
 $(document).ready(function () {
+
+    var userAgent = navigator.userAgent.toLowerCase();
+    $.browser = {
+        version: (userAgent.match( /.+(?:rv|it|ra|ie|me)[/: ]([\d.]+)/ ) || [])[1],
+        chrome: /chrome/.test( userAgent ),
+        safari: /webkit/.test( userAgent ) && !/chrome/.test( userAgent ),
+        opera: /opera/.test( userAgent ),
+        msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
+        mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
+    };
+
+    if($.browser.msie && parseFloat($.browser.version)>=10) {
+        $("#UPLOAD_FLASH_LINK").hide();
+    }
+
     //Upload management
     var UploaderManager = new p4.UploaderManager({
         container: $('#uploadBox'),

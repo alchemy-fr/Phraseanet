@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -39,8 +39,7 @@ class CreateCollection extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $databox = $this->container['phraseanet.appbox']
-            ->get_databox((int) $input->getArgument('databox_id'));
+        $databox = $this->container['phraseanet.appbox']->get_databox((int) $input->getArgument('databox_id'));
 
         $new_collection = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 

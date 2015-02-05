@@ -9,6 +9,8 @@
                 display: none;
             }
         </style>
+
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3/css/ui-lightness/jquery-ui-1.10.3.custom.css' }) }}" />
         <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript">
             var p4 = {};
@@ -68,6 +70,18 @@
 
                 f.target = "IFR0";
                 f.submit();
+
+                $("#SEARCH_DLG").dialog({
+                    modal: true,
+                    title: "{% trans 'Chercher' %}",
+                    autoOpen:false
+                });
+                $("#NEWSY_DLG").dialog({
+                    modal: true,
+                    title: "???",
+                    autoOpen:false,
+                    width:400
+                });
             }
 
             function chgCkShowRejected()
@@ -223,6 +237,60 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ------------------------------ the "search" dialog --------------------------- -->
+                <div id="SEARCH_DLG">
+                    <form>
+                        <table>
+                            <tr>
+                                <td>{% trans 'thesaurus:: le terme' %}</td>
+                                <td><input type="radio" name="m" value="equal">{% trans 'thesaurus:: est egal a ' %}</td>
+                            </tr>
+                            <tr>
+                                <td />
+                                <td><input type="radio" checked name="m" value="begins">{% trans 'thesaurus:: commence par' %}</td>
+                            </tr>
+                            <tr>
+                                <td />
+                                <td><input type="radio" name="m" value="contains">{% trans 'thesaurus:: contient' %}</td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <input type="text" name="t" value="" style="width:200px;" autofocus>
+                    </form>
+                </div>
+                <!-- ------------------------------ end "search" dialog --------------------------- -->
+
+                <!-- ------------------------ the "new term/synonym" dialog ----------------------- -->
+                <div id="NEWSY_DLG">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td style="text-align:right; width:80px;"><span class="label"></span> :&nbsp;</td>
+                            <td></td>
+                            <td><input type="text" style="width:250px;" name="term"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right">{% trans 'thesaurus:: contexte' %} : </td>
+                            <td><b>(</b>&nbsp;</td>
+                            <td><input type="text" style="width:250px;" name="context">&nbsp;<b>)</b></td>
+                        </tr>
+                        <tr>
+                            <td valign="bottom" style="text-align:right">{% trans 'phraseanet:: language' %} :&nbsp;</td>
+                            <td></td>
+                            <td valign="bottom">
+                                {% for code, language in flags %}
+                                    <span style="display:inline-block">
+                                    <input type="radio" {% if code == piv %}checked{% endif %} name="lng" value="{{ code }}" id="lng_{{ code }}">
+                                    <label for="lng_{{ code }}"><img src="/skins/lng/{{ code }}_flag_18.gif" />({{ language }})</label>
+                                </span>
+                                    &nbsp;&nbsp;
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
+
             </div>
 
             <br/>
@@ -232,10 +300,12 @@
         <div id="clipboard" style="position:absolute; top:0px; left:0px; z-index:99">&nbsp;</div>
 
 
+
         <iframe src="about:blank" name="IFRsave" id="IFRsave" style="visibility:hidden; ; position:absolute; top:0px; left:5px;   height:50px; width:50px; overflow:scroll"></iframe>
         <iframe src="about:blank" name="IFR0"    id="IFR0"    style="visibility:hidden; ; position:absolute; top:0px; left:400px; height:50px; width:50px; overflow:scroll"></iframe>
 
         <script type="text/javascript">
+
 
         document.body.oncontextmenu = function(){
             return false;
@@ -543,33 +613,46 @@
                             url += "&piv={{ piv }}";
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
-                            url += "&dlg=1";
-                            ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:no; scroll:no; status:no; unadorned:yes");
+
+                            w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                             break;
                         case "kcterm_search":
-                            ret = window.showModalDialog("search.php?dlg=1", null, "dialogHeight:240px; dialogWidth:300px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                            if(ret && ret.t != "")
-                            {
-                                url = "/thesaurus/xmlhttp/openbranches.x.php";
-                                parms  = "bid={{ bid }}";
-                                parms += "&id=" + cbParm.id.substr(4);
-                                parms += "&typ=CT";
-                                parms += "&method=" + ret.method;
-                                parms += "&t=" + encodeURIComponent(ret.t);
-                                //alert(url + "?" + parms);
-
-                                ret = loadXMLDoc(url, parms, true);
-                                // alert(ret);
-                                thb = document.getElementById("THB_" + cbParm.id.substr(4));
-
-                                ts = ret.getElementsByTagName("html");
-                                if(ts.length==1)
-                                {
-                                    replaceContent(thb, ts.item(0));
-                                    thb.className = "hb";
-                                    document.getElementById("THP_" + cbParm.id.substr(4)).innerText="...";
-                                }
-                            }
+                            $("#SEARCH_DLG").dialog("option", "buttons",
+                                [
+                                    {
+                                        text:"{% trans 'boutton::annuler' %}",
+                                        click: function() {
+                                            $(this).dialog("close");
+                                        }
+                                    } ,
+                                    {
+                                        text:"{% trans 'boutton::chercher' %}",
+                                        click:function() {
+                                            var zdialog = $(this);
+                                            var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
+                                            $("#THB_" + nid).empty();
+                                            $.post(
+                                                    "/thesaurus/xmlhttp/openbranches.x.php",
+                                                    {
+                                                        bid: {{ bid }},
+                                                        id: cbParm.id.substr(4),
+                                                        typ: "CT",
+                                                        method: zdialog.find("[name=m]:checked").val(),
+                                                        t: zdialog.find("[name=t]").val()
+                                                    },
+                                                    function(data, textStatus, jqXHR) {
+                                                        var ts = $(data).find("html");
+                                                        $("#THB_" + nid).html(ts.html()).removeClass().addClass("hb");
+                                                        $("#THP_" + nid).text("...");
+                                                        zdialog.dialog("close");
+                                                    },
+                                                    "xml"
+                                            );
+                                        }
+                                    }
+                                ]
+                            );
+                            $("#SEARCH_DLG").dialog("open");
                             break;
                         case "kcterm_export":
                             var myObj = { "win":window };
@@ -639,8 +722,8 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=CT";
-                                        url += "&dlg=1";
-                                        ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:no; scroll:no; status:no; unadorned:yes");
+
+                                        w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                     }
                                     break;
                                 }
@@ -926,45 +1009,51 @@
                                 switch(menuelem_id)
                                 {
                                     case "kterm_newts": // nouveau terme specifique
-                                        var myObj = { "win":window };
-                                        url  = "newsy_dlg.php?piv={{ piv }}&typ=TS";
+                                    case "kterm_newsy": // nouveau synonyme
+                                        var typ = menuelem_id=="kterm_newts" ? "TS" : "SY";
+                                        $("#NEWSY_DLG .label").html(
+                                                typ=="TS" ? "{% trans 'thesaurus:: terme' %}" : "{% trans 'thesaurus:: synonyme' %}"
+                                        );
+                                        $("#NEWSY_DLG").dialog("option", "title", typ=="TS" ? "{% trans 'thesaurus:: Nouveau terme' %}" : "{% trans 'thesaurus:: Nouveau synonyme' %}");
+                                        $("#NEWSY_DLG").dialog("option", "buttons",
+                                                [
+                                                    {
+                                                        text:"{% trans 'boutton::annuler' %}",
+                                                        click: function() {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    } ,
+                                                    {
+                                                        text:"{% trans 'boutton::valider' %}",
+                                                        click:function() {
+                                                            var zdialog = $(this);
+                                                            var myObj = { "win":window };
 
-                                        ret = window.showModalDialog(url, myObj, "dialogHeight:200px; dialogWidth:400px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                                            var t = zdialog.find("[name=term]").val();
+                                                            var k = zdialog.find("[name=context]").val();
+                                                            if(k != "") {
+                                                                t += " (" + k + ")";
+                                                            }
+                                                            var lng = zdialog.find("[name=lng]:checked").val();
 
-                                        if(ret && ret.t)
-                                        {
-                                            var myObj = { "win":window };
-                                            url  = "newterm.php";
-                                            url += "?bid={{ bid }}";
-                                            url += "&piv={{ piv }}";
-                                            url += "&pid=" + o.id.substr(4);
-                                            //        url += "&t=" + escape(newts);        // PAS avec un prompt UTF8
-                                            url += "&t=" + encodeURIComponent(ret.t);
-                                            url += "&typ=TS";
-                                            url += "&sylng=" + encodeURIComponent(ret.lng);
-                                            url += "&dlg=1";
-                                            ret = window.showModalDialog(url, myObj, "dialogHeight:290px; dialogWidth:490px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                        }
+                                                            zdialog.dialog("close");
+
+                                                            url  = "newterm.php";
+                                                            url += "?bid={{ bid }}";
+                                                            url += "&piv={{ piv }}";
+                                                            url += "&pid=" + o.id.substr(4);
+                                                            url += "&t=" + encodeURIComponent(t);
+                                                            url += "&typ=" + typ;
+                                                            url += "&sylng=" + encodeURIComponent(lng);
+
+                                                            w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                                        }
+                                                    }
+                                                ]
+                                        );
+                                        $("#NEWSY_DLG").dialog("open");
                                         break;
-                                    case "kterm_newsy":
-                                        var myObj = { "win":window };
-                                        url  = "newsy_dlg.php?piv={{ piv }}&typ=SY";
-                                        ret = window.showModalDialog(url, myObj, "dialogHeight:200px; dialogWidth:400px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                        if(ret && ret.t)
-                                        {
-                                            var myObj = { "win":window };
-                                            url  = "newterm.php";
-                                            url += "?bid={{ bid }}";
-                                            url += "&piv={{ piv }}";
-                                            url += "&pid=" + o.id.substr(4);
-                                            //        url += "&t=" + escape(newts);        // PAS avec un prompt UTF8
-                                            url += "&t=" + encodeURIComponent(ret.t);
-                                            url += "&typ=SY";
-                                            url += "&sylng=" + encodeURIComponent(ret.lng);
-                                            url += "&dlg=1";
-                                            ret = window.showModalDialog(url, myObj, "dialogHeight:290px; dialogWidth:490px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                        }
-                                        break;
+
                                     case "kterm_delete":
                                         tid = o.id.substr(4);
                                         url = "/thesaurus/xmlhttp/getterm.x.php";
@@ -1012,8 +1101,7 @@
                                         url +=  "?bid={{ bid }}";
                                         url +=  "&piv={{ piv }}";
                                         url += "&tid=" + o.id.substr(4);
-                                        url += "&dlg=1";
-                                        ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                        w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                         break;
                                     case "kterm_properties":
                                         var myObj = { "win":window };
@@ -1026,30 +1114,42 @@
                                         w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                         break;
                                     case "kterm_search":
-                                        ret = window.showModalDialog("search.php?dlg=1", myObj, "dialogHeight:240px; dialogWidth:300px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                        if(ret && ret.t != "")
-                                        {
-                                            url = "/thesaurus/xmlhttp/openbranches.x.php";
-                                            parms  = "bid={{ bid }}";
-                                            parms += "&id=" + cbParm.id.substr(4);
-                                            parms += "&typ=TH";
-                                            parms += "&method=" + ret.method;
-                                            parms += "&t=" + encodeURIComponent(ret.t);
-                                            // alert(url + "?" + parms);
-
-                                            ret = loadXMLDoc(url, parms, true);
-                                            // alert(ret);
-
-                                            thb = document.getElementById("THB_" + cbParm.id.substr(4));
-
-                                            ts = ret.getElementsByTagName("html");
-                                            if(ts.length==1)
-                                            {
-                                                replaceContent(thb, ts.item(0));
-                                                thb.className = "hb";
-                                                document.getElementById("THP_" + cbParm.id.substr(4)).innerText="...";
-                                            }
-                                        }
+                                        $("#SEARCH_DLG").dialog("option", "buttons",
+                                            [
+                                                {
+                                                    text:"{% trans 'boutton::annuler' %}",
+                                                    click: function() {
+                                                        $(this).dialog("close");
+                                                    }
+                                                } ,
+                                                {
+                                                    text:"{% trans 'boutton::chercher' %}",
+                                                    click:function() {
+                                                        var zdialog = $(this);
+                                                        var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
+                                                        $("#THB_" + nid).empty();
+                                                        $.post(
+                                                            "/thesaurus/xmlhttp/openbranches.x.php",
+                                                            {
+                                                                bid: {{ bid }},
+                                                                id: cbParm.id.substr(4),
+                                                                typ: "TH",
+                                                                method: zdialog.find("[name=m]:checked").val(),
+                                                                t: zdialog.find("[name=t]").val()
+                                                            },
+                                                            function(data, textStatus, jqXHR) {
+                                                                var ts = $(data).find("html");
+                                                                $("#THB_" + nid).html(ts.html()).removeClass().addClass("hb");
+                                                                $("#THP_" + nid).text("...");
+                                                                zdialog.dialog("close");
+                                                            },
+                                                            "xml"
+                                                        );
+                                                    }
+                                                }
+                                            ]
+                                        );
+                                        $("#SEARCH_DLG").dialog("open");
                                         break;
                                     case "kterm_export":
                                         var myObj = { "win":window };
@@ -1172,8 +1272,7 @@
                                                 url += "&piv={{ piv }}";
                                                 url += "&id=" + o.id.substr(4);
                                                 url += "&typ=TH";
-                                                url += "&dlg=1";
-                                                ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:no; scroll:no; status:no; unadorned:yes");
+                                                w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                             }
                                         }
                                         break;
@@ -1296,10 +1395,11 @@
                                             {
                                                 case "kth_import": // importer
                                                     var myObj = { "win":window };
-                                                    url  = "import_dlg.php?piv={{ piv }}&bid={{ bid }}&id=&dlg=1";
-                                                    window.showModalDialog(url, myObj, "dialogHeight:400px; dialogWidth:600px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                                    //          url  = "import_dlg.php?piv={{ piv }}&bid={{ bid }}&id=";
-                                                    //          w = window.open(url, "IMPORT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                    url  = "import_dlg.php";
+                                                    url += "?piv={{ piv }}";
+                                                    url += "&bid={{ bid }}";
+                                                    url += "&id=";
+                                                    w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                                     break;
                                                 }
                                                 break;

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -115,6 +115,9 @@ class Databoxes implements ControllerProviderInterface
             case 'mount-failed' :
                 $errorMsg = $app->trans('Database could not be mounted');
                 break;
+            case 'innodb-support' :
+                $errorMsg = _('Database server does not support InnoDB storage engine');
+                break;
         }
 
         return $app['twig']->render('admin/databases.html.twig', [
@@ -165,6 +168,10 @@ class Databoxes implements ControllerProviderInterface
                 $connbas->connect();
             } catch (DBALException $e) {
                 return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
+            }
+
+            if (false === $connbas->supportInnoDB()){
+                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'innodb-support'));
             }
 
             try {

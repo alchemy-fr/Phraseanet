@@ -602,17 +602,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setBanner
-     */
-    public function testSetBannerBadRequest()
-    {
-        $this->setAdmin(true);
-
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/banner/');
-
-        $this->assertBadResponse(self::$DI['client']->getResponse());
-    }
 
     /**
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setMiniLogo
@@ -751,54 +740,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->setAdmin(true);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/stamp-logo/delete/');
-
-        $json = $this->getJson(self::$DI['client']->getResponse());
-        $this->assertTrue($json->success);
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setBanner
-     */
-    public function testSetBanner()
-    {
-        $this->setAdmin(true);
-
-        $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        self::$DI['app']['filesystem']->copy(__DIR__ . '/../../../../../files/p4logo.jpg', $target);
-        $files = [
-            'newBanner' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
-        ];
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/banner/', [], $files);
-        $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getPresentation(self::$DI['collection']->get_base_id())));
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteBanner
-     */
-    public function testDeleteBannerNotJson()
-    {
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-
-        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/picture/banner/delete/');
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteBanner
-     */
-    public function testDeleteBanner()
-    {
-        if (count(\collection::getPresentation(self::$DI['collection']->get_base_id())) === 0) {
-            $this->markTestSkipped('No Banner setted');
-        }
-
-        $this->setAdmin(true);
-
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/banner/delete/');
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);

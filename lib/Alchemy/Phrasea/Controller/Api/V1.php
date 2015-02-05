@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -116,6 +116,8 @@ class V1 implements ControllerProviderInterface
 
         $controllers->post('/records/add/', 'controller.api.v1:add_record');
 
+        $controllers->post('/embed/substitute/', 'controller.api.v1:substitute');
+        
         $controllers->match('/search/', 'controller.api.v1:search');
 
         $controllers->match('/records/search/', 'controller.api.v1:search_records');
@@ -197,6 +199,7 @@ class V1 implements ControllerProviderInterface
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
         $controllers->get('/me/', 'controller.api.v1:get_current_user');
+
 
         return $controllers;
     }
@@ -566,6 +569,49 @@ class V1 implements ControllerProviderInterface
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
             $ret['url'] = '/quarantine/item/' . $output->getId() . '/';
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+    
+    public function substitute(Application $app, Request $request)
+    {
+        $ret = array();
+        
+        if (count($request->files->get('file')) == 0) {
+            throw new API_V1_exception_badrequest('Missing file parameter');
+        }
+        if (!$request->files->get('file') instanceof Symfony\Component\HttpFoundation\File\UploadedFile) {
+            throw new API_V1_exception_badrequest('You can upload one file at time');
+        }
+        $file = $request->files->get('file');
+        // @var $file Symfony\Component\HttpFoundation\File\UploadedFile
+        if (!$file->isValid()) {
+            throw new API_V1_exception_badrequest('Datas corrupted, please try again');
+        }
+        if (!$request->get('databox_id')) {
+            throw new API_V1_exception_badrequest('Missing databox_id parameter');
+        }
+        if (!$request->get('record_id')) {
+            throw new API_V1_exception_badrequest('Missing record_id parameter');
+        }
+        if (!$request->get('name')) {
+            throw new API_V1_exception_badrequest('Missing name parameter');
+        }
+        $media = $app['mediavorus']->guess($file->getPathname());
+        // @var $record \record_adapter
+        $record = $this->app['phraseanet.appbox']->get_databox($request->get('databox_id'))->get_record($request->get('record_id'));
+        $base_id = $record->get_base_id();
+        $collection = \collection::get_from_base_id($this->app, $base_id);
+        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
+        }
+        $record->substitute_subdef($request->get('name'), $media, $app);
+        foreach ($record->get_embedable_medias() as $name => $media) {
+            if ($name == $request->get('name') &&
+                null !== ($subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry']))) {
+                $ret[] = $subdef;
+            }
         }
 
         return Result::create($request, $ret)->createResponse();

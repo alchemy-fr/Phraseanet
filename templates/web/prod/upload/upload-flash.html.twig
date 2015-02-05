@@ -41,7 +41,7 @@
                                     {{ 'You are using the Flash uploader.' | trans }}
                                     {{ 'This version does not allow you to access all the features offered by the HTML5 uploader' | trans }}
                                 </p>
-                                <a href="{{ path('upload_form') }}" class="dialog full-dialog">{{ 'Use the HTML5 uploader' | trans }}</a>
+                                <a href="{{ path('upload_html5_form') }}" class="dialog full-dialog">{{ 'Use the HTML5 uploader' | trans }}</a>
                             </td>
                         </tr>
                      </table>
@@ -167,7 +167,6 @@
 
             $('#uploadBox #status-' + selectedCollId).show();
         });
-
         //global file order, start uploads from swf.queue, following
         //order of "file_order"
         var file_order = [];

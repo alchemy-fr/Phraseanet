@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -194,16 +194,23 @@ class Property implements ControllerProviderInterface
     {
         $typeLst = $request->request->get('types', []);
         $records = RecordsRequest::fromRequest($app, $request, false, ['canmodifrecord']);
+        $mimeLst = $request->request->get('mimes', []);
         $forceType = $request->request->get('force_types', '');
         $updated = [];
 
         foreach ($records as $record) {
             try {
                 $recordType = !empty($forceType) ? $forceType : (isset($typeLst[$record->get_serialize_key()]) ? $typeLst[$record->get_serialize_key()] : null);
+                $mimeType = isset($mimeLst[$record->get_serialize_key()]) ? $mimeLst[$record->get_serialize_key()] : null;
 
                 if ($recordType) {
                     $record->set_type($recordType);
-                    $updated[$record->get_serialize_key()] = $recordType;
+                    $updated[$record->get_serialize_key()]['record_type'] = $recordType;
+                }
+
+                if ($mimeType) {
+                    $record->set_mime($mimeType);
+                    $updated[$record->get_serialize_key()]['mime_type'] = $mimeType;
                 }
             } catch (\Exception $e) {
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,8 @@
 
 namespace KonsoleKommander;
 
+
+use Alchemy\Phrasea\Command\BuildSubdefs;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
@@ -107,6 +109,7 @@ $cli->command(new CreateCollection('collection:create'));
 $cli->command(new RecordAdd('records:add'));
 $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
 $cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
+$cli->command(new BuildSubdefs('records:build-subdefs'));
 
 $cli->command(new AddPlugin());
 $cli->command(new ListPlugin());

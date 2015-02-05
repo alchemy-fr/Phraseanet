@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,7 +21,7 @@ class DatabaseHelper extends Helper
         $password = $this->request->query->get('password');
         $db_name = $this->request->query->get('db_name');
 
-        $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
+        $connection_ok = $innodb = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
             $conn = $this->app['dbal.provider']->get([
@@ -74,6 +74,7 @@ class DatabaseHelper extends Helper
 
         return [
             'connection' => $connection_ok,
+            'innodb'     => $innodb,
             'database'   => $db_ok,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,

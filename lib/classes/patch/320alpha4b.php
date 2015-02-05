@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -91,6 +91,8 @@ class patch_320alpha4b extends patchAbstract
             }
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 
+            $feed = $this->get_feed($app, $appbox, $user, $row['pub_restrict'], $row['homelink']);
+
             if (! $feed instanceof Feed) {
                 continue;
             }
@@ -174,7 +176,7 @@ class patch_320alpha4b extends patchAbstract
     }
     protected static $feeds = [];
 
-    protected function get_feed(appbox $appbox, User $user, $pub_restrict, $homelink, Application $app)
+    protected function get_feed(Application $app, appbox $appbox, User $user, $pub_restrict, $homelink)
     {
         $user_key = 'user_' . $user->getId();
         if ($homelink == '1') {

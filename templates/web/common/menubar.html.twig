@@ -8,29 +8,11 @@
         </li>
         {% if module is defined and module != "lightbox" and app['authentication'].isAuthenticated() %}
           <li>
-            {% if module is defined and module == "prod" %}
-              <a target="_self" href="{{ path('get_client') }}">
+              <a target="_blank" href="{{ path('prod') }}">
                 <span class="">
-                  {{ 'admin::monitor: Ancienne version (client)' | trans }}
+                  {{ 'admin::monitor: production' | trans }}
                 </span>
               </a>
-            {% else %}
-              {% if app['browser'].isNewGeneration %}
-                {% if module is defined and module == "client" %}
-                  <a target="_self" href="{{ path('prod') }}">
-                    <span class="">
-                      {{ 'admin::monitor: Nouvelle version (prod)' | trans }}
-                    </span>
-                  </a>
-                {% else %}
-                  <a target="_blank" href="{{ path('prod') }}">
-                    <span class="">
-                      {{ 'admin::monitor: production' | trans }}
-                    </span>
-                  </a>
-                {% endif %}
-              {% endif %}
-            {% endif %}
           </li>
 
           {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
@@ -79,7 +61,7 @@
           {% if module is defined and module == "prod" %}
               {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('upload') %}
             <li>
-                {% set link = path('upload_form') %}
+                {% set link = path('upload_html5_form') %}
 
                 {% if not app['browser'].supportFileAPI() %}
                     {% set link = path('upload_flash_form') %}
@@ -95,7 +77,7 @@
           {% endif %}
 
           {# MODULE #}
-          {% if module is defined and (module == "prod" or module == "client") %}
+          {% if module == "prod" %}
           <li>
             <a href="#" onclick="getHome('PUBLI');" >
               <span>
@@ -122,7 +104,7 @@
     <div class="PNB" style="left:auto;overflow:hidden;">
       <ol>
 
-    {% if app['authentication'].isAuthenticated()  and (module is defined and (module == "client" or module == "prod")) %}
+    {% if app['authentication'].isAuthenticated()  and module == "prod" %}
         <li id="notification_trigger">
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
@@ -192,7 +174,7 @@
     </div>
 </div>
 
- {% if app['authentication'].isAuthenticated()  and (module is defined and (module == "client" or module == "prod")) %}
+ {% if app['authentication'].isAuthenticated()  and (module == "client" or module == "prod") %}
     <div style="display:none;z-index:30000;" id="notification_box">
         {% set notifications = app['events-manager'].get_notifications %}
         {% include 'prod/notifications.html.twig' %}

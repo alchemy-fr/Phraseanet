@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -93,6 +93,11 @@ class Install extends Command
         }
 
         $abConn = $this->getABConn($input, $output, $dialog);
+
+        if (false === $abConn->supportInnoDB()){
+            throw new \Exception('Database server does not support InnoDB storage engine');
+        }
+
         list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);

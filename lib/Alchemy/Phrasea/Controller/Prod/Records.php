@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -135,7 +135,9 @@ class Records implements ControllerProviderInterface
                 'record'        => $record
             ]),
             "pos"           => $record->get_number(),
-            "title"         => str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], $record->get_title($query, $searchEngine))
+            "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
+            "collection_name" => $record->get_collection()->get_name(),
+            "collection_logo" => $record->get_collection()->getLogo($record->get_base_id(), $app)
         ]);
     }
 

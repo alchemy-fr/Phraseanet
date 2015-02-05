@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -623,6 +623,7 @@ class Login implements ControllerProviderInterface
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
                     $mail->setLogin($user->getLogin());
                     $mail->setButtonUrl($url);
+                    $mail->setExpiration($expirationDate);
 
                     $app['notification.deliverer']->deliver($mail);
                     $app->addFlash('info', $app->trans('phraseanet:: Un email vient de vous etre envoye'));

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -105,15 +105,6 @@ class Collection implements ControllerProviderInterface
         $controllers->post('/{bas_id}/picture/stamp-logo/delete/', 'controller.admin.collection:deleteStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_stamp');
-
-        $controllers->post('/{bas_id}/picture/banner/', 'controller.admin.collection:setBanner')
-            ->assert('bas_id', '\d+')
-            ->bind('admin_collection_submit_banner');
-
-        $controllers->post('/{bas_id}/picture/banner/delete/', 'controller.admin.collection:deleteBanner')
-            ->assert('bas_id', '\d+')
-            ->bind('admin_collection_delete_banner');
-
         $controllers->get('/{bas_id}/informations/details/', 'controller.admin.collection:getDetails')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_document_details');
@@ -268,41 +259,6 @@ class Collection implements ControllerProviderInterface
     }
 
     /**
-     * Delete the collection banner
-     *
-     * @param  Application                   $app     The silex application
-     * @param  Request                       $request The current request
-     * @param  integer                       $bas_id  The collection base_id
-     * @return JsonResponse|RedirectResponse
-     */
-    public function deleteBanner(Application $app, Request $request, $bas_id)
-    {
-        $success = false;
-
-        $collection = \collection::get_from_base_id($app, $bas_id);
-
-        try {
-            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_PRESENTATION);
-            $success = true;
-        } catch (\Exception $e) {
-
-        }
-
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
-                'success' => $success,
-                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
-                'bas_id'  => $collection->get_base_id()
-            ]);
-        }
-
-        return $app->redirectPath('admin_display_collection', [
-            'bas_id'  => $collection->get_base_id(),
-            'success' => (int) $success,
-        ]);
-    }
-
-    /**
      * Delete the collection stamp
      *
      * @param  Application                   $app     The silex application
@@ -405,56 +361,6 @@ class Collection implements ControllerProviderInterface
         return $app->redirectPath('admin_display_collection', [
             'bas_id'  => $collection->get_base_id(),
             'success' => (int) $success,
-        ]);
-    }
-
-    /**
-     * Set a collection banner
-     *
-     * @param  Application      $app     The silex application
-     * @param  Request          $request The current request
-     * @param  integer          $bas_id  The collection base_id
-     * @return RedirectResponse
-     */
-    public function setBanner(Application $app, Request $request, $bas_id)
-    {
-        if (null === $file = $request->files->get('newBanner')) {
-            $app->abort(400);
-        }
-
-        if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirectPath('admin_display_collection', [
-                'bas_id'  => $bas_id,
-                'success' => 0,
-                'error'   => 'file-too-big',
-            ]);
-        }
-
-        if (!$file->isValid()) {
-            return $app->redirectPath('admin_display_collection', [
-                'bas_id'  => $bas_id,
-                'success' => 0,
-                'error'   => 'file-invalid',
-            ]);
-        }
-
-        $collection = \collection::get_from_base_id($app, $bas_id);
-
-        try {
-            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_PRESENTATION);
-
-            $app['filesystem']->remove($file->getPathname());
-        } catch (\Exception $e) {
-            return $app->redirectPath('admin_display_collection', [
-                'bas_id'  => $bas_id,
-                'success' => 0,
-                'error'   => 'file-error',
-            ]);
-        }
-
-        return $app->redirectPath('admin_display_collection', [
-            'bas_id'  => $bas_id,
-            'success' => 1,
         ]);
     }
 

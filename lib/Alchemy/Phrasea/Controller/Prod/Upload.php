@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -51,6 +51,8 @@ class Upload implements ControllerProviderInterface
 
         $controllers->get('/flash-version/', 'controller.prod.upload:getFlashUploadForm')
             ->bind('upload_flash_form');
+        $controllers->get('/html5-version/', $this->call('getHtml5UploadForm'))
+            ->bind('upload_html5_form');
 
         $controllers->post('/', 'controller.prod.upload:upload')
             ->bind('upload');
@@ -71,12 +73,25 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-            'prod/upload/upload-flash.html.twig', [
-            'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
-            'maxFileSize'         => $maxFileSize,
-            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ]);
+            'prod/upload/upload-flash.html.twig', array(
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            ));
+    }
+
+    public function getHtml5UploadForm(Application $app, Request $request)
+    {
+        $maxFileSize = $this->getUploadMaxFileSize();
+
+        return $app['twig']->render(
+            'prod/upload/upload.html.twig', array(
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            ));
     }
 
     /**

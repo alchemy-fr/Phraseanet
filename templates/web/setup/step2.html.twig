@@ -232,17 +232,20 @@
                 },
                 success: function(datas){
                     el_loader.css('visibility', 'hidden');
-                    if(datas.connection === true && datas.database === true)
-                    {
-                        el_status.attr('src','/skins/icons/ok.png').show();
+                    if (data.connection === true && data.database === true && data.innodb === true) {
+                        el_status.attr('src', '/skins/icons/ok.png').show();
                         el_message.empty().append("{{ 'Successfull connection' | trans }}");
-                        if(!datas.is_empty)
-                        {
+                        if (!data.is_empty) {
                             el_message.append("<br>{{ 'Warning, this database is not empty' | trans }}");
-                            el_status.attr('src','/skins/icons/alert.png').show();
+                            el_status.attr('src', '/skins/icons/alert.png').show();
                         }
                         if(typeof callback == 'function')
                             callback();
+
+                        return;
+                    }
+                    if (false === data.innodb) {
+                        el_message.empty().append("{% trans 'Database server does not support InnoDB storage engine' %}");
 
                         return;
                     }

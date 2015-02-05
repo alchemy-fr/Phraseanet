@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -206,7 +206,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = $row['mime'];
             $this->file = $row['file'];
             $this->path = p4string::addEndSlash($row['path']);
-            $this->etag = $row['etag'] !== null ? $row['etag'] : file_exists($this->get_pathfile()) ? sha1_file($this->get_pathfile()) : null;
+            $this->is_physically_present = file_exists($this->get_pathfile());
+            $this->etag = $row['etag'];
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
 
@@ -215,7 +216,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             if ($row['created_on'])
                 $this->creation_date = new DateTime($row['created_on']);
 
-            $this->is_physically_present = true;
         } elseif ($substitute === false) {
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
@@ -346,7 +346,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function getEtag()
     {
         if (!$this->etag && $this->is_physically_present()) {
-            $this->setEtag(sha1_file($this->get_pathfile()));
+            $file = new SplFileInfo($this->get_pathfile());
+            if ($file->isFile()) {
+                $this->setEtag(md5($file->getMTime()));
+            }
         }
 
         return $this->etag;
@@ -360,6 +363,23 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
         $stmt->execute([':subdef_id' => $this->subdef_id, ':etag'      => $etag]);
         $stmt->closeCursor();
+
+        return $this;
+    }
+
+    public function set_substituted($substit)
+    {
+        $this->is_substituted = !!$substit;
+
+        $sql = "UPDATE subdef SET substit = :substit, updated_on=NOW() WHERE subdef_id = :subdef_id";
+        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute(array(
+            ':subdef_id' => $this->subdef_id,
+            ':substit'   => $this->is_substituted
+        ));
+        $stmt->closeCursor();
+
+        $this->delete_data_from_cache();
 
         return $this;
     }
@@ -737,7 +757,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         if ($this->get_name() === 'thumbnail') {
             if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled() && null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
-                $this->url = $url;
+                $this->url = $url. "?etag=".$this->getEtag();
 
                 return;
             }

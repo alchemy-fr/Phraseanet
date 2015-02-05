@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -323,21 +323,35 @@ class SearchEngineOptions
     {
         $tmp = [];
         foreach ($status as $n => $options) {
-            if (count($options) > 1) {
-                continue;
-            }
             if (isset($options['on'])) {
                 foreach ($options['on'] as $sbas_id) {
-                    $tmp[$n][$sbas_id] = 1;
+                    if(!isset($tmp[$n][$sbas_id])) {
+                        $tmp[$n][$sbas_id] = array();
+                    }
+                    $tmp[$n][$sbas_id][] = 1;
                 }
             }
             if (isset($options['off'])) {
                 foreach ($options['off'] as $sbas_id) {
-                    $tmp[$n][$sbas_id] = 0;
+                    if(!isset($tmp[$n][$sbas_id])) {
+                        $tmp[$n][$sbas_id] = array();
+                    }
+                    $tmp[$n][$sbas_id][] = 0;
                 }
             }
         }
-
+        foreach($tmp as $n=>$bas) {
+            foreach($bas as $sbas_id=>$values) {
+                if(count($values) > 1) {
+                    unset($tmp[$n][$sbas_id]);
+                } else {
+                    $tmp[$n][$sbas_id] = $values[0];
+                }
+            }
+            if(count($tmp[$n]) == 0) {
+                unset($tmp[$n]);
+            }
+        }
         $this->status = $tmp;
 
         return $this;
@@ -639,11 +653,14 @@ class SearchEngineOptions
         }
 
         $bas = array_filter($bas, function ($collection) use ($app) {
-            if ($app['authentication']->isAuthenticated()) {
-                return $app['acl']->get($app['authentication']->getUser())->has_access_to_base($collection->get_base_id());
-            } else {
-                return in_array($collection, $app->getOpenCollections());
+            if($collection !== null) {
+                if ($app['authentication']->isAuthenticated()) {
+                    return $app['acl']->get($app['authentication']->getUser())->has_access_to_base($collection->get_base_id());
+                } else {
+                    return in_array($collection, $app->getOpenCollections());
+                }
             }
+            return false; // CollectionNotFound
         });
 
         $databoxes = [];

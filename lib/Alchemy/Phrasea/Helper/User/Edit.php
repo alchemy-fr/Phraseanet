@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -652,11 +652,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
-
-            if ($user->isTemplate()) {
-                continue;
-            }
-
+            
             $this->app['acl']->get($user)->apply_model($template, $base_ids);
         }
 

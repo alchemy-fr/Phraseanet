@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -91,6 +91,8 @@ class Export implements ControllerProviderInterface
         }
 
         $success = false;
+        $msg = _('Error while connecting to FTP');
+
         try {
             $ftpClient = $app['phraseanet.ftp.client']($request->request->get('address', ''), 21, 90, !!$request->request->get('ssl'));
             $ftpClient->login($request->request->get('login', 'anonymous'), $request->request->get('password', 'anonymous'));
@@ -98,7 +100,6 @@ class Export implements ControllerProviderInterface
             $msg = $app->trans('Connection to FTP succeed');
             $success = true;
         } catch (\Exception $e) {
-            $msg = $app->trans('Error while connecting to FTP');
         }
 
         return $app->json([

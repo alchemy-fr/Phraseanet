@@ -188,7 +188,7 @@
                     <div>
                         <input name="tbl" type="radio" value="WDOC" data-action="{{ path('report_activity_documents_pushed') }}" id="WDOC" class="formsubmiter" />
                         <label for="WDOC">{{ "report:: document" | trans }}</label>
-                        <select class="options" style="display:inline;display:none;" id="list-select3" name="docwhat" >
+                        <select class="options formsubmiter" style="display:inline;display:none;" id="list-select3" name="docwhat" >
                             <option selected ="selected" value="PUSHDOC" data-action="{{ path('report_activity_documents_pushed') }}" class="formsubmiter">{{ "report:: pushe" | trans }}</option>
                             <option value="ADDDOC" data-action="{{ path('report_activity_documents_added') }}" class="formsubmiter">{{ "report:: ajoute" | trans }}</option>
                             <option value="EDIDOC" data-action="{{ path('report_activity_documents_edited') }}" class="formsubmiter">{{ "report:: edite" | trans }}</option>
