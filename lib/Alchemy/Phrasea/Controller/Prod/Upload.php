@@ -51,7 +51,7 @@ class Upload implements ControllerProviderInterface
 
         $controllers->get('/flash-version/', 'controller.prod.upload:getFlashUploadForm')
             ->bind('upload_flash_form');
-        $controllers->get('/html5-version/', $this->call('getHtml5UploadForm'))
+        $controllers->get('/html5-version/', 'controller.prod.upload:getHtml5UploadForm')
             ->bind('upload_html5_form');
 
         $controllers->post('/', 'controller.prod.upload:upload')
