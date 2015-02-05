@@ -288,7 +288,7 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= sprintf(
+                $this->title = sprintf(
                     _('preview:: resultat numero %s '), '<span id="current_result_n">' . ($this->number + 1)
                     . '</span> : '
                 );
