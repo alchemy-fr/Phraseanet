@@ -20,7 +20,7 @@ $groups = [
         '//assets/normalize-css/normalize.css',
         '//assets/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
-        '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
+        '//assets/jquery.ui/jquery.ui.autocomplete.css'
     ],
     'authentication' => [
         '//assets/modernizr/modernizr.js',
