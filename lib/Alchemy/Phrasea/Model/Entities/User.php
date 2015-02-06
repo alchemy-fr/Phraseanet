@@ -426,7 +426,7 @@ class User
             self::GENDER_MISS,
             self::GENDER_MR,
             self::GENDER_MRS
-        ])) {
+        ], true)) {
             throw new InvalidArgumentException(sprintf("Invalid gender %s.", $gender));
         }
 
