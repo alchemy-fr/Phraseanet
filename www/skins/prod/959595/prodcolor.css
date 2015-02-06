@@ -4359,3 +4359,8 @@ ui-dialog-titlebar {
 #clientModal .close {
     color: #404040;
 }
+
+#answers .status img {
+    max-width: 16px;
+    max-heigh: 16px;
+}
