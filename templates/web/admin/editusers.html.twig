@@ -559,33 +559,37 @@
   </div>
 </div>
 
-<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
 <script type="text/javascript">
-  $(document).ready(function(){
-    ini_edit_usrs();
 
-    geonames.init($('#user_infos_tab input.geoname_field'), {
+
+
+  define([
+    "jquery",
+    "common/geonames"
+  ], function ($, geonames) {
+    $(document).ready(function() {
+      ini_edit_usrs();
+      geonames.init($('#user_infos_tab input.geoname_field'), {
         "server": "{{ app['geonames.server-uri'] }}",
         "limit": 40
-    });
+      });
 
-    $('div.tabs').tabs();
+      $('div.tabs').tabs();
 
-    $('#users_rights_form button#reset_rights').bind('click', function(){
-        if(confirm("{{ 'Are you sure you want to reset rights?' | trans }}"))
-        {
+      $('#users_rights_form button#reset_rights').bind('click', function () {
+        if (confirm("{{ 'Are you sure you want to reset rights?' | trans }}")) {
           var users = $('#users_rights_form input[name="users"]').val();
 
           $.ajax({
             type: 'POST',
             url: '/admin/users/rights/reset/',
-            dataType:'json',
+            dataType: 'json',
             data: {
-              users : users
+              users: users
             },
-            success: function(data){
-              if(!data.error) {
-                if(users === '') {
+            success: function (data) {
+              if (!data.error) {
+                if (users === '') {
                   return false;
                 }
 
@@ -595,9 +599,9 @@
                   type: 'GET',
                   url: '/admin/users/rights/',
                   data: {
-                    users : users
+                    users: users
                   },
-                  success: function(data){
+                  success: function (data) {
                     $('#right-ajax').removeClass('loading').html(data);
                   }
                 });
@@ -611,4 +615,6 @@
         }
       });
     });
+  });
+
 </script>

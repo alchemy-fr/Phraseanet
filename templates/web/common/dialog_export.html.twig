@@ -506,7 +506,6 @@
         {% endif %}
     </div>
 
-    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
     <script type="text/javascript">
 
         function check_TOU(container)
@@ -619,10 +618,16 @@
                 dialog.Close();
             });
 
-            geonames.init($('#command_geoname_field'), {
-                "server": "{{ app['geonames.server-uri'] }}",
-                "limit": 40
+            define([
+                "common/geonames"
+            ], function (geonames) {
+                geonames.init($('#command_geoname_field'), {
+                    "server": "{{ app['geonames.server-uri'] }}",
+                    "limit": 40
+                });
             });
+
+
 
             $('#download .download_button').bind('click',function(){
                 if(!check_subdefs($('#download')))

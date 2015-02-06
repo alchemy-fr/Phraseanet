@@ -13,6 +13,7 @@ $groups = [
         '//include/jslibs/jquery.contextmenu_scroll.js',
         '//assets/jquery.cookie/jquery.cookie.js',
         '//include/jquery.common.js',
+        '//assets/requirejs/require.js',
         '//skins/account/account.js'
     ],
     'authentication_css' => [
