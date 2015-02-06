@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\Install;
+use Symfony\Component\Yaml\Parser;
 
 class InstallTest extends \PhraseanetTestCase
 {
@@ -11,7 +12,7 @@ class InstallTest extends \PhraseanetTestCase
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
-        $email = 'romain@neutron.io';
+        $email = 'jean@dupont.io';
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
@@ -33,12 +34,16 @@ class InstallTest extends \PhraseanetTestCase
         $input->expects($this->any())
             ->method('getOption')
             ->will($this->returnCallback(function ($option) use ($template, $email, $password, $serverName, $dataPath) {
+                $parser = new Parser();
+                $config = $parser->parse(file_get_contents(__DIR__ . '/../../../../../../config/configuration.yml'));
+                $credentials = $config['main']['database'];
+
                 switch ($option) {
                     case 'appbox':
-                        return 'ab_unitTests';
+                        return 'ab_setup_test';
                         break;
                     case 'databox':
-                        return 'db_unitTests';
+                        return 'db_setup_test';
                         break;
                     case 'db-template':
                         return $template;
@@ -65,10 +70,10 @@ class InstallTest extends \PhraseanetTestCase
                         return 3306;
                         break;
                     case 'db-user':
-                        return 'root';
+                        return $credentials['user'];
                         break;
                     case 'db-password':
-                        return '';
+                        return $credentials['password'];
                         break;
                     case 'yes':
                         return true;
