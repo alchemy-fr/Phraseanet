@@ -275,7 +275,7 @@
                             <td><input type="text" style="width:250px;" name="context">&nbsp;<b>)</b></td>
                         </tr>
                         <tr>
-                            <td valign="bottom" style="text-align:right">{{ 'phraseanet:: language' %} :&nbsp;</td>
+                            <td valign="bottom" style="text-align:right">{{ 'phraseanet:: language' | trans }} :&nbsp;</td>
                             <td></td>
                             <td valign="bottom">
                                 {% for code, language in flags %}
@@ -620,13 +620,13 @@
                             $("#SEARCH_DLG").dialog("option", "buttons",
                                 [
                                     {
-                                        text:"{{ 'boutton::annuler' %}",
+                                        text:"{{ 'boutton::annuler' | trans }}",
                                         click: function() {
                                             $(this).dialog("close");
                                         }
                                     } ,
                                     {
-                                        text:"{{ 'boutton::chercher' %}",
+                                        text:"{{ 'boutton::chercher'| trans }}",
                                         click:function() {
                                             var zdialog = $(this);
                                             var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
