@@ -620,6 +620,7 @@ class Login implements ControllerProviderInterface
 
                     $url = $app->url('login_renew_password', ['token' => $token->getValue()], true);
 
+                    $expirationDate = new \DateTime('+1 day');
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
                     $mail->setLogin($user->getLogin());
                     $mail->setButtonUrl($url);
