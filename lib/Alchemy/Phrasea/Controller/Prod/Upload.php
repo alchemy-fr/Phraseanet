@@ -75,7 +75,7 @@ class Upload implements ControllerProviderInterface
         return $app['twig']->render(
             'prod/upload/upload-flash.html.twig', array(
                 'sessionId'           => session_id(),
-                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
                 'maxFileSize'         => $maxFileSize,
                 'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
             ));
@@ -88,7 +88,7 @@ class Upload implements ControllerProviderInterface
         return $app['twig']->render(
             'prod/upload/upload.html.twig', array(
                 'sessionId'           => session_id(),
-                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
                 'maxFileSize'         => $maxFileSize,
                 'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
             ));
