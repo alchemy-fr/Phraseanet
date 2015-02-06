@@ -51,11 +51,13 @@ module.exports = function(grunt) {
             "autobahn": {
                 "expand": true,
                 "src": [
-                    "<%= path.bower %>/autobahn/autobahn.js",
-                    "<%= path.bower %>/autobahn/LICENSE"
+                    "<%= path.bower %>/autobahn/index.js",
                 ],
                 "dest": "<%= path.asset %>/autobahn/",
-                "flatten": true
+                "flatten": true,
+                "rename": function(dest, src) {
+                    return dest + "autobahn.js"
+                }
             },
             "backbone": {
                 "expand": true,
@@ -90,7 +92,7 @@ module.exports = function(grunt) {
             },
             "bootstrap-multiselect": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/bootstrap-multiselect",
+                "cwd": "<%= path.bower %>/bootstrap-multiselect/dist",
                 "src": [
                     "css/bootstrap-multiselect.css",
                     "js/bootstrap-multiselect.js"
