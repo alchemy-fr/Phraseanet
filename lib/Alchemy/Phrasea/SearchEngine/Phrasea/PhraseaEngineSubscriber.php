@@ -33,12 +33,12 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
 
     public function onCollectionCreate(CollectionCreateEvent $event)
     {
-        $sql = 'SELECT u.usr_id, c.session_id
-                FROM (usr u, Sessions s, basusr b)
-                LEFT JOIN cache c ON (c.usr_id = u.usr_id)
-                WHERE u.model_of = 0 AND u.usr_login NOT LIKE "(#deleted%"
-                  AND b.base_id = :base_id AND b.usr_id = u.usr_id AND b.actif=1
-                  AND s.usr_id = u.usr_id';
+        $sql = 'SELECT Users.id, c.session_id
+                FROM (Users, Sessions s, basusr b)
+                LEFT JOIN cache c ON (c.usr_id = Users.id)
+                WHERE Users.model_of = 0 AND Users.deleted = 0
+                  AND b.base_id = :base_id AND b.usr_id = Users.id AND b.actif=1
+                  AND s.usr_id = Users.id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute([':base_id' => $event->getCollection()->get_base_id()]);
