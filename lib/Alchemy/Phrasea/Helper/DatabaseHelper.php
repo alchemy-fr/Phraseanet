@@ -21,7 +21,7 @@ class DatabaseHelper extends Helper
         $password = $this->request->query->get('password');
         $db_name = $this->request->query->get('db_name');
 
-        $connection_ok = $innodb = $db_ok = $is_databox = $is_appbox = $empty = false;
+        $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
             $conn = $this->app['dbal.provider']->get([
@@ -74,7 +74,7 @@ class DatabaseHelper extends Helper
 
         return [
             'connection' => $connection_ok,
-            'innodb'     => $innodb,
+            'innodb'     => true,
             'database'   => $db_ok,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,
