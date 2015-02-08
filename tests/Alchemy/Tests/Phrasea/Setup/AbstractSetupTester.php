@@ -42,7 +42,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 \$port = '".$conn->getPort()."';
 \$user = '".$conn->getUsername()."';
 \$password = '".$conn->getPassword()."';
-\$dbname = 'ab_unitTests';
+\$dbname = 'ab_setup_test';
             ");
 
         $this->tearDownHandlers[] = function () {

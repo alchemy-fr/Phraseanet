@@ -438,7 +438,7 @@ module.exports = function(grunt) {
         "bower",
         "bower_postinst",
         "copy-assets",
-        //"clean:bower"
+        "clean:bower"
     ]);
     grunt.registerTask('test', ["shell:generate_js_fixtures", "qunit", "mocha_phantomjs"]);
 };
