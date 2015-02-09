@@ -68,7 +68,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             );
 
             $annotationDriver = new AnnotationDriver(
-                $annotationReader,
+                $fileCacheReader,
                 [$app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities']
             );
 

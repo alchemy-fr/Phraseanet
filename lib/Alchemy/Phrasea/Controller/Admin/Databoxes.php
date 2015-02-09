@@ -170,10 +170,6 @@ class Databoxes implements ControllerProviderInterface
                 return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
             }
 
-            if (false === $connbas->supportInnoDB()){
-                return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'innodb-support'));
-            }
-
             try {
                 $base = \databox::create($app, $connbas, $dataTemplate);
                 $base->registerAdmin($app['authentication']->getUser());

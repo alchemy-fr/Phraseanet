@@ -1,36 +1,36 @@
 {% macro tooltip_connected_users(row) %}
 
 {% set user = row.getUser() %}
-<span id="tooltip-usr">
-    <table id="tabledescexp" cellpadding="0" cellspacing="0">
+<span id='tooltip-usr'>
+    <table id='tabledescexp' cellpadding='0' cellspacing='0'>
         <tr>
-            <td class="tooltip-title" colspan="2" valign="center" >usr_id : {{ user.getId() }}</td>
+            <td class='tooltip-title' colspan='2' valign='center' >usr_id : {{ user.getId() }}</td>
         </tr>
         <tr>
-            <td colspan="2" style="height: 10px;"></td>
+            <td colspan='2' style='height: 10px;'></td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ user.getDisplayName() }}</td>
+            <td colspan='2'><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ user.getDisplayName() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur societe' | trans }} : </strong>{{ user.getCompany() }}</td>
+            <td colspan='2'><strong>{{ 'admin::compte-utilisateur societe' | trans }} : </strong>{{ user.getCompany() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur telephone' | trans }} : </strong>{{ user.getPhone() }}</td>
+            <td colspan='2'><strong>{{ 'admin::compte-utilisateur telephone' | trans }} : </strong>{{ user.getPhone() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur email' | trans }} : </strong>{{ user.getEmail() }}</td>
+            <td colspan='2'><strong>{{ 'admin::compte-utilisateur email' | trans }} : </strong>{{ user.getEmail() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte :' | trans }} :</strong></td>
+            <td colspan='2'><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte :' | trans }} :</strong></td>
         </tr>
         {% for databox in app['acl'].get(user).get_granted_sbas() %}
             <tr>
-                <td colspan="2" style="overflow:hidden;" >{{ databox.get_label(app['locale']) }}</td>
+                <td colspan='2' style='overflow:hidden;' >{{ databox.get_label(app['locale']) }}</td>
             </tr>
         {% endfor %}
         <tr>
-            <td colspan="2" valign="center" >
+            <td colspan='2' valign='center' >
                 <strong>{{ row.getPlatform() }} / {{ row.getBrowserName() }} - {{ row.getBrowserVersion() }}</strong><br/>
                 {% if row.getToken() %}
                     {{ 'Session persistente' | trans }}
@@ -39,7 +39,6 @@
         </tr>
     </table>
 </span>
-
 {% endmacro %}
 
 <div class="tableTitle">{{ 'admin::utilisateurs: utilisateurs connectes' | trans }}</div>
@@ -95,7 +94,7 @@
         <tbody>
             {% for session in data['sessions'] %}
                 {% set row = session['session'] %}
-            <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
+            <tr title="{{ _self.tooltip_connected_users(row) | raw }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
                     <td style="color:#ff0000"><i>{{ row.getUser().getDisplayName() }}</i></td>
@@ -122,7 +121,11 @@
 <script type="text/javascript">
     $(document).ready(
     function(){
-        $('.usrTips').tooltip();
+        $('.usrTips').tooltip({
+            content: function() {
+                return $( this ).attr( "title" );
+            }
+        });
     }
 );
 </script>

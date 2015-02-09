@@ -73,7 +73,7 @@
 
                 $("#SEARCH_DLG").dialog({
                     modal: true,
-                    title: "{% trans 'Chercher' %}",
+                    title: "{{ 'Chercher' | trans }}",
                     autoOpen:false
                 });
                 $("#NEWSY_DLG").dialog({
@@ -206,14 +206,14 @@
 
                 <div class="onglet" style="background-color:#f0f0f0; border-bottom:1px solid #f4f4f4">
                     <span id="baseName">{{ 'phraseanet:: thesaurus' | trans }}</span>
-                    <a href="javascript:void();" onclick="fixTh();return(false);" style="visibility:hidden;">X</a>
+                    <a href="#" onclick="fixTh();return(false);" style="visibility:hidden;">X</a>
                 </div>
 
 
                 <div id="TabT0" style="position:absolute; top:28px; left:0px; bottom:0px; width:40%;">
 
                     <div class="thbox" style="position:absolute; top:0px; bottom:8px; left:6px; right:3px;">
-                        <div class="onglet">{{ 'thesaurus:: onglet stock' | trans }} <a href="javascript:void();" onclick="test('T0');return(false);" style="visibility:hidden;">X</a>
+                        <div class="onglet">{{ 'thesaurus:: onglet stock' | trans }} <a href="#" onclick="test('T0');return(false);" style="visibility:hidden;">X</a>
                         </div>
                         <div style="width:100%; overflow:hidden">
                             <input type="checkbox" name="ckShowRejected" onClick="return(chgCkShowRejected());" /><span style="white-space:nowrap; overflow:hidden">{{ 'thesaurus:: afficher les termes refuses' | trans }}</span>
@@ -229,7 +229,7 @@
                     <div class="thbox"  style="position:absolute; top:0px; bottom:8px; left:3px; right:6px;">
                         <div class="onglet"><span id='TabT1Title' style="cursor:pointer">{{ 'thesaurus:: onglet thesaurus' | trans }}</span>
                             &nbsp;
-                            <a href="javascript:void();" onclick="test('T1');return(false);" style="visibility:hidden;">X</a>
+                            <a href="#" onclick="test('T1');return(false);" style="visibility:hidden;">X</a>
                         </div>
                         <div id="TabT1k" style="position:absolute; top:0px; bottom:0px; left:0px; right:0px; overflow:scroll; border:0px #000000 none">
                             <div id="T1" style="position:absolute; top:0px; left:0px;">
@@ -243,16 +243,16 @@
                     <form>
                         <table>
                             <tr>
-                                <td>{% trans 'thesaurus:: le terme' %}</td>
-                                <td><input type="radio" name="m" value="equal">{% trans 'thesaurus:: est egal a ' %}</td>
+                                <td>{{ 'thesaurus:: le terme' | trans }}</td>
+                                <td><input type="radio" name="m" value="equal">{{ 'thesaurus:: est egal a ' | trans }}</td>
                             </tr>
                             <tr>
                                 <td />
-                                <td><input type="radio" checked name="m" value="begins">{% trans 'thesaurus:: commence par' %}</td>
+                                <td><input type="radio" checked name="m" value="begins">{{ 'thesaurus:: commence par' | trans }}</td>
                             </tr>
                             <tr>
                                 <td />
-                                <td><input type="radio" name="m" value="contains">{% trans 'thesaurus:: contient' %}</td>
+                                <td><input type="radio" name="m" value="contains">{{ 'thesaurus:: contient' | trans }}</td>
                             </tr>
                         </table>
                         <br/>
@@ -270,12 +270,12 @@
                             <td><input type="text" style="width:250px;" name="term"></td>
                         </tr>
                         <tr>
-                            <td style="text-align:right">{% trans 'thesaurus:: contexte' %} : </td>
+                            <td style="text-align:right">{{ 'thesaurus:: contexte'  | trans }} : </td>
                             <td><b>(</b>&nbsp;</td>
                             <td><input type="text" style="width:250px;" name="context">&nbsp;<b>)</b></td>
                         </tr>
                         <tr>
-                            <td valign="bottom" style="text-align:right">{% trans 'phraseanet:: language' %} :&nbsp;</td>
+                            <td valign="bottom" style="text-align:right">{{ 'phraseanet:: language' | trans }} :&nbsp;</td>
                             <td></td>
                             <td valign="bottom">
                                 {% for code, language in flags %}
@@ -620,13 +620,13 @@
                             $("#SEARCH_DLG").dialog("option", "buttons",
                                 [
                                     {
-                                        text:"{% trans 'boutton::annuler' %}",
+                                        text:"{{ 'boutton::annuler' | trans }}",
                                         click: function() {
                                             $(this).dialog("close");
                                         }
                                     } ,
                                     {
-                                        text:"{% trans 'boutton::chercher' %}",
+                                        text:"{{ 'boutton::chercher'| trans }}",
                                         click:function() {
                                             var zdialog = $(this);
                                             var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
@@ -1012,19 +1012,19 @@
                                     case "kterm_newsy": // nouveau synonyme
                                         var typ = menuelem_id=="kterm_newts" ? "TS" : "SY";
                                         $("#NEWSY_DLG .label").html(
-                                                typ=="TS" ? "{% trans 'thesaurus:: terme' %}" : "{% trans 'thesaurus:: synonyme' %}"
+                                                typ=="TS" ? "{{ 'thesaurus:: terme'  | trans }}" : "{{ 'thesaurus:: synonyme'  | trans }}"
                                         );
-                                        $("#NEWSY_DLG").dialog("option", "title", typ=="TS" ? "{% trans 'thesaurus:: Nouveau terme' %}" : "{% trans 'thesaurus:: Nouveau synonyme' %}");
+                                        $("#NEWSY_DLG").dialog("option", "title", typ=="TS" ? "{{ 'thesaurus:: Nouveau terme'  | trans }}" : "{{ 'thesaurus:: Nouveau synonyme'  | trans }}");
                                         $("#NEWSY_DLG").dialog("option", "buttons",
                                                 [
                                                     {
-                                                        text:"{% trans 'boutton::annuler' %}",
+                                                        text:"{{ 'boutton::annuler'  | trans }}",
                                                         click: function() {
                                                             $(this).dialog("close");
                                                         }
                                                     } ,
                                                     {
-                                                        text:"{% trans 'boutton::valider' %}",
+                                                        text:"{{ 'boutton::valider'  | trans }}",
                                                         click:function() {
                                                             var zdialog = $(this);
                                                             var myObj = { "win":window };
@@ -1117,13 +1117,13 @@
                                         $("#SEARCH_DLG").dialog("option", "buttons",
                                             [
                                                 {
-                                                    text:"{% trans 'boutton::annuler' %}",
+                                                    text:"{{ 'boutton::annuler'  | trans }}",
                                                     click: function() {
                                                         $(this).dialog("close");
                                                     }
                                                 } ,
                                                 {
-                                                    text:"{% trans 'boutton::chercher' %}",
+                                                    text:"{{ 'boutton::chercher'  | trans }}",
                                                     click:function() {
                                                         var zdialog = $(this);
                                                         var nid = cbParm.id.substr(4).replace(".", "\\.", "g");

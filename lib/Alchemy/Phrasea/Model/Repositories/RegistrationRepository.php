@@ -71,13 +71,13 @@ class RegistrationRepository extends EntityRepository
         SELECT dbname, sbas.sbas_id, time_limited,
                UNIX_TIMESTAMP( limited_from ) AS limited_from,
                UNIX_TIMESTAMP( limited_to ) AS limited_to,
-               bas.server_coll_id, usr.usr_id, basusr.actif,
+               bas.server_coll_id, Users.id, basusr.actif,
                bas.base_id AS bas_id , " . $rsm->generateSelectClause(['d' => 'd',]) . "
-        FROM (usr, bas, sbas)
-          LEFT JOIN basusr ON ( usr.usr_id = basusr.usr_id AND bas.base_id = basusr.base_id )
-          LEFT JOIN Registrations d ON ( d.user_id = usr.usr_id AND bas.base_id = d.base_id )
+        FROM (Users, bas, sbas)
+          LEFT JOIN basusr ON ( Users.id = basusr.usr_id AND bas.base_id = basusr.base_id )
+          LEFT JOIN Registrations d ON ( d.user_id = Users.id AND bas.base_id = d.base_id )
         WHERE bas.active = 1 AND bas.sbas_id = sbas.sbas_id
-        AND usr.usr_id = ?
+        AND Users.id = ?
         AND model_of = 0";
 
         $query = $this->_em->createNativeQuery($sql, $rsm);

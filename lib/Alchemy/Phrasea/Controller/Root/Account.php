@@ -364,7 +364,7 @@ class Account implements ControllerProviderInterface
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
             $app['authentication']->getUser()
-                ->setGender($request->request->get("form_gender"))
+                ->setGender((int) $request->request->get("form_gender"))
                 ->setFirstName($request->request->get("form_firstname"))
                 ->setLastName($request->request->get("form_lastname"))
                 ->setAddress($request->request->get("form_address"))

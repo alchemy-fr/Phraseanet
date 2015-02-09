@@ -11,10 +11,6 @@ services:
   - elasticsearch
 
 before_script:
-  - export JS_COMPILER=$TRAVIS_BUILD_DIR/closure/compiler.jar
-  - sudo apt-get update -qq && sudo apt-get install -qq scons inkscape python-setuptools
-  - sudo easy_install -U taschenmesser scour boto
-  - wget http://dl.google.com/closure-compiler/compiler-latest.zip && unzip compiler-latest.zip -d closure
   - node --version
   - npm --version
   - travis_retry npm install
@@ -25,9 +21,7 @@ before_script:
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
   - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
   - yes | pecl install imagick
-  - mysql -e 'create database update39_test;create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
-  - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
-  - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
+  - mysql -e 'create database update39_test;create database ab_test;create database db_test;'
   - mysql -e 'SET @@global.sql_mode= "";'
   - mysql -e 'SET @@global.max_allowed_packet= 33554432;'
   - mysql -e 'SET @@global.wait_timeout= 999999;'

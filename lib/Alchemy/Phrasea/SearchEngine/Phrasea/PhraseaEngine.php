@@ -709,18 +709,18 @@ class PhraseaEngine implements SearchEngineInterface
             }
 
             // date
-            if (($options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
+            if (($options->getMinDate() || $options->getMaxDate()) && $options->getDateFields()) {
                 if ($options->getMinDate()) {
-                    $clauses[] = implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d');
+                    $clauses[] = implode(' >= ' . $options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $options->getDateFields())) . ' >= ' . $options->getMinDate()->format('Y-m-d');
                 }
                 if ($options->getMaxDate()) {
-                    $clauses[] = implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d');
+                    $clauses[] = implode(' <= ' . $options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $options->getDateFields())) . ' <= ' . $options->getMaxDate()->format('Y-m-d');
                 }
             }
 
             // record type
             if ($options->getRecordType()) {
-                $clauses[] = 'recordtype=' . $this->options->getRecordType();
+                $clauses[] = 'recordtype=' . $options->getRecordType();
             }
 
             // join clauses to build a query

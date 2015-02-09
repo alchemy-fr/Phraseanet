@@ -106,7 +106,7 @@
                                     {% if expiration is not none %}
                                     <tr>
                                         <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; line-height:16px; color:#999999;">
-                                            {% trans 'Ce lien est valable jusqu\'au' %} {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
+                                            {{ 'Ce lien est valable jusqu\'au' | trans  }} {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
                                         </td>
                                     </tr>
                                     {% endif %}

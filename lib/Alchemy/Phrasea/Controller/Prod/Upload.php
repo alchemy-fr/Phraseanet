@@ -51,7 +51,7 @@ class Upload implements ControllerProviderInterface
 
         $controllers->get('/flash-version/', 'controller.prod.upload:getFlashUploadForm')
             ->bind('upload_flash_form');
-        $controllers->get('/html5-version/', $this->call('getHtml5UploadForm'))
+        $controllers->get('/html5-version/', 'controller.prod.upload:getHtml5UploadForm')
             ->bind('upload_html5_form');
 
         $controllers->post('/', 'controller.prod.upload:upload')
@@ -75,7 +75,7 @@ class Upload implements ControllerProviderInterface
         return $app['twig']->render(
             'prod/upload/upload-flash.html.twig', array(
                 'sessionId'           => session_id(),
-                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
                 'maxFileSize'         => $maxFileSize,
                 'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
             ));
@@ -88,7 +88,7 @@ class Upload implements ControllerProviderInterface
         return $app['twig']->render(
             'prod/upload/upload.html.twig', array(
                 'sessionId'           => session_id(),
-                'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+                'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
                 'maxFileSize'         => $maxFileSize,
                 'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
             ));

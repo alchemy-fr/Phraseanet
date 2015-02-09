@@ -598,7 +598,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $user->setFirstName($parm['first_name'])
             ->setLastName($parm['last_name'])
-            ->setGender($parm['gender'])
+            ->setGender((int) $parm['gender'])
             ->setEmail($parm['email'])
             ->setAddress($parm['address'])
             ->setZipCode($parm['zip'])

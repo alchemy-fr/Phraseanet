@@ -15,7 +15,7 @@
 {% block javascript %}
     {% include "common/templates.html.twig" %}
     {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
-    <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
+    <script type="text/javascript" src="/assets/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
     <script type="text/javascript">
         var p4 = p4 || {};
@@ -81,7 +81,7 @@
     <div id="quotas_dialog"></div>
     <div id="masks_dialog"></div>
     <div id="time_dialog"></div>
-    <div id="user_add_dialog" title="{{ 'Ajouter un nouvel utilisateur' | trans }}">
+    <div id="user_add_dialog" title="{{ 'Ajouter un nouvel utilisateur' | trans }}" style="display:none">
         <form>
             <label for="new_user_mail">{{ 'Adresse email du nouvel utilisateur' | trans }}</label>
             <input id="new_user_mail"  type="text" name="value" />

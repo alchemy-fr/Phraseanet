@@ -310,9 +310,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['subdef.substituer'] = $this->getMockBuilder('Alchemy\Phrasea\Media\SubdefSubstituer')
             ->disableOriginalConstructor()
             ->getMock();
-        $record = $this->getMockBuilder('record_adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $record = self::$DI['record_2'];
 
         //expect one call to substitute the documents
         self::$DI['app']['subdef.substituer']->expects($this->once())

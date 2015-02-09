@@ -230,7 +230,7 @@
                 beforeSend:function(){
                     el_loader.css('visibility', 'visible');
                 },
-                success: function(datas){
+                success: function(data){
                     el_loader.css('visibility', 'hidden');
                     if (data.connection === true && data.database === true && data.innodb === true) {
                         el_status.attr('src', '/skins/icons/ok.png').show();
@@ -245,11 +245,11 @@
                         return;
                     }
                     if (false === data.innodb) {
-                        el_message.empty().append("{% trans 'Database server does not support InnoDB storage engine' %}");
+                        el_message.empty().append("{{ 'Database server does not support InnoDB storage engine' | trans }}");
 
                         return;
                     }
-                    if(datas.connection === true)
+                    if(data.connection === true)
                     {
                         el_message.empty().append("{{ 'Connection is OK but database does not exists or can not be accessed' | trans }}");
                     }
@@ -266,7 +266,7 @@
                     el_status.attr('src', '/skins/icons/delete.png').show();
                     el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
                 },
-                error:function(datas){
+                error:function(data){
                     el_loader.css('visibility', 'hidden');
                     el_status.attr('src', '/skins/icons/delete.png').show();
                     el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");

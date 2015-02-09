@@ -555,7 +555,8 @@ class V1 implements ControllerProviderInterface
                 return $this->getBadRequest($app, $request, sprintf('Invalid forceBehavior value `%s`', $request->get('forceBehavior')));
         }
 
-        $app['border-manager']->process($session, $Package, $callback, $behavior);
+        $nosubdef = $request->get('nosubdefs')==='' || \p4field::isyes($request->get('nosubdefs'));
+        $app['border-manager']->process($session, $Package, $callback, $behavior, $nosubdef);
 
         $ret = ['entity' => null,];
 
@@ -1325,13 +1326,38 @@ class V1 implements ControllerProviderInterface
             }
         }
 
+        if($media->get_name() != 'document') {
+            $databox = $record->get_databox();
+            try {
+                $subDefDefinition = $databox->get_subdef_structure()->get_subdef($record->get_type(), $media->get_name());
+            } catch (\Exception_Databox_SubdefNotFound $e) {
+                return null;
+            }
+        }
+
+        if ($media->get_name() != 'document' && false === $subDefDefinition->is_downloadable()) {
+            return null;
+        }
+
         if ($media->get_permalink() instanceof \media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink());
         } else {
             $permalink = null;
         }
 
-        return ['name' => $media->get_name(), 'permalink' => $permalink, 'height' => $media->get_height(), 'width' => $media->get_width(), 'filesize' => $media->get_size(), 'devices' => $media->getDevices(), 'player_type' => $media->get_type(), 'mime_type' => $media->get_mime(),];
+        return [
+            'name' => $media->get_name(),
+            'permalink' => $permalink,
+            'height' => $media->get_height(),
+            'width' => $media->get_width(),
+            'filesize' => $media->get_size(),
+            'devices' => $media->getDevices(),
+            'player_type' => $media->get_type(),
+            'mime_type' => $media->get_mime(),
+            'substituted' => $media->is_substituted(),
+            'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
+            'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
+        ];
     }
 
     /**

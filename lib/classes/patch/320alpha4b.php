@@ -89,7 +89,6 @@ class patch_320alpha4b extends patchAbstract
             if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
                 continue;
             }
-            $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 
             $feed = $this->get_feed($app, $appbox, $user, $row['pub_restrict'], $row['homelink']);
 
