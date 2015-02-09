@@ -47,7 +47,7 @@ class IndexerSubscriber implements EventSubscriberInterface
             RecordEvents::ORIGINAL_NAME_CHANGED => 'onRecordChange',
             RecordEvents::STATUS_CHANGED => 'onRecordChange',
             RecordEvents::SUB_DEFINITION_CREATED => 'onRecordChange',
-            RecordEvents::SUB_DEFINITION_SUBSTITUTED => 'onRecordChange',
+            RecordEvents::MEDIA_SUBSTITUTED => 'onRecordChange',
             KernelEvents::TERMINATE => 'onKernelTerminate',
         ];
     }

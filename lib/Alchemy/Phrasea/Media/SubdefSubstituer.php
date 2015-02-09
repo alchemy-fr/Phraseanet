@@ -97,6 +97,6 @@ class SubdefSubstituer
             $record->rebuild_subdefs();
         }
 
-        $this->dispatcher->dispatch(RecordEvents::SUB_DEFINITION_SUBSTITUTED, new RecordMediaSubstitutedEvent($record));
+        $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new RecordMediaSubstitutedEvent($record));
     }
 }

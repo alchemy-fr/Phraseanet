@@ -22,5 +22,5 @@ final class RecordEvents
     const STATUS_CHANGED = 'record.status_changed';
     // Sub-definitions
     const SUB_DEFINITION_CREATED = 'record.sub_definition_created';
-    const SUB_DEFINITION_SUBSTITUTED = 'record.sub_definition_substituted';
+    const MEDIA_SUBSTITUTED = 'record.media_substituted';
 }
