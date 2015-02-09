@@ -11,16 +11,11 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Event\Subscriber\CollectionSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\DataboxSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\ElasticSearchSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\RecordSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\StorySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
