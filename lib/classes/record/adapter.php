@@ -1212,7 +1212,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        $this->dispatchCreatedEvent()
+        self::dispatchCreatedEvent($app, $story);
 
         return $story;
     }
@@ -1283,14 +1283,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $record->insertTechnicalDatas($app['mediavorus']);
         $record->rebuild_subdefs();
 
-        $this->dispatchCreatedEvent()
+        self::dispatchCreatedEvent($app, $record);
 
         return $record;
     }
 
-    private function dispatchCreatedEvent()
+    private static function dispatchCreatedEvent(Application $app, RecordInterface $record)
     {
-        $this->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($this));
+        $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
     }
 
     /**
@@ -1538,7 +1538,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 
-        $this->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($record));
+        $this->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($this));
 
         return array_keys($ftodel);
     }
