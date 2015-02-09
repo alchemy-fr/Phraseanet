@@ -39,7 +39,7 @@ class IndexerSubscriber implements EventSubscriberInterface
             RecordStructureEvents::FIELD_DELETED => 'onStructureChange',
             RecordStructureEvents::STATUS_BIT_UPDATED => 'onStructureChange',
             RecordStructureEvents::STATUS_BIT_DELETED => 'onStructureChange',
-            CollectionEvents::NAME_CHANGED => 'onCollectionChange'
+            CollectionEvents::NAME_CHANGED => 'onCollectionChange',
             RecordEvents::CREATED => 'onRecordChange',
             RecordEvents::DELETED => 'onRecordDelete',
             RecordEvents::COLLECTION_CHANGED => 'onRecordChange',
