@@ -24,4 +24,13 @@ class ApiAccountRepository extends EntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    public function findByUser(User $user)
+    {
+        $qb = $this->createQueryBuilder('acc');
+        $qb->where($qb->expr()->eq('acc.user', ':user'));
+        $qb->setParameter(':user', $user);
+
+        return $qb->getQuery()->getResult();
+    }
 }

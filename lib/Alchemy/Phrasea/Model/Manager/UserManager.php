@@ -217,6 +217,7 @@ class UserManager
         $this->cleanFtpExports($user);
         $this->cleanAuthProvider($user);
         $this->cleanUserSessions($user);
+        $this->cleanOauthApplication($user);
     }
 
     /**
@@ -233,6 +234,20 @@ class UserManager
             $stmt = $this->appboxConnection->prepare($sql);
             $stmt->execute([':usr_id' => $user->getId()]);
             $stmt->closeCursor();
+        }
+    }
+    private function cleanOauthApplication(User $user)
+    {
+        $accounts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findByUser($user);
+
+        foreach ($accounts as $account) {
+            $this->objectManager->remove($account);
+        }
+
+        $apps = $this->objectManager->getRepository('Phraseanet:ApiApplication')->findByCreator($user);
+
+        foreach ($apps as $app) {
+            $this->objectManager->remove($app);
         }
     }
 }
