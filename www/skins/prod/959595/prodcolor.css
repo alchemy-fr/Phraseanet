@@ -4780,6 +4780,11 @@ ui-dialog-titlebar {
     color: #404040;
 }
 
+#answers .status img {
+    max-width: 16px;
+    max-heigh: 16px;
+}
+
 #answers #answersNext {
   width: 150px;
   margin: 5px;
