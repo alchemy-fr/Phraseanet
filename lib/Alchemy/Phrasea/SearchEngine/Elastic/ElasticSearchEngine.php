@@ -556,10 +556,12 @@ class ElasticSearchEngine implements SearchEngineInterface
         $rules = [];
         foreach ($collections as $collectionId) {
             $databoxId = \phrasea::sbasFromBas($this->app, $collectionId);
+            $mask_xor = $acl->get_mask_xor($collectionId);
+            $mask_and = $acl->get_mask_and($collectionId);
             foreach (range(0, 31) as $bit) {
                 $rules[$databoxId][$collectionId][$bit] = $this->computeAccess(
-                    $acl->get_mask_xor($collectionId),
-                    $acl->get_mask_and($collectionId),
+                    $mask_xor,
+                    $mask_and,
                     $bit
                 );
             }
