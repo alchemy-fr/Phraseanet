@@ -33,6 +33,8 @@ class BuildSubdefs extends Command
         $this->addArgument('subdefs', InputArgument::REQUIRED, 'Names of sub-definition to re-build');
         $this->addOption('max_record', 'max', InputOption::VALUE_OPTIONAL, 'Max record id');
         $this->addOption('min_record', 'min', InputOption::VALUE_OPTIONAL, 'Min record id');
+        $this->addOption('with-substitution', 'wsubstit', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records as well');
+        $this->addOption('substitution-only', 'substito', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records only');
 
         return $this;
     }
@@ -91,14 +93,13 @@ class BuildSubdefs extends Command
 
         list($sqlCount, $stmtParams) = SQLParserUtils::expandListParameters($sqlCount, $params, $types);
 
-        $totalRecords = 0;
-        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
-            $connection = $databox->get_connection();
-            $stmt = $connection->prepare($sqlCount);
-            $stmt->execute($stmtParams);
-            $row = $stmt->fetch();
-            $totalRecords += $row['nb_records'];
-        }
+        $databox = $this->container['phraseanet.appbox']->get_databox($input->getArgument('databox'));
+
+        $connection = $databox->get_connection();
+        $stmt = $connection->prepare($sqlCount);
+        $stmt->execute($stmtParams);
+        $row = $stmt->fetch();
+        $totalRecords = $row['nb_records'];
 
         if ($totalRecords === 0) {
             return;
@@ -109,8 +110,6 @@ class BuildSubdefs extends Command
         $progress->start($output, $totalRecords);
 
         $progress->display();
-
-        $databox = $this->container['phraseanet.appbox']->get_databox($input->getArgument('databox'));
 
         $sql = "
             SELECT DISTINCT(r.record_id)
@@ -137,6 +136,14 @@ class BuildSubdefs extends Command
             $types[] = \PDO::PARAM_INT;
         }
 
+        if (false === $withSubstitution = $input->getOption('with-substitution')) {
+            $sql .= " AND (s.substit = 0)";
+        }
+
+        if ($substitutionOnly = $input->getOption('substitution-only')) {
+            $sql .= " AND (s.substit = 1)";
+        }
+
         list($sql, $stmtParams) = SQLParserUtils::expandListParameters($sql, $params, $types);
 
         $connection = $databox->get_connection();
@@ -155,6 +162,9 @@ class BuildSubdefs extends Command
 
             foreach ($subdefs as $subdef) {
                 $subdef->remove_file();
+                if (($withSubstitution && $subdef->is_substituted()) || $substitutionOnly) {
+                    $subdef->set_substituted(false);
+                }
             }
 
             $record->generate_subdefs($databox, $this->container, $subdefsName);
