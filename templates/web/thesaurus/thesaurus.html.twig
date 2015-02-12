@@ -1011,6 +1011,7 @@
                                     case "kterm_newts": // nouveau terme specifique
                                     case "kterm_newsy": // nouveau synonyme
                                         var typ = menuelem_id=="kterm_newts" ? "TS" : "SY";
+                                        $("#NEWSY_DLG input[type=\"text\"]").val("");
                                         $("#NEWSY_DLG .label").html(
                                                 typ=="TS" ? "{% trans 'thesaurus:: terme' %}" : "{% trans 'thesaurus:: synonyme' %}"
                                         );
