@@ -331,6 +331,15 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         return $this->publishers;
     }
 
+    public function get_owner()
+    {
+        if (!$this->owner) {
+            $this->load_publishers();
+        }
+
+        return $this->owner;
+    }
+
     /**
      *
      * @return int

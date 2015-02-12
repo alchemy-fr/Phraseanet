@@ -559,7 +559,11 @@ class User_Query implements User_QueryInterface
         $users = new ArrayCollection();
 
         foreach ($rs as $row) {
-            $users[] = User_Adapter::getInstance($row['usr_id'], $this->app);
+            try {
+                $users[] = User_Adapter::getInstance($row['usr_id'], $this->app);
+            } catch (\Exception $e) {
+
+            }
         }
 
         $this->results = $users;
