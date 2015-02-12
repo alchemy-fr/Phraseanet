@@ -80,7 +80,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $rejectedRegistration->setPending(true);
         $rejectedRegistration->setRejected(true);
 
-        $databox = current((new \appbox(new Application()))->get_databoxes());
+        $databox = current((new \appbox(new Application(Application::ENV_TEST)))->get_databoxes());
         $collection = current($databox->get_collections());
 
         $noLimitedPendingRegistration = [

@@ -142,12 +142,12 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             $module->setSession($session);
             $session->addModule($module);
 
-            $this->app['EM']->persist($module);
+            $this->app['orm.em']->persist($module);
         } else {
-            $this->app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+            $this->app['orm.em']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
-        $this->app['EM']->persist($session);
-        $this->app['EM']->flush();
+        $this->app['orm.em']->persist($session);
+        $this->app['orm.em']->flush();
     }
 
     private function isFlashUploadRequest(Request $request)

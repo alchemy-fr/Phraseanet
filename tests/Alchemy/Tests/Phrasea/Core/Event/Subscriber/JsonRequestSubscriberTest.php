@@ -13,7 +13,7 @@ class JsonRequestSubscriberTest extends \PhraseanetTestCase
      */
     public function testRoutes($route, $isJson, $exceptionExpected)
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new JsonRequestSubscriber());
         $app->get($route, function () {

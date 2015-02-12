@@ -122,7 +122,7 @@ class Records implements ControllerProviderInterface
             ]),
             "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
-                'baskets'       => $record->get_container_baskets($app['EM'], $app['authentication']->getUser())
+                'baskets'       => $record->get_container_baskets($app['orm.em'], $app['authentication']->getUser())
             ]),
             "current"       => $train,
             "history"       => $app['twig']->render('prod/preview/short_history.html.twig', [
@@ -164,14 +164,14 @@ class Records implements ControllerProviderInterface
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
 
                 foreach ($basketElements as $element) {
-                    $app['EM']->remove($element);
+                    $app['orm.em']->remove($element);
                     $deleted[] = $element->getRecord($app)->get_serialize_key();
                 }
 
                 $attachedStories = $StoryWZRepository->findByRecord($app, $record);
 
                 foreach ($attachedStories as $attachedStory) {
-                    $app['EM']->remove($attachedStory);
+                    $app['orm.em']->remove($attachedStory);
                 }
 
                 $deleted[] = $record->get_serialize_key();
@@ -181,7 +181,7 @@ class Records implements ControllerProviderInterface
             }
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return $app->json($deleted);
     }

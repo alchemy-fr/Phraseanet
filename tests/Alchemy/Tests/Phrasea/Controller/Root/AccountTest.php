@@ -395,10 +395,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $response = self::$DI['client']->getResponse();
+
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
 
-        $rs = self::$DI['app']['EM']->getRepository('Phraseanet:Registration')->findBy([
+        $rs = self::$DI['app']['orm.em']->getRepository('Phraseanet:Registration')->findBy([
             'user' => self::$DI['app']['authentication']->getUser()->getId(),
             'pending' => true
         ]);

@@ -47,7 +47,7 @@ class ConnectedUsers implements ControllerProviderInterface
         $date = new \DateTime('-2 hours');
         $params = ['date' => $date->format('Y-m-d h:i:s')];
 
-        $query = $app['EM']->createQuery($dql);
+        $query = $app['orm.em']->createQuery($dql);
         $query->setParameters($params);
         $sessions = $query->getResult();
 

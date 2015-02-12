@@ -29,7 +29,7 @@ class MediaTypeTest extends \PhraseanetTestCase
     {
         $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg');
         $file = new File(self::$DI['app'], $media, self::$DI['collection']);
-        $response = $this->object->check(self::$DI['app']['EM'], $file);
+        $response = $this->object->check(self::$DI['app']['orm.em'], $file);
 
         $this->assertTrue($response->isOk());
 
@@ -37,7 +37,7 @@ class MediaTypeTest extends \PhraseanetTestCase
 
         $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg');
         $file = new File(self::$DI['app'], $media, self::$DI['collection']);
-        $response = $object->check(self::$DI['app']['EM'], $file);
+        $response = $object->check(self::$DI['app']['orm.em'], $file);
 
         $this->assertFalse($response->isOk());
     }

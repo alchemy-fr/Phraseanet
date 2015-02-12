@@ -12,7 +12,7 @@ class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
             return null;
         }
 
-        $entry = $this->app['EM']->getRepository('Phraseanet::Entry')->find($data->{"entry_id"});
+        $entry = $this->app['orm.em']->getRepository('Phraseanet::Entry')->find($data->{"entry_id"});
 
         if (null === $entry) {
             return null;

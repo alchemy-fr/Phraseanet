@@ -37,7 +37,7 @@ class RemovePluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['filesystem']->expects($this->at(1))
             ->method('remove')
-            ->with(self::$DI['cli']['plugins.directory'].'/'.$name);
+            ->with(self::$DI['cli']['plugin.path'].'/'.$name);
 
         $result = $command->execute($input, $output);
 

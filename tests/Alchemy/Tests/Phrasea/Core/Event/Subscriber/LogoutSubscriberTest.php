@@ -11,7 +11,7 @@ class LogoutSubscriberTest extends \PhraseanetTestCase
 {
     public function testThatSearchEngineCacheIsCleaned()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new LogoutSubscriber());
 
         $app['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');

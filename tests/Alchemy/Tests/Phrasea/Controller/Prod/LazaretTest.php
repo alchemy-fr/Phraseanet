@@ -59,7 +59,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         $route = '/prod/lazaret/';
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         $crawler = self::$DI['client']->request(
             'GET', $route
         );
@@ -129,7 +129,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAddElement()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $originalEm = self::$DI['app']['EM'];
+        $originalEm = self::$DI['app']['orm.em'];
         $em = $this->createEntityManagerMock();
 
         $lazaretFile = $this->getOneLazaretFile();
@@ -186,7 +186,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $em->expects($this->once())
             ->method('flush');
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
@@ -198,7 +198,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['app']['orm.em'] = $originalEm;
         $story->delete();
     }
 
@@ -254,7 +254,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l');
 
         $count = $query->getSingleScalarResult();
 
@@ -276,7 +276,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['EM']->createQuery(
+        $query = self::$DI['app']['orm.em']->createQuery(
             'SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l'
         );
 
@@ -379,7 +379,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
                     ->getMock();
         });
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', [
             'record_id' => self::$DI['record_1']->get_record_id()
         ]);

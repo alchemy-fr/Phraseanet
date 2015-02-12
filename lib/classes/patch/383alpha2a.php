@@ -66,17 +66,17 @@ class patch_383alpha2a extends patchAbstract
 
         foreach ($rows as $row) {
             try {
-                $vsession = $app['EM']->createQuery('SELECT PARTIAL s.{id} FROM Phraseanet:ValidationSession s WHERE s.id = :id')
+                $vsession = $app['orm.em']->createQuery('SELECT PARTIAL s.{id} FROM Phraseanet:ValidationSession s WHERE s.id = :id')
                       ->setParameters(['id' => $row['validation_session_id']])
                       ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                       ->getSingleResult();
-                $app['EM']->remove($vsession);
+                $app['orm.em']->remove($vsession);
             } catch (NoResultException $e) {
 
             }
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return true;
     }

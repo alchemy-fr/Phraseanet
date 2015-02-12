@@ -190,8 +190,8 @@ class DoDownload implements ControllerProviderInterface
         } else {
             $list['complete'] = true;
             $token->setData(serialize($list));
-            $app['em']->persist($token);
-            $app['em']->flush();
+            $app['orm.em']->persist($token);
+            $app['orm.em']->flush();
         }
 
         return $app->json([

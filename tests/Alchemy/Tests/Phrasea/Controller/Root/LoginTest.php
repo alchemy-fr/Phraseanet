@@ -163,8 +163,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $email = $this->generateEmail();
         $token = self::$DI['app']['manipulator.token']->createResetEmailToken(self::$DI['user'], $email);
         $tokenValue = $token->getValue();
-        self::$DI['app']['EM']->remove($token);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->remove($token);
+        self::$DI['app']['orm.em']->flush();
         self::$DI['client']->request('GET', '/login/register-confirm/', [
             'code'    => $tokenValue
         ]);
@@ -209,8 +209,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $registration->setUser(self::$DI['user']);
         $registration->setBaseId(self::$DI['collection']->get_base_id());
 
-        self::$DI['app']['EM']->persist($registration);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($registration);
+        self::$DI['app']['orm.em']->flush();
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
         $response = self::$DI['client']->getResponse();
@@ -977,7 +977,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'base_id' => 1
         ]]));
 
-        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+        self::$DI['app']['orm.em.native-query'] = $nativeQueryMock;
 
         $this->mockNotificationsDeliverer($emails);
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
@@ -1075,7 +1075,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'base_id' => 1
         ]]));
 
-        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+        self::$DI['app']['orm.em.native-query'] = $nativeQueryMock;
 
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
@@ -1199,8 +1199,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $login = self::$DI['app']['authentication']->getUser()->getLogin();
         self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
         self::$DI['app']['authentication']->getUser()->setMailLocked(false);
-        self::$DI['app']['EM']->persist(self::$DI['app']['authentication']->getUser());
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist(self::$DI['app']['authentication']->getUser());
+        self::$DI['app']['orm.em']->flush();
 
         $this->logout(self::$DI['app']);
 
@@ -1561,7 +1561,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
+        $ret = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['user' => self::$DI['user']->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -1632,7 +1632,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('Phraseanet:UsrAuthProvider')
+        $ret = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrAuthProvider')
             ->findBy(['user' => $user->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -1811,7 +1811,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->with('provider-test', $id)
             ->will($this->returnValue($out));
 
-        self::$DI['app']['EM'] = $this->createEntityManagerMock();
+        self::$DI['app']['orm.em'] = $this->createEntityManagerMock();
 
         self::$DI['app']['repo.usr-auth-providers'] = $repo;
 
@@ -1839,7 +1839,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     private function deleteRequest()
     {
-        $query = self::$DI['app']['EM']->createQuery('DELETE FROM Phraseanet:Registration d WHERE d.user=?1');
+        $query = self::$DI['app']['orm.em']->createQuery('DELETE FROM Phraseanet:Registration d WHERE d.user=?1');
         $query->setParameter(1, self::$DI['user']->getId());
         $query->execute();
     }

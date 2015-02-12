@@ -75,22 +75,6 @@ sudo npm install -g grunt-cli
 sudo npm install -g bower
 sudo npm install -g uglify-js
 
-# python tools
-sudo easy_install -U taschenmesser scour boto 
-
-# closure compiler
-cd /tmp
-wget –quiet http://dl.google.com/closure-compiler/compiler-latest.zip
-unzip compiler-latest.zip -d closure
-mv /tmp/closure /home/vagrant
-sudo sh -c "echo 'JS_COMPILER=/home/vagrant/closure/compiler.jar' >> /etc/environment"
-export JS_COMPILER=/home/vagrant/closure/compiler.jar
-sudo chown -R vagrant: /home/vagrant/closure
-
-# java
-sudo sh -c "echo 'JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/' >> /etc/environment"
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/
-
 #twig
 cd /tmp
 git clone https://github.com/fabpot/Twig.git

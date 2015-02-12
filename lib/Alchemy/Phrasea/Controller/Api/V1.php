@@ -330,7 +330,7 @@ class V1 implements ControllerProviderInterface
      */
     private function get_cache_info(Application $app)
     {
-        $caches = ['main' => $app['cache'], 'op_code' => $app['opcode-cache'], 'doctrine_metadatas' => $app['EM']->getConfiguration()->getMetadataCacheImpl(), 'doctrine_query' => $app['EM']->getConfiguration()->getQueryCacheImpl(), 'doctrine_result' => $app['EM']->getConfiguration()->getResultCacheImpl(),];
+        $caches = ['main' => $app['cache'], 'op_code' => $app['opcode-cache'], 'doctrine_metadatas' => $app['orm.em']->getConfiguration()->getMetadataCacheImpl(), 'doctrine_query' => $app['orm.em']->getConfiguration()->getQueryCacheImpl(), 'doctrine_result' => $app['orm.em']->getConfiguration()->getResultCacheImpl(),];
 
         $ret = [];
 
@@ -526,8 +526,8 @@ class V1 implements ControllerProviderInterface
         $session = new LazaretSession();
         $session->setUser($app['authentication']->getUser());
 
-        $app['EM']->persist($session);
-        $app['EM']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         $reasons = $output = null;
 
@@ -767,7 +767,7 @@ class V1 implements ControllerProviderInterface
         $that = $this;
         $baskets = array_map(function (Basket $basket) use ($that, $app) {
             return $that->list_basket($app, $basket);
-        }, (array) $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id)->get_container_baskets($app['EM'], $app['authentication']->getUser()));
+        }, (array) $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id)->get_container_baskets($app['orm.em'], $app['authentication']->getUser()));
 
         $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
@@ -1038,8 +1038,8 @@ class V1 implements ControllerProviderInterface
         $Basket->setUser($app['authentication']->getUser());
         $Basket->setName($name);
 
-        $app['EM']->persist($Basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($Basket);
+        $app['orm.em']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $Basket)])->createResponse();
     }
@@ -1054,8 +1054,8 @@ class V1 implements ControllerProviderInterface
      */
     public function delete_basket(Application $app, Request $request, Basket $basket)
     {
-        $app['EM']->remove($basket);
-        $app['EM']->flush();
+        $app['orm.em']->remove($basket);
+        $app['orm.em']->flush();
 
         return $this->search_baskets($app, $request);
     }
@@ -1145,8 +1145,8 @@ class V1 implements ControllerProviderInterface
     {
         $basket->setName($request->get('name'));
 
-        $app['EM']->persist($basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($basket);
+        $app['orm.em']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
     }
@@ -1163,8 +1163,8 @@ class V1 implements ControllerProviderInterface
     {
         $basket->setDescription($request->get('description'));
 
-        $app['EM']->persist($basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($basket);
+        $app['orm.em']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
     }

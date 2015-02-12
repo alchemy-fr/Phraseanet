@@ -38,13 +38,13 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
                 ->setCrash(12)
                 ->setNbretry(23);
 
-        self::$DI['app']['EM']->persist($failure1);
-        self::$DI['app']['EM']->persist($failure2);
-        self::$DI['app']['EM']->persist($good1);
-        self::$DI['app']['EM']->persist($good2);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($failure1);
+        self::$DI['app']['orm.em']->persist($failure2);
+        self::$DI['app']['orm.em']->persist($good1);
+        self::$DI['app']['orm.em']->persist($good2);
+        self::$DI['app']['orm.em']->flush();
 
-        $crashed = self::$DI['app']['EM']
+        $crashed = self::$DI['app']['orm.em']
                 ->getRepository('Phraseanet:FtpExport')
                 ->findCrashedExports();
 
@@ -55,7 +55,7 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
 
     public function testFindCrashedExportsWithDate()
     {
-        self::$DI['app']['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        self::$DI['app']['orm.em']->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         $failure1 = new FtpExport();
         $failure1
@@ -97,14 +97,14 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
                 ->setNbretry(23)
                 ->setCreated(new \DateTime('-6 days'));
 
-        self::$DI['app']['EM']->persist($failure1);
-        self::$DI['app']['EM']->persist($failure2);
-        self::$DI['app']['EM']->persist($good1);
-        self::$DI['app']['EM']->persist($good2);
-        self::$DI['app']['EM']->persist($good3);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($failure1);
+        self::$DI['app']['orm.em']->persist($failure2);
+        self::$DI['app']['orm.em']->persist($good1);
+        self::$DI['app']['orm.em']->persist($good2);
+        self::$DI['app']['orm.em']->persist($good3);
+        self::$DI['app']['orm.em']->flush();
 
-        $crashed = self::$DI['app']['EM']
+        $crashed = self::$DI['app']['orm.em']
                 ->getRepository('Phraseanet:FtpExport')
                 ->findCrashedExports(new \DateTime('-6 days'));
 
@@ -179,14 +179,14 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
         $elem4->setExport($doable2);
         $doable2->addElement($elem4);
 
-        self::$DI['app']['EM']->persist($notDoable1);
-        self::$DI['app']['EM']->persist($notDoable2);
-        self::$DI['app']['EM']->persist($doable1);
-        self::$DI['app']['EM']->persist($doable2);
+        self::$DI['app']['orm.em']->persist($notDoable1);
+        self::$DI['app']['orm.em']->persist($notDoable2);
+        self::$DI['app']['orm.em']->persist($doable1);
+        self::$DI['app']['orm.em']->persist($doable2);
 
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->flush();
 
-        $doables = self::$DI['app']['EM']
+        $doables = self::$DI['app']['orm.em']
                 ->getRepository('Phraseanet:FtpExport')
                 ->findDoableExports();
 
@@ -212,13 +212,13 @@ class FtpExportRepositoryTest extends \PhraseanetTestCase
                 ->setAddr('No match 1')
                 ->setUser(self::$DI['user_alt1']);
 
-        self::$DI['app']['EM']->persist($match1);
-        self::$DI['app']['EM']->persist($match2);
-        self::$DI['app']['EM']->persist($noMatch1);
+        self::$DI['app']['orm.em']->persist($match1);
+        self::$DI['app']['orm.em']->persist($match2);
+        self::$DI['app']['orm.em']->persist($noMatch1);
 
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->flush();
 
-        $exports = self::$DI['app']['EM']
+        $exports = self::$DI['app']['orm.em']
                 ->getRepository('Phraseanet:FtpExport')
                 ->findByUser(self::$DI['user']);
 

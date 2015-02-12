@@ -80,9 +80,9 @@ class Story implements ControllerProviderInterface
             $StoryWZ->setUser($app['authentication']->getUser());
             $StoryWZ->setRecord($Story);
 
-            $app['EM']->persist($StoryWZ);
+            $app['orm.em']->persist($StoryWZ);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             if ($request->getRequestFormat() == 'json') {
                 $data = [

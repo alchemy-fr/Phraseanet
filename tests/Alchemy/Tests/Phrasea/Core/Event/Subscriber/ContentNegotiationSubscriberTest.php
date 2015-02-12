@@ -30,7 +30,7 @@ class ContentNegotiationSubscriberTest extends \PHPUnit_Framework_TestCase
 
     private function request($accept)
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new ContentNegotiationSubscriber($app));
         $app->get('/content/negociation', function () {
             return '';

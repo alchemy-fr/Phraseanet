@@ -67,15 +67,14 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canpush"));
         $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canreport"));
 
-        self::$DI['app']['EM']->refresh($user);
+        self::$DI['app']['orm.em']->refresh($user);
         self::$DI['app']['manipulator.user']->delete($user);
     }
 
     public function testRouteRightsApplyException()
     {
-        $this->markTestIncomplete();
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
-            'users'   => 'unknow_id',
+            'template'   => 'unknow_id',
             'values'  => 'canreport_' . self::$DI['collection']->get_base_id() . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
             'user_infos' => "user_infos[email]=toto@toto.fr"
         ]);
@@ -194,7 +193,6 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteRightMaskApply()
     {
-        $this->markTestIncomplete();
         $base_id = self::$DI['collection']->get_base_id();
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
         self::$DI['client']->request('POST', '/admin/users/rights/masks/apply/', [
@@ -443,7 +441,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
             $user
         ]));
 
-        self::$DI['app']['EM.native-query'] = $nativeQueryMock;
+        self::$DI['app']['orm.em.native-query'] = $nativeQueryMock;
 
         $data =
 <<<CSV

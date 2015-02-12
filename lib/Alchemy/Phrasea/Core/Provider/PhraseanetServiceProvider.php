@@ -68,13 +68,25 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
             return $reader;
         });
 
-        $app['phraseanet.metadata-setter'] = $app->share(function (SilexApplication $app) {
+        $app['phraseanet.metadata-setter'] = $app->share(function () {
             return new PhraseanetMetadataSetter();
         });
 
         $app['phraseanet.user-query'] = function (SilexApplication $app) {
             return new \User_Query($app);
         };
+
+        $app['phraseanet.logger'] = $app->protect(function ($databox) use ($app) {
+            try {
+                return \Session_Logger::load($app, $databox);
+            } catch (\Exception_Session_LoggerNotFound $e) {
+                return \Session_Logger::create($app, $databox, $app['browser']);
+            }
+        });
+
+        $app['date-formatter'] = $app->share(function (SilexApplication $app) {
+            return new \phraseadate($app);
+        });
     }
 
     public function boot(SilexApplication $app)

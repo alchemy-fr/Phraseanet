@@ -61,11 +61,11 @@ class patch_390alpha16a extends patchAbstract
         $sql = ' SELECT edit_preset_id, creation_date, title, xml, usr_id, sbas_id
                  FROM edit_presets';
 
-        $em = $app['EM'];
+        $em = $app['orm.em'];
         $n = 0;
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
         foreach ($app['phraseanet.appbox']->get_connection()->fetchAll($sql) as $row) {
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
             $preset = new Preset();

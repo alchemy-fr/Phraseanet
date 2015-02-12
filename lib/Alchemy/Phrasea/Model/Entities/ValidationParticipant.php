@@ -58,7 +58,7 @@ class ValidationParticipant
 
     /**
      * @ORM\ManyToOne(targetEntity="ValidationSession", inversedBy="participants", cascade={"persist"})
-     * @ORM\JoinColumn(name="ValidationSession_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="validation_session_id", referencedColumnName="id")
      */
     private $session;
 

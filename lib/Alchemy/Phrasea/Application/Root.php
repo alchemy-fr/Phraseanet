@@ -68,7 +68,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
             $app->register(new DoctrineProfilerServiceProvider());
             $app['db'] = $app->share(function (PhraseaApplication $app) {
-                return $app['EM']->getConnection();
+                return $app['orm.em']->getConnection();
             });
         }
     }

@@ -137,7 +137,7 @@ class CLI extends Application
         parent::loadPlugins();
 
         call_user_func(function ($cli) {
-            require $cli['plugins.directory'] . '/commands.php';
+            require $cli['plugin.path'] . '/commands.php';
         }, $this);
     }
 }

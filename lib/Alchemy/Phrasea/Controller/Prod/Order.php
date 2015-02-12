@@ -124,7 +124,7 @@ class Order implements ControllerProviderInterface
                     $orderElement->setOrder($order);
                     $orderElement->setBaseId($record->get_base_id());
                     $orderElement->setRecordId($record->get_record_id());
-                    $app['EM']->persist($orderElement);
+                    $app['orm.em']->persist($orderElement);
                 }
             }
 
@@ -145,8 +145,8 @@ class Order implements ControllerProviderInterface
 
                 try {
                     $app['dispatcher']->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
-                    $app['EM']->persist($order);
-                    $app['EM']->flush();
+                    $app['orm.em']->persist($order);
+                    $app['orm.em']->flush();
                     $msg = $app->trans('The records have been properly ordered');
                     $success = true;
                 } catch (\Exception $e) {
@@ -242,8 +242,8 @@ class Order implements ControllerProviderInterface
             $basket->setUser($order->getUser());
             $basket->setPusher($app['authentication']->getUser());
 
-            $app['EM']->persist($basket);
-            $app['EM']->flush();
+            $app['orm.em']->persist($basket);
+            $app['orm.em']->flush();
         }
 
         $n = 0;
@@ -275,10 +275,10 @@ class Order implements ControllerProviderInterface
             }
             $success = true;
 
-            $app['EM']->persist($basket);
-            $app['EM']->persist($orderElement);
-            $app['EM']->persist($order);
-            $app['EM']->flush();
+            $app['orm.em']->persist($basket);
+            $app['orm.em']->persist($orderElement);
+            $app['orm.em']->persist($order);
+            $app['orm.em']->flush();
         } catch (\Exception $e) {
 
         }
@@ -320,7 +320,7 @@ class Order implements ControllerProviderInterface
                 $orderElement->setOrderMaster($app['authentication']->getUser());
                 $orderElement->setDeny(true);
 
-                $app['EM']->persist($orderElement);
+                $app['orm.em']->persist($orderElement);
                 $n++;
             }
         }
@@ -332,8 +332,8 @@ class Order implements ControllerProviderInterface
             }
             $success = true;
 
-            $app['EM']->persist($order);
-            $app['EM']->flush();
+            $app['orm.em']->persist($order);
+            $app['orm.em']->flush();
         } catch (\Exception $e) {
 
         }

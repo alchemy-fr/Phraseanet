@@ -44,7 +44,7 @@ class Migration35Test extends AbstractSetupTester
         $this->assertFalse($this->specifications->isSetup());
 
         $this->goBackTo35();
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $migration = $this->getMigration($app);
         $migration->migrate();
 
@@ -59,7 +59,7 @@ class Migration35Test extends AbstractSetupTester
 
     private function getMigration(Application $app = null)
     {
-        $app = $app ? : new Application('test');
+        $app = $app ? : new Application(Application::ENV_TEST);
 
         if ($this->specifications) {
             $app['configuration.store'] = $this->specifications;

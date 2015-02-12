@@ -57,14 +57,14 @@ class patch_390alpha17a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $this->fillApplicationTable($app['EM']);
-        $this->fillAccountTable($app['EM']);
-        $this->fillLogTable($app['EM']);
-        $this->fillCodeTable($app['EM']);
-        $this->fillRefreshTokenTable($app['EM']);
-        $this->fillOauthTokenTable($app['EM']);
-        $this->setOauthTokenExpiresToNull($app['EM']);
-        $this->updateLogsTable($app['EM']);
+        $this->fillApplicationTable($app['orm.em']);
+        $this->fillAccountTable($app['orm.em']);
+        $this->fillLogTable($app['orm.em']);
+        $this->fillCodeTable($app['orm.em']);
+        $this->fillRefreshTokenTable($app['orm.em']);
+        $this->fillOauthTokenTable($app['orm.em']);
+        $this->setOauthTokenExpiresToNull($app['orm.em']);
+        $this->updateLogsTable($app['orm.em']);
     }
 
     private function fillApplicationTable(EntityManager $em)

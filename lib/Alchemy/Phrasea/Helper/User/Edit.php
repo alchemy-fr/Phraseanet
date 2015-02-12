@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Edit extends \Alchemy\Phrasea\Helper\Helper
 {
@@ -644,6 +645,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $template = $this->app['repo.users']->find($this->request->get('template'));
 
+        if (null === $template) {
+            throw new NotFoundHttpException(sprintf('Given template "%s" could not be found', $this->request->get('template')));
+        }
         if (null === $template->getTemplateOwner() || $template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }

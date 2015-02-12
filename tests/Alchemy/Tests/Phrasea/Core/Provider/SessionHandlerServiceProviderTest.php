@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
 use Alchemy\Tests\Phrasea\MockArrayConf;
-use Silex\Application;
+use Silex\Application as SilexApp;
 use Silex\Provider\SessionServiceProvider;
 
 class SessionHandlerServiceProviderTest extends \PhraseanetTestCase
@@ -15,7 +15,7 @@ class SessionHandlerServiceProviderTest extends \PhraseanetTestCase
      */
     public function testWithVariousConf($sessionConf, $expectedInstance, $method = null, $options = null, $mock = null)
     {
-        $app = new Application();
+        $app = new SilexApp();
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new SessionServiceProvider());
         $app->register(new SessionHandlerServiceProvider());

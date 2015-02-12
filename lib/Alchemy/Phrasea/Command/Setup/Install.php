@@ -127,7 +127,7 @@ class Install extends Command
 
     private function getABConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
-        $abConn = null;
+        $abConn = $info = null;
         if (!$input->getOption('appbox')) {
             $output->writeln("\n<info>--- Database credentials ---</info>\n");
 
@@ -138,14 +138,15 @@ class Install extends Command
                 $dbPassword = $dialog->askHiddenResponse($output, "DB password (hidden) : ");
                 $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
 
+                $info = [
+                    'host'     => $hostname,
+                    'port'     => $port,
+                    'user'     => $dbUser,
+                    'password' => $dbPassword,
+                    'dbname'   => $abName,
+                ];
                 try {
-                    $abConn = $this->container['dbal.provider']->get([
-                        'host'     => $hostname,
-                        'port'     => $port,
-                        'user'     => $dbUser,
-                        'password' => $dbPassword,
-                        'dbname'   => $abName,
-                    ]);
+                    $abConn = $this->container['dbal.provider']($info);
                     $abConn->connect();
                     $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
                 } catch (\Exception $e) {
@@ -153,15 +154,23 @@ class Install extends Command
                 }
             } while (!$abConn);
         } else {
-            $abConn = $this->container['dbal.provider']->get([
+            $info = [
                 'host'     => $input->getOption('db-host'),
                 'port'     => $input->getOption('db-port'),
                 'user'     => $input->getOption('db-user'),
                 'password' => $input->getOption('db-password'),
                 'dbname'   => $input->getOption('appbox'),
-            ]);
+            ];
+
+            $abConn = $this->container['dbal.provider']($info);
             $abConn->connect();
             $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
+        }
+
+        // add dbs.option & orm.options services to use orm.em later
+        if ($abConn && $info) {
+            $this->container['dbs.options'] = array_merge($this->container['db.options.from_info']($info), $this->container['dbs.options']);
+            $this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
         return $abConn;
@@ -169,7 +178,7 @@ class Install extends Command
 
     private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
     {
-        $dbConn = $template = null;
+        $dbConn = $template = $info = null;
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
@@ -177,13 +186,15 @@ class Install extends Command
 
                 if ($dbName) {
                     try {
-                        $dbConn = $this->container['dbal.provider']->get([
+                        $info = [
                             'host'     => $abConn->getHost(),
                             'port'     => $abConn->getPort(),
                             'user'     => $abConn->getUsername(),
                             'password' => $abConn->getPassword(),
                             'dbname'   => $dbName,
-                        ]);
+                        ];
+
+                        $dbConn = $this->container['dbal.provider']($info);
                         $dbConn->connect();
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
@@ -200,16 +211,24 @@ class Install extends Command
                 }
             } while ($retry);
         } else {
-            $dbConn = $this->container['dbal.provider']->get([
+            $info = [
                 'host'     => $input->getOption('db-host'),
                 'port'     => $input->getOption('db-port'),
                 'user'     => $input->getOption('db-user'),
                 'password' => $input->getOption('db-password'),
                 'dbname'   => $input->getOption('databox'),
-            ]);
+            ];
+
+            $dbConn = $this->container['dbal.provider']($info);
             $dbConn->connect();
             $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
             $template = $input->getOption('db-template') ? : 'en';
+        }
+
+        // add dbs.option & orm.options services to use orm.em later
+        if ($dbConn && $info) {
+            $this->container['dbs.options'] = array_merge($this->container['db.options.from_info']($info), $this->container['dbs.options']);
+            $this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
         return [$dbConn, $template];

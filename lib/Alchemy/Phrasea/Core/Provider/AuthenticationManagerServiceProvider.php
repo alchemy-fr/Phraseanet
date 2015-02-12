@@ -32,7 +32,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['authentication'] = $app->share(function (Application $app) {
-            return new Authenticator($app, $app['browser'], $app['session'], $app['EM']);
+            return new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
         });
 
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
@@ -98,7 +98,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
             $authConf = $app['conf']->get(['authentication', 'captcha']);
 
-            return new FailureManager($app['repo.auth-failures'], $app['EM'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
+            return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
         });
 
         $app['auth.password-checker'] = $app->share(function (Application $app) {

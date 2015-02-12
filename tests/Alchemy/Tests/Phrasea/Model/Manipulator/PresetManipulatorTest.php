@@ -8,7 +8,7 @@ class PresetManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new PresetManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.presets']);
+        $manipulator = new PresetManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.presets']);
         $this->assertCount(0, self::$DI['app']['repo.presets']->findAll());
         $fields = [
             ['name' => 'titi', 'value' => 'titi_value'], ['name' => 'tutu', 'value' => 'tutu_value'],
@@ -25,7 +25,7 @@ class PresetManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new PresetManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.presets']);
+        $manipulator = new PresetManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.presets']);
         $preset = $manipulator->create(self::$DI['user'], self::$DI['collection']->get_sbas_id(), 'title', []);
         $countBefore = count(self::$DI['app']['repo.presets']->findAll());
         $manipulator->delete($preset);

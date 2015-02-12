@@ -177,7 +177,7 @@ class Upload implements ControllerProviderInterface
             $lazaretSession = new LazaretSession();
             $lazaretSession->setUser($app['authentication']->getUser());
 
-            $app['EM']->persist($lazaretSession);
+            $app['orm.em']->persist($lazaretSession);
 
             $packageFile = new File($app, $media, $collection, $file->getClientOriginalName());
 

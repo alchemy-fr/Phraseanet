@@ -91,9 +91,9 @@ class patch_390alpha8a extends patchAbstract
                 ->setSettings($row['settings'])
                 ->setStatus($row['active'] ? Task::STATUS_STARTED : Task::STATUS_STOPPED);
 
-            $app['EM']->persist($task);
+            $app['orm.em']->persist($task);
         }
-        $app['EM']->flush();
+        $app['orm.em']->flush();
     }
 
     private function createJob(Application $app, $class)

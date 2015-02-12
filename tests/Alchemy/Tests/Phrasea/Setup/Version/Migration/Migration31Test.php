@@ -36,6 +36,6 @@ class Migration31Test extends AbstractSetupTester
 
     private function getMigration()
     {
-        return new Migration31(new Application('test'));
+        return new Migration31(new Application(Application::ENV_TEST));
     }
 }

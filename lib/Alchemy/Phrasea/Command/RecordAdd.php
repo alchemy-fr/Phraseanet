@@ -83,7 +83,7 @@ class RecordAdd extends Command
 
         $file = new File($this->container, $media, $collection, $originalName);
         $session = new LazaretSession();
-        $this->container['EM']->persist($session);
+        $this->container['orm.em']->persist($session);
 
         $forceBehavior = null;
 

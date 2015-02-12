@@ -822,7 +822,7 @@ abstract class base implements cache_cacheableInterface
                 $migration = $version->getMigration();
 
                 // Inject entity manager
-                $migration->setEntityManager($app['EM']);
+                $migration->setEntityManager($app['orm.em']);
 
                 // Execute migration if not marked as migrated and not already applied by an older patch
                 if (!$migration->isAlreadyApplied()) {

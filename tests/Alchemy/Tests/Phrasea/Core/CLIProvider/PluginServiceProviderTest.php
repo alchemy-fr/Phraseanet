@@ -65,8 +65,8 @@ class PluginServiceProviderTest extends ServiceProviderTestCase
         $app = self::$DI['cli'];
         $app->register(new PluginServiceProvider());
 
-        $this->assertFileExists($app['plugins.directory']);
-        $this->assertTrue(is_dir($app['plugins.directory']));
+        $this->assertFileExists($app['plugin.path']);
+        $this->assertTrue(is_dir($app['plugin.path']));
     }
 
     public function testInstallerUsesPhpConf()

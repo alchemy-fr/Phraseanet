@@ -67,10 +67,10 @@ class Publications implements ControllerProviderInterface
 
             $publisher->setFeed($feed);
 
-            $app['EM']->persist($feed);
-            $app['EM']->persist($publisher);
+            $app['orm.em']->persist($feed);
+            $app['orm.em']->persist($publisher);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })->bind('admin_feeds_create');
@@ -101,8 +101,8 @@ class Publications implements ControllerProviderInterface
             $feed->setSubtitle($request->request->get('subtitle', ''));
             $feed->setCollection($collection);
             $feed->setIsPublic('1' === $request->request->get('public'));
-            $app['EM']->persist($feed);
-            $app['EM']->flush();
+            $app['orm.em']->persist($feed);
+            $app['orm.em']->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })->before(function (Request $request) use ($app) {
@@ -171,8 +171,8 @@ class Publications implements ControllerProviderInterface
                 unset($media);
 
                 $feed->setIconUrl(true);
-                $app['EM']->persist($feed);
-                $app['EM']->flush();
+                $app['orm.em']->persist($feed);
+                $app['orm.em']->flush();
 
                 $app['filesystem']->copy($tmpname, $app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
                 $app['filesystem']->copy($tmpname, sprintf('%s/www/custom/feed_%d.jpg', $app['root.path'], $feed->getId()));
@@ -202,10 +202,10 @@ class Publications implements ControllerProviderInterface
 
                 $feed->addPublisher($publisher);
 
-                $app['EM']->persist($feed);
-                $app['EM']->persist($publisher);
+                $app['orm.em']->persist($feed);
+                $app['orm.em']->persist($publisher);
 
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             } catch (\Exception $e) {
                 $error = "An error occured";
             }
@@ -230,8 +230,8 @@ class Publications implements ControllerProviderInterface
                 if ($feed->isPublisher($user) && !$feed->isOwner($user)) {
                     $feed->removePublisher($publisher);
 
-                    $app['EM']->remove($publisher);
-                    $app['EM']->flush();
+                    $app['orm.em']->remove($publisher);
+                    $app['orm.em']->flush();
                 }
             } catch (\Exception $e) {
                 $error = "An error occured";
@@ -254,8 +254,8 @@ class Publications implements ControllerProviderInterface
                 unlink('custom/feed_' . $feed->getId() . '.jpg');
             }
 
-            $app['EM']->remove($feed);
-            $app['EM']->flush();
+            $app['orm.em']->remove($feed);
+            $app['orm.em']->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })

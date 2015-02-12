@@ -40,7 +40,7 @@ class AddPlugin extends AbstractPluginCommand
         $manifest = $this->container['plugins.plugins-validator']->validatePlugin($temporaryDir);
         $output->writeln(" <comment>OK</comment> found <info>".$manifest->getName()."</info>");
 
-        $targetDir  = $this->container['plugins.directory'] . DIRECTORY_SEPARATOR . $manifest->getName();
+        $targetDir  = $this->container['plugin.path'] . DIRECTORY_SEPARATOR . $manifest->getName();
 
         $output->write("Setting up composer...");
         $this->container['plugins.composer-installer']->install($temporaryDir);

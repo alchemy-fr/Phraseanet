@@ -244,8 +244,8 @@ class Lazaret implements ControllerProviderInterface
             }
 
             //Delete lazaret file
-            $app['EM']->remove($lazaretFile);
-            $app['EM']->flush();
+            $app['orm.em']->remove($lazaretFile);
+            $app['orm.em']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -297,8 +297,8 @@ class Lazaret implements ControllerProviderInterface
         $lazaretFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
         $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
 
-        $app['EM']->remove($lazaretFile);
-        $app['EM']->flush();
+        $app['orm.em']->remove($lazaretFile);
+        $app['orm.em']->flush();
 
         try {
             $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
@@ -323,16 +323,16 @@ class Lazaret implements ControllerProviderInterface
 
         $lazaretFiles = $app['repo.lazaret-files']->findAll();
 
-        $app['EM']->beginTransaction();
+        $app['orm.em']->beginTransaction();
 
         try {
             foreach ($lazaretFiles as $lazaretFile) {
                 $this->denyLazaretFile($app, $lazaretFile);
             }
-            $app['EM']->commit();
+            $app['orm.em']->commit();
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $app['EM']->rollback();
+            $app['orm.em']->rollback();
             $ret['message'] = $app->trans('An error occured');
         }
 
@@ -402,8 +402,8 @@ class Lazaret implements ControllerProviderInterface
             );
 
             //Delete lazaret file
-            $app['EM']->remove($lazaretFile);
-            $app['EM']->flush();
+            $app['orm.em']->remove($lazaretFile);
+            $app['orm.em']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {

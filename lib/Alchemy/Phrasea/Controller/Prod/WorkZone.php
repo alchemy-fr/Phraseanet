@@ -150,11 +150,11 @@ class WorkZone implements ControllerProviderInterface
             $StoryWZ->setUser($app['authentication']->getUser());
             $StoryWZ->setRecord($Story);
 
-            $app['EM']->persist($StoryWZ);
+            $app['orm.em']->persist($StoryWZ);
             $done++;
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
@@ -192,8 +192,8 @@ class WorkZone implements ControllerProviderInterface
             throw new NotFoundHttpException('Story not found');
         }
 
-        $app['EM']->remove($StoryWZ);
-        $app['EM']->flush();
+        $app['orm.em']->remove($StoryWZ);
+        $app['orm.em']->flush();
 
         if ($request->getRequestFormat() == 'json') {
             return $app->json([

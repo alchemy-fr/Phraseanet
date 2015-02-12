@@ -199,10 +199,10 @@ class Session_Logger
             $module->setSession($session);
             $session->addModule($module);
 
-            $app['EM']->persist($module);
-            $app['EM']->persist($session);
+            $app['orm.em']->persist($module);
+            $app['orm.em']->persist($session);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
         }
 
         $appName = [

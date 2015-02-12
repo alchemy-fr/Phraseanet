@@ -192,14 +192,14 @@ class Push implements ControllerProviderInterface
                     $Basket->setPusher($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
-                    $app['EM']->persist($Basket);
+                    $app['orm.em']->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
                         $BasketElement = new BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
-                        $app['EM']->persist($BasketElement);
+                        $app['orm.em']->persist($BasketElement);
 
                         $Basket->addElement($BasketElement);
 
@@ -218,7 +218,7 @@ class Push implements ControllerProviderInterface
                         }
                     }
 
-                    $app['EM']->flush();
+                    $app['orm.em']->flush();
 
                     $arguments = [
                         'basket' => $Basket->getId(),
@@ -238,7 +238,7 @@ class Push implements ControllerProviderInterface
                 $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
                     ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_VALIDATE, $user_receiver->getId(), '');
 
-                $app['EM']->flush();
+                $app['orm.em']->flush();
 
                 $message = $app->trans('%quantity_records% records have been sent to %quantity_users% users', [
                     '%quantity_records%' => count($pusher->get_elements()),
@@ -264,7 +264,7 @@ class Push implements ControllerProviderInterface
                 'message' => $app->trans('Unable to send the documents')
             ];
 
-            $app['EM']->beginTransaction();
+            $app['orm.em']->beginTransaction();
 
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
@@ -291,21 +291,21 @@ class Push implements ControllerProviderInterface
                     $Basket->setUser($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
-                    $app['EM']->persist($Basket);
+                    $app['orm.em']->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
                         $BasketElement = new BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
-                        $app['EM']->persist($BasketElement);
+                        $app['orm.em']->persist($BasketElement);
 
                         $Basket->addElement($BasketElement);
                     }
-                    $app['EM']->flush();
+                    $app['orm.em']->flush();
                 }
 
-                $app['EM']->refresh($Basket);
+                $app['orm.em']->refresh($Basket);
 
                 if (!$Basket->getValidation()) {
                     $Validation = new ValidationSession();
@@ -320,7 +320,7 @@ class Push implements ControllerProviderInterface
                     }
 
                     $Basket->setValidation($Validation);
-                    $app['EM']->persist($Validation);
+                    $app['orm.em']->persist($Validation);
                 } else {
                     $Validation = $Basket->getValidation();
                 }
@@ -368,7 +368,7 @@ class Push implements ControllerProviderInterface
                     $validationParticipant->setCanAgree($participant['agree']);
                     $validationParticipant->setCanSeeOthers($participant['see_others']);
 
-                    $app['EM']->persist($validationParticipant);
+                    $app['orm.em']->persist($validationParticipant);
 
                     foreach ($Basket->getElements() as $BasketElement) {
                         $ValidationData = new ValidationData();
@@ -390,8 +390,8 @@ class Push implements ControllerProviderInterface
                             );
                         }
 
-                        $app['EM']->merge($BasketElement);
-                        $app['EM']->persist($ValidationData);
+                        $app['orm.em']->merge($BasketElement);
+                        $app['orm.em']->persist($ValidationData);
 
                         $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
                             ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participantUser->getId(), '');
@@ -399,9 +399,9 @@ class Push implements ControllerProviderInterface
                         $validationParticipant->addData($ValidationData);
                     }
 
-                    $validationParticipant = $app['EM']->merge($validationParticipant);
+                    $validationParticipant = $app['orm.em']->merge($validationParticipant);
 
-                    $app['EM']->flush();
+                    $app['orm.em']->flush();
 
                     $arguments = [
                         'basket' => $Basket->getId(),
@@ -419,9 +419,9 @@ class Push implements ControllerProviderInterface
                     $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_CREATE, new ValidationEvent($validationParticipant, $Basket, $url, $request->request->get('message'), $receipt, (int) $request->request->get('duration')));
                 }
 
-                $app['EM']->merge($Basket);
-                $app['EM']->merge($Validation);
-                $app['EM']->flush();
+                $app['orm.em']->merge($Basket);
+                $app['orm.em']->merge($Validation);
+                $app['orm.em']->flush();
 
                 $message = $app->trans('%quantity_records% records have been sent for validation to %quantity_users% users', [
                     '%quantity_records%' => count($pusher->get_elements()),
@@ -433,10 +433,10 @@ class Push implements ControllerProviderInterface
                     'message' => $message
                 ];
 
-                $app['EM']->commit();
+                $app['orm.em']->commit();
             } catch (ControllerException $e) {
                 $ret['message'] = $e->getMessage();
-                $app['EM']->rollback();
+                $app['orm.em']->rollback();
             }
 
             return $app->json($ret);

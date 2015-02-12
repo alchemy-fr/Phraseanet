@@ -44,22 +44,22 @@ class SetupTestsDbs extends Command
         $dbs[] = $settings['database']['ab_name'];
         $dbs[] = $settings['database']['db_name'];
 
-        $schema = $this->container['EM']->getConnection()->getSchemaManager();
+        $schema = $this->container['orm.em']->getConnection()->getSchemaManager();
 
         foreach($dbs as $name) {
             $output->writeln('Creating database "'.$name.'"...<info>OK</info>');
             $schema->dropAndCreateDatabase($name);
         }
 
-        $this->container['EM']->getConnection()->executeUpdate('
+        $this->container['orm.em']->getConnection()->executeUpdate('
             GRANT ALL PRIVILEGES ON '.$settings['database']['ab_name'].'.* TO \''.$settings['database']['user'].'\'@\''.$settings['database']['host'].'\' IDENTIFIED BY \''.$settings['database']['password'].'\' WITH GRANT OPTION
         ');
 
-        $this->container['EM']->getConnection()->executeUpdate('
+        $this->container['orm.em']->getConnection()->executeUpdate('
             GRANT ALL PRIVILEGES ON '.$settings['database']['db_name'].'.* TO \''.$settings['database']['user'].'\'@\''.$settings['database']['host'].'\' IDENTIFIED BY \''.$settings['database']['password'].'\' WITH GRANT OPTION
         ');
 
-        $this->container['EM']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
+        $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
 
         return 0;
     }

@@ -75,9 +75,9 @@ class FtpJob extends AbstractJob
     {
         foreach ($app['repo.ftp-exports']
                 ->findCrashedExports(new \DateTime('-1 month')) as $export) {
-            $app['EM']->remove($export);
+            $app['orm.em']->remove($export);
         }
-        $app['EM']->flush();
+        $app['orm.em']->flush();
     }
 
     private function retrieveExports(Application $app)
@@ -238,8 +238,8 @@ class FtpJob extends AbstractJob
                     $exportElement
                             ->setDone(true)
                             ->setError(false);
-                    $app['EM']->persist($exportElement);
-                    $app['EM']->flush();
+                    $app['orm.em']->persist($exportElement);
+                    $app['orm.em']->flush();
                     $this->logexport($app, $record, $obj, $ftpLog);
                 } catch (\Exception $e) {
                     $state .= $line = $this->translator->trans('task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n\'existe plus)', ['%file%' => basename($localfile), '%record_id%' => $record_id, '%basename%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($app, $base_id), $app)]) . "\n<br/>";
@@ -250,8 +250,8 @@ class FtpJob extends AbstractJob
                     $exportElement
                             ->setDone($exportElement->isError())
                             ->setError(true);
-                    $app['EM']->persist($exportElement);
-                    $app['EM']->flush();
+                    $app['orm.em']->persist($exportElement);
+                    $app['orm.em']->flush();
                 }
             }
 
@@ -289,8 +289,8 @@ class FtpJob extends AbstractJob
             $this->log('debug', $line);
 
             $export->incrementCrash();
-            $app['EM']->persist($export);
-            $app['EM']->flush();
+            $app['orm.em']->persist($export);
+            $app['orm.em']->flush();
         }
 
         $this->finalize($app, $export);
@@ -316,16 +316,16 @@ class FtpJob extends AbstractJob
             $this->send_mails($app, $export);
 
             if ((int) $error === 0) {
-                $app['EM']->remove($export);
-                $app['EM']->flush();
+                $app['orm.em']->remove($export);
+                $app['orm.em']->flush();
             } else {
                 $export->setCrash($export->getNbretry());
                 foreach ($export->getElements() as $element) {
                     if (!$element->isError()) {
-                        $app['EM']->remove($export);
+                        $app['orm.em']->remove($export);
                     }
                 }
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
 
             return $this;

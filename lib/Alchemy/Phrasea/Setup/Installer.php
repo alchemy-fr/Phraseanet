@@ -35,11 +35,11 @@ class Installer
 
         $this->createConfigFile($abConn, $serverName, $binaryData, $dataPath);
         try {
-            $this->createAB();
+            $this->createAB($abConn);
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
             if (null !== $dbConn) {
-                $this->createDB($dbConn, $template);
+                $this->createDB($dbConn, $template, $user);
             }
         } catch (\Exception $e) {
             $this->rollbackInstall($abConn, $dbConn);
@@ -56,11 +56,12 @@ class Installer
         $this->phraseaIndexer = $path;
     }
 
-    private function createDB(Connection $dbConn = null, $template)
+    private function createDB(Connection $dbConn = null, $template, User $admin)
     {
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
         $databox = \databox::create($this->app, $dbConn, $template);
-        $this->app['acl']->get($this->app['authentication']->getUser())
+
+        $this->app['acl']->get($admin)
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
                 $databox->get_sbas_id(), [
@@ -69,11 +70,11 @@ class Installer
                 ]
         );
 
-        $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $this->app['authentication']->getUser());
+        $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
 
-        $this->app['acl']->get($this->app['authentication']->getUser())->give_access_to_base([$collection->get_base_id()]);
-        $this->app['acl']->get($this->app['authentication']->getUser())->update_rights_to_base($collection->get_base_id(), [
-            'canpush'         => 1, 'cancmd'          => 1
+        $this->app['acl']->get($admin)->give_access_to_base([$collection->get_base_id()]);
+        $this->app['acl']->get($admin)->update_rights_to_base($collection->get_base_id(), [
+            'canpush'           => 1, 'cancmd'          => 1
             , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
             , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
             , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
@@ -95,7 +96,6 @@ class Installer
     private function createUser($email, $password)
     {
         $user = $this->app['manipulator.user']->createUser($email, $password, $email, true);
-        $this->app['authentication']->openAccount($user);
 
         return $user;
     }
@@ -145,16 +145,19 @@ class Installer
         return;
     }
 
-    private function createAB()
+    private function createAB(Connection $abConn)
     {
-        $metadatas = $this->app['EM']->getMetadataFactory()->getAllMetadata();
+        // set default orm to the application box
+        $this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
 
-        if (!empty($metadatas)) {
+        $metadata = $this->app['orm.em']->getMetadataFactory()->getAllMetadata();
+
+        if (!empty($metadata)) {
             // Create SchemaTool
-            $tool = new SchemaTool($this->app['EM']);
+            $tool = new SchemaTool($this->app['orm.em']);
             // Create schema
-            $tool->dropSchema($metadatas);
-            $tool->createSchema($metadatas);
+            $tool->dropSchema($metadata);
+            $tool->createSchema($metadata);
         }
 
         $this->app['phraseanet.appbox']->insert_datas($this->app);

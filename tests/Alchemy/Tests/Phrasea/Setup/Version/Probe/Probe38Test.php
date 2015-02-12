@@ -16,7 +16,7 @@ class Probe38Test extends AbstractSetupTester
 
     public function testMigration()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['root.path'] = __DIR__ . '/fixtures-3807';
         $probe = new Probe38($app);
         $this->assertTrue($probe->isMigrable());
@@ -25,6 +25,6 @@ class Probe38Test extends AbstractSetupTester
 
     private function getProbe()
     {
-        return new Probe38(new Application('test'));
+        return new Probe38(new Application(Application::ENV_TEST));
     }
 }

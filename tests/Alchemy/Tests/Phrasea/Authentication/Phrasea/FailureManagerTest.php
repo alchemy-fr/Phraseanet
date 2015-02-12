@@ -237,7 +237,7 @@ class FailureManagerTest extends \PhraseanetTestCase
 
     public function testFailureOlderThan2MonthsAreRemovedOnFailure()
     {
-        self::$DI['app']['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        self::$DI['app']['orm.em']->getEventManager()->removeEventSubscriber(new TimestampableListener());
         $recaptcha = $this->getReCaptchaMock(null);
 
         $ip = '192.168.16.178';
@@ -248,20 +248,20 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
-        $this->assertCount(10, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
+        $this->assertCount(10, self::$DI['app']['orm.em']->getRepository('Phraseanet:AuthFailure')
                 ->findOldFailures());
-        $this->assertCount(12, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
+        $this->assertCount(12, self::$DI['app']['orm.em']->getRepository('Phraseanet:AuthFailure')
                 ->findAll());
 
-        $manager = new FailureManager(self::$DI['app']['repo.auth-failures'], self::$DI['app']['EM'], $recaptcha, 9);
+        $manager = new FailureManager(self::$DI['app']['repo.auth-failures'], self::$DI['app']['orm.em'], $recaptcha, 9);
         $manager->saveFailure($username, $request);
 
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:AuthFailure')
                 ->findOldFailures());
-        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Phraseanet:AuthFailure')
+        $this->assertCount(3, self::$DI['app']['orm.em']->getRepository('Phraseanet:AuthFailure')
                 ->findAll());
 
-        self::$DI['app']['EM']->getEventManager()->addEventSubscriber(new TimestampableListener());
+        self::$DI['app']['orm.em']->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
 
     private function ArrayIze($failure, $n)

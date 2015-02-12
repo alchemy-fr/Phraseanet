@@ -18,6 +18,7 @@ class TagProviderTest extends \PhraseanetTestCase
      */
     public function testGetAll()
     {
+        $this->markTestSkipped('This test lasts more than 30 seconds');
         $all = $this->object->getAll();
         $this->assertArrayHasKey('Phraseanet', $all);
         $this->assertCount(20, $all['Phraseanet']);

@@ -106,7 +106,7 @@ class patch_390alpha7a extends patchAbstract
         $stmt->closeCursor();
 
         $n = 0;
-        $em = $app['EM'];
+        $em = $app['orm.em'];
 
         $fpSql = 'SELECT id, usr_id, owner, created_on FROM feed_publishers WHERE feed_id = :feed_id;';
         $fpStmt = $conn->prepare($fpSql);
@@ -133,7 +133,7 @@ class patch_390alpha7a extends patchAbstract
             $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($fpRes as $fpRow) {
-                if (null === $user = $this->loadUser($app['EM'], $fpRow['usr_id'])) {
+                if (null === $user = $this->loadUser($app['orm.em'], $fpRow['usr_id'])) {
                     continue;
                 }
 
@@ -154,8 +154,8 @@ class patch_390alpha7a extends patchAbstract
                     $feedEntry->setPublisher($feedPublisher);
                     $feedEntry->setTitle($feRow['title']);
                     $feedEntry->setSubtitle($feRow['description']);
-                    $feedEntry->setAuthorName($feRow['author_name']);
-                    $feedEntry->setAuthorEmail($feRow['author_email']);
+                    $feedEntry->setAuthorName((string) $feRow['author_name']);
+                    $feedEntry->setAuthorEmail((string) $feRow['author_email']);
                     $feedEntry->setCreatedOn(new \DateTime($feRow['created_on']));
                     $feedEntry->setUpdatedOn(new \DateTime($feRow['updated_on']));
 
@@ -181,7 +181,7 @@ class patch_390alpha7a extends patchAbstract
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($ftRes as $ftRow) {
-                if (null === $user = $this->loadUser($app['EM'], $ftRow['usr_id'])) {
+                if (null === $user = $this->loadUser($app['orm.em'], $ftRow['usr_id'])) {
                     continue;
                 }
 
@@ -212,7 +212,7 @@ class patch_390alpha7a extends patchAbstract
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($faRes as $faRow) {
-            if (null === $user = $this->loadUser($app['EM'], $faRow['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $faRow['usr_id'])) {
                 continue;
             }
 
@@ -242,7 +242,7 @@ class patch_390alpha7a extends patchAbstract
         $rsm = (new ResultSetMapping())->addScalarResult('Name', 'Name');
         $backup = false;
 
-        foreach ($app['EM']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
+        foreach ($app['orm.em']->createNativeQuery('SHOW TABLE STATUS', $rsm)->getResult() as $row) {
             if ('feeds_backup' === $row['Name']) {
                 $backup = true;
                 break;

@@ -93,7 +93,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDownloadBasket()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
 
         $triggered = false;
         self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
@@ -120,7 +120,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDownloadBasketValidation()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
 
         $triggered = false;
         self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {

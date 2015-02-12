@@ -81,7 +81,7 @@ class Aggregate implements FeedInterface
         $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user), $restrictions);
         $token = $app['repo.aggregate-tokens']->findOneBy(['user' => $user]);
 
-        return new static($app['EM'], $feeds, $token);
+        return new static($app['orm.em'], $feeds, $token);
     }
 
     /**
@@ -239,6 +239,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['repo.feeds']->findBy(['public' => true], ['updatedOn' => 'DESC']));
+        return new static($app['orm.em'], $app['repo.feeds']->findBy(['public' => true], ['updatedOn' => 'DESC']));
     }
 }

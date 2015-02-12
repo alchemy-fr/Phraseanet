@@ -218,7 +218,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         }
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
 
-        $testOrder = self::$DI['app']['EM']->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = self::$DI['app']['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
@@ -233,19 +233,19 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order->addElement($orderElement);
         $order->setTodo(2);
 
-        self::$DI['app']['EM']->persist($order);
-        self::$DI['app']['EM']->persist($orderElement);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($order);
+        self::$DI['app']['orm.em']->persist($orderElement);
+        self::$DI['app']['orm.em']->flush();
 
         $parameters = [$order->getElements()->first()->getId()];
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $testOrder = self::$DI['app']['EM']->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = self::$DI['app']['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
         $this->assertEquals(1, $testOrder->getTodo());
 
         $parameters = [$orderElement->getId()];
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
 
-        $testOrder = self::$DI['app']['EM']->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = self::$DI['app']['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
@@ -270,9 +270,9 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order->addElement($orderElement);
         $order->setTodo(1);
 
-        self::$DI['app']['EM']->persist($order);
-        self::$DI['app']['EM']->persist($orderElement);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($order);
+        self::$DI['app']['orm.em']->persist($orderElement);
+        self::$DI['app']['orm.em']->flush();
 
         return $order;
     }

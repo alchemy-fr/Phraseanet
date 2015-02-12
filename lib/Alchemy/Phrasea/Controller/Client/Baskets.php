@@ -63,8 +63,8 @@ class Baskets implements ControllerProviderInterface
         try {
             $repository = $app['repo.basket-elements'];
             $basketElement = $repository->findUserElement($request->request->get('p0'), $app['authentication']->getUser());
-            $app['EM']->remove($basketElement);
-            $app['EM']->flush();
+            $app['orm.em']->remove($basketElement);
+            $app['orm.em']->flush();
         } catch (\Exception $e) {
 
         }
@@ -87,8 +87,8 @@ class Baskets implements ControllerProviderInterface
             $basket = $app['converter.basket']->convert($request->request->get('courChuId'));
             $app['acl.basket']->isOwner($basket, $app['authentication']->getUser());
 
-            $app['EM']->remove($basket);
-            $app['EM']->flush();
+            $app['orm.em']->remove($basket);
+            $app['orm.em']->flush();
             unset($basket);
         } catch (\Exception $e) {
 
@@ -113,8 +113,8 @@ class Baskets implements ControllerProviderInterface
             $basket->setName($request->request->get('p0'));
             $basket->setUser($app['authentication']->getUser());
 
-            $app['EM']->persist($basket);
-            $app['EM']->flush();
+            $app['orm.em']->persist($basket);
+            $app['orm.em']->flush();
 
         } catch (\Exception $e) {
 
@@ -145,9 +145,9 @@ class Baskets implements ControllerProviderInterface
             $basketElement->setBasket($basket);
             $basket->addElement($basketElement);
 
-            $app['EM']->persist($basket);
+            $app['orm.em']->persist($basket);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
         } catch (\Exception $e) {
 
         }

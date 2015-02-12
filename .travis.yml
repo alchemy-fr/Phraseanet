@@ -8,14 +8,14 @@ services:
   - mysql
   - memcached
   - redis
-  - elasticsearch
 
 before_script:
   - node --version
   - npm --version
   - travis_retry npm install
-  - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+  - phpenv config-rm xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
+  - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
@@ -42,19 +42,17 @@ matrix:
     - php: 5.6
 
 script:
-  - travis_retry composer install --dev --prefer-source -vvv
-  - travis_retry grunt install-assets -vvv
+  - travis_retry composer install --optimize-autoloader --dev --prefer-source
+  - travis_retry grunt install-assets
   - bin/developer assets:compile-less
   - bin/developer system:uninstall
+  - bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
   - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
-              bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y -v;
-              bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches -v;
+              bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
+              php resources/hudson/cleanupSubdefs.php;
             fi"
-  - sh -c " if [ '$SETUP_MODE' = 'install' ]; then
-              bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y -v;
-              bin/developer ini:setup-tests-dbs -v;
-            fi"
-  - php resources/hudson/cleanupSubdefs.php
+  - bin/developer ini:setup-tests-dbs
   - bin/developer phraseanet:regenerate-sqlite
+  - bin/developer phraseanet:generate-js-fixtures
   - ./node_modules/.bin/grunt test
   - bin/phpunit

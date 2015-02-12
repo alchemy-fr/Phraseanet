@@ -79,7 +79,7 @@ class patch_390alpha1a extends patchAbstract
         $stmt->closeCursor();
 
         $n = 0;
-        $em = $app['EM'];
+        $em = $app['orm.em'];
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         foreach ($rs as $row) {
@@ -93,12 +93,12 @@ class patch_390alpha1a extends patchAbstract
             $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 
             try {
-                $basket = $app['EM']->createQuery('SELECT PARTIAL b.{id} FROM Phraseanet:Basket b WHERE b.id = :id')
+                $basket = $app['orm.em']->createQuery('SELECT PARTIAL b.{id} FROM Phraseanet:Basket b WHERE b.id = :id')
                     ->setParameters(['id' => $row['ssel_id']])
                     ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                     ->getSingleResult();
@@ -127,7 +127,7 @@ class patch_390alpha1a extends patchAbstract
 
             foreach ($elements as $element) {
                 $orderElement = new OrderElement();
-                $user = $this->loadUser($app['EM'], $row['usr_id']);
+                $user = $this->loadUser($app['orm.em'], $row['usr_id']);
                 $orderElement->setBaseId($element['base_id'])
                     ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
                     ->setOrder($order)

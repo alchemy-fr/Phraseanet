@@ -95,13 +95,13 @@ class BasketController implements ControllerProviderInterface
     {
         if ($basket->getIsRead() === false) {
             $basket->setIsRead(true);
-            $app['EM']->flush();
+            $app['orm.em']->flush();
         }
 
         if ($basket->getValidation()) {
             if ($basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
                 $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
         }
 
@@ -121,7 +121,7 @@ class BasketController implements ControllerProviderInterface
         $Basket->setUser($app['authentication']->getUser());
         $Basket->setDescription($request->request->get('desc'));
 
-        $app['EM']->persist($Basket);
+        $app['orm.em']->persist($Basket);
 
         $n = 0;
 
@@ -136,14 +136,14 @@ class BasketController implements ControllerProviderInterface
             $basket_element->setRecord($record);
             $basket_element->setBasket($Basket);
 
-            $app['EM']->persist($basket_element);
+            $app['orm.em']->persist($basket_element);
 
             $Basket->addElement($basket_element);
 
             $n++;
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         if ($request->getRequestFormat() === 'json') {
             $data = [
@@ -162,8 +162,8 @@ class BasketController implements ControllerProviderInterface
 
     public function deleteBasket(Application $app, Request $request, BasketEntity $basket)
     {
-        $app['EM']->remove($basket);
-        $app['EM']->flush();
+        $app['orm.em']->remove($basket);
+        $app['orm.em']->flush();
 
         $data = [
             'success' => true
@@ -179,7 +179,7 @@ class BasketController implements ControllerProviderInterface
 
     public function removeBasketElement(Application $app, Request $request, BasketEntity $basket, $basket_element_id)
     {
-        $basketElement = $app['EM']->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
+        $basketElement = $app['orm.em']->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
         $ord = $basketElement->getOrd();
 
         foreach ($basket->getElements() as $basket_element) {
@@ -188,12 +188,12 @@ class BasketController implements ControllerProviderInterface
             }
             if ($basket_element->getId() === (int) $basket_element_id) {
                 $basket->removeElement($basket_element);
-                $app['EM']->remove($basket_element);
+                $app['orm.em']->remove($basket_element);
             }
         }
 
-        $app['EM']->persist($basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($basket);
+        $app['orm.em']->flush();
 
         $data = ['success' => true, 'message' => $app->trans('Record removed from basket')];
 
@@ -212,8 +212,8 @@ class BasketController implements ControllerProviderInterface
             $basket->setName($request->request->get('name', ''));
             $basket->setDescription($request->request->get('description'));
 
-            $app['EM']->merge($basket);
-            $app['EM']->flush();
+            $app['orm.em']->merge($basket);
+            $app['orm.em']->flush();
 
             $success = true;
             $msg = $app->trans('Basket has been updated');
@@ -259,11 +259,11 @@ class BasketController implements ControllerProviderInterface
                 if (isset($order[$basketElement->getId()])) {
                     $basketElement->setOrd($order[$basketElement->getId()]);
 
-                    $app['EM']->merge($basketElement);
+                    $app['orm.em']->merge($basketElement);
                 }
             }
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
             $ret = ['success' => true, 'message' => $app->trans('Basket updated')];
         } catch (\Exception $e) {
 
@@ -278,8 +278,8 @@ class BasketController implements ControllerProviderInterface
 
         $basket->setArchived($archive_status);
 
-        $app['EM']->merge($basket);
-        $app['EM']->flush();
+        $app['orm.em']->merge($basket);
+        $app['orm.em']->flush();
 
         if ($archive_status) {
             $message = $app->trans('Basket has been archived');
@@ -314,7 +314,7 @@ class BasketController implements ControllerProviderInterface
             $basket_element->setRecord($record);
             $basket_element->setBasket($basket);
 
-            $app['EM']->persist($basket_element);
+            $app['orm.em']->persist($basket_element);
 
             $basket->addElement($basket_element);
 
@@ -327,14 +327,14 @@ class BasketController implements ControllerProviderInterface
                     $validationData->setParticipant($participant);
                     $validationData->setBasketElement($basket_element);
 
-                    $app['EM']->persist($validationData);
+                    $app['orm.em']->persist($validationData);
                 }
             }
 
             $n++;
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         $data = [
             'success' => true
@@ -365,7 +365,7 @@ class BasketController implements ControllerProviderInterface
             $n++;
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         $data = ['success' => true, 'message' => $app->trans('%quantity% records moved', ['%quantity%' => $n])];
 

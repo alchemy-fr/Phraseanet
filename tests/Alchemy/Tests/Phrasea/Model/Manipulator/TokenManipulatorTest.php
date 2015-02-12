@@ -14,7 +14,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
     {
         $user = $user ? self::$DI['user'] : null;
 
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->create($user, $type, $expiration, $data);
 
         $this->assertSame($user, $token->getUser());
@@ -37,7 +37,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateBasketValidationToken()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createBasketValidationToken(self::$DI['basket_4'], self::$DI['user_1']);
 
         $this->assertSame(self::$DI['basket_4']->getId(), $token->getData());
@@ -48,7 +48,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateBasketValidationTokenWithoutUser()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createBasketValidationToken(self::$DI['basket_4']);
 
         $this->assertSame(self::$DI['basket_4']->getId(), $token->getData());
@@ -59,14 +59,14 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateBasketValidationTokenWithInvalidBasket()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $this->setExpectedException('InvalidArgumentException', 'A validation token requires a validation basket.');
         $manipulator->createBasketValidationToken(self::$DI['basket_1']);
     }
 
     public function testCreateBasketAccessToken()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createBasketAccessToken(self::$DI['basket_4'], self::$DI['user']);
 
         $this->assertSame(self::$DI['basket_4']->getId(), $token->getData());
@@ -77,7 +77,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateFeedEntryToken()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createFeedEntryToken(self::$DI['user'], self::$DI['feed_public_entry']);
 
         $this->assertSame(self::$DI['feed_public_entry']->getId(), $token->getData());
@@ -89,7 +89,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
     public function testCreateDownloadToken()
     {
         $data = serialize(['some' => 'data']);
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createDownloadToken(self::$DI['user'], $data);
 
         $this->assertSame($data, $token->getData());
@@ -101,7 +101,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
     public function testCreateEmailExportToken()
     {
         $data = serialize(['some' => 'data']);
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createEmailExportToken($data);
 
         $this->assertSame($data, $token->getData());
@@ -112,7 +112,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateResetEmailToken()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createResetEmailToken(self::$DI['user'], 'newemail@phraseanet.com');
 
         $this->assertSame('newemail@phraseanet.com', $token->getData());
@@ -123,7 +123,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateAccountUnlockToken()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createAccountUnlockToken(self::$DI['user']);
 
         $this->assertNull($token->getData());
@@ -134,7 +134,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateResetPasswordToken()
     {
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $token = $manipulator->createResetPasswordToken(self::$DI['user']);
 
         $this->assertNull($token->getData());
@@ -177,7 +177,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
     {
         $this->assertCount(4, self::$DI['app']['repo.tokens']->findAll());
 
-        $manipulator = new TokenManipulator(self::$DI['app']['EM'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
+        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens']);
         $manipulator->removeExpiredTokens();
 
         $this->assertCount(3, self::$DI['app']['repo.tokens']->findAll());

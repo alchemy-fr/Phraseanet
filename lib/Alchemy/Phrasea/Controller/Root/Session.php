@@ -90,7 +90,7 @@ class Session implements ControllerProviderInterface
             'notifications' => $app['events-manager']->get_notifications()
         ]);
 
-        $baskets = $app['EM']->getRepository('Phraseanet:Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $app['orm.em']->getRepository('Phraseanet:Basket')->findUnreadActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
@@ -161,13 +161,13 @@ class Session implements ControllerProviderInterface
             $module = new SessionModule();
             $module->setModuleId($moduleId);
             $module->setSession($session);
-            $app['EM']->persist($module);
+            $app['orm.em']->persist($module);
         } else {
-            $app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+            $app['orm.em']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
 
-        $app['EM']->persist($session);
-        $app['EM']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         $ret['status'] = 'ok';
 
@@ -219,8 +219,8 @@ class Session implements ControllerProviderInterface
             $app->abort(403, 'Unauthorized');
         }
 
-        $app['EM']->remove($session);
-        $app['EM']->flush();
+        $app['orm.em']->remove($session);
+        $app['orm.em']->flush();
 
         if ($app['request']->isXmlHttpRequest()) {
             return $app->json([

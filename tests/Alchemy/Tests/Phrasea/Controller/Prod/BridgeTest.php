@@ -42,7 +42,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testManager()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
 
         self::$DI['client']->request('POST', '/prod/bridge/manager/', ['ssel' => $basket->getId()]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -318,23 +318,6 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', $url, ['title'       => 'test', 'description' => 'description']);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/success/', self::$DI['client']->getResponse()->headers->get('location'));
-    }
-
-    /**
-     * @todo no templates declared for modify a container in any apis
-     */
-    public function testActionModifyContainer()
-    {
-        $this->markTestSkipped("No templates declared for modify a container in any apis");
-        self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
-        $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
-        $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "containerudt456shn"]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $pageContent = self::$DI['client']->getResponse()->getContent();
-        $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
-
-        self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn"]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testActionMoveInto()
