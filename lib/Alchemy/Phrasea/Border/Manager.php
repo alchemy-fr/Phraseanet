@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -79,7 +80,7 @@ class Manager
      * @param  type           $forceBehavior Force a behavior, one of the self::FORCE_* constant
      * @return int            One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
      */
-    public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null)
+    public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null, $nosubdef = false)
     {
         $visa = $this->getVisa($file);
 
@@ -92,7 +93,7 @@ class Manager
 
             $this->addMediaAttributes($file);
 
-            $element = $this->createRecord($file);
+            $element = $this->createRecord($file, $nosubdef);
 
             $code = self::RECORD_CREATED;
         } else {
@@ -228,10 +229,9 @@ class Manager
      * @param  File           $file The package file
      * @return \record_adater
      */
-    protected function createRecord(File $file)
+    protected function createRecord(File $file, $nosubdef=false)
     {
         $element = \record_adapter::createFromFile($file, $this->app);
-
         $date = new \DateTime();
 
         $file->addAttribute(
@@ -302,7 +302,9 @@ class Manager
 
         $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 
-        $element->rebuild_subdefs();
+        if(!$nosubdef) {
+            $element->rebuild_subdefs();
+        }
         $element->reindex();
 
         return $element;

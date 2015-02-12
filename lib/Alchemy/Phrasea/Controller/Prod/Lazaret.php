@@ -411,22 +411,49 @@ class Lazaret implements ControllerProviderInterface
      */
     public function emptyLazaret(Application $app, Request $request)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = array(
+            'success' => false,
+            'message' => '',
+            'result'  => array(
+                'tobedone'  => 0,
+                'done'      => 0,
+                'todo'      => 0,
+                'max'       => '',
+            )
+        );
+
+        $maxTodo = -1;  // all
+        if($request->get('max') !== null) {
+            $maxTodo = (int)($request->get('max'));
+            $ret['result']['max'] = $maxTodo;
+            if( $maxTodo <= 0) {
+                $maxTodo = -1;      // all
+            }
+        }
+        $ret['result']['max'] = $maxTodo;
 
         $lazaretFiles = $app['EM']->getRepository('Entities\LazaretFile')->findAll();
 
         $app['EM']->beginTransaction();
 
+        $ret['result']['tobedone'] = count($lazaretFiles);
+        $_done = 0;
         try {
             foreach ($lazaretFiles as $lazaretFile) {
+                if($maxTodo != -1 && --$maxTodo < 0) {
+                    break;
+                }
                 $this->denyLazaretFile($app, $lazaretFile);
+                $_done++;
             }
             $app['EM']->commit();
+            $ret['result']['done'] = $_done;
             $ret['success'] = true;
         } catch (\Exception $e) {
             $app['EM']->rollback();
             $ret['message'] = _('An error occured');
         }
+        $ret['result']['todo'] = $ret['result']['tobedone'] - $ret['result']['done'];
 
         return $app->json($ret);
     }

@@ -469,6 +469,18 @@ class V1 implements ControllerProviderInterface
         });
 
         /**
+         * Route : /embed/substitute/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *
+         */
+        $controllers->post('/embed/substitute/', function (SilexApplication $app, Request $request) {
+            return $app['api']->substitute_subdef($app, $request)->get_response();
+        });
+
+        /**
          * Route : /search/
          *
          * Method : GET or POST

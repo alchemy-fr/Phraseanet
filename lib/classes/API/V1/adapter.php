@@ -494,8 +494,8 @@ class API_V1_adapter extends API_V1_Abstract
                 throw new API_V1_exception_badrequest(sprintf('Invalid forceBehavior value `%s`', $request->get('forceBehavior')));
                 break;
         }
-
-        $app['border-manager']->process($session, $Package, $callback, $behavior);
+        $nosubdef = $request->get('nosubdefs')==='' || \p4field::isyes($request->get('nosubdefs'));
+        $app['border-manager']->process($session, $Package, $callback, $behavior, $nosubdef);
 
         $ret = array(
             'entity' => null,
@@ -511,6 +511,62 @@ class API_V1_adapter extends API_V1_Abstract
         if ($output instanceof \Entities\LazaretFile) {
             $ret['entity'] = '1';
             $ret['url'] = '/quarantine/item/' . $output->getId() . '/';
+        }
+
+        $result = new API_V1_result($this->app, $request, $this);
+
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+
+    public function substitute_subdef(Application $app, Request $request)
+    {
+        $ret = array();
+
+        if (count($request->files->get('file')) == 0) {
+            throw new API_V1_exception_badrequest('Missing file parameter');
+        }
+
+        if (!$request->files->get('file') instanceof Symfony\Component\HttpFoundation\File\UploadedFile) {
+            throw new API_V1_exception_badrequest('You can upload one file at time');
+        }
+
+        $file = $request->files->get('file');
+        // @var $file Symfony\Component\HttpFoundation\File\UploadedFile
+
+        if (!$file->isValid()) {
+            throw new API_V1_exception_badrequest('Datas corrupted, please try again');
+        }
+
+        if (!$request->get('databox_id')) {
+            throw new API_V1_exception_badrequest('Missing databox_id parameter');
+        }
+        if (!$request->get('record_id')) {
+            throw new API_V1_exception_badrequest('Missing record_id parameter');
+        }
+        if (!$request->get('name')) {
+            throw new API_V1_exception_badrequest('Missing name parameter');
+        }
+
+        $media = $app['mediavorus']->guess($file->getPathname());
+
+        // @var $record \record_adapter
+        $record = $this->app['phraseanet.appbox']->get_databox($request->get('databox_id'))->get_record($request->get('record_id'));
+        $base_id = $record->get_base_id();
+        $collection = \collection::get_from_base_id($this->app, $base_id);
+
+        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
+        }
+
+        $record->substitute_subdef($request->get('name'), $media, $app);
+        foreach ($record->get_embedable_medias() as $name => $media) {
+            if ($name == $request->get('name') &&
+                null !== ($subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry']))) {
+                    $ret[] = $subdef;
+            }
         }
 
         $result = new API_V1_result($this->app, $request, $this);
@@ -1490,6 +1546,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         return array(
             'name'        => $media->get_name(),
+            'substituted' => $media->is_substituted(),
+            'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
+            'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
             'permalink'   => $permalink,
             'height'      => $media->get_height(),
             'width'       => $media->get_width(),

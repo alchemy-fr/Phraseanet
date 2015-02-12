@@ -18,7 +18,7 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>200</size>
+                <size>240</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
@@ -153,7 +153,7 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>200</size>
+                <size>240</size>
                 <mediatype>gif</mediatype>
                 <delay>500</delay>
                 <devices>screen</devices>
@@ -163,7 +163,7 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>200</size>
+                <size>240</size>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
@@ -183,7 +183,7 @@
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <size>200</size>
+                <size>240</size>
                 <devices>screen</devices>
                 <writeDatas>no</writeDatas>
                 <label lang="fr">Imagette</label>
@@ -223,7 +223,7 @@
                 <mediatype>image</mediatype>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <size>200</size>
+                <size>240</size>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Imagette</label>
@@ -264,7 +264,7 @@
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <size>200</size>
+                <size>240</size>
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>

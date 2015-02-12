@@ -772,7 +772,10 @@ class PhraseaEngineQueryParser
             $prophtml = "";
             $this->propAsHTML($domthe->documentElement, $prophtml, $path);
             $this->proposals["BASES"]["b$bid"]["TERMS"][$path]["HTML"] = $prophtml;
+        } else {
+            $tree = NULL;
         }
+
 
         return($ambigus);
     }
@@ -1864,7 +1867,8 @@ class PhraseaEngineQueryParser
                     if (!$this->app['unicode']->has_indexer_bad_char(($c_utf8 = mb_substr($this->phq, $i, 1, 'UTF-8')))) {
                         //  $c = mb_strtolower($c);
                         //  $t .= isset($this->noaccent[$c]) ? $this->noaccent[$c] : $c;
-                        $t .= $this->app['unicode']->remove_diacritics(mb_strtolower($c_utf8));
+                    //    $t .= $this->app['unicode']->remove_diacritics(mb_strtolower($c_utf8));
+                        $t .= mb_strtolower($c_utf8);
                     } else
                         break;
                 }
