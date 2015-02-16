@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
 use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
+use Alchemy\Phrasea\Core\Provider\JsonSchemaServiceProvider;
 use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Application as SilexApplication;
@@ -86,6 +87,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         }
     });
 
+    $app->register(new JsonSchemaServiceProvider());
     $app->register(new \API_V1_Timer());
     $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
 

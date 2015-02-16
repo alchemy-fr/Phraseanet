@@ -1409,7 +1409,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $app['filesystem']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
         $media = $app['mediavorus']->guess($pathhd . $newname);
-        $subdef = media_subdef::create($app, $record, 'document', $media);
+
+        media_subdef::create($app, $record, 'document', $media);
 
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Record",
+  "description": "A record in a story",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The unique identifier for a record",
+      "type": "string"
+    },
+    "record_id": {
+      "description": "The identifier for a story contextualized by the databox",
+      "type": "integer"
+    },
+    "databox_id": {
+      "description": "The databox identifier where the story is localized",
+      "type": "integer"
+    }
+  },
+  "required": ["databox_id", "record_id"]
+}
