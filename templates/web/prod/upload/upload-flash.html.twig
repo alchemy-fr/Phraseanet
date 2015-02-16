@@ -39,9 +39,13 @@
                             <td class='uploader-info'>
                                 <p>
                                     {% trans 'You are using the Flash uploader.'%}
-                                    {% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}
+                                    {% if not app['browser'].supportFileAPI() %}
+                                        {% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}
+                                    {% endif %}
                                 </p>
-                                <a href="{{ path('upload_html5_form') }}" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
+                                {% if app['browser'].supportFileAPI() %}
+                                <a id="UPLOAD_HTML5_LINK" href="{{ path('upload_html5_form') }}" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
+                                {% endif %}
                             </td>
                         </tr>
                      </table>
