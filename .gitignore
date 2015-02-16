@@ -6,6 +6,9 @@
 /www/assets
 /tmp-assets
 
+# Exclude thumbnails folder
+/www/thumbnails
+
 # Exclude node.js dependencies folder
 /node_modules
 

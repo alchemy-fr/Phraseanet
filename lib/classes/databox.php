@@ -451,21 +451,6 @@ class databox extends base
 
     public function unmount_databox()
     {
-        if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
-            $sql = "SELECT path, file FROM subdef WHERE `name`='thumbnail'";
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            foreach ($rows as $row) {
-                $pathfile = $this->app['phraseanet.thumb-symlinker']->getSymlinkPath(sprintf(
-                    '%s/%s',
-                    rtrim($row['path'], '/'),
-                    $row['file']
-                ));
-                $this->app['filesystem']->remove($pathfile);
-            }
-        }
         foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($this->app);
         }

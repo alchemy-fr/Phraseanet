@@ -206,10 +206,6 @@ api_cors:
 session:
   idle: 0
   lifetime: 604800 # 1 week
-static-file:
-  enabled: false
-  type: nginx
-  symlink-directory: ''
 crossdomain:
     site-control: 'master-only'
     allow-access-from:

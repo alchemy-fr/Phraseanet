@@ -735,7 +735,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $subdef->get_permalink()->delete_data_from_cache();
         }
 
-        if ($name === 'thumbnail' && $app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+        if ($name === 'thumbnail') {
             $app['phraseanet.thumb-symlinker']->symlink($subdef->get_pathfile());
         }
 
@@ -755,8 +755,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return;
         }
 
+        // serve thumbnails using static file service
         if ($this->get_name() === 'thumbnail') {
-            if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled() && null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
+            if (null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
                 $this->url = $url. "?etag=".$this->getEtag();
 
                 return;

@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
 use Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory;
 use Alchemy\Phrasea\Http\ServeFileResponseFactory;
 use Alchemy\Phrasea\Http\StaticFile\StaticFileFactory;
+use Alchemy\Phrasea\Http\StaticFile\StaticMode;
+use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -34,16 +36,12 @@ class FileServeServiceProvider implements ServiceProviderInterface
             return H264Factory::create($app);
         });
 
-        $app['phraseanet.static-file-factory'] = $app->share(function ($app) {
-            return StaticFileFactory::create($app);
-        });
-
         $app['phraseanet.h264'] = $app->share(function ($app) {
             return $app['phraseanet.h264-factory']->createMode(false);
         });
 
-        $app['phraseanet.static-file'] = $app->share(function ($app) {
-            return $app['phraseanet.static-file-factory']->getMode(false);
+        $app['phraseanet.static-file'] = $app->share(function (Application $app) {
+            return new StaticMode(SymLinker::create($app));
         });
 
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {
