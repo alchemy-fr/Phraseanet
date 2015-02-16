@@ -49,7 +49,7 @@ EM {
 
 .ui-state-default, .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .ui-widget-overlay {
@@ -96,6 +96,11 @@ body {
     right: 0;
     bottom: 0;
 }
+
+.PNB .ui-corner-top {
+    top: 73px;
+}
+
 
 .PNB10 {
     position: absolute;
@@ -166,10 +171,12 @@ span.ww_winTitle {
     padding: 3px 5px 0;
 }
 
+#idFrameC {
+    top: 0 !important;
+}
+
 #idFrameC .wrapper {
-    background-color: #404040;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    background-color: #333333;
     right: 10px;
 }
 
@@ -217,9 +224,9 @@ span.ww_winTitle {
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
     width: auto;
-    height: 45px;
+    height: 81px;
     display: inline-block;
-    background-color: #404040;
+    background-color: #333333;
     z-index: 10;
 }
 
@@ -320,7 +327,7 @@ span.ww_winTitle {
     display: block;
     border-width: 0;
     padding: 0px;
-    background-color: #404040;
+    background-color: #333333;
 }
 
 .ui-tabs .ui-tabs-panel.tabBox {
@@ -361,6 +368,8 @@ span.ww_winTitle {
 .ui-accordion .ui-accordion-content {
     padding: 0;
     min-height: 120px;
+    border: none !important;
+    border-radius: 0;
 }
 
 .ui-accordion-icons .ui-accordion-header,
@@ -394,10 +403,14 @@ span.ww_winTitle {
 
 .ui-accordion .ui-accordion-header {
     border: none;
-    background-image: url('../../icons/bask_back.png');
+    /*background-image: url('../../icons/bask_back.png');*/
     background-repeat: repeat-x;
     margin-bottom: 0;
-    height: 20px;
+    height: 44px;
+    line-height: 44px;
+    background-color: #333333;
+    border-top: 1px solid #000;
+    border-radius: 0;
 }
 
 .ui-accordion .ui-accordion-header.unread {
@@ -408,6 +421,7 @@ span.ww_winTitle {
     padding-bottom: 0;
     padding-right: 0;
     padding-top: 0;
+    margin-top: 0;
 }
 
 #keyboard-dialog h1 {
@@ -489,6 +503,20 @@ span.ww_winTitle {
 }
 
 /******* FORMULAIRE DE RECHERCHE **********************************************/
+
+.searchFormWrapper {
+    margin: 25px 0 0 45px;
+    line-height: 30px;
+}
+
+#searchForm .input-append {
+    float: left;
+}
+
+#searchForm .control-group {
+    float: left;
+    margin-left: 30px;
+}
 
 #searchForm .input-append .btn {
     border:none;
@@ -630,7 +658,7 @@ div.diapo {
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
-    background-color: #404040;
+    margin-left: -29px;
 }
 
 .submenu .ui-buttonset{
@@ -646,12 +674,20 @@ div.diapo {
     margin-bottom: 0px;
     margin-top: 0px;
     height: 30px;
+    background-color: #333333;
+    font-size:10px;
+    z-index:100;
+    height:45px;
 }
 
 #idFrameT .tools .classicButton button.btn,
 #idFrameT .tools .dropdownButton {
-    margin-left: 3px;
-    margin-right: 3px;
+    margin: 0;
+}
+
+#idFrameT .tools .btn-group {
+    float: left;
+    border-right: 1px solid #000;
 }
 
 #idFrameT .tools .classicButton button.btn,
@@ -659,7 +695,6 @@ div.diapo {
     height: 30px;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
-    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -667,6 +702,7 @@ div.diapo {
 
 #idFrameT .tools .classicButton button.btn-inverse,
 #idFrameT .tools .dropdownButton button.btn-inverse {
+    /*
     *background-color: #404040;
     background-image: -ms-linear-gradient(top, #444444, #393939);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
@@ -677,6 +713,22 @@ div.diapo {
     *border: 1px solid #515151;
     color: #AAAAAA;
     padding-left: 5px;
+    */
+    background-image: none;
+    background-color: #333333;
+    border-radius: 0;
+    margin: 0;
+    height: 45px;
+    border: 0;
+}
+
+#idFrameT .tools .classicButton button.btn-inverse {
+    border-right: 0;
+}
+
+#idFrameT .tools .dropdownButton button.btn-inverse {
+    border-left: 0;
+    border-right: 0;
 }
 
 #idFrameT .tools .classicButton button.btn-inverse:hover,
@@ -759,19 +811,15 @@ div.diapo {
 
 #idFrameC #baskets .bloc {
     position: absolute;
-    top: 10px;
+    top: 31px;
     left: 0pt;
     right: 1px;
     bottom: 0px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
-    background-color: #404040;
 }
 
 #baskets .insidebloc {
-    left: 10px;
-    position: absolute;
-    right: 10px;
     top: 0;
 }
 
@@ -803,7 +851,7 @@ div.diapo {
     top: 0px;
     left: 10px;
     bottom: 0px;
-    right: 10px;
+    right: 0;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav,#idFrameE .ui-tabs .ui-tabs-nav {
@@ -919,12 +967,11 @@ div.diapo {
 }
 
 .ui-accordion .ui-accordion-content {
-    background-color: #1a1a1a;
+    background-color: #212121;
     margin-top: 0;
-    border: 1px solid #b1b1b1;
     border-top: none;
     margin-top: -1px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .ui-accordion .ui-accordion-content.grouping {
@@ -986,7 +1033,10 @@ div.diapo {
 }
 
 #baskets .SSTT.active.ui-corner-top {
-    border-bottom: none;
+    border: none;
+    border-top: 1px solid #000;
+    top: 0;
+    background-color: #212121;
 }
 
 .ui-accordion .ui-accordion-header.baskDrop {
@@ -1552,7 +1602,8 @@ input.btn-mini {
     padding: 35px 0;
     height: 0;
     position: absolute;
-    background-image:  url('../../icons/vsplitter.png');
+    /*background-image:  url('../../icons/vsplitter.png');*/
+    background-color: #212121;
     background-position:  center center;
     background-repeat:  no-repeat;
     right: 0;
@@ -2664,7 +2715,7 @@ DIV.thesaurus U.w {
 /*******  MAINMENU ************************************************************/
 
 #mainMenu, .publi_group {
-    background-color: #404040;
+    background-color: #333333;
 }
 
 .context-menu-item a {
