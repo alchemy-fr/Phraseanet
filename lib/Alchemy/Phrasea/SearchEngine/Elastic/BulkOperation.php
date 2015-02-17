@@ -20,6 +20,7 @@ class BulkOperation
     private $client;
 
     private $stack = array();
+    private $opCount = 0;
     private $index;
     private $type;
     private $flushLimit = 1000;
@@ -49,29 +50,25 @@ class BulkOperation
 
     public function index(array $params)
     {
-        $this->stack[] = ['index' => $this->getBulkHeader($params)];
-        $this->stack[] = igorw\get_in($params, ['body']);
-
-        if ($this->flushLimit === count($this->stack) / 2) {
-            $this->flush();
-        }
-    }
-
-    public function update(array $params)
-    {
-        $this->stack[] = ['update' => $this->getBulkHeader($params)];
-        $this->stack[] = ['doc' => igorw\get_in($params, ['doc'])];
-
-        if ($this->flushLimit === count($this->stack) / 2) {
-            $this->flush();
-        }
+        $header = $this->buildHeader('index', $params);
+        $body = igorw\get_in($params, ['body']);
+        $this->push($header, $body);
     }
 
     public function delete(array $params)
     {
-        $this->stack[] = ['delete' => $this->getBulkHeader($params)];
+        $this->push($this->buildHeader('delete', $params));
+    }
 
-        if ($this->flushLimit === count($this->stack) / 2) {
+    private function push($header, $body = null)
+    {
+        $this->stack[] = $header;
+        if ($body) {
+            $this->stack[] = $body;
+        }
+        $this->opCount++;
+
+        if ($this->flushLimit === $this->opCount) {
             $this->flush();
         }
     }
@@ -93,11 +90,12 @@ class BulkOperation
         $params['body'] = $this->stack;
 
         if (php_sapi_name() === 'cli') {
-            printf("ES Bulk query with %d items\n", count($this->stack) / 2);
+            printf("ES Bulk query with %d items\n", $this->opCount);
         }
 
         $response = $this->client->bulk($params);
         $this->stack = array();
+        $this->opCount = 0;
 
         if (igorw\get_in($response, ['errors'], true)) {
             // foreach ($response['items'] as $key => $item) {
@@ -109,14 +107,16 @@ class BulkOperation
         }
     }
 
-    private function getBulkHeader(array $params)
+    private function buildHeader($key, array $params)
     {
         $header = [];
         $header['_id']    = igorw\get_in($params, ['id']);
-        $header['_index'] = igorw\get_in($params, ['index']);
         $header['_type']  = igorw\get_in($params, ['type']);
+        if ($index = igorw\get_in($params, ['index'])) {
+            $header['_index'] = $index;
+        }
 
-        return $header;
+        return [$key => $header];
     }
 
 }
