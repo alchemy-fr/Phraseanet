@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\SQLParserUtils;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,11 +85,25 @@ class BuildSubdefs extends Command
             $params[] = (int) $min;
             $types[] = \PDO::PARAM_INT;
         }
+
         if (null !== $max = $input->getOption('max_record')) {
             $sqlCount .= " AND (r.record_id <= ?)";
 
             $params[] = (int) $max;
             $types[] = \PDO::PARAM_INT;
+        }
+
+        $substitutionOnly = $input->getOption('substitution-only');
+        $withSubstitution = $input->getOption('with-substitution');
+
+        if (false === $withSubstitution) {
+            if (true === $substitutionOnly) {
+                $sqlCount .= " AND (s.substit = 1)";
+            } else  {
+                $sqlCount .= " AND (s.substit = 0)";
+            }
+        } elseif ($substitutionOnly) {
+            throw new InvalidArgumentException('Conflict, you can not ask for --substituion-only && --with-substitution parameters at the same time');
         }
 
         list($sqlCount, $stmtParams) = SQLParserUtils::expandListParameters($sqlCount, $params, $types);
@@ -136,12 +151,12 @@ class BuildSubdefs extends Command
             $types[] = \PDO::PARAM_INT;
         }
 
-        if (false === $withSubstitution = $input->getOption('with-substitution')) {
-            $sql .= " AND (s.substit = 0)";
-        }
-
-        if ($substitutionOnly = $input->getOption('substitution-only')) {
-            $sql .= " AND (s.substit = 1)";
+        if (false === $withSubstitution) {
+            if (true === $substitutionOnly) {
+                $sql .= " AND (s.substit = 1)";
+            } else  {
+                $sql .= " AND (s.substit = 0)";
+            }
         }
 
         list($sql, $stmtParams) = SQLParserUtils::expandListParameters($sql, $params, $types);
