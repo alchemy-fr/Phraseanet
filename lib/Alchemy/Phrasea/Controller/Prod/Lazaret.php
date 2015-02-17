@@ -432,22 +432,32 @@ class Lazaret implements ControllerProviderInterface
         }
         $ret['result']['max'] = $maxTodo;
 
-        $lazaretFiles = $app['EM']->getRepository('Entities\LazaretFile')->findAll();
+        $repo = $app['EM']->getRepository('Entities\LazaretFile');
+
+        $ret['result']['tobedone'] = $repo->createQueryBuilder('id')
+            ->select('COUNT(id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if($maxTodo == -1) {
+            // all
+            $lazaretFiles = $repo->findAll();
+        }
+        else {
+            // limit maxTodo
+            $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
+        }
+
 
         $app['EM']->beginTransaction();
 
-        $ret['result']['tobedone'] = count($lazaretFiles);
         $_done = 0;
         try {
             foreach ($lazaretFiles as $lazaretFile) {
-                if($maxTodo != -1 && --$maxTodo < 0) {
-                    break;
-                }
                 $this->denyLazaretFile($app, $lazaretFile);
-                $_done++;
+                $ret['result']['done']++;
             }
             $app['EM']->commit();
-            $ret['result']['done'] = $_done;
             $ret['success'] = true;
         } catch (\Exception $e) {
             $app['EM']->rollback();
