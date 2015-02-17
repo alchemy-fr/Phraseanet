@@ -27,16 +27,6 @@ class Root implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
-            /**
-             * /!\/!\/!\/!\/!\/!\/!\/!\/!\
-             *
-             * Client is not longer used
-             *
-             * Redirect to production with a nice message
-             */
-            $app['session']->getFlashBag()->add('client_deprecated', '');
-
-            return $app->redirectPath('prod');
 
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
                 return $app->redirectPath('login_authenticate_as_guest', array('redirect' => 'client'));
@@ -301,6 +291,8 @@ class Root implements ControllerProviderInterface
      */
     public function getClient(Application $app, Request $request)
     {
+        $app['session']->getFlashBag()->add('step_by_step', '');
+
         try {
             \User_Adapter::updateClientInfos($app, 2);
         } catch (SessionNotFound $e) {
