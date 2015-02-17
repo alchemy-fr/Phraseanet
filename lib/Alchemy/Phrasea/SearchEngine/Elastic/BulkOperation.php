@@ -24,10 +24,12 @@ class BulkOperation
     private $index;
     private $type;
     private $flushLimit = 1000;
+    private $throwOnError;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, $throwOnError = false)
     {
         $this->client = $client;
+        $this->throwOnError = $throwOnError;
     }
 
     public function setDefaultIndex($index)
@@ -97,13 +99,12 @@ class BulkOperation
         $this->stack = array();
         $this->opCount = 0;
 
-        if (igorw\get_in($response, ['errors'], true)) {
-            // foreach ($response['items'] as $key => $item) {
-            //     if ($item['index']['status'] >= 400) { // 4xx or 5xx error
-            //         printf($key, $item['index']['error']);
-            //     }
-            // }
-            throw new Exception('Errors occurred during bulk indexing request, index may be in an inconsistent state');
+        if ($this->throwOnError && igorw\get_in($response, ['errors'], true)) {
+            foreach ($response['items'] as $key => $item) {
+                if ($item['index']['status'] >= 400) { // 4xx or 5xx error
+                    throw new Exception(sprintf('%d: %s', $key, $item['index']['error']));
+                }
+            }
         }
     }
 
