@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -92,7 +93,7 @@ class H264MappingGenerator extends Command
         static $n = 0;
         $n++;
 
-        return ['mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => \random::generatePassword(32)];
+        return ['mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => $this->container['random.low']->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS)];
     }
 
     private function extractPath(\appbox $appbox)
