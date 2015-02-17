@@ -171,20 +171,6 @@
         </div>
     </div>
     <div id="desktop" class="PNB" style="overflow:hidden;">
-        {% if app.flash('client_deprecated') %}
-            <div id="clientModal" class="modal hide fade"   >
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3>{{ 'Client application is deprecated'|trans }}</h3>
-                </div>
-                <div class="modal-body">
-                    <p>{{ 'You have been redirected to production application.'|trans }}</p>
-                </div>
-            </div>
-            <script type="text/javascript">
-                $('#clientModal').modal();
-            </script>
-        {% endif %}
         {% set ratio = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
@@ -810,6 +796,88 @@
     <div id="dialog_publicator" title="{{ 'action : bridge' | trans }}" style="display:none;"></div>
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
+
+    {% if step %}
+        <ol id="step_by_step" style="visibility: hidden;">
+            /* data-id needs to be the same as the parent it will attach to */
+            <li data-id="EDIT_query">
+                <div>
+                    <h1>
+                        {{ "Rechercher"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Taper ici les termes de recherche afin de retrouver les documents souhaités."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="ADV_query">
+                <div>
+                    <h1>
+                        {{ "Recherche Avancée"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Séléctionner les champs et les collections sur lesquels vous voulez rechercher."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="recordtype_sel">
+                <div>
+                    <h1>
+                        {{ "Types de documents"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Séléctionner ici le type de document que vous souhaitez rechercher."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="TOOL_disktt">
+                <div>
+                    <h1>
+                        {{ "Barre d'outils"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="answers" data-options="tipLocation:left">
+                <div>
+                    <h1>
+                        {{ "Sélection et Prévisualisation de documents"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Sélectionner les documents en cliquant dessus.
+                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
+                        cliquez sur les documents souhaités.
+                        Pour prévisualier un document cliquez dessus."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="basket_menu_trigger">
+                <div>
+                    <h1>
+                        {{ "Paniers"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Consulter et administrer vos paniers dans cet onglet.
+                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
+                        flèche blanche."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="answers" data-options="tipLocation:left">
+                <div>
+                    <h1>
+                        {{ "Ajouter au panier"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
+                        désiré et en relachant au dessus."|trans }}
+                    </p>
+                </div>
+            </li>
+        </ol>
+    {% endif %}
 
     {% if step %}
         <ol id="step_by_step" style="visibility: hidden;">
