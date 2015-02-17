@@ -813,6 +813,9 @@ abstract class base implements cache_cacheableInterface
 
         $success = true;
 
+        // disable mail
+        $app['swiftmailer.transport'] = null;
+
         foreach ($list_patches as $patch) {
             if ( ! $patch->apply($this, $app))
                 $success = false;

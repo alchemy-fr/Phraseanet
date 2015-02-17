@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -87,20 +88,40 @@ class patch_320alpha4b implements patchInterface
                 continue;
             }
 
-            $publishers = $feed->get_publishers();
-            $entry = Feed_Entry_Adapter::create($app, $feed, array_shift($publishers), $row['name'], $row['descript'], $user->get_display_name(), $user->get_email());
+            $sql = 'INSERT INTO feed_entries (id, feed_id, publisher, title, description, created_on, updated_on, author_name, author_email)
+                    VALUES (null, :feed_id, :publisher_id, :title, :description, :created, :updated, :author_name, :author_email)';
+
+            $params = array(
+                ':feed_id'      => $feed->get_id(),
+                ':publisher_id' => $feed->get_owner()->get_id(),
+                ':title'        => trim($row['name']),
+                ':description'  => trim($row['descript']),
+                ':author_name'  => trim($user->get_display_name()),
+                ':author_email' => trim($user->get_email()),
+                ':updated' => $row['updater'],
+                ':created' => $row['pub_date'],
+            );
+
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt->execute($params);
+            $stmt->closeCursor();
+
+            $entry_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
+
+            $feed->delete_data_from_cache();
+
+            unset($stmt);
+
             $date_create = new DateTime($row['pub_date']);
             if ($date_create < $date_ref) {
                 $date_ref = $date_create;
             }
-            $entry->set_created_on($date_create);
-            if ($row['updater'] != '0000-00-00 00:00:00') {
-                $date_update = new DateTime($row['updater']);
-                $entry->set_updated_on($date_update);
-            }
 
             $sql = 'SELECT sselcont_id, ssel_id, base_id, record_id
-                                FROM sselcont WHERE ssel_id = :ssel_id ORDER BY ord ASC';
+                    FROM sselcont
+                    WHERE ssel_id = :ssel_id
+                    ORDER BY ord ASC';
+
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -109,14 +130,40 @@ class patch_320alpha4b implements patchInterface
             foreach ($rs as $row) {
                 try {
                     $record = new record_adapter($app, phrasea::sbasFromBas($app, $row['base_id']), $row['record_id']);
-                    $item = Feed_Entry_Item::create($appbox, $entry, $record);
+
+                    $sql = 'SELECT (MAX(ord)+1) as sorter FROM feed_entry_elements
+                            WHERE entry_id = :entry_id';
+
+                    $stmt = $appbox->get_connection()->prepare($sql);
+                    $stmt->execute(array(':entry_id' => $entry_id));
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+                    unset($stmt);
+
+                    $sorter = ($row && $row['sorter'] > 0) ? (int) $row['sorter'] : 1;
+
+                    $sql = 'INSERT INTO feed_entry_elements (id, entry_id, sbas_id, record_id, ord)
+                            VALUES (null, :entry_id, :sbas_id, :record_id, :ord)';
+
+                    $params = array(
+                        ':entry_id'  => $entry_id,
+                        ':sbas_id'   => $record->get_sbas_id(),
+                        ':record_id' => $record->get_record_id(),
+                        ':ord'       => $sorter
+                    );
+
+                    $stmt = $appbox->get_connection()->prepare($sql);
+                    $stmt->execute($params);
+                    $stmt->closeCursor();
+                    unset($stmt);
+
                 } catch (NotFoundHttpException $e) {
 
                 }
             }
 
             $sql = 'UPDATE ssel SET deleted = "1", migrated="1"
-                            WHERE ssel_id = :ssel_id';
+                    WHERE ssel_id = :ssel_id';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $stmt->closeCursor();
