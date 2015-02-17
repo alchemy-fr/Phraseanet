@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
@@ -78,33 +79,7 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function onKernelTerminate(PostResponseEvent $event)
     {
+        // TODO flush queue synchronously in CLI (think task manager)
         $this->indexer->flushQueue();
     }
-
-    /////////////////////////////////////////////////////
-
-    // private function doRecordAction(\SplObjectStorage $poolOfRecords, $action)
-    // {
-    //     // filter by databox
-    //     $toIndex = [];
-    //     foreach ($poolOfRecords as $record) {
-    //         $toIndex[$record->get_sbas_id()][] = $record;
-    //     }
-
-    //     $bulk = new BulkOperation($this->client);
-    //     $bulk->setDefaultIndex($this->indexName);
-    //     $bulk->setAutoFlushLimit(200);
-
-    //     $recordHelper = new RecordHelper($this->appbox);
-
-    //     foreach($toIndex as $databoxId => $records) {
-    //         $databox = $this->appbox->get_databox($databoxId);
-    //         $fetcher = new RecordPoolFetcher($databox, $recordHelper, $records);
-
-    //         call_user_func_array([$this->recordIndexer, $action], [$bulk, $fetcher]);
-    //     }
-
-    //     // should we refresh ?
-    //     $this->client->indices()->refresh(['index' => $this->indexName]);
-    // }
 }

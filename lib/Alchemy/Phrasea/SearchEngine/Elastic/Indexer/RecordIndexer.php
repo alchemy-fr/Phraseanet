@@ -15,14 +15,20 @@ use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
-use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\AbstractRecordFetcher;
-use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\RecordPoolFetcher;
-use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\SingleRecordFetcher;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\CoreHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\TitleHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\RecordFetcher;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use databox;
+use Iterator;
 use media_subdef;
 
 class RecordIndexer
@@ -60,69 +66,77 @@ class RecordIndexer
     public function populateIndex(BulkOperation $bulk)
     {
         foreach ($this->appbox->get_databoxes() as $databox) {
-            $fetcher = new RecordFetcher($databox, $this->helper);
-            $fetcher->setBatchSize(200);
-            while ($records = $fetcher->fetch()) {
-                foreach ($records as $record) {
-                    $params = array();
-                    $params['id'] = $record['id'];
-                    $params['type'] = self::TYPE_NAME;
-                    $params['index'] = $this->elasticSearchEngine->getIndexName();
-                    $params['body'] = $this->transform($record);
-                    $bulk->index($params);
-                }
-            }
+            $fetcher = $this->createFetcherForDatabox($databox);
+            $this->indexFromFetcher($bulk, $fetcher);
         }
     }
 
-    public function index(BulkOperation $bulk, AbstractRecordFetcher $fetcher)
+    public function index(BulkOperation $bulk, Iterator $records)
     {
-        while ($records = $fetcher->fetch()) {
-            foreach ($records as $record) {
-                $params = array();
-                // header
-                $params['id'] = $record['id'];
-                $params['type'] = self::TYPE_NAME;
-                $params['index'] = $this->elasticSearchEngine->getIndexName();
-                // body
-                $params['body'] = $this->transform($record);
-                $bulk->index($params);
-            }
+        foreach ($this->createFetchersForRecords($records) as $fetcher) {
+            $this->indexFromFetcher($bulk, $fetcher);
         }
-        $bulk->flush();
     }
 
-    public function update(BulkOperation $bulk, AbstractRecordFetcher $fetcher)
+    public function delete(BulkOperation $bulk, Iterator $records)
     {
-        while ($records = $fetcher->fetch()) {
-            foreach ($records as $record) {
-                $params = array();
-                // header
-                $params['id'] = $record['id'];
-                $params['type'] = self::TYPE_NAME;
-                $params['index'] = $this->elasticSearchEngine->getIndexName();
-                // doc
-                $params['doc'] = $this->transform($record);
-                $bulk->update($params);
-            }
+        foreach ($records as $record) {
+            $params = array();
+            $params['id'] = $record->getId();
+            $params['type'] = self::TYPE_NAME;
+            $bulk->delete($params);
         }
-        $bulk->flush();
     }
 
-    public function delete(BulkOperation $bulk, AbstractRecordFetcher $fetcher)
+    private function createFetchersForRecords(Iterator $records)
     {
-        while ($records = $fetcher->fetch()) {
-            foreach ($records as $record) {
-                $params = array();
-                // header
-                $params['id'] = $record['id'];
-                $params['type'] = self::TYPE_NAME;
-                $params['index'] = $this->elasticSearchEngine->getIndexName();
-
-                $bulk->delete($params);
-            }
+        $fetchers = array();
+        foreach ($this->groupRecordsByDatabox($records) as $group) {
+            $databox = $group['databox'];
+            $connection = $databox->get_connection();
+            $delegate = new RecordListFetcherDelegate($group['records']);
+            $fetchers[] = $this->createFetcherForDatabox($databox, $delegate);
         }
-        $bulk->flush();
+
+        return $fetchers;
+    }
+
+    private function createFetcherForDatabox(databox $databox, FetcherDelegateInterface $delegate = null)
+    {
+        $connection = $databox->get_connection();
+        $fetcher = new RecordFetcher($connection, array(
+            new CoreHydrator($databox->get_sbas_id(), $this->helper),
+            new TitleHydrator($connection),
+            new MetadataHydrator($connection),
+            new SubDefinitionHydrator($connection)
+        ), $delegate);
+        $fetcher->setBatchSize(200);
+
+        return $fetcher;
+    }
+
+    private function groupRecordsByDatabox(Iterator $records)
+    {
+        $databoxes = array();
+        foreach ($records as $record) {
+            $databox = $record->get_databox();
+            $hash = spl_object_hash($databox);
+            $databoxes[$hash]['databox'] = $databox;
+            $databoxes[$hash]['records'][] = $record;
+        }
+
+        return array_values($databoxes);
+    }
+
+    private function indexFromFetcher(BulkOperation $bulk, RecordFetcher $fetcher)
+    {
+        while ($record = $fetcher->fetch()) {
+            $params = array();
+            $params['id'] = $record['id'];
+            $params['type'] = self::TYPE_NAME;
+            $params['body'] = $this->transform($record);
+            $bulk->index($params);
+        }
     }
 
     private function findLinkedConcepts($structure, array $record)
@@ -293,6 +307,7 @@ class RecordIndexer
      * Inspired by ESRecordSerializer
      *
      * @todo complete, with all the other transformations
+     * @todo convert this function in a HydratorInterface and inject into fetcher
      * @param $record
      */
     private function transform($record)
