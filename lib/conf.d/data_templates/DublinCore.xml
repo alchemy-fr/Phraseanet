@@ -61,7 +61,7 @@
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
-                <label lang="fr">Imagette</label>
+                <label lang="fr">Vignette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnailgif" downloadable="false">
@@ -164,7 +164,7 @@
                 <method>resample</method>
                 <dpi>72</dpi>
                 <devices>screen</devices>
-                <label lang="fr">Imagette</label>
+                <label lang="fr">Vignette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
