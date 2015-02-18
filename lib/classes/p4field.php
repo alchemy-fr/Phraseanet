@@ -14,6 +14,6 @@ class p4field
     {
         $v = mb_strtolower(trim($v));
 
-        return($v == '0' || $v == 'n' || $v == 'no' || $v == 'non' || $v = 'off' || $v == 'false');
+        return($v == '0' || $v == 'n' || $v == 'no' || $v == 'non' || $v == 'off' || $v == 'false');
     }
 }

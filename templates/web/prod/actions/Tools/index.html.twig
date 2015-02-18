@@ -1,7 +1,7 @@
 {% set selectionLength = records|length %}
 
 {% set nbHdSubstitute = 0 %}
-{% set nbThumbSubstitute = 0 %}
+{% set nbSubdefSubstitute = 0 %}
 
 {% for record in records %}
   {% set subdefs = record.get_subdefs() %}
@@ -9,10 +9,8 @@
     {% for key, subdef in subdefs if subdef.is_substituted() %}
       {% if key == 'document' %}
         {% set nbHdSubstitute = nbHdSubstitute + 1 %}
-      {% endif%}
-
-      {% if key == 'thumbnail' %}
-        {% set nbThumbSubstitute = nbThumbSubstitute + 1 %}
+      {% else %}
+        {% set nbSubdefSubstitute = nbSubdefSubstitute + 1 %}
       {% endif%}
 
     {% endfor %}
@@ -68,7 +66,7 @@
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
                     <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
-                    {% if nbThumbSubstitute > 0 %}
+                    {% if nbSubdefSubstitute > 0 %}
                         <div style="color:#A00;">
                             {% trans "Attention, certain documents ont des sous-definitions substituees" %}
                         </div>
