@@ -156,7 +156,7 @@ class Indexer
         $this->indexQueue->removeAll($this->deleteQueue);
 
         // Skip if nothing to do
-        if (!count($this->indexQueue) || !count($this->deleteQueue)) {
+        if (count($this->indexQueue) === 0 && count($this->deleteQueue) === 0) {
             return;
         }
 
