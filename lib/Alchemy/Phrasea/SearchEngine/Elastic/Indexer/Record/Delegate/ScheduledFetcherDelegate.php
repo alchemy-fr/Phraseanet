@@ -24,8 +24,8 @@ class ScheduledFetcherDelegate implements FetcherDelegateInterface
     public function getParameters()
     {
         return array(
-            ':to_index', PhraseaTokens::TO_INDEX,
-            ':indexing', PhraseaTokens::INDEXING
+            ':to_index' => PhraseaTokens::TO_INDEX,
+            ':indexing' => PhraseaTokens::INDEXING
         );
     }
 

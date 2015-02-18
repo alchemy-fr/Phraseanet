@@ -136,7 +136,7 @@ class Indexer
         // RecordQueuer::queueRecordsFromDatabox($databox);
     }
 
-    public function queueCollectionRecordsForIndexing(\collection $collection)
+    public function scheduleRecordsFromCollectionForIndexing(\collection $collection)
     {
         RecordQueuer::queueRecordsFromCollection($collection);
     }
@@ -149,6 +149,13 @@ class Indexer
     public function queueRecordForDeletion(RecordInterface $record)
     {
         $this->deleteQueue->attach($record);
+    }
+
+    public function indexScheduledRecords()
+    {
+        $this->apply(function(BulkOperation $bulk) {
+            $this->recordIndexer->indexScheduled($bulk);
+        });
     }
 
     public function flushQueue()

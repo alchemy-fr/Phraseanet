@@ -62,49 +62,6 @@ class IndexerJob extends AbstractJob
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
-
-        $recordHelper = new RecordHelper($app['phraseanet.appbox']);
-
-        // set bulk
-        $bulk = new BulkOperation($app['elasticsearch.client']);
-        $bulk->setDefaultIndex($app['elasticsearch.options']['index']);
-        $bulk->setAutoFlushLimit(1000);
-
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-            if (!$this->isStarted()) {
-                break;
-            }
-
-            $connection = $databox->get_connection();
-
-            // fetch records with 'to_index' flag set and 'indexing' flag not set
-            $fetcher = new ScheduledIndexationRecordFetcher($databox, $recordHelper);
-            $fetcher->setBatchSize(200);
-
-            // set 'indexing' flag, unset 'to_index' flag once
-            // records have been fetched
-            $fetcher->setPostFetch(function($records) use ($connection) {
-                $sql = <<<SQL
-                UPDATE record
-                SET jeton = ((jeton | ?) & (jeton & ~ ?))
-                WHERE record_id IN (?)
-SQL;
-                $records = array_map(function($record) {
-                    return $record['record_id'];
-                }, $records);
-
-                $connection->executeQuery($sql, [PhraseaTokens::TOKEN_INDEXING, PhraseaTokens::TOKEN_INDEX, $records], [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
-            });
-
-            // update es index
-            $app['elasticsearch.indexer.record_indexer']->update($bulk, $fetcher);
-
-            // unset 'indexing' flag
-            $sql = <<<SQL
-                UPDATE record
-                SET jeton = (jeton & ~ ?)
-SQL;
-            $connection->executeQuery($sql, [PhraseaTokens::TOKEN_INDEXING], [\PDO::PARAM_INT]);
-        }
+        $app['elasticsearch.indexer']->indexScheduledRecords();
     }
 }

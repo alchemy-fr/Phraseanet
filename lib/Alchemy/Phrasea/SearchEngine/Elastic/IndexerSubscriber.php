@@ -62,7 +62,7 @@ class IndexerSubscriber implements EventSubscriberInterface
     public function onCollectionChange(CollectionEvent $event)
     {
         $collection = $event->getCollection();
-        $this->indexer->queueCollectionRecordsForIndexing($collection);
+        $this->indexer->scheduleRecordsFromCollectionForIndexing($collection);
     }
 
     public function onRecordChange(RecordEvent $event)

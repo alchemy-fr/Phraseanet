@@ -18,11 +18,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\ScheduledFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\CoreHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\TitleHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
@@ -69,6 +71,32 @@ class RecordIndexer
             $fetcher = $this->createFetcherForDatabox($databox);
             $this->indexFromFetcher($bulk, $fetcher);
         }
+    }
+
+    public function indexScheduled(BulkOperation $bulk)
+    {
+        foreach ($this->appbox->get_databoxes() as $databox) {
+            $this->indexScheduledInDatabox($bulk, $databox);
+        }
+    }
+
+    private function indexScheduledInDatabox(BulkOperation $bulk, databox $databox)
+    {
+        // Make fetcher
+        $delegate = new ScheduledFetcherDelegate();
+        $fetcher = $this->createFetcherForDatabox($databox, $delegate);
+        // Keep track of fetched records, flag them as "indexing"
+        $fetched = array();
+        $fetcher->setPostFetch(function(array $records) use ($databox, &$fetched) {
+            // TODO Do not keep all indexed records in memory...
+            $fetched += $records;
+            RecordQueuer::didStartIndexingRecords($records, $databox);
+        });
+        // Perform indexing
+        $this->indexFromFetcher($bulk, $fetcher);
+        // Commit and remove "indexing" flag
+        $bulk->flush();
+        RecordQueuer::didFinishIndexingRecords($fetched, $databox);
     }
 
     public function index(BulkOperation $bulk, Iterator $records)
