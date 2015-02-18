@@ -19,12 +19,4 @@ final class PhraseaTokens
     const WRITE_META = 6; // Equivalent to WRITE_META_DOC | WRITE_META_SUBDEF
     const TO_INDEX = 8;
     const INDEXING = 16;
-
-    // TODO Replace usages of below constants
-    const TOKEN_MAKE_SUBDEF = 0x01;
-    const TOKEN_WRITE_META_DOC = 0x02;
-    const TOKEN_WRITE_META_SUBDEF = 0x04;
-    const TOKEN_WRITE_META = 0x06;
-    const TOKEN_INDEX = 0x08;
-    const TOKEN_INDEXING = 0x10;
 }

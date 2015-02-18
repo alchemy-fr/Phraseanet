@@ -440,7 +440,7 @@ class databox extends base
                 $ret['thesaurus_indexed'] += $row['n'];
         }
 
-        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".PhraseaTokens::TOKEN_MAKE_SUBDEF." GROUP BY type";
+        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".PhraseaTokens::MAKE_SUBDEF." GROUP BY type";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

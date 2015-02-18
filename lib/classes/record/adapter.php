@@ -1091,7 +1091,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
-        $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::TOKEN_MAKE_SUBDEF . ') WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
         $stmt->closeCursor();
@@ -1108,7 +1108,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
-            SET jeton = jeton | (' . (PhraseaTokens::TOKEN_WRITE_META_DOC | PhraseaTokens::TOKEN_WRITE_META_SUBDEF) . ')
+            SET jeton = jeton | (' . (PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF) . ')
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->record_id]);

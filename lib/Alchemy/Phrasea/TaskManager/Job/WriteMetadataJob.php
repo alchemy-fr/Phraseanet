@@ -83,7 +83,7 @@ class WriteMetadataJob extends AbstractJob
                 }
             }
 
-            $sql = 'SELECT record_id, coll_id, jeton FROM record WHERE (jeton & ' . PhraseaTokens::TOKEN_WRITE_META . ' > 0)';
+            $sql = 'SELECT record_id, coll_id, jeton FROM record WHERE (jeton & ' . PhraseaTokens::WRITE_META . ' > 0)';
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -99,8 +99,8 @@ class WriteMetadataJob extends AbstractJob
 
                 $subdefs = [];
                 foreach ($record->get_subdefs() as $name => $subdef) {
-                    $write_document = (($token & PhraseaTokens::TOKEN_WRITE_META_DOC) && $name == 'document');
-                    $write_subdef = (($token & PhraseaTokens::TOKEN_WRITE_META_SUBDEF) && isset($metaSubdefs[$name . '_' . $type]));
+                    $write_document = (($token & PhraseaTokens::WRITE_META_DOC) && $name == 'document');
+                    $write_subdef = (($token & PhraseaTokens::WRITE_META_SUBDEF) && isset($metaSubdefs[$name . '_' . $type]));
 
                     if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
                         $subdefs[$name] = $subdef->get_pathfile();
@@ -197,7 +197,7 @@ class WriteMetadataJob extends AbstractJob
                     }
                 }
 
-                $sql = 'UPDATE record SET jeton=jeton & ~' . PhraseaTokens::TOKEN_WRITE_META . ' WHERE record_id = :record_id';
+                $sql = 'UPDATE record SET jeton=jeton & ~' . PhraseaTokens::WRITE_META . ' WHERE record_id = :record_id';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([':record_id' => $record_id]);
                 $stmt->closeCursor();
