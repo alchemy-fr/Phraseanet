@@ -27,7 +27,8 @@
     "zxcvbn": "https://github.com/lowe/zxcvbn.git",
     "geonames-server-jquery-plugin": "~0.2",
     "jquery-galleria": "1.2.9",
-    "jquery.cookie": "~1.4"
+    "jquery.cookie": "~1.4",
+    "joyride": "https://github.com/zurb/joyride/archive/v2.0.0.zip"
   },
   "resolutions": {
     "jquery": "~1.8.3"
