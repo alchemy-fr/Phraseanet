@@ -9,21 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record;
 
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\HydratorInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
-use Doctrine\DBAL\Driver\Statement;
-use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
-use databox;
 use PDO;
 
-class RecordFetcher
+class Fetcher
 {
     private $connection;
     private $statement;

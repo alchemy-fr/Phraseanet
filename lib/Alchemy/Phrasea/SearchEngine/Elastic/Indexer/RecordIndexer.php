@@ -18,12 +18,12 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\CoreHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\TitleHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
@@ -104,7 +104,7 @@ class RecordIndexer
     private function createFetcherForDatabox(databox $databox, FetcherDelegateInterface $delegate = null)
     {
         $connection = $databox->get_connection();
-        $fetcher = new RecordFetcher($connection, array(
+        $fetcher = new Fetcher($connection, array(
             new CoreHydrator($databox->get_sbas_id(), $this->helper),
             new TitleHydrator($connection),
             new MetadataHydrator($connection),
@@ -128,7 +128,7 @@ class RecordIndexer
         return array_values($databoxes);
     }
 
-    private function indexFromFetcher(BulkOperation $bulk, RecordFetcher $fetcher)
+    private function indexFromFetcher(BulkOperation $bulk, Fetcher $fetcher)
     {
         while ($record = $fetcher->fetch()) {
             $params = array();
