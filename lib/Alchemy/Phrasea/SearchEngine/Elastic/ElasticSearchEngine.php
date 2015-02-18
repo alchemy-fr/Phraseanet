@@ -188,9 +188,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function addRecord(\record_adapter $record)
     {
-        $this->app['elasticsearch.indexer.record_indexer']->indexSingleRecord($record);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -198,13 +196,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function removeRecord(\record_adapter $record)
     {
-        $this->doExecute('delete', [
-            'index' => $this->indexName,
-            'type'  => self::GEM_TYPE_RECORD,
-            'id'    => sprintf('%s_%s', $record->get_sbas_id(), $record->get_record_id()), // @todo use RecordHelper::getUniqueRecordId
-        ]);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -212,9 +204,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function updateRecord(\record_adapter $record)
     {
-        $this->addRecord($record);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -222,9 +212,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function addStory(\record_adapter $story)
     {
-        $this->addRecord($story);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -232,9 +220,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function removeStory(\record_adapter $story)
     {
-        $this->removeRecord($story);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -242,9 +228,12 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function updateStory(\record_adapter $story)
     {
-        $this->addRecord($story);
+        $this->notImplemented();
+    }
 
-        return $this;
+    private function notImplemented()
+    {
+        throw new LogicException('Not implemented');
     }
 
     /**
