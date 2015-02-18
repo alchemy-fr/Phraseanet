@@ -14,7 +14,7 @@
 // relative order of precedence is NOT > XOR > AND > OR
 
 #query:
-    primary()
+    primary() ?
 
 primary:
     secondary() ( ::except:: #except primary() )?
