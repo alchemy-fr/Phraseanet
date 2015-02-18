@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
+use Closure;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use PDO;
@@ -30,6 +31,7 @@ class Fetcher
     private $buffer = array();
 
     private $hydrators = array();
+    private $postFetch;
 
     public function __construct(ConnectionInterface $connection, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
@@ -76,6 +78,10 @@ class Fetcher
             }
         }
 
+        if ($this->postFetch) {
+            $this->postFetch->__invoke($records);
+        }
+
         return $records;
     }
 
@@ -85,6 +91,11 @@ class Fetcher
             throw new \LogicException("Batch size must be greater than or equal to 1");
         }
         $this->batchSize = (int) $size;
+    }
+
+    public function setPostFetch(Closure $postFetch)
+    {
+        $this->postFetch = $postFetch;
     }
 
     private function getExecutedStatement()
