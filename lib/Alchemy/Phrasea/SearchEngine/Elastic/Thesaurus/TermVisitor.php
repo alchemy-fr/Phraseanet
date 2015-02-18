@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\ThesaurusException;
 use Closure;

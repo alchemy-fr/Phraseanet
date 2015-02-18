@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Core\PhraseaTokens;
-use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\ScheduledIndexationRecordFetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\TaskManager\Editor\IndexerEditor;
