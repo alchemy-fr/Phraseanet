@@ -141,12 +141,12 @@ class Indexer
         RecordQueuer::queueRecordsFromCollection($collection);
     }
 
-    public function queueRecordForIndexing(RecordInterface $record)
+    public function indexRecord(RecordInterface $record)
     {
         $this->indexQueue->attach($record);
     }
 
-    public function queueRecordForDeletion(RecordInterface $record)
+    public function deleteRecord(RecordInterface $record)
     {
         $this->deleteQueue->attach($record);
     }

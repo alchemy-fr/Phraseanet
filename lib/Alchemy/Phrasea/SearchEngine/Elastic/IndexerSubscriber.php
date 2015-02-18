@@ -68,13 +68,13 @@ class IndexerSubscriber implements EventSubscriberInterface
     public function onRecordChange(RecordEvent $event)
     {
         $record = $event->getRecord();
-        $this->indexer->queueRecordForIndexing($record);
+        $this->indexer->indexRecord($record);
     }
 
     public function onRecordDelete(RecordDeletedEvent $event)
     {
         $record = $event->getRecord();
-        $this->indexer->queueRecordForDeletion($record);
+        $this->indexer->deleteRecord($record);
     }
 
     public function onKernelTerminate(PostResponseEvent $event)
