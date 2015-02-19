@@ -957,6 +957,10 @@ div.diapo {
     position: absolute; bottom: 0px;
 }
 
+#answers {
+    padding: 20px;
+}
+
 #answers .list {
     position: relative;
     float: left;
