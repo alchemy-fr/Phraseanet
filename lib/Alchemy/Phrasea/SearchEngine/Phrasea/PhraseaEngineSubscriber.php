@@ -12,7 +12,8 @@
 namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\CollectionCreateEvent;
+use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
+use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -31,7 +32,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
         $this->app['acl']->get($event->getUser())->inject_rights();
     }
 
-    public function onCollectionCreate(CollectionCreateEvent $event)
+    public function onCollectionCreate(CreatedEvent $event)
     {
         $sql = 'SELECT u.usr_id, c.session_id
                 FROM (usr u, Sessions s, basusr b)
@@ -65,7 +66,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
     {
         return [
             PhraseaEvents::POST_AUTHENTICATE => ['onAuthenticate', 0],
-            PhraseaEvents::COLLECTION_CREATE => ['onCollectionCreate', 0],
+            CollectionEvents::CREATED => ['onCollectionCreate', 0],
         ];
     }
 }

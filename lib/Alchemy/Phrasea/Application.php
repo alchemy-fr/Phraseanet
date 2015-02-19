@@ -179,6 +179,7 @@ class Application extends SilexApplication
         'fr' => 'Français',
         'nl' => 'Dutch',
     ];
+
     private static $flashTypes = ['warning', 'info', 'success', 'error'];
     private $environment;
 
@@ -203,11 +204,6 @@ class Application extends SilexApplication
 
         $this['charset'] = 'UTF-8';
         mb_internal_encoding($this['charset']);
-
-        !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
-        !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
-        !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
-        !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
 
         $this['debug'] = $this->share(function (Application $app) {
             return Application::ENV_PROD !== $app->getEnvironment();
@@ -241,6 +237,7 @@ class Application extends SilexApplication
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
+
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
             return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
         });

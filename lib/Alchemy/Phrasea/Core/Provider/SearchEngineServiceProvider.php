@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\IndexerSubscriber;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
@@ -72,6 +73,9 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             );
         });
 
+
+        /* Indexer related services */
+
         $app['elasticsearch.indexer'] = $app->share(function ($app) {
             return new Indexer(
                 $app['elasticsearch.client'],
@@ -99,6 +103,21 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         $app['elasticsearch.record_helper'] = $app->share(function ($app) {
             return new RecordHelper($app['phraseanet.appbox']);
         });
+
+        $app['elasticsearch.indexer_subscriber'] = $app->share(function ($app) {
+            return new IndexerSubscriber($app['elasticsearch.indexer']);
+        });
+
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function ($dispatcher, $app) {
+                $dispatcher->addSubscriber($app['elasticsearch.indexer_subscriber']);
+
+                return $dispatcher;
+            })
+        );
+
+
+        /* Low-level elasticsearch services */
 
         $app['elasticsearch.client'] = $app->share(function($app) {
             $options        = $app['elasticsearch.options'];
@@ -134,6 +153,9 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
             return array_replace($defaults, $options);
         });
+
+
+        /* Querying helper services */
 
         $app['thesaurus'] = $app->share(function ($app) {
             return new Thesaurus(

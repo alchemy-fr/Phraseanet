@@ -558,7 +558,6 @@ class V1 implements ControllerProviderInterface
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
-            $app['phraseanet.SE']->addRecord($output);
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -861,7 +860,6 @@ class V1 implements ControllerProviderInterface
         }
 
         $record->set_binary_status(strrev($datas));
-        $app['phraseanet.SE']->updateRecord($record);
 
         $ret = ["status" => $this->list_record_status($databox, $record->get_status())];
 

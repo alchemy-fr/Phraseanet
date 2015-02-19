@@ -11,6 +11,14 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -23,6 +31,7 @@ use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -486,12 +495,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->base_id = $collection->get_base_id();
 
-        $this->app['phraseanet.SE']->updateRecord($this);
-
         $this->app['phraseanet.logger']($this->get_databox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
 
         $this->delete_data_from_cache();
+
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($this));
 
         return $this;
     }
@@ -855,6 +864,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
+        $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($this));
+
         return $this;
     }
 
@@ -972,8 +983,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         );
         $stmt->closeCursor();
 
-        $this->reindex();
-
         return $this;
     }
 
@@ -1067,22 +1076,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
 
         $this->set_xml($xml);
-        $this->reindex();
-
         unset($xml);
 
-        return $this;
-    }
-
-    /**
-     * Reindex the record
-     *
-     * @return record_adapter
-     */
-    public function reindex()
-    {
-        $this->app['phraseanet.SE']->updateRecord($this);
-        $this->delete_data_from_cache(self::CACHE_STATUS);
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($this));
 
         return $this;
     }
@@ -1095,7 +1091,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
-        $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
         $stmt->closeCursor();
@@ -1112,7 +1108,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
-            SET jeton = jeton | (' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ')
+            SET jeton = jeton | (' . (PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF) . ')
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->record_id]);
@@ -1153,7 +1149,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($this));
+
         return $this;
+    }
+
+    private function dispatch($eventName, RecordEvent $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     /**
@@ -1208,6 +1211,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         } catch (\Exception $e) {
             unset($e);
         }
+
+        self::dispatchCreatedEvent($app, $story);
 
         return $story;
     }
@@ -1278,7 +1283,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $record->insertTechnicalDatas($app['mediavorus']);
         $record->rebuild_subdefs();
 
+        self::dispatchCreatedEvent($app, $record);
+
         return $record;
+    }
+
+    private static function dispatchCreatedEvent(Application $app, RecordInterface $record)
+    {
+        $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
     }
 
     /**
@@ -1525,6 +1537,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app['filesystem']->remove($ftodel);
 
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+        $this->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($this));
 
         return array_keys($ftodel);
     }
@@ -1928,6 +1942,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function setStatus($status)
     {
         $this->set_binary_status($status);
+
+        $this->delete_data_from_cache(self::CACHE_STATUS);
     }
 
     /** {@inheritdoc} */

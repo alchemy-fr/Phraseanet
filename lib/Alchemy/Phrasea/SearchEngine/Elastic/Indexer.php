@@ -11,12 +11,16 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\Model\RecordInterface;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Closure;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
 use Symfony\Component\Stopwatch\Stopwatch;
+use SplObjectStorage;
 
 class Indexer
 {
@@ -28,6 +32,9 @@ class Indexer
 
     private $recordIndexer;
     private $termIndexer;
+
+    private $indexQueue;
+    private $deleteQueue;
 
     private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
 
@@ -41,6 +48,9 @@ class Indexer
         $this->termIndexer = $termIndexer;
         $this->recordIndexer = $recordIndexer;
         $this->logger   = $logger;
+
+        $this->indexQueue = new SplObjectStorage();
+        $this->deleteQueue = new SplObjectStorage();
     }
 
     public function createIndex($withMapping = true)
@@ -90,20 +100,12 @@ class Indexer
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        $this->disableShardRefreshing();
-
-        try {
-            // Prepare the bulk operation
-            $bulk = new BulkOperation($this->client);
-            $bulk->setDefaultIndex($this->options['index']);
-            $bulk->setAutoFlushLimit(1000);
-
+        $this->apply(function(BulkOperation $bulk) {
             $this->termIndexer->populateIndex($bulk);
-            // Record indexing depends on indexed terms so we need to flush
-            // between the two operations
-            $bulk->flush();
 
-            // Make everything ready to search
+            // Record indexing depends on indexed terms so we need to make
+            // everything ready to search
+            $bulk->flush();
             $this->client->indices()->refresh();
 
             $this->recordIndexer->populateIndex($bulk);
@@ -114,15 +116,83 @@ class Indexer
             // Optimize index
             $params = array('index' => $this->options['index']);
             $this->client->indices()->optimize($params);
+        });
 
+        $event = $stopwatch->stop('populate');
+        printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
+    }
+
+    public function migrateMappingForDatabox($databox)
+    {
+        // TODO Migrate mapping
+        // - Create a new index
+        // - Dump records using scroll API
+        // - Insert them in created index (except those in the changed databox)
+        // - Reindex databox's records from DB
+        // - Make alias point to new index
+        // - Delete old index
+
+        // $this->updateMapping();
+        // RecordQueuer::queueRecordsFromDatabox($databox);
+    }
+
+    public function scheduleRecordsFromCollectionForIndexing(\collection $collection)
+    {
+        RecordQueuer::queueRecordsFromCollection($collection);
+    }
+
+    public function indexRecord(RecordInterface $record)
+    {
+        $this->indexQueue->attach($record);
+    }
+
+    public function deleteRecord(RecordInterface $record)
+    {
+        $this->deleteQueue->attach($record);
+    }
+
+    public function indexScheduledRecords()
+    {
+        $this->apply(function(BulkOperation $bulk) {
+            $this->recordIndexer->indexScheduled($bulk);
+        });
+    }
+
+    public function flushQueue()
+    {
+        // Do not reindex records modified then deleted in the request
+        $this->indexQueue->removeAll($this->deleteQueue);
+
+        // Skip if nothing to do
+        if (count($this->indexQueue) === 0 && count($this->deleteQueue) === 0) {
+            return;
+        }
+
+        $this->apply(function(BulkOperation $bulk) {
+            $this->recordIndexer->index($bulk, $this->indexQueue);
+            $this->recordIndexer->delete($bulk, $this->deleteQueue);
+            $bulk->flush();
+        });
+    }
+
+    private function apply(Closure $work)
+    {
+        $this->disableShardRefreshing();
+
+        try {
+            // Prepare the bulk operation
+            $bulk = new BulkOperation($this->client);
+            $bulk->setDefaultIndex($this->options['index']);
+            $bulk->setAutoFlushLimit(1000);
+            // Do the work
+            $work($bulk);
+            // Flush just in case, it's a noop when already done
+            $bulk->flush();
             $this->restoreShardRefreshing();
         } catch (\Exception $e) {
             $this->restoreShardRefreshing();
             throw $e;
         }
-
-        $event = $stopwatch->stop('populate');
-        printf("Indexation finished in %s min (Mem. %s)", ($event->getDuration()/1000/60), $event->getMemory());
     }
 
     private function disableShardRefreshing()

@@ -304,7 +304,6 @@ class Manager
         $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 
         $element->rebuild_subdefs();
-        $element->reindex();
 
         return $element;
     }

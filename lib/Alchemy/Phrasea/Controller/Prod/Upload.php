@@ -207,7 +207,6 @@ class Upload implements ControllerProviderInterface
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
                 $message = $app->trans('The record was successfully created');
-                $app['phraseanet.SE']->addRecord($elementCreated);
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {

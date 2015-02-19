@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\BulkOperation;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;

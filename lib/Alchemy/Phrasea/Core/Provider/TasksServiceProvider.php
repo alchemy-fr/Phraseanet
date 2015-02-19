@@ -15,6 +15,7 @@ use Alchemy\Phrasea\TaskManager\Job\FtpJob;
 use Alchemy\Phrasea\TaskManager\Job\ArchiveJob;
 use Alchemy\Phrasea\TaskManager\Job\BridgeJob;
 use Alchemy\Phrasea\TaskManager\Job\FtpPullJob;
+use Alchemy\Phrasea\TaskManager\Job\IndexerJob;
 use Alchemy\Phrasea\TaskManager\Job\PhraseanetIndexerJob;
 use Alchemy\Phrasea\TaskManager\Job\RecordMoverJob;
 use Alchemy\Phrasea\TaskManager\Job\SubdefsJob;
@@ -78,6 +79,7 @@ class TasksServiceProvider implements ServiceProviderInterface
                 new SubdefsJob($app['dispatcher'], $logger, $app['translator']),
                 new WriteMetadataJob($app['dispatcher'], $logger, $app['translator']),
                 new WebhookJob($app['dispatcher'], $logger, $app['translator']),
+                new IndexerJob($app['dispatcher'], $logger, $app['translator']),
             ];
         });
     }
