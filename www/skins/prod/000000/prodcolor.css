@@ -13,6 +13,10 @@ html, body {
     z-index: 1;
 }
 
+#desktop {
+    min-width: 1100px;
+}
+
 *::-moz-selection, *::selection{
     background: white;
     color: black;
@@ -658,7 +662,7 @@ div.diapo {
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
-    margin-left: -29px;
+    margin-left: -20px;
 }
 
 .submenu .ui-buttonset{

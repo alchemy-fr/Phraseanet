@@ -517,10 +517,11 @@ function initAnswerForm() {
 function answerSizer() {
     var el = $('#idFrameC').outerWidth();
     if (!$.support.cssFloat) {
-        $('#idFrameC .insidebloc').width(el - 56);
+       // $('#idFrameC .insidebloc').width(el - 56);
     }
     var widthA = Math.round(bodySize.x - el - 10);
     $('#rightFrame').width(widthA);
+    $('#rightFrame').css('left', $('#idFrameC').width());
 
 }
 
