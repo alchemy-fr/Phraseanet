@@ -253,6 +253,11 @@ span.ww_winTitle {
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+    margin:8px 0;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li a.escamote {
+    margin:25px 25px 0 0;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li:hover a {
