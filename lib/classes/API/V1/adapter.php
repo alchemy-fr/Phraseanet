@@ -561,7 +561,9 @@ class API_V1_adapter extends API_V1_Abstract
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
         }
 
-        $record->substitute_subdef($request->get('name'), $media, $app);
+        $adapt = $request->get('adapt')===null || !(\p4field::isno($request->get('adapt')));
+        $ret['adapt'] = $adapt;
+        $record->substitute_subdef($request->get('name'), $media, $app, $adapt);
         foreach ($record->get_embedable_medias() as $name => $media) {
             if ($name == $request->get('name') &&
                 null !== ($subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry']))) {
