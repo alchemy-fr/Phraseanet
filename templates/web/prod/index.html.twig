@@ -167,7 +167,7 @@
                         </li>
                         {% endif %}
                         <li style="float:right;">
-                            <a href="#" class="escamote" style="margin:8px 0;">
+                            <a href="#" class="escamote">
                                 <img src="/skins/icons/workzoneEscamote.png" title="{{ 'Close the WorkZone' | trans }}"/>
                             </a>
                         </li>
@@ -468,6 +468,16 @@
                             </table>
                         </div>
                     </form>
+                    <div id="answers_status">
+                        <div class="infos">
+                            <span id="tool_results">
+
+                            </span>
+                        </div>
+                        <!--td class="navigation">
+                            <div id="tool_navigate"></div>
+                        </td-->
+                    </div>
                 </div>
 
                 <!--
@@ -710,22 +720,6 @@
                             {% endif %}
                         });
                     </script>
-                </div>
-                <div id="answers_status" class="PNB">
-                    <table>
-                        <tr>
-                            <td class="infos">
-                                <a href="#" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
-                                |
-                                <span id="tool_results">
-
-                                </span>
-                            </td>
-                            <td class="navigation">
-                                <div id="tool_navigate"></div>
-                            </td>
-                        </tr>
-                    </table>
                 </div>
             </div>
         </div>
