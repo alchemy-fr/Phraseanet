@@ -293,17 +293,16 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         $this->flags = $flags;
     }
 
-    public function setStatus($status)
+    public function setStatusBitField($status)
     {
         $this->status = $status;
     }
 
     /**
-     * Get status of current current as 32 bits binary string
      *
-     * Eg: 00000000001011100000000000011111
+     * @return integer
      */
-    public function getStatus()
+    public function getStatusBitField()
     {
         return $this->status;
     }

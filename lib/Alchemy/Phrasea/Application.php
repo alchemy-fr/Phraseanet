@@ -114,6 +114,7 @@ use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\StatusServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
@@ -237,7 +238,7 @@ class Application extends SilexApplication
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
-
+        $this->register(new StatusServiceProvider());
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
             return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
         });

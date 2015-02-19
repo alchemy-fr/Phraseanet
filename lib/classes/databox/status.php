@@ -11,385 +11,101 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
-use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Alchemy\Phrasea\Model\RecordInterface;
 
 class databox_status
 {
-    /**
-     *
-     * @var Array
-     */
-    private static $_status = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected static $_statuses;
-
-    /**
-     *
-     * @var Array
-     */
-    private $status = [];
-
-    /**
-     *
-     * @var string
-     */
-    private $path = '';
-
-    /**
-     *
-     * @var string
-     */
-    private $url = '';
-
-    /**
-     *
-     * @param  int    $sbas_id
-     * @return status
-     */
-    private function __construct(Application $app, $sbas_id)
-    {
-        $this->status = [];
-
-        $path = $url = false;
-
-        $sbas_params = phrasea::sbas_params($app);
-
-        if ( ! isset($sbas_params[$sbas_id])) {
-            return;
-        }
-
-        $uniqid = md5(implode('-', [
-            $sbas_params[$sbas_id]["host"],
-            $sbas_params[$sbas_id]["port"],
-            $sbas_params[$sbas_id]["dbname"]
-        ]));
-
-        $path = $this->path = $app['root.path'] . "/config/status/" . $uniqid;
-        $url = $this->url = "/custom/status/" . $uniqid;
-
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $xmlpref = $databox->get_structure();
-        $sxe = simplexml_load_string($xmlpref);
-
-        if ($sxe !== false) {
-
-            foreach ($sxe->statbits->bit as $sb) {
-                $bit = (int) ($sb["n"]);
-                if ($bit < 4 && $bit > 31)
-                    continue;
-
-                $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
-                $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
-
-                foreach ($app['locales.available'] as $code => $language) {
-                    $this->status[$bit]['labels_on'][$code] = null;
-                    $this->status[$bit]['labels_off'][$code] = null;
-                }
-
-                foreach ($sb->label as $label) {
-                    $this->status[$bit]['labels_'.$label['switch']][(string) $label['code']] = (string) $label;
-                }
-
-                foreach ($app['locales.available'] as $code => $language) {
-                    $this->status[$bit]['labels_on_i18n'][$code] = '' !== trim($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
-                    $this->status[$bit]['labels_off_i18n'][$code] = '' !== trim($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
-                }
-
-                $this->status[$bit]["img_off"] = null;
-                $this->status[$bit]["img_on"] = null;
-
-                if (is_file($path . "-stat_" . $bit . "_0.gif")) {
-                    $this->status[$bit]["img_off"] = $url . "-stat_" . $bit . "_0.gif?etag=".md5_file($path . "-stat_" . $bit . "_0.gif");
-                    $this->status[$bit]["path_off"] = $path . "-stat_" . $bit . "_0.gif";
-                }
-                if (is_file($path . "-stat_" . $bit . "_1.gif")) {
-                    $this->status[$bit]["img_on"] = $url . "-stat_" . $bit . "_1.gif?etag=".md5_file($path . "-stat_" . $bit . "_1.gif");
-                    $this->status[$bit]["path_on"] = $path . "-stat_" . $bit . "_1.gif";
-                }
-
-                $this->status[$bit]["searchable"] = isset($sb['searchable']) ? (int) $sb['searchable'] : 0;
-                $this->status[$bit]["printable"] = isset($sb['printable']) ? (int) $sb['printable'] : 0;
-            }
-        }
-        ksort($this->status);
-
-        return $this;
-    }
-
-    public static function getStatus(Application $app, $sbas_id)
-    {
-
-        if ( ! isset(self::$_status[$sbas_id]))
-            self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
-
-
-        return self::$_status[$sbas_id]->status;
-    }
-
-    public static function getDisplayStatus(Application $app)
-    {
-        if (self::$_statuses) {
-            return self::$_statuses;
-        }
-
-        $sbas_ids = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
-
-        $statuses = [];
-
-        foreach ($sbas_ids as $databox) {
-            try {
-                $statuses[$databox->get_sbas_id()] = $databox->get_statusbits();
-            } catch (\Exception $e) {
-
-            }
-        }
-
-        self::$_statuses = $statuses;
-
-        return self::$_statuses;
-    }
-
     public static function getSearchStatus(Application $app)
     {
-        $statuses = $see_all = [];
-        $databoxes = $app['acl']->get($app['authentication']->getUser())->get_granted_sbas();
-
-        foreach ($databoxes as $databox) {
+        $see_all = $structures = $stats = [];
+        foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_sbas() as $databox) {
             $see_all[$databox->get_sbas_id()] = false;
-
             foreach ($databox->get_collections() as $collection) {
                 if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }
             }
-
-            try {
-                $statuses[$databox->get_sbas_id()] = $databox->get_statusbits();
-            } catch (\Exception $e) {
-
-            }
+            $structures[$databox->get_sbas_id()] = $databox->getStatusStructure();
         }
 
-        $stats = [];
+        foreach ($structures as $databox_id => $structure) {
+            if (false === $see_all[$databox_id]) {
+                $structure = array_filter(function($status) {
+                    return (bool) $status['searchable'];
+                }, $structure->toArray());
+            }
 
-        foreach ($statuses as $databox_id => $status) {
-            $canSeeAll = isset($see_all[$databox_id]) ? $see_all[$databox_id] : false;
-            $canSeeThis = $app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($databox_id, 'bas_modify_struct');
+            foreach($structure as $bit => $status) {
+                $key = RecordHelper::normalizeFlagKey($status['labelon']);
 
-            $canAccess = $canSeeAll || $canSeeThis;
-
-            foreach ($status as $bit => $props) {
-                if (!$props['searchable'] && !$canAccess) {
-                    continue;
+                if (isset($stats[$key])) {
+                    $status = $stats[$key];
                 }
-                $stats[$databox_id][$bit] = array(
-                    'name'            => RecordHelper::normalizeFlagKey($props['labelon']),
-                    'labeloff'        => $props['labeloff'],
-                    'labelon'         => $props['labelon'],
-                    'labels_on_i18n'  => $props['labels_on_i18n'],
-                    'labels_off_i18n' => $props['labels_off_i18n'],
-                    'imgoff'          => $props['img_off'],
-                    'imgon'           => $props['img_on']
-                );
+
+                $status['sbas'][] = $databox_id;
+                $status['bit'] = $bit;
+
+                $stats[$key] = $status;
             }
         }
-
         return $stats;
     }
 
-    public static function getPath(Application $app, $sbas_id)
+    public static function deleteIcon(Application $app, $databox_id, $bit, $switch)
     {
-        if ( ! isset(self::$_status[$sbas_id])) {
-            self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
+        $statusStructure = $app['factory.status-structure']->getStructure($databox);
+
+        if (!$statusStructure->hasStatus($bit)) {
+            throw new InvalidArgumentException(sprintf('bit %s does not exists on database %s', $bit, $statusStructure->getDatabox()->get_dbname()));
         }
 
-        return self::$_status[$sbas_id]->path;
-    }
-
-    public static function getUrl(Application $app, $sbas_id)
-    {
-        if ( ! isset(self::$_status[$sbas_id])) {
-            self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
-        }
-
-        return self::$_status[$sbas_id]->url;
-    }
-
-    public static function deleteStatus(Application $app, \databox $databox, $bit)
-    {
-        $status = self::getStatus($app, $databox->get_sbas_id());
-
-        if (isset($status[$bit])) {
-            $doc = $databox->get_dom_structure();
-            if ($doc) {
-                $xpath = $databox->get_xpath_structure();
-                $entries = $xpath->query("/record/statbits/bit[@n=" . $bit . "]");
-
-                foreach ($entries as $sbit) {
-                    if ($p = $sbit->previousSibling) {
-                        if ($p->nodeType == XML_TEXT_NODE && $p->nodeValue == "\n\t\t")
-                            $p->parentNode->removeChild($p);
-                    }
-                    if ($sbit->parentNode->removeChild($sbit)) {
-                        $sql = 'UPDATE record SET status = status&(~(1<<' . $bit . '))';
-                        $stmt = $databox->get_connection()->prepare($sql);
-                        $stmt->execute();
-                        $stmt->closeCursor();
-                    }
-                }
-
-                $databox->saveStructure($doc);
-
-                if (null !== $status[$bit]['img_off']) {
-                    $app['filesystem']->remove($status[$bit]['path_off']);
-                }
-
-                if (null !== $status[$bit]['img_on']) {
-                    $app['filesystem']->remove($status[$bit]['path_on']);
-                }
-
-                unset(self::$_status[$databox->get_sbas_id()]->status[$bit]);
-
-                $app['dispatcher']->dispatch(RecordStructureEvents::STATUS_BIT_DELETED, new StatusBitDeletedEvent($databox, $bit));
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static function updateStatus(Application $app, $sbas_id, $bit, $properties)
-    {
-        self::getStatus($app, $sbas_id);
-
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-
-        $doc = $databox->get_dom_structure($sbas_id);
-        if ($doc) {
-            $xpath = $databox->get_xpath_structure($sbas_id);
-            $entries = $xpath->query("/record/statbits");
-            if ($entries->length == 0) {
-                $statbits = $doc->documentElement->appendChild($doc->createElement("statbits"));
-            } else {
-                $statbits = $entries->item(0);
-            }
-
-            if ($statbits) {
-                $entries = $xpath->query("/record/statbits/bit[@n=" . $bit . "]");
-
-                if ($entries->length >= 1) {
-                    foreach ($entries as $k => $sbit) {
-                        if ($p = $sbit->previousSibling) {
-                            if ($p->nodeType == XML_TEXT_NODE && $p->nodeValue == "\n\t\t")
-                                $p->parentNode->removeChild($p);
-                        }
-                        $sbit->parentNode->removeChild($sbit);
-                    }
-                }
-
-                $sbit = $statbits->appendChild($doc->createElement("bit"));
-
-                if ($n = $sbit->appendChild($doc->createAttribute("n"))) {
-                    $n->value = $bit;
-                }
-
-                if ($labOn = $sbit->appendChild($doc->createAttribute("labelOn"))) {
-                    $labOn->value = $properties['labelon'];
-                }
-
-                if ($searchable = $sbit->appendChild($doc->createAttribute("searchable"))) {
-                    $searchable->value = $properties['searchable'];
-                }
-
-                if ($printable = $sbit->appendChild($doc->createAttribute("printable"))) {
-                    $printable->value = $properties['printable'];
-                }
-
-                if ($labOff = $sbit->appendChild($doc->createAttribute("labelOff"))) {
-                    $labOff->value = $properties['labeloff'];
-                }
-
-                foreach ($properties['labels_off'] as $code => $label) {
-                    $labelTag = $sbit->appendChild($doc->createElement("label"));
-                    $switch = $labelTag->appendChild($doc->createAttribute("switch"));
-                    $switch->value = 'off';
-                    $codeTag = $labelTag->appendChild($doc->createAttribute("code"));
-                    $codeTag->value = $code;
-                    $labelTag->appendChild($doc->createTextNode($label));
-                }
-
-                foreach ($properties['labels_on'] as $code => $label) {
-                    $labelTag = $sbit->appendChild($doc->createElement("label"));
-                    $switch = $labelTag->appendChild($doc->createAttribute("switch"));
-                    $switch->value = 'on';
-                    $codeTag = $labelTag->appendChild($doc->createAttribute("code"));
-                    $codeTag->value = $code;
-                    $labelTag->appendChild($doc->createTextNode($label));
-                }
-            }
-
-            $databox->saveStructure($doc);
-
-            self::$_status[$sbas_id]->status[$bit]["labelon"] = $properties['labelon'];
-            self::$_status[$sbas_id]->status[$bit]["labeloff"] = $properties['labeloff'];
-            self::$_status[$sbas_id]->status[$bit]["searchable"] = (Boolean) $properties['searchable'];
-            self::$_status[$sbas_id]->status[$bit]["printable"] = (Boolean) $properties['printable'];
-
-            if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on'])) {
-                self::$_status[$sbas_id]->status[$bit]['img_on'] = null;
-            }
-
-            if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_off'])) {
-                self::$_status[$sbas_id]->status[$bit]['img_off'] = null;
-            }
-
-            $properties = self::$_status[$sbas_id]->status[$bit];
-            $app['dispatcher']->dispatch(RecordStructureEvents::STATUS_BIT_UPDATED, new StatusBitUpdatedEvent($databox, $bit, $properties));
-        }
-
-        return false;
-    }
-
-    public static function deleteIcon(Application $app, $sbas_id, $bit, $switch)
-    {
-        $status = self::getStatus($app, $sbas_id);
+        $status = $statusStructure->getStatus($bit);
 
         $switch = in_array($switch, ['on', 'off']) ? $switch : false;
 
-        if (! $switch) {
+        if (!$switch) {
             return false;
         }
 
-        if ($status[$bit]['img_' . $switch]) {
-            if (isset($status[$bit]['path_' . $switch])) {
-                $app['filesystem']->remove($status[$bit]['path_' . $switch]);
+        if ($status['img_' . $switch]) {
+            if (isset($status['path_' . $switch])) {
+                $app['filesystem']->remove($status['path_' . $switch]);
             }
 
-            $status[$bit]['img_' . $switch] = false;
-            unset($status[$bit]['path_' . $switch]);
+            $status['img_' . $switch] = false;
+            unset($status['path_' . $switch]);
         }
 
         return true;
     }
 
-    public static function updateIcon(Application $app, $sbas_id, $bit, $switch, UploadedFile $file)
+    public static function updateIcon(Application $app, $databox_id, $bit, $switch, UploadedFile $file)
     {
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
+        $statusStructure = $app['factory.status-structure']->getStructure($databox);
+
+        if (!$statusStructure->hasStatus($bit)) {
+            throw new InvalidArgumentException(sprintf('bit %s does not exists', $bit));
+        }
+
+        $status = $statusStructure->getStatus($bit);
+
         $switch = in_array($switch, ['on', 'off']) ? $switch : false;
 
-        if (! $switch) {
+        if (!$switch) {
             throw new Exception_InvalidArgument();
         }
 
-        $url = self::getUrl($app, $sbas_id);
-        $path = self::getPath($app, $sbas_id);
+        $url = $statusStructure->getUrl();
+        $path = $statusStructure->getPath();
 
         if ($file->getSize() >= 65535) {
             throw new Exception_Upload_FileTooBig();
@@ -399,7 +115,7 @@ class databox_status
             throw new Exception_Upload_Error();
         }
 
-        self::deleteIcon($app, $sbas_id, $bit, $switch);
+        self::deleteIcon($app, $databox_id, $bit, $switch);
 
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
@@ -427,8 +143,8 @@ class databox_status
 
         }
 
-        self::$_status[$sbas_id]->status[$bit]['img_' . $switch] = $url . $name;
-        self::$_status[$sbas_id]->status[$bit]['path_' . $switch] = $filePath;
+        $status['img_' . $switch] = $url . $name;
+        $status['path_' . $switch] = $filePath;
 
         return true;
     }
@@ -607,13 +323,8 @@ class databox_status
         return $status;
     }
 
-    public static function purge()
+    public static function bitIsSet($bitValue, $nthBit)
     {
-        self::$_status = self::$_statuses = [];
-    }
-
-    public static function bitIsSet($bitMask, $nthBit)
-    {
-        return (bool) ($bitMask & (1 << $nthBit));
+        return (bool) ($bitValue & (1 << $nthBit));
     }
 }

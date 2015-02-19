@@ -34,8 +34,8 @@ interface MutableRecordInterface
     /** @param string $uuid */
     public function setUuid($uuid);
 
-    /** @param string $status */
-    public function setStatus($status);
+    /** @param integer $status */
+    public function setStatusBitField($status);
 
     /** @param \DateTime $updated */
     public function setUpdated(\DateTime $updated = null);

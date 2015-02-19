@@ -647,7 +647,7 @@ class SphinxSearchEngine implements SearchEngineInterface
          */
         $status_opts = $options->getStatus();
         foreach ($options->getDataboxes() as $databox) {
-            foreach ($databox->get_statusbits() as $n => $status) {
+            foreach ($databox->getStatusStructure() as $n => $status) {
                 if (!array_key_exists($n, $status_opts))
                     continue;
                 if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n]))

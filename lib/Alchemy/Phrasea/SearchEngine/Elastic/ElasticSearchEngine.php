@@ -435,9 +435,11 @@ class ElasticSearchEngine implements SearchEngineInterface
             return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
         }
 
-        $flagNamesMap = $this->getFlagsKey($this->app['phraseanet.appbox']);
+        $appbox = $this->app['phraseanet.appbox'];
+
+        $flagNamesMap = $this->getFlagsKey($appbox);
         // Get flags rules
-        $flagRules = $this->getFlagsRules($acl, $grantedCollections);
+        $flagRules = $this->getFlagsRules($appbox, $acl, $grantedCollections);
         // Get intersection between collection ACLs and collection chosen by end user
         $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
 
@@ -531,23 +533,25 @@ class ElasticSearchEngine implements SearchEngineInterface
         $flags = [];
         foreach ($appbox->get_databoxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
-            $status = $databox->get_statusbits();
-            foreach($status as $bit => $stat) {
-                $flags[$databoxId][$bit] = RecordHelper::normalizeFlagKey($stat['labelon']);
+            $statusStructure = $databox->getStatusStructure();
+            foreach($statusStructure as $bit => $status) {
+                $flags[$databoxId][$bit] = RecordHelper::normalizeFlagKey($status['labelon']);
             }
         }
 
         return $flags;
     }
 
-    private function getFlagsRules(\ACL $acl, array $collections)
+    private function getFlagsRules(\appbox $appbox, \ACL $acl, array $collections)
     {
         $rules = [];
         foreach ($collections as $collectionId) {
             $databoxId = \phrasea::sbasFromBas($this->app, $collectionId);
+            $databox = $appbox->get_databox($databoxId);
+
             $mask_xor = $acl->get_mask_xor($collectionId);
             $mask_and = $acl->get_mask_and($collectionId);
-            foreach (range(0, 31) as $bit) {
+            foreach ($databox->getStatusStructure()->getBits() as $bit) {
                 $rules[$databoxId][$collectionId][$bit] = $this->computeAccess(
                     $mask_xor,
                     $mask_and,

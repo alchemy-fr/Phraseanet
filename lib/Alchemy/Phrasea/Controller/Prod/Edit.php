@@ -39,8 +39,7 @@ class Edit implements ControllerProviderInterface
             $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, ['canmodifrecord']);
 
             $thesaurus = false;
-            $status = $ids = $elements = $suggValues =
-                $fields = $JSFields = [];
+            $status = $ids = $elements = $suggValues = $fields = $JSFields = [];
             $databox = null;
 
             $multipleDataboxes = count($records->databoxes()) > 1;
@@ -120,16 +119,16 @@ class Edit implements ControllerProviderInterface
                  * generate javascript status
                  */
                 if ($app['acl']->get($app['authentication']->getUser())->has_right('changestatus')) {
-                    $dbstatus = \databox_status::getDisplayStatus($app);
-                    if (isset($dbstatus[$databox->get_sbas_id()])) {
-                        foreach ($dbstatus[$databox->get_sbas_id()] as $n => $statbit) {
-                            $status[$n] = [];
-                            $status[$n]['label0'] = $statbit['labels_off_i18n'][$app['locale']];
-                            $status[$n]['label1'] = $statbit['labels_on_i18n'][$app['locale']];
-                            $status[$n]['img_off'] = $statbit['img_off'];
-                            $status[$n]['img_on'] = $statbit['img_on'];
-                            $status[$n]['_value'] = 0;
-                        }
+                    $statusStructure = $databox->getStatusStructure();
+                    foreach ($statusStructure as $statbit) {
+                        $bit = $statbit['bit'];
+
+                        $status[$bit] = [];
+                        $status[$bit]['label0'] = $statbit['labels_off_i18n'][$app['locale']];
+                        $status[$bit]['label1'] = $statbit['labels_on_i18n'][$app['locale']];
+                        $status[$bit]['img_off'] = $statbit['img_off'];
+                        $status[$bit]['img_on'] = $statbit['img_on'];
+                        $status[$bit]['_value'] = 0;
                     }
                 }
 

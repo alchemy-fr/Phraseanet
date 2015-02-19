@@ -250,6 +250,7 @@ class RecordIndexer
         $mapping->add('caption', $captionMapping);
         $privateCaptionMapping = new Mapping();
         $mapping->add('private_caption', $privateCaptionMapping);
+
         foreach ($this->getFieldsStructure() as $name => $params) {
             $m = $params['private'] ? $privateCaptionMapping : $captionMapping;
             $m->add($name, $params['type']);
@@ -319,7 +320,7 @@ class RecordIndexer
         $mapping = new Mapping();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_statusbits() as $bit => $status) {
+            foreach ($databox->getStatusStructure() as $bit => $status) {
                 $key = RecordHelper::normalizeFlagKey($status['labelon']);
                 // We only add to mapping new statuses
                 if (!$mapping->has($key)) {
@@ -345,10 +346,10 @@ class RecordIndexer
         $structure = $this->getFieldsStructure();
         $databox = $this->appbox->get_databox($record['databox_id']);
 
-        foreach ($databox->get_statusbits() as $bit => $status) {
+        foreach ($databox->getStatusStructure() as $bit => $status) {
             $key = RecordHelper::normalizeFlagKey($status['labelon']);
 
-            $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bitmask'], $bit);
+            $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bit_value'], $bit);
         }
 
         foreach ($dateFields as $field) {

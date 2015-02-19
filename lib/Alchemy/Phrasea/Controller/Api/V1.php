@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Status\StatusStructure;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -437,7 +438,7 @@ class V1 implements ControllerProviderInterface
      */
     public function get_databox_status(Application $app, Request $request, $databox_id)
     {
-        $ret = ["status" => $this->list_databox_status($app['phraseanet.appbox']->get_databox($databox_id)->get_statusbits())];
+        $ret = ["status" => $this->list_databox_status($app['phraseanet.appbox']->get_databox($databox_id)->getStatusStructure())];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -757,7 +758,7 @@ class V1 implements ControllerProviderInterface
     {
         $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
-        $ret = ["status" => $this->list_record_status($app['phraseanet.appbox']->get_databox($databox_id), $record->get_status())];
+        $ret = ["status" => $this->list_record_status($record)];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -836,7 +837,7 @@ class V1 implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
         $record = $databox->get_record($record_id);
-        $status_bits = $databox->get_statusbits();
+        $statusStructure = $databox->getStatusStructure();
 
         $status = $request->get('status');
 
@@ -852,7 +853,7 @@ class V1 implements ControllerProviderInterface
             if (!in_array($value, ['0', '1'])) {
                 return $this->getBadRequest($app, $request);
             }
-            if (!isset($status_bits[$n])) {
+            if (!$statusStructure->hasStatus($n)) {
                 return $this->getBadRequest($app, $request);
             }
 
@@ -861,7 +862,7 @@ class V1 implements ControllerProviderInterface
 
         $record->set_binary_status(strrev($datas));
 
-        $ret = ["status" => $this->list_record_status($databox, $record->get_status())];
+        $ret = ["status" => $this->list_record_status($record)];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -1304,13 +1305,11 @@ class V1 implements ControllerProviderInterface
      *
      * @return array
      */
-    private function list_record_status(\databox $databox, $status)
+    private function list_record_status(\record_adapter $record)
     {
-        $status = strrev($status);
-
         $ret = [];
-        foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[] = ['bit' => $bit, 'state' => !!substr($status, ($bit - 1), 1)];
+        foreach ($record->getStatusStructure() as $bit => $status) {
+            $ret[] = ['bit' => $bit, 'state' => \databox_status::bitIsSet($record->getStatusBitField(), $bit)];
         }
 
         return $ret;
@@ -1502,11 +1501,25 @@ class V1 implements ControllerProviderInterface
      *
      * @return array
      */
-    private function list_databox_status(array $status)
+    private function list_databox_status(StatusStructure $statusStructure)
     {
         $ret = [];
-        foreach ($status as $n => $datas) {
-            $ret[] = ['bit' => $n, 'label_on' => $datas['labelon'], 'label_off' => $datas['labeloff'], 'labels' => ['en' => $datas['labels_on_i18n']['en'], 'fr' => $datas['labels_on_i18n']['fr'], 'de' => $datas['labels_on_i18n']['de'], 'nl' => $datas['labels_on_i18n']['nl'],], 'img_on' => $datas['img_on'], 'img_off' => $datas['img_off'], 'searchable' => !!$datas['searchable'], 'printable' => !!$datas['printable'],];
+        foreach ($statusStructure as $bit => $status) {
+            $ret[] = [
+                'bit' => $bit,
+                'label_on' => $status['labelon'],
+                'label_off' => $status['labeloff'],
+                'labels' => [
+                    'en' => $status['labels_on_i18n']['en'],
+                    'fr' => $status['labels_on_i18n']['fr'],
+                    'de' => $status['labels_on_i18n']['de'],
+                    'nl' => $status['labels_on_i18n']['nl'],
+                ],
+                'img_on' => $status['img_on'],
+                'img_off' => $status['img_off'],
+                'searchable' => (bool) $status['searchable'],
+                'printable' => (bool) $status['printable'],
+            ];
         }
 
         return $ret;

@@ -29,6 +29,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
+use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Alchemy\Phrasea\Core\PhraseaTokens;
@@ -379,61 +380,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_embedable_medias($devices = null, $mimes = null)
     {
         return $this->getSubdfefByDeviceAndMime($devices, $mimes);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_status_icons()
-    {
-        $dstatus = databox_status::getDisplayStatus($this->app);
-        $sbas_id = $this->get_sbas_id();
-
-        $status = '';
-
-        if (isset($dstatus[$sbas_id])) {
-            foreach ($dstatus[$sbas_id] as $n => $statbit) {
-                if ($statbit['printable'] == '0' &&
-                    !$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->base_id, 'chgstatus')) {
-                    continue;
-                }
-
-                $x = (substr((strrev($this->get_status())), $n, 1));
-
-                $source0 = "/skins/icons/spacer.gif";
-                $style0 = "visibility:hidden;display:none;";
-                $source1 = "/skins/icons/spacer.gif";
-                $style1 = "visibility:hidden;display:none;";
-                if ($statbit["img_on"]) {
-                    $source1 = $statbit["img_on"];
-                    $style1 = "visibility:auto;display:none;";
-                }
-                if ($statbit["img_off"]) {
-                    $source0 = $statbit["img_off"];
-                    $style0 = "visibility:auto;display:none;";
-                }
-                if ($x == '1') {
-                    if ($statbit["img_on"]) {
-                        $style1 = "visibility:auto;display:inline;";
-                    }
-                } else {
-                    if ($statbit["img_off"]) {
-                        $style0 = "visibility:auto;display:inline;";
-                    }
-                }
-                $status .= '<img style="margin:1px;' . $style1 . '" ' .
-                    'class="STAT_' . $this->base_id . '_'
-                    . $this->record_id . '_' . $n . '_1" ' .
-                    'src="' . $source1 . '" title="' . $statbit['labels_on_i18n'][$this->app['locale']] . '"/>';
-                $status .= '<img style="margin:1px;' . $style0 . '" ' .
-                    'class="STAT_' . $this->base_id . '_'
-                    . $this->record_id . '_' . $n . '_0" ' .
-                    'src="' . $source0 . '" title="' . $statbit['labels_off_i18n'][$this->app['locale']] . '"/>';
-            }
-        }
-
-        return $status;
     }
 
     /**
@@ -1601,8 +1547,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
         $databox = $this->get_databox();
 
-        \cache_databox::update($this->app, $this->get_sbas_id(), 'record', $this->get_record_id());
-
         return $databox->delete_data_from_cache($this->get_cache_key($option));
     }
 
@@ -1947,9 +1891,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function getStatus()
+    public function getStatusBitField()
     {
-        return $this->get_status();
+        return bindec($this->get_status());
     }
 
     /** {@inheritdoc} */

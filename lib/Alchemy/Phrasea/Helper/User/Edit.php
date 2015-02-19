@@ -256,16 +256,16 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $sbas_id = \phrasea::sbasFromBas($this->app, $this->base_id);
         $databox = $this->app['phraseanet.appbox']->get_databox($sbas_id);
-        $status = $databox->get_statusbits();
+        $statusStructure = $databox->getStatusStructure();
 
-        foreach ($status as $bit => $datas) {
+        foreach ($statusStructure as $bit => $status) {
             $tbits_left[$bit]["nset"] = 0;
-            $tbits_left[$bit]["name"] = $datas['labels_off_i18n'][$this->app['locale']];
-            $tbits_left[$bit]["icon"] = $datas["img_off"];
+            $tbits_left[$bit]["name"] = $status['labels_off_i18n'][$this->app['locale']];
+            $tbits_left[$bit]["icon"] = $status["img_off"];
 
             $tbits_right[$bit]["nset"] = 0;
-            $tbits_right[$bit]["name"] = $datas['labels_on_i18n'][$this->app['locale']];
-            $tbits_right[$bit]["icon"] = $datas["img_on"];
+            $tbits_right[$bit]["name"] = $status['labels_on_i18n'][$this->app['locale']];
+            $tbits_right[$bit]["icon"] = $status["img_on"];
         }
 
         $vand_and = $vand_or = $vxor_and = $vxor_or = "0000";
