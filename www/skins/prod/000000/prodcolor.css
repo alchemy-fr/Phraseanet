@@ -93,6 +93,13 @@ body {
     min-height: 500px;
 }
 
+#mainContent {
+    top: 40px;
+    min-width:900px;
+    overflow-x:auto;
+    overflow-y:auto;
+}
+
 .PNB {
     position: absolute;
     top: 0;
@@ -2746,6 +2753,17 @@ DIV.thesaurus U.w {
 }
 
 /*******  MAINMENU ************************************************************/
+
+#mainMenu {
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+}
+
+#mainMenu li, #mainMenu li span {
+    height: 40px;
+    line-height: 40px;
+}
 
 #mainMenu, .publi_group {
     background-color: #333333;
