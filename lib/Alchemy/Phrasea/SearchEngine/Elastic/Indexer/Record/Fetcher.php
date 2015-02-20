@@ -106,7 +106,7 @@ class Fetcher
                  , r.coll_id as collection_id
                  , c.asciiname as collection_name
                  , r.uuid
-                 , r.status as flags_bitmask
+                 , r.status as flags_bitfield
                  , r.sha256 -- TODO rename in "hash"
                  , r.originalname as original_name
                  , r.mime
