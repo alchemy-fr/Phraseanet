@@ -1082,16 +1082,16 @@
         },
         {
             "name": "goodby/csv",
-            "version": "1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goodby/csv.git",
-                "reference": "da672802985d196cae767da29b11618a676496b0"
+                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goodby/csv/zipball/da672802985d196cae767da29b11618a676496b0",
-                "reference": "da672802985d196cae767da29b11618a676496b0",
+                "url": "https://api.github.com/repos/goodby/csv/zipball/b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
+                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
                 "shasum": ""
             },
             "require": {
@@ -1135,7 +1135,7 @@
                 "export",
                 "import"
             ],
-            "time": "2013-11-22 19:10:34"
+            "time": "2015-02-02 12:29:23"
         },
         {
             "name": "guzzle/guzzle",
@@ -4089,11 +4089,13 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "goodby/csv": 20,
         "imagine/imagine": 20,
         "phpexiftool/phpexiftool": 20,
         "doctrine/data-fixtures": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.3"
     },
