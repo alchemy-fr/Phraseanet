@@ -2,16 +2,16 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class TermNode extends TextNode
 {
-    public function getQuery()
+    public function buildQuery(QueryContext $context)
     {
-        throw new \Exception('Corresponding concepts where not linked.');
-    }
+        $query = array();
+        $query['bool']['should'] = $this->buildConceptQueries();
 
-    public function setConcepts(array $concepts)
-    {
-        // TODO
+        return $query;
     }
 
     public function __toString()

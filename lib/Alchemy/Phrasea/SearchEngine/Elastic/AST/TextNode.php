@@ -30,16 +30,24 @@ class TextNode extends Node implements TermInterface
             )
         );
 
-        if ($this->concepts) {
-            $shoulds = array($query);
-            foreach (Concept::pruneNarrowConcepts($this->concepts) as $concept) {
-                $shoulds[]['term']['concept_paths'] = $concept->getPath();
-            }
+        if ($conceptQueries = $this->buildConceptQueries()) {
+            $textQuery = $query;
             $query = array();
-            $query['bool']['should'] = $shoulds;
+            $query['bool']['should'] = $conceptQueries;
+            $query['bool']['should'][] = $textQuery;
         }
 
         return $query;
+    }
+
+    protected function buildConceptQueries()
+    {
+        $queries = array();
+        foreach (Concept::pruneNarrowConcepts($this->concepts) as $concept) {
+            $queries[]['term']['concept_paths'] = $concept->getPath();
+        }
+
+        return $queries;
     }
 
     public function getTextNodes()
