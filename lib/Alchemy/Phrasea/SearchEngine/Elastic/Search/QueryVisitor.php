@@ -121,7 +121,7 @@ class QueryVisitor implements Visit
         foreach ($element->getChildren() as $child) {
             $node = $child->accept($this);
             if ($node instanceof AST\TextNode) {
-                $words[] = $node->getText();
+                $words[] = $node->getValue();
             } else {
                 throw new \Exception('Term node can only contain text nodes');
             }
