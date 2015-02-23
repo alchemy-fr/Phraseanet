@@ -26,7 +26,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function icon_url()
     {
-        return '/skins/prod/000000/images/disktt_history.gif';
+        return '/skins/prod/000000/images/disktt_history.png';
     }
 
     /**
