@@ -1527,18 +1527,6 @@ class API_V1_adapter extends API_V1_Abstract
                 return null;
             }
         }
-        if($media->get_name() != 'document') {
-            $databox = $record->get_databox();
-            try {
-                $subDefDefinition = $databox->get_subdef_structure()->get_subdef($record->get_type(), $media->get_name());
-            } catch (Exception_Databox_SubdefNotFound $e) {
-                return null;
-            }
-        }
-
-        if ($media->get_name() != 'document' && false === $subDefDefinition->is_downloadable()) {
-            return null;
-        }
 
         if ($media->get_permalink() instanceof media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink(), $registry);
