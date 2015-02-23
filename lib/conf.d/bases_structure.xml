@@ -1974,18 +1974,15 @@
             <name>pwd</name>
             <type>char(64)</type>
             <null>YES</null>
-
             <extra></extra>
-
             <default></default>
             <comment></comment>
           </field>
           <field>
             <name>viewname</name>
             <type>char(128)</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-
             <default></default>
             <comment></comment>
           </field>

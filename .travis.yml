@@ -22,7 +22,7 @@ before_script:
   - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
   - yes | pecl install imagick
   - mysql -e 'create database update39_test;create database ab_test;create database db_test;'
-  - mysql -e 'SET @@global.sql_mode= "";'
+  - mysql -e 'SET @@global.sql_mode= STRICT_ALL_TABLES;'
   - mysql -e 'SET @@global.max_allowed_packet= 33554432;'
   - mysql -e 'SET @@global.wait_timeout= 999999;'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
