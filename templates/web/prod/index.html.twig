@@ -547,7 +547,7 @@
                     <span class="dropdownButton">
                         <div class="btn-group">
                             <button class="default_action TOOL_disktt_btn results_window btn btn-inverse">
-                                <img src="/skins/prod/000000/images/disktt_history.gif" height="16" width="16" /> {{ 'action : exporter' | trans }}
+                                <img src="/skins/prod/000000/images/disktt_history.png" height="16" width="16" /> {{ 'action : exporter' | trans }}
                             </button>
                             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                             <ul class="dropdown-menu">
@@ -566,7 +566,7 @@
                         {% set label %}
                             {{ 'action : editer' | trans }}
                         {% endset %}
-                        {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+                        {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
                     {% endif %}
                     {% if app['acl'].get(app['authentication'].getUser()).has_right('changestatus') %}
                         {% set label %}

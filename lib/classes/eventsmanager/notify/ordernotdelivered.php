@@ -24,7 +24,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
     public function icon_url()
     {
-        return '/skins/prod/000000/images/disktt_history.gif';
+        return '/skins/prod/000000/images/disktt_history.png';
     }
 
     public function datas(array $data, $unread)

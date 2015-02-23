@@ -187,7 +187,7 @@ span.ww_winTitle {
 }
 
 #idFrameC .wrapper {
-    background-color: #333333;
+    background-color: #3b3b3b;
     right: 10px;
 }
 
@@ -237,7 +237,7 @@ span.ww_winTitle {
     width: auto;
     height: 81px;
     display: inline-block;
-    background-color: #333333;
+    background-color: #3b3b3b;
     z-index: 10;
 }
 
@@ -254,13 +254,14 @@ span.ww_winTitle {
     margin-left: 5px;
 }
 
+#idFrameC .ui-tabs .ui-tabs-nav li {
+    border-radius: 0;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li a {
-    padding: 5px;
-    margin: 5px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    margin:8px 0;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li a.escamote {
@@ -273,6 +274,7 @@ span.ww_winTitle {
 
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a {
     background-color: #666666;
+    border-bottom: 3px solid #076882;
 }
 
 #idFrameC ul.icon-menu {
@@ -283,22 +285,26 @@ span.ww_winTitle {
     display: block;
     background-image: url("/skins/icons/workzone32.png");
     background-repeat: no-repeat;
-    background-position: 8px 5px;
-    width: 54px;
-    height: 32px;
+    background-position: 18px 18px;
+    width: 91px;
+    height: 78px;
 }
 
 #idFrameC .icon-menu .WZtabs {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 91px;
+    height: 78px;
+    line-height: 78px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 #basket_menu_trigger {
-     padding: 7px 3px;
-     float: right;
-     font-size: 12px;
-     cursor: pointer;
+    padding: 34px 9px 0 0;
+    float: right;
+    font-size: 9px;
+    cursor: pointer;
+    cursor: pointer;
 }
 
 #idFrameC.closed .icon-menu li {
@@ -313,11 +319,6 @@ span.ww_winTitle {
 #idFrameC li.proposals_WZ.active img.proposals_off,
 #idFrameC li.proposals_WZ img.proposals_on {
     display: none;
-}
-
-#idFrameC li.proposals_WZ.active img.proposals_on,
-#idFrameC li.proposals_WZ img.proposals_off {
-    display: block;
 }
 
 .ui-tabs .ui-tabs-nav li a {
@@ -343,7 +344,7 @@ span.ww_winTitle {
     display: block;
     border-width: 0;
     padding: 0px;
-    background-color: #333333;
+    background-color: #3b3b3b;
 }
 
 .ui-tabs .ui-tabs-panel.tabBox {
@@ -424,7 +425,7 @@ span.ww_winTitle {
     margin-bottom: 0;
     height: 44px;
     line-height: 44px;
-    background-color: #333333;
+    background-color: #3b3b3b;
     border-top: 1px solid #000;
     border-radius: 0;
 }
@@ -710,10 +711,24 @@ div.diapo {
     margin-bottom: 0px;
     margin-top: 0px;
     height: 30px;
-    background-color: #333333;
+    background-color: #3b3b3b;
     font-size:10px;
     z-index:100;
     height:45px;
+}
+
+#idFrameC .tools {
+    text-align: left !important;
+}
+
+#idFrameC .tools label {
+    display: inline;
+    margin: 0 15px 0 0;
+    float: left;
+    font-size: 11px;
+    color: #7f7f7f;
+    line-height: 22px;
+    vertical-align: middle;
 }
 
 #idFrameT .tools .classicButton button.btn,
@@ -721,9 +736,12 @@ div.diapo {
     margin: 0;
 }
 
+#idFrameT .tools:first-child .btn-group {
+    border-left: 1px solid #000;
+}
+
 #idFrameT .tools .btn-group {
     float: left;
-    border-right: 1px solid #000;
 }
 
 #idFrameT .tools .classicButton button.btn,
@@ -751,7 +769,7 @@ div.diapo {
     padding-left: 5px;
     */
     background-image: none;
-    background-color: #333333;
+    background-color: #3b3b3b;
     border-radius: 0;
     margin: 0;
     height: 45px;
@@ -1060,8 +1078,9 @@ div.diapo {
 
 #baskets .SSTT img {
     max-height: 18px;
-    vertical-align: top;
+    vertical-align: middle;
     cursor: help;
+    margin-right: 9px;
 }
 
 #baskets .SSTT.grouping.active {
@@ -1832,7 +1851,7 @@ H4 {
 
 .bodyprofile .ui-tabs .ui-tabs-panel {
     background-color: #a3a3a3;
-    color: #333333;
+    color: #3b3b3b;
 }
 
 .bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-active {
@@ -2766,7 +2785,7 @@ DIV.thesaurus U.w {
 }
 
 #mainMenu, .publi_group {
-    background-color: #333333;
+    background-color: #3b3b3b;
 }
 
 .context-menu-item a {
@@ -4023,7 +4042,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #uploadBox .well {
     margin: 0;
     padding: 0.5%;
-    color: #333333;
+    color: #3b3b3b;
 }
 
 #uploadBox #fileupload {
@@ -4274,7 +4293,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #lazaretBox .lazaret-file a,
 #lazaretBox .lazaret-proposals a {
     font-weight: normal;
-    color: #333333;
+    color: #3b3b3b;
 }
 
 #lazaretBox .lazaret-file a:hover,
