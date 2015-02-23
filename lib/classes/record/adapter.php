@@ -984,13 +984,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this->get_databox()->get_sbas_id();
     }
 
-    public function substitute_subdef($name, MediaInterface $media, Application $app)
+    public function substitute_subdef($name, MediaInterface $media, Application $app, $adapt=true)
     {
         $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
-
-        $base_url = '';
-
-        $subdef_def = false;
 
         if ($name == 'document') {
             $baseprefs = $this->get_databox()->get_sxml_structure();
@@ -1021,24 +1017,30 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $path_file_dest = $path . $newfilename;
             }
 
-            try {
-                $app['media-alchemyst']->turnInto(
-                    $media->getFile()->getRealPath(),
-                    $path_file_dest,
-                    $subdef_def->getSpecs()
-                );
-            } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
-                return $this;
-            }
+            if($adapt) {
+                try {
+                    $app['media-alchemyst']->turnInto(
+                        $media->getFile()->getRealPath(),
+                        $path_file_dest,
+                        $subdef_def->getSpecs()
+                    );
+                } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
+                    return $this;
+                }
 
-            $subdefFile = $path_file_dest;
+                $subdefFile = $path_file_dest;
+            }
+            else{
+                $app['filesystem']->copy($media->getFile()->getRealPath(), $path_file_dest);
+
+                $subdefFile = $path_file_dest;
+            }
 
             $meta_writable = $subdef_def->meta_writeable();
         }
 
         $app['filesystem']->chmod($subdefFile, 0760);
         $media = $app['mediavorus']->guess($subdefFile);
-
         $subdef = media_subdef::create($app, $this, $name, $media);
         $subdef->set_substituted(true);
 
@@ -1048,7 +1050,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->write_metas();
         }
 
-        if ($name == 'document') {
+        if ($name == 'document' && $adapt) {
             $this->rebuild_subdefs();
         }
 

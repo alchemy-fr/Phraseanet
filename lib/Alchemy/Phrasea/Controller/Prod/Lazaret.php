@@ -319,15 +319,50 @@ class Lazaret implements ControllerProviderInterface
      */
     public function emptyLazaret(Application $app, Request $request)
     {
-        $ret = ['success' => false, 'message' => '', 'result'  => []];
+        $ret = array(
+            'success' => false,
+            'message' => '',
+            'result'  => array(
+                'tobedone'  => 0,
+                'done'      => 0,
+                'todo'      => 0,
+                'max'       => '',
+            )
+        );
 
-        $lazaretFiles = $app['repo.lazaret-files']->findAll();
+        $maxTodo = -1;  // all
+        if($request->get('max') !== null) {
+            $maxTodo = (int)($request->get('max'));
+            $ret['result']['max'] = $maxTodo;
+            if( $maxTodo <= 0) {
+                $maxTodo = -1;      // all
+            }
+        }
+        $ret['result']['max'] = $maxTodo;
+
+        $repo = $app['orm.em']->getRepository('Entities\LazaretFile');
+
+        $ret['result']['tobedone'] = $repo->createQueryBuilder('id')
+            ->select('COUNT(id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if($maxTodo == -1) {
+            // all
+            $lazaretFiles = $repo->findAll();
+        }
+        else {
+            // limit maxTodo
+            $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
+        }
+
 
         $app['orm.em']->beginTransaction();
 
         try {
             foreach ($lazaretFiles as $lazaretFile) {
                 $this->denyLazaretFile($app, $lazaretFile);
+                $ret['result']['done']++;
             }
             $app['orm.em']->commit();
             $ret['success'] = true;
@@ -335,6 +370,7 @@ class Lazaret implements ControllerProviderInterface
             $app['orm.em']->rollback();
             $ret['message'] = $app->trans('An error occured');
         }
+        $ret['result']['todo'] = $ret['result']['tobedone'] - $ret['result']['done'];
 
         return $app->json($ret);
     }

@@ -762,6 +762,7 @@ $(document).ready(function () {
         var $record_types = $('#recordtype_sel');
         if ($this.hasClass('mode_type_reg')) {
             $record_types.hide();
+            $record_types.prop("selectedIndex", 0);
         } else {
             $record_types.show();
         }

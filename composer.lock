@@ -1435,16 +1435,16 @@
         },
         {
             "name": "goodby/csv",
-            "version": "1.2.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goodby/csv.git",
-                "reference": "66c376b3bd51bc90fd680bfdf3708c9a22b9d081"
+                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goodby/csv/zipball/66c376b3bd51bc90fd680bfdf3708c9a22b9d081",
-                "reference": "66c376b3bd51bc90fd680bfdf3708c9a22b9d081",
+                "url": "https://api.github.com/repos/goodby/csv/zipball/b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
+                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
                 "shasum": ""
             },
             "require": {
@@ -1488,7 +1488,7 @@
                 "export",
                 "import"
             ],
-            "time": "2015-01-14 03:58:50"
+            "time": "2015-02-02 12:29:23"
         },
         {
             "name": "guzzle/guzzle",
@@ -5022,6 +5022,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "goodby/csv": 20,
         "alchemy/task-manager": 20,
         "alchemy/zippy": 20,
         "imagine/imagine": 20,

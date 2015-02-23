@@ -142,22 +142,21 @@
 
 <script>
 
+
 $(document).ready(function () {
 
-    var userAgent = navigator.userAgent.toLowerCase();
-    $.browser = {
-        version: (userAgent.match( /.+(?:rv|it|ra|ie|me)[/: ]([\d.]+)/ ) || [])[1],
-        chrome: /chrome/.test( userAgent ),
-        safari: /webkit/.test( userAgent ) && !/chrome/.test( userAgent ),
-        opera: /opera/.test( userAgent ),
-        msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
-        mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
-    };
+    var iev=0;
+    var ieold = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    var trident = !!navigator.userAgent.match(/Trident\/7.0/);
+    var rv=navigator.userAgent.indexOf("rv:11.0");
 
-    if($.browser.msie && parseFloat($.browser.version)>=10) {
+    if (ieold) iev=new Number(RegExp.$1);
+    if (navigator.appVersion.indexOf("MSIE 10") != -1) iev=10;
+    if (trident&&rv!=-1) iev=11;
+
+    if (iev >= 10) {
         $("#UPLOAD_FLASH_LINK").hide();
     }
-
     //Upload management
     var UploaderManager = new p4.UploaderManager({
         container: $('#uploadBox'),

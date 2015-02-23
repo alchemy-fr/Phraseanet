@@ -96,6 +96,11 @@ class Tools implements ControllerProviderInterface
                 foreach ($record->get_subdefs() as $subdef) {
                     if ($subdef->is_substituted()) {
                         $substituted = true;
+
+                        if ($force) {
+                            // unset flag
+                            $subdef->set_substituted(false);
+                        }
                         break;
                     }
                 }

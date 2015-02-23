@@ -182,30 +182,40 @@
     </subdefs>
 
     <description>
-        <Objet src="IPTC:ObjectName" />
-        <Categorie src="IPTC:Category"/>
-        <AutresCategories src="IPTC:SupplementalCategories" multi="1"/>
-        <MotsCles src="IPTC:Keywords" multi="1"/>
-        <Observations src="IPTC:SpecialInstructions"/>
-        <Date src="IPTC:DateCreated" type="date" />
-        <Signature src="IPTC:By-line"/>
-        <TitreCredits src="IPTC:By-lineTitle"/>
-        <Ville src="IPTC:City" />
-        <Province src="IPTC:Province-State" />
-        <Pays src="IPTC:Country-PrimaryLocationName" />
-        <ReferencesOriginales src="IPTC:OriginalTransmissionReference" />
-        <Titre src="IPTC:Headline" report="1" thumbtitle="1" />
-        <Credit src="IPTC:Credit" report="1" />
-        <Source src="IPTC:Source" />
-        <Legende src="IPTC:Caption-Abstract" />
-        <Redacteur src="IPTC:Writer-Editor" />
-        <Longitude src="GPS:GPSLongitude" readonly="1"/>
-        <Latitude src="GPS:GPSLatitude" readonly="1"/>
-        <AppareilPhoto src="IFD0:Model" readonly="1"/>
-        <NomDeFichier src="Phraseanet:tf-basename" readonly="1" type="text" />
+        <Title src="XMP-dc:Title" thumbtitle="1" report="1" />
+        <Creator src="XMP-dc:Creator" report="1" />
+        <Subject src="XMP-dc:Subject" multi="1"/>
+        <Description src="XMP-dc:Description" report="0" />
+        <Publisher src="XMP-dc:Publisher" type="date" report="0" />
+        <Contributor src="XMP-dc:Contributor" report="0"/>
+        <Date src="XMP-dc:Date" type="date" report="0" />
+        <Type src="XMP-dc:Type" report="1" />
+        <Format src="XMP-dc:Format" report="0" />
+        <Identifier src="XMP-dc:Identifier" report="1" />
+        <Source src="XMP-dc:Source" report="0" />
+        <Language src="XMP-dc:Language" report="0" />
+        <Relation src="XMP-dc:Relation" report="0" />
+        <Coverage src="XMP-dc:Coverage" report="1" />
+        <Rights src="XMP-dc:Rights" report="0" />
+        <Comments src="" business="1" report="0" />
+        <Filename src="Phraseanet:tf-basename" readonly="1" type="text" report="1"/>
+        <CameraDevice src="IFD0:Model" readonly="1" report="0" />
+        <Latitude src="GPS:GPSLatitude" readonly="1" report="0" />
+        <Longitude src="GPS:GPSLongitude" readonly="1" report="0"/>
+        <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
+        <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
     </description>
 
     <statbits>
-        <bit n="4">Online</bit>
+        <bit n="4" labelOn="Caption filled" searchable="0" printable="0" labelOff="Caption not filled">
+          <label switch="off" code="de">Nicht gefüllt</label>
+          <label switch="off" code="en">Caption not filled</label>
+          <label switch="off" code="fr">Média non renseigné</label>
+          <label switch="off" code="nl"/>
+          <label switch="on" code="de">Gefüllt</label>
+          <label switch="on" code="en">Caption filled</label>
+          <label switch="on" code="fr">Média renseigné</label>
+          <label switch="on" code="nl"/>
+        </bit>
     </statbits>
 </record>

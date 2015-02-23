@@ -53,7 +53,7 @@
                     <span class="btn btn-success fileinput-button pull-left">
                         <i class="icon-plus icon-white"></i>
                         <span>{% trans %}Select files...{% endtrans %}</span>
-                        <input type="file" name="image_off" accept="image/*"/>
+                        <input type="file" name="image_off" accept="image/jpg, image/png"/>
                     </span>
                     <div class='thumbnail pull-left' style='height:20px;width:20px;margin-left:10px;'>
                         {% if status['img_off'] is defined and status['img_off'] %}
@@ -117,7 +117,7 @@
                     <span class="btn btn-success fileinput-button pull-left">
                         <i class="icon-plus icon-white"></i>
                         <span>{% trans %}Select files...{% endtrans %}</span>
-                        <input type="file" name="image_on" accept="image/*"/>
+                        <input type="file" name="image_on" accept="image/jpg, image/png"/>
                     </span>
                     <div class='thumbnail pull-left' style='height:20px;width:20px;margin-left:10px'>
                         {% if status['img_on'] is defined and status['img_on'] %}

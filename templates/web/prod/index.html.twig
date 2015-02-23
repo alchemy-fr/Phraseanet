@@ -44,6 +44,7 @@
 {% endmacro %}
 
 {% set jquery_theme = 'dark-hive' %}
+{% set step = app.flash('step_by_step') %}
 
 {% extends "common/index_bootstrap.html.twig" %}
 
@@ -104,6 +105,41 @@
             background-color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
         }
     </style>
+
+    {% if step %}
+        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/joyride/joyride-2.1.css' }) }}" >
+            <style>
+                .joyride-tip-guide {
+                    background-color: #eee;
+                    color: #000;
+                }
+
+                .joyride-tip-guide h1 {
+                    font-weight: 100;
+                    font-size: 20px;
+                    color: #0a212b;
+                    line-height: 22px;
+                    margin-bottom: 10px;
+                }
+
+                .joyride-tip-guide span.joyride-nub.top {
+                    border-color: #eee;
+                }
+
+                .joyride-tip-guide span.joyride-nub.right {
+                    border-left-color: #eee !important;
+                }
+
+                .joyride-expose-wrapper {
+                    background-color: transparent;
+                }
+
+                .joyride-tip-guide .joyride-next-tip {
+                    background: #0a212b;
+                    border: none;
+                }
+            </style>
+    {% endif %}
 {% endblock %}
 
 {% block javascript %}
@@ -121,7 +157,6 @@
             </div>
         </div>
     </div>
-
     <div id="desktop" class="PNB" style="overflow:hidden;">
         {% if app.flash('client_deprecated') %}
             <div id="clientModal" class="modal hide fade"   >
@@ -299,7 +334,7 @@
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <div class="input-append">
                             <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
-                            <a href="#" class="btn btn-inverse adv_trigger adv_search_button">
+                            <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                 <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                             </a>
                             <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
@@ -546,7 +581,7 @@
 
                     <span class="dropdownButton">
                         <div class="btn-group">
-                            <button class="default_action TOOL_disktt_btn results_window btn btn-inverse">
+                            <button  id="TOOL_disktt" class="default_action TOOL_disktt_btn results_window btn btn-inverse">
                                 <img src="/skins/prod/000000/images/disktt_history.png" height="16" width="16" /> {{ 'action : exporter' | trans }}
                             </button>
                             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
@@ -1036,6 +1071,88 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
+    {% if step %}
+        <ol id="step_by_step" style="visibility: hidden;">
+            /* data-id needs to be the same as the parent it will attach to */
+            <li data-id="EDIT_query">
+                <div>
+                    <h1>
+                        {{ "Rechercher"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Taper ici les termes de recherche afin de retrouver les documents souhaités."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="ADV_query">
+                <div>
+                    <h1>
+                        {{ "Recherche Avancée"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Séléctionner les champs et les collections sur lesquels vous voulez rechercher."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="recordtype_sel">
+                <div>
+                    <h1>
+                        {{ "Types de documents"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Séléctionner ici le type de document que vous souhaitez rechercher."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="TOOL_disktt">
+                <div>
+                    <h1>
+                        {{ "Barre d'outils"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="answers" data-options="tipLocation:left">
+                <div>
+                    <h1>
+                        {{ "Sélection et Prévisualisation de documents"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Sélectionner les documents en cliquant dessus.
+                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
+                        cliquez sur les documents souhaités.
+                        Pour prévisualier un document cliquez dessus."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="basket_menu_trigger">
+                <div>
+                    <h1>
+                        {{ "Paniers"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Consulter et administrer vos paniers dans cet onglet.
+                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
+                        flèche blanche."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="answers" data-options="tipLocation:left">
+                <div>
+                    <h1>
+                        {{ "Ajouter au panier"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
+                        désiré et en relachant au dessus."|trans }}
+                    </p>
+                </div>
+            </li>
+        </ol>
+    {% endif %}
+
     <script type="text/javascript">
         {% include "prod/thesaurus.js.twig" %}
     </script>
@@ -1088,5 +1205,19 @@
 
     </script>
     <script type="text/javascript" id="bitly_loader"></script>
+    {% if step %}
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.cookie.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/modernizr.mq.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.joyride-2.1.js' }) }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#step_by_step").joyride({
+                    autoStart : true,
+                    modal:true,
+                    expose: true
+                });
+            });
+        </script>
+    {% endif %}
 
 {% endblock %}

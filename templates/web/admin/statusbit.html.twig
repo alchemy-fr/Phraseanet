@@ -42,12 +42,12 @@
                     {% set statusbit = attribute(status, bit) %}
                     <td>
                         {% if statusbit['img_off'] %}
-                            <img title='{{ statusbit['labels_off_i18n'][app['locale']] }}' src='{{ statusbit['img_off'] }}' />
+                            <img class="status-img" title='{{ statusbit['labels_off_i18n'][app['locale']] }}' src='{{ statusbit['img_off'] }}' />
                         {% endif %}
                         {{ statusbit['labels_off_i18n'][app['locale']] }}
                         /
                         {% if statusbit['img_on'] %}
-                            <img title='{{ statusbit['labels_on_i18n'][app['locale']] }}' src='{{ statusbit['img_on'] }}' />
+                            <img class="status-img" title='{{ statusbit['labels_on_i18n'][app['locale']] }}' src='{{ statusbit['img_on'] }}' />
                         {% endif %}
                         {{ statusbit['labels_on_i18n'][app['locale']] }}
                     </td>

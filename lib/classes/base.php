@@ -810,6 +810,9 @@ abstract class base implements cache_cacheableInterface
 
         $success = true;
 
+        // disable mail
+        $app['swiftmailer.transport'] = null;
+
         foreach ($list_patches as $patch) {
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {

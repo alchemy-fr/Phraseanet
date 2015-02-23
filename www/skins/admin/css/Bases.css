@@ -75,3 +75,8 @@ div[id$="_indexed_percent"] {
 a.btn {
     text-decoration: none;
 }
+
+.status-img {
+  max-width: 16px;
+  max-heigh: 16px;
+}
