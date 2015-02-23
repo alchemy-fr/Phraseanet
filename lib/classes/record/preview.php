@@ -204,7 +204,7 @@ class record_preview extends record_adapter
         return $this;
     }
 
-    public function get_train($pos = 0, $query = '', SearchEngineInterface $search_engine = null)
+    public function get_train($pos = 0, $query = '', SearchEngineInterface $search_engine = null, SearchEngineOptions $options)
     {
         if ($this->train) {
             return $this->train;
@@ -214,7 +214,7 @@ class record_preview extends record_adapter
             case 'RESULT':
                 $perPage = 56;
                 $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-                $results = $search_engine->query($query, $index, $perPage);
+                $results = $search_engine->query($query, $index, $perPage, $options);
 
                 $this->train = $results->getResults()->toArray();
                 break;

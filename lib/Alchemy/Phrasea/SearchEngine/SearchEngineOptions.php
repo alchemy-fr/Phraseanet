@@ -497,6 +497,8 @@ class SearchEngineOptions
         $options = new static();
         $options->disallowBusinessFields();
 
+        $sort_by = $sort_ord = null;
+
         foreach ($serialized as $key => $value) {
 
             switch (true) {
@@ -529,8 +531,6 @@ class SearchEngineOptions
                             }, $value);
                     break;
             }
-
-            $sort_by = $sort_ord = null;
 
             switch ($key) {
                 case 'record_type':

@@ -221,7 +221,7 @@ class Query implements ControllerProviderInterface
 
         return $app->json([
             'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
-                'records'  => $record->get_train($pos, $query, $app['phraseanet.SE']),
+                'records'  => $record->get_train($pos, $query, $app['phraseanet.SE'], $options),
                 'selected' => $pos
             ])
         ]);
