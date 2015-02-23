@@ -30,7 +30,7 @@
         "gedmo/doctrine-extensions"        : "~2.3.0",
         "alchemy/google-plus-api-client"   : "~0.6.2",
         "alchemy/geonames-api-consumer"    : "~0.1.0",
-        "goodby/csv"                       : "~1.0",
+        "goodby/csv"                       : "dev-master",
         "guzzle/guzzle"                    : "~3.0",
         "imagine/imagine"                  : "dev-alchemy-0.6.2 as 0.6.2",
         "jms/serializer"                   : "~0.10",
