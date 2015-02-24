@@ -349,7 +349,7 @@ class RecordIndexer
         foreach ($databox->getStatusStructure() as $bit => $status) {
             $key = RecordHelper::normalizeFlagKey($status['labelon']);
 
-            $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bit_value'], $bit);
+            $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bitfield'], $bit);
         }
 
         foreach ($dateFields as $field) {
