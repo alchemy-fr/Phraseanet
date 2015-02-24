@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class TermNode extends TextNode
+class TermNode extends AbstractTermNode
 {
     public function buildQuery(QueryContext $context)
     {
