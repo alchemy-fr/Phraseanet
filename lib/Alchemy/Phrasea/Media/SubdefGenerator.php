@@ -75,7 +75,7 @@ class SubdefGenerator
 
             $record->clearSubdefCache($subdefname);
 
-            $this->app['dispatcher']->dispatch(RecordEvents::SUB_DEFINITION_CREATED, new RecordSubDefinitionCreatedEvent($record, $subDefName));
+            $this->app['dispatcher']->dispatch(RecordEvents::SUB_DEFINITION_CREATED, new RecordSubDefinitionCreatedEvent($record, $subdefname));
         }
 
         return $this;
