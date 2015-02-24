@@ -277,7 +277,9 @@
       {% endif %}
       {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_status_display') == '1' %}
           <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
-              {{record.get_status_icons|raw}}
+              {% for flag in record_flags(record) %}
+                  <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+              {% endfor %}
           </div>
       {% endif %}
           <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">

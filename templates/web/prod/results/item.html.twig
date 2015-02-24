@@ -14,7 +14,9 @@
                 {{ record.get_title }}
             </div>
             <div class="status">
-                {{ record.get_status_icons|raw }}
+                {% for flag in record_flags(record) %}
+                    <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+                {% endfor %}
             </div>
         </div>
 
