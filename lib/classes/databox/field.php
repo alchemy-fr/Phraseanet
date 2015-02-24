@@ -473,7 +473,7 @@ class databox_field implements cache_cacheableInterface
         $this->delete_data_from_cache();
         $this->databox->saveStructure($dom_struct);
 
-        $this->dispatchEvent(RecordStructureEvents::FIELD_UPDATED, new FieldUpdatedEvent($databox, $this));
+        $this->dispatchEvent(RecordStructureEvents::FIELD_UPDATED, new FieldUpdatedEvent($this->databox, $this));
 
         return $this;
     }
