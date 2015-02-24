@@ -204,7 +204,7 @@ class Query implements ControllerProviderInterface
      */
     public function queryAnswerTrain(Application $app, Request $request)
     {
-        if (null === $optionsSerial = $request->request->get('options_serial')) {
+        if (null === $optionsSerial = $request->get('options_serial')) {
             $app->abort(400, 'Search engine options are missing');
         }
 
