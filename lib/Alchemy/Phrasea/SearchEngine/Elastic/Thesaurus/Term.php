@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\TextNode;
-
 class Term implements TermInterface
 {
     private $value;
@@ -49,9 +47,9 @@ class Term implements TermInterface
     public static function dump(TermInterface $term)
     {
         if ($term->hasContext()) {
-            return sprintf('%s (%s)', $term->getValue(), $term->getContext());
+            return sprintf('"%s" context:"%s"', $term->getValue(), $term->getContext());
         }
 
-        return $term->getValue();
+        return sprintf('"%s"', $term->getValue());
     }
 }
