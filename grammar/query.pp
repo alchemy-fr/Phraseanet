@@ -40,7 +40,10 @@ bracketed_text:
     ::bracket_:: text() ::_bracket::
 
 text:
-    ( word() | keyword() | symbol() )+
+    ( word() | keyword() | symbol() )+ context()?
+
+#context:
+    ::parenthese_:: ( word() )+ ::_parenthese::
 
 word:
     <word> | string()

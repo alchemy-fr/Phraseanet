@@ -3,24 +3,11 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 
-class TextNode extends Node implements TermInterface
+class TextNode extends AbstractTermNode
 {
-    protected $text;
-    protected $concepts = array();
-
-    public function __construct($text)
-    {
-        $this->text = $text;
-    }
-
-    public function setConcepts(array $concepts)
-    {
-        $this->concepts = $concepts;
-    }
-
     public function buildQuery(QueryContext $context)
     {
         $query = array(
@@ -30,7 +17,7 @@ class TextNode extends Node implements TermInterface
             )
         );
 
-        if ($conceptQueries = $this->buildConceptQueries()) {
+        if ($conceptQueries = $this->buildConceptQueries($context)) {
             $textQuery = $query;
             $query = array();
             $query['bool']['should'] = $conceptQueries;
@@ -40,16 +27,6 @@ class TextNode extends Node implements TermInterface
         return $query;
     }
 
-    protected function buildConceptQueries()
-    {
-        $queries = array();
-        foreach (Concept::pruneNarrowConcepts($this->concepts) as $concept) {
-            $queries[]['term']['concept_paths'] = $concept->getPath();
-        }
-
-        return $queries;
-    }
-
     public function getTextNodes()
     {
         return array($this);
@@ -57,25 +34,6 @@ class TextNode extends Node implements TermInterface
 
     public function __toString()
     {
-        return sprintf('<text:"%s">', $this->text);
-    }
-
-
-    // Implementation of TermInterface
-
-    public function getValue()
-    {
-        return $this->text;
-    }
-
-    public function hasContext()
-    {
-        return false;
-    }
-
-    public function getContext()
-    {
-        // TODO Insert context during parsing
-        return null;
+        return sprintf('<text:%s>', Term::dump($this));
     }
 }

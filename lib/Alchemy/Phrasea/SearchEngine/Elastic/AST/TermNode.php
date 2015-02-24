@@ -9,7 +9,7 @@ class TermNode extends TextNode
     public function buildQuery(QueryContext $context)
     {
         $query = array();
-        $query['bool']['should'] = $this->buildConceptQueries();
+        $query['bool']['should'] = $this->buildConceptQueries($context);
 
         return $query;
     }

@@ -59,6 +59,9 @@ class QueryVisitor implements Visit
             case NodeTypes::TEXT:
                 return $this->visitText($element);
 
+            case NodeTypes::CONTEXT:
+                return $this->visitContext($element);
+
             default:
                 throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
         }
@@ -118,16 +121,37 @@ class QueryVisitor implements Visit
     private function visitTerm(Element $element)
     {
         $words = array();
+        $context = null;
         foreach ($element->getChildren() as $child) {
             $node = $child->accept($this);
             if ($node instanceof AST\TextNode) {
+                if ($context) {
+                    throw new \Exception('Unexpected text node after context');
+                }
                 $words[] = $node->getValue();
+            } elseif ($node instanceof AST\Context) {
+                $context = $node;
             } else {
                 throw new \Exception('Term node can only contain text nodes');
             }
         }
 
-        return new AST\TermNode(implode(' ', $words));
+        return new AST\TermNode(implode(' ', $words), $context);
+    }
+
+    private function visitContext(Element $element)
+    {
+        $words = array();
+        foreach ($element->getChildren() as $child) {
+            $node = $child->accept($this);
+            if ($node instanceof AST\TextNode) {
+                $words[] = $node->getValue();
+            } else {
+                throw new \Exception('Context node can only contain text nodes');
+            }
+        }
+
+        return new AST\Context(implode(' ', $words));
     }
 
     private function visitText(Element $element)
@@ -135,17 +159,26 @@ class QueryVisitor implements Visit
         $root = null;
         foreach ($element->getChildren() as $child) {
             $node = $child->accept($this);
-            if ($root) {
-                // Merge text nodes together, but not with quoted ones
-                if ($root instanceof AST\TextNode &&
-                    !$root instanceof AST\QuotedTextNode &&
-                    !$node instanceof AST\QuotedTextNode) {
-                    $root = new AST\TextNode(sprintf('%s %s', $root->getValue(), $node->getValue()));
-                } else {
-                    $root = new AST\AndExpression($root, $node);
-                }
-            } else {
+            if (!$root) {
                 $root = $node;
+                continue;
+            }
+            if ($node instanceof AST\Context) {
+                $root = new AST\TextNode($root->getValue(), $node);
+                continue;
+            }
+            // Merge text nodes together, but not with quoted ones
+            if ($root instanceof AST\TextNode &&
+                $node instanceof AST\TextNode &&
+                !$root instanceof AST\QuotedTextNode &&
+                !$node instanceof AST\QuotedTextNode) {
+                // Prevent merge once a context is set
+                if ($root->hasContext()) {
+                    throw new \Exception('Unexpected text node after context');
+                }
+                $root = new AST\TextNode(sprintf('%s %s', $root->getValue(), $node->getValue()));
+            } else {
+                $root = new AST\AndExpression($root, $node);
             }
         }
 
