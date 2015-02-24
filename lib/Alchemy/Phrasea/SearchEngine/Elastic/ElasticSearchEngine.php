@@ -267,28 +267,11 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $searchQuery = $this->app['query_parser']->parse($string);
-
-        $query['_ast'] = $searchQuery->dump();
-
-
-
-        $thesaurus = $this->app['thesaurus'];
-        $termNodes = $searchQuery->getTermNodes();
-        $concepts = $thesaurus->findConceptsBulk($termNodes);
-
-        foreach ($concepts as $index => $termConcepts) {
-            $node = $termNodes[$index];
-            $node->setConcepts($termConcepts);
-            $term = Term::dump($node);
-            $query['_thesaurus_concepts'][$term] = Concept::toPathArray($termConcepts);
-        }
-
         $recordHelper = $this->app['elasticsearch.record_helper'];
         // TODO Pass options to getFields to include/exclude private fields
         $searchableFields = $recordHelper->getFields();
         $queryContext = new QueryContext($this->locales, $this->app['locale'], $searchableFields);
-        $recordQuery = $searchQuery->build($queryContext);
+        $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
 
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
@@ -324,15 +307,10 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
-        $query['_searchable_fields'] = $searchableFields;
-        $query['_ast'] = $searchQuery->dump();
-        // $query['_paths'] = $pathsToFilter;
-        // $query['_richFields'] = $collectFields;
-
-        $queryyy = $recordQuery;
-        // $queryyy = $params['body'];
-        $query['query'] = $queryyy;
-        $query['query_as_string'] = json_encode($queryyy);
+        $query['ast'] = $this->app['query_parser']->parse($string)->dump();
+        $query['query_main'] = $recordQuery;
+        $query['query'] = $params['body'];
+        $query['query_string'] = json_encode($params['body']);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
