@@ -47,4 +47,9 @@ abstract class AbstractTermNode extends Node implements TermInterface
     {
         return $this->context->getValue();
     }
+
+    public function getTermNodes()
+    {
+        return array($this);
+    }
 }

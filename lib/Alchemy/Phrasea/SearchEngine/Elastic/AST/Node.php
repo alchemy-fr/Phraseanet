@@ -11,5 +11,5 @@ abstract class Node
      */
     abstract public function buildQuery(QueryContext $context);
 
-    abstract public function getTextNodes();
+    abstract public function getTermNodes();
 }

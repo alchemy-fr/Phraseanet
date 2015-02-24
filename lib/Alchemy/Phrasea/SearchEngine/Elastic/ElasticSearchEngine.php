@@ -274,11 +274,11 @@ class ElasticSearchEngine implements SearchEngineInterface
 
 
         $thesaurus = $this->app['thesaurus'];
-        $textNodes = $searchQuery->getTextNodes();
-        $concepts = $thesaurus->findConceptsBulk($textNodes);
+        $termNodes = $searchQuery->getTermNodes();
+        $concepts = $thesaurus->findConceptsBulk($termNodes);
 
         foreach ($concepts as $index => $termConcepts) {
-            $node = $textNodes[$index];
+            $node = $termNodes[$index];
             $node->setConcepts($termConcepts);
             $term = Term::dump($node);
             $query['_thesaurus_concepts'][$term] = Concept::toPathArray($termConcepts);

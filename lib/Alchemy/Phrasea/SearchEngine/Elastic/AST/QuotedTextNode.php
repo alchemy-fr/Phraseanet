@@ -4,8 +4,15 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class QuotedTextNode extends TextNode
+class QuotedTextNode extends Node
 {
+    private $text;
+
+    public function __construct($text)
+    {
+        $this->text = $text;
+    }
+
     public function buildQuery(QueryContext $context)
     {
         return array(
@@ -16,6 +23,11 @@ class QuotedTextNode extends TextNode
                 // 'operator'  => 'and'
             )
         );
+    }
+
+    public function getTermNodes()
+    {
+        return array();
     }
 
     public function __toString()

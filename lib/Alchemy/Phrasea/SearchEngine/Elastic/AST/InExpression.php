@@ -22,9 +22,9 @@ class InExpression extends Node
         return $this->expression->buildQuery($context->narrowToFields($fields));
     }
 
-    public function getTextNodes()
+    public function getTermNodes()
     {
-        return $this->expression->getTextNodes();
+        return $this->expression->getTermNodes();
     }
 
     public function __toString()

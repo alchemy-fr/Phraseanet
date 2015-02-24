@@ -27,11 +27,6 @@ class TextNode extends AbstractTermNode
         return $query;
     }
 
-    public function getTextNodes()
-    {
-        return array($this);
-    }
-
     public function __toString()
     {
         return sprintf('<text:%s>', Term::dump($this));
