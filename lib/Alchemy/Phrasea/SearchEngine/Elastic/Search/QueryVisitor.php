@@ -167,11 +167,9 @@ class QueryVisitor implements Visit
                 $root = new AST\TextNode($root->getValue(), $node);
                 continue;
             }
-            // Merge text nodes together, but not with quoted ones
+            // Merge text nodes together (quoted nodes do not)
             if ($root instanceof AST\TextNode &&
-                $node instanceof AST\TextNode &&
-                !$root instanceof AST\QuotedTextNode &&
-                !$node instanceof AST\QuotedTextNode) {
+                $node instanceof AST\TextNode) {
                 // Prevent merge once a context is set
                 if ($root->hasContext()) {
                     throw new \Exception('Unexpected text node after context');
