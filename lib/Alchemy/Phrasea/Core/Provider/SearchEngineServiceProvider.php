@@ -108,14 +108,12 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new IndexerSubscriber($app['elasticsearch.indexer']);
         });
 
-        $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function ($dispatcher, $app) {
-                $dispatcher->addSubscriber($app['elasticsearch.indexer_subscriber']);
 
-                return $dispatcher;
-            })
-        );
+        $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, $app) {
+            $dispatcher->addSubscriber($app['elasticsearch.indexer_subscriber']);
 
+            return $dispatcher;
+        }));
 
         /* Low-level elasticsearch services */
 
@@ -182,10 +180,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        if (!$app['phraseanet.configuration']->isSetup()) {
-            return;
-        }
-
         if ($app['search_engine.type'] === SearchEngineInterface::TYPE_PHRASEA) {
             $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, Application $app) {
                 $dispatcher->addSubscriber($app['phraseanet.SE.subscriber']);

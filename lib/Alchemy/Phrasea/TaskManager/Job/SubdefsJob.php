@@ -99,7 +99,7 @@ class SubdefsJob extends AbstractJob
                 // rewrite metadata
                 $sql = 'UPDATE record
                     SET status=(status & ~0x03),
-                        jeton=(jeton | ' . PhraseaTokens::MAKE_SUBDEF . ')
+                        jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF . ')
                     WHERE record_id=:record_id';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([':record_id' => $row['record_id']]);

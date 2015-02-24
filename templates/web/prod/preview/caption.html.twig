@@ -9,7 +9,9 @@
     </div>
   {% endif %}
   <div style="text-align:center;">
-    {{record.get_status_icons()|raw}}
+    {% for flag in record_flags(record) %}
+      <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+    {% endfor %}
   </div>
   {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}

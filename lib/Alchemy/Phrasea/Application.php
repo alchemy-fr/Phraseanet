@@ -222,7 +222,6 @@ class Application extends SilexApplication
         $this->register(new ACLServiceProvider());
         $this->register(new APIServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
-        $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new ConfigurationServiceProvider());
@@ -313,7 +312,10 @@ class Application extends SilexApplication
             }
         });
 
-        $this->register(new SearchEngineServiceProvider());
+        if ($this['configuration.store']->isSetup()) {
+            $this->register(new SearchEngineServiceProvider());
+            $this->register(new BorderManagerServiceProvider());
+        }
 
         $this->register(new SessionHandlerServiceProvider());
         $this->register(new SessionServiceProvider(), [
