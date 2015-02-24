@@ -287,7 +287,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $recordHelper = $this->app['elasticsearch.record_helper'];
         // TODO Pass options to getFields to include/exclude private fields
         $searchableFields = $recordHelper->getFields();
-        $queryContext = new QueryContext($searchableFields, $this->locales, $this->app['locale']);
+        $queryContext = new QueryContext($this->locales, $this->app['locale'], $searchableFields);
         $recordQuery = $searchQuery->build($queryContext);
 
 
