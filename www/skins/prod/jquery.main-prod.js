@@ -310,7 +310,7 @@ function resize() {
 
     if ($('#idFrameC').data('ui-resizable')) {
         $('#idFrameC').resizable('option', 'maxWidth', (bodySize.x - 670));
-        $('#idFrameC').resizable('option', 'minWidth', 265);
+        $('#idFrameC').resizable('option', 'minWidth', 305);
     }
 
     answerSizer();
