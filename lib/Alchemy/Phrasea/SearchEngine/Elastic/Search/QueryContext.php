@@ -19,6 +19,9 @@ class QueryContext
     {
         // Ensure we are not escaping from original fields restrictions
         $fields = array_intersect($this->fields, $fields);
+        if (!$fields) {
+            throw new \Exception('Query narrowed to non available fields');
+        }
 
         return new static($this->locales, $this->queryLocale, $fields);
     }
