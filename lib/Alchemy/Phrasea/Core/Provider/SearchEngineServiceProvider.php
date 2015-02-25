@@ -174,7 +174,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             $grammarPath = $app['query_parser.grammar_path'];
             $parser = Llk::load(new Read($grammarPath));
 
-            return new QueryParser($parser);
+            return new QueryParser($parser, $app['thesaurus']);
         });
     }
 

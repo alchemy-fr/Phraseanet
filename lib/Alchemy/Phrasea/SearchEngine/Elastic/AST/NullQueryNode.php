@@ -11,7 +11,7 @@ class NullQueryNode extends Node
         return array('match_all' => array());
     }
 
-    public function getTextNodes()
+    public function getTermNodes()
     {
         return array();
     }

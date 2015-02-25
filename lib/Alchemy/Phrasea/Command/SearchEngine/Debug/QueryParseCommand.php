@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class QueryParseCommand extends Command
 {
@@ -64,6 +65,10 @@ class QueryParseCommand extends Command
         $postprocessing = !$input->getOption('no-compiler-postprocessing');
 
         $parser = $this->container['query_parser'];
+
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('parsing');
+
         if ($input->getOption('compiler-dump')) {
             $dump = $parser->dump($string, $postprocessing);
         } else {
@@ -71,8 +76,12 @@ class QueryParseCommand extends Command
             $dump = $query->dump();
         }
 
+        $event = $stopwatch->stop('parsing');
+
         if (!$raw) {
             $output->writeln($dump);
+            $output->writeln(str_repeat('-', 20));
+            $output->writeln(sprintf("Took %sms", $event->getDuration()));
         } else {
             $output->write($dump);
         }

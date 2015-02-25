@@ -1,7 +1,9 @@
 %skip   space           \s
 
-%token  bracket_        \(
-%token _bracket         \)
+%token  parenthese_     \(
+%token _parenthese      \)
+%token  bracket_        \[
+%token _bracket         \]
 %token  quote_          "        -> string
 %token  string:string   [^"]+
 %token  string:_quote   "        -> default
@@ -9,7 +11,7 @@
 %token  and             AND
 %token  or              OR
 %token  except          EXCEPT
-%token  word            [^\s\(\)]+
+%token  word            [^\s\(\)\[\]]+
 
 // relative order of precedence is NOT > XOR > AND > OR
 
@@ -26,13 +28,22 @@ ternary:
     quaternary() ( ::and:: #and primary() )?
 
 quaternary:
-    term() ( ::in:: #in word() )?
+    ( group() | term() ) ( ::in:: #in word() )?
+
+group:
+    ( ::parenthese_:: #group primary() ::_parenthese:: )
 
 term:
-    ( ::bracket_:: primary() ::_bracket:: ) | text()
+    ( bracketed_text() #thesaurus_term ) | ( text() #text )
 
-#text:
-    ( word() | keyword() | symbol() )+
+bracketed_text:
+    ::bracket_:: text() ::_bracket::
+
+text:
+    ( word() | keyword() | symbol() )+ context()?
+
+#context:
+    ::parenthese_:: ( word() )+ ::_parenthese::
 
 word:
     <word> | string()
@@ -44,4 +55,4 @@ keyword:
     <in> | <except> | <and> | <or>
 
 symbol:
-    ::bracket_:: | ::_bracket::
+    ::parenthese_:: | ::_parenthese:: | ::bracket_:: | ::_bracket::

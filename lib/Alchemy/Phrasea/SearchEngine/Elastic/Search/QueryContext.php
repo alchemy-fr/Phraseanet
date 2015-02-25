@@ -4,15 +4,15 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 class QueryContext
 {
-    private $fields;
     private $locales;
     private $queryLocale;
+    private $fields;
 
-    public function __construct(array $fields, array $locales, $queryLocale)
+    public function __construct(array $locales, $queryLocale, array $fields = null)
     {
-        $this->fields = $fields;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
+        $this->fields = $fields;
     }
 
     public function narrowToFields(array $fields)
@@ -20,20 +20,32 @@ class QueryContext
         // Ensure we are not escaping from original fields restrictions
         $fields = array_intersect($this->fields, $fields);
 
-        return new static($fields, $this->locales, $this->queryLocale);
+        return new static($this->locales, $this->queryLocale, $fields);
     }
 
     public function getLocalizedFields()
     {
+        if ($this->fields === null) {
+            return $this->localizeField('*');
+        }
+
         $fields = array();
         foreach ($this->fields as $field) {
-            foreach ($this->locales as $locale) {
-                $boost = ($locale === $this->queryLocale) ? '^5' : '';
-                $fields[] = sprintf('caption.%s.%s%s', $field, $locale, $boost);
-            }
-            // TODO Put generic analyzers on main field instead of "light" sub-field
-            $fields[] = sprintf('caption.%s.%s', $field, 'light^10');
+            foreach ($this->localizeField($field) as $fields[]);
         }
+
+        return $fields;
+    }
+
+    private function localizeField($field)
+    {
+        $fields = array();
+        foreach ($this->locales as $locale) {
+            $boost = ($locale === $this->queryLocale) ? '^5' : '';
+            $fields[] = sprintf('caption.%s.%s%s', $field, $locale, $boost);
+        }
+        // TODO Put generic analyzers on main field instead of "light" sub-field
+        $fields[] = sprintf('caption.%s.%s', $field, 'light^10');
 
         return $fields;
     }

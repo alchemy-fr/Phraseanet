@@ -18,9 +18,9 @@ class Query
         $this->root = $root;
     }
 
-    public function getTextNodes()
+    public function getTermNodes()
     {
-        return $this->root->getTextNodes();
+        return $this->root->getTermNodes();
     }
 
     public function build(QueryContext $context)

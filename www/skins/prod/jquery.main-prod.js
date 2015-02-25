@@ -469,10 +469,7 @@ function initAnswerForm() {
                     query = JSON.parse(query);
                 }
                 catch (e) {}
-
-                console.info('All Details:', query);
-                console.debug('Paths:');
-                console.debug(query._paths);
+                console.info(query);
 
                 var aggs = datas.aggregations;
                 try {

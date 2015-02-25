@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Hoa\Compiler\Exception\Exception as CompilerException;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Llk\TreeNode;
@@ -13,6 +14,7 @@ use Hoa\Visitor\Visit;
 class QueryParser
 {
     private $parser;
+    private $thesaurus;
 
     private static $leftAssociativeOperators = array(
         NodeTypes::AND_EXPR,
@@ -20,9 +22,29 @@ class QueryParser
         NodeTypes::EXCEPT_EXPR
     );
 
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, Thesaurus $thesaurus)
     {
         $this->parser = $parser;
+        $this->thesaurus = $thesaurus;
+    }
+
+    public function compile($string, QueryContext $context)
+    {
+        $query = $this->parse($string);
+        $this->injectThesaurusConcepts($query);
+
+        return $query->build($context);
+    }
+
+    private function injectThesaurusConcepts(Query $query)
+    {
+        $nodes = $query->getTermNodes();
+        $concepts = $this->thesaurus->findConceptsBulk($nodes);
+
+        foreach ($concepts as $index => $termConcepts) {
+            $node = $nodes[$index];
+            $node->setConcepts($termConcepts);
+        }
     }
 
     /**
