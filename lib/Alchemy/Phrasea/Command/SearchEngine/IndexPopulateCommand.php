@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Command\SearchEngine;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexPopulateCommand extends Command
@@ -22,12 +23,36 @@ class IndexPopulateCommand extends Command
     {
         $this
             ->setName('searchengine:index:populate')
-            ->setDescription('Populate search index with record data')
+            ->setDescription('Populate search index')
+            ->addOption(
+                'thesaurus',
+                null,
+                InputOption::VALUE_NONE,
+                'Only populate thesaurus data'
+            )
+            ->addOption(
+                'records',
+                null,
+                InputOption::VALUE_NONE,
+                'Only populate record data'
+            )
         ;
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->container['elasticsearch.indexer']->populateIndex();
+        $what = Indexer::THESAURUS | Indexer::RECORDS;
+
+        if ($thesaurusOnly = $input->getOption('thesaurus')) {
+            $what = Indexer::THESAURUS;
+        }
+        if ($recordsOnly = $input->getOption('records')) {
+            $what = Indexer::RECORDS;
+        }
+        if ($thesaurusOnly && $recordsOnly) {
+            throw new \RuntimeException("Could not provide --thesaurus and --records option at the same time.");
+        }
+
+        $this->container['elasticsearch.indexer']->populateIndex($what);
     }
 }

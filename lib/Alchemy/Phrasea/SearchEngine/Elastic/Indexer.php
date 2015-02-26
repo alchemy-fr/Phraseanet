@@ -24,6 +24,9 @@ use SplObjectStorage;
 
 class Indexer
 {
+    const THESAURUS = 1;
+    const RECORDS   = 2;
+
     /** @var \Elasticsearch\Client */
     private $client;
     private $options;
@@ -95,23 +98,27 @@ class Indexer
         return $this->client->indices()->exists($params);
     }
 
-    public function populateIndex()
+    public function populateIndex($what)
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        $this->apply(function(BulkOperation $bulk) {
-            $this->termIndexer->populateIndex($bulk);
+        $this->apply(function(BulkOperation $bulk) use ($what) {
+            if ($what & self::THESAURUS) {
+                $this->termIndexer->populateIndex($bulk);
 
-            // Record indexing depends on indexed terms so we need to make
-            // everything ready to search
-            $bulk->flush();
-            $this->client->indices()->refresh();
+                // Record indexing depends on indexed terms so we need to make
+                // everything ready to search
+                $bulk->flush();
+                $this->client->indices()->refresh();
+            }
 
-            $this->recordIndexer->populateIndex($bulk);
+            if ($what & self::RECORDS) {
+                $this->recordIndexer->populateIndex($bulk);
 
-            // Final flush
-            $bulk->flush();
+                // Final flush
+                $bulk->flush();
+            }
 
             // Optimize index
             $params = array('index' => $this->options['index']);
