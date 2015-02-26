@@ -37,7 +37,8 @@ class Navigator
             $visitor->leaveConcept($node);
         } elseif ($this->isTerm($node)) {
             $visitor->visitTerm($node);
-        } else {
+        } elseif ($node->childNodes !== null) {
+            // Sometimes childNodes is NULL (i.e. DOMText)
             foreach ($node->childNodes as $child) {
                 $this->walk($child, $visitor);
             }
