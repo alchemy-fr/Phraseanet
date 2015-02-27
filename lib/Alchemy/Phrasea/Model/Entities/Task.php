@@ -47,22 +47,22 @@ class Task
     private $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings></tasksettings>';
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $completed = false;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default" = "started"})
      */
     private $status = self::STATUS_STARTED;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default" = 0})
      */
     private $crashed = 0;
 
     /**
-     * @ORM\Column(type="boolean", name="single_run")
+     * @ORM\Column(type="boolean", name="single_run", options={"default" = 0})
      */
     private $singleRun = false;
 
@@ -84,7 +84,7 @@ class Task
     private $lastExecution;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default" = 0})
      */
     private $period = 0;
 

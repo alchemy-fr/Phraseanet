@@ -29,62 +29,62 @@ class FtpExport
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default" = 0})
      */
     private $crash = 0;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default" = 3})
      */
     private $nbretry = 3;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $mail;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=128)
      */
     private $addr;
 
     /**
-     * @ORM\Column(type="boolean", name="use_ssl")
+     * @ORM\Column(type="boolean", name="use_ssl", options={"default" = 0})
      */
     private $ssl = false;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $login;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $pwd;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $passif = false;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=128, options={"default" = "/"})
      */
     private $destfolder = '/';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true, options={"default" = 1})
      */
     private $sendermail;
 
     /**
-     * @ORM\Column(type="text", name="text_mail_sender", nullable=true)
+     * @ORM\Column(type="string", length=128, name="text_mail_sender", nullable=true)
      */
     private $textMailSender;
 
     /**
-     * @ORM\Column(type="text", name="text_mail_receiver", nullable=true)
+     * @ORM\Column(type="string", length=128, name="text_mail_receiver", nullable=true)
      */
     private $textMailReceiver;
 
@@ -97,12 +97,12 @@ class FtpExport
     private $user;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $foldertocreate;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $logfile = false;
 

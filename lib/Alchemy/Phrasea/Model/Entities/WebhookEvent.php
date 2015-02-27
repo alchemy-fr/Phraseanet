@@ -41,7 +41,7 @@ class WebhookEvent
     /**
      * @var boolean
      *
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(type="boolean", nullable=false, options={"default" = 0})
      */
     private $processed = false;
 

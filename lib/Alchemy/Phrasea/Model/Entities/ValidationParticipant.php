@@ -27,22 +27,22 @@ class ValidationParticipant
     private $id;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $is_aware = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $is_confirmed = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $can_agree = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $can_see_others = false;
 

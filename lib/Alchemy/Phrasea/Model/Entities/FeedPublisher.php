@@ -36,7 +36,7 @@ class FeedPublisher
     private $user;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $owner = false;
 

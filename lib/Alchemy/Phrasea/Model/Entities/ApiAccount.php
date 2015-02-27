@@ -33,7 +33,7 @@ class ApiAccount
     /**
      * @var integer
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $revoked = false;
 

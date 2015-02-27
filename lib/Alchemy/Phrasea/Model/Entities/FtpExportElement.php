@@ -63,12 +63,12 @@ class FtpExportElement
 
     /**
      * @var Boolean
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $error = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $done = false;
 
@@ -79,7 +79,7 @@ class FtpExportElement
     private $export;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $businessfields = false;
 
