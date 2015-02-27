@@ -37,11 +37,17 @@ class TermIndexer
         $this->locales = $locales;
     }
 
-    public function populateIndex(BulkOperation $bulk)
+    public function populateIndex(BulkOperation $bulk, array $databoxes = [])
     {
+        $all_databoxes = empty($databoxes);
+
         foreach ($this->appbox->get_databoxes() as $databox) {
             /** @var databox $databox */
             $databoxId = $databox->get_sbas_id();
+
+            if (!$all_databoxes && !in_array($databoxId, $databoxes)) {
+                continue;
+            }
 
             $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId) {
                 // Path and id are prefixed with a databox identifier to not

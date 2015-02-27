@@ -98,14 +98,14 @@ class Indexer
         return $this->client->indices()->exists($params);
     }
 
-    public function populateIndex($what)
+    public function populateIndex($what, array $databoxes = [])
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        $this->apply(function(BulkOperation $bulk) use ($what) {
+        $this->apply(function(BulkOperation $bulk) use ($what, $databoxes) {
             if ($what & self::THESAURUS) {
-                $this->termIndexer->populateIndex($bulk);
+                $this->termIndexer->populateIndex($bulk, $databoxes);
 
                 // Record indexing depends on indexed terms so we need to make
                 // everything ready to search
@@ -114,7 +114,7 @@ class Indexer
             }
 
             if ($what & self::RECORDS) {
-                $this->recordIndexer->populateIndex($bulk);
+                $this->recordIndexer->populateIndex($bulk, $databoxes);
 
                 // Final flush
                 $bulk->flush();
