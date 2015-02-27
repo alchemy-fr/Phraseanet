@@ -102,10 +102,13 @@ class Root implements ControllerProviderInterface
                 }
             }
 
+            $helper = new Helper\Prod($app, $app['request']);
+
             return $app['twig']->render('prod/index.html.twig', [
                 'module_name'          => 'Production',
                 'WorkZone'             => new Helper\WorkZone($app, $app['request']),
-                'module_prod'          => new Helper\Prod($app, $app['request']),
+                'module_prod'          => $helper,
+                'search_datas'         => $helper->get_search_datas(),
                 'cssfile'              => $cssfile,
                 'module'               => 'prod',
                 'events'               => $app['events-manager'],

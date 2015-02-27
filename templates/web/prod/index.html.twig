@@ -147,7 +147,7 @@
 {% endblock %}
 
 {% block content %}
-    {% set search_datas = module_prod.get_search_datas() %}
+
     <div style="position:absolute; top:0; left:0; right:0; bottom:0; background-color:#1a1a1a; z-index:32766;">
         <div id="loader" style="top:200px; margin:0 auto; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; background-color:#CCCCCC; position:relative; margin:0 auto; text-align:center; width:400px; height:100px; padding:20px; z-index:32767;">
             <div style="margin:0 10px 10px; font-family:Helvetica,Arial,sans-serif; font-size:18px; color:#1A1A1A; text-align:left;">Phraseanet</div>
@@ -1154,7 +1154,7 @@
     {% endif %}
 
     <script type="text/javascript">
-        {% include "prod/thesaurus.js.twig" %}
+        {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
     <script type="text/javascript">
