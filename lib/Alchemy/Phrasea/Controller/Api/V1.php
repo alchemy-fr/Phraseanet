@@ -481,6 +481,30 @@ class V1 implements ControllerProviderInterface
         });
 
         /**
+         * Route : /stories/add/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *
+         */
+        $controllers->post('/stories', function (SilexApplication $app, Request $request) {
+            return $app['api']->add_story($app, $request)->get_response();
+        });
+
+        /**
+         * Route : /stories/{story_id}/records
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *
+         */
+        $controllers->post('/stories/{databox_id}/{story_id}/records', function (SilexApplication $app, Request $request, $databox_id, $story_id) {
+            return $app['api']->add_records_to_story($app, $request, $databox_id, $story_id)->get_response();
+        });
+
+        /**
          * Route : /search/
          *
          * Method : GET or POST

@@ -1589,6 +1589,82 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
     }
 
+    public function testAddStory()
+    {
+        $this->markTestSkipped();
+        $this->setToken(self::$token);
+        $route = '/api/v1/stories';
+
+        $story['collection_id'] = self::$DI['collection']->get_base_id();
+        $story['title'] = uniqid('story');
+
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/p4logo.jpg'), self::$DI['collection']);
+        $record = \record_adapter::createFromFile($file, self::$DI['app']);
+
+        $story['story_records'] = array(array(
+            'databox_id' => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id()
+        ));
+
+        self::$DI['client']->request(
+            'POST',
+            $route,
+            $this->getParameters(),
+            $this->getAddRecordFile(),
+            array('HTTP_Accept' => $this->getAcceptMimeType()),
+            json_encode(array('stories' => array($story)))
+        );
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $data = $content['response'];
+
+        $this->assertArrayHasKey('stories', $data);
+        $this->assertCount(1, $data['stories']);
+        list($empty, $path, $databox_id, $story_id) = explode('/', current($data['stories']));
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
+        $story = $databox->get_record($story_id);
+        $story->delete();
+        $record->delete();
+    }
+
+    public function testAddRecordToStory()
+    {
+        $this->markTestSkipped();
+        $this->setToken(self::$token);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+
+        $route = sprintf('/api/v1/stories/%s/%s/records', $story->get_sbas_id(), $story->get_record_id());
+
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/extractfile.jpg'), self::$DI['collection']);
+        $record = \record_adapter::createFromFile($file, self::$DI['app']);
+
+        $records = array(
+            'databox_id' => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id()
+        );
+
+        self::$DI['client']->request(
+            'POST',
+            $route,
+            $this->getParameters(),
+            $this->getAddRecordFile(),
+            array('HTTP_Accept' => $this->getAcceptMimeType()),
+            json_encode(array('story_records' => array($records)))
+        );
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $data = $content['response'];
+
+        $this->assertArrayHasKey('records', $data);
+        $this->assertCount(1, $data['records']);
+        $story->delete();
+        $record->delete();
+    }
+
     /**
      * @covers \API_V1_adapter::add_record
      * @covers \API_V1_adapter::list_record
