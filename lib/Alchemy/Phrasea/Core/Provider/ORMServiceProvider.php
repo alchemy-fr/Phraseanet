@@ -587,28 +587,6 @@ SQL;
         });
 
         /**
-         * Return op code cache driver
-         */
-        $app['orm.cache.op_code.driver'] = $app->share(function (Application $app) {
-            if ($app['configuration.store']->isSetup()) {
-                return $app['conf']->get(['main', 'opcodecache', 'type']);
-            }
-
-            return 'array';
-        });
-
-        /**
-         * Return op code cache options
-         */
-        $app['orm.cache.op_code.options'] = $app->share(function (Application $app) {
-            if ($app['configuration.store']->isSetup()) {
-                return $app['conf']->get(['main', 'opcodecache', 'options']);
-            }
-
-            return [];
-        });
-
-        /**
          * Return cache driver
          */
         $app['orm.cache.driver'] = $app->share(function (Application $app) {
