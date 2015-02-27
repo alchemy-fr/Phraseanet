@@ -616,6 +616,10 @@ SQL;
 
             $key = $app['hash.dsn']($app['db.dsn']($info));
 
+            if (!isset($app['dbs'][$key])) {
+                return $app['dbal.provider']($info);
+            }
+
             return $app['dbs'][$key];
         });
 
