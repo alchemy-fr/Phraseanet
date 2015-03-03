@@ -44,6 +44,12 @@ class FindConceptsCommand extends Command
                 'Specify input locale'
             )
             ->addOption(
+                'strict',
+                null,
+                InputOption::VALUE_NONE,
+                'Strict mode (enforce term context matching)'
+            )
+            ->addOption(
                 'broad',
                 null,
                 InputOption::VALUE_NONE,
@@ -76,7 +82,8 @@ class FindConceptsCommand extends Command
         $thesaurus = $this->container['thesaurus'];
         $term = new Term($term, $context);
         $locale = $input->getOption('locale');
-        $concepts = $thesaurus->findConcepts($term, $locale);
+        $strict = $input->getOption('strict');
+        $concepts = $thesaurus->findConcepts($term, $locale, null, $strict);
 
         if ($input->getOption('broad')) {
             $concepts = Concept::pruneNarrowConcepts($concepts);
