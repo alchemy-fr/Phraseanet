@@ -145,16 +145,12 @@ then
     #copy configuration template
     mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
     cp /vagrant/resources/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
-    mv /var/www/phraseanet/.bowerrc /var/www/phraseanet/.bowerrc.bkp
-    cp /vagrant/resources/vagrant/config/bower/.bowerrc /var/www/phraseanet/.bowerrc
     cd /var/www/phraseanet
     sudo -u vagrant composer install -n --prefer-source --dev
     sudo -u vagrant npm install
     sudo -u vagrant grunt install-assets
     sudo -u vagrant bin/developer assets:compile-less
     sudo -u vagrant rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
-    rm -f /var/www/phraseanet/.bowerrc
-    mv /www/phraseanet/.bowerrc.bkp /www/phraseanet/.bowerrc
     mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml
 fi
 
@@ -168,4 +164,3 @@ sudo service iptables-persistent stop
 
 # reload bash
 source ~/.bashrc
-
