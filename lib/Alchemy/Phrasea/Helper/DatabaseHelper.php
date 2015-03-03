@@ -21,64 +21,47 @@ class DatabaseHelper extends Helper
         $password = $this->request->query->get('password');
         $db_name = $this->request->query->get('db_name');
 
-        $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
+        $db_ok = $is_databox = $is_appbox = $empty = false;
 
         try {
             $connection = $this->app['dbal.provider']([
                 'host'     => $hostname,
                 'port'     => $port,
                 'user'     => $user,
-                'password' => $password
+                'password' => $password,
+                'dbname'   => $db_name,
             ]);
-            $connection->connect();
-            $connection_ok = true;
+
+            $db_ok = true;
+
+            $sql = "SHOW TABLE STATUS";
+            $stmt = $connection->prepare($sql);
+            $stmt->execute();
+
+            $empty = $stmt->rowCount() === 0;
+
+            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            foreach ($rs as $row) {
+                if ($row["Name"] === 'sitepreff') {
+                    $is_appbox = true;
+                }
+                if ($row["Name"] === 'pref') {
+                    $is_databox = true;
+                }
+            }
             $connection->close();
         } catch (\Exception $e) {
 
         }
+
         unset($connection);
-
-        if (null !== $db_name && $connection_ok) {
-            try {
-                $connection = $this->app['dbal.provider']([
-                    'host'     => $hostname,
-                    'port'     => $port,
-                    'user'     => $user,
-                    'password' => $password,
-                    'dbname'   => $db_name,
-                ]);
-
-                $db_ok = true;
-
-                $sql = "SHOW TABLE STATUS";
-                $stmt = $connection->prepare($sql);
-                $stmt->execute();
-
-                $empty = $stmt->rowCount() === 0;
-
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $row) {
-                    if ($row["Name"] === 'sitepreff') {
-                        $is_appbox = true;
-                    }
-                    if ($row["Name"] === 'pref') {
-                        $is_databox = true;
-                    }
-                }
-                $connection->close();
-            } catch (\Exception $e) {
-
-            }
-
-            unset($connection);
-        }
 
         $this->app['connection.pool.manager']->closeAll();
 
         return [
-            'connection' => $connection_ok,
+            'connection' => $db_ok,
             'innodb'     => true,
             'database'   => $db_ok,
             'is_empty'   => $empty,
