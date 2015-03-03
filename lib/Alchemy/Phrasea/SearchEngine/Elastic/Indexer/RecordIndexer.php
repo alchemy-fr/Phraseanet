@@ -23,6 +23,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\CoreHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\ThesaurusHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\TitleHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
@@ -136,6 +137,7 @@ class RecordIndexer
             new CoreHydrator($databox->get_sbas_id(), $this->helper),
             new TitleHydrator($connection),
             new MetadataHydrator($connection),
+            new ThesaurusHydrator($this->thesaurus, $this->helper),
             new SubDefinitionHydrator($connection)
         ), $delegate);
         $fetcher->setBatchSize(200);
@@ -167,50 +169,6 @@ class RecordIndexer
         }
     }
 
-    private function findLinkedConcepts($structure, array $record)
-    {
-        $client = $this->elasticSearchEngine->getClient();
-        $searchParams['index'] = $this->elasticSearchEngine->getIndexName();
-        $searchParams['type']  = TermIndexer::TYPE_NAME;
-        $shoulds = [];
-        $paths   = [];
-
-        foreach ($structure as $field => $options) {
-            // @todo is thesaurus_concept_inference the right option?
-            if (isset($record['caption'][$field]) && $options['thesaurus_concept_inference']) {
-                $shoulds[] = ["multi_match" => [
-                    'fields' => $this->elasticSearchEngine->expendToAnalyzedFieldsNames(array('value', 'context')),
-                    'query'  =>
-                        is_string($record['caption'][$field])
-                            ? mb_substr($record['caption'][$field], 0, 120) // Cut short to avoid maxClauseCount
-                            : implode(' ', $record['caption'][$field]),
-                    'operator' => is_array($record['caption'][$field]) ? 'or' : 'and',
-                ]];
-            }
-        }
-
-        if (empty($shoulds)) {
-            return [];
-        }
-
-        $searchParams['body']['query']['filtered']['query'] = array('bool' => array('should' => $shoulds));
-
-        // Only search in the databox of the record itself
-        $searchParams['body']['query']['filtered']['filter'] = array('term' => array('databox_id' => $record['databox_id']));
-        $searchParams['body']['size'] = 20;
-        $searchParams['body']['fields'] = ['path'];
-
-        $queryResponse = $client->search($searchParams);
-
-        foreach ($queryResponse['hits']['hits'] as $hit) {
-            foreach ($hit['fields']['path'] as $path) {
-                $paths[] = $path;
-            }
-        }
-
-        return array_values(array_unique($paths));
-    }
-
     public function getMapping()
     {
         $mapping = new Mapping();
@@ -231,11 +189,6 @@ class RecordIndexer
             // Dates
             ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
             ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
-            // Inferred thesaurus concepts
-            ->add('concept_paths', 'string')
-                ->analyzer('thesaurus_path', 'indexing')
-                ->analyzer('keyword', 'searching')
-                ->addRawVersion()
             // EXIF
             ->add('exif', $this->getExifMapping())
             // Status
@@ -250,8 +203,11 @@ class RecordIndexer
         $mapping->add('caption', $captionMapping);
         $privateCaptionMapping = new Mapping();
         $mapping->add('private_caption', $privateCaptionMapping);
+        // Inferred thesaurus concepts
+        $conceptPathMapping = new Mapping();
+        $mapping->add('concept_path', $conceptPathMapping);
 
-        foreach ($this->getFieldsStructure() as $name => $params) {
+        foreach ($this->helper->getFieldsStructure() as $name => $params) {
             $m = $params['private'] ? $privateCaptionMapping : $captionMapping;
             $m->add($name, $params['type']);
 
@@ -270,15 +226,18 @@ class RecordIndexer
                     $m->addAnalyzedVersion($this->locales);
                 }
             }
+
+            if ($params['thesaurus_concept_inference']) {
+                $conceptPathMapping
+                    ->add($name, 'string')
+                    ->analyzer('thesaurus_path', 'indexing')
+                    ->analyzer('keyword', 'searching')
+                    ->addRawVersion()
+                ;
+            }
         }
 
         return $mapping->export();
-    }
-
-
-    private function getFieldsStructure()
-    {
-        return $this->helper->getFieldsStructure();
     }
 
     // @todo Add call to addAnalyzedVersion ?
@@ -343,7 +302,6 @@ class RecordIndexer
     {
         $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
 
-        $structure = $this->getFieldsStructure();
         $databox = $this->appbox->get_databox($record['databox_id']);
 
         foreach ($databox->getStatusStructure() as $bit => $status) {
@@ -365,8 +323,6 @@ class RecordIndexer
                 continue;
             }
         }
-
-        // $record['concept_paths'] = $this->findLinkedConcepts($structure, $record);
 
         return $record;
     }

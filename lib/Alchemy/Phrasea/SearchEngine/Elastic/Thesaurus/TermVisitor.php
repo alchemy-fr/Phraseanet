@@ -26,11 +26,6 @@ class TermVisitor implements VisitorInterface
     const TERM_ID_ATTR = 'id';
     const TERM_LANG_ATTR = 'lng';
     const TERM_VALUE_ATTR = 'v';
-    // So, this is a huuuge regex to match a group of words eventually followed
-    // by another group of words in parenthesis. It also takes care of trimming
-    // spaces.
-    const TERM_REGEX = '/^\s*(\w[^\(\)]*\w|\w)\s*(?:\(\s*([^\(\)]*[^\s\(\)])\s*\))?/u';
-    //                       [_____term______]       (   [_____context_____]    )
 
     const PATH_LANG = 'en';
 
@@ -49,13 +44,15 @@ class TermVisitor implements VisitorInterface
 
     public function visitTerm(DOMElement $element)
     {
-        $value = $this->getTermValue($element);
-
-        $term = $this->parseTermValue($value);
-        $term += [
-            'path' => $this->getCurrentPathAsString(),
-            'lang' => $this->getTermAttribute($element, self::TERM_LANG_ATTR),
-            'id'   => $this->getTermAttribute($element, self::TERM_ID_ATTR)
+        $raw_value = $this->getTermValue($element);
+        $object = Term::parse($raw_value);
+        $term = [
+            'raw_value' => $raw_value,
+            'value'     => $object->getValue(),
+            'context'   => $object->getContext(),
+            'path'      => $this->getCurrentPathAsString(),
+            'lang'      => $this->getTermAttribute($element, self::TERM_LANG_ATTR),
+            'id'        => $this->getTermAttribute($element, self::TERM_ID_ATTR)
         ];
 
         call_user_func($this->termCallback, $term);
@@ -64,17 +61,6 @@ class TermVisitor implements VisitorInterface
     public function leaveConcept(DOMElement $element)
     {
         array_pop($this->path);
-    }
-
-    private function parseTermValue($value)
-    {
-        preg_match(self::TERM_REGEX, $value, $matches);
-
-        return [
-            'raw_value' => $value,
-            'value'     => isset($matches[1]) ? $matches[1] : null,
-            'context'   => isset($matches[2]) ? $matches[2] : null
-        ];
     }
 
     private function getCurrentPathAsString()

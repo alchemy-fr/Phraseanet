@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 use Elasticsearch\Client;
@@ -41,7 +42,19 @@ class Thesaurus
         return $concepts;
     }
 
-    public function findConcepts($term, $lang = null)
+    /**
+     * Find concepts linked to the provided Term
+     *
+     * In strict mode, term context matching is enforced:
+     *   `orange (color)` will *not* match `orange` in the index
+     *
+     * @param  Term|string $term   Term object or a string containing term's value
+     * @param  string|null $lang   Input language ("fr", "en", ...) for more effective results
+     * @param  Filter|null $filter Filter to restrict search on a specified subset
+     * @param  boolean     $strict Whether to enable strict search or not
+     * @return Concept[]           Matching concepts
+     */
+    public function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
@@ -61,20 +74,21 @@ class Thesaurus
             $query = array();
             $query['bool']['must'][0] = $term_query;
             $query['bool']['must'][1]['term']['context'] = $term->getContext();
+        } elseif ($strict) {
+            $context_filter = array();
+            $context_filter['missing']['field'] = 'context';
+            $query = self::applyQueryFilter($query, $context_filter);
         }
 
         if ($lang) {
-            $term_query = $query;
-            $query = array();
-            $query['filtered']['query'] = $term_query;
-            $query['filtered']['filter']['term']['lang'] = $lang;
+            $lang_filter = array();
+            $lang_filter['term']['lang'] = $lang;
+            $query = self::applyQueryFilter($query, $lang_filter);
         }
 
-        // TODO Only search in a specific databox
-        // $term_query = $query;
-        // $query = array();
-        // $query['filtered']['query'] = $term_query;
-        // $query['filtered']['filter']['term']['databox_id'] = $databox_id;
+        if ($filter) {
+            $query = self::applyQueryFilter($query, $filter->getQueryFilter());
+        }
 
         // Path deduplication
         $aggs = array();
@@ -106,5 +120,32 @@ class Thesaurus
         }
 
         return $concepts;
+    }
+
+    private static function applyQueryFilter(array $query, array $filter)
+    {
+        if (!isset($query['filtered'])) {
+            // Wrap in a filtered query
+            $filtered = array();
+            $filtered['filtered']['query'] = $query;
+            $filtered['filtered']['filter'] = $filter;
+
+            return $filtered;
+        } elseif (isset($query['filtered']['filter'])) {
+            // Reuse the existing filtered query
+            if (!isset($query['filtered']['filter']['bool']['must'])) {
+                // Wrap the previous filter in a boolean (must) filter
+                $previous_filter = $query['filtered']['filter'];
+                $query['filtered']['filter'] = array();
+                $query['filtered']['filter']['bool']['must'][0] = $previous_filter;
+            }
+            $query['filtered']['filter']['bool']['must'][] = $filter;
+
+            return $query;
+        } else {
+            $query['filtered']['filter'] = $filter;
+
+            return $query;
+        }
     }
 }

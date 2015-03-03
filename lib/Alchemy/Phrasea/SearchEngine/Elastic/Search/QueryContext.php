@@ -54,4 +54,18 @@ class QueryContext
 
         return $fields;
     }
+
+    public function getFields($prefix = '')
+    {
+        if ($this->fields === null) {
+            return array($prefix . '*');
+        }
+
+        $fields = array();
+        foreach ($this->fields as $field) {
+            $fields[] = $prefix . $field;
+        }
+
+        return $fields;
+    }
 }

@@ -26,8 +26,20 @@ abstract class AbstractTermNode extends Node implements TermInterface
     protected function buildConceptQueries(QueryContext $context)
     {
         $queries = array();
-        foreach (Concept::pruneNarrowConcepts($this->concepts) as $concept) {
-            $queries[]['term']['concept_paths'] = $concept->getPath();
+        $concepts = Concept::pruneNarrowConcepts($this->concepts);
+        $fields = $context->getFields();
+        if (empty($fields)) {
+            $fields = array('*');
+        }
+        $prefixedFields = array();
+        foreach ($fields as $field) {
+            $prefixedFields[] = 'concept_path.' . $field;
+        }
+        foreach ($concepts as $concept) {
+            $queries[]['multi_match'] = array(
+                'fields' => $prefixedFields,
+                'query' => $concept->getPath()
+            );
         }
 
         return $queries;

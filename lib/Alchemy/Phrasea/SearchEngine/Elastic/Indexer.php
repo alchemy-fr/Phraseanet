@@ -252,6 +252,7 @@ class Indexer
                 'general_light' => [
                     'type'      => 'custom',
                     'tokenizer' => 'icu_tokenizer',
+                    // TODO Maybe replace nfkc_normalizer + asciifolding with icu_folding
                     'filter'    => ['nfkc_normalizer', 'asciifolding']
                 ],
                 // Lang specific
