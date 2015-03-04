@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Helper;
 
+use Doctrine\DBAL\Connection;
+
 class DatabaseHelper extends Helper
 {
     public function checkConnection()
@@ -21,19 +23,18 @@ class DatabaseHelper extends Helper
         $password = $this->request->query->get('password');
         $db_name = $this->request->query->get('db_name');
 
-        $db_ok = $is_databox = $is_appbox = $empty = false;
+        $is_databox = $is_appbox = $empty = false;
 
-        try {
-            $connection = $this->app['dbal.provider']([
-                'host'     => $hostname,
-                'port'     => $port,
-                'user'     => $user,
-                'password' => $password,
-                'dbname'   => $db_name,
-            ]);
+        /** @var Connection $connection */
+        $connection = $this->app['dbal.provider']([
+            'host'     => $hostname,
+            'port'     => $port,
+            'user'     => $user,
+            'password' => $password,
+            'dbname'   => $db_name,
+        ]);
 
-            $db_ok = true;
-
+        if (false !== $dbOK = $connection->isConnected()) {
             $sql = "SHOW TABLE STATUS";
             $stmt = $connection->prepare($sql);
             $stmt->execute();
@@ -52,8 +53,6 @@ class DatabaseHelper extends Helper
                 }
             }
             $connection->close();
-        } catch (\Exception $e) {
-
         }
 
         unset($connection);
@@ -61,9 +60,9 @@ class DatabaseHelper extends Helper
         $this->app['connection.pool.manager']->closeAll();
 
         return [
-            'connection' => $db_ok,
+            'connection' => $dbOK,
             'innodb'     => true,
-            'database'   => $db_ok,
+            'database'   => $dbOK,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,
             'is_databox' => $is_databox
