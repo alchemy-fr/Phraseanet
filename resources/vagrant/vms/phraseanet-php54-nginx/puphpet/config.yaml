@@ -5,7 +5,7 @@ vagrantfile-local:
         box: puphpet/debian75-x64
         box_url: puphpet/debian75-x64
         hostname: phraseanet-php54-nginx
-        memory: '2048'
+        memory: '4096'
         cpus: '2'
         chosen_provider: virtualbox
         network:
@@ -117,6 +117,8 @@ server:
         - libopencore-amrwb-dev
         - libxvidcore-dev
         - libdc1394-22-dev
+        - memcached
+        - zip
     dot_files:
         -
             bash_aliases: null

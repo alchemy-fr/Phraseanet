@@ -5,15 +5,15 @@ sudo sh -c 'echo "Europe/Paris" > /etc/timezone'
 sudo dpkg-reconfigure -f noninteractive tzdata 
 
 # locales
-sudo sh -c "echo 'LANGUAGE=fr_FR.UTF-8' >> /etc/environment"
-sudo sh -c "echo 'LANG=fr_FR.UTF-8' >> /etc/environment"
-sudo sh -c "echo 'LC_ALL=fr_FR.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LANGUAGE=en_GB.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LANG=en_GB.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LC_ALL=en_GB.UTF-8' >> /etc/environment"
 sudo sh -c 'echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "nl_NL.UTF-8 UTF-8" >> /etc/locale.gen'
-sudo locale-gen en_US en_US.UTF-8 en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
+sudo locale-gen en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
 sudo dpkg-reconfigure -f noninteractive locales
 
 #ffmpeg
