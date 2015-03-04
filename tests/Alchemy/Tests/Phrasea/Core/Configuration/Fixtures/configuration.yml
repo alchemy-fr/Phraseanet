@@ -203,10 +203,6 @@ session:
   idle: 0
   # 1 week
   lifetime: 604800
-static-file:
-  enabled: false
-  type: nginx
-  symlink-directory: ''
 crossdomain:
   allow-access-from:
     -
