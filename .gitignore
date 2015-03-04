@@ -59,6 +59,7 @@ behat.yml
 
 # Exclude vagrant configuration file
 /.vagrant
+/vagrant
 
 # Exclude crossdomain.xml file it's generated
 /www/crossdomain.xml
