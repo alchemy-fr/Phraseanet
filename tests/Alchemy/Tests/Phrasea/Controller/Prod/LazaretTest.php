@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,44 +29,19 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testListElement()
     {
-        $fileLazaret = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', ['getRecordsToSubstitute', 'getSession', 'getCollection'], [], '', false);
-
-        $fileLazaret
-            ->expects($this->any())
-            ->method('getRecordsToSubstitute')
-            ->will($this->returnValue([self::$DI['record_1']]));
-
-        $fileLazaret
-            ->expects($this->any())
-            ->method('getSession')
-            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\Model\Entities\LazaretSession')));
-
-        $fileLazaret
-            ->expects($this->any())
-            ->method('getCollection')
-            ->will($this->returnValue(self::$DI['collection']));
-
-        //mock one Alchemy\Phrasea\Model\Repositories\LazaretFile::getFiles
-        $repo = $this->getMock('Alchemy\Phrasea\Model\Repositories\LazaretFile', ['findPerPage'], [], '', false);
-
-        $repo->expects($this->once())
-            ->method('findPerPage')
-            ->will($this->returnValue([$fileLazaret]));
-
-        //mock Doctrine\ORM\EntityManager::getRepository
-        $em = $this->createEntityManagerMock();
-
-        self::$DI['app']['repo.lazaret-files'] = $repo;
-
+        $lazaretFile = $this->getOneLazaretFile();
         $route = '/prod/lazaret/';
 
-        self::$DI['app']['orm.em'] = $em;
+        /** @var ObjectManager $em */
+        $em = self::$DI['app']['orm.em'];
+        $em->persist($lazaretFile);
+        $em->flush();
         $crawler = self::$DI['client']->request(
             'GET', $route
         );
 
         $this->assertResponseOk(self::$DI['client']->getResponse());
-        $this->assertEquals(1, $crawler->filter('.records-subititution')->count());
+        $this->assertGreaterThanOrEqual(1, $crawler->filter('.wrapper-item')->count());
     }
 
     /**
