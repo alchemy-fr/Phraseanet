@@ -340,7 +340,7 @@ class Lazaret implements ControllerProviderInterface
         }
         $ret['result']['max'] = $maxTodo;
 
-        $repo = $app['orm.em']->getRepository('Entities\LazaretFile');
+        $repo = $app['repo.lazaret-files'];
 
         $ret['result']['tobedone'] = $repo->createQueryBuilder('id')
             ->select('COUNT(id)')
