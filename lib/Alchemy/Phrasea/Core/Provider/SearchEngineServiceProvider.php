@@ -82,7 +82,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.options'],
                 $app['elasticsearch.indexer.term_indexer'],
                 $app['elasticsearch.indexer.record_indexer'],
-                $app['monolog']
+                $app['phraseanet.appbox']
             );
         });
 
