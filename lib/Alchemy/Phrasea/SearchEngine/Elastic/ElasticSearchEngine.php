@@ -38,12 +38,14 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $indexName;
     private $configurationPanel;
     private $locales;
+    private $recordHelper;
 
     public function __construct(Application $app, Client $client, $indexName)
     {
         $this->app = $app;
         $this->client = $client;
         $this->locales = array_keys($app['locales.available']);
+        $this->recordHelper = $this->app['elasticsearch.record_helper'];
 
         if ('' === trim($indexName)) {
             throw new \InvalidArgumentException('The provided index name is invalid.');
@@ -267,9 +269,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $recordHelper = $this->app['elasticsearch.record_helper'];
         // TODO Pass options to getFields to include/exclude private fields
-        $searchableFields = $recordHelper->getFields();
+        $searchableFields = $this->recordHelper->getFields();
         $queryContext = new QueryContext($this->locales, $this->app['locale'], $searchableFields);
         $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
 
@@ -278,7 +279,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
 
-        if (0 !== count($aggs = $this->getAggregationQueryParams($options, $recordHelper))) {
+        if ($aggs = $this->getAggregationQueryParams($options)) {
             $params['body']['aggs'] = $aggs;
         }
 
@@ -296,11 +297,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
-
-        $queryyy = $recordQuery;
-        // $queryyy = $params['body'];
-        $query['query'] = $queryyy;
-        $query['query_as_string'] = json_encode($queryyy);
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
@@ -388,51 +384,45 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $params;
     }
 
-    private function getAggregationQueryParams(SearchEngineOptions $options, RecordHelper $recordHelper)
+    private function getAggregationQueryParams(SearchEngineOptions $options)
     {
-        $acl = null;
-        if ($this->app['authentication']->isAuthenticated()) {
-            $acl = $this->app['acl']->get($this->app['authentication']->getUser());
-        }
-
         // get business field access rights for current user
-        $rights = [];
+        $allowed_databoxes = [];
+        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
         foreach ($options->getDataboxes() as $databox) {
-            $can_see_business = (null !== $acl && $acl->can_see_business_fields($databox));
-            $rights[$databox->get_sbas_id()] = $can_see_business;
+            $id = $databox->get_sbas_id();
+            if ($acl->can_see_business_fields($databox)) {
+                $allowed_databoxes[] = $id;
+            }
         }
 
-        $hasRightOnDatabox = function($databox_id) use ($rights) {
-            return isset($rights[$databox_id]) && $rights[$databox_id];
-        };
-
-        $params = [];
-        foreach ($recordHelper->getFieldsStructure() as $fieldName => $field) {
+        $aggs = [];
+        foreach ($this->recordHelper->getFieldsStructure() as $field_name => $params) {
             // skip if field is not searchable or not aggregated
-            if (!$field['searchable'] || !$field['to_aggregate']) {
+            if (!$params['searchable'] || !$params['to_aggregate']) {
                 continue;
             }
 
-            $allowed_databoxes = $field['databox_ids'];
-            $searchField = 'caption';
-
-            if ($field['private']) {
-                // restrict access to authorized databoxes  
-                $allowed_databoxes = array_filter($allowed_databoxes, $hasRightOnDatabox);
-                $searchField = 'private_caption';
+            if ($params['private']) {
+                // restrict access to authorized databoxes
+                $databoxes = array_intersect($params['databox_ids'], $allowed_databoxes);
+                $prefix = 'private_caption';
+            } else {
+                $databoxes = $params['databox_ids'];
+                $prefix = 'caption';
             }
 
-            $searchField = sprintf('%s.%s.raw', $searchField, $fieldName);
+            // filter aggregation to allowed databoxes
+            // declare aggregation on current field
+            $agg = array();
+            $agg['filter']['terms']['databox_id'] = $databoxes;
+            $agg['aggs']['distinct_occurrence']['terms']['field'] =
+                sprintf('%s.%s.raw', $prefix, $field_name);
 
-            $params[$fieldName] = [
-                // filter aggregation to allowed databoxes
-                'filter' => ['term' => ['databox_id' => $allowed_databoxes]],
-                // declare aggregation on current field
-                'aggs' => ['distinct_occurrence' => ['terms' => ['field' => $searchField]]]
-            ];
+            $aggs[$field_name] = $agg;
         }
 
-        return $params;
+        return $aggs;
     }
 
     private function createACLFilters()
