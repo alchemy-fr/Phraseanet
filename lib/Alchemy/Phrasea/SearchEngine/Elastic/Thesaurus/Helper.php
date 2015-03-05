@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 
+use databox;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
@@ -31,5 +32,24 @@ class Helper
             }
         }
 
+    }
+
+    public static function thesaurusFromDatabox(databox $databox)
+    {
+        return self::document($databox->get_dom_thesaurus());
+    }
+
+    public static function candidatesFromDatabox(databox $databox)
+    {
+        return self::document($databox->get_dom_cterms());
+    }
+
+    private static function document($document)
+    {
+        if (!$document) {
+            return new DOMDocument('1.0', 'UTF-8');
+        }
+
+        return $document;
     }
 }

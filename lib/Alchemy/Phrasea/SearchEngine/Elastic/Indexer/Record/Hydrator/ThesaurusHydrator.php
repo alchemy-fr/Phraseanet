@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
@@ -23,9 +24,10 @@ class ThesaurusHydrator implements HydratorInterface
     private $thesaurus;
     private $helper;
 
-    public function __construct(Thesaurus $thesaurus, RecordHelper $helper)
+    public function __construct(Thesaurus $thesaurus, CandidateTerms $candidateTerms, RecordHelper $helper)
     {
         $this->thesaurus = $thesaurus;
+        $this->candidateTerms = $candidateTerms;
         $this->helper = $helper;
     }
 
@@ -52,7 +54,6 @@ class ThesaurusHydrator implements HydratorInterface
         }
         $filter = Filter::byDatabox($record['databox_id']);
 
-        $candidate_terms = array();
         foreach ($fields as $field => $prefix) {
             if (!isset($record['caption'][$field])) {
                 continue;
@@ -67,14 +68,12 @@ class ThesaurusHydrator implements HydratorInterface
                 if ($item_concepts) {
                     foreach ($item_concepts as $concepts[]);
                 } else {
-                    $candidate_terms[] = $value;
+                    $this->candidateTerms->insert($field, $value);
                 }
             }
             if ($concepts) {
                 $record['concept_path'][$field] = Concept::toPathArray($concepts);
             }
         }
-
-        // TODO store candidate terms
     }
 }

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
 use databox;
@@ -62,19 +63,9 @@ class TermIndexer
                 $bulk->index($params);
             });
 
-            $document  = self::thesaurusFromDatabox($databox);
+            $document = Helper::thesaurusFromDatabox($databox);
             $this->navigator->walk($document, $visitor);
         }
-    }
-
-    private static function thesaurusFromDatabox(databox $databox)
-    {
-        $dom = $databox->get_dom_thesaurus();
-        if (!$dom) {
-            $dom = new DOMDocument('1.0', 'UTF-8');
-        }
-
-        return $dom;
     }
 
     public function getMapping()

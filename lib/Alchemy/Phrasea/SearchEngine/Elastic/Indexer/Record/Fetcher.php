@@ -32,6 +32,7 @@ class Fetcher
 
     private $hydrators = array();
     private $postFetch;
+    private $onDrain;
 
     public function __construct(ConnectionInterface $connection, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
@@ -65,6 +66,7 @@ class Fetcher
         }
 
         if (empty($records)) {
+            $this->onDrain->__invoke();
             return;
         }
 
@@ -96,6 +98,11 @@ class Fetcher
     public function setPostFetch(Closure $postFetch)
     {
         $this->postFetch = $postFetch;
+    }
+
+    public function onDrain(Closure $onDrain)
+    {
+        $this->onDrain = $onDrain;
     }
 
     private function getExecutedStatement()

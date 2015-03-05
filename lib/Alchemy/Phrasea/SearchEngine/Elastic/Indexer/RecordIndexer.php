@@ -30,6 +30,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use databox;
 use Iterator;
 use media_subdef;
@@ -133,14 +134,18 @@ class RecordIndexer
     private function createFetcherForDatabox(databox $databox, FetcherDelegateInterface $delegate = null)
     {
         $connection = $databox->get_connection();
+        $candidateTerms = new CandidateTerms($databox);
         $fetcher = new Fetcher($connection, array(
             new CoreHydrator($databox->get_sbas_id(), $this->helper),
             new TitleHydrator($connection),
             new MetadataHydrator($connection),
-            new ThesaurusHydrator($this->thesaurus, $this->helper),
+            new ThesaurusHydrator($this->thesaurus, $candidateTerms, $this->helper),
             new SubDefinitionHydrator($connection)
         ), $delegate);
         $fetcher->setBatchSize(200);
+        $fetcher->onDrain(function() use ($candidateTerms) {
+            $candidateTerms->save();
+        });
 
         return $fetcher;
     }
