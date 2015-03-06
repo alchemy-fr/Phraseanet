@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -148,13 +148,15 @@ class Setup implements ControllerProviderInterface
         $databox_name = $request->request->get('db_name');
 
         try {
-            $abConn = $app['dbal.provider']->get([
+            $abInfo = [
                 'host'     => $database_host,
                 'port'     => $database_port,
                 'user'     => $database_user,
                 'password' => $database_password,
                 'dbname'   => $appbox_name,
-            ]);
+            ];
+
+            $abConn = $app['dbal.provider']($abInfo);
             $abConn->connect();
         } catch (\Exception $e) {
             return $app->redirectPath('install_step2', [
@@ -164,13 +166,15 @@ class Setup implements ControllerProviderInterface
 
         try {
             if ($databox_name) {
-                $dbConn = $app['dbal.provider']->get([
+                $dbInfo = [
                     'host'     => $database_host,
                     'port'     => $database_port,
                     'user'     => $database_user,
                     'password' => $database_password,
                     'dbname'   => $databox_name,
-                ]);
+                ];
+
+                $dbConn = $app['dbal.provider']($dbInfo);
                 $dbConn->connect();
             }
         } catch (\Exception $e) {
@@ -178,6 +182,17 @@ class Setup implements ControllerProviderInterface
                 'error' => $app->trans('Databox is unreachable'),
             ]);
         }
+
+        $app['dbs.options'] = array_merge(
+            $app['db.options.from_info']($dbInfo),
+            $app['db.options.from_info']($abInfo),
+            $app['dbs.options']
+        );
+        $app['orm.ems.options'] = array_merge(
+            $app['orm.em.options.from_info']($dbInfo),
+            $app['orm.em.options.from_info']($abInfo),
+            $app['orm.ems.options']
+        );
 
         $email = $request->request->get('email');
         $password = $request->request->get('password');

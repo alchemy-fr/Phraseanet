@@ -42,23 +42,22 @@ module.exports = function(grunt) {
             dist: {
                 options: {
                     components: {
-                        "jquery.ui": ["npm", {"../../node_modules/.bin/grunt": "build"}],
-                        "jquery-mobile": ["npm", {"../../node_modules/.bin/grunt": "dist"}],
-                        "bootstrap": ["npm", {"make": "bootstrap"}],
-                        "autobahnjs": [{"make":"build"}]
+                        "bootstrap": ["npm", {"make": "bootstrap"}]
                     }
                 }
             }
         },
         copy: {
-            "autobahnjs": {
+            "autobahn": {
                 "expand": true,
                 "src": [
-                    "<%= path.bower %>/autobahnjs/build/autobahn.js",
-                    "<%= path.bower %>/autobahnjs/LICENSE"
+                    "<%= path.bower %>/autobahn/index.js",
                 ],
-                "dest": "<%= path.asset %>/autobahnjs/",
-                "flatten": true
+                "dest": "<%= path.asset %>/autobahn/",
+                "flatten": true,
+                "rename": function(dest, src) {
+                    return dest + "autobahn.js"
+                }
             },
             "backbone": {
                 "expand": true,
@@ -102,7 +101,7 @@ module.exports = function(grunt) {
             },
             "bootstrap-multiselect": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/bootstrap-multiselect",
+                "cwd": "<%= path.bower %>/bootstrap-multiselect/dist",
                 "src": [
                     "css/bootstrap-multiselect.css",
                     "js/bootstrap-multiselect.js"
@@ -114,12 +113,6 @@ module.exports = function(grunt) {
                 "src": "<%= path.bower %>/chai/chai.js",
                 "dest": "<%= path.asset %>/chai/",
                 "flatten": true
-            },
-            "deps-when": {
-                "expand": true,
-                "cwd": "<%= path.bower %>/autobahnjs",
-                "src": "../when/when.js",
-                "dest": "<%= path.bower %>/autobahnjs/when"
             },
             "font-awesome": {
                 "expand": true,
@@ -190,12 +183,13 @@ module.exports = function(grunt) {
             },
             "jquery-mobile": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/jquery-mobile/dist",
+                "cwd": "<%= path.bower %>/jquery-mobile-bower/",
                 "src": [
                     "images/*",
-                    "jquery.mobile.css",
-                    "jquery.mobile.js"
+                    "css/jquery.mobile-1.3.2.css",
+                    "js/jquery.mobile-1.3.2.js"
                 ],
+                "flatten": true,
                 "dest": "<%= path.asset %>/jquery-mobile/"
             },
             "jquery.cookie": {
@@ -208,18 +202,17 @@ module.exports = function(grunt) {
             },
             "jquery-ui": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/jquery.ui",
+                "cwd": "<%= path.bower %>/jquery-ui",
                 "src": [
-                    "dist/i18n/*",
-                    "dist/images/*",
+                    "ui/i18n/*",
+                    "ui/*",
                     "themes/base/*",
                     "themes/base/images/*",
-                    "dist/jquery-ui.css",
-                    "dist/jquery-ui.js",
                     "MIT-LICENSE.txt"
                 ],
                 "rename": function(dest, src) {
-                    return dest + src.replace("dist", "");
+                    var dest =  dest + src.replace("ui/", "/");
+                    return dest.replace("themes/base/", "/")
                 },
                 "dest": "<%= path.asset %>/jquery.ui/"
             },
@@ -319,12 +312,13 @@ module.exports = function(grunt) {
             },
             "tinymce": {
                 "expand": true,
-                "cwd": "<%= path.bower %>/tinymce/js/tinymce",
+                "cwd": "<%= path.bower %>/tinymce/",
                 "src": [
                     "plugins/**",
                     "skins/**",
                     "themes/**",
-                    "tinymce.js",
+                    "*.js",
+                    "changelog.txt",
                     "license.txt"
                 ],
                 "dest": "<%= path.asset %>/tinymce"
@@ -413,15 +407,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-bower-postinst");
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
-    // This task is here to copy bower module into an other bower module
-    // Because bower removes .git folder you can not use git submodule update
-    // So fetch them with bower and copy them to appropriate path
-    grunt.registerTask("copy-deps", [
-        "copy:deps-when"
-    ]);
-
     grunt.registerTask("copy-assets", [
-        "copy:autobahnjs",
+        "copy:autobahn",
         "copy:backbone",
         "copy:blueimp",
         "copy:bootstrap",
@@ -458,7 +445,6 @@ module.exports = function(grunt) {
     grunt.registerTask("install-assets", [
         "clean:assets",
         "bower",
-        "copy-deps",
         "bower_postinst",
         "copy-assets",
         "clean:bower"

@@ -11,7 +11,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testEndSession()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
         $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
@@ -37,7 +37,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEndSessionXmlXhttpRequest()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
         $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
@@ -65,7 +65,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEndSessionAuthenticated()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
         $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
         $app['authentication']->expects($this->any())->method('isAuthenticated')->will($this->returnValue(true));
@@ -73,11 +73,11 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $session = new Session();
         $session->setUpdated(new \DateTime());
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
         $app['repo.sessions']->expects($this->exactly(2))->method('find')->will($this->returnValue($session));
-        $app['EM']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
-        $app['EM']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
+        $app['orm.em']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
+        $app['orm.em']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
 
         $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
@@ -99,7 +99,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEndSessionAuthenticatedWithOutdatedIdle()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
         $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
         $app['authentication']->expects($this->any())->method('isAuthenticated')->will($this->returnValue(true));
@@ -108,11 +108,11 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $session = new Session();
         $session->setUpdated(new \DateTime('-1 hour'));
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
         $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
-        $app['EM']->expects($this->any())->method('persist')->will($this->returnValue(null));
-        $app['EM']->expects($this->any())->method('flush')->will($this->returnValue(null));
+        $app['orm.em']->expects($this->any())->method('persist')->will($this->returnValue(null));
+        $app['orm.em']->expects($this->any())->method('flush')->will($this->returnValue(null));
 
         $app['phraseanet.configuration']['session'] = [
             'idle' => 10,
@@ -137,7 +137,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEndSessionAuthenticatedWithOutdatedIdleXmlHttpRequest()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
         $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
         $app['authentication']->expects($this->any())->method('isAuthenticated')->will($this->returnValue(true));
@@ -146,11 +146,11 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $session = new Session();
         $session->setUpdated(new \DateTime('-1 hour'));
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
         $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
-        $app['EM']->expects($this->any())->method('persist')->will($this->returnValue(null));
-        $app['EM']->expects($this->any())->method('flush')->will($this->returnValue(null));
+        $app['orm.em']->expects($this->any())->method('persist')->will($this->returnValue(null));
+        $app['orm.em']->expects($this->any())->method('flush')->will($this->returnValue(null));
 
         $app['phraseanet.configuration']['session'] = [
             'idle' => 10,
@@ -176,7 +176,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testUndefinedModule()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
 
         $app->get('/login', function () {
@@ -199,13 +199,13 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testForbiddenRoutes($route)
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
         $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
         $app['authentication']->expects($this->never())->method('isAuthenticated');
 
-        $app['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['EM']->expects($this->never())->method('flush');
+        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $app['orm.em']->expects($this->never())->method('flush');
 
         $app->get('/login', function () {
             return '';

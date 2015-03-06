@@ -31,10 +31,10 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testCreateBasket()
     {
-       $nbBasketsBefore = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b')->getSingleScalarResult();
+       $nbBasketsBefore = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b')->getSingleScalarResult();
        self::$DI['client']->request("POST", "/client/baskets/new/", ['p0' => 'hello']);
        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-       $nbBasketsAfter = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b')->getSingleScalarResult();
+       $nbBasketsAfter = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b')->getSingleScalarResult();
        $this->assertGreaterThan($nbBasketsBefore,$nbBasketsAfter);
     }
 
@@ -43,14 +43,14 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAddElementToBasket()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         self::$DI['client']->request("POST", "/client/baskets/add-element/", [
             'courChuId'  => $basket->getId(),
             'sbas'       => self::$DI['record_1']->get_sbas_id(),
             'p0'         => self::$DI['record_1']->get_record_id()
         ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $basket = self::$DI['app']['EM']->getRepository('Phraseanet:Basket')->find($basket->getId());
+        $basket = self::$DI['app']['orm.em']->getRepository('Phraseanet:Basket')->find($basket->getId());
         $this->assertGreaterThan(0, $basket->getElements()->count());
     }
 
@@ -64,7 +64,7 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
-            $basket = self::$DI['app']['EM']->getRepository('Phraseanet:Basket')->find(1);
+            $basket = self::$DI['app']['orm.em']->getRepository('Phraseanet:Basket')->find(1);
             $this->fail('Basket is not deleted');
         } catch (\Exception $e) {
 
@@ -76,8 +76,8 @@ class BasketsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDeleteBasketElement()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
-        $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
 
         self::$DI['client']->request("POST", "/client/baskets/delete-element/", [
             'p0'  => $basketElement->getId()

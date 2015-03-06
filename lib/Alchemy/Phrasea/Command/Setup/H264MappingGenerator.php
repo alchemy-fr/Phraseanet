@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +53,7 @@ class H264MappingGenerator extends Command
         $conf = [
             'enabled' => $enabled,
             'type' => $type,
-            'mapping' => array_replace_recursive($mode->getMapping(), $currentMapping),
+            'mapping' => $mode->getMapping(),
         ];
 
         if ($input->getOption('write')) {
@@ -77,7 +78,11 @@ class H264MappingGenerator extends Command
         $ret = [];
 
         foreach ($paths as $path) {
-            $ret[$path] = $this->pathsToConf($path);
+            $sanitizedPath = rtrim($path, '/');
+            if (array_key_exists($sanitizedPath, $ret)) {
+                continue;
+            }
+            $ret[$sanitizedPath] = $this->pathsToConf($sanitizedPath);
         }
 
         return $ret;
@@ -88,7 +93,7 @@ class H264MappingGenerator extends Command
         static $n = 0;
         $n++;
 
-        return ['mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => \random::generatePassword(32)];
+        return ['mount-point' => 'mp4-videos-'.$n, 'directory' => $path, 'passphrase' => $this->container['random.low']->generateString(32, TokenManipulator::LETTERS_AND_NUMBERS)];
     }
 
     private function extractPath(\appbox $appbox)

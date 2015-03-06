@@ -13,14 +13,14 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
     public function testGenerate($expected, $format, $page, $renew, $alreadyCreated)
     {
         $user = self::$DI['user'];
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
 
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()
             ->getMock();
 
         if ($alreadyCreated) {
-            $token = self::$DI['app']['EM']->find('Phraseanet:FeedToken', 1);
+            $token = self::$DI['app']['orm.em']->find('Phraseanet:FeedToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -36,7 +36,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
         $random = self::$DI['app']['random.low'];
 
-        $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['EM'], $random);
+        $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['orm.em'], $random);
 
         $link = $linkGenerator->generate($feed, self::$DI['user'], $format, $page, $renew);
 
@@ -58,10 +58,10 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                     $this->assertEquals($page, $capture['page']);
                 }
 
-                $this->assertCount(0, self::$DI['app']['EM']
+                $this->assertCount(0, self::$DI['app']['orm.em']
                     ->getRepository('Phraseanet:FeedToken')
                     ->findBy(['value' => $tokenValue]));
-                $this->assertCount(1, self::$DI['app']['EM']
+                $this->assertCount(1, self::$DI['app']['orm.em']
                     ->getRepository('Phraseanet:FeedToken')
                     ->findBy(['value' => $capture['token']]));
             } else {
@@ -77,7 +77,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
                 $this->assertEquals($expectedParams, $capture);
 
-                $this->assertCount(1, self::$DI['app']['EM']
+                $this->assertCount(1, self::$DI['app']['orm.em']
                     ->getRepository('Phraseanet:FeedToken')
                     ->findBy(['value' => $tokenValue]));
             }
@@ -89,7 +89,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals($format, $capture['format']);
             $this->assertEquals(64, strlen($capture['token']));
 
-            $this->assertCount(1, self::$DI['app']['EM']
+            $this->assertCount(1, self::$DI['app']['orm.em']
                 ->getRepository('Phraseanet:FeedToken')
                 ->findBy(['value' => $capture['token']]));
         }
@@ -100,7 +100,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
      */
     public function testGeneratePublic($expected, $format, $page)
     {
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
 
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()
@@ -118,7 +118,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
 
         $random = self::$DI['app']['random.low'];
 
-        $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['EM'], $random);
+        $linkGenerator = new FeedLinkGenerator($generator, self::$DI['app']['orm.em'], $random);
 
         $link = $linkGenerator->generatePublic($feed, $format, $page);
 

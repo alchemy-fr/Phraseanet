@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -40,7 +40,7 @@ class RemovePlugin extends AbstractPluginCommand
         $this->container['plugins.assets-manager']->remove($name);
         $output->writeln(" <comment>OK</comment>");
 
-        $path = $this->container['plugins.directory'] . DIRECTORY_SEPARATOR . $name;
+        $path = $this->container['plugin.path'] . DIRECTORY_SEPARATOR . $name;
 
         $output->write("Removing <info>$name</info>...");
         $this->container['filesystem']->remove($path);

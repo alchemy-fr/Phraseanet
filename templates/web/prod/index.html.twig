@@ -44,6 +44,7 @@
 {% endmacro %}
 
 {% set jquery_theme = 'dark-hive' %}
+{% set step = app.flash('step_by_step') %}
 
 {% extends "common/index_bootstrap.html.twig" %}
 
@@ -100,12 +101,47 @@
             background-color: #{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection-disabled', '333333')}}};
         }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
-            color: #{{app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF')}};
-            background-color: #{{app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
+            color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF')}};
+            background-color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
         }
     </style>
     <!-- Include Fancytree skin and library -->
     <link href="{{ path('minifier', { 'f' : 'assets/fancytree/dist/skin-win8/ui.fancytree.min.css'}) }}" rel="stylesheet" type="text/css">
+
+    {% if step %}
+        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/joyride/joyride-2.1.css' }) }}" >
+            <style>
+                .joyride-tip-guide {
+                    background-color: #eee;
+                    color: #000;
+                }
+
+                .joyride-tip-guide h1 {
+                    font-weight: 100;
+                    font-size: 20px;
+                    color: #0a212b;
+                    line-height: 22px;
+                    margin-bottom: 10px;
+                }
+
+                .joyride-tip-guide span.joyride-nub.top {
+                    border-color: #eee;
+                }
+
+                .joyride-tip-guide span.joyride-nub.right {
+                    border-left-color: #eee !important;
+                }
+
+                .joyride-expose-wrapper {
+                    background-color: transparent;
+                }
+
+                .joyride-tip-guide .joyride-next-tip {
+                    background: #0a212b;
+                    border: none;
+                }
+            </style>
+    {% endif %}
 {% endblock %}
 
 {% block javascript %}
@@ -114,18 +150,32 @@
 {% endblock %}
 
 {% block content %}
-    {% set search_datas = module_prod.get_search_datas() %}
+
     <div style="position:absolute; top:0; left:0; right:0; bottom:0; background-color:#1a1a1a; z-index:32766;">
         <div id="loader" style="top:200px; margin:0 auto; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; background-color:#CCCCCC; position:relative; margin:0 auto; text-align:center; width:400px; height:100px; padding:20px; z-index:32767;">
             <div style="margin:0 10px 10px; font-family:Helvetica,Arial,sans-serif; font-size:18px; color:#1A1A1A; text-align:left;">Phraseanet</div>
             <div style="text-align:center;">{{ 'Chargement' | trans }}</div>
             <div style="width:220px; height:19px; margin:20px auto;">
-                <div id="loader_bar" style="height:19px;width:10%;background-image:url(/skins/icons/main-loader.gif)"></div>
+                <div id="loader_bar" style="height:19px;width:10%;background-image:url('/skins/icons/main-loader.gif')"></div>
             </div>
         </div>
     </div>
-
     <div id="desktop" class="PNB" style="overflow:hidden;">
+        {% if app.flash('client_deprecated') %}
+            <div id="clientModal" class="modal hide fade"   >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>{{ 'Client application is deprecated'|trans }}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'You have been redirected to production application.'|trans }}</p>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $('#clientModal').modal();
+            </script>
+        {% endif %}
+        
         {% set ratio = app['settings'].getUserSetting(app['authentication'].getUser(), 'search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
@@ -155,12 +205,12 @@
                         </li>
                         {% endif %}
                         <li style="float:right;">
-                            <a href="#" class="escamote" style="margin:8px 0;">
+                            <a href="#" class="escamote">
                                 <img src="/skins/icons/workzoneEscamote.png" title="{{ 'Close the WorkZone' | trans }}"/>
                             </a>
                         </li>
                     </ul>
-                    <div id="baskets" class="PNB" style="top:52px;">
+                    <div id="baskets" class="PNB">
                         {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                         {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                     </div>
@@ -283,24 +333,24 @@
 
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB" style="height: 90px; bottom: auto;">
-                <div style="margin: 15px auto; line-height: 30px; width: 580px;">
+                <div class="searchFormWrapper">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <div class="input-append">
                             <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
-                            <a href="#" class="btn btn-inverse adv_trigger adv_search_button">
+                            <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                 <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                             </a>
                             <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                         </div>
-                        <div class="control-group" style="margin:5px;">
+                        <div class="control-group">
                             <div class="controls">
                                 {% if GV_multiAndReport %}
                                     <label for="mode_type_doc" class="radio inline">
-                                        <input type="radio" value="0" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
+                                        <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
                                         {{ 'phraseanet::type:: documents' | trans }}
                                     </label>
                                     <label for="mode_type_reg" class="radio inline">
-                                        <input type="radio" value="1" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
+                                        <input type="radio" value="1" class="mode_type_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
                                         {{ 'phraseanet::type:: reportages' | trans }}
                                     </label>
                                 {% else %}
@@ -345,7 +395,7 @@
                                                 <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
                                                 <optgroup label="{{ 'By field'|trans }}">
                                                 {% for sort in search_datas['sort'] %}
-                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected default-selection"{% endif %}>{{ sort.fieldname }}</option>
+                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort.fieldname }}</option>
                                                 {% endfor %}
                                                 </optgroup>
                                             </select>
@@ -457,6 +507,16 @@
                             </table>
                         </div>
                     </form>
+                    <div id="answers_status">
+                        <div class="infos">
+                            <span id="tool_results">
+
+                            </span>
+                        </div>
+                        <!--td class="navigation">
+                            <div id="tool_navigate"></div>
+                        </td-->
+                    </div>
                 </div>
 
                 <!--
@@ -476,8 +536,8 @@
                 </div>-->
             </div>
 
-            <div id="idFrameT" class="PNB ui-corner-top" style="top:110px;">
-                <div class="tools PNB10 btn-toolbar" style="font-size:10px; z-index:100; height:28px;">
+            <div id="idFrameT" class="PNB ui-corner-top">
+                <div class="tools PNB10 btn-toolbar">
 
                     <span class="dropdownButton">
                         <div class="btn-group">
@@ -525,8 +585,8 @@
 
                     <span class="dropdownButton">
                         <div class="btn-group">
-                            <button class="default_action TOOL_disktt_btn results_window btn btn-inverse">
-                                <img src="/skins/prod/000000/images/disktt_history.gif" height="16" width="16" /> {{ 'action : exporter' | trans }}
+                            <button  id="TOOL_disktt" class="default_action TOOL_disktt_btn results_window btn btn-inverse">
+                                <img src="/skins/prod/000000/images/disktt_history.png" height="16" width="16" /> {{ 'action : exporter' | trans }}
                             </button>
                             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                             <ul class="dropdown-menu">
@@ -545,7 +605,7 @@
                         {% set label %}
                             {{ 'action : editer' | trans }}
                         {% endset %}
-                        {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+                        {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
                     {% endif %}
                     {% if app['acl'].get(app['authentication'].getUser()).has_right('changestatus') %}
                         {% set label %}
@@ -687,7 +747,7 @@
                         </span>
                     {% endif %}
                 </div>
-                <div id="answers" class=" PNB10" style="top:48px; bottom:30px;">
+                <div id="answers" class=" PNB10">
                     <script>
                         $(document).ready(function(){
                             {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page') == 'QUERY' %}
@@ -699,22 +759,6 @@
                             {% endif %}
                         });
                     </script>
-                </div>
-                <div id="answers_status" class="PNB">
-                    <table>
-                        <tr>
-                            <td class="infos">
-                                <a href="#" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
-                                |
-                                <span id="tool_results">
-
-                                </span>
-                            </td>
-                            <td class="navigation">
-                                <div id="tool_navigate"></div>
-                            </td>
-                        </tr>
-                    </table>
                 </div>
             </div>
         </div>
@@ -935,7 +979,13 @@
         <div class="PNB" style="right:180px;">
             <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
                 <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
-                    <span id="SPANTITLE" class="PNB10"> </span>
+                    <div style="padding-top: 0px; padding-left: 5px;">
+                        <span id="PREVIEWTITLE_COLLLOGO"> </span>
+                        &nbsp;
+                        <span id="PREVIEWTITLE_COLLNAME"> </span>
+                        &nbsp;
+                        <span id="SPANTITLE"> </span>
+                    </div>
                 </div>
             </div>
             <div class="PNB" style="top:55px;">
@@ -1025,8 +1075,90 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
+    {% if step %}
+        <ol id="step_by_step" style="visibility: hidden;">
+            /* data-id needs to be the same as the parent it will attach to */
+            <li data-id="EDIT_query">
+                <div>
+                    <h1>
+                        {{ "Rechercher"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Taper ici les termes de recherche afin de retrouver les documents souhaités."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="ADV_query">
+                <div>
+                    <h1>
+                        {{ "Recherche Avancée"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Séléctionner les champs et les collections sur lesquels vous voulez rechercher."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="recordtype_sel">
+                <div>
+                    <h1>
+                        {{ "Types de documents"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Séléctionner ici le type de document que vous souhaitez rechercher."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="TOOL_disktt">
+                <div>
+                    <h1>
+                        {{ "Barre d'outils"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="answers" data-options="tipLocation:left">
+                <div>
+                    <h1>
+                        {{ "Sélection et Prévisualisation de documents"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Sélectionner les documents en cliquant dessus.
+                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
+                        cliquez sur les documents souhaités.
+                        Pour prévisualier un document cliquez dessus."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="basket_menu_trigger">
+                <div>
+                    <h1>
+                        {{ "Paniers"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Consulter et administrer vos paniers dans cet onglet.
+                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
+                        flèche blanche."|trans }}
+                    </p>
+                </div>
+            </li>
+            <li data-id="answers" data-options="tipLocation:left">
+                <div>
+                    <h1>
+                        {{ "Ajouter au panier"|trans }}
+                    </h1>
+                    <p>
+                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
+                        désiré et en relachant au dessus."|trans }}
+                    </p>
+                </div>
+            </li>
+        </ol>
+    {% endif %}
+
     <script type="text/javascript">
-        {% include "prod/thesaurus.js.twig" %}
+        {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
     <script type="text/javascript">
@@ -1077,5 +1209,19 @@
 
     </script>
     <script type="text/javascript" id="bitly_loader"></script>
+    {% if step %}
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.cookie.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/modernizr.mq.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.joyride-2.1.js' }) }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#step_by_step").joyride({
+                    autoStart : true,
+                    modal:true,
+                    expose: true
+                });
+            });
+        </script>
+    {% endif %}
 
 {% endblock %}

@@ -1,6 +1,6 @@
 <?php
 
-class report_sqlFilterTest extends \PhraseanetAuthenticatedTestCase
+class report_sqlFilterTest extends \report_abstractReportTestCase
 {
     /**
      *
@@ -87,18 +87,6 @@ class report_sqlFilterTest extends \PhraseanetAuthenticatedTestCase
         } else {
             $filter = $this->filter->getUserFilter();
             $this->checkFilter($filter);
-        }
-    }
-
-    public function testCollectionFilter()
-    {
-        if ($this->report->getUserId() == '') {
-            $this->assertFalse($this->filter->getCollectionFilter());
-        } elseif (count(explode(",", $this->report->getListCollId()) > 0)) {
-            $filter = $this->filter->getCollectionFilter();
-            $this->checkFilter($filter);
-        } else {
-            $this->assertFalse($this->filter->getCollectionFilter());
         }
     }
 

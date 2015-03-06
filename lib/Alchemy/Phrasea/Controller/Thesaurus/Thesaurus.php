@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -43,10 +43,8 @@ class Thesaurus implements ControllerProviderInterface
         $controllers->match('linkfield2.php', 'controller.thesaurus:linkFieldStep2');
         $controllers->match('linkfield3.php', 'controller.thesaurus:linkFieldStep3');
         $controllers->match('loadth.php', 'controller.thesaurus:loadThesaurus')->bind('thesaurus_loadth');
-        $controllers->match('newsy_dlg.php', 'controller.thesaurus:newSynonymDialog');
         $controllers->match('newterm.php', 'controller.thesaurus:newTerm');
         $controllers->match('properties.php', 'controller.thesaurus:properties');
-        $controllers->match('search.php', 'controller.thesaurus:search');
         $controllers->match('thesaurus.php', 'controller.thesaurus:thesaurus')->bind('thesaurus_thesaurus');
 
         $controllers->match('xmlhttp/accept.x.php', 'controller.thesaurus:acceptXml');
@@ -1117,23 +1115,6 @@ class Thesaurus implements ControllerProviderInterface
         ]);
     }
 
-    public function newSynonymDialog(Application $app, Request $request)
-    {
-        $languages = [];
-
-        foreach ($app['locales.available'] as $lng_code => $lng) {
-            $lng_code = explode('_', $lng_code);
-            $languages[$lng_code[0]] = $lng;
-        }
-
-        return $app['twig']->render('thesaurus/new-synonym-dialog.html.twig', [
-            'piv'       => $request->get('piv'),
-            'typ'       => $request->get('typ'),
-            'languages' => $languages,
-        ]);
-    }
-
-
     public function newTerm(Application $app, Request $request)
     {
         list($term, $context) = $this->splitTermAndContext($request->get("t"));
@@ -1214,11 +1195,6 @@ class Thesaurus implements ControllerProviderInterface
             'hits' => $hits,
             'synonyms' => $synonyms,
         ]);
-    }
-
-    public function search(Application $app, Request $request)
-    {
-        return $app['twig']->render('thesaurus/search.html.twig');
     }
 
     public function thesaurus(Application $app, Request $request)

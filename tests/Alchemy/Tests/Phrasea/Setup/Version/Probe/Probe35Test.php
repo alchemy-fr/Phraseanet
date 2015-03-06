@@ -24,6 +24,6 @@ class Probe35Test extends AbstractSetupTester
 
     private function getProbe()
     {
-        return new Probe35(new Application('test'));
+        return new Probe35(new Application(Application::ENV_TEST));
     }
 }

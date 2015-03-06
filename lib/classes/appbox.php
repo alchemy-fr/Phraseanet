@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -55,7 +55,8 @@ class appbox extends base
     {
         $this->app = $app;
         $connexion = $app['conf']->get(['main', 'database']);
-        $this->connection = $app['dbal.provider']->get($connexion);
+
+        $this->connection = $app['db.provider']($connexion);
 
         $this->host = $connexion['host'];
         $this->port = $connexion['port'];
@@ -317,6 +318,16 @@ class appbox extends base
             $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target, null, array('override' => true));
         }
 
+        // do not apply patches
+        // just update old database schema
+        // it is need before applying patches
+        $advices = $this->upgradeDB(false, $app);
+
+        foreach ($this->get_databoxes() as $s) {
+            $advices = array_merge($advices, $s->upgradeDB(false, $app));
+        }
+
+        // then apply patches
         $advices = $this->upgradeDB(true, $app);
 
         foreach ($this->get_databoxes() as $s) {
@@ -327,9 +338,9 @@ class appbox extends base
 
         $app['phraseanet.cache-service']->flushAll();
 
-        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
-            $tool = new SchemaTool($app['EM']);
-            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
+        if ($app['orm.em']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
+            $tool = new SchemaTool($app['orm.em']);
+            $metas = $app['orm.em']->getMetadataFactory()->getAllMetadata();
             $tool->updateSchema($metas, true);
         }
 

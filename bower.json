@@ -4,8 +4,8 @@
     "dependencies": {
         "bootstrap": "2.3.2",
         "jquery": "~1.8.3",
-        "jquery.ui": "~1.10.0",
-        "jquery-mobile": "~1.3.0",
+        "jquery-ui": "~1.10.0",
+        "jquery-mobile-bower": "~1.3.0",
         "underscore": "~1.4.4",
         "font-awesome": "~3.0.2",
         "modernizr": "~2.6.2",
@@ -25,11 +25,12 @@
         "tinymce": "~4.0",
         "jquery-galleria": "1.2.9",
         "jquery.cookie": "~1.4",
-        "autobahnjs": "~0.8.0",
+        "autobahn": "http://autobahn.s3.amazonaws.com/js/autobahn.min.js",
         "when": "~2.7.0",
         "web-socket-js": "~1.0.1",
         "jquery.treeview": "1.4.1",
-        "fancytree": "~2.7"
+        "fancytree": "~2.7",
+        "joyride": "https://github.com/zurb/joyride/archive/v2.0.0.zip"
     },
     "devDependencies": {
         "mocha": "latest",

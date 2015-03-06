@@ -77,12 +77,14 @@
 $(document).ready(function(){
 	var dialog = p4.Dialog.get(1);
 
-    $('a.self-ajax', dialog.getDomElement()).bind('click', function(){
+    $('a.self-ajax', dialog.getDomElement()).bind('click', function(e){
+        e.preventDefault();
         var url = $(this).attr('href');
         dialog.load(url);
     });
 
     $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
+        e.preventDefault();
         var id = $(this).attr('id').split('_').pop();
         dialog.load('/prod/order/' + id +'/');
     }).addClass('clickable');

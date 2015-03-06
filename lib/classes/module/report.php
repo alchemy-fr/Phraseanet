@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -234,6 +234,7 @@ class module_report
      *
      */
     protected $cor_query = [];
+    protected $dateField = 'log.date';
     protected $isInformative;
 
     /**
@@ -579,6 +580,7 @@ class module_report
                 return new module_report_sqlconnexion($this->app, $this);
                 break;
             case 'download' :
+  // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
                 return new module_report_sqldownload($this->app, $this);
                 break;
             case 'question' :
@@ -778,7 +780,6 @@ class module_report
      */
     protected function setConfigColumn($tab)
     {
-
         foreach ($tab as $column => $row) {
             foreach ($row as $ind => $value) {
                 $title_text = "";
@@ -805,6 +806,18 @@ class module_report
         }
     }
 
+    public function setDateField($dateField)
+    {
+        $this->dateField = $dateField;
+
+        return $this;
+    }
+
+    public function getDateField()
+    {
+        return $this->dateField;
+    }
+
     /**
      * Build the final formated array which contains all the result,
      * we construct the html code from this array
@@ -817,6 +830,8 @@ class module_report
      */
     public function buildReport($tab = false, $groupby = false, $on = false)
     {
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         if (sizeof($this->report) > 0) {
             return $this->report;
         }
@@ -824,7 +839,11 @@ class module_report
         $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
         $conn = $databox->get_connection();
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         $this->buildReq($groupby, $on);
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\nreq=%s\n\n", __FILE__, __LINE__, $this->req), FILE_APPEND);
 
         try {
             try {
@@ -833,23 +852,30 @@ class module_report
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
             } catch (DBALException $e) {
-                echo $e->getMessage();
 
                 return;
             }
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, get_class($this)), FILE_APPEND);
+
             //set request field
             $this->setChamp($rs);
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //set display
             $this->setDisplay($tab, $groupby);
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //construct results
             $this->buildResult($this->app, $rs);
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //calculate prev and next page
             $this->calculatePages();
             //do we display navigator ?
             $this->setDisplayNav();
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //assign all variables
             $this->setReport();
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
             return $this->report;
         } catch (\Exception $e) {

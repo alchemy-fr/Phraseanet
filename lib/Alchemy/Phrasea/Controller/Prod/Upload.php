@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Core\Event\LazaretEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\RecordEdit;use Alchemy\Phrasea\Core\PhraseaEvents;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
@@ -51,6 +51,8 @@ class Upload implements ControllerProviderInterface
 
         $controllers->get('/flash-version/', 'controller.prod.upload:getFlashUploadForm')
             ->bind('upload_flash_form');
+        $controllers->get('/html5-version/', 'controller.prod.upload:getHtml5UploadForm')
+            ->bind('upload_html5_form');
 
         $controllers->post('/', 'controller.prod.upload:upload')
             ->bind('upload');
@@ -71,12 +73,25 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-            'prod/upload/upload-flash.html.twig', [
-            'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
-            'maxFileSize'         => $maxFileSize,
-            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ]);
+            'prod/upload/upload-flash.html.twig', array(
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            ));
+    }
+
+    public function getHtml5UploadForm(Application $app, Request $request)
+    {
+        $maxFileSize = $this->getUploadMaxFileSize();
+
+        return $app['twig']->render(
+            'prod/upload/upload.html.twig', array(
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            ));
     }
 
     /**
@@ -162,7 +177,7 @@ class Upload implements ControllerProviderInterface
             $lazaretSession = new LazaretSession();
             $lazaretSession->setUser($app['authentication']->getUser());
 
-            $app['EM']->persist($lazaretSession);
+            $app['orm.em']->persist($lazaretSession);
 
             $packageFile = new File($app, $media, $collection, $file->getClientOriginalName());
 
@@ -207,6 +222,8 @@ class Upload implements ControllerProviderInterface
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
                 $message = $app->trans('The record was successfully created');
+
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {

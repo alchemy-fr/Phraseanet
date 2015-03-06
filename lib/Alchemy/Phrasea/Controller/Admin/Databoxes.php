@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -115,6 +115,9 @@ class Databoxes implements ControllerProviderInterface
             case 'mount-failed' :
                 $errorMsg = $app->trans('Database could not be mounted');
                 break;
+            case 'innodb-support' :
+                $errorMsg = _('Database server does not support InnoDB storage engine');
+                break;
         }
 
         return $app['twig']->render('admin/databases.html.twig', [
@@ -155,7 +158,7 @@ class Databoxes implements ControllerProviderInterface
             $dataTemplate = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
 
             try {
-                $connbas = $app['dbal.provider']->get([
+                $connbas = $app['dbal.provider']([
                     'host'     => $hostname,
                     'port'     => $port,
                     'user'     => $user,
@@ -172,6 +175,7 @@ class Databoxes implements ControllerProviderInterface
                 $base->registerAdmin($app['authentication']->getUser());
                 $app['acl']->get($app['authentication']->getUser())->delete_data_from_cache();
 
+                $connbas->close();
                 return $app->redirectPath('admin_database', ['databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1]);
             } catch (\Exception $e) {
                 return $app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
@@ -188,7 +192,7 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $data_template = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-                $connbas = $app['dbal.provider']->get([
+                $connbas = $app['db.provider']([
                     'host'     => $hostname,
                     'port'     => $port,
                     'user'     => $userDb,

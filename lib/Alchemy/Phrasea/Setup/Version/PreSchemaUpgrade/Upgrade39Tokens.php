@@ -32,7 +32,7 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
      */
     public function isApplyable(Application $app)
     {
-        return $this->tableExists($app['EM'], 'tokens');
+        return $this->tableExists($app['orm.em'], 'tokens');
     }
 
     /**

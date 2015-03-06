@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -49,11 +49,11 @@ class ComposerInstall extends Command
 
         try {
             if ($input->getOption('no-dev')) {
-                $output->write("Installing dependencies <info>without</info> developer packages ");
+                $output->write("Installing composer dependencies <info>without</info> developer packages ");
                 $composer->command(array_merge($commands, ['--no-dev']));
                 $output->writeln("<comment>OK</comment>");
             } else {
-                $output->write("Installing dependencies <info>with</info> developer packages ");
+                $output->write("Installing composer dependencies <info>with</info> developer packages ");
                 $composer->command(array_merge($commands, ['--dev']));
                 $output->writeln("<comment>OK</comment>");
             }

@@ -12,7 +12,7 @@ class RedisCacheTest extends \PhraseanetTestCase
         if (extension_loaded('Redis')) {
             $redis = new \Redis();
             try {
-                $ok = @$redis->connect('127.0.0.1', 6379);
+                $ok = @$redis->connect('localhost', 6379);
             } catch (\Exception $e) {
                 $ok = false;
             }

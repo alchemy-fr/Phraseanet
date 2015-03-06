@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -159,32 +159,29 @@ class Root implements ControllerProviderInterface
         })->bind('admin_display_tree');
 
         $controllers->get('/test-paths/', function (Application $app, Request $request) {
-
-            if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            if (!$request->isXmlHttpRequest()) {
+                $app->abort(400);
+            }
+            if (!array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
                 $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
             }
 
-            if (0 !== count($tests = $request->query->get('tests', []))) {
+            if (0 === count($tests = $request->query->get('tests', []))) {
                 $app->abort(400, $app->trans('Missing tests parameter'));
             }
 
-            if (null !== $path = $request->query->get('path')) {
+            if (null === $path = $request->query->get('path')) {
                 $app->abort(400, $app->trans('Missing path parameter'));
             }
 
             foreach ($tests as $test) {
                 switch ($test) {
                     case 'writeable':
-                        if (!is_writable($path)) {
-                            $result = false;
-                        }
+                        $result = is_writable($path);
                         break;
                     case 'readable':
                     default:
-                        if (!is_readable($path)) {
-                            $result = true;
-                        }
-                        break;
+                    $result = is_readable($path);
                 }
             }
 

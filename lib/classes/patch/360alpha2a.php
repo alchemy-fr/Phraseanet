@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -56,7 +56,7 @@ class patch_360alpha2a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $app['EM']->getConnection()->executeUpdate('UPDATE Users u SET u.email = NULL WHERE u.email IS NOT NULL AND u.deleted = 1');
+        $app['orm.em']->getConnection()->executeUpdate('UPDATE Users u SET u.email = NULL WHERE u.email IS NOT NULL AND u.deleted = 1');
 
         return true;
     }

@@ -79,10 +79,10 @@ class FeedItemRepository extends EntityRepository
                 try {
                     $record = $item->getRecord($app);
                 } catch (NotFoundHttpException $e) {
-                    $app['EM']->remove($item);
+                    $app['orm.em']->remove($item);
                     continue;
                 } catch (\Exception_Record_AdapterNotFound $e) {
-                    $app['EM']->remove($item);
+                    $app['orm.em']->remove($item);
                     continue;
                 }
 
@@ -97,7 +97,7 @@ class FeedItemRepository extends EntityRepository
                 }
             }
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
             $execution++;
         } while (count($items) < $nbItems && count($result) !== 0);
 

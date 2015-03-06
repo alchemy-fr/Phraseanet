@@ -25,9 +25,7 @@ class DisplaySettingServiceTest extends \PhraseanetTestCase
 
     public static function tearDownAfterClass()
     {
-        if (null === self::$userSettings) {
-            self::$DI['app']['conf']->remove('user-settings');
-        } else {
+        if (null !== self::$userSettings) {
             self::$DI['app']['conf']->set('user-settings', self::$userSettings);
         }
 

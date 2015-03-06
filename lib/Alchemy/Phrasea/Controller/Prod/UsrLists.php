@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -170,9 +170,9 @@ class UsrLists implements ControllerProviderInterface
             $List->setName($list_name);
             $List->addOwner($Owner);
 
-            $app['EM']->persist($Owner);
-            $app['EM']->persist($List);
-            $app['EM']->flush();
+            $app['orm.em']->persist($Owner);
+            $app['orm.em']->persist($List);
+            $app['orm.em']->flush();
 
             $datas = [
                 'success' => true
@@ -261,7 +261,7 @@ class UsrLists implements ControllerProviderInterface
 
             $list->setName($list_name);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             $datas = [
                 'success' => true
@@ -290,8 +290,8 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
-            $app['EM']->remove($list);
-            $app['EM']->flush();
+            $app['orm.em']->remove($list);
+            $app['orm.em']->flush();
 
             $datas = [
                 'success' => true
@@ -329,8 +329,8 @@ class UsrLists implements ControllerProviderInterface
 
             $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
-            $app['EM']->remove($user_entry);
-            $app['EM']->flush();
+            $app['orm.em']->remove($user_entry);
+            $app['orm.em']->flush();
 
             $datas = [
                 'success' => true
@@ -381,12 +381,12 @@ class UsrLists implements ControllerProviderInterface
 
                 $list->addEntrie($entry);
 
-                $app['EM']->persist($entry);
+                $app['orm.em']->persist($entry);
 
                 $inserted_usr_ids[] = $user_entry->getId();
             }
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             if (count($inserted_usr_ids) > 1) {
                 $datas = [
@@ -476,14 +476,14 @@ class UsrLists implements ControllerProviderInterface
 
                 $list->addOwner($owner);
 
-                $app['EM']->persist($owner);
+                $app['orm.em']->persist($owner);
             }
 
             $role = $app['request']->request->get('role');
 
             $owner->setRole($role);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             $datas = [
                 'success' => true
@@ -521,8 +521,8 @@ class UsrLists implements ControllerProviderInterface
 
             $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
 
-            $app['EM']->remove($owner);
-            $app['EM']->flush();
+            $app['orm.em']->remove($owner);
+            $app['orm.em']->flush();
 
             $datas = [
                 'success' => true

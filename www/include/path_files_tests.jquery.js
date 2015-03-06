@@ -3,7 +3,7 @@
     var methods = {
         init: function (options) {
             var settings = {
-                'url': '/admin/tests/pathurl/path/'
+                'url': '/admin/test-paths/'
             };
             return this.each(function () {
 
@@ -24,6 +24,8 @@
                         var el_loader = $this.nextAll('.loader');
                         var el_status = $this.nextAll('.status');
 
+                        var tests = [];
+
                         if ($this.data('ajax_path_test') && typeof $this.data('ajax_path_test').abort == 'function')
                             $this.data('ajax_path_test').abort();
 
@@ -36,12 +38,23 @@
                             return;
                         }
 
+                        if ($this.hasClass('test_executable')) {
+                            tests.push('executable');
+                        }
+                        if ($this.hasClass('test_writeable')) {
+                            tests.push('writeable');
+                        }
+                        if ($this.hasClass('test_readable')) {
+                            tests.push('readable');
+                        }
+
                         var ajax = $.ajax({
                             dataType: 'json',
                             type: "GET",
                             url: settings.url,
                             data: {
-                                path: $this.val()
+                                path: $this.val(),
+                                tests: tests
                             },
                             beforeSend: function () {
                                 el_loader.css('visibility', 'visible');

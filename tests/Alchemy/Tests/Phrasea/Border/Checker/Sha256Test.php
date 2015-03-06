@@ -38,7 +38,7 @@ class Sha256Test extends \PhraseanetTestCase
      */
     public function testCheck()
     {
-        $session = self::$DI['app']['EM']->find('Phraseanet:LazaretSession', 1);
+        $session = self::$DI['app']['orm.em']->find('Phraseanet:LazaretSession', 1);
 
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
@@ -51,7 +51,7 @@ class Sha256Test extends \PhraseanetTestCase
             ->will($this->returnValue('7fad283de349b903c850548cda65cf2d86d24c4e3856cdc2b97e47430494b8c8'))
         ;
 
-        $response = $this->object->check(self::$DI['app']['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['orm.em'], $mock);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
     }
@@ -69,7 +69,7 @@ class Sha256Test extends \PhraseanetTestCase
             ->will($this->returnValue(self::$DI['app']['random.low']->generateString(3)))
         ;
 
-        $response = $this->object->check(self::$DI['app']['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['orm.em'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 

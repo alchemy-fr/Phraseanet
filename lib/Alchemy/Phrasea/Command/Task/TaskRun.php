@@ -74,7 +74,7 @@ class TaskRun extends Command
             $job->addSubscriber(new MemoryLimitSubscriber($maxMemory, $logger));
         }
         if ($task->isSingleRun()) {
-            $job->addSubscriber(new FinishedJobRemoverSubscriber($this->container['EM']));
+            $job->addSubscriber(new FinishedJobRemoverSubscriber($this->container['orm.em']));
         }
 
         $job->run(new JobData($this->container, $task));

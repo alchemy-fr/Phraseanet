@@ -2,61 +2,63 @@
 
 {% macro print_ftp_form(datas) %}
     <div class="ftp_form ftp_form_{{datas.usr_id}}">
-        <div class="control-group">
-            <label class="control-label" for="ftp-address-{{datas.usr_id}}">{{ 'phraseanet:: adresse' | trans }}  ftp://</label>
-            <div class="controls">
-                <input type="text" name="address" id="ftp-address-{{datas.usr_id}}" value="{{datas.address}}" />
+        <form id="ftp_user_{{datas.usr_id}}" action="{{ path('export_ftp') }}" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
+            <div class="control-group">
+                <label class="control-label" for="ftp-address-{{datas.usr_id}}">{{ 'phraseanet:: adresse' | trans }}  ftp://</label>
+                <div class="controls">
+                    <input type="text" name="address" id="ftp-address-{{datas.usr_id}}" value="{{datas.address}}" />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-ssl-{{datas.usr_id}}">{{ 'phraseanet:: utiliser SSL' | trans }}</label>
-            <div class="controls">
-                <input type="checkbox" name="ssl" id="ftp-ssl-{{datas.usr_id}}" {% if datas.ssl %}checked{% endif %} />
+            <div class="control-group">
+                <label class="control-label" for="ftp-ssl-{{datas.usr_id}}">{{ 'phraseanet:: utiliser SSL' | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" name="ssl" id="ftp-ssl-{{datas.usr_id}}" {% if datas.ssl %}checked{% endif %} />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-login-{{datas.usr_id}}">{{ 'admin::compte-utilisateur identifiant' | trans }}</label>
-            <div class="controls">
-                <input type="text" name="login" id="ftp-login-{{datas.usr_id}}" value="{{datas.login}}" />
+            <div class="control-group">
+                <label class="control-label" for="ftp-login-{{datas.usr_id}}">{{ 'admin::compte-utilisateur identifiant' | trans }}</label>
+                <div class="controls">
+                    <input type="text" name="login" id="ftp-login-{{datas.usr_id}}" value="{{datas.login}}" />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-password-{{datas.usr_id}}">{{ 'admin::compte-utilisateur mot de passe' | trans }}</label>
-            <div class="controls">
-                <input type="password" name="password" id="ftp-password-{{datas.usr_id}}" value="{{datas.password}}" />
+            <div class="control-group">
+                <label class="control-label" for="ftp-password-{{datas.usr_id}}">{{ 'admin::compte-utilisateur mot de passe' | trans }}</label>
+                <div class="controls">
+                    <input type="password" name="password" id="ftp-password-{{datas.usr_id}}" value="{{datas.password}}" />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-passive-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: Utiliser le mode passif' | trans }}</label>
-            <div class="controls">
-                <input value="1" type="checkbox" name="passive" id="ftp-passive-{{datas.usr_id}}" {% if datas.passive %}checked{% endif %} />
+            <div class="control-group">
+                <label class="control-label" for="ftp-passive-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: Utiliser le mode passif' | trans }}</label>
+                <div class="controls">
+                    <input value="1" type="checkbox" name="passive" id="ftp-passive-{{datas.usr_id}}" {% if datas.passive %}checked{% endif %} />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-max-retry-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: Nombre d\'essais max' | trans }}</label>
-            <div class="controls">
-                <input type="text" name="max_retry" id="ftp-max-retry-{{datas.usr_id}}" value="{{datas.max_retry}}" />
+            <div class="control-group">
+                <label class="control-label" for="ftp-max-retry-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: Nombre d\'essais max' | trans }}</label>
+                <div class="controls">
+                    <input type="text" name="max_retry" id="ftp-max-retry-{{datas.usr_id}}" value="{{datas.max_retry}}" />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-dest-folder-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' | trans }}</label>
-            <div class="controls">
-                <input type="text" name="dest_folder" id="ftp-dest-folder-{{datas.usr_id}}" value="{{datas.dest_folder}}" />
+            <div class="control-group">
+                <label class="control-label" for="ftp-dest-folder-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' | trans }}</label>
+                <div class="controls">
+                    <input type="text" name="dest_folder" id="ftp-dest-folder-{{datas.usr_id}}" value="{{datas.dest_folder}}" />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="ftp-prefix-folder-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: creer un dossier' | trans }}</label>
-            <div class="controls">
-                <input type="checkbox" class="ftp_folder_check" {% if datas.prefix_folder != '' %}checked{% endif %} name="prefix_folder_check" id="ftp-prefix-folder-check-{{datas.usr_id}}" />
-                <input type="text" name="prefix_folder" id="ftp-prefix-folder-{{datas.usr_id}}" value="{{datas.prefix_folder}}" {% if datas.prefix_folder == '' %}disabled{% endif %} />
+            <div class="control-group">
+                <label class="control-label" for="ftp-prefix-folder-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: creer un dossier' | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" class="ftp_folder_check" {% if datas.prefix_folder != '' %}checked{% endif %} name="prefix_folder_check" id="ftp-prefix-folder-check-{{datas.usr_id}}" />
+                    <input type="text" name="prefix_folder" id="ftp-prefix-folder-{{datas.usr_id}}" value="{{datas.prefix_folder}}" {% if datas.prefix_folder == '' %}disabled{% endif %} />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="logfile_{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: ecrire un fichier de log' | trans }}</label>
-            <div class="controls">
-                <input type="checkbox" class=ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1" />
+            <div class="control-group">
+                <label class="control-label" for="logfile_{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: ecrire un fichier de log' | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" class=ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1" />
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 {% endmacro %}
 
@@ -409,30 +411,30 @@
             <div id="ftp">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: FTP' | trans }}</h4>
-                    <form action="{{ path('export_ftp') }}" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
+                    <div class="control-group">
+                        <label class="control-label" for="ftp_form_selector">
+                            {{ 'phraseanet:: prereglages' | trans }}
+                        </label>
+                        <div class="controls">
+                            <select id="ftp_form_selector" class="span3">
+                                {% for datas in download.get_ftp_datas() %}
+                                    <option value="{{datas.usr_id}}">{{datas.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div id="ftp_form">
+                        <div id="ftp_form_stock">
+                            {% for datas in download.get_ftp_datas() %}
+                                {{ _self.print_ftp_form(datas) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <form id="ftp_joined" class="form-horizontal" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                        <div class="control-group">
-                            <label class="control-label" for="ftp_form_selector">
-                                {{ 'phraseanet:: prereglages' | trans }}
-                            </label>
-                            <div class="controls">
-                                <select id="ftp_form_selector" class="span3">
-                                    {% for datas in download.get_ftp_datas() %}
-                                        <option value="{{datas.usr_id}}">{{datas.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div id="ftp_form">
-                            <div id="ftp_form_stock">
-                                {% for datas in download.get_ftp_datas() %}
-                                    {{ _self.print_ftp_form(datas) }}
-                                {% endfor %}
-                            </div>
-                        </div>
                         <div>
-                            <p>{{ 'export::mail: fichiers joint' | trans }}</p>
+                            <p>{{  'export::mail: fichiers joint' | trans }}</p>
                             {% for name, values in download.get_display_ftp() %}
                                 {% if values.available > 0 %}
                                     <div class="well-small">
@@ -477,14 +479,14 @@
                                 </label>
                             </div>
                         {% endif %}
-                        <div class="buttons_line">
-                            <button type="button" class="tryftp_button btn btn-inverse">{{ 'boutton::essayer' | trans }}</button>
-                            <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-                            <button type="button" class="ftp_button btn btn-inverse">{{ 'boutton::envoyer' | trans }}</button>
-                            <img class="ftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-                            <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
-                        </div>
                     </form>
+                    <div class="buttons_line">
+                        <button type="button" class="tryftp_button btn btn-inverse">{{ 'boutton::essayer' | trans }}</button>
+                        <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                        <button type="button" class="ftp_button btn btn-inverse">{{ 'boutton::envoyer' | trans }}</button>
+                        <img class="ftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                        <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+                    </div>
                 </div>
                 <script type="text/javascript">
                     $(document).ready(function(){
@@ -504,7 +506,6 @@
         {% endif %}
     </div>
 
-    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
     <script type="text/javascript">
 
         function check_TOU(container)
@@ -617,10 +618,16 @@
                 dialog.Close();
             });
 
-            geonames.init($('#command_geoname_field'), {
-                "server": "{{ app['geonames.server-uri'] }}",
-                "limit": 40
+            define([
+                "common/geonames"
+            ], function (geonames) {
+                geonames.init($('#command_geoname_field'), {
+                    "server": "{{ app['geonames.server-uri'] }}",
+                    "limit": 40
+                });
             });
+
+
 
             $('#download .download_button').bind('click',function(){
                 if(!check_subdefs($('#download')))
@@ -726,18 +733,21 @@
                     return false;
                 }
 
-                $('#ftp .ftp_button_loader').css('visibility','visible');
+                $('#ftp .ftp_button_loader').show();
 
                     $('#ftp .ftp_form:hidden').remove();
 
                 var $this = $(this);
-                var options = $('#ftp form').serialize();
+
+                var options_addr = $('#ftp_form_stock form:visible').serialize();
+                var options_join = $('#ftp_joined').serialize();
+
                 $this.attr('disabled','disabled');
                 $.post("../prod/export/ftp/"
-                    , options
+                    , options_addr + '&' + options_join
                     , function(data){
                         $this.removeAttr('disabled');
-                        $('#ftp .ftp_button_loader').css('visibility','hidden');
+                        $('#ftp .ftp_button_loader').hide();
 
                         if(data.success) {
                             humane.info(data.message);
@@ -762,9 +772,10 @@
                 $('#ftp .tryftp_button_loader').css('visibility','visible');
                 var $this = $(this);
                 $this.attr('disabled','disabled');
-                var options = $('#ftp form').serialize();
+                var options_addr = $('#ftp_form_stock form:visible').serialize();
+
                 $.post("../prod/export/ftp/test/"
-                    , options
+                    , options_addr           // no need to include 'ftp_joined' checkboxes to test ftp
                     , function(data){
                         $('#ftp .tryftp_button_loader').css('visibility','hidden');
 
@@ -774,7 +785,7 @@
                           title : data.success ? '{{ "Success" | trans | e('js') }}' : '{{ "Warning !" | trans | e('js') }}'
                         };
 
-                        p4.Dialog.Create(options, 2).setContent(data.message);
+                        p4.Dialog.Create(options, 3).setContent(data.message);
 
                         $this.removeAttr('disabled');
 

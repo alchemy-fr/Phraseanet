@@ -13,13 +13,14 @@ $groups = [
         '//include/jslibs/jquery.contextmenu_scroll.js',
         '//assets/jquery.cookie/jquery.cookie.js',
         '//include/jquery.common.js',
+        '//assets/requirejs/require.js',
         '//skins/account/account.js'
     ],
     'authentication_css' => [
         '//assets/normalize-css/normalize.css',
         '//assets/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
-        '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
+        '//assets/jquery.ui/jquery.ui.autocomplete.css'
     ],
     'authentication' => [
         '//assets/modernizr/modernizr.js',
@@ -47,9 +48,7 @@ $groups = [
         , '//assets/jquery.treeview/jquery.treeview.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
-        , '//skins/admin/users.js'
         , '//skins/admin/template-dialogs.js'
-        , '//skins/admin/editusers.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
         , '//skins/prod/jquery.Dialog.js'
@@ -57,7 +56,7 @@ $groups = [
         , '//assets/blueimp-load-image/load-image.js'
         , '//assets/jquery-file-upload/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/jquery.fileupload.js'
-        , '//assets/autobahnjs/autobahn.js'
+        , '//assets/autobahn/autobahn.js'
     ],
     'report' => [
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'

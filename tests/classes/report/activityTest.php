@@ -1,6 +1,6 @@
 <?php
 
-class report_activityTest extends \PhraseanetAuthenticatedTestCase
+class report_activityTest extends \report_abstractReportTestCase
 {
     protected $ret;
     protected $dmin;
@@ -60,8 +60,6 @@ class report_activityTest extends \PhraseanetAuthenticatedTestCase
             $this->activity($report, $sbasid, $colllist);
             $this->activityDay($report, $sbasid, $colllist);
             $this->activityQuestion($report, $sbasid, $colllist);
-            $this->allDownloadByUserBase($report);
-            $this->allQuestion($report);
             $this->detailDownload($report);
             $this->downloadByBaseByDay($report);
             $this->otherTest($report);

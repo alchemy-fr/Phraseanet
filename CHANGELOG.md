@@ -1,5 +1,6 @@
 # CHANGELOG
 
+
 * 3.9.0 (xxxx-xx-xx)
 
   - Convert Orders custom adapter to Doctrine entity.
@@ -8,6 +9,61 @@
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Session management is now part of Phraseanet configuration.
+
+## 3.8.6 (2015-01-20)
+
+  - BugFix : Fixes the stories editing. When opening an editing form, the style applied to the notice doesn't match its selection
+  - BugFix : Fixes the sending of a return receipt (attributed in the headers of the email) at the export
+  - BugFix : Fixes the SMTP field in the Administration panel which is pre filled with a wrong information
+  - BugFix : Fixes a bad mapping of the registration fields on the homepage and the displayed fields in the registration requests in the Administration
+  - BugFix : In the detailed view, fixes the list of the stories titles which is truncated.
+  - BugFix : Fixes Oauth 2.0, the authorization of the client applications is not systematically requested when logging in.
+  - BugFix : When uploading documents, the first status is not taken into account
+  - BugFix : Fixes the cache invalidation of the status bits icons when changed in Admin section
+  - BugFix : Fixes the reordering of the media in a basket
+  - BugFix : Fixes the control of field "name" when creating a push or a feedback
+  - BugFix : Fixes Oauth 2.0 message when the connection fails
+  - BugFix : Fixes the suppression of diffusion lists on IE9
+  - BugFix : Fixes the anonymous download when a user is logged off
+  - BugFix : Fixes the setup of the default display mode of the collections (stamp/watermark) on a non authenticated mode
+  - BugFix : Fixes the printing of the thumbnails of documents for the videos or PDFs
+  - BugFix : Fixes the reordering of the basket when the documents come from n different collections
+  - BugFix : Fixes the application of the "status bits" when the status bit is defined by the task "RecordMover"
+  - BugFix : Fixes the detection of duplicates for PDF files
+  - BugFix : Fixes the rewriting of metadata of a document, when the name space is empty
+  - BugFix : Fixes the injection of the rights of a user for a connection via Oauth2
+  - BugFix : Fixes the invalidation of the cache when disassembling a databox
+  - BugFix : Fixes the sorting criteria by date and by field, according to users rights
+  - BugFix : Fixes the right to download for the guest access
+  - BugFix : Fixes the report generation for the number of downloads and connections
+  - BugFix : Fixes the memory use of the task for the the sub-definitions creation
+  - BugFix : Fixes the generation of sub-definitions when editing the sub-definitions task
+  - BugFix : Fixes the display of multivalued fields in the editing window
+  - BugFix : Fixes the adding of a term in the candidates which was is not detected as present in the candidates
+  - BugFix : Fixes the users' rights when using the API
+  - BugFix : When being redirected, fixes the add of parameters after login.
+  - BugFix : Fixes the thumbnails' size of EPS files.
+  - BugFix : The "Delete" action of a task ("Record Mover" type) is now taken into consideration.
+  - BugFix : The edition dates of a record sent back by the API are now fixed
+  - BuxFix : Writing of IPTC fields is fixed, when setting up a stamp on a media (image type). 
+  - Enhancement : Possibility to adapt a task "creation of subdefinition", by database and type of document 
+  - Enhancement : Reporting modifications of Flickr & Dailymotion APIs (Bridge feature).
+  - Enhancement : Adding the possibility to overload the name space reserved for the cache
+  - Enhancement : Adding the possibility to deactivate the use of the TaskManager by instance
+  - Enhancement : Adding an extended format for the API replies. Get more information about Phraseanet records in one API request.
+  - Enhancement : Adding a block for the help text of Production when no result is displayed to authorize the modification of this text via a plugin
+  - Enhancement : Adding the possibility to deactivate the notifications to the users for a new publication
+  - Enhancement : Adding the possibility to modify the rotation of pictures representing the videos and PDF files
+  - Enhancement : Adding the possibility to serve the thumbnails of the application in a static way for improved performances
+  - Enhancement : Adding the possibility to deactivate the lazy load for the thumbnails
+  - Enhancement : The tasks can now reconnect automatically to MySQL
+  - Enhancement : The sorting on the fields "Number" is now possible
+  - Enhancement : The sub-definition creation task now displays the remaining number of sub-definitions to create
+  - Enhancement : Adding the date of edition of the media
+  - Enhancement : Use of http cache for the display of documents
+  - Enhancement : Adding the possibility to deactivate the CSRF for the authentication form
+  - NewFeature : Adding a Vagrant VM (for developers and testers). The setup is quicker: development environments made easy.
+  - NewFeature : Adding a command for the file generation crossdomain.xml depending on the configuration.
 
 ## 3.8.5 (2014-07-08)
 

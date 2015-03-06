@@ -37,7 +37,6 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'hello', 'attachment', 'application/json', 23456);
 
         $this->assertEquals(23456, $response->getMaxAge());
-        $this->assertTrue($response->headers->getCacheControlDirective('private'));
     }
 
     public function testDeliverFileWithFilename()

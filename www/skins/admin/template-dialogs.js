@@ -4,7 +4,7 @@ var dialogUserResetTemplateConfirm = function (callback) {
     buttons[language.reset_template_do_reset_apply_button] = function () { p4.Dialog.Close(2); callback('1'); };
 
     var $dialog = p4.Dialog.Create({
-        size : '500x150',
+        size : '550x200',
         closeOnEscape : true,
         closeButton:false,
         cancelButton:true,
@@ -21,7 +21,7 @@ var dialogUserTemplate = function (callback) {
     buttons[language.reset_template_do_reset_button] = function () { p4.Dialog.Close(1); dialogUserResetTemplateConfirm(callback); };
 
     var $dialog = p4.Dialog.Create({
-        size : '500x150',
+        size : '550x200',
         closeOnEscape : true,
         closeButton:false,
         cancelButton:true,

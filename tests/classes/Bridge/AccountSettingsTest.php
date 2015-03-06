@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-class Bridge_AccountSettingsTest extends \PhraseanetAuthenticatedTestCase
+class Bridge_AccountSettingsTest extends \PhraseanetTestCase
 {
     /**
      * @var Bridge_AccountSettings

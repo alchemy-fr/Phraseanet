@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -30,6 +30,7 @@ class Root implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
+
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
                 return $app->redirectPath('login_authenticate_as_guest', ['redirect' => 'client']);
             }
@@ -233,6 +234,8 @@ class Root implements ControllerProviderInterface
      */
     public function getClient(Application $app, Request $request)
     {
+        $app['session']->getFlashBag()->add('step_by_step', '');
+
         try {
             \Session_Logger::updateClientInfos($app, 2);
         } catch (SessionNotFound $e) {

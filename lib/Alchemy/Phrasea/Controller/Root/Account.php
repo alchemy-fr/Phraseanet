@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -267,7 +267,7 @@ class Account implements ControllerProviderInterface
             WHERE s.user = :usr_id
             ORDER BY s.created DESC';
 
-        $query = $app['EM']->createQuery($dql);
+        $query = $app['orm.em']->createQuery($dql);
         $query->setMaxResults(100);
         $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
         $sessions = $query->getResult();
@@ -364,7 +364,7 @@ class Account implements ControllerProviderInterface
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
             $app['authentication']->getUser()
-                ->setGender($request->request->get("form_gender"))
+                ->setGender((int) $request->request->get("form_gender"))
                 ->setFirstName($request->request->get("form_firstname"))
                 ->setLastName($request->request->get("form_lastname"))
                 ->setAddress($request->request->get("form_address"))
@@ -393,10 +393,10 @@ class Account implements ControllerProviderInterface
             $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
             $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
 
-            $app['EM']->persist($ftpCredential);
-            $app['EM']->persist($app['authentication']->getUser());
+            $app['orm.em']->persist($ftpCredential);
+            $app['orm.em']->persist($app['authentication']->getUser());
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
             $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
         }
 

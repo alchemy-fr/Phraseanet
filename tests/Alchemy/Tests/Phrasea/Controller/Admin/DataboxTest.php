@@ -501,7 +501,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testMountCollection()
     {
-        $this->markTestSkipped();
         $this->setAdmin(true);
 
         $collection = $this->createOneCollection();
@@ -510,6 +509,13 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', [
             'othcollsel' => self::$DI['collection']->get_base_id()
         ]);
+
+        // delete mounted collection
+        $sql = "DELETE FROM bas ORDER BY base_id DESC LIMIT 1";
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+        unset($stmt);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . $collection->get_sbas_id() . '/?mount=ok');
     }
@@ -681,7 +687,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
 
-        if (count(self::$DI['app']['EM']->getRepository('Phraseanet:Task')->findAll()) === 0) {
+        if (count(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task')->findAll()) === 0) {
             $this->fail('Task for empty collection has not been created');
         }
 

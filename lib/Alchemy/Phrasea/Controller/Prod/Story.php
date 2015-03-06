@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,9 +80,9 @@ class Story implements ControllerProviderInterface
             $StoryWZ->setUser($app['authentication']->getUser());
             $StoryWZ->setRecord($Story);
 
-            $app['EM']->persist($StoryWZ);
+            $app['orm.em']->persist($StoryWZ);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             if ($request->getRequestFormat() == 'json') {
                 $data = [
@@ -132,6 +134,8 @@ class Story implements ControllerProviderInterface
                 $n++;
             }
 
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
+
             $data = [
                 'success' => true
                 , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
@@ -158,6 +162,9 @@ class Story implements ControllerProviderInterface
                 'success' => true
                 , 'message' => $app->trans('Record removed from story')
             ];
+
+
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
 
             if ($request->getRequestFormat() == 'json') {
                 return $app->json($data);
@@ -222,6 +229,8 @@ class Story implements ControllerProviderInterface
                 $stmt->closeCursor();
 
                 $ret = ['success' => true, 'message' => $app->trans('Story updated')];
+
+                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
             } catch (ControllerException $e) {
                 $ret = ['success' => false, 'message' => $e->getMessage()];
             } catch (\Exception $e) {

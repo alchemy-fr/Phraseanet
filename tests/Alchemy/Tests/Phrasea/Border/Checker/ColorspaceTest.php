@@ -40,7 +40,7 @@ class ColorspaceTest extends \PhraseanetTestCase
 
         $File = new File(self::$DI['app'], $media, self::$DI['collection']);
 
-        $response = $this->object->check(self::$DI['app']['EM'], $File);
+        $response = $this->object->check(self::$DI['app']['orm.em'], $File);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());

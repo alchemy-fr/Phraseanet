@@ -47,7 +47,6 @@
         </div>
         <div class="menu" id="syMenu" style="z-index:50">
             <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus::menu: supprimer' | trans }}</a>
-            <a href="javascript:void(0)" id="replace_sy" class="disabled">{{ 'thesaurus:: remplacer' | trans }}</a>
         </div>
 
         <div style='text-align:right'>
@@ -191,14 +190,6 @@
                         document.getElementById("delete_sy").className = "";
                     }
                 }
-                // si on ne connait pas encore le client mais que start est ouvert, on lui demande
-                //    if(!opener.wClient && opener.opener.wClient)
-                //      opener.wClient = opener.opener.wClient;
-                // si on connait le client et qu'on peut s'en servir pour chercher, on active l'option dans le menu
-                //    if(opener.wClient && opener.wClient.externQuery)
-                //      document.getElementById("searchcli_sy").className = "";
-                //    else
-                //      document.getElementById("searchcli_sy").className = "disabled";
                 return;
             }
 
@@ -247,30 +238,6 @@
                             }
                         }
                     }
-                    break;
-                case "searchcli_sy":    // cbParm = objet 'TR'
-                    url = "xmlhttp/getsy.x.php";
-                    url +=  "?bid={{ bid | url_encode }}";
-                    url += "&id=" + cbParm.id.substr(4);
-                    url += "&typ={{ typ | url_encode }}";
-                    ret = loadXMLDoc(url, null, true);
-                    t = ret.getElementsByTagName("sy").item(0).getAttribute("t");
-
-                    if(opener.wClient && opener.wClient.externQuery)
-                    {
-                        opener.wClient.focus();
-                        opener.wClient.externQuery(opener.currentBaseId, t);
-                    }
-
-                    break;
-                case "replace_sy":
-                    url  = "replace.php";
-                    url += "?bid={{ bid }}";
-                    url += "&piv={{ piv }}";
-                    url += "&pid={{ id }}"
-                    url += "&id=" + o.id.substr(4);
-                    url += "&typ={{ typ | url_encode }}";
-                    w = window.open(url, "REPLACE", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
                     break;
             }
         }

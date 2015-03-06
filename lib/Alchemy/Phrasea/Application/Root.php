@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -68,7 +68,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
             $app->register(new DoctrineProfilerServiceProvider());
             $app['db'] = $app->share(function (PhraseaApplication $app) {
-                return $app['EM']->getConnection();
+                return $app['orm.em']->getConnection();
             });
         }
     }

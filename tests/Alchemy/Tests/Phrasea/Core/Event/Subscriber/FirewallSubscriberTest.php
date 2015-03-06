@@ -11,7 +11,7 @@ class FirewallSubscriberTest extends \PhraseanetTestCase
 {
     public function testRedirection()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new FirewallSubscriber());
         $app->get('/', function () {
@@ -27,7 +27,7 @@ class FirewallSubscriberTest extends \PhraseanetTestCase
 
     public function testNoHeaderNoRedirection()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new FirewallSubscriber());
         $app->get('/', function () {

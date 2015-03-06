@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,9 +21,6 @@ use Guzzle\Http\Url;
  */
 class SymLinker
 {
-    /** Mount Point Alias Name */
-    const ALIAS = 'thumb';
-
     protected $encoder;
     protected $fs;
     protected $symlinkDir;
@@ -33,7 +30,7 @@ class SymLinker
         return new SymLinker(
             $app['phraseanet.thumb-symlinker-encoder'],
             $app['filesystem'],
-            isset($app['phraseanet.configuration']['static-file']['symlink-directory']) ? $app['phraseanet.configuration']['static-file']['symlink-directory'] : $app['root.path'] . '/tmp/symlinks'
+            $app['thumbnail.path']
         );
     }
 
@@ -47,11 +44,6 @@ class SymLinker
     public function getSymlinkDir()
     {
         return $this->symlinkDir;
-    }
-
-    public function getDefaultAlias()
-    {
-        return sprintf('/%s', self::ALIAS);
     }
 
     public function symlink($pathFile)
@@ -68,7 +60,7 @@ class SymLinker
     {
         $symlinkName = $this->getSymlink($pathFile);
 
-        return sprintf('%s/%s/%s',
+        return sprintf('%s/%s/%s.jpg',
             substr($symlinkName, 0, 2),
             substr($symlinkName, 2, 2),
             substr($symlinkName, 4)

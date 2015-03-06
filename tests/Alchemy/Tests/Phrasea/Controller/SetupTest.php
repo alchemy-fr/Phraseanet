@@ -92,7 +92,7 @@ class SetupTest extends \PhraseanetWebTestCase
     {
         $emMock  = $this->createEntityManagerMock();
         $this->app['repo.sessions'] = $this->createEntityRepositoryMock();
-        $this->app['EM'] = $emMock;
+        $this->app['orm.em'] = $emMock;
 
         $this->app['phraseanet.configuration-tester']->expects($this->once())
             ->method('isBlank')

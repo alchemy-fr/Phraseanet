@@ -28,7 +28,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 
     protected function goBackTo31()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $conn = $app['phraseanet.appbox']->get_connection();
 
         $this->uninstall();
@@ -42,7 +42,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 \$port = '".$conn->getPort()."';
 \$user = '".$conn->getUsername()."';
 \$password = '".$conn->getPassword()."';
-\$dbname = 'ab_unitTests';
+\$dbname = 'ab_setup_test';
             ");
 
         $this->tearDownHandlers[] = function () {
@@ -53,7 +53,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 
     protected function goBackTo35()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $conn = $app['phraseanet.appbox']->get_connection();
 
         $this->uninstall();

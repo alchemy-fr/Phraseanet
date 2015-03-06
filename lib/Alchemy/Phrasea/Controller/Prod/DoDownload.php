@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -180,12 +180,19 @@ class DoDownload implements ControllerProviderInterface
         $app['session']->save();
         ignore_user_abort(true);
 
-        \set_export::build_zip(
-            $app,
-            $token,
-            $list,
-            sprintf($app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
-        );
+        if ($list['count'] > 1) {
+             \set_export::build_zip(
+                $app,
+                $token,
+                $list,
+                sprintf($app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
+            );
+        } else {
+            $list['complete'] = true;
+            $token->setData(serialize($list));
+            $app['orm.em']->persist($token);
+            $app['orm.em']->flush();
+        }
 
         return $app->json([
             'success' => true,

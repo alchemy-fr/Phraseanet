@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -43,6 +43,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
 
 class V1 implements ControllerProviderInterface
 {
@@ -116,6 +117,8 @@ class V1 implements ControllerProviderInterface
 
         $controllers->post('/records/add/', 'controller.api.v1:add_record');
 
+        $controllers->post('/embed/substitute/', 'controller.api.v1:substitute');
+        
         $controllers->match('/search/', 'controller.api.v1:search');
 
         $controllers->match('/records/search/', 'controller.api.v1:search_records');
@@ -197,6 +200,7 @@ class V1 implements ControllerProviderInterface
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
         $controllers->get('/me/', 'controller.api.v1:get_current_user');
+
 
         return $controllers;
     }
@@ -327,7 +331,7 @@ class V1 implements ControllerProviderInterface
      */
     private function get_cache_info(Application $app)
     {
-        $caches = ['main' => $app['cache'], 'op_code' => $app['opcode-cache'], 'doctrine_metadatas' => $app['EM']->getConfiguration()->getMetadataCacheImpl(), 'doctrine_query' => $app['EM']->getConfiguration()->getQueryCacheImpl(), 'doctrine_result' => $app['EM']->getConfiguration()->getResultCacheImpl(),];
+        $caches = ['main' => $app['cache'], 'op_code' => $app['opcode-cache'], 'doctrine_metadatas' => $app['orm.em']->getConfiguration()->getMetadataCacheImpl(), 'doctrine_query' => $app['orm.em']->getConfiguration()->getQueryCacheImpl(), 'doctrine_result' => $app['orm.em']->getConfiguration()->getResultCacheImpl(),];
 
         $ret = [];
 
@@ -523,8 +527,8 @@ class V1 implements ControllerProviderInterface
         $session = new LazaretSession();
         $session->setUser($app['authentication']->getUser());
 
-        $app['EM']->persist($session);
-        $app['EM']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         $reasons = $output = null;
 
@@ -552,17 +556,62 @@ class V1 implements ControllerProviderInterface
                 return $this->getBadRequest($app, $request, sprintf('Invalid forceBehavior value `%s`', $request->get('forceBehavior')));
         }
 
-        $app['border-manager']->process($session, $Package, $callback, $behavior);
+        $nosubdef = $request->get('nosubdefs')==='' || \p4field::isyes($request->get('nosubdefs'));
+        $app['border-manager']->process($session, $Package, $callback, $behavior, $nosubdef);
 
         $ret = ['entity' => null,];
 
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
+            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
             $ret['url'] = '/quarantine/item/' . $output->getId() . '/';
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+    
+    public function substitute(Application $app, Request $request)
+    {
+        $ret = array();
+        
+        if (count($request->files->get('file')) == 0) {
+            throw new API_V1_exception_badrequest('Missing file parameter');
+        }
+        if (!$request->files->get('file') instanceof Symfony\Component\HttpFoundation\File\UploadedFile) {
+            throw new API_V1_exception_badrequest('You can upload one file at time');
+        }
+        $file = $request->files->get('file');
+        // @var $file Symfony\Component\HttpFoundation\File\UploadedFile
+        if (!$file->isValid()) {
+            throw new API_V1_exception_badrequest('Datas corrupted, please try again');
+        }
+        if (!$request->get('databox_id')) {
+            throw new API_V1_exception_badrequest('Missing databox_id parameter');
+        }
+        if (!$request->get('record_id')) {
+            throw new API_V1_exception_badrequest('Missing record_id parameter');
+        }
+        if (!$request->get('name')) {
+            throw new API_V1_exception_badrequest('Missing name parameter');
+        }
+        $media = $app['mediavorus']->guess($file->getPathname());
+        // @var $record \record_adapter
+        $record = $this->app['phraseanet.appbox']->get_databox($request->get('databox_id'))->get_record($request->get('record_id'));
+        $base_id = $record->get_base_id();
+        $collection = \collection::get_from_base_id($this->app, $base_id);
+        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
+        }
+        $record->substitute_subdef($request->get('name'), $media, $app);
+        foreach ($record->get_embedable_medias() as $name => $media) {
+            if ($name == $request->get('name') &&
+                null !== ($subdef = $this->list_embedable_media($record, $media, $this->app['phraseanet.registry']))) {
+                $ret[] = $subdef;
+            }
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -717,7 +766,7 @@ class V1 implements ControllerProviderInterface
         $that = $this;
         $baskets = array_map(function (Basket $basket) use ($that, $app) {
             return $that->list_basket($app, $basket);
-        }, (array) $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id)->get_container_baskets($app['EM'], $app['authentication']->getUser()));
+        }, (array) $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id)->get_container_baskets($app['orm.em'], $app['authentication']->getUser()));
 
         $record = $app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
@@ -862,6 +911,9 @@ class V1 implements ControllerProviderInterface
 
         $record->set_binary_status(strrev($datas));
 
+        // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+
         $ret = ["status" => $this->list_record_status($record)];
 
         return Result::create($request, $ret)->createResponse();
@@ -984,8 +1036,8 @@ class V1 implements ControllerProviderInterface
         $Basket->setUser($app['authentication']->getUser());
         $Basket->setName($name);
 
-        $app['EM']->persist($Basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($Basket);
+        $app['orm.em']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $Basket)])->createResponse();
     }
@@ -1000,8 +1052,8 @@ class V1 implements ControllerProviderInterface
      */
     public function delete_basket(Application $app, Request $request, Basket $basket)
     {
-        $app['EM']->remove($basket);
-        $app['EM']->flush();
+        $app['orm.em']->remove($basket);
+        $app['orm.em']->flush();
 
         return $this->search_baskets($app, $request);
     }
@@ -1091,8 +1143,8 @@ class V1 implements ControllerProviderInterface
     {
         $basket->setName($request->get('name'));
 
-        $app['EM']->persist($basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($basket);
+        $app['orm.em']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
     }
@@ -1109,8 +1161,8 @@ class V1 implements ControllerProviderInterface
     {
         $basket->setDescription($request->get('description'));
 
-        $app['EM']->persist($basket);
-        $app['EM']->flush();
+        $app['orm.em']->persist($basket);
+        $app['orm.em']->flush();
 
         return Result::create($request, ["basket" => $this->list_basket($app, $basket)])->createResponse();
     }
@@ -1278,7 +1330,19 @@ class V1 implements ControllerProviderInterface
             $permalink = null;
         }
 
-        return ['name' => $media->get_name(), 'permalink' => $permalink, 'height' => $media->get_height(), 'width' => $media->get_width(), 'filesize' => $media->get_size(), 'devices' => $media->getDevices(), 'player_type' => $media->get_type(), 'mime_type' => $media->get_mime(),];
+        return [
+            'name' => $media->get_name(),
+            'permalink' => $permalink,
+            'height' => $media->get_height(),
+            'width' => $media->get_width(),
+            'filesize' => $media->get_size(),
+            'devices' => $media->getDevices(),
+            'player_type' => $media->get_type(),
+            'mime_type' => $media->get_mime(),
+            'substituted' => $media->is_substituted(),
+            'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
+            'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
+        ];
     }
 
     /**

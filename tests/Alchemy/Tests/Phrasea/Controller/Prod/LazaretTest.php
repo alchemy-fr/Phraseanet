@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,44 +29,19 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testListElement()
     {
-        $fileLazaret = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', ['getRecordsToSubstitute', 'getSession', 'getCollection'], [], '', false);
-
-        $fileLazaret
-            ->expects($this->any())
-            ->method('getRecordsToSubstitute')
-            ->will($this->returnValue([self::$DI['record_1']]));
-
-        $fileLazaret
-            ->expects($this->any())
-            ->method('getSession')
-            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\Model\Entities\LazaretSession')));
-
-        $fileLazaret
-            ->expects($this->any())
-            ->method('getCollection')
-            ->will($this->returnValue(self::$DI['collection']));
-
-        //mock one Alchemy\Phrasea\Model\Repositories\LazaretFile::getFiles
-        $repo = $this->getMock('Alchemy\Phrasea\Model\Repositories\LazaretFile', ['findPerPage'], [], '', false);
-
-        $repo->expects($this->once())
-            ->method('findPerPage')
-            ->will($this->returnValue([$fileLazaret]));
-
-        //mock Doctrine\ORM\EntityManager::getRepository
-        $em = $this->createEntityManagerMock();
-
-        self::$DI['app']['repo.lazaret-files'] = $repo;
-
+        $lazaretFile = $this->getOneLazaretFile();
         $route = '/prod/lazaret/';
 
-        self::$DI['app']['EM'] = $em;
+        /** @var ObjectManager $em */
+        $em = self::$DI['app']['orm.em'];
+        $em->persist($lazaretFile);
+        $em->flush();
         $crawler = self::$DI['client']->request(
             'GET', $route
         );
 
         $this->assertResponseOk(self::$DI['client']->getResponse());
-        $this->assertEquals(1, $crawler->filter('.records-subititution')->count());
+        $this->assertGreaterThanOrEqual(1, $crawler->filter('.wrapper-item')->count());
     }
 
     /**
@@ -129,7 +105,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAddElement()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $originalEm = self::$DI['app']['EM'];
+        $originalEm = self::$DI['app']['orm.em'];
         $em = $this->createEntityManagerMock();
 
         $lazaretFile = $this->getOneLazaretFile();
@@ -186,7 +162,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $em->expects($this->once())
             ->method('flush');
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
@@ -198,7 +174,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['app']['orm.em'] = $originalEm;
         $story->delete();
     }
 
@@ -254,7 +230,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l');
 
         $count = $query->getSingleScalarResult();
 
@@ -276,7 +252,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['EM']->createQuery(
+        $query = self::$DI['app']['orm.em']->createQuery(
             'SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l'
         );
 
@@ -310,9 +286,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['subdef.substituer'] = $this->getMockBuilder('Alchemy\Phrasea\Media\SubdefSubstituer')
             ->disableOriginalConstructor()
             ->getMock();
-        $record = $this->getMockBuilder('record_adapter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $record = self::$DI['record_2'];
 
         //expect one call to substitute the documents
         self::$DI['app']['subdef.substituer']->expects($this->once())
@@ -381,7 +355,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
                     ->getMock();
         });
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', [
             'record_id' => self::$DI['record_1']->get_record_id()
         ]);

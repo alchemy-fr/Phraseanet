@@ -28,7 +28,7 @@ class AddPluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['temporary-filesystem'] = $this->createTemporaryFilesystemMock();
         self::$DI['cli']['plugins.autoloader-generator'] = $this->createPluginsAutoloaderGeneratorMock();
-        self::$DI['cli']['plugins.explorer'] = [self::$DI['cli']['plugins.directory'].'/TestPlugin'];
+        self::$DI['cli']['plugins.explorer'] = [self::$DI['cli']['plugin.path'].'/TestPlugin'];
         self::$DI['cli']['plugins.plugins-validator'] = $this->createPluginsValidatorMock();
         self::$DI['cli']['filesystem'] = $this->createFilesystemMock();
         self::$DI['cli']['plugins.composer-installer'] = $this->createComposerInstallerMock();
@@ -50,7 +50,7 @@ class AddPluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['plugins.plugins-validator']->expects($this->at(1))
             ->method('validatePlugin')
-            ->with(self::$DI['cli']['plugins.directory'].'/TestPlugin')
+            ->with(self::$DI['cli']['plugin.path'].'/TestPlugin')
             ->will($this->returnValue($manifest));
 
         self::$DI['cli']['plugins.composer-installer']->expects($this->once())
@@ -59,11 +59,11 @@ class AddPluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['filesystem']->expects($this->at(0))
             ->method('mirror')
-            ->with('tempdir', self::$DI['cli']['plugins.directory'].'/TestPlugin');
+            ->with('tempdir', self::$DI['cli']['plugin.path'].'/TestPlugin');
 
         self::$DI['cli']['filesystem']->expects($this->at(1))
             ->method('mirror')
-            ->with(self::$DI['cli']['plugins.directory'].'/TestPlugin/public', self::$DI['cli']['root.path'].'/www/plugins/TestPlugin');
+            ->with(self::$DI['cli']['plugin.path'].'/TestPlugin/public', self::$DI['cli']['root.path'].'/www/plugins/TestPlugin');
 
         self::$DI['cli']['filesystem']->expects($this->at(2))
             ->method('remove')

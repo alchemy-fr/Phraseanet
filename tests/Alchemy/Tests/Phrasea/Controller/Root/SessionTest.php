@@ -107,7 +107,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('flush')
             ->will($this->returnValue(null));
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         $this->XMLHTTPRequest('POST', '/session/delete/1');
         $this->assertTrue(self::$DI['client']->getResponse()->isOK());
     }
@@ -127,7 +127,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('find')
             ->will($this->returnValue($session));
 
-        self::$DI['app']['EM'] = $em;
+        self::$DI['app']['orm.em'] = $em;
         self::$DI['client']->request('POST', '/session/delete/1');
         $this->assertFalse(self::$DI['client']->getResponse()->isOK());
         $this->assertEquals(self::$DI['client']->getResponse()->getStatusCode(), 403);

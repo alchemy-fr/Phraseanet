@@ -9,7 +9,7 @@ class WebhookEventManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new WebhookEventManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.webhook-delivery']);
+        $manipulator = new WebhookEventManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.webhook-delivery']);
         $nbEvents = count(self::$DI['app']['repo.webhook-event']->findAll());
         $event = $manipulator->create(WebhookEvent::NEW_FEED_ENTRY, WebhookEvent::FEED_ENTRY_TYPE, [
             'feed_id' => self::$DI['feed_public_entry']->getFeed()->getId(), 'entry_id' => self::$DI['feed_public_entry']->getId()
@@ -19,7 +19,7 @@ class WebhookEventManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new WebhookEventManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.webhook-event']);
+        $manipulator = new WebhookEventManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.webhook-event']);
         $event = $manipulator->create(WebhookEvent::NEW_FEED_ENTRY, WebhookEvent::FEED_ENTRY_TYPE, [
             'feed_id' => self::$DI['feed_public_entry']->getFeed()->getId(), 'entry_id' => self::$DI['feed_public_entry']->getId()
         ]);
@@ -30,7 +30,7 @@ class WebhookEventManipulatorTest extends \PhraseanetTestCase
 
     public function testUpdate()
     {
-        $manipulator = new WebhookEventManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.webhook-event']);
+        $manipulator = new WebhookEventManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.webhook-event']);
         $event = $manipulator->create(WebhookEvent::NEW_FEED_ENTRY, WebhookEvent::FEED_ENTRY_TYPE, [
             'feed_id' => self::$DI['feed_public_entry']->getFeed()->getId(), 'entry_id' => self::$DI['feed_public_entry']->getId()
         ]);
@@ -42,7 +42,7 @@ class WebhookEventManipulatorTest extends \PhraseanetTestCase
 
     public function testProcessed()
     {
-        $manipulator = new WebhookEventManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.webhook-event']);
+        $manipulator = new WebhookEventManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.webhook-event']);
         $event = $manipulator->create(WebhookEvent::NEW_FEED_ENTRY, WebhookEvent::FEED_ENTRY_TYPE, [
             'feed_id' => self::$DI['feed_public_entry']->getFeed()->getId(), 'entry_id' => self::$DI['feed_public_entry']->getId()
         ]);

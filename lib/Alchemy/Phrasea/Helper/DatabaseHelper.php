@@ -3,13 +3,15 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 namespace Alchemy\Phrasea\Helper;
+
+use Doctrine\DBAL\Connection;
 
 class DatabaseHelper extends Helper
 {
@@ -21,60 +23,46 @@ class DatabaseHelper extends Helper
         $password = $this->request->query->get('password');
         $db_name = $this->request->query->get('db_name');
 
-        $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
+        $is_databox = $is_appbox = $empty = false;
 
-        try {
-            $conn = $this->app['dbal.provider']->get([
-                'host'     => $hostname,
-                'port'     => $port,
-                'user'     => $user,
-                'password' => $password
-            ]);
-            $conn->connect();
-            $connection_ok = true;
-        } catch (\Exception $e) {
+        /** @var Connection $connection */
+        $connection = $this->app['dbal.provider']([
+            'host'     => $hostname,
+            'port'     => $port,
+            'user'     => $user,
+            'password' => $password,
+            'dbname'   => $db_name,
+        ]);
 
-        }
+        if (false !== $dbOK = $connection->isConnected()) {
+            $sql = "SHOW TABLE STATUS";
+            $stmt = $connection->prepare($sql);
+            $stmt->execute();
 
-        if (null !== $db_name && $connection_ok) {
-            try {
-                $conn = $this->app['dbal.provider']->get([
-                    'host'     => $hostname,
-                    'port'     => $port,
-                    'user'     => $user,
-                    'password' => $password,
-                    'dbname'   => $db_name,
-                ]);
+            $empty = $stmt->rowCount() === 0;
 
-                $conn->connect();
+            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
 
-                $db_ok = true;
-
-                $sql = "SHOW TABLE STATUS";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-
-                $empty = $stmt->rowCount() === 0;
-
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $row) {
-                    if ($row["Name"] === 'sitepreff') {
-                        $is_appbox = true;
-                    }
-                    if ($row["Name"] === 'pref') {
-                        $is_databox = true;
-                    }
+            foreach ($rs as $row) {
+                if ($row["Name"] === 'sitepreff') {
+                    $is_appbox = true;
                 }
-            } catch (\Exception $e) {
-
+                if ($row["Name"] === 'pref') {
+                    $is_databox = true;
+                }
             }
+            $connection->close();
         }
+
+        unset($connection);
+
+        $this->app['connection.pool.manager']->closeAll();
 
         return [
-            'connection' => $connection_ok,
-            'database'   => $db_ok,
+            'connection' => $dbOK,
+            'innodb'     => true,
+            'database'   => $dbOK,
             'is_empty'   => $empty,
             'is_appbox'  => $is_appbox,
             'is_databox' => $is_databox

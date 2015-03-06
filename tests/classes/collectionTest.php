@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 
-class collectionTest extends \PhraseanetAuthenticatedTestCase
+class collectionTest extends \PhraseanetTestCase
 {
     /**
      * @var collection
@@ -14,9 +14,9 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
      */
     private static $objectDisable;
 
-    public function bootTestCase()
+    public function setUp()
     {
-        $application = self::$DI['app'];
+        parent::setup();
 
         if (!self::$object) {
             if (0 === count($databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes())) {
@@ -115,17 +115,6 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
         $this->assertInstanceOf('Doctrine\DBAL\Driver\Connection', self::$object->get_connection());
     }
 
-    /**
-     * @todo Implement testSet_public_presentation().
-     */
-    public function testSet_public_presentation()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testSet_name()
     {
         self::$object->set_name('babababe bi bo bu');
@@ -180,30 +169,6 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals(file_get_contents($pathfile->getPathname()), self::$object->get_binary_minilogos());
     }
 
-    public function testReset_watermark()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    public function testDelete()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    public function testGet_from_base_id()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_from_coll_id()
     {
         $temp_coll = collection::get_from_coll_id(self::$DI['app'], self::$object->get_databox(), self::$object->get_coll_id());
@@ -229,139 +194,10 @@ class collectionTest extends \PhraseanetAuthenticatedTestCase
         $this->assertTrue(self::$object->get_coll_id() > 0);
     }
 
-    /**
-     * @todo Implement testGet_prefs().
-     */
-    public function testGet_prefs()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testSet_prefs().
-     */
-    public function testSet_prefs()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_name()
     {
         $this->assertTrue(is_string(self::$object->get_name()));
         $this->assertTrue(trim(strip_tags(self::$object->get_name())) === self::$object->get_name());
-    }
-
-    /**
-     * @todo Implement testGet_pub_wm().
-     */
-    public function testGet_pub_wm()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testIs_available().
-     */
-    public function testIs_available()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testUnmount_collection().
-     */
-    public function testUnmount_collection()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testCreate().
-     */
-    public function testCreate()
-    {
-
-    }
-
-    /**
-     * @todo Implement testSet_admin().
-     */
-    public function testSet_admin()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testMount_collection().
-     */
-    public function testMount_collection()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetLogo().
-     */
-    public function testGetLogo()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetWatermark().
-     */
-    public function testGetWatermark()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetPresentation().
-     */
-    public function testGetPresentation()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetStamp().
-     */
-    public function testGetStamp()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
     }
 
     /**

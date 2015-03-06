@@ -19,7 +19,7 @@ class TaskLogFileTest extends LogFileTestCase
 
     protected function getLogFile($root)
     {
-        $task = self::$DI['app']['EM']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
 
         return new TaskLogFile($root, $task);
     }

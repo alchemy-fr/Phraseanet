@@ -30,7 +30,7 @@ class FactoryTest extends \PhraseanetTestCase
             ['memcache', 'memcache', 'Alchemy\Phrasea\Cache\MemcacheCache'],
             ['memcachecache', 'memcache', 'Alchemy\Phrasea\Cache\MemcacheCache'],
             ['memcached', 'memcached', 'Alchemy\Phrasea\Cache\MemcachedCache'],
-            ['memcachecached', 'memcached', 'Alchemy\Phrasea\Cache\MemcachedCache'],
+            ['memcachedcache', 'memcached', 'Alchemy\Phrasea\Cache\MemcachedCache'],
             ['redis', 'redis', 'Alchemy\Phrasea\Cache\RedisCache'],
             ['rediscache', 'redis', 'Alchemy\Phrasea\Cache\RedisCache'],
             ['wincache', 'wincache', 'Alchemy\Phrasea\Cache\WincacheCache'],

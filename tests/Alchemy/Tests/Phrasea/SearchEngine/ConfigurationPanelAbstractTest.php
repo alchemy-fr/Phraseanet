@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
-abstract class ConfigurationPanelAbstractTest extends \PhraseanetAuthenticatedTestCase
+abstract class ConfigurationPanelAbstractTest extends \PhraseanetTestCase
 {
 
     abstract public function getPanel();

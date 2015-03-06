@@ -131,8 +131,8 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
             ->setNonce($nonce)
             ->setToken($token);
 
-        $app['EM']->persist($session);
-        $app['EM']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         $boolean = false;
 

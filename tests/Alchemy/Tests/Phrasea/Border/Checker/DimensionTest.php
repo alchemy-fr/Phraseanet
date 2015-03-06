@@ -37,32 +37,32 @@ class DimensionTest extends \PhraseanetTestCase
         $File = new File(self::$DI['app'], $media, self::$DI['collection']);
 
         $object = new Dimension(self::$DI['app'], ['width' => 800]);
-        $response = $object->check(self::$DI['app']['EM'], $File);
+        $response = $object->check(self::$DI['app']['orm.em'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
         $object = new Dimension(self::$DI['app'], ['width' => 500]);
-        $response = $object->check(self::$DI['app']['EM'], $File);
+        $response = $object->check(self::$DI['app']['orm.em'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
         $object = new Dimension(self::$DI['app'], ['width' => 400]);
-        $response = $object->check(self::$DI['app']['EM'], $File);
+        $response = $object->check(self::$DI['app']['orm.em'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
         $object = new Dimension(self::$DI['app'], ['width' => 600, 'height' => 500]);
-        $response = $object->check(self::$DI['app']['EM'], $File);
+        $response = $object->check(self::$DI['app']['orm.em'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
         $object = new Dimension(self::$DI['app'], ['width' => 600, 'height' => 400]);
-        $response = $object->check(self::$DI['app']['EM'], $File);
+        $response = $object->check(self::$DI['app']['orm.em'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
         $object = new Dimension(self::$DI['app'], ['width' => 200, 'height' => 200]);
-        $response = $object->check(self::$DI['app']['EM'], $File);
+        $response = $object->check(self::$DI['app']['orm.em'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
     }

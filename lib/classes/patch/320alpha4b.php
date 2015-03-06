@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class patch_320alpha4b extends patchAbstract
 {
@@ -84,12 +85,13 @@ class patch_320alpha4b extends patchAbstract
         $date_ref = new DateTime();
         $n = 0;
 
-        $app['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        $app['orm.em']->getEventManager()->removeEventSubscriber(new TimestampableListener());
         foreach ($rs as $row) {
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
-            $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
+
+            $feed = $this->get_feed($app, $appbox, $user, $row['pub_restrict'], $row['homelink']);
 
             if (! $feed instanceof Feed) {
                 continue;
@@ -98,8 +100,8 @@ class patch_320alpha4b extends patchAbstract
             $publishers = $feed->getPublishers();
 
             $entry = new FeedEntry();
-            $entry->setAuthorEmail($user->getEmail());
-            $entry->setAuthorName($user->getDisplayName());
+            $entry->setAuthorEmail((string) $user->getEmail());
+            $entry->setAuthorName((string) $user->getDisplayName());
             $entry->setFeed($feed);
             $entry->setPublisher($publishers->first());
             $entry->setTitle($row['name']);
@@ -133,31 +135,31 @@ class patch_320alpha4b extends patchAbstract
                     $entry->addItem($item);
                     $item->setRecordId($record->get_record_id());
                     $item->setSbasId($record->get_sbas_id());
-                    $app['EM']->persist($item);
+                    $app['orm.em']->persist($item);
                 } catch (NotFoundHttpException $e) {
 
                 }
             }
 
-            $app['EM']->persist($entry);
+            $app['orm.em']->persist($entry);
 
             $sql = 'UPDATE ssel SET deleted = "1", migrated="1"
                     WHERE ssel_id = :ssel_id';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute([':ssel_id' => $row['ssel_id']]);
             $stmt->closeCursor();
-            $app['EM']->persist($feed);
+            $app['orm.em']->persist($feed);
             $n++;
             if ($n % 1000 == 0) {
-                $app['EM']->flush();
-                $app['EM']->clear();
+                $app['orm.em']->flush();
+                $app['orm.em']->clear();
             }
         }
         $this->set_feed_dates($date_ref);
-        $app['EM']->flush();
-        $app['EM']->clear();
+        $app['orm.em']->flush();
+        $app['orm.em']->clear();
 
-        $app['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        $app['orm.em']->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         return true;
     }
@@ -174,7 +176,7 @@ class patch_320alpha4b extends patchAbstract
     }
     protected static $feeds = [];
 
-    protected function get_feed(appbox $appbox, User $user, $pub_restrict, $homelink, Application $app)
+    protected function get_feed(Application $app, appbox $appbox, User $user, $pub_restrict, $homelink)
     {
         $user_key = 'user_' . $user->getId();
         if ($homelink == '1') {
@@ -199,15 +201,15 @@ class patch_320alpha4b extends patchAbstract
             $feed->setSubtitle('');
             $feed->addPublisher($publisher);
             $publisher->setFeed($feed);
-            $publisher->setOwner(true);
+            $publisher->setIsOwner(true);
             $publisher->setUser($user);
 
             if ($homelink) {
-                $feed->setPublic(true);
+                $feed->setIsPublic(true);
 
-                $app['EM']->persist($feed);
-                $app['EM']->persist($user);
-                $app['EM']->flush();
+                $app['orm.em']->persist($feed);
+                $app['orm.em']->persist($user);
+                $app['orm.em']->flush();
 
             } elseif ($pub_restrict == 1) {
                 $collections = $app['acl']->get($user)->get_granted_base();

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -205,8 +205,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->height = (int) $row['height'];
             $this->mime = $row['mime'];
             $this->file = $row['file'];
-            $this->etag = $row['etag'] !== null ? $row['etag'] : md5(time() . $row['path'] .$row['file']);
             $this->path = p4string::addEndSlash($row['path']);
+            $this->is_physically_present = file_exists($this->get_pathfile());
+            $this->etag = $row['etag'];
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
 
@@ -215,7 +216,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             if ($row['created_on'])
                 $this->creation_date = new DateTime($row['created_on']);
 
-            $this->is_physically_present = true;
         } elseif ($substitute === false) {
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
@@ -345,8 +345,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function getEtag()
     {
-        if ( ! $this->etag && $this->is_physically_present()) {
-            $this->setEtag(md5(time() . $this->get_pathfile()));
+        if (!$this->etag && $this->is_physically_present()) {
+            $file = new SplFileInfo($this->get_pathfile());
+            if ($file->isFile()) {
+                $this->setEtag(md5($file->getMTime()));
+            }
         }
 
         return $this->etag;
@@ -364,14 +367,21 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $this;
     }
 
-    public function get_url()
+    public function set_substituted($substit)
     {
-        $url = parent::get_url();
-        if (null !== $this->getEtag()) {
-            $url->getQuery()->set('etag', $this->getEtag());
-        }
+        $this->is_substituted = !!$substit;
 
-        return $url;
+        $sql = "UPDATE subdef SET substit = :substit, updated_on=NOW() WHERE subdef_id = :subdef_id";
+        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute(array(
+            ':subdef_id' => $this->subdef_id,
+            ':substit'   => $this->is_substituted
+        ));
+        $stmt->closeCursor();
+
+        $this->delete_data_from_cache();
+
+        return $this;
     }
 
     /**
@@ -725,7 +735,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $subdef->get_permalink()->delete_data_from_cache();
         }
 
-        if ($name === 'thumbnail' && $app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+        if ($name === 'thumbnail') {
             $app['phraseanet.thumb-symlinker']->symlink($subdef->get_pathfile());
         }
 
@@ -745,9 +755,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return;
         }
 
+        // serve thumbnails using static file service
         if ($this->get_name() === 'thumbnail') {
-            if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled() && null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
-                $this->url = $url;
+            if (null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
+                $this->url = $url. "?etag=".$this->getEtag();
 
                 return;
             }
@@ -763,7 +774,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $this->url = Url::factory("/datafiles/" . $this->record->get_sbas_id()
             . "/" . $this->record->get_record_id() . "/"
-            . $this->get_name() . "/");
+            . $this->get_name() . "/?etag=".$this->getEtag());
 
         return;
     }

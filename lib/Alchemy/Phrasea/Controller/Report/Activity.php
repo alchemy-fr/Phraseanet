@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -133,9 +133,7 @@ class Activity implements ControllerProviderInterface
         $conf = [
             'user'      => [$app->trans('report:: utilisateur'), 0, 1, 0, 0],
             'nbdoc'     => [$app->trans('report:: nombre de documents'), 0, 0, 0, 0],
-            'poiddoc'   => [$app->trans('report:: poids des documents'), 0, 0, 0, 0],
             'nbprev'    => [$app->trans('report:: nombre de preview'), 0, 0, 0, 0],
-            'poidprev'  => [$app->trans('report:: poids des previews'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
@@ -347,7 +345,7 @@ class Activity implements ControllerProviderInterface
             'ddate'     => [$app->trans('report:: jour'), 0, 0, 0, 0],
             'total'     => [$app->trans('report:: total des telechargements'), 0, 0, 0, 0],
             'preview'   => [$app->trans('report:: preview'), 0, 0, 0, 0],
-            'document'  => [$app->trans('report:: document original'), 0, 0, 0, 0]
+            'document'  => [$app->trans('report:: document'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(

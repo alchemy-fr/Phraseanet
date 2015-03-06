@@ -1,6 +1,6 @@
 <?php
 
-class report_sentTest extends \PhraseanetAuthenticatedTestCase
+class report_sentTest extends \report_abstractReportTestCase
 {
     protected $ret;
     protected $dmin;

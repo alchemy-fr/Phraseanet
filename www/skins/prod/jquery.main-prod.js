@@ -307,8 +307,8 @@ function resize() {
         resizePreview();
 
     if ($('#idFrameC').data('ui-resizable')) {
-        $('#idFrameC').resizable('option', 'maxWidth', (bodySize.x - 670));
-        $('#idFrameC').resizable('option', 'minWidth', 265);
+        $('#idFrameC').resizable('option', 'maxWidth', (480));
+        $('#idFrameC').resizable('option', 'minWidth', 300);
     }
 
     answerSizer();
@@ -591,10 +591,11 @@ function initAnswerForm() {
 function answerSizer() {
     var el = $('#idFrameC').outerWidth();
     if (!$.support.cssFloat) {
-        $('#idFrameC .insidebloc').width(el - 56);
+       // $('#idFrameC .insidebloc').width(el - 56);
     }
     var widthA = Math.round(bodySize.x - el - 10);
     $('#rightFrame').width(widthA);
+    $('#rightFrame').css('left', $('#idFrameC').width());
 
 }
 
@@ -830,12 +831,23 @@ function HueToRgb(m1, m2, hue) {
 
 $(document).ready(function () {
 
+    $('input[name=search_type]').bind('click', function () {
+        var $this = $(this);
+        var $record_types = $('#recordtype_sel');
+        if ($this.hasClass('mode_type_reg')) {
+            $record_types.hide();
+            $record_types.prop("selectedIndex", 0);
+        } else {
+            $record_types.show();
+        }
+    });
+
     $('.adv_search_button').live('click', function () {
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();
 
         var options = {
-            size: 'Full',
+            size: (bodySize.x - 120)+'x'+(bodySize.y - 120),
             loading: false,
             closeCallback: function (dialog) {
 

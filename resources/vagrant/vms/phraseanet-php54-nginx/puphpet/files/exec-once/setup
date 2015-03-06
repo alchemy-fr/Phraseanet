@@ -5,15 +5,15 @@ sudo sh -c 'echo "Europe/Paris" > /etc/timezone'
 sudo dpkg-reconfigure -f noninteractive tzdata 
 
 # locales
-sudo sh -c "echo 'LANGUAGE=fr_FR.UTF-8' >> /etc/environment"
-sudo sh -c "echo 'LANG=fr_FR.UTF-8' >> /etc/environment"
-sudo sh -c "echo 'LC_ALL=fr_FR.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LANGUAGE=en_GB.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LANG=en_GB.UTF-8' >> /etc/environment"
+sudo sh -c "echo 'LC_ALL=en_GB.UTF-8' >> /etc/environment"
 sudo sh -c 'echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen'
 sudo sh -c 'echo "nl_NL.UTF-8 UTF-8" >> /etc/locale.gen'
-sudo locale-gen en_US en_US.UTF-8 en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
+sudo locale-gen en_GB en_GB.UTF-8 fr_FR fr_FR.UTF-8 de_DE de_DE.UTF-8 nl_NL nl_NL.UTF-8
 sudo dpkg-reconfigure -f noninteractive locales
 
 #ffmpeg
@@ -74,22 +74,6 @@ sudo npm install -g recess
 sudo npm install -g grunt-cli
 sudo npm install -g bower
 sudo npm install -g uglify-js
-
-# python tools
-sudo easy_install -U taschenmesser scour boto 
-
-# closure compiler
-cd /tmp
-wget –quiet http://dl.google.com/closure-compiler/compiler-latest.zip
-unzip compiler-latest.zip -d closure
-mv /tmp/closure /home/vagrant
-sudo sh -c "echo 'JS_COMPILER=/home/vagrant/closure/compiler.jar' >> /etc/environment"
-export JS_COMPILER=/home/vagrant/closure/compiler.jar
-sudo chown -R vagrant: /home/vagrant/closure
-
-# java
-sudo sh -c "echo 'JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/' >> /etc/environment"
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/
 
 #twig
 cd /tmp
@@ -161,16 +145,12 @@ then
     #copy configuration template
     mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
     cp /vagrant/resources/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
-    mv /var/www/phraseanet/.bowerrc /var/www/phraseanet/.bowerrc.bkp
-    cp /vagrant/resources/vagrant/config/bower/.bowerrc /var/www/phraseanet/.bowerrc
     cd /var/www/phraseanet
     sudo -u vagrant composer install -n --prefer-source --dev
     sudo -u vagrant npm install
     sudo -u vagrant grunt install-assets
     sudo -u vagrant bin/developer assets:compile-less
     sudo -u vagrant rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
-    rm -f /var/www/phraseanet/.bowerrc
-    mv /www/phraseanet/.bowerrc.bkp /www/phraseanet/.bowerrc
     mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml
 fi
 
@@ -184,4 +164,3 @@ sudo service iptables-persistent stop
 
 # reload bash
 source ~/.bashrc
-

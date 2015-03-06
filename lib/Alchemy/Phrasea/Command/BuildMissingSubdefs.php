@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -38,9 +38,6 @@ class BuildMissingSubdefs extends Command
         $n = 0;
 
         foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
-
-            $subdefStructure = $databox->get_subdef_structure();
-
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
@@ -50,38 +47,14 @@ class BuildMissingSubdefs extends Command
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);
 
-                try {
-                    $record->get_hd_file();
-                } catch (FileNotFoundException $e) {
-                    continue;
-                }
+                $wanted_subdefs = $record->get_missing_subdefs();
 
-                $group = $subdefStructure->getSubdefGroup($record->get_type());
+                if (count($wanted_subdefs) > 0) {
+                    $record->generate_subdefs($databox, $this->container, $wanted_subdefs);
 
-                if ($group) {
-                    foreach ($group as $subdef) {
-
-                        $todo = false;
-
-                        if ( ! $record->has_subdef($subdef->get_name())) {
-                            $todo = true;
-                        }
-                        if (in_array($subdef->get_name(), ['preview', 'thumbnail', 'thumbnailgif'])) {
-                            try {
-                                $sub = $record->get_subdef($subdef->get_name());
-                                if ( ! $sub->is_physically_present()) {
-                                    $todo = true;
-                                }
-                            } catch (\Exception_Media_SubdefNotFound $e) {
-                                $todo = true;
-                            }
-                        }
-
-                        if ($todo) {
-                            $this->container['subdef.generator']->generateSubdefs($record, [$subdef->get_name()]);
-                            $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
-                            $n ++;
-                        }
+                    foreach ($wanted_subdefs as $subdef) {
+                        $this->container['monolog']->addInfo("generate " .$subdef . " for record " . $record->get_record_id());
+                        $n ++;
                     }
                 }
 

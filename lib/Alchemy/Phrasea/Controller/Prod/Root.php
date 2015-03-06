@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -102,10 +102,13 @@ class Root implements ControllerProviderInterface
                 }
             }
 
+            $helper = new Helper\Prod($app, $app['request']);
+
             return $app['twig']->render('prod/index.html.twig', [
                 'module_name'          => 'Production',
                 'WorkZone'             => new Helper\WorkZone($app, $app['request']),
-                'module_prod'          => new Helper\Prod($app, $app['request']),
+                'module_prod'          => $helper,
+                'search_datas'         => $helper->get_search_datas(),
                 'cssfile'              => $cssfile,
                 'module'               => 'prod',
                 'events'               => $app['events-manager'],

@@ -11,19 +11,41 @@
 
 {% block javascript %}
     {{ parent() }}
-    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : '/skins/account/account.js,assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            geonames.init($("#form_geonameid"), {
-                "server": "{{ app['geonames.server-uri'] }}",
-                "limit": 40
+            requirejs.config({
+                baseUrl: "/scripts",
+                paths: {
+                    "jquery": "../assets/jquery/jquery",
+                    "jquery.ui": "../assets/jquery.ui/jquery-ui",
+                    "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
+                },
+                shim: {
+                    "jquery.geonames": {
+                        deps: ["jquery", "jquery.ui"],
+                        exports: "$.fn.geocompleter"
+                    },
+                    "common/geonames": {
+                        deps: ["jquery.geonames"]
+                    }
+                }
             });
 
-            $('legend').bind('click', function() {
-                $(".form-info").hide(200);
-                $($(this).data('target')).show();
+            require([
+                "jquery",
+                "common/geonames"
+            ], function ($, geonames) {
+                $(document).ready(function() {
+                    $('legend').bind('click', function () {
+                        $(".form-info").hide(200);
+                        $($(this).data('target')).show();
+                    });
+
+                    geonames.init($("#form_geonameid"), {
+                        "server": "{{ app['geonames.server-uri'] }}",
+                        "limit": 40
+                    });
+                });
             });
-        });
     </script>
 {% endblock %}
 

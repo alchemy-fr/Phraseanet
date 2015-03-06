@@ -230,23 +230,26 @@
                 beforeSend:function(){
                     el_loader.css('visibility', 'visible');
                 },
-                success: function(datas){
+                success: function(data){
                     el_loader.css('visibility', 'hidden');
-                    if(datas.connection === true && datas.database === true)
-                    {
-                        el_status.attr('src','/skins/icons/ok.png').show();
+                    if (data.connection === true && data.database === true && data.innodb === true) {
+                        el_status.attr('src', '/skins/icons/ok.png').show();
                         el_message.empty().append("{{ 'Successfull connection' | trans }}");
-                        if(!datas.is_empty)
-                        {
+                        if (!data.is_empty) {
                             el_message.append("<br>{{ 'Warning, this database is not empty' | trans }}");
-                            el_status.attr('src','/skins/icons/alert.png').show();
+                            el_status.attr('src', '/skins/icons/alert.png').show();
                         }
                         if(typeof callback == 'function')
                             callback();
 
                         return;
                     }
-                    if(datas.connection === true)
+                    if (false === data.innodb) {
+                        el_message.empty().append("{{ 'Database server does not support InnoDB storage engine' | trans }}");
+
+                        return;
+                    }
+                    if(data.connection === true)
                     {
                         el_message.empty().append("{{ 'Connection is OK but database does not exists or can not be accessed' | trans }}");
                     }
@@ -263,7 +266,7 @@
                     el_status.attr('src', '/skins/icons/delete.png').show();
                     el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
                 },
-                error:function(datas){
+                error:function(data){
                     el_loader.css('visibility', 'hidden');
                     el_status.attr('src', '/skins/icons/delete.png').show();
                     el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
@@ -651,7 +654,7 @@
                                 <table class="main_content_table">
                                     <tr>
                                         <td><label>{{ 'Repertoire de stockage des fichiers' | trans }}</label></td>
-                                        <td><input class="path_to_test test_writeable required" type="text" name="datapath_noweb" value="" /></td>
+                                        <td><input class="path_to_test test_writeable required" type="text" name="datapath_noweb" value="{{ rootpath ~ '/datas' }}" /></td>
                                     </tr>
                                 </table>
                             </td>

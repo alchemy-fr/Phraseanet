@@ -45,6 +45,22 @@
 
     </head>
      <body class="PNB" style="overflow:hidden;width:100%;height:100%;">
+
+     {% if app['phraseanet.configuration']['deprecate-client']|default(true) %}
+         <div id="clientModal" >
+             <div class="modal-body">
+                 <p style="background-color: red">
+                     {{ "Pour des raisons techniques cette interface n'est plus maintenue et serta bientôt rendue
+                     inacessible. Nous vous invitons si vous le souhaitez à utiliser production dés maintenant."|trans }}
+                 </p>
+                 <br />
+                 <p><a href="{{ path('prod') }}" >{{ 'Production '|trans }} > </a></p>
+             </div>
+         </div>
+         <script type="text/javascript">
+             $('#clientModal').dialog();
+         </script>
+    {% endif %}
          <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
             {% include 'common/menubar.html.twig' %}
             <div style="top:30px;position:relative;float:left;">

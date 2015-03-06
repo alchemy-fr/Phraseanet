@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -142,12 +142,12 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             $module->setSession($session);
             $session->addModule($module);
 
-            $this->app['EM']->persist($module);
+            $this->app['orm.em']->persist($module);
         } else {
-            $this->app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+            $this->app['orm.em']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
-        $this->app['EM']->persist($session);
-        $this->app['EM']->flush();
+        $this->app['orm.em']->persist($session);
+        $this->app['orm.em']->flush();
     }
 
     private function isFlashUploadRequest(Request $request)

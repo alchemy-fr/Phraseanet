@@ -20,21 +20,20 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
         parent::setUp();
         $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
         $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['conf'], $this->auth, self::$DI['app']['translator']]);
-    }
 
-    public function bootTestCase()
-    {
-        $application = self::$DI['app'];
-        try {
-            self::$api = Bridge_Api::get_by_api_name($application, 'apitest');
-        } catch (Bridge_Exception_ApiNotFound $e) {
-            self::$api = Bridge_Api::create($application, 'apitest');
-        }
+        if (!self::$api) {
+            $application = self::$DI['app'];
+            try {
+                self::$api = Bridge_Api::get_by_api_name($application, 'apitest');
+            } catch (Bridge_Exception_ApiNotFound $e) {
+                self::$api = Bridge_Api::create($application, 'apitest');
+            }
 
-        try {
-            self::$account = Bridge_Account::load_account_from_distant_id($application, self::$api, self::$DI['user'], 'kirikoo');
-        } catch (Bridge_Exception_AccountNotFound $e) {
-            self::$account = Bridge_Account::create($application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
+            try {
+                self::$account = Bridge_Account::load_account_from_distant_id($application, self::$api, self::$DI['user'], 'kirikoo');
+            } catch (Bridge_Exception_AccountNotFound $e) {
+                self::$account = Bridge_Account::create($application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
+            }
         }
     }
 
