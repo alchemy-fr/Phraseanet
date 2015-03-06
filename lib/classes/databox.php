@@ -101,42 +101,42 @@ class databox extends base
     const PIC_PDF = 'logopdf';
 
     protected $cache;
-    protected $connection;
-    protected $app;
     private $labels = [];
     private $ord;
     private $viewname;
     private $loaded = false;
 
+    /**
+     * @param Application $app
+     * @param int         $sbas_id
+     */
     public function __construct(Application $app, $sbas_id)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
 
-        $this->app = $app;
         $this->id = $sbas_id;
 
-        $connection_params = phrasea::sbas_params($this->app);
+        $connection_params = phrasea::sbas_params($app);
 
         if (! isset($connection_params[$sbas_id])) {
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $this->connection = $app['db.provider']([
+        $params = [
             'host'     => $connection_params[$sbas_id]['host'],
             'port'     => $connection_params[$sbas_id]['port'],
             'user'     => $connection_params[$sbas_id]['user'],
             'password' => $connection_params[$sbas_id]['pwd'],
             'dbname'   => $connection_params[$sbas_id]['dbname'],
-        ]);
+        ];
+        parent::__construct($app, $app['db.provider']($params));
 
-        $this->host = $connection_params[$sbas_id]['host'];
-        $this->port = $connection_params[$sbas_id]['port'];
-        $this->user = $connection_params[$sbas_id]['user'];
-        $this->passwd = $connection_params[$sbas_id]['pwd'];
-        $this->dbname = $connection_params[$sbas_id]['dbname'];
-
-        return $this;
+        $this->host = $params['host'];
+        $this->port = $params['port'];
+        $this->user = $params['user'];
+        $this->passwd = $params['password'];
+        $this->dbname = $params['dbname'];
     }
 
     private function load()
