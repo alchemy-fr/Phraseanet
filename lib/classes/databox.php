@@ -887,7 +887,10 @@ class databox extends base
 
     public function saveCterms(DOMDocument $dom_cterms)
     {
-
+        if (null === $dom_cterms->documentElement) {
+            $cterms = $dom_cterms->createElement('cterms');
+            $dom_cterms->appendChild($cterms);
+        }
         $dom_cterms->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
 
         $sql = "UPDATE pref SET value = :xml, updated_on = :date
