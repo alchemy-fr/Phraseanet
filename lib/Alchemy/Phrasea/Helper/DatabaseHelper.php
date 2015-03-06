@@ -34,7 +34,14 @@ class DatabaseHelper extends Helper
             'dbname'   => $db_name,
         ]);
 
-        if (false !== $dbOK = $connection->isConnected()) {
+        try {
+            $connection->connect();
+            $dbOK = true;
+        } catch (\Exception $exception) {
+            $dbOK = false;
+        }
+
+        if ($dbOK && false !== $connection->isConnected()) {
             $sql = "SHOW TABLE STATUS";
             $stmt = $connection->prepare($sql);
             $stmt->execute();
