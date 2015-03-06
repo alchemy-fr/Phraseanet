@@ -427,6 +427,7 @@ module.exports = function(grunt) {
         "copy:jquery.treeview",
         "copy:json2",
         "copy:js-fixtures",
+        "copy:fancytree",
         "copy:modernizr",
         "copy:normalize",
         "copy:normalize",
