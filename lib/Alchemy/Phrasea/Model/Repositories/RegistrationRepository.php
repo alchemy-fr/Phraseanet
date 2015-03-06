@@ -38,7 +38,7 @@ class RegistrationRepository extends EntityRepository
 
         if (count($collections) > 0) {
             $qb->andWhere('d.baseId IN (:bases)');
-            $qb->setParameter(':bases', array_map(function ($collection) {
+            $qb->setParameter(':bases', array_map(function (\collection $collection) {
                 return $collection->get_base_id();
             }, $collections));
         }
