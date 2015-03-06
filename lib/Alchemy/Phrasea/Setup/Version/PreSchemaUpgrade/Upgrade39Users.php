@@ -387,9 +387,9 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
                 )
                 ->from('usr', 'u')
                 ->where(
-                    $builder->expr()->notLike('u.usr_login', '(#deleted_%'),
+                    $builder->expr()->notLike('u.usr_login', $builder->expr()->literal('(#deleted_%')),
                     $builder->expr()->eq('u.model_of', 0),
-                    $builder->expr()->neq('u.addrFTP', '')
+                    $builder->expr()->neq('u.addrFTP', $builder->expr()->literal(''))
                 )
                 ->setFirstResult($offset)
                 ->setMaxResults($perBatch)
