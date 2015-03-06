@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Connection;
 
-use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\DriverManager;
 use Psr\Log\LoggerInterface;
