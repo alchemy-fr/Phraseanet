@@ -51,7 +51,7 @@ class Basket
     private $user;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $is_read = false;
 
@@ -64,7 +64,7 @@ class Basket
     private $pusher;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $archived = false;
 

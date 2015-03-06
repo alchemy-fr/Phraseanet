@@ -35,10 +35,22 @@ class ApiMigration extends AbstractMigration
         $this->addSql("ALTER TABLE ApiOauthTokens ADD CONSTRAINT FK_4FD469539B6B5FBA FOREIGN KEY (account_id) REFERENCES ApiAccounts (id)");
         $this->addSql("ALTER TABLE ApiAccounts ADD CONSTRAINT FK_2C54E637A76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
         $this->addSql("ALTER TABLE ApiAccounts ADD CONSTRAINT FK_2C54E6373E030ACD FOREIGN KEY (application_id) REFERENCES ApiApplications (id)");
+
+        $this->addSql('ALTER TABLE ApiAccounts CHANGE revoked revoked TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE ApiApplications CHANGE client_id client_id VARCHAR(128) NOT NULL, CHANGE client_secret client_secret VARCHAR(128) NOT NULL');
+        $this->addSql('ALTER TABLE ApiOauthCodes CHANGE expires expires INT NOT NULL');
+        $this->addSql('ALTER TABLE ApiOauthRefreshTokens CHANGE expires expires INT NOT NULL');
+        $this->addSql('ALTER TABLE ApiOauthTokens CHANGE expires expires INT DEFAULT NULL');
     }
 
     public function doDownSql(Schema $schema)
     {
+        $this->addSql('ALTER TABLE ApiAccounts CHANGE revoked revoked TINYINT(1) NOT NULL');
+        $this->addSql('ALTER TABLE ApiApplications CHANGE client_id client_id VARCHAR(32) NOT NULL, CHANGE client_secret client_secret VARCHAR(32) NOT NULL');
+        $this->addSql('ALTER TABLE ApiOauthCodes CHANGE expires expires DATETIME DEFAULT NULL');
+        $this->addSql('ALTER TABLE ApiOauthRefreshTokens CHANGE expires expires DATETIME NOT NULL');
+        $this->addSql('ALTER TABLE ApiOauthTokens CHANGE expires expires DATETIME DEFAULT NULL');
+
         $this->addSql("ALTER TABLE ApiAccounts DROP FOREIGN KEY FK_2C54E6373E030ACD");
         $this->addSql("ALTER TABLE ApiLogs DROP FOREIGN KEY FK_91E90F309B6B5FBA");
         $this->addSql("ALTER TABLE ApiOauthCodes DROP FOREIGN KEY FK_BE6B11809B6B5FBA");

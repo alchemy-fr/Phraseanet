@@ -73,17 +73,17 @@ class User
     private $nonce;
 
     /**
-     * @ORM\Column(type="boolean", name="salted_password")
+     * @ORM\Column(type="boolean", name="salted_password", options={"default" = 1})
      */
     private $saltedPassword = true;
 
     /**
-     * @ORM\Column(type="string", length=64, name="first_name")
+     * @ORM\Column(type="string", length=64, name="first_name", options={"default" = ""})
      */
     private $firstName = '';
 
     /**
-     * @ORM\Column(type="string", length=64, name="last_name")
+     * @ORM\Column(type="string", length=64, name="last_name", options={"default" = ""})
      */
     private $lastName = '';
 
@@ -93,22 +93,22 @@ class User
     private $gender;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255, options={"default" = ""})
      */
     private $address = '';
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, options={"default" = ""})
      */
     private $city = '';
 
     /**
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\Column(type="string", length=64, nullable=true, options={"default" = ""})
      */
     private $country = '';
 
     /**
-     * @ORM\Column(type="string", length=32, name="zip_code")
+     * @ORM\Column(type="string", length=32, name="zip_code", options={"default" = ""})
      */
     private $zipCode = '';
 
@@ -123,57 +123,57 @@ class User
     private $locale;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, options={"default" = ""})
      */
     private $timezone = '';
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, options={"default" = ""})
      */
     private $job = '';
 
     /**
-     * @ORM\Column(type="string", length=256)
+     * @ORM\Column(type="string", length=256, options={"default" = ""})
      */
     private $activity = '';
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, options={"default" = ""})
      */
     private $company = '';
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, options={"default" = ""})
      */
     private $phone = '';
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, options={"default" = ""})
      */
     private $fax = '';
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $admin = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $guest = false;
 
     /**
-     * @ORM\Column(type="boolean", name="mail_notifications")
+     * @ORM\Column(type="boolean", name="mail_notifications", options={"default" = 0})
      */
     private $mailNotificationsActivated = false;
 
     /**
-     * @ORM\Column(type="boolean", name="request_notifications")
+     * @ORM\Column(type="boolean", name="request_notifications", options={"default" = 0})
      */
     private $requestNotificationsActivated = false;
 
     /**
-     * @ORM\Column(type="boolean", name="ldap_created")
+     * @ORM\Column(type="boolean", name="ldap_created", options={"default" = 0})
      */
     private $ldapCreated = false;
 
@@ -184,17 +184,17 @@ class User
     private $lastAppliedTemplate;
 
     /**
-     * @ORM\Column(type="text", name="push_list")
+     * @ORM\Column(type="string", length=255, name="push_list", options={"default" = ""})
      */
     private $pushList = '';
 
     /**
-     * @ORM\Column(type="boolean", name="can_change_profil")
+     * @ORM\Column(type="boolean", name="can_change_profil", options={"default" = 1})
      */
     private $canChangeProfil = true;
 
     /**
-     * @ORM\Column(type="boolean", name="can_change_ftp_profil")
+     * @ORM\Column(type="boolean", name="can_change_ftp_profil", options={"default" = 1})
      */
     private $canChangeFtpProfil = true;
 
@@ -204,12 +204,12 @@ class User
     private $lastConnection;
 
     /**
-     * @ORM\Column(type="boolean", name="mail_locked")
+     * @ORM\Column(type="boolean", name="mail_locked", options={"default" = 0})
      */
     private $mailLocked = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $deleted = false;
 

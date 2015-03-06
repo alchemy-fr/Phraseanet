@@ -30,12 +30,12 @@ class Feed implements FeedInterface
     private $id;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $public = false;
 
     /**
-     * @ORM\Column(type="boolean", name="icon_url")
+     * @ORM\Column(type="boolean", name="icon_url", options={"default" = 0})
      */
     private $iconUrl = false;
 
