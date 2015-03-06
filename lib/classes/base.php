@@ -275,7 +275,7 @@ abstract class base implements cache_cacheableInterface
         try {
             $sql = '';
             if ($this->get_base_type() === self::APPLICATION_BOX)
-                $sql = 'UPDATE sitepreff SET version = "' . $version->getNumber() . '"';
+                $sql = 'UPDATE sitepreff SET version = :version';
             if ($this->get_base_type() === self::DATA_BOX) {
                 $sql = 'DELETE FROM pref WHERE prop="version" AND locale IS NULL';
                 $this->get_connection()->query($sql);
