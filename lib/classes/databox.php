@@ -12,7 +12,8 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -796,6 +797,7 @@ class databox extends base
      */
     public function get_mountable_colls()
     {
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $colls = [];
 
@@ -804,6 +806,7 @@ class databox extends base
         $stmt->execute([':sbas_id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+        unset($stmt);
 
         foreach ($rs as $row) {
             $colls[] = (int) $row['server_coll_id'];
@@ -811,16 +814,22 @@ class databox extends base
 
         $mountable_colls = [];
 
-        $sql = 'SELECT coll_id, asciiname FROM coll';
-
+        $builder = $this->get_connection()->createQueryBuilder();
+        $builder
+            ->select('c.coll_id', 'c.asciiname')
+            ->from('coll', 'c');
         if (count($colls) > 0) {
-            $sql .= ' WHERE coll_id NOT IN (' . implode(',', $colls) . ')';
+            $builder
+                ->where($builder->expr()->notIn('c.coll_id', ':colls'))
+                ->setParameter('colls', $colls)
+            ;
         }
 
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
+        /** @var Statement $stmt */
+        $stmt = $builder->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+        unset($stmt);
 
         foreach ($rs as $row) {
             $mountable_colls[$row['coll_id']] = $row['asciiname'];
@@ -831,6 +840,7 @@ class databox extends base
 
     public function get_activable_colls()
     {
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $base_ids = [];
 
@@ -858,8 +868,7 @@ class databox extends base
         $dom_struct->documentElement
             ->setAttribute("modification_date", $now = date("YmdHis"));
 
-        $sql = "UPDATE pref SET value= :structure, updated_on= :now
-        WHERE prop='structure'";
+        $sql = "UPDATE pref SET value= :structure, updated_on= :now WHERE prop='structure'";
 
         $this->structure = $dom_struct->saveXML();
 
@@ -1079,10 +1088,7 @@ class databox extends base
     public function clear_logs()
     {
         foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
-            $sql = 'DELETE FROM ' . $table;
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $this->get_connection()->delete($table, []);
         }
 
         return $this;
@@ -1090,10 +1096,7 @@ class databox extends base
 
     public function reindex()
     {
-        $sql = 'UPDATE pref SET updated_on="0000-00-00 00:00:00" WHERE prop="indexes"';
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
 
         return $this;
     }
