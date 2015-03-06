@@ -71,7 +71,7 @@ main:
             host: 127.0.0.1
             port: 6700
     storage:
-        subdefs:null
+        subdefs: null
         cache: null
         log : null
         download: null
