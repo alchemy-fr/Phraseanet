@@ -309,8 +309,8 @@ function resize() {
         resizePreview();
 
     if ($('#idFrameC').data('ui-resizable')) {
-        $('#idFrameC').resizable('option', 'maxWidth', (bodySize.x - 670));
-        $('#idFrameC').resizable('option', 'minWidth', 305);
+        $('#idFrameC').resizable('option', 'maxWidth', (480));
+        $('#idFrameC').resizable('option', 'minWidth', 300);
     }
 
     answerSizer();

@@ -108,6 +108,10 @@ body {
     bottom: 0;
 }
 
+#rightFrame {
+    min-width: 660px;
+}
+
 .PNB .ui-corner-top {
     top: 100px;
 }
@@ -441,6 +445,10 @@ span.ww_winTitle {
     margin-top: 0;
 }
 
+.ui-accordion .ui-accordion-header.header:hover {
+    background-color: #474747;
+}
+
 #keyboard-dialog h1 {
     font-size: 14px;
     font-weight: bold;
@@ -629,6 +637,8 @@ div.diapo {
 #answers {
     background-color: #111111;
     border: 1px solid #111111;
+    top: 55px;
+    bottom: 30px;
 }
 
 #answers_status{
@@ -1016,7 +1026,7 @@ div.diapo {
 }
 
 #answers {
-    padding: 20px;
+    padding: 20px 0 20px 20px;
 }
 
 #answers .list {
