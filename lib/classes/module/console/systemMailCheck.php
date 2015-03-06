@@ -35,15 +35,15 @@ class module_console_systemMailCheck extends Command
     {
         $output->writeln("Processing...");
 
-        $bad_users = [];
-        if (version_compare($this->getService('phraseanet.appbox')->get_version(), '3.9', '<')) {
-            $bad_users = MailChecker::getWrongEmailUsers($this->container);
-        }
+        /** @var appbox $appBox */
+        $appBox = $this->getService('phraseanet.appbox');
+        $checker = new MailChecker($appBox);
+        $bad_users = $checker->getWrongEmailUsers();
 
         foreach ($bad_users as $email => $users) {
             if ($input->getOption('list')) {
-                $this->write_infos($email, $users, $output, $this->getService('phraseanet.appbox'));
-            } elseif ($this->manage_group($email, $users, $output, $this->getService('phraseanet.appbox')) === false) {
+                $this->write_infos($email, $users, $output, $appBox);
+            } elseif ($this->manage_group($email, $users, $output, $appBox) === false) {
                 break;
             }
 

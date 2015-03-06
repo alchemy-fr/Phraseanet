@@ -39,8 +39,8 @@ class Setup_Upgrade
 
         $this->app = $app;
 
-        if (version_compare($this->app['phraseanet.appbox']->get_version(), '3.9', '<')
-                && count(MailChecker::getWrongEmailUsers($app)) > 0) {
+        $checker = new MailChecker($app['phraseanet.appbox']);
+        if ($checker->hasWrongEmailUsers()) {
             throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
         }
 
