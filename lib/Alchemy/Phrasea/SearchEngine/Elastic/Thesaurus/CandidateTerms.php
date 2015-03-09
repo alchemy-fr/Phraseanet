@@ -20,8 +20,8 @@ use Transliterator;
 class CandidateTerms
 {
     private $databox;
-    private $candidates;
     private $new_candidates = array();
+    private $visitor;
     private $document;
 
     public function __construct(databox $databox)
@@ -39,10 +39,12 @@ class CandidateTerms
 
     private function ensureVisitorSetup()
     {
-        $navigator = new Navigator();
-        $this->visitor = new CandidateTermVisitor();
-        $this->ensureDocumentLoaded();
-        $navigator->walk($this->document, $this->visitor);
+        if (!$this->visitor) {
+            $navigator = new Navigator();
+            $this->visitor = new CandidateTermVisitor();
+            $this->ensureDocumentLoaded();
+            $navigator->walk($this->document, $this->visitor);
+        }
     }
 
     public function save()
