@@ -11,9 +11,8 @@ define([
     "jquery",
     "underscore",
     "backbone",
-    "common/websockets/subscriberManager",
     "jquery.treeview"
-], function ($, _, Backbone, SubscriberManager) {
+], function ($, _, Backbone) {
     var LeftPanelView = Backbone.View.extend({
         initialize: function (options) {
             options = options || {};

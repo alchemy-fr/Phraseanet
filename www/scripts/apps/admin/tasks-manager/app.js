@@ -12,14 +12,12 @@ define([
     "underscore",
     "backbone",
     "models/scheduler",
-    "common/websockets/connection",
-    "common/websockets/subscriberManager",
     "apps/admin/tasks-manager/views/scheduler",
     "apps/admin/tasks-manager/views/tasks",
     "apps/admin/tasks-manager/views/ping",
     "apps/admin/tasks-manager/views/refresh",
     "apps/admin/tasks-manager/collections/tasks"
-], function ($, _, Backbone, Scheduler, WSConnection, SubscriberManager, SchedulerView, TasksView, PingView, RefreshView, TasksCollection) {
+], function ($, _, Backbone, Scheduler, SchedulerView, TasksView, PingView, RefreshView, TasksCollection) {
     var create = function() {
         window.TaskManagerApp = {
             $scope: $("#task-manager-app"),
@@ -55,23 +53,6 @@ define([
                 TaskManagerApp.tasksView.render();
                 TaskManagerApp.schedulerView.render();
 
-                SubscriberManager.pushCallback(function(topic, msg) {
-                    // double encoded string
-                    var msg = JSON.parse(JSON.parse(msg));
-                    WSConnection.trigger("ws:"+msg.event, msg);
-                });
-
-                // On ticks re-render ping view, update tasks & scheduler model
-                WSConnection.on("ws:manager-tick", function(response) {
-                    TaskManagerApp.pingView.render();
-                    TaskManagerApp.Scheduler.set({"actual": "started", "process-id": response.message.manager["process-id"]});
-                    _.each(response.message.jobs, function(data, id) {
-                        var jobModel = TaskManagerApp.tasksCollection.get(id);
-                        if ("undefined" !== typeof jobModel) {
-                            jobModel.set({"actual": data["status"], "process-id": data["process-id"]});
-                        }
-                    });
-                });
             }
         );
     };

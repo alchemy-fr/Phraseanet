@@ -31,23 +31,15 @@ main:
     task-manager:
         status: started
         enabled: true
-        logger:
-            max-files: 10
-            enabled: true
-            level: INFO
-        listener:
+        options:
             protocol: tcp
             host: 127.0.0.1
             port: 6660
             linger: 500
-    websocket-server:
-        host: local.phrasea
-        port: 9090
-        ip: 0.0.0.0
-        subscriber:
-            protocol: tcp
-            host: 127.0.0.1
-            port: 13598
+        logger:
+            max-files: 10
+            enabled: true
+            level: INFO
     session:
         type: 'file'
         options: []
