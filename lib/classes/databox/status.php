@@ -152,10 +152,10 @@ class databox_status
     public static function operation_and($stat1, $stat2)
     {
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin($app, substr($stat1, 2));
+            $stat1 = self::hex2bin(substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin($app, substr($stat2, 2));
+            $stat2 = self::hex2bin(substr($stat2, 2));
         }
 
         return dechex(hexdec($stat1) & hexdec($stat2));
