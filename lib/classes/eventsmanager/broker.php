@@ -261,22 +261,28 @@ class eventsmanager_broker
             return false;
         }
 
-        $sql = 'UPDATE notifications SET unread="0" WHERE usr_id = :usr_id AND (id IN (:notifications))';
-
         /** @var Connection $connection */
         $connection = $this->app['phraseanet.appbox']->get_connection();
-        $stmt = $connection->prepare($sql);
-        $stmt->execute(
-            [
-                'usr_id' => $usr_id,
-                'notifications' => $notifications,
-            ],
-            [
-                'usr_id' => PDO::PARAM_INT,
-                'notifications' => Connection::PARAM_INT_ARRAY,
-            ]
-        );
-        $stmt->closeCursor();
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->update('notifications')
+            ->set('unread', '0')
+            ->where(
+                $builder->expr()->eq('usr_id', ':usr_id'),
+                $builder->expr()->in('id', [':notifications'])
+            )
+            ->setParameters(
+                [
+                    'usr_id' => $usr_id,
+                    'notifications' => $notifications,
+                ],
+                [
+                    'usr_id' => PDO::PARAM_INT,
+                    'notifications' => Connection::PARAM_INT_ARRAY,
+                ]
+            )
+            ->execute()
+        ;
 
         return $this;
     }
