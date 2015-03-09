@@ -1928,17 +1928,17 @@
         },
         {
             "name": "jms/translation-bundle",
-            "version": "1.1.0",
+            "version": "dev-alchemy",
             "target-dir": "JMS/TranslationBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/schmittjoh/JMSTranslationBundle.git",
-                "reference": "6f03035a38badaf8c48767c7664c3196df1eebdf"
+                "url": "https://github.com/nlegoff/JMSTranslationBundle.git",
+                "reference": "69333336b8e08fb557eb84141c11bbc673d43894"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSTranslationBundle/zipball/6f03035a38badaf8c48767c7664c3196df1eebdf",
-                "reference": "6f03035a38badaf8c48767c7664c3196df1eebdf",
+                "url": "https://api.github.com/repos/nlegoff/JMSTranslationBundle/zipball/69333336b8e08fb557eb84141c11bbc673d43894",
+                "reference": "69333336b8e08fb557eb84141c11bbc673d43894",
                 "shasum": ""
             },
             "require": {
@@ -1974,16 +1974,13 @@
                     "JMS\\TranslationBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache2"
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "Puts the Symfony2 Translation Component on steroids",
@@ -1998,7 +1995,10 @@
                 "ui",
                 "webinterface"
             ],
-            "time": "2013-06-08 14:08:19"
+            "support": {
+                "source": "https://github.com/nlegoff/JMSTranslationBundle/tree/1.1"
+            },
+            "time": "2015-03-05 15:29:24"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -5079,6 +5079,12 @@
             "package": "imagine/imagine"
         },
         {
+            "alias": "1.1.0",
+            "alias_normalized": "1.1.0.0",
+            "version": "dev-alchemy",
+            "package": "jms/translation-bundle"
+        },
+        {
             "alias": "0.4.1",
             "alias_normalized": "0.4.1.0",
             "version": "dev-0.4.1-mwg-metadata-copy",
@@ -5091,6 +5097,7 @@
         "alchemy/zippy": 20,
         "goodby/csv": 20,
         "imagine/imagine": 20,
+        "jms/translation-bundle": 20,
         "neutron/process-manager": 20,
         "phpexiftool/phpexiftool": 20,
         "silex/silex": 20,
