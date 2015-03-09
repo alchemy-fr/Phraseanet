@@ -820,8 +820,8 @@ class databox extends base
             ->from('coll', 'c');
         if (count($colls) > 0) {
             $builder
-                ->where($builder->expr()->notIn('c.coll_id', ':colls'))
-                ->setParameter('colls', $colls)
+                ->where($builder->expr()->notIn('c.coll_id', [':colls']))
+                ->setParameter('colls', $colls, Connection::PARAM_INT_ARRAY)
             ;
         }
 
