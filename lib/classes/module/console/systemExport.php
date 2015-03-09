@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -120,6 +121,7 @@ class module_console_systemExport extends Command
 
         $total = $errors = 0;
 
+        /** @var databox $databox */
         foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
             $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_label($this->container['locale'])));
 
@@ -153,20 +155,27 @@ class module_console_systemExport extends Command
 
             $this->getService('filesystem')->mkdir($local_export);
 
-            $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0 ';
+            $builder = $databox->get_connection()->createQueryBuilder();
+            $builder
+                ->select('r.record_id')
+                ->from('record', 'r')
+                ->where($builder->expr()->eq('r.parent_record_id', $builder->expr()->literal(0)))
+            ;
 
             if (count($coll_ids) > 0) {
-                $sql .= ' AND coll_id IN (' . implode(', ', $coll_ids) . ') ';
+                $builder
+                    ->andWhere($builder->expr()->in('r.coll_id', [':collIds']))
+                    ->setParameter('collIds', $coll_ids, Connection::PARAM_INT_ARRAY)
+                ;
             }
 
-            $sql .= ' ORDER BY record_id ASC ';
+            $builder->orderBy('r.record_id', 'ASC');
 
             if ($limit) {
-                $sql .= ' LIMIT 0, ' . $limit;
+                $builder->setMaxResults($limit);
             }
 
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
+            $stmt = $builder->execute();
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 

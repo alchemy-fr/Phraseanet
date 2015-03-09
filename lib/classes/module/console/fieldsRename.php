@@ -35,6 +35,7 @@ class module_console_fieldsRename extends Command
         $new_name = $input->getArgument('name');
 
         try {
+            /** @var databox $databox */
             $databox = $this->getService('phraseanet.appbox')->get_databox((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid databox id </error>");
@@ -84,13 +85,18 @@ class module_console_fieldsRename extends Command
         $start = 0;
         $quantity = 100;
 
+        $builder = $databox->get_connection()->createQueryBuilder();
+        $builder
+            ->select('r.record_id')
+            ->from('record', 'r')
+            ->orderBy('r.record_id', 'ASC')
+            ->setFirstResult($start)
+            ->setMaxResults($quantity)
+        ;
         do {
             $output->write("\rUpdating records... <info>".min($start, $total)." / $total</info>");
 
-            $sql = 'SELECT record_id FROM record
-                  ORDER BY record_id LIMIT ' . $start . ', ' . $quantity;
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
+            $stmt = $builder->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
