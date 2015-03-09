@@ -173,6 +173,8 @@ class databox_status
      */
     public static function operation_mask(Application $app, $stat1, $stat2)
     {
+        $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
         $stat1_or  = bindec(trim(str_replace("x", "0", $stat1)));
         $stat1_and = bindec(trim(str_replace("x", "1", $stat1)));
         $stat2_or  = bindec(trim(str_replace("x", "0", $stat2)));
@@ -189,6 +191,8 @@ class databox_status
         if (substr($stat2, 0, 2) === '0x') {
             $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
+        $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
 
         return decbin(bindec($stat1) & ~bindec($stat2));
     }
@@ -201,6 +205,8 @@ class databox_status
         if (substr($stat2, 0, 2) === '0x') {
             $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
+        $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
 
         return decbin(hexdec($stat1) | hexdec($stat2));
     }
@@ -227,7 +233,7 @@ class databox_status
             throw new \Exception('Non-hexadecimal value');
         }
 
-        return hex2bin($status);
+        return base_convert($status, 16, 2);
     }
 
     public static function bitIsSet($bitValue, $nthBit)
