@@ -29,11 +29,11 @@ class Status implements AttributeInterface
         } elseif (ctype_digit($status)) {
             $status = decbin((int) $status);
         } elseif (strpos($status, '0x') === 0 && ctype_xdigit(substr($status, 2))) {
-            $status = \databox_status::hex2bin($app, $status);
+            $status = \databox_status::hex2bin($status);
         } elseif (strpos($status, '0b') === 0 && preg_match('/^[01]+$/', substr($status, 2))) {
             $status = substr($status, 2);
         } elseif (ctype_xdigit($status)) {
-            $status = \databox_status::hex2bin($app, $status);
+            $status = \databox_status::hex2bin($status);
         } else {
             throw new \InvalidArgumentException('Invalid status argument');
         }

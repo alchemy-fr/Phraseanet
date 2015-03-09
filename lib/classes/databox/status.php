@@ -149,7 +149,7 @@ class databox_status
         return true;
     }
 
-    public static function operation_and(Application $app, $stat1, $stat2)
+    public static function operation_and($stat1, $stat2)
     {
         if (substr($stat1, 0, 2) === '0x') {
             $stat1 = self::hex2bin($app, substr($stat1, 2));
@@ -165,13 +165,12 @@ class databox_status
      * compute ((0 M s1) M s2) where M is the "mask" operator
      * nb : s1,s2 are binary mask strings as "01x0xx1xx0x", no other format (hex) supported
      *
-     * @param Application $app
      * @param $stat1 a binary mask "010x1xx0.." STRING
      * @param $stat2 a binary mask "x100x1..." STRING
      *
      * @return string
      */
-    public static function operation_mask(Application $app, $stat1, $stat2)
+    public static function operation_mask($stat1, $stat2)
     {
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
         $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
@@ -183,13 +182,13 @@ class databox_status
         return decbin((((0 | $stat1_or) & $stat1_and) | $stat2_or) & $stat2_and);
     }
 
-    public static function operation_and_not(Application $app, $stat1, $stat2)
+    public static function operation_and_not($stat1, $stat2)
     {
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin($app, substr($stat1, 2));
+            $stat1 = self::hex2bin(substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin($app, substr($stat2, 2));
+            $stat2 = self::hex2bin(substr($stat2, 2));
         }
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
         $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
@@ -197,13 +196,13 @@ class databox_status
         return decbin(bindec($stat1) & ~bindec($stat2));
     }
 
-    public static function operation_or(Application $app, $stat1, $stat2)
+    public static function operation_or($stat1, $stat2)
     {
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin($app, substr($stat1, 2));
+            $stat1 = self::hex2bin(substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin($app, substr($stat2, 2));
+            $stat2 = self::hex2bin(substr($stat2, 2));
         }
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
         $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
@@ -211,7 +210,7 @@ class databox_status
         return decbin(bindec($stat1) | bindec($stat2));
     }
 
-    public static function dec2bin(Application $app, $status)
+    public static function dec2bin($status)
     {
         $status = (string) $status;
 
@@ -222,7 +221,7 @@ class databox_status
         return decbin($status);
     }
 
-    public static function hex2bin(Application $app, $status)
+    public static function hex2bin($status)
     {
         $status = (string) $status;
         if (substr($status, 0, 2) === '0x') {
