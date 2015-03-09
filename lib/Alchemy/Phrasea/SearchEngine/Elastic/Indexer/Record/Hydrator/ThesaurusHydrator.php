@@ -52,27 +52,30 @@ class ThesaurusHydrator implements HydratorInterface
         if (!isset($record['databox_id'])) {
             throw new Exception('Expected a record with the "databox_id" key set.');
         }
-        $filter = Filter::byDatabox($record['databox_id']);
 
+        $terms = array();
+        $fieldMap = array();
         foreach ($fields as $field => $prefix) {
-            if (!isset($record['caption'][$field])) {
-                continue;
-            }
-
-            // TODO Build prefix filter
-
-            $concepts = array();
-            foreach ($record['caption'][$field] as $value) {
-                $term = Term::parse($value);
-                $item_concepts = $this->thesaurus->findConcepts($term, null, $filter, true);
-                if ($item_concepts) {
-                    foreach ($item_concepts as $concepts[]);
-                } else {
-                    $this->candidateTerms->insert($field, $value);
+            if (isset($record['caption'][$field])) {
+                foreach ($record['caption'][$field] as $value) {
+                    $terms[] = Term::parse($value);
+                    $fieldMap[] = $field;
                 }
             }
-            if ($concepts) {
-                $record['concept_path'][$field] = Concept::toPathArray($concepts);
+        }
+
+        // TODO Build prefix filter
+        $filter = Filter::byDatabox($record['databox_id']);
+        $bulk = $this->thesaurus->findConceptsBulk($terms, null, $filter, true);
+
+        foreach ($bulk as $offset => $item_concepts) {
+            if ($item_concepts) {
+                $field = $fieldMap[$offset];
+                foreach ($item_concepts as $concept) {
+                    $record['concept_path'][$field][] = $concept->getPath();
+                }
+            } else {
+                $this->candidateTerms->insert($field, $value);
             }
         }
     }

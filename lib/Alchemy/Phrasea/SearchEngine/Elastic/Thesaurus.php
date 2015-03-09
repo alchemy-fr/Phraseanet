@@ -31,12 +31,12 @@ class Thesaurus
         $this->index = $index;
     }
 
-    public function findConceptsBulk(array $terms, $lang = null)
+    public function findConceptsBulk(array $terms, $lang = null, Filter $filter, $strict = false)
     {
         // TODO Use bulk queries for performance
         $concepts = array();
         foreach ($terms as $term) {
-            $concepts[] = $this->findConcepts($term, $lang);
+            $concepts[] = $this->findConcepts($term, $lang, $filter, $strict);
         }
 
         return $concepts;
