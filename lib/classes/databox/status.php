@@ -192,7 +192,7 @@ class databox_status
             $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
-        $stat2 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
 
         return decbin(bindec($stat1) & ~bindec($stat2));
     }
@@ -206,9 +206,9 @@ class databox_status
             $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
-        $stat2 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
 
-        return decbin(hexdec($stat1) | hexdec($stat2));
+        return decbin(bindec($stat1) | bindec($stat2));
     }
 
     public static function dec2bin(Application $app, $status)
