@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use appbox;
 use Closure;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
@@ -30,7 +31,6 @@ class Indexer
     /** @var \Elasticsearch\Client */
     private $client;
     private $options;
-    private $logger;
     private $appbox;
 
     private $recordIndexer;
@@ -44,13 +44,13 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    public function __construct(Client $client, array $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, LoggerInterface $logger)
+    public function __construct(Client $client, array $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox)
     {
         $this->client   = $client;
         $this->options  = $options;
         $this->termIndexer = $termIndexer;
         $this->recordIndexer = $recordIndexer;
-        $this->logger   = $logger;
+        $this->appbox   = $appbox;
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
@@ -98,14 +98,21 @@ class Indexer
         return $this->client->indices()->exists($params);
     }
 
-    public function populateIndex($what)
+    public function populateIndex($what, array $databoxes_id = [])
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        $this->apply(function(BulkOperation $bulk) use ($what) {
+        if ($databoxes_id) {
+            // If databoxes are given, only use those
+            $databoxes = array_map(array($this->appbox, 'get_databox'), $databoxes_id);
+        } else {
+            $databoxes = $this->appbox->get_databoxes();
+        }
+
+        $this->apply(function(BulkOperation $bulk) use ($what, $databoxes) {
             if ($what & self::THESAURUS) {
-                $this->termIndexer->populateIndex($bulk);
+                $this->termIndexer->populateIndex($bulk, $databoxes);
 
                 // Record indexing depends on indexed terms so we need to make
                 // everything ready to search
@@ -114,7 +121,7 @@ class Indexer
             }
 
             if ($what & self::RECORDS) {
-                $this->recordIndexer->populateIndex($bulk);
+                $this->recordIndexer->populateIndex($bulk, $databoxes);
 
                 // Final flush
                 $bulk->flush();

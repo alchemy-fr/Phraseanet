@@ -38,9 +38,9 @@ class TermIndexer
         $this->locales = $locales;
     }
 
-    public function populateIndex(BulkOperation $bulk)
+    public function populateIndex(BulkOperation $bulk, array $databoxes)
     {
-        foreach ($this->appbox->get_databoxes() as $databox) {
+        foreach ($databoxes as $databox) {
             /** @var databox $databox */
             $databoxId = $databox->get_sbas_id();
 
