@@ -183,11 +183,6 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
-                        <li class="ui-tabs-selected ui-corner-top">
-                            <a href="#baskets" class="WZbasketTab">
-                                <div id="basket_menu_trigger">&#9660;</div>
-                            </a>
-                        </li>
                         {% if GV_thesaurus %}
                         <li class="proposals_WZ">
                             <a href="#proposals" class="WZtabs">
@@ -204,6 +199,11 @@
                         <li style="float:right;">
                             <a href="#" class="escamote">
                                 <img src="/skins/icons/workzoneEscamote.png" title="{{ 'Close the WorkZone' | trans }}"/>
+                            </a>
+                        </li>
+                        <li class="ui-tabs-selected ui-corner-top">
+                            <a href="#baskets" class="WZbasketTab">
+                                <div id="basket_menu_trigger">&#9660;</div>
                             </a>
                         </li>
                     </ul>
@@ -509,9 +509,6 @@
 
                             </span>
                         </div>
-                        <!--td class="navigation">
-                            <div id="tool_navigate"></div>
-                        </td-->
                     </div>
                 </div>
 
@@ -755,6 +752,11 @@
                             {% endif %}
                         });
                     </script>
+                </div>
+                <div id="paginate">
+                    <div class="navigation">
+                        <div id="tool_navigate"></div>
+                    </div>
                 </div>
             </div>
         </div>
