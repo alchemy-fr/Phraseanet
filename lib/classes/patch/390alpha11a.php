@@ -58,21 +58,12 @@ class patch_390alpha11a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $app['conf']->set(['main', 'task-manager', 'status'], 'started');
-        $app['conf']->set(['main', 'websocket-server'], [
-            'host' => parse_url($app['conf']->get('servername'), PHP_URL_HOST),
-            'port' => 9090,
-            'ip'   => '0.0.0.0',
-        ]);
-        $app['conf']->set(['main', 'task-manager', 'listener'], [
+
+        $app['conf']->set(['main', 'task-manager', 'options'], [
             'protocol' => 'tcp',
             'host'     => '127.0.0.1',
             'port'     => 6660,
             'linger'   => 500,
-        ]);
-        $app['conf']->set(['main', 'websocket-server', 'subscriber'], [
-            'protocol' => 'tcp',
-            'host'     => '127.0.0.1',
-            'port'     => 13598,
         ]);
     }
 }
