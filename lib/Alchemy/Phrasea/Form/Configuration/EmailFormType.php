@@ -44,7 +44,7 @@ class EmailFormType extends AbstractType
             'label'        => 'SMTP user',
         ]);
         $builder->add('hidden-password', 'password', [
-            'label' => false,
+            'label' => '',
             'attr' =>  [
                 'style' => 'display:none'
             ]

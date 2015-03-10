@@ -339,7 +339,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
                 mail_locked,            last_model,             mail_notifications,     nonce,
                 password,               push_list,              request_notifications,  salted_password,
                 gender,                 phone,                  timezone,               zip_code,
-                created,                updated
+                created,                updated,                deleted
             )
             (
                 SELECT
@@ -351,7 +351,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
                 mail_locked,            NULL AS lastModel,      mail_notifications,     '.($this->hasField($em, 'nonce') ? 'nonce' : 'NULL AS nonce').',
                 usr_password,           push_list,              request_notifications,  '.($this->hasField($em, 'salted_password') ? 'salted_password' : '0 AS salted_password').',
                 usr_sexe,               tel,                    timezone,               cpostal,
-                usr_creationdate,       usr_modificationdate
+                usr_creationdate,       usr_modificationdate,   0
                 FROM usr
             )'
         );

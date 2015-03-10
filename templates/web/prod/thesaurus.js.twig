@@ -471,7 +471,7 @@ function T_search(menuItem, menu, cmenu, e, label)
   var sbid = tcids.shift();
   var term = menu._li.find("span span").html();
 
-  v = '*:"' + term.replace("(", "[").replace(")", "]") + '"';
+  v = '[' + term + ']';
 
   var nck = 0;
   $('#searchForm .adv_options :checkbox[name="bases[]"]').each(function(a)
@@ -804,7 +804,7 @@ function doThesSearch(type, sbid, term, field)
     }
   }
   if(type=='T')
-    v = '*:"' + term.replace("(", "[").replace(")", "]") + '"';
+    v = '[' + term + ']';
   else
     v = '"' + term + '" IN ' + field;
   $('form[name="phrasea_query"] input[name="qry"]').val(v);

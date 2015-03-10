@@ -97,7 +97,7 @@
 
 {% macro caption_field(field, bounceable, extra_classes) %}
     <div class="desc {{ extra_classes|join(' ') }}">
-        <b>{{ field.label }}</b> :
+        <b>{{ field.label_name }}</b> :
         {{ _self.caption_value(field, bounceable|default(true))|highlight|linkify }}
     </div>
 {% endmacro %}

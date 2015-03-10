@@ -44,12 +44,12 @@ class Registration
     private $baseId;
 
     /**
-     * @ORM\Column(type="boolean", name="pending")
+     * @ORM\Column(type="boolean", name="pending", options={"default" = 1})
      */
     private $pending = true;
 
     /**
-     * @ORM\Column(type="boolean", name="rejected")
+     * @ORM\Column(type="boolean", name="rejected", options={"default" = 0})
      */
     private $rejected = false;
 

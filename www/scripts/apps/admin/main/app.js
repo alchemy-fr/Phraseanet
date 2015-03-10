@@ -11,10 +11,9 @@ define([
     "jquery",
     "underscore",
     "backbone",
-    "common/websockets/connection",
     "apps/admin/main/views/leftPanel",
     "apps/admin/main/views/rightPanel"
-], function ($, _, Backbone, WSConnection, LeftPanel, RightPanel) {
+], function ($, _, Backbone, LeftPanel, RightPanel) {
     window.AdminApp = {
         $scope: $("#admin-app"),
         $leftView : $(".left-view", this.$scope),
@@ -66,10 +65,6 @@ define([
     var initialize = function (options) {
         if (false === "wsurl" in options) {
             throw "You must define a websocket url";
-        }
-
-        if (false === WSConnection.isConnected()) {
-            // WSConnection.connect(options.wsurl);
         }
 
         create();

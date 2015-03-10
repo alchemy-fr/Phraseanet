@@ -41,12 +41,12 @@ class WebhookEventDelivery
     private $event;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(type="boolean", nullable=false, options={"default" = 0})
      */
     private $delivered = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="integer", nullable=false, options={"default" = 0})
      */
     private $deliveryTries = 0;
 

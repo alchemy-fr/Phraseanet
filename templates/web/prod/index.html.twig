@@ -186,11 +186,6 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
-                        <li class="ui-tabs-selected ui-corner-top">
-                            <a href="#baskets" class="WZbasketTab">
-                                <div id="basket_menu_trigger">&#9660;</div>
-                            </a>
-                        </li>
                         {% if GV_thesaurus %}
                         <li class="proposals_WZ">
                             <a href="#proposals" class="WZtabs">
@@ -209,13 +204,18 @@
                                 <img src="/skins/icons/workzoneEscamote.png" title="{{ 'Close the WorkZone' | trans }}"/>
                             </a>
                         </li>
+                        <li class="ui-tabs-selected ui-corner-top">
+                            <a href="#baskets" class="WZbasketTab">
+                                <div id="basket_menu_trigger">&#9660;</div>
+                            </a>
+                        </li>
                     </ul>
                     <div id="baskets" class="PNB">
                         {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                         {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                     </div>
                     {% if GV_thesaurus %}
-                    <div id="proposals" class="PNB" style="top:52px;"
+                    <div id="proposals" class="PNB" style="top:85px;"
                         ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
                     </div>
                     <div id="thesaurus_tab" class="PNB" style="top:52px;">
@@ -513,9 +513,6 @@
 
                             </span>
                         </div>
-                        <!--td class="navigation">
-                            <div id="tool_navigate"></div>
-                        </td-->
                     </div>
                 </div>
 
@@ -759,6 +756,11 @@
                             {% endif %}
                         });
                     </script>
+                </div>
+                <div id="paginate">
+                    <div class="navigation">
+                        <div id="tool_navigate"></div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -34,47 +34,47 @@ class FtpCredential
     private $user;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $active = false;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, options={"default" = ""})
      */
     private $address = '';
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, options={"default" = ""})
      */
     private $login = '';
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, options={"default" = ""})
      */
     private $password = '';
 
     /**
-     * @ORM\Column(type="string", length=128, name="reception_folder")
+     * @ORM\Column(type="string", length=128, name="reception_folder", options={"default" = ""})
      */
     private $receptionFolder = '';
 
     /**
-     * @ORM\Column(type="string", length=128, name="repository_prefix_name")
+     * @ORM\Column(type="string", length=128, name="repository_prefix_name", options={"default" = ""})
      */
     private $repositoryPrefixName = '';
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $passive = false;
 
     /**
-     * @ORM\Column(type="boolean", name="tls")
+     * @ORM\Column(type="boolean", name="tls", options={"default" = 0})
      */
     private $ssl = false;
 
     /**
-     * @ORM\Column(type="integer", name="max_retry")
+     * @ORM\Column(type="integer", name="max_retry", options={"default" = 5})
      */
     private $maxRetry = 5;
 

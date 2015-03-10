@@ -276,7 +276,8 @@ span.ww_winTitle {
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li.th_tab {
-    height: 34px;
+    height: 23px;
+    margin-left: 10px;
 }
 
 #THPD_T, #THPD_C {
@@ -957,6 +958,7 @@ div.diapo {
     top: 0px;
     left: 10px;
     right: 10px;
+    margin-top: 21px;
 }
 
 #idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
@@ -1113,6 +1115,16 @@ div.diapo {
     overflow: hidden;
     white-space: nowrap;
     display: block;
+}
+
+#baskets .menu .contextMenuTrigger {
+    cursor: pointer;
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: url('../../icons/contextMenuTrigger.png') 0 13px no-repeat;
+    height: 45px;
+    width: 13px;
 }
 
 /** hack IE7 only */
@@ -4405,7 +4417,47 @@ ui-dialog-titlebar {
     max-heigh: 16px;
 }
 
-#answers .status img {
-    max-width: 16px;
-    max-heigh: 16px;
+#paginate {
+    position: absolute;
+    bottom: 30px;
+    right: 65px;
+}
+
+#paginate #tool_navigate {
+    background-color: #000;
+    /*border: 1px solid #3b3b3b;*/
+}
+
+
+#paginate #tool_navigate input,
+#paginate #tool_navigate a {
+    border: none;
+    border-top: 1px solid #3b3b3b;
+    border-bottom: 1px solid #3b3b3b;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    width: 30px;
+    background: none;
+    font-weight: normal;
+    text-shadow: none;
+    box-shadow: none;
+    color: #3b3b3b;
+}
+
+#paginate #tool_navigate:first-child {
+    border-left: 1px solid #3b3b3b;
+}
+
+#paginate #tool_navigate:last-child {
+    border-right: 1px solid #3b3b3b;
+}
+
+#paginate #tool_navigate input,
+#paginate #tool_navigate a:hover {
+    color: #fff;
+    background: #076882;
 }

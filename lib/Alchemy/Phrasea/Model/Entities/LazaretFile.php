@@ -59,7 +59,7 @@ class LazaretFile
     private $sha256;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" = 0})
      */
     private $forced = false;
 

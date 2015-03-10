@@ -34,10 +34,18 @@ class FeedMigration extends AbstractMigration
         $this->addSql("ALTER TABLE FeedItems ADD CONSTRAINT FK_7F9CDFA6BA364942 FOREIGN KEY (entry_id) REFERENCES FeedEntries (id)");
         $this->addSql("ALTER TABLE FeedTokens ADD CONSTRAINT FK_9D1CA848A76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)");
         $this->addSql("ALTER TABLE FeedTokens ADD CONSTRAINT FK_9D1CA84851A5BC03 FOREIGN KEY (feed_id) REFERENCES Feeds (id)");
+
+        $this->addSql('ALTER TABLE Feeds CHANGE public public TINYINT(1) DEFAULT \'0\' NOT NULL, CHANGE icon_url icon_url TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE FeedPublishers CHANGE owner owner TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE FeedTokens CHANGE value value VARCHAR(64) DEFAULT NULL');
     }
 
     public function doDownSql(Schema $schema)
     {
+        $this->addSql('ALTER TABLE FeedPublishers CHANGE owner owner TINYINT(1) NOT NULL');
+        $this->addSql('ALTER TABLE FeedTokens CHANGE value value VARCHAR(12) DEFAULT NULL');
+        $this->addSql('ALTER TABLE Feeds CHANGE public public TINYINT(1) NOT NULL, CHANGE icon_url icon_url TINYINT(1) NOT NULL');
+
         $this->addSql("ALTER TABLE FeedPublishers DROP FOREIGN KEY FK_31AFAB251A5BC03");
         $this->addSql("ALTER TABLE FeedEntries DROP FOREIGN KEY FK_5FC892F951A5BC03");
         $this->addSql("ALTER TABLE FeedTokens DROP FOREIGN KEY FK_9D1CA84851A5BC03");

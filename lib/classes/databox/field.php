@@ -1009,12 +1009,12 @@ class databox_field implements cache_cacheableInterface
         }
 
         $sql = "INSERT INTO metadatas_structure
-        (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
+        (`id`, `name`, `src`, `readonly`, `required`, `indexable`, `type`, `tbranch`,
           `thumbtitle`, `multi`, `business`, `aggregable`,
-          `report`, `sorter`)
-        VALUES (null, :name, '', 0, 1, 'string', '',
+          `report`, `sorter`, `separator`)
+        VALUES (null, :name, '', 0, 0, 1, 'string', '',
           null, :multi,
-          0, 0, 1, :sorter)";
+          0, 0, 1, :sorter, '')";
 
         $name = self::generateName($name);
 

@@ -22,7 +22,7 @@ class Token
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=128)
      */
     private $value;
 

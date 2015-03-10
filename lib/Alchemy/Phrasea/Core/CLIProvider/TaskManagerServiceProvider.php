@@ -31,9 +31,9 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager'] = $app->share(function (Application $app) {
-            $options = $app['task-manager.listener.options'];
+            $options = $app['task-manager.options'];
 
-            $manager = TaskManager::create(
+            return TaskManager::create(
                 $app['dispatcher'],
                 $app['task-manager.logger'],
                 $app['task-manager.task-list'],
@@ -44,9 +44,6 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
                     'tick_period'       => 1,
                 ]
             );
-            $manager->addSubscriber($app['ws.task-manager.broadcaster']);
-
-            return $manager;
         });
 
         $app['task-manager.logger.configuration'] = $app->share(function (Application $app) {

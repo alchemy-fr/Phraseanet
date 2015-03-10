@@ -88,13 +88,7 @@ class Authenticator
     {
         $user = $session->getUser();
 
-        $rights = [];
-        if ($this->app['acl']->get($user)->has_right('taskmanager')) {
-            $rights[] = 'task-manager';
-        }
-
         $this->session->set('usr_id', $user->getId());
-        $this->session->set('websockets_rights', $rights);
         $this->session->set('session_id', $session->getId());
     }
 
