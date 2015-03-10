@@ -11,32 +11,41 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Serializer\ESRecordSerializer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Application;
 use Elasticsearch\Client;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
+    const FLAG_ALLOW_BOTH = 'allow_both';
+    const FLAG_SET_ONLY = 'set_only';
+    const FLAG_UNSET_ONLY = 'unset_only';
+
     private $app;
     /** @var Client */
     private $client;
-
     private $dateFields;
     private $indexName;
-    private $serializer;
     private $configurationPanel;
+    private $locales;
+    private $recordHelper;
 
-    public function __construct(Application $app, Client $client, ESRecordSerializer $serializer, $indexName)
+    public function __construct(Application $app, Client $client, $indexName)
     {
         $this->app = $app;
         $this->client = $client;
-        $this->serializer = $serializer;
+        $this->locales = array_keys($app['locales.available']);
+        $this->recordHelper = $this->app['elasticsearch.record_helper'];
 
         if ('' === trim($indexName)) {
             throw new \InvalidArgumentException('The provided index name is invalid.');
@@ -128,8 +137,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableSort()
     {
         return [
-            'score' => $this->app->trans('pertinence'),
-            'created_on' => $this->app->trans('date dajout'),
+            SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
+            SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
         ];
     }
 
@@ -138,7 +147,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getDefaultSort()
     {
-        return 'score';
+        return SearchEngineOptions::SORT_RELEVANCE;
     }
 
     /**
@@ -155,8 +164,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableOrder()
     {
         return [
-            'desc' => $this->app->trans('descendant'),
-            'asc'  => $this->app->trans('ascendant'),
+            SearchEngineOptions::SORT_MODE_DESC => $this->app->trans('descendant'),
+            SearchEngineOptions::SORT_MODE_ASC  => $this->app->trans('ascendant'),
         ];
     }
 
@@ -181,14 +190,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function addRecord(\record_adapter $record)
     {
-        $this->doExecute('index', [
-            'body'  => $this->serializer->serialize($record),
-            'index' => $this->indexName,
-            'type'  => 'record',
-            'id'    => sprintf('%d-%d', $record->get_sbas_id(), $record->get_record_id()),
-        ]);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -196,13 +198,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function removeRecord(\record_adapter $record)
     {
-        $this->doExecute('delete', [
-            'index' => $this->indexName,
-            'type'  => 'record',
-            'id'    => sprintf('%s-%s', $record->get_sbas_id(), $record->get_record_id()),
-        ]);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -210,9 +206,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function updateRecord(\record_adapter $record)
     {
-        $this->addRecord($record);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -220,9 +214,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function addStory(\record_adapter $story)
     {
-        $this->addRecord($story);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -230,9 +222,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function removeStory(\record_adapter $story)
     {
-        $this->removeRecord($story);
-
-        return $this;
+        $this->notImplemented();
     }
 
     /**
@@ -240,9 +230,12 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function updateStory(\record_adapter $story)
     {
-        $this->addRecord($story);
+        $this->notImplemented();
+    }
 
-        return $this;
+    private function notImplemented()
+    {
+        throw new LogicException('Not implemented');
     }
 
     /**
@@ -272,26 +265,42 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($query, $offset, $perPage, SearchEngineOptions $options = null)
+    public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
     {
-        $query = 'all' !== strtolower($query) ? $query : '';
-        $params = $this->createQueryParams($query, $options ?: new SearchEngineOptions());
-        $params['from'] = $offset;
-        $params['size'] = $perPage;
+        $options = $options ?: new SearchEngineOptions();
+
+        // TODO Pass options to getFields to include/exclude private fields
+        $searchableFields = $this->recordHelper->getFields();
+        $queryContext = new QueryContext($this->locales, $this->app['locale'], $searchableFields);
+        $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
+
+        $params = $this->createRecordQueryParams($recordQuery, $options, null);
+
+        $params['body']['from'] = $offset;
+        $params['body']['size'] = $perPage;
+
+        if ($aggs = $this->getAggregationQueryParams($options)) {
+            $params['body']['aggs'] = $aggs;
+        }
 
         $res = $this->doExecute('search', $params);
 
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
-        $n = 0;
 
+        $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
-            $databoxId = is_array($hit['fields']['databox_id']) ? array_pop($hit['fields']['databox_id']) : $hit['fields']['databox_id'];
-            $recordId = is_array($hit['fields']['record_id']) ? array_pop($hit['fields']['record_id']) : $hit['fields']['record_id'];
-            $results[] = new \record_adapter($this->app, $databoxId, $recordId, $n++);
+            $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
-        return new SearchEngineResult($results, $query, $res['took'], $offset, $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [], $this->indexName);
+        $query['ast'] = $this->app['query_parser']->parse($string)->dump();
+        $query['query_main'] = $recordQuery;
+        $query['query'] = $params['body'];
+        $query['query_string'] = json_encode($params['body']);
+
+        return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
+            $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
+            $this->indexName, isset($res['aggregations']) ? $res['aggregations'] : []);
     }
 
     /**
@@ -299,7 +308,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        throw new RuntimeException('ElasticSearch engine currently does not support auto-complete.');
+        throw new RuntimeException('Elasticsearch engine currently does not support auto-complete.');
     }
 
     /**
@@ -333,214 +342,166 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function createSubscriber(Application $app)
-    {
-        return new ElasticSearchEngineSubscriber();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return ElastcSearchEngine
-     */
-    public static function create(Application $app, array $options = [])
-    {
-        $options = array_replace([
-            'host'  => '127.0.0.1',
-            'port'  => '9200',
-            'index' => 'phraseanet',
-        ], $options);
-
-        $client = new Client(['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]]);
-
-        return new static($app, $client, $app['serializer.es-record'], $options['index']);
-    }
-
-    private function createQueryParams($query, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createTermQueryParams($query, SearchEngineOptions $options)
     {
         $params = [
             'index' => $this->indexName,
-            'type'  => 'record',
-            'body'  => [
-                'fields' => ['databox_id', 'record_id'],
-                'sort'   => $this->createSortQueryParams($options),
-            ]
+            'type'  => TermIndexer::TYPE_NAME,
+            'body'  => [],
+            'size'  => 20,
         ];
 
-        $ESquery = $this->createESQuery($query, $options);
-        $filters = $this->createFilters($options);
-
-        if ($record) {
-            $filters[] = [
-                'term' => [
-                    '_id' => sprintf('%s-%s', $record->get_sbas_id(), $record->get_record_id()),
-                ]
-            ];
-
-            $fields = [];
-
-            foreach ($record->get_databox()->get_meta_structure() as $dbField) {
-                $fields['caption.'.$dbField->get_name()] = new \stdClass();
-            }
-
-            $params['body']['highlight'] = [
-                "pre_tags"  => ["[[em]]"],
-                "post_tags" => ["[[/em]]"],
-                "fields"    => $fields,
-            ];
-        }
-
-        if (count($filters) > 0) {
-            $ESquery = [
-                'filtered' => [
-                    'query' => $ESquery,
-                    'filter' => [
-                        'and' => $filters
-                    ]
-                ]
-            ];
-        }
-
-        $params['body']['query'] = $ESquery;
+        $params['body']['query'] = $query;
 
         return $params;
     }
 
-    private function createESQuery($query, SearchEngineOptions $options)
+    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
     {
-        $preg = preg_match('/\s?(recordid|storyid)\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
+        $params = [
+            'index' => $this->indexName,
+            'type'  => RecordIndexer::TYPE_NAME,
+            'body'  => [
+                'sort'   => $this->createSortQueryParams($options),
+            ]
+        ];
 
-        $search = [];
-        if ($preg > 0) {
-            $search['bool']['must'][] = [
-                'term' => [
-                    'record_id' => $matches[2],
-                ],
-            ];
-            $query = '';
+        $query_filters = $this->createQueryFilters($options);
+        $acl_filters = $this->createACLFilters();
+
+        $ESQuery = ['filtered' => ['query' => $ESQuery]];
+
+        if (count($query_filters) > 0) {
+            $ESQuery['filtered']['filter']['bool']['must'][] = $query_filters;
         }
 
-        if ('' !== $query) {
-            if (0 < count($options->getBusinessFieldsOn())) {
-                $fields = [];
-
-                foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
-                    foreach ($databox->get_meta_structure() as $dbField) {
-                        if ($dbField->isBusiness()) {
-                            $fields[$dbField->get_name()] = [
-                                'match' => [
-                                    'caption.'.$dbField->get_name() => $query,
-                                ]
-                            ];
-                        }
-                    }
-                }
-
-                if (count($fields) > 0) {
-                    foreach ($options->getBusinessFieldsOn() as $coll) {
-                        $search['bool']['should'][] = [
-                            'bool' => [
-                                'must' => [
-                                    [
-                                        'bool' => [
-                                            'should' => array_values($fields)
-                                        ]
-                                    ],[
-                                        'term' => [
-                                            'base_id' => $coll->get_base_id(),
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ];
-                    }
-                }
-            }
-
-            if ($options->getFields()) {
-                foreach ($options->getFields() as $field) {
-                    $search['bool']['should'][] = [
-                        'match' => [
-                            'caption.'.$field->get_name() => $query,
-                        ]
-                    ];
-                }
-            } else {
-                $search['bool']['should'][] = [
-                    'match' => [
-                        '_all' => $query,
-                    ]
-                ];
-            }
-        } else {
-            $search['bool']['should'][] = [
-                'match_all' => new \stdClass(),
-            ];
+        if (count($acl_filters) > 0) {
+            $ESQuery['filtered']['filter']['bool']['must'][] = $acl_filters;
         }
 
-        return $search;
+        $params['body']['query'] = $ESQuery;
+
+        return $params;
     }
 
-    private function createFilters(SearchEngineOptions $options)
+    private function getAggregationQueryParams(SearchEngineOptions $options)
+    {
+        // get business field access rights for current user
+        $allowed_databoxes = [];
+        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
+        foreach ($options->getDataboxes() as $databox) {
+            $id = $databox->get_sbas_id();
+            if ($acl->can_see_business_fields($databox)) {
+                $allowed_databoxes[] = $id;
+            }
+        }
+
+        $aggs = [];
+        foreach ($this->recordHelper->getFieldsStructure() as $field_name => $params) {
+            // skip if field is not searchable or not aggregated
+            if (!$params['searchable'] || !$params['to_aggregate']) {
+                continue;
+            }
+
+            if ($params['private']) {
+                // restrict access to authorized databoxes
+                $databoxes = array_intersect($params['databox_ids'], $allowed_databoxes);
+                $prefix = 'private_caption';
+            } else {
+                $databoxes = $params['databox_ids'];
+                $prefix = 'caption';
+            }
+
+            // filter aggregation to allowed databoxes
+            // declare aggregation on current field
+            $agg = array();
+            $agg['filter']['terms']['databox_id'] = $databoxes;
+            $agg['aggs']['distinct_occurrence']['terms']['field'] =
+                sprintf('%s.%s.raw', $prefix, $field_name);
+
+            $aggs[$field_name] = $agg;
+        }
+
+        return $aggs;
+    }
+
+    private function createACLFilters()
+    {
+        // No ACLs if no user
+        if (false === $this->app['authentication']->isAuthenticated()) {
+            return [];
+        }
+
+        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
+
+        $grantedCollections = array_keys($acl->get_granted_base(['actif']));
+
+        if (count($grantedCollections) === 0) {
+            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+        }
+
+        $appbox = $this->app['phraseanet.appbox'];
+
+        $flagNamesMap = $this->getFlagsKey($appbox);
+        // Get flags rules
+        $flagRules = $this->getFlagsRules($appbox, $acl, $grantedCollections);
+        // Get intersection between collection ACLs and collection chosen by end user
+        $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
+
+        return $this->buildACLsFilters($aclRules);
+    }
+
+    private function createQueryFilters(SearchEngineOptions $options)
     {
         $filters = [];
 
-        $status_opts = $options->getStatus();
-        foreach ($options->getDataboxes() as $databox) {
-            foreach ($databox->get_statusbits() as $n => $status) {
-                if (!array_key_exists($n, $status_opts)) {
-                    continue;
-                }
-                if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n])) {
-                    continue;
-                }
-
-                $filters[] = [
-                    'term' => [
-                        'status.status-'.$n => $status_opts[$n][$databox->get_sbas_id()],
-                    ]
-                ];
-            }
-        }
-
-        $filters[] = [
-            'terms' => [
-                'base_id' => array_map(function (\collection $coll) { return $coll->get_base_id(); }, $options->getCollections())
-            ]
-        ];
-        $filters[] = [
-            'term' => [
-                'type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ? 'record' : 'story',
-            ]
-        ];
+        $filters[]['term']['record_type'] = $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                    SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(DATE_ATOM);
+                $range['lte'] = $options->getMaxDate()->format(Mapping::DATE_FORMAT_CAPTION_PHP);
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(DATE_ATOM);
+                $range['gte'] = $options->getMinDate()->format(Mapping::DATE_FORMAT_CAPTION_PHP);
             }
 
             foreach ($options->getDateFields() as $dateField) {
-                $filters[] = [
-                    'range' => [
-                        'caption.'.$dateField->get_name() => $range
-                    ]
-                ];
+                $filters[]['range']['caption.'.$dateField->get_name()] = $range;
             }
         }
 
         if ($options->getRecordType()) {
-            $filters[] = [
-                'term' => [
-                    'phrasea_type' => $options->getRecordType(),
-                ]
-            ];
+            $filters[]['term']['phrasea_type'] = $options->getRecordType();
+        }
+
+        if (count($options->getCollections()) > 0) {
+            $filters[]['terms']['base_id'] = array_map(function($collection) {
+                return $collection->get_base_id();
+            }, $options->getCollections());
+        }
+
+        if (count($options->getStatus()) > 0) {
+            $status_filters = [];
+            $flagNamesMap = $this->getFlagsKey($this->app['phraseanet.appbox']);
+
+            foreach ($options->getStatus() as $databoxId => $status) {
+                $status_filter = $databox_status =[];
+                $status_filter[] = ['term' => ['databox_id' => $databoxId]];
+                foreach ($status as $n => $v) {
+                    if (!isset($flagNamesMap[$databoxId][$n])) {
+                        continue;
+                    }
+
+                    $label = $flagNamesMap[$databoxId][$n];
+                    $databox_status[] = ['term' => [sprintf('flags.%s', $label) => (bool) $v]];
+                };
+                $status_filter[] = $databox_status;
+
+                $status_filters[] = ['bool' => ['must' => $status_filter]];
+            }
+            $filters[]['bool']['should'] = $status_filters;
         }
 
         return $filters;
@@ -549,11 +510,14 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createSortQueryParams(SearchEngineOptions $options)
     {
         $sort = [];
-        if ($options->getSortBy() === 'score') {
-            $sort['_score'] = $options->getSortOrder();
-        }
 
-        $sort['created_on'] = $options->getSortOrder();
+        if ($options->getSortBy() === null || $options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
+            $sort['_score'] = $options->getSortOrder();
+        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
+            $sort['created_on'] = $options->getSortOrder();
+        } else {
+            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
+        }
 
         return $sort;
     }
@@ -567,5 +531,124 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $res;
+    }
+
+    private function getFlagsKey(\appbox $appbox)
+    {
+        $flags = [];
+        foreach ($appbox->get_databoxes() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+            $statusStructure = $databox->getStatusStructure();
+            foreach($statusStructure as $bit => $status) {
+                $flags[$databoxId][$bit] = RecordHelper::normalizeFlagKey($status['labelon']);
+            }
+        }
+
+        return $flags;
+    }
+
+    private function getFlagsRules(\appbox $appbox, \ACL $acl, array $collections)
+    {
+        $rules = [];
+        foreach ($collections as $collectionId) {
+            $databoxId = \phrasea::sbasFromBas($this->app, $collectionId);
+            $databox = $appbox->get_databox($databoxId);
+
+            $mask_xor = $acl->get_mask_xor($collectionId);
+            $mask_and = $acl->get_mask_and($collectionId);
+            foreach ($databox->getStatusStructure()->getBits() as $bit) {
+                $rules[$databoxId][$collectionId][$bit] = $this->computeAccess(
+                    $mask_xor,
+                    $mask_and,
+                    $bit
+                );
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     *    Truth table for status rights
+     *
+     *    +-----------+
+     *    | and | xor |
+     *    +-----------+
+     *    |  0  |  0  | -> BOTH STATES ARE CHECKED
+     *    +-----------+
+     *    |  1  |  0  | -> UNSET STATE IS CHECKED
+     *    +-----------+
+     *    |  0  |  1  | -> UNSET STATE IS CHECKED (not possible)
+     *    +-----------+
+     *    |  1  |  1  | -> SET STATE IS CHECKED
+     *    +-----------+
+     *
+     */
+    private function computeAccess($and, $xor, $bit)
+    {
+        $xorBit = \databox_status::bitIsSet($xor, $bit);
+        $andBit = \databox_status::bitIsSet($and, $bit);
+
+        if (!$xorBit && !$andBit) {
+            return self::FLAG_ALLOW_BOTH;
+        }
+
+        if ($xorBit && $andBit) {
+            return self::FLAG_SET_ONLY;
+        }
+
+        return self::FLAG_UNSET_ONLY;
+    }
+
+    private function getACLsByCollection(array $flagACLs, array $flagNamesMap)
+    {
+        $rules = [];
+
+        foreach ($flagACLs as $databoxId => $bases) {
+            foreach ($bases as $baseId => $bit) {
+                $rules[$baseId] = [];
+                foreach ($bit as $n => $rule) {
+                    if (!isset($flagNamesMap[$databoxId][$n])) {
+                        continue;
+                    }
+
+                    $label = $flagNamesMap[$databoxId][$n];
+                    $rules[$baseId][$label] = $rule;
+                }
+            }
+        }
+
+        return $rules;
+    }
+
+    private function buildACLsFilters(array $aclRules)
+    {
+        $filters = [];
+
+        foreach ($aclRules as $baseId => $flagsRules) {
+            $ruleFilter = $baseFilter = [];
+
+            // filter on base
+            $baseFilter['term']['base_id'] = $baseId;
+            $ruleFilter['bool']['must'][] = $baseFilter;
+
+            // filter by flags
+            foreach ($flagsRules as $flagName => $flagRule) {
+                // only add filter if one of the status state is not allowed / allowed
+                if ($flagRule === self::FLAG_ALLOW_BOTH) {
+                    continue;
+                }
+                $flagFilter = [];
+
+                $flagField = sprintf('flags.%s', $flagName);
+                $flagFilter['term'][$flagField] = $flagRule === self::FLAG_SET_ONLY ? true : false;
+
+                $ruleFilter['bool']['must'][] = $flagFilter;
+            }
+
+            $filters[] = $ruleFilter;
+        }
+
+        return ['bool' => ['should' => $filters]];
     }
 }

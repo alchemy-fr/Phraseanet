@@ -10,6 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
+use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
+use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\NameChangedEvent;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Driver\Connection;
@@ -49,6 +53,11 @@ class collection implements cache_cacheableInterface
         $this->load();
 
         return $this;
+    }
+
+    private function dispatch($eventName, CollectionEvent $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     protected function load()
@@ -249,6 +258,8 @@ class collection implements cache_cacheableInterface
         $this->delete_data_from_cache();
 
         phrasea::reset_baseDatas($this->databox->get_appbox());
+
+        $this->dispatch(CollectionEvents::NAME_CHANGED, new NameChangedEvent($this));
 
         return $this;
     }
@@ -611,6 +622,8 @@ class collection implements cache_cacheableInterface
         if (null !== $user) {
             $collection->set_admin($new_bas, $user);
         }
+
+        $app['dispatcher']->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
 
         return $collection;
     }

@@ -197,8 +197,6 @@ function checkFilters(save) {
 
     $('input.field_switch:checked', container).removeAttr('checked');
 
-    $('input.field_switch:checkbox', container).parent().hide();
-
     filters.removeClass('danger');
 
     var nbSelectedColls = 0;
@@ -340,7 +338,6 @@ function search_doubles() {
 }
 
 function newSearch() {
-    $('#proposals').empty();
     p4.Results.Selection.empty();
 
     clearAnswers();
@@ -466,8 +463,89 @@ function initAnswerForm() {
             },
             success: function (datas) {
 
+                // DEBUG QUERY PARSER
+                var query = datas.parsed_query;
+                try {
+                    query = JSON.parse(query);
+                }
+                catch (e) {}
+                console.info(query);
+
+                var aggs = datas.aggregations;
+                try {
+                  aggs = JSON.parse(aggs);
+                }
+                catch (e) {}
+
+                console.debug('Aggregations:');
+                var toDisplay = [];
+                _.each(aggs, function(field_aggs, key) {
+                    _.each(field_aggs, function(value) {
+                        _.each(value.buckets, function(bucket, keyBis) {
+                            if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
+                            toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
+                        });
+                    });
+                });
+
+                console.table(toDisplay);
+
+                var treeData = [];
+                _.each(aggs, function(field_aggs, key) {
+                    var entry = {
+                        "title" : key,
+                        "key": key,
+                        "folder": true,
+                        "children" : []
+                    };
+                    _.each(field_aggs, function (agg) {
+                        _.each(agg.buckets, function(bucket) {
+                            entry.children.push({
+                                "title": bucket.key + ' ('+ bucket.doc_count + ')',
+                                "key": bucket.key,
+                                "query": '"'+ bucket.key + '" IN ' + key
+                            });
+                        });
+                    });
+                    treeData.push(entry);
+                });
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
+
+                var $tree = $("#proposals");
+
+                if ($tree.data("ui-fancytree")) {
+                    $tree.fancytree("destroy");
+                }
+
+                if (treeData.length > 0) {
+                    $tree.fancytree({
+                        source: treeData,
+                        activate: function(event, data){
+                            var node = data.node;
+                            if (typeof node.data.query === "undefined") {
+                                return;
+                            }
+
+                            var $input = $('form[name="phrasea_query"] input[name="qry"]');
+                            var current_query = $input.val();
+                            var query = node.data.query;
+
+                            if (current_query != '') {
+                                query = '('+current_query+') AND ('+query+')';
+                            }
+                            $input.val(query);
+
+                            checkFilters();
+                            newSearch();
+                            $('searchForm').trigger('submit');
+                        }
+                    });
+
+                    $tree.fancytree("getRootNode").visit(function(node){
+                        node.setExpanded(true);
+                    });
+                }
 
                 $("#answers img.lazyload").lazyload({
                     container: $('#answers')
@@ -479,10 +557,6 @@ function initAnswerForm() {
                     $('#IMGT_' + el).addClass('selected');
                 });
 
-                if (datas.phrasea_props && $.trim(datas.phrasea_props) !== '') {
-                    $('#proposals').empty().append(datas.phrasea_props);
-                    $('#idFrameC li.proposals_WZ').addClass('active');
-                }
                 p4.tot = datas.total_answers;
                 p4.tot_options = datas.form;
                 p4.tot_query = datas.query;

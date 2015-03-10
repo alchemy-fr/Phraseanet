@@ -30,8 +30,6 @@ final class PhraseaEvents
     const ORDER_DELIVER = 'order.deliver';
     const ORDER_DENY = 'order.deny';
 
-    const COLLECTION_CREATE = 'collection.create';
-
     const FEED_ENTRY_CREATE = 'feed-entry.create';
 
     const REGISTRATION_CREATE = 'registration.create';

@@ -99,8 +99,6 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        if ($app['configuration.store']->isSetup()) {
-            $app['border-manager.mime-guesser-configuration']->register();
-        }
+        $app['border-manager.mime-guesser-configuration']->register();
     }
 }

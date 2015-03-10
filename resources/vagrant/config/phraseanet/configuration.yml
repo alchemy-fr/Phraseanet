@@ -24,7 +24,7 @@ main:
         type: ArrayCache
         options: []
     search-engine:
-        type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
+        type: elasticsearch
         options: []
     task-manager:
         status: started

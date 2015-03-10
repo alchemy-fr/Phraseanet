@@ -25,7 +25,7 @@ class SubdefServiceProvider implements ServiceProviderInterface
             return new SubdefGenerator($app, $app['media-alchemyst'], $app['filesystem'], $app['mediavorus'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog']);
         });
         $app['subdef.substituer'] = $app->share(function (SilexApplication $app) {
-            return new SubdefSubstituer($app, $app['filesystem'], $app['media-alchemyst'], $app['mediavorus']);
+            return new SubdefSubstituer($app, $app['filesystem'], $app['media-alchemyst'], $app['mediavorus'], $app['dispatcher']);
         });
     }
 

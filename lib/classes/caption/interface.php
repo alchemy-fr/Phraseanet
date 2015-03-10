@@ -16,7 +16,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 interface caption_interface
 {
 
-    public function __construct(Application $app, record_Interface $record, databox $databox);
+    public function __construct(Application $app, \record_adapter $record, databox $databox);
 
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null);
 }

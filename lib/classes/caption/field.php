@@ -38,11 +38,11 @@ class caption_field implements cache_cacheableInterface
      *
      * @param Application      $app
      * @param databox_field    $databox_field
-     * @param record_Interface $record
+     * @param record_adapter $record
      *
      * @return caption_field
      */
-    public function __construct(Application $app, databox_field $databox_field, record_Interface $record)
+    public function __construct(Application $app, databox_field $databox_field, \record_adapter $record)
     {
         $this->app = $app;
         $this->record = $record;
@@ -317,7 +317,7 @@ class caption_field implements cache_cacheableInterface
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $record->set_metadatas([]);
-                    $app['phraseanet.SE']->updateRecord($record);
+
                     unset($record);
                 } catch (\Exception $e) {
 
@@ -370,7 +370,6 @@ class caption_field implements cache_cacheableInterface
                     $caption_field->delete();
                     $record->set_metadatas([]);
 
-                    $app['phraseanet.SE']->updateRecord($record);
                     unset($caption_field);
                     unset($record);
                 } catch (\Exception $e) {

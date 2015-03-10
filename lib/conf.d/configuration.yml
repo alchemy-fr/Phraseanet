@@ -26,8 +26,11 @@ main:
         type: ArrayCache
         options: []
     search-engine:
-        type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
-        options: []
+        type: elasticsearch
+        # type: phrasea
+        options:
+            host: localhost
+            port: 9200
     task-manager:
         status: started
         enabled: true

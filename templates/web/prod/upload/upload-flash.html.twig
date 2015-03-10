@@ -70,7 +70,7 @@
                                         <h5>{{ 'upload:: Status :' | trans }} :</h5>
                                         <table class="status-tab">
                                             <tbody>
-                                            {% for bit, status in availableCollections['databox'].get_statusbits() %}
+                                            {% for bit, status in availableCollections['databox'].getStatusStructure() %}
                                                 <tr>
                                                     <td class="status-tab-left">
                                                         {% if status['img_off'] is not empty %}

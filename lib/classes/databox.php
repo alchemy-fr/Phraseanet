@@ -16,6 +16,7 @@ use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class databox extends base
 {
@@ -303,9 +304,9 @@ class databox extends base
      *
      * @return databox_status
      */
-    public function get_statusbits()
+    public function getStatusStructure()
     {
-        return databox_status::getStatus($this->app, $this->id);
+        return $this->app['factory.status-structure']->getStructure($this);
     }
 
     /**
@@ -436,7 +437,7 @@ class databox extends base
                 $ret['thesaurus_indexed'] += $row['n'];
         }
 
-        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".JETON_MAKE_SUBDEF." GROUP BY type";
+        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".PhraseaTokens::MAKE_SUBDEF." GROUP BY type";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -886,7 +887,10 @@ class databox extends base
 
     public function saveCterms(DOMDocument $dom_cterms)
     {
-
+        if (null === $dom_cterms->documentElement) {
+            $cterms = $dom_cterms->createElement('cterms');
+            $dom_cterms->appendChild($cterms);
+        }
         $dom_cterms->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
 
         $sql = "UPDATE pref SET value = :xml, updated_on = :date

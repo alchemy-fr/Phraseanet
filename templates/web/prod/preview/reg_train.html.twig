@@ -1,54 +1,79 @@
+    {% set story = record.get_container %}
 
-  {% set regroupement = record.get_container() %}
-  {% set thumbnail = regroupement.get_thumbnail() %}
+    {% set thumb_w = 90 %}
+    {% set thumb_h = 90 %}
 
-  {% if thumbnail.get_height() > 0 %}
-      {% set ratio = thumbnail.get_width() / thumbnail.get_height() %}
-  {% else %}
-      {% set ratio = 1 %}
-  {% endif %}
-  {% if thumbnail.is_paysage %}
-    {% set style = 'width:80px;top:' %}
-    {% set top = (8 + (80 - (80 / ratio)) / 2)|round %}
-    {% set style = style ~ top %}
-    {% set style = style ~ 'px;' %}
-  {% else %}
-    {% set style = 'height:80px;top:8px;' %}
-  {% endif %}
+    {% set thumbnail = story.get_thumbnail %}
+
+    {% if thumbnail is not none %}
+        {% set thumb_w = thumbnail.get_width %}
+        {% set thumb_h = thumbnail.get_height %}
+    {% endif %}
+
+    {% set url = record_thumbnail_url(story) %}
+
+    {% set box_w = 90 %}
+    {% set box_h = 96 %}
+
+    {% set original_h = thumb_h > 0 ? thumb_h : 90 %}
+    {% set original_w = thumb_w > 0 ? thumb_w : 90 %}
+
+    {% set fit_size = fitIn(
+            {"width":original_w, "height":original_h},
+            {"width":box_w, "height":box_h}
+        )
+    %}
 
   <div id="PREVMAINREG" class="PNB10">
-  <img onclick="openPreview('REG',0,'{{regroupement.get_serialize_key()}}')"
-       src="{{thumbnail.get_url()}}" style="position:relative;{{style}}" />
+  <img onclick="openPreview('REG',0,'{{story.get_serialize_key}}')"
+       src="{{url}}"
+       style="
+          width:{{fit_size.width}}px;
+          height:{{fit_size.height}}px;
+          top:{{fit_size.top}}px;
+          position:relative;
+      " />
   </div>
+
+
   <div id="PREVIEWCURRENTCONT" class="PNB10 group_case">
   <ul>
+      {% for record_item in record.get_train %}
+          {% set thumb_w = 70 %}
+          {% set thumb_h = 70 %}
 
-    {% for contained in record.get_train %}
-      {% set thumbnail = contained.get_thumbnail() %}
+          {% set thumbnail = record_item.get_thumbnail %}
 
-      {% if thumbnail.is_paysage %}
-        {% set style = 'width:65px;top:' %}
-        {% set top = ((66 - (65 / (thumbnail.get_width() / thumbnail.get_height()))) / 2)|round %}
-        {% set style = style ~ top %}
-        {% set style = style ~ 'px;' %}
-      {% else %}
-        {% set style = 'height:65px;top:8px;' %}
-      {% endif %}
+          {% if thumbnail is not none %}
+              {% set thumb_w = thumbnail.get_width %}
+              {% set thumb_h = thumbnail.get_height %}
+          {% endif %}
 
-      {% set tooltip = '' %}
-      {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}
-        {% set tooltip = path('prod_tooltip_caption', { 'sbas_id' : contained.get_sbas_id(), 'record_id' : contained.get_record_id(), 'context' : 'preview', 'number' : contained.get_number() }) %}
-      {% endif %}
+          {% set url = record_thumbnail_url(record_item) %}
 
-      {% set class = '' %}
-      {% if loop.index == record.get_number() %}
-        {% set class = ' selected' %}
-      {% endif %}
+          {% set box_w = 70 %}
+          {% set box_h = 80 %}
 
-      <li class="{{class}} prevTrainCurrent" style="">
-        <img {% if tooltip %}tooltipsrc="{{ tooltip }}"{% endif %} jsargs="REG|{{loop.index}}|{{regroupement.get_serialize_key}}"
-          class="openPreview prevRegToolTip" src="{{thumbnail.get_url()}}"
-          style="{{style}}margin:7px;position:relative;"/></li>
+          {% set original_h = thumb_h > 0 ? thumb_h : 70 %}
+          {% set original_w = thumb_w > 0 ? thumb_w : 70 %}
+
+          {% set fit_size = fitIn(
+          {"width":original_w, "height":original_h},
+          {"width":box_w, "height":box_h}
+          )
+          %}
+
+      <li class="{% if loop.index == record.get_number %}selected{% endif %} prevTrainCurrent" style="">
+        <img {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record_item.databoxId, 'record_id' : record_item.recordId, 'context' : 'preview', 'number' : record_item.get_number }) }}"{% endif %}
+             jsargs="REG|{{loop.index}}|{{story.get_serialize_key}}"
+            class="openPreview prevRegToolTip" src="{{url}}"
+            style="
+                width:{{fit_size.width}}px;
+                height:{{fit_size.height}}px;
+                top:{{fit_size.top}}px;
+                position:relative;
+            "
+        /></li>
     {% endfor %}
 
     </ul>

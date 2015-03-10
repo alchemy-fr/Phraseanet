@@ -207,7 +207,7 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
-            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', [
+            $datas = $app['twig']->render('prod/results/feeds.html.twig', [
                 'feeds' => $feeds,
                 'feed' => new Aggregate($app['orm.em'], $feeds),
                 'page' => $page

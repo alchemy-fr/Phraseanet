@@ -222,7 +222,6 @@ class Upload implements ControllerProviderInterface
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
                 $message = $app->trans('The record was successfully created');
-                $app['phraseanet.SE']->addRecord($elementCreated);
 
                 $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
 

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
+use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
 use MediaAlchemyst\Transmuter\Image2Image;
 
@@ -67,7 +68,7 @@ class SubdefsJob extends AbstractJob
 
             $sql = 'SELECT coll_id, record_id
                     FROM record
-                    WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
+                    WHERE jeton & ' . PhraseaTokens::MAKE_SUBDEF . ' > 0
                     ORDER BY record_id DESC LIMIT 0, 30';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -88,7 +89,7 @@ class SubdefsJob extends AbstractJob
                 }
 
                 $sql = 'UPDATE record
-                      SET jeton=(jeton & ~' . JETON_MAKE_SUBDEF . '), moddate=NOW()
+                      SET jeton=(jeton & ~' . PhraseaTokens::MAKE_SUBDEF . '), moddate=NOW()
                       WHERE record_id=:record_id';
 
                 $stmt = $conn->prepare($sql);
@@ -98,7 +99,7 @@ class SubdefsJob extends AbstractJob
                 // rewrite metadata
                 $sql = 'UPDATE record
                     SET status=(status & ~0x03),
-                        jeton=(jeton | ' . JETON_WRITE_META_SUBDEF . ')
+                        jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF . ')
                     WHERE record_id=:record_id';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([':record_id' => $row['record_id']]);

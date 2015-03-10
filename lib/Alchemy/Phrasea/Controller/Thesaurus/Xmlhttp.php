@@ -753,8 +753,9 @@ class Xmlhttp implements ControllerProviderInterface
         $sbid = (int) $request->get('sbid');
 
         $lcoll = '';
-        $collections = $app['authentication']->getUser()->ACL()
-            ->get_granted_base([], [$sbid]); // array(), $sbid);
+
+        $ACL = $app['acl']->get($app['authentication']->getUser());
+        $collections = $ACL->get_granted_base([], [$sbid]); // array(), $sbid);
         foreach ($collections as $collection) {
             $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
         }

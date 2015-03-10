@@ -156,7 +156,6 @@ class Tools implements ControllerProviderInterface
 
                         if ((int) $request->request->get('ccfilename') === 1) {
                             $record->set_original_name($fileName);
-                            $app['phraseanet.SE']->updateRecord($record);
                         }
                         unlink($tempoFile);
                         rmdir($tempoDir);

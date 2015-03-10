@@ -63,3 +63,7 @@ behat.yml
 
 # Exclude crossdomain.xml file it's generated
 /www/crossdomain.xml
+
+# Exclude jison files
+grammar/query.js
+grammar/jison-*

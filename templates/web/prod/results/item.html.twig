@@ -1,0 +1,82 @@
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
+{% set record  = item.record(app) %}
+
+<div style="width:{{ images_size+30 }}px;"
+     sbas="{{ record.databoxId }}"
+     id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
+     class="IMGT diapo type-{{ record.type }}"
+     onDblClick="openPreview('FEED',{{ record.get_number }},{{ entry.id }});"
+>
+    <div style="padding: 4px;">
+        <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
+            <div class="title" style="max-height:100%" title="{{ record.get_title }}">
+                {{ record.get_title }}
+            </div>
+            <div class="status">
+                {% for flag in record_flags(record) %}
+                    <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+                {% endfor %}
+            </div>
+        </div>
+
+        {% set rollover_gif = record.get_rollover_thumbnail %}
+
+        {% if rollover_thumbnail == 'caption' %}
+            {% set tooltipsrc = path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'publi' }) %}
+        {% elseif rollover_thumbnail == 'preview' %}
+            {% set tooltipsrc = path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) %}
+        {% endif %}
+
+        <div class="thumb captionTips " tooltipsrc="{{ tooltipsrc }}"
+             style="height:{{ images_size }}px; z-index:90;">
+            <div class="doc_infos">
+                {% if doctype_display %}
+                    {{ record_doctype_icon(record) }}
+                {% endif %}
+                <span class="duration">
+                    {{ record.get_formated_duration }}
+                </span>
+            </div>
+            <div class="{% if rollover_gif %}rollovable{% endif %}">
+                {% set extraclass = rollover_gif ? 'rollover-gif-out' : '' %}
+                {{ thumbnail.format(record.get_thumbnail(), images_size, images_size, extraclass, true, false) }}
+                {% if rollover_gif %}
+                    {{ thumbnail.format(rollover_gif, images_size, images_size, 'rollover-gif-hover', true, false) }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="height: 25px; position:relative; text-align:left;">
+            <table class="bottom" style="width:100%; table-layout:fixed;">
+                <tr>
+                    <td style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
+                        {{ record.get_collection_logo(app)|raw }}
+                    </td>
+                    {% set l_width = 30 %}
+                    {% if rollover_thumbnail == 'preview' %}
+                        {% set l_width = l_width + 20 %}
+                    {% endif %}
+                    {% if technical_display == '1' %}
+                        {% set l_width = l_width + 20 %}
+                    {% endif %}
+                    <td style='text-align:right;width:{{ l_width }}px;' valign='bottom'>
+                        {% if record.has_preview and has_access_subdef(record, 'preview') %}
+                            <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"
+                                 class="previewTips"></div>
+                        {% endif %}
+                        {% if rollover_thumbnail == 'preview' %}
+                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.get_number }) }}"
+                                 class="captionRolloverTips"></div>
+                        {% endif %}
+                        {% if technical_display == '1' %}
+                            <img class="infoTips"
+                                 tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"
+                                 src="/skins/icons/info.gif"/>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

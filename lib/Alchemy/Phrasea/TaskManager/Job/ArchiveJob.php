@@ -1016,8 +1016,6 @@ class ArchiveJob extends AbstractJob
         $story->set_binary_status(\databox_status::operation_or($app, $stat0, $stat1));
         $story->rebuild_subdefs();
 
-        $app['phraseanet.SE']->addStory($story);
-
         unset($media);
 
         return $story;

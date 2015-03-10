@@ -68,6 +68,15 @@ module.exports = function(grunt) {
                 "dest": "<%= path.asset %>/backbone-amd/",
                 "flatten": true
             },
+            "fancytree": {
+                "expand": true,
+                "src": [
+                    "dist/*",
+                    "dist/**/*"
+                ],
+                "cwd": "<%= path.bower %>/fancytree",
+                "dest": "<%= path.asset %>/fancytree/"
+            },
             "blueimp": {
                 "expand": true,
                 "src": "js/load-image.js",
@@ -408,6 +417,7 @@ module.exports = function(grunt) {
         "copy:jquery.treeview",
         "copy:json2",
         "copy:js-fixtures",
+        "copy:fancytree",
         "copy:modernizr",
         "copy:normalize",
         "copy:normalize",

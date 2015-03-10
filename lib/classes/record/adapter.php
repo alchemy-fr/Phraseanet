@@ -11,6 +11,14 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -18,11 +26,15 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
+use Alchemy\Phrasea\Status\StatusStructure;
+use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 
-class record_adapter implements record_Interface, cache_cacheableInterface
+class record_adapter implements RecordInterface, cache_cacheableInterface
 {
     /**
      *
@@ -124,12 +136,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @var string
      */
-    protected $bitly_link;
-
-    /**
-     *
-     * @var string
-     */
     protected $uuid;
 
     /**
@@ -174,7 +180,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $this->mime = $datas['mime'];
             $this->sha256 = $datas['sha256'];
-            $this->bitly_link = $datas['bitly_link'];
             $this->original_name = $datas['original_name'];
             $this->type = $datas['type'];
             $this->grouping = $datas['grouping'];
@@ -209,14 +214,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->grouping = ($row['parent_record_id'] == '1');
         $this->type = $row['type'];
         $this->original_name = $row['originalname'];
-        $this->bitly_link = $row['bitly'];
         $this->sha256 = $row['sha256'];
         $this->mime = $row['mime'];
 
         $datas = [
             'mime'              => $this->mime
             , 'sha256'            => $this->sha256
-            , 'bitly_link'        => $this->bitly_link
             , 'original_name'     => $this->original_name
             , 'type'              => $this->type
             , 'grouping'          => $this->grouping
@@ -406,61 +409,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return string
-     */
-    public function get_status_icons()
-    {
-        $dstatus = databox_status::getDisplayStatus($this->app);
-        $sbas_id = $this->get_sbas_id();
-
-        $status = '';
-
-        if (isset($dstatus[$sbas_id])) {
-            foreach ($dstatus[$sbas_id] as $n => $statbit) {
-                if ($statbit['printable'] == '0' &&
-                    !$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->base_id, 'chgstatus')) {
-                    continue;
-                }
-
-                $x = (substr((strrev($this->get_status())), $n, 1));
-
-                $source0 = "/skins/icons/spacer.gif";
-                $style0 = "visibility:hidden;display:none;";
-                $source1 = "/skins/icons/spacer.gif";
-                $style1 = "visibility:hidden;display:none;";
-                if ($statbit["img_on"]) {
-                    $source1 = $statbit["img_on"];
-                    $style1 = "visibility:auto;display:none;";
-                }
-                if ($statbit["img_off"]) {
-                    $source0 = $statbit["img_off"];
-                    $style0 = "visibility:auto;display:none;";
-                }
-                if ($x == '1') {
-                    if ($statbit["img_on"]) {
-                        $style1 = "visibility:auto;display:inline;";
-                    }
-                } else {
-                    if ($statbit["img_off"]) {
-                        $style0 = "visibility:auto;display:inline;";
-                    }
-                }
-                $status .= '<img style="margin:1px;' . $style1 . '" ' .
-                    'class="STAT_' . $this->base_id . '_'
-                    . $this->record_id . '_' . $n . '_1" ' .
-                    'src="' . $source1 . '" title="' . $statbit['labels_on_i18n'][$this->app['locale']] . '"/>';
-                $status .= '<img style="margin:1px;' . $style0 . '" ' .
-                    'class="STAT_' . $this->base_id . '_'
-                    . $this->record_id . '_' . $n . '_0" ' .
-                    'src="' . $source0 . '" title="' . $statbit['labels_off_i18n'][$this->app['locale']] . '"/>';
-            }
-        }
-
-        return $status;
-    }
-
-    /**
      * Returns the type of the document
      *
      * @return string
@@ -519,12 +467,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->base_id = $collection->get_base_id();
 
-        $this->app['phraseanet.SE']->updateRecord($this);
-
         $this->app['phraseanet.logger']($this->get_databox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
 
         $this->delete_data_from_cache();
+
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($this));
 
         return $this;
     }
@@ -770,7 +718,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_technical_infos($data = false)
     {
-
         if (!$this->technical_datas) {
             try {
                 $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
@@ -884,6 +831,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
+
+        $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($this));
 
         return $this;
     }
@@ -1075,8 +1024,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         );
         $stmt->closeCursor();
 
-        $this->reindex();
-
         return $this;
     }
 
@@ -1170,22 +1117,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
 
         $this->set_xml($xml);
-        $this->reindex();
-
         unset($xml);
 
-        return $this;
-    }
-
-    /**
-     * Reindex the record
-     *
-     * @return record_adapter
-     */
-    public function reindex()
-    {
-        $this->app['phraseanet.SE']->updateRecord($this);
-        $this->delete_data_from_cache(self::CACHE_STATUS);
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($this));
 
         return $this;
     }
@@ -1198,7 +1132,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
-        $sql = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->get_record_id()]);
         $stmt->closeCursor();
@@ -1247,7 +1181,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
-            SET jeton = jeton | (' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ')
+            SET jeton = jeton | (' . (PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF) . ')
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':record_id' => $this->record_id]);
@@ -1288,7 +1222,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($this));
+
         return $this;
+    }
+
+    private function dispatch($eventName, RecordEvent $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     /**
@@ -1343,6 +1284,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         } catch (\Exception $e) {
             unset($e);
         }
+
+        self::dispatchCreatedEvent($app, $story);
 
         return $story;
     }
@@ -1412,7 +1355,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $record->insertTechnicalDatas($app['mediavorus']);
 
+        self::dispatchCreatedEvent($app, $record);
+
         return $record;
+    }
+
+    private static function dispatchCreatedEvent(Application $app, RecordInterface $record)
+    {
+        $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
     }
 
     /**
@@ -1660,6 +1610,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 
+        $this->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($this));
+
         return array_keys($ftodel);
     }
 
@@ -1720,8 +1672,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 break;
         }
         $databox = $this->get_databox();
-
-        \cache_databox::update($this->app, $this->get_sbas_id(), 'record', $this->get_record_id());
 
         return $databox->delete_data_from_cache($this->get_cache_key($option));
     }
@@ -1973,5 +1923,108 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /** {@inheritdoc} */
+    public function getBaseId()
+    {
+        return $this->get_base_id();
+    }
+
+    /** {@inheritdoc} */
+    public function getCollectionId()
+    {
+        return $this->get_collection()->get_coll_id();
+    }
+
+    /** {@inheritdoc} */
+    public function getCreated()
+    {
+        return $this->get_creation_date();
+    }
+
+    /** {@inheritdoc} */
+    public function getDataboxId()
+    {
+        return $this->get_databox()->get_sbas_id();
+    }
+
+    /** {@inheritdoc} */
+    public function isStory()
+    {
+        return $this->is_grouping();
+    }
+
+    /** {@inheritdoc} */
+    public function getMimeType()
+    {
+        return $this->get_mime();
+    }
+
+    /** {@inheritdoc} */
+    public function getOriginalName()
+    {
+       return $this->get_original_name();
+    }
+
+    /** {@inheritdoc} */
+    public function setOriginalName($originalName)
+    {
+        $this->set_original_name($originalName);
+    }
+
+    /** {@inheritdoc} */
+    public function getRecordId()
+    {
+        return $this->get_record_id();
+    }
+
+    /** {@inheritdoc} */
+    public function getSha256()
+    {
+        return $this->get_sha256();
+    }
+
+    /** {@inheritdoc} */
+    public function getType()
+    {
+        return $this->get_type();
+    }
+
+    /** {@inheritdoc} */
+    public function getUpdated()
+    {
+        return $this->get_modification_date();
+    }
+
+    /** {@inheritdoc} */
+    public function getUuid()
+    {
+        return $this->get_uuid();
+    }
+
+    /** {@inheritdoc} */
+    public function getId()
+    {
+        return $this->get_serialize_key();
+    }
+
+    public function setStatus($status)
+    {
+        $this->set_binary_status($status);
+
+        $this->delete_data_from_cache(self::CACHE_STATUS);
+    }
+
+    /** {@inheritdoc} */
+    public function getStatusBitField()
+    {
+        return bindec($this->get_status());
+    }
+
+    /** {@inheritdoc} */
+    public function getExif()
+    {
+        return new ArrayCollection($this->get_technical_infos());
     }
 }

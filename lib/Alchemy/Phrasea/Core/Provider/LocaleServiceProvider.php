@@ -48,9 +48,9 @@ class LocaleServiceProvider implements ServiceProviderInterface
                 }
 
                 return $enabledLanguages;
-            } else {
-                return $availableLanguages;
             }
+
+            return $availableLanguages;
         });
     }
 

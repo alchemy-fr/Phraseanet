@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,8 +52,6 @@ class Query implements ControllerProviderInterface
     {
         $query = (string) $request->request->get('qry');
 
-        $mod = $app['settings']->getUserSetting($app['authentication']->getUser(), 'view');
-
         $json = [];
 
         $options = SearchEngineOptions::fromRequest($app, $request);
@@ -69,6 +68,7 @@ class Query implements ControllerProviderInterface
             $page = 1;
         }
 
+        /** @var SearchEngineResult $result */
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage, $options);
 
         $app['manipulator.user']->logQuery($app['authentication']->getUser(), $result->getQuery());
@@ -174,23 +174,18 @@ class Query implements ControllerProviderInterface
         if ($result->getTotal() === 0) {
             $template = 'prod/results/help.html.twig';
         } else {
-            if ($mod == 'thumbs') {
-                $template = 'prod/results/answergrid.html.twig';
-            } else {
-                $template = 'prod/results/answerlist.html.twig';
-            }
+            $template = 'prod/results/records.html.twig';
         }
 
-        $json['results'] = $app['twig']->render($template, [
-            'results'         => $result,
-            'highlight'       => $result->getQuery(),
-            'searchEngine'    => $app['phraseanet.SE'],
-            'searchOptions'   => $options,
-            'suggestions'     => $prop
-            ]
-        );
+        $json['results'] = $app['twig']->render($template, ['results'=> $result]);
 
         $json['query'] = $query;
+
+        /** Debug */
+        $json['parsed_query'] = $result->getQuery();
+        $json['aggregations'] = $result->getAggregations();
+        /** End debug */
+
         $json['phrasea_props'] = $proposals;
         $json['total_answers'] = (int) $result->getAvailable();
         $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
@@ -209,7 +204,7 @@ class Query implements ControllerProviderInterface
      */
     public function queryAnswerTrain(Application $app, Request $request)
     {
-        if (null === $optionsSerial = $request->request->get('options_serial')) {
+        if (null === $optionsSerial = $request->get('options_serial')) {
             $app->abort(400, 'Search engine options are missing');
         }
 
@@ -226,7 +221,7 @@ class Query implements ControllerProviderInterface
 
         return $app->json([
             'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
-                'records'  => $record->get_train($pos, $query, $app['phraseanet.SE']),
+                'records'  => $record->get_train($pos, $query, $app['phraseanet.SE'], $options),
                 'selected' => $pos
             ])
         ]);

@@ -19,6 +19,9 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 
 interface SearchEngineInterface
 {
+    const TYPE_ELASTICSEARCH = 'elasticsearch';
+    const TYPE_PHRASEA       = 'phrasea';
+
     const GEM_TYPE_RECORD = 'record';
     const GEM_TYPE_STORY = 'story';
     const GEM_TYPE_ENTRY = 'entry';
@@ -205,19 +208,4 @@ interface SearchEngineInterface
      * @return SearchEngineInterface
      */
     public function clearCache();
-
-    /**
-     * Returns a subscriber
-     *
-     * @return EventSubscriberInterface
-     */
-    public static function createSubscriber(Application $app);
-
-    /**
-     * Creates the adapter.
-     *
-     * @param Application $app
-     * @param array       $options
-     */
-    public static function create(Application $app, array $options = []);
 }

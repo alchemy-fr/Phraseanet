@@ -29,7 +29,7 @@
     {% for item in feed_entry.getItems() %}
       <li class="image_box" id="item_{{item.getId()}}">
         <a href="{{ path('lightbox_ajax_load_feeditem', { 'entry_id' : feed_entry.getId(), 'item_id' : item.getId()}) }}">
-          {{thumbnail.format(item.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
+          {{ thumbnail.format(item.getRecord(app).get_thumbnail(), 80, 80, '', true, false) }}
           </a>
           <input type="hidden" class="display_id" name="display_id" value="{{item.getOrd()}}" />
       </li>

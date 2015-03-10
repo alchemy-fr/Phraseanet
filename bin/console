@@ -15,6 +15,13 @@ use Alchemy\Phrasea\Command\BuildSubdefs;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
+use Alchemy\Phrasea\Command\SearchEngine\Debug\QueryParseCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexDropCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexFull;
+use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
+use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
+use Alchemy\Phrasea\Command\WebsocketServer;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
@@ -38,6 +45,7 @@ use Alchemy\Phrasea\Command\Task\TaskRun;
 use Alchemy\Phrasea\Command\Task\TaskStart;
 use Alchemy\Phrasea\Command\Task\TaskStop;
 use Alchemy\Phrasea\Command\Task\TaskState;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -114,6 +122,16 @@ $cli->command(new H264ConfigurationDumper());
 $cli->command(new H264MappingGenerator());
 $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
+
+if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
+    $cli->command(new IndexCreateCommand());
+    $cli->command(new IndexDropCommand());
+    $cli->command(new IndexPopulateCommand());
+    $cli->command(new QueryParseCommand());
+    $cli->command(new FindConceptsCommand());
+}
+
+$cli->command(new WebsocketServer('ws-server:run'));
 
 $cli->loadPlugins();
 

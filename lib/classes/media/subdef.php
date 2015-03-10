@@ -665,7 +665,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $datas;
     }
 
-    public static function create(Application $app, record_Interface $record, $name, MediaInterface $media)
+    public static function create(Application $app, \record_adapter $record, $name, MediaInterface $media)
     {
         $databox = $record->get_databox();
         $connbas = $databox->get_connection();

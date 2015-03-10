@@ -63,13 +63,13 @@ class SearchEngineOptions
 
     /**
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $date_min;
 
     /**
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $date_max;
 
@@ -319,40 +319,9 @@ class SearchEngineOptions
      * @param  array               $status
      * @return SearchEngineOptions
      */
-    public function setStatus(Array $status)
+    public function setStatus(array $status)
     {
-        $tmp = [];
-        foreach ($status as $n => $options) {
-            if (isset($options['on'])) {
-                foreach ($options['on'] as $sbas_id) {
-                    if(!isset($tmp[$n][$sbas_id])) {
-                        $tmp[$n][$sbas_id] = array();
-                    }
-                    $tmp[$n][$sbas_id][] = 1;
-                }
-            }
-            if (isset($options['off'])) {
-                foreach ($options['off'] as $sbas_id) {
-                    if(!isset($tmp[$n][$sbas_id])) {
-                        $tmp[$n][$sbas_id] = array();
-                    }
-                    $tmp[$n][$sbas_id][] = 0;
-                }
-            }
-        }
-        foreach($tmp as $n=>$bas) {
-            foreach($bas as $sbas_id=>$values) {
-                if(count($values) > 1) {
-                    unset($tmp[$n][$sbas_id]);
-                } else {
-                    $tmp[$n][$sbas_id] = $values[0];
-                }
-            }
-            if(count($tmp[$n]) == 0) {
-                unset($tmp[$n]);
-            }
-        }
-        $this->status = $tmp;
+        $this->status = $status;
 
         return $this;
     }
@@ -528,6 +497,8 @@ class SearchEngineOptions
         $options = new static();
         $options->disallowBusinessFields();
 
+        $sort_by = $sort_ord = null;
+
         foreach ($serialized as $key => $value) {
 
             switch (true) {
@@ -537,7 +508,7 @@ class SearchEngineOptions
                 case in_array($key, ['date_min', 'date_max']):
                     $value = \DateTime::createFromFormat(DATE_ATOM, $value);
                     break;
-                case $value instanceof stdClass:
+                case $value instanceof \stdClass:
                     $tmpvalue = (array) $value;
                     $value = [];
 
@@ -560,8 +531,6 @@ class SearchEngineOptions
                             }, $value);
                     break;
             }
-
-            $sort_by = $sort_ord = null;
 
             switch ($key) {
                 case 'record_type':
@@ -678,6 +647,7 @@ class SearchEngineOptions
 
             $options->allowBusinessFieldsOn($BF);
         }
+
 
         $status = is_array($request->get('status')) ? $request->get('status') : [];
         $fields = is_array($request->get('fields')) ? $request->get('fields') : [];

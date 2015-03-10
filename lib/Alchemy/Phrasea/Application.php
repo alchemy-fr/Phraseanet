@@ -114,6 +114,7 @@ use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\StatusServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
@@ -128,6 +129,7 @@ use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
@@ -180,6 +182,7 @@ class Application extends SilexApplication
         'fr' => 'Français',
         'nl' => 'Dutch',
     ];
+
     private static $flashTypes = ['warning', 'info', 'success', 'error'];
     private $environment;
 
@@ -232,7 +235,6 @@ class Application extends SilexApplication
         $this->register(new ACLServiceProvider());
         $this->register(new APIServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
-        $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConvertersServiceProvider());
         $this->register(new CSVServiceProvider());
@@ -244,6 +246,7 @@ class Application extends SilexApplication
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
+        $this->register(new StatusServiceProvider());
         $this->setupGeonames();
         $this->register(new MediaAlchemystServiceProvider());
         $this->setupMediaAlchemyst();
@@ -260,7 +263,12 @@ class Application extends SilexApplication
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());
         $this->setupRecaptacha();
-        $this->register(new SearchEngineServiceProvider());
+
+        if ($this['configuration.store']->isSetup()) {
+            $this->register(new SearchEngineServiceProvider());
+            $this->register(new BorderManagerServiceProvider());
+        }
+
         $this->register(new SessionHandlerServiceProvider());
         $this->register(new SessionServiceProvider(), [
             'session.test' => $this->getEnvironment() === static::ENV_TEST,
@@ -413,6 +421,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new Fit());
                 $twig->addExtension(new Camelize());
                 $twig->addExtension(new BytesConverter());
+                $twig->addExtension(new PhraseanetExtension($app));
 
                 $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                 $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));

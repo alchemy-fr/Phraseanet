@@ -111,8 +111,8 @@ class record_preview extends record_adapter
                 foreach ($results->getResults() as $record) {
                     $number = $pos;
                     $this->original_item = $record;
-                    $sbas_id = $record->get_sbas_id();
-                    $record_id = $record->get_record_id();
+                    $sbas_id = $record->getDataboxId();
+                    $record_id = $record->getRecordId();
                     break;
                 }
                 break;
@@ -204,7 +204,7 @@ class record_preview extends record_adapter
         return $this;
     }
 
-    public function get_train($pos = 0, $query = '', SearchEngineInterface $search_engine = null)
+    public function get_train($pos = 0, $query = '', SearchEngineInterface $search_engine = null, SearchEngineOptions $options)
     {
         if ($this->train) {
             return $this->train;
@@ -214,7 +214,7 @@ class record_preview extends record_adapter
             case 'RESULT':
                 $perPage = 56;
                 $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-                $results = $search_engine->query($query, $index, $perPage);
+                $results = $search_engine->query($query, $index, $perPage, $options);
 
                 $this->train = $results->getResults()->toArray();
                 break;
@@ -270,7 +270,7 @@ class record_preview extends record_adapter
      *
      * @return String
      */
-    public function get_title($highlight = '', SearchEngineInterface $search_engine = null)
+    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null, SearchEngineOptions $options = null)
     {
         if ($this->title) {
             return $this->title;
@@ -282,10 +282,10 @@ class record_preview extends record_adapter
 
             case "RESULT":
                 $this->title .= $this->app->trans('preview:: resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->number + 1) . '</span> : ']);
-                $this->title .= parent::get_title($highlight, $search_engine);
+                $this->title .= parent::get_title($highlight, $searchEngine);
                 break;
             case "BASK":
-                $this->title .= $this->name . ' - ' . parent::get_title($highlight, $search_engine)
+                $this->title .= $this->name . ' - ' . parent::get_title($highlight, $searchEngine)
                     . ' (' . $this->get_number() . '/' . $this->total . ') ';
                 break;
             case "REG":
@@ -299,7 +299,7 @@ class record_preview extends record_adapter
                 }
                 break;
             default:
-                $this->title .= parent::get_title($highlight, $search_engine);
+                $this->title .= parent::get_title($highlight, $searchEngine);
                 break;
         }
 

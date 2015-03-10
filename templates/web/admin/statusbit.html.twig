@@ -1,4 +1,4 @@
-{% set status = databox.get_statusbits() %}
+{% set statusStructure = databox.getStatusStructure() %}
 {% set databox_id = databox.get_sbas_id() %}
 
 <h1>
@@ -19,7 +19,7 @@
                 <td>
                     {{ bit }}
                 </td>
-                {% if attribute(status, bit) is defined %}
+                {% if statusStructure.hasStatus(bit) %}
                     <td>
                         <a target="right" href="{{ path('database_display_statusbit_form', { 'databox_id' : databox_id, 'bit' : bit }) }}" class="ajax">
                             <img class="editer" src="/skins/icons/edit_0.gif" />
@@ -38,8 +38,8 @@
                     </td>
                 {% endif %}
 
-                {% if attribute(status, bit) is defined %}
-                    {% set statusbit = attribute(status, bit) %}
+                {% if statusStructure.hasStatus(bit) %}
+                    {% set statusbit = statusStructure.getStatus(bit) %}
                     <td>
                         {% if statusbit['img_off'] %}
                             <img class="status-img" title='{{ statusbit['labels_off_i18n'][app['locale']] }}' src='{{ statusbit['img_off'] }}' />

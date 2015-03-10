@@ -105,6 +105,8 @@
             background-color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
         }
     </style>
+    <!-- Include Fancytree skin and library -->
+    <link href="{{ path('minifier', { 'f' : 'assets/fancytree/dist/skin-win8/ui.fancytree.min.css'}) }}" rel="stylesheet" type="text/css">
 
     {% if step %}
         <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/joyride/joyride-2.1.css' }) }}" >
@@ -143,6 +145,7 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{{ path('minifier', { 'f' : 'assets/fancytree/dist/jquery.fancytree-all.js'}) }}" type="text/javascript"></script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
 
@@ -387,11 +390,14 @@
                                             </div>
 
                                             <span>{{ 'Trier par' | trans }}</span>
-                                            <select name="sort" class="input-small">
-                                                <option value="" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected" class="default-selection"{% endif %}>{{ "No sort"|trans }}</option>
+                                            <select name="sort" class="input-medium">
+                                                <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
+                                                <optgroup label="{{ 'By field'|trans }}">
                                                 {% for sort in search_datas['sort'] %}
                                                     <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort.fieldname }}</option>
                                                 {% endfor %}
+                                                </optgroup>
                                             </select>
                                             <select name="ord" class="input-medium">
                                                 {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
@@ -423,33 +429,31 @@
                                                 <div class="status_filter">
                                                     <span>{{ 'Status des documents a rechercher' | trans }}</span>
                                                     <table style="width: 100%;">
-                                                        {% for n, stat in search_status %}
-                                                            {% for s in stat %}
+                                                        {% for databox_id, flag in search_status %}
                                                             <tr>
                                                                 <td>
                                                                     <label class="checkbox inline">
-                                                                    {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale']]}}" />
-                                                                    {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
-                                                                        n="{{n}}" name="status[{{n}}][off][]" />
-                                                                        {{s['labels_off_i18n'][app['locale']]}}
+                                                                        {% if flag['img_off'] %}
+                                                                            <img src="{{flag['img_off']}}" title="{{flag['labels_off_i18n'][app['locale']]}}" />
+                                                                        {% endif %}
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
+                                                                        type="checkbox" value="0"
+                                                                        n="{{flag['bit']}}" name="status[{{databox_id}}][{{flag['bit']}}]" />
+                                                                        {{flag['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
                                                                     <label class="checkbox inline">
-                                                                    {% if s['imgoff'] %}
-                                                                        <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale']]}}" />
-                                                                    {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
-                                                                        n="{{n}}" name="status[{{n}}][on][]"/>
-                                                                        {{s['labels_on_i18n'][app['locale']]}}
+                                                                        {% if flag['img_on'] %}
+                                                                            <img src="{{flag['img_on']}}" title="{{flag['labels_on_i18n'][app['locale']]}}" />
+                                                                        {% endif %}
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
+                                                                        type="checkbox" value="1"
+                                                                        n="{{flag['bit']}}" name="status[{{databox_id}}][{{flag['bit']}}]"/>
+                                                                        {{flag['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                             </tr>
-                                                            {% endfor %}
                                                         {% endfor %}
                                                     </table>
                                                 </div>

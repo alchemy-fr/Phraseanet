@@ -64,49 +64,42 @@ class Property implements ControllerProviderInterface
         }
 
         $records = RecordsRequest::fromRequest($app, $request, false, ['chgstatus']);
-        $databoxStatus = \databox_status::getDisplayStatus($app);
-        $statusBit = $nRec = [];
 
-        foreach ($records as $record) {
-            //perform logic
-            $sbasId = $record->get_databox()->get_sbas_id();
-
-            if (!isset($nRec[$sbasId])) {
-                $nRec[$sbasId] = ['stories' => 0, 'records' => 0];
-            }
-
-            $nRec[$sbasId]['records']++;
-
-            if ($record->is_grouping()) {
-                $nRec[$sbasId]['stories']++;
-            }
-
-            if (!isset($statusBit[$sbasId])) {
-                $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : [];
-
-                foreach (array_keys($statusBit[$sbasId]) as $bit) {
-                    $statusBit[$sbasId][$bit]['nset'] = 0;
-                }
-            }
-
-            $status = strrev($record->get_status());
-
-            foreach (array_keys($statusBit[$sbasId]) as $bit) {
-                $statusBit[$sbasId][$bit]["nset"] += substr($status, $bit, 1) !== "0" ? 1 : 0;
-            }
+        if (count($records->databoxes()) > 1) {
+            return new Response($app['twig']->render('prod/actions/Property/index.html.twig', [
+                'records'   => $records
+            ]));
         }
 
-        foreach ($records->databoxes() as $databox) {
-            $sbasId = $databox->get_sbas_id();
-            foreach ($statusBit[$sbasId] as $bit => $values) {
-                $statusBit[$sbasId][$bit]["status"] = $values["nset"] == 0 ? 0 : ($values["nset"] == $nRec[$sbasId]['records'] ? 1 : 2);
+        $databox = current($records->databoxes());
+        $statusStructure = $databox->getStatusStructure();
+        $recordsStatuses = [];
+
+        foreach ($records->received() as $record) {
+            foreach ($statusStructure as $status) {
+                $bit = $status['bit'];
+
+                if (!isset($recordsStatuses[$bit])) {
+                    $recordsStatuses[$bit] = $status;
+                }
+
+                $statusSet = \databox_status::bitIsSet($record->getStatusBitField(), $bit);
+
+                if (!isset($recordsStatuses[$bit]['flag'])) {
+                    $recordsStatuses[$bit]['flag'] = (int) $statusSet;
+                }
+
+                // if flag property was already set and the value is different from the previous one
+                // it means that records share different value for the same flag
+                if ($recordsStatuses[$bit]['flag'] !== (int) $statusSet) {
+                    $recordsStatuses[$bit]['flag'] = 2;
+                }
             }
         }
 
         return new Response($app['twig']->render('prod/actions/Property/index.html.twig', [
             'records'   => $records,
-            'statusBit' => $statusBit,
-            'nRec'      => $nRec
+            'status'    => $recordsStatuses
         ]));
     }
 

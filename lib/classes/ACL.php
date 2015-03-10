@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\DBALException;
+use Alchemy\Phrasea\Model\RecordInterface;
 
 class ACL implements cache_cacheableInterface
 {
@@ -118,24 +119,22 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if a hd grant has been received for a record
      *
-     * @param  record_Interface $record
+     * @param  \record_adapter $record
      * @return boolean
      */
-    public function has_hd_grant(record_Interface $record)
+    public function has_hd_grant(RecordInterface $record)
     {
 
         $this->load_hd_grant();
 
-        $key = $record->get_serialize_key();
-
-        if (array_key_exists($key, $this->_rights_records_document)) {
+        if (array_key_exists($record->getId(), $this->_rights_records_document)) {
             return true;
         }
 
         return false;
     }
 
-    public function grant_hd_on(record_adapter $record, User $pusher, $action)
+    public function grant_hd_on(RecordInterface $record, User $pusher, $action)
     {
         $sql = 'REPLACE INTO records_rights
             (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)
@@ -144,8 +143,8 @@ class ACL implements cache_cacheableInterface
 
         $params = [
             ':usr_id'    => $this->user->getId()
-            , ':sbas_id'   => $record->get_sbas_id()
-            , ':record_id' => $record->get_record_id()
+            , ':sbas_id'   => $record->getDataboxId()
+            , ':record_id' => $record->getRecordId()
             , ':case'      => $action
             , ':pusher'    => $pusher->getId()
         ];
@@ -159,7 +158,7 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    public function grant_preview_on(record_adapter $record, User $pusher, $action)
+    public function grant_preview_on(RecordInterface $record, User $pusher, $action)
     {
         $sql = 'REPLACE INTO records_rights
             (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)
@@ -168,8 +167,8 @@ class ACL implements cache_cacheableInterface
 
         $params = [
             ':usr_id'    => $this->user->getId()
-            , ':sbas_id'   => $record->get_sbas_id()
-            , ':record_id' => $record->get_record_id()
+            , ':sbas_id'   => $record->getDataboxId()
+            , ':record_id' => $record->getRecordI()
             , ':case'      => $action
             , ':pusher'    => $pusher->getId()
         ];
@@ -186,49 +185,48 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if a hd grant has been received for a record
      *
-     * @param  record_Interface $record
+     * @param  \record_adapter $record
      * @return boolean
      */
-    public function has_preview_grant(record_Interface $record)
+    public function has_preview_grant(RecordInterface $record)
     {
         $this->load_hd_grant();
 
-        $key = $record->get_serialize_key();
-
-        if (array_key_exists($key, $this->_rights_records_preview)) {
+        if (array_key_exists($record->getId(), $this->_rights_records_preview)) {
             return true;
         }
 
         return false;
     }
 
-    public function has_access_to_record(\record_adapter $record)
+    public function has_access_to_record(RecordInterface $record)
     {
-        if ($this->has_access_to_base($record->get_base_id()) && $this->has_status_access_to_record($record)) {
+        if ($this->has_access_to_base($record->getBaseId()) && $this->has_status_access_to_record($record)) {
             return true;
         }
 
         return $this->has_preview_grant($record) || $this->has_hd_grant($record);
     }
 
-    public function has_status_access_to_record(record_adapter $record)
+    public function has_status_access_to_record(RecordInterface $record)
     {
-        return 0 === ((bindec($record->get_status()) ^ $this->get_mask_xor($record->get_base_id())) & $this->get_mask_and($record->get_base_id()));
+        return 0 === ((bindec($record->getStatusBitField()) ^ $this->get_mask_xor($record->getBaseId())) & $this->get_mask_and($record->getBaseId()));
     }
 
-    public function has_access_to_subdef(record_Interface $record, $subdef_name)
+    public function has_access_to_subdef(RecordInterface $record, $subdef_name)
     {
         if ($subdef_name == 'thumbnail') {
             return true;
         }
 
-        if ($record->is_grouping()) {
+        if ($record->isStory()) {
             return true;
         }
 
+        $databox = $this->app['phraseanet.appbox']->get_databox($record->getDataboxId());
         try {
-            $subdef_class = $record->get_databox()->get_subdef_structure()
-                ->get_subdef($record->get_type(), $subdef_name)
+            $subdef_class = $databox->get_subdef_structure()
+                ->get_subdef($record->getType(), $subdef_name)
                 ->get_class();
         } catch (\Exception $e) {
             return false;
@@ -238,17 +236,17 @@ class ACL implements cache_cacheableInterface
 
         if ($subdef_class == databox_subdef::CLASS_THUMBNAIL) {
             $granted = true;
-        } elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_right_on_base($record->get_base_id(), 'candwnldpreview')) {
+        } elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_right_on_base($record->getBaseId(), 'candwnldpreview')) {
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_preview_grant($record)) {
             $granted = true;
-        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->get_base_id(), 'candwnldhd')) {
+        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->getBaseId(), 'candwnldhd')) {
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_hd_grant($record)) {
             $granted = true;
         }
 
-        if (false === $granted && $this->app['repo.feed-items']->isRecordInPublicFeed($this->app, $record->get_sbas_id(), $record->get_record_id())) {
+        if (false === $granted && $this->app['repo.feed-items']->isRecordInPublicFeed($this->app, $record->getDataboxId(), $record->getRecordId())) {
             $granted = true;
         }
 
@@ -1582,6 +1580,18 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_LIMITS_BAS);
 
         return $this;
+    }
+
+    public function can_see_business_fields(\databox $databox)
+    {
+        // a user can see the business fields if he has at least the right on one collection to edit a record
+        foreach($databox->get_collections() as $collection) {
+            if ($this->has_access_to_base($collection->get_base_id()) && $this->has_right_on_base($collection->get_base_id(), 'canmodifrecord')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

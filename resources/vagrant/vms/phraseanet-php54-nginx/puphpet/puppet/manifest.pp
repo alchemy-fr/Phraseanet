@@ -1786,7 +1786,7 @@ if hash_key_equals($rabbitmq_values, 'install', 1) {
   }
 }
 
-# Begin elastic search
+# Begin Elasticsearch
 
 if $elasticsearch_values == undef {
   $elasticsearch_values = hiera('elastic_search', false)
@@ -1794,9 +1794,9 @@ if $elasticsearch_values == undef {
 
 if hash_key_equals($elasticsearch_values, 'install', 1) {
   case $::osfamily {
-    'debian': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb' }
-    'redhat': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.noarch.rpm' }
-    default:  { fail('Unrecognized operating system for Elastic Search') }
+    'debian': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.deb' }
+    'redhat': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.noarch.rpm' }
+    default:  { fail('Unrecognized operating system for Elasticsearch') }
   }
 
   $elasticsearch_settings = merge($elasticsearch_values['settings'], {
@@ -1805,4 +1805,9 @@ if hash_key_equals($elasticsearch_values, 'install', 1) {
   })
 
   create_resources('class', { 'elasticsearch' => $elasticsearch_settings })
+
+  # Custom plugins
+  elasticsearch::plugin{'mobz/elasticsearch-head': module_dir => 'head' }
+  elasticsearch::plugin{'elasticsearch/marvel/latest': module_dir => 'marvel' }
+  elasticsearch::plugin{'elasticsearch/elasticsearch-analysis-icu/2.3.0': module_dir => 'analysis-icu' }
 }

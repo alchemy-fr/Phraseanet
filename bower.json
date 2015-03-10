@@ -28,6 +28,7 @@
         "autobahn": "http://autobahn.s3.amazonaws.com/js/autobahn.min.js",
         "when": "~2.7.0",
         "jquery.treeview": "1.4.1",
+        "fancytree": "~2.7",
         "joyride": "https://github.com/zurb/joyride/archive/v2.0.0.zip"
     },
     "devDependencies": {

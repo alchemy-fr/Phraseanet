@@ -306,7 +306,6 @@ class Manager
         if(!$nosubdef) {
             $element->rebuild_subdefs();
         }
-        $element->reindex();
 
         return $element;
     }

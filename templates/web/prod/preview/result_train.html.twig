@@ -1,30 +1,41 @@
 <div id="PREVIEWCURRENTCONT" class="PNB10">
   <ul>
-    {% for rec in records %}
+    {% for record in records %}
 
-        {% set thumbnail = rec.get_thumbnail() %}
-        {% set w = thumbnail.get_width() %}
-        {% set h = thumbnail.get_height() %}
+        {% set thumb_w = 70 %}
+        {% set thumb_h = 70 %}
 
-        {% if thumbnail.is_paysage() %}
-          {% set style = 'width:65px;top:' %}
-          {% set top = ((66 - (65 / (w / h))) / 2)|round %}
-          {% set style = style ~ top %}
-          {% set style = style ~ 'px;' %}
-        {% else %}
-          {% set style = 'height:65px;top:0;' %}
+        {% set thumbnail = record.subdefs.get('thumbnail') %}
+
+        {% if thumbnail is not none %}
+            {% set thumb_w = thumbnail.width %}
+            {% set thumb_h = thumbnail.height %}
         {% endif %}
 
-        {% if selected == rec.get_number() %}
-          {% set class = ' selected ' %}
-        {% else %}
-          {% set class = '' %}
-        {% endif %}
+        {% set url = record_thumbnail_url(record) %}
 
-        <li class="prevTrainCurrent current{{rec.get_number()}} {{class}}" style="">
-          <!--<div class="doc_infos">' . $array_icons[$record->get_type()] . '<span class="duration">{{rec.get_formated_duration()}}</span></div>-->
-          <img jsargs="RESULT|{{rec.get_number()}}|" class="openPreview" src="{{thumbnail.get_url()}}"
-               style="{{style}}margin:7px;position:relative;"/>
+        {% set box_w = 70 %}
+        {% set box_h = 80 %}
+
+        {% set original_h = thumb_h > 0 ? thumb_h : 70 %}
+        {% set original_w = thumb_w > 0 ? thumb_w : 70 %}
+
+        {% set fit_size = fitIn(
+                {"width":original_w, "height":original_h},
+                {"width":box_w, "height":box_h}
+            )
+        %}
+
+        <li class="prevTrainCurrent current{{loop.index0}} {% if loop.index0 == selected %}selected{% endif %}">
+            <img jsargs="RESULT|{{loop.index0}}|" class="openPreview" src="{{url}}"
+               src="{{url}}"
+               style="
+                   width:{{fit_size.width}}px;
+                   height:{{fit_size.height}}px;
+                   top:{{fit_size.top}}px;
+                   position:relative;
+               "
+            />
         </li>
     {% endfor %}
 
