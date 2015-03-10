@@ -38,12 +38,14 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $indexName;
     private $configurationPanel;
     private $locales;
+    private $recordHelper;
 
     public function __construct(Application $app, Client $client, $indexName)
     {
         $this->app = $app;
         $this->client = $client;
         $this->locales = array_keys($app['locales.available']);
+        $this->recordHelper = $this->app['elasticsearch.record_helper'];
 
         if ('' === trim($indexName)) {
             throw new \InvalidArgumentException('The provided index name is invalid.');
@@ -267,35 +269,19 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $recordHelper = $this->app['elasticsearch.record_helper'];
         // TODO Pass options to getFields to include/exclude private fields
-        $searchableFields = $recordHelper->getFields();
+        $searchableFields = $this->recordHelper->getFields();
         $queryContext = new QueryContext($this->locales, $this->app['locale'], $searchableFields);
         $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
 
-
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
+
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
 
-        // Debug at the moment. See https://phraseanet.atlassian.net/browse/PHRAS-322
-        $params['body']['aggs'] = array (
-            'Keywords' => array ('terms' =>
-                array ('field' => 'caption.Keywords.raw', 'size' => 20),
-            ),
-            'Photographer' => array ('terms' =>
-                array ('field' => 'caption.Photographer.raw', 'size' => 20),
-            ),
-            'Headline' => array ('terms' =>
-                array ('field' => 'caption.Headline.raw', 'size' => 20),
-            ),
-            'City' => array ('terms' =>
-                array ('field' => 'caption.City.raw', 'size' => 20),
-            ),
-            'Country' => array ('terms' =>
-                array ('field' => 'caption.Country.raw', 'size' => 20),
-            ),
-        );
+        if ($aggs = $this->getAggregationQueryParams($options)) {
+            $params['body']['aggs'] = $aggs;
+        }
 
         $res = $this->doExecute('search', $params);
 
@@ -314,7 +300,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
-            $this->indexName, $res['aggregations']);
+            $this->indexName, isset($res['aggregations']) ? $res['aggregations'] : []);
     }
 
     /**
@@ -396,6 +382,47 @@ class ElasticSearchEngine implements SearchEngineInterface
         $params['body']['query'] = $ESQuery;
 
         return $params;
+    }
+
+    private function getAggregationQueryParams(SearchEngineOptions $options)
+    {
+        // get business field access rights for current user
+        $allowed_databoxes = [];
+        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
+        foreach ($options->getDataboxes() as $databox) {
+            $id = $databox->get_sbas_id();
+            if ($acl->can_see_business_fields($databox)) {
+                $allowed_databoxes[] = $id;
+            }
+        }
+
+        $aggs = [];
+        foreach ($this->recordHelper->getFieldsStructure() as $field_name => $params) {
+            // skip if field is not searchable or not aggregated
+            if (!$params['searchable'] || !$params['to_aggregate']) {
+                continue;
+            }
+
+            if ($params['private']) {
+                // restrict access to authorized databoxes
+                $databoxes = array_intersect($params['databox_ids'], $allowed_databoxes);
+                $prefix = 'private_caption';
+            } else {
+                $databoxes = $params['databox_ids'];
+                $prefix = 'caption';
+            }
+
+            // filter aggregation to allowed databoxes
+            // declare aggregation on current field
+            $agg = array();
+            $agg['filter']['terms']['databox_id'] = $databoxes;
+            $agg['aggs']['distinct_occurrence']['terms']['field'] =
+                sprintf('%s.%s.raw', $prefix, $field_name);
+
+            $aggs[$field_name] = $agg;
+        }
+
+        return $aggs;
     }
 
     private function createACLFilters()
