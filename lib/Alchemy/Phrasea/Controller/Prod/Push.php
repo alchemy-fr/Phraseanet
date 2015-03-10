@@ -509,41 +509,37 @@ class Push implements ControllerProviderInterface
             $user = null;
             $email = $request->request->get('email');
 
-            try {
-                $user = $app['repo.users']->findByEmail($email);
-
+            if (null !== $user = $app['repo.users']->findByEmail($email)) {
                 $result['message'] = $app->trans('User already exists');
                 $result['success'] = true;
                 $result['user'] = $userFormatter($user);
-            } catch (\Exception $e) {
 
+                return $app->json($result);
             }
 
-            if (!$user instanceof User) {
-                try {
-                    $password = $app['random.medium']->generateString(128);
+            try {
+                $password = $app['random.medium']->generateString(128);
 
-                    $user = $app['manipulator.user']->createUser($email, $password, $email);
+                $user = $app['manipulator.user']->createUser($email, $password, $email);
 
-                    $user->setFirstName($request->request->get('firstname'))
-                        ->setLastName($request->request->get('lastname'));
+                $user->setFirstName($request->request->get('firstname'))
+                    ->setLastName($request->request->get('lastname'));
 
-                    if ($request->request->get('company')) {
-                        $user->setCompany($request->request->get('company'));
-                    }
-                    if ($request->request->get('job')) {
-                        $user->setCompany($request->request->get('job'));
-                    }
-                    if ($request->request->get('form_geonameid')) {
-                        $app['manipulator.user']->setGeonameId($user, $request->request->get('form_geonameid'));
-                    }
-
-                    $result['message'] = $app->trans('User successfully created');
-                    $result['success'] = true;
-                    $result['user'] = $userFormatter($user);
-                } catch (\Exception $e) {
-                    $result['message'] = $app->trans('Error while creating user');
+                if ($request->request->get('company')) {
+                    $user->setCompany($request->request->get('company'));
                 }
+                if ($request->request->get('job')) {
+                    $user->setCompany($request->request->get('job'));
+                }
+                if ($request->request->get('form_geonameid')) {
+                    $app['manipulator.user']->setGeonameId($user, $request->request->get('form_geonameid'));
+                }
+
+                $result['message'] = $app->trans('User successfully created');
+                $result['success'] = true;
+                $result['user'] = $userFormatter($user);
+            } catch (\Exception $e) {
+                $result['message'] = $app->trans('Error while creating user');
             }
 
             return $app->json($result);
