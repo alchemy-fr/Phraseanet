@@ -1089,6 +1089,16 @@ div.diapo {
     display: block;
 }
 
+#baskets .menu .contextMenuTrigger {
+    cursor: pointer;
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: url('../../icons/contextMenuTrigger.png') 0 13px no-repeat;
+    height: 45px;
+    width: 13px;
+}
+
 /** hack IE7 only */
 *:first-child+html .workzone-menu-title {
     margin-right:65px;
