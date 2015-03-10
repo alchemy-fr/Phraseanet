@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -78,12 +78,12 @@ class Feed implements ControllerProviderInterface
                     ->setRecordId($record->get_record_id())
                     ->setSbasId($record->get_sbas_id());
                 $entry->addItem($item);
-                $app['EM']->persist($item);
+                $app['orm.em']->persist($item);
             }
 
-            $app['EM']->persist($entry);
-            $app['EM']->persist($feed);
-            $app['EM']->flush();
+            $app['orm.em']->persist($entry);
+            $app['orm.em']->persist($feed);
+            $app['orm.em']->flush();
 
             $app['dispatcher']->dispatch(PhraseaEvents::FEED_ENTRY_CREATE, new FeedEntryEvent($entry, $request->request->get('notify')));
 
@@ -159,11 +159,11 @@ class Feed implements ControllerProviderInterface
                 }
                 $item = $app['repo.feed-items']->find($item_sort_datas[0]);
                 $item->setOrd($item_sort_datas[1]);
-                $app['EM']->persist($item);
+                $app['orm.em']->persist($item);
             }
 
-            $app['EM']->persist($entry);
-            $app['EM']->flush();
+            $app['orm.em']->persist($entry);
+            $app['orm.em']->flush();
 
             return $app->json([
                 'error' => false,
@@ -190,8 +190,8 @@ class Feed implements ControllerProviderInterface
                 $app->abort(403, $app->trans('Action Forbidden : You are not the publisher'));
             }
 
-            $app['EM']->remove($entry);
-            $app['EM']->flush();
+            $app['orm.em']->remove($entry);
+            $app['orm.em']->flush();
 
             return $app->json(['error' => false, 'message' => 'succes']);
         })
@@ -209,7 +209,7 @@ class Feed implements ControllerProviderInterface
 
             $datas = $app['twig']->render('prod/results/feeds.html.twig', [
                 'feeds' => $feeds,
-                'feed' => new Aggregate($app['EM'], $feeds),
+                'feed' => new Aggregate($app['orm.em'], $feeds),
                 'page' => $page
             ]);
 
@@ -238,7 +238,7 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
-            $link = $app['feed.aggregate-link-generator']->generate(new Aggregate($app['EM'], $feeds),
+            $link = $app['feed.aggregate-link-generator']->generate(new Aggregate($app['orm.em'], $feeds),
                 $app['authentication']->getUser(),
                 AggregateLinkGenerator::FORMAT_RSS,
                 null, $renew

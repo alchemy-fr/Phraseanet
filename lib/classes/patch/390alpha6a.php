@@ -71,7 +71,7 @@ class patch_390alpha6a extends patchAbstract
 
         $conn = $app['phraseanet.appbox']->get_connection();
 
-        $em = $app['EM'];
+        $em = $app['orm.em'];
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         $sql = 'SELECT `id`, `crash`, `nbretry`, `mail`, `addr`, `ssl`,
@@ -93,7 +93,7 @@ class patch_390alpha6a extends patchAbstract
         $n = 0;
 
         foreach ($rs as $row) {
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 

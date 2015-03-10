@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -69,7 +69,8 @@ class patch_361alpha1a extends patchAbstract
             $sbas_id = (int) $row['sbas_id'];
 
             try {
-                $connbas = $app['phraseanet.appbox']->get_databox($sbas_id)->get_connection()->connect();
+                $connbas = $app['phraseanet.appbox']->get_databox($sbas_id)->get_connection();
+                $connbas->connect();
             } catch (\Exception $e) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
                 $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
@@ -93,7 +94,7 @@ class patch_361alpha1a extends patchAbstract
         $n = 0;
         $perPage = 100;
 
-        $query = $app['EM']->createQuery($dql)
+        $query = $app['orm.em']->createQuery($dql)
             ->setFirstResult($n)
             ->setMaxResults($perPage);
 
@@ -102,7 +103,7 @@ class patch_361alpha1a extends patchAbstract
         $count = count($paginator);
 
         while ($n < $count) {
-            $query = $app['EM']->createQuery($dql)
+            $query = $app['orm.em']->createQuery($dql)
                 ->setFirstResult($n)
                 ->setMaxResults($perPage);
 
@@ -121,10 +122,10 @@ class patch_361alpha1a extends patchAbstract
             }
 
             $n += $perPage;
-            $app['EM']->flush();
+            $app['orm.em']->flush();
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return true;
     }

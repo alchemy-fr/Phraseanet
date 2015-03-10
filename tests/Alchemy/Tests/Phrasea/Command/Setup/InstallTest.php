@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\Install;
+use Symfony\Component\Yaml\Yaml;
 
 class InstallTest extends \PhraseanetTestCase
 {
@@ -11,11 +12,13 @@ class InstallTest extends \PhraseanetTestCase
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
-        $email = 'romain@neutron.io';
+        $email = 'jean@dupont.io';
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
         $template = 'fr';
+
+        $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
 
         $helperSet = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
             ->disableOriginalConstructor()
@@ -32,13 +35,13 @@ class InstallTest extends \PhraseanetTestCase
 
         $input->expects($this->any())
             ->method('getOption')
-            ->will($this->returnCallback(function ($option) use ($template, $email, $password, $serverName, $dataPath) {
+            ->will($this->returnCallback(function ($option) use ($infoDb, $template, $email, $password, $serverName, $dataPath) {
                 switch ($option) {
                     case 'appbox':
-                        return 'ab_unitTests';
+                        return $infoDb['database']['ab_name'];
                         break;
                     case 'databox':
-                        return 'db_unitTests';
+                        return $infoDb['database']['db_name'];
                         break;
                     case 'db-template':
                         return $template;
@@ -59,16 +62,16 @@ class InstallTest extends \PhraseanetTestCase
                         return true;
                         break;
                     case 'db-host':
-                        return '127.0.0.1';
+                        return $infoDb['database']['host'];
                         break;
                     case 'db-port':
-                        return 3306;
+                        return $infoDb['database']['port'];
                         break;
                     case 'db-user':
-                        return 'root';
+                        return $infoDb['database']['user'];
                         break;
                     case 'db-password':
-                        return '';
+                        return $infoDb['database']['password'];
                         break;
                     case 'yes':
                         return true;

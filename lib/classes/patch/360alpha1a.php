@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -67,9 +67,14 @@ class patch_360alpha1a extends patchAbstract
 
         $stories = [];
 
-        $sql = 'SELECT sbas_id, rid as record_id, usr_id
-                FROM ssel
-                WHERE temporaryType = "1"';
+        $sql = <<<SQL
+        SELECT
+          sbas_id,
+          rid as record_id,
+          usr_id
+        FROM ssel
+        WHERE temporaryType = "1"
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -88,9 +93,13 @@ class patch_360alpha1a extends patchAbstract
             $current[$serial] = $serial;
         }
 
-        $sql = 'DELETE FROM ssel
-                WHERE temporaryType="1" AND record_id = :record_id
-                AND usr_id = :usr_id AND sbas_id = :sbas_id';
+        $sql = <<<SQL
+        DELETE FROM ssel
+        WHERE temporaryType="1"
+        AND record_id = :record_id
+        AND usr_id = :usr_id
+        AND sbas_id = :sbas_id
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
 
@@ -105,30 +114,52 @@ class patch_360alpha1a extends patchAbstract
 
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO StoryWZ
-            (
-                SELECT null as id, sbas_id, rid as record_id, usr_id, date as created
-                FROM ssel
-                WHERE temporaryType = "1"
-            )';
+        $sql = <<<SQL
+        INSERT INTO StoryWZ (
+            SELECT
+                null as id,
+                usr_id as user_id,
+                sbas_id,
+                rid as record_id,
+                date as created
+            FROM ssel
+            INNER JOIN Users ON usr_id = Users.id
+            WHERE temporaryType = "1"
+        )
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO Baskets
-            (
-                SELECT ssel_id as id, name, descript as description, usr_id, 1 as is_read
-                , pushFrom as pusher_id, 0 as archived, date as created, updater as updated
-                FROM ssel
-                WHERE temporaryType = "0"
-            )';
+        $sql = <<<SQL
+        INSERT INTO Baskets  (
+            SELECT
+                ssel_id as id,
+                usr_id as user_id,
+                pushFrom as pusher_id,
+                name,
+                descript as description,
+                1 as is_read,
+                0 as archived,
+                date as created,
+                updater as updated
+            FROM ssel
+            INNER JOIN Users a ON ssel.usr_id = a.id
+            INNER JOIN Users b ON ssel.pushFrom = b.id
+            WHERE temporaryType = "0"
+        )
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'SELECT ssel_id FROM ssel WHERE temporaryType = "0"';
+        $sql = <<<SQL
+        SELECT ssel_id
+        FROM ssel
+        WHERE temporaryType = "0"
+SQL;
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -137,10 +168,18 @@ class patch_360alpha1a extends patchAbstract
         $sselcont_ids = [];
 
         foreach ($rs as $row) {
-            $sql = 'SELECT c.sselcont_id, c.record_id, b.sbas_id
-                    FROM sselcont c, bas b, ssel s
-                    WHERE s.temporaryType = "0" AND b.base_id = c.base_id
-                    AND c.ssel_id = :ssel_id AND s.ssel_id = c.ssel_id';
+            $sql = <<<SQL
+            SELECT
+                c.sselcont_id,
+                c.record_id,
+                b.sbas_id
+            FROM sselcont c
+            INNER JOIN bas b ON (b.base_id = c.base_id)
+            INNER JOIN ssel s ON (s.ssel_id = c.ssel_id)
+            INNER JOIN Baskets ba ON (ba.id = s.ssel_id)
+            WHERE s.temporaryType = "0"
+            AND c.ssel_id = :ssel_id
+SQL;
 
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute([':ssel_id' => $row['ssel_id']]);
@@ -160,7 +199,10 @@ class patch_360alpha1a extends patchAbstract
             }
         }
 
-        $sql = 'DELETE FROM sselcont WHERE sselcont_id = :sselcont_id';
+        $sql = <<<SQL
+        DELETE FROM sselcont
+        WHERE sselcont_id = :sselcont_id
+SQL;
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($sselcont_ids as $sselcont_id) {
@@ -169,68 +211,111 @@ class patch_360alpha1a extends patchAbstract
 
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO BasketElements
-            (
-                SELECT sselcont_id as id, c.ssel_id as basket_id, record_id, b.sbas_id, c.ord,
-                s.date as created, s.updater as updated
-                FROM sselcont c, ssel s, bas b
-                WHERE temporaryType = "0" AND b.base_id = c.base_id AND s.ssel_id = c.ssel_id
-            )';
+        $sql = <<<SQL
+        INSERT INTO BasketElements (
+            SELECT
+                sselcont_id as id,
+                c.ssel_id as basket_id,
+                record_id,
+                b.sbas_id,
+                c.ord,
+                s.date as created,
+                s.updater as updated
+            FROM sselcont c
+            INNER JOIN ssel s ON (s.ssel_id = c.ssel_id)
+            INNER JOIN Baskets a ON (a.id = s.ssel_id)
+            INNER JOIN bas b ON (b.base_id = c.base_id)
+            WHERE s.temporaryType = "0"
+        )
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'UPDATE Baskets SET pusher_id = NULL WHERE pusher_id = 0';
+        $sql = <<<SQL
+        UPDATE Baskets
+        SET pusher_id = NULL
+        WHERE pusher_id = 0
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO ValidationSessions
-            (
-                SELECT null as id, v.ssel_id as basket_id ,created_on as created
-                ,updated_on as updated ,expires_on as expires
-                ,v.usr_id as initiator_id
-                FROM ssel s, validate v
-                WHERE v.ssel_id = s.ssel_id AND v.usr_id = s.usr_id
-            )';
+        $sql = <<<SQL
+        INSERT INTO ValidationSessions (
+            SELECT null as id,
+                v.usr_id as initiator_id,
+                v.ssel_id as basket_id,
+                v.created_on as created,
+                v.updated_on as updated,
+                v.expires_on as expires
+            FROM validate v
+            INNER JOIN Baskets b ON (b.id = v.ssel_id)
+            INNER JOIN Users u ON (u.id = v.usr_id)
+        )
+SQL;
+
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO ValidationParticipants
-            (
-                SELECT v.id as id, v.usr_id
-                , 1 AS is_aware, confirmed as is_confirmed, 1 as can_agree
-                , can_see_others, last_reminder AS reminded
-                , vs.`id` AS ValidationSession_id
-                FROM validate v, ssel s, ValidationSessions vs
-                WHERE s.ssel_id = v.ssel_id AND vs.basket_id = v.ssel_id
-            )';
+        $sql = <<<SQL
+        INSERT INTO ValidationParticipants (
+            SELECT
+                v.id AS id,
+                v.usr_id AS user_id,
+                1 AS is_aware,
+                confirmed AS is_confirmed,
+                1 AS can_agree,
+                can_see_others,
+                last_reminder AS reminded,
+                vs.`id` AS validation_session_id
+            FROM validate v
+            INNER JOIN Baskets b ON (b.id = v.ssel_id)
+            INNER JOIN ValidationSessions vs ON (vs.basket_id = b.id)
+            INNER JOIN Users u ON (u.id = v.usr_id)
+        )
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'SELECT user_id, basket_id, p.id as participant_id
-                FROM ValidationParticipants p, ValidationSessions s
-                WHERE p.ValidationSession_Id = s.id';
+        $sql = <<<SQL
+        SELECT
+            p.user_id,
+            s.basket_id,
+            p.id as participant_id
+        FROM ValidationParticipants p
+        INNER JOIN ValidationSessions s ON (s.id = p.validation_session_id)
+        INNER JOIN Users u ON (u.id = p.user_id)
+        INNER JOIN Baskets b ON (b.id = s.basket_id)
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO ValidationDatas
-            (
-                SELECT d.id , :participant_id as participant_id, d.sselcont_id, d.agreement
-                ,d.note, d.updated_on as updated
-                FROM validate v, validate_datas d, sselcont c
-                WHERE c.sselcont_id = d.sselcont_id AND v.id = d.validate_id
-                AND v.usr_id = :usr_id AND v.ssel_id = :basket_id
-            )';
+        $sql = <<<SQL
+        INSERT INTO ValidationDatas (
+            SELECT
+                d.id ,
+                :participant_id AS participant_id,
+                d.sselcont_id AS basket_element_id,
+                d.agreement,
+                d.note, d.updated_on AS updated
+            FROM validate v
+            INNER JOIN validate_datas d ON (v.id = d.validate_id)
+            INNER JOIN Baskets b ON (v.ssel_id = b.id)
+            INNER JOIN BasketElements be ON (be.id = d.sselcont_id)
+            AND v.usr_id = :usr_id AND v.ssel_id = :basket_id
+        )
+SQL;
+
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {
             $params = [
@@ -243,15 +328,21 @@ class patch_360alpha1a extends patchAbstract
 
         $stmt->closeCursor();
 
-        $sql = 'UPDATE ValidationDatas
-                SET agreement = NULL where agreement = "0"';
+        $sql = <<<SQL
+        UPDATE ValidationDatas
+        SET agreement = NULL
+        WHERE agreement = "0"
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'UPDATE ValidationDatas
-                SET agreement = "0" where agreement = "-1"';
+        $sql = <<<SQL
+        UPDATE ValidationDatas
+        SET agreement = "0"
+        WHERE agreement = "-1"
+SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();

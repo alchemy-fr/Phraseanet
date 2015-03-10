@@ -39,6 +39,10 @@ html, body {
     z-index: 1;
 }
 
+#desktop {
+    min-width: 1100px;
+}
+
 *::-moz-selection, *::selection{
     background: white;
     color: black;
@@ -75,7 +79,7 @@ EM {
 
 .ui-state-default, .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .ui-widget-overlay {
@@ -115,6 +119,13 @@ body {
     min-height: 500px;
 }
 
+#mainContent {
+    top: 40px;
+    min-width:900px;
+    overflow-x:auto;
+    overflow-y:auto;
+}
+
 .PNB {
     position: absolute;
     top: 0;
@@ -122,6 +133,15 @@ body {
     right: 0;
     bottom: 0;
 }
+
+#rightFrame {
+    min-width: 660px;
+}
+
+.PNB .ui-corner-top {
+    top: 100px;
+}
+
 
 .PNB10 {
     position: absolute;
@@ -192,10 +212,12 @@ span.ww_winTitle {
     padding: 3px 5px 0;
 }
 
+#idFrameC {
+    top: 0 !important;
+}
+
 #idFrameC .wrapper {
-    background-color: #404040;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    background-color: #3b3b3b;
     right: 10px;
 }
 
@@ -243,9 +265,9 @@ span.ww_winTitle {
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
     width: auto;
-    height: 45px;
+    height: 73px;
     display: inline-block;
-    background-color: #404040;
+    background-color: #3b3b3b;
     z-index: 10;
 }
 
@@ -262,12 +284,18 @@ span.ww_winTitle {
     margin-left: 5px;
 }
 
+#idFrameC .ui-tabs .ui-tabs-nav li {
+    border-radius: 0;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li a {
-    padding: 5px;
-    margin: 5px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li a.escamote {
+    margin:25px 25px 0 0;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li:hover a {
@@ -275,7 +303,8 @@ span.ww_winTitle {
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a {
-    background-color: #666666;
+    background-color: #333;
+    border-bottom: 3px solid #076882;
 }
 
 #idFrameC ul.icon-menu {
@@ -286,22 +315,26 @@ span.ww_winTitle {
     display: block;
     background-image: url("/skins/icons/workzone32.png");
     background-repeat: no-repeat;
-    background-position: 8px 5px;
-    width: 54px;
-    height: 32px;
+    background-position: 9px 16px;
+    width: 70px;
+    height: 70px;
 }
 
 #idFrameC .icon-menu .WZtabs {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 #basket_menu_trigger {
-     padding: 7px 3px;
-     float: right;
-     font-size: 12px;
-     cursor: pointer;
+    padding: 27px 7px 0 0;
+    float: right;
+    font-size: 9px;
+    cursor: pointer;
+    cursor: pointer;
 }
 
 #idFrameC.closed .icon-menu li {
@@ -316,11 +349,6 @@ span.ww_winTitle {
 #idFrameC li.proposals_WZ.active img.proposals_off,
 #idFrameC li.proposals_WZ img.proposals_on {
     display: none;
-}
-
-#idFrameC li.proposals_WZ.active img.proposals_on,
-#idFrameC li.proposals_WZ img.proposals_off {
-    display: block;
 }
 
 .ui-tabs .ui-tabs-nav li a {
@@ -346,7 +374,7 @@ span.ww_winTitle {
     display: block;
     border-width: 0;
     padding: 0px;
-    background-color: #404040;
+    background-color: #3b3b3b;
 }
 
 .ui-tabs .ui-tabs-panel.tabBox {
@@ -387,6 +415,8 @@ span.ww_winTitle {
 .ui-accordion .ui-accordion-content {
     padding: 0;
     min-height: 120px;
+    border: none !important;
+    border-radius: 0;
 }
 
 .ui-accordion-icons .ui-accordion-header,
@@ -420,10 +450,14 @@ span.ww_winTitle {
 
 .ui-accordion .ui-accordion-header {
     border: none;
-    background-image: url('../../icons/bask_back.png');
+    /*background-image: url('../../icons/bask_back.png');*/
     background-repeat: repeat-x;
     margin-bottom: 0;
-    height: 20px;
+    height: 44px;
+    line-height: 44px;
+    background-color: #3b3b3b;
+    border-top: 1px solid #000;
+    border-radius: 0;
 }
 
 .ui-accordion .ui-accordion-header.unread {
@@ -434,6 +468,11 @@ span.ww_winTitle {
     padding-bottom: 0;
     padding-right: 0;
     padding-top: 0;
+    margin-top: 0;
+}
+
+.ui-accordion .ui-accordion-header.header:hover {
+    background-color: #474747;
 }
 
 #keyboard-dialog h1 {
@@ -516,16 +555,38 @@ span.ww_winTitle {
 
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 
+.searchFormWrapper {
+    margin: 25px 0 0 5px;
+    line-height: 30px;
+}
+
+#searchForm {
+    width: 80%;
+    float: left;
+}
+
+#searchForm .input-append {
+    float: left;
+    width: 80%;
+}
+
+#searchForm .control-group {
+    float: left;
+    margin-left: 0;
+}
+
 #searchForm .input-append .btn {
     border:none;
 }
 
 #searchForm .input-append a.btn {
     height: 22px;
+    width: 5%;
 }
 
 #searchForm .input-append button.btn {
     height: 30px;
+    width: 15%;
 }
 
 /******* PRESENTATION DE MINIATURES *******************************************/
@@ -602,20 +663,17 @@ div.diapo {
 #answers {
     background-color: #111111;
     border: 1px solid #111111;
+    top: 55px;
+    bottom: 30px;
 }
 
 #answers_status{
-    top: auto;
-    left: 10px;
-    right: 10px;
-    height: 30px;
-    overflow: hidden;
+    width: auto;
+    float: right;
 }
 
 #answers_status table{
     width: 100%;
-    height: 20px;
-    margin: 5px 0;
 }
 
 #answers_status table tr{
@@ -627,9 +685,34 @@ div.diapo {
     text-align: right;
 }
 
-#answers_status table tr td.infos{
+#answers_status .infos {
     text-align: left;
+    line-height: 18px;
+    font-size: 11px;
+    color: #949494;
 }
+
+#answers_status .infos .infoDialog {
+    float: left;
+    color: #949494;
+    margin-top: 2px;
+    margin-right: 30px;
+}
+
+#answers_status .infos .infoDialog span {
+    font-size: 20px;
+    display: block;
+}
+
+#answers_status .infos #nbrecsel {
+    float: left;
+    font-size: 20px;
+    margin-right: 10px;
+    height: 30px;
+    line-height: 36px;
+    vertical-align: middle;
+}
+
 
 /******* POPOVERS *************************************************************/
 #tooltip .popover {
@@ -656,7 +739,7 @@ div.diapo {
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
-    background-color: #404040;
+    margin-left: -20px;
 }
 
 .submenu .ui-buttonset{
@@ -672,12 +755,37 @@ div.diapo {
     margin-bottom: 0px;
     margin-top: 0px;
     height: 30px;
+    background-color: #3b3b3b;
+    font-size:10px;
+    z-index:100;
+    height:45px;
+}
+
+#idFrameC .tools {
+    text-align: left !important;
+}
+
+#idFrameC .tools label {
+    display: inline;
+    margin: 0 15px 0 0;
+    float: left;
+    font-size: 11px;
+    color: #7f7f7f;
+    line-height: 22px;
+    vertical-align: middle;
 }
 
 #idFrameT .tools .classicButton button.btn,
 #idFrameT .tools .dropdownButton {
-    margin-left: 3px;
-    margin-right: 3px;
+    margin: 0;
+}
+
+#idFrameT .tools:first-child .btn-group {
+    border-left: 1px solid #000;
+}
+
+#idFrameT .tools .btn-group {
+    float: left;
 }
 
 #idFrameT .tools .classicButton button.btn,
@@ -685,7 +793,6 @@ div.diapo {
     height: 30px;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
-    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -693,6 +800,7 @@ div.diapo {
 
 #idFrameT .tools .classicButton button.btn-inverse,
 #idFrameT .tools .dropdownButton button.btn-inverse {
+    /*
     *background-color: #404040;
     background-image: -ms-linear-gradient(top, #444444, #393939);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
@@ -703,6 +811,22 @@ div.diapo {
     *border: 1px solid #515151;
     color: #AAAAAA;
     padding-left: 5px;
+    */
+    background-image: none;
+    background-color: #3b3b3b;
+    border-radius: 0;
+    margin: 0;
+    height: 45px;
+    border: 0;
+}
+
+#idFrameT .tools .classicButton button.btn-inverse {
+    border-right: 0;
+}
+
+#idFrameT .tools .dropdownButton button.btn-inverse {
+    border-left: 0;
+    border-right: 0;
 }
 
 #idFrameT .tools .classicButton button.btn-inverse:hover,
@@ -785,19 +909,15 @@ div.diapo {
 
 #idFrameC #baskets .bloc {
     position: absolute;
-    top: 10px;
+    top: 31px;
     left: 0pt;
     right: 1px;
     bottom: 0px;
     overflow-y: hidden;
     overflow-x: hidden;
-    background-color: #404040;
 }
 
 #baskets .insidebloc {
-    left: 10px;
-    position: absolute;
-    right: 10px;
     top: 0;
 }
 
@@ -829,7 +949,7 @@ div.diapo {
     top: 0px;
     left: 10px;
     bottom: 0px;
-    right: 10px;
+    right: 0;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav,#idFrameE .ui-tabs .ui-tabs-nav {
@@ -841,7 +961,7 @@ div.diapo {
 
 #idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
     position: absolute;
-    top: 31px;
+    top: 44px;
     left: 0px;
     bottom: 0px;
     right: 0px;
@@ -931,6 +1051,10 @@ div.diapo {
     position: absolute; bottom: 0px;
 }
 
+#answers {
+    padding: 20px 0 20px 20px;
+}
+
 #answers .list {
     position: relative;
     float: left;
@@ -945,12 +1069,11 @@ div.diapo {
 }
 
 .ui-accordion .ui-accordion-content {
-    background-color: #1a1a1a;
+    background-color: #212121;
     margin-top: 0;
-    border: 1px solid #b1b1b1;
     border-top: none;
     margin-top: -1px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .ui-accordion .ui-accordion-content.grouping {
@@ -999,8 +1122,9 @@ div.diapo {
 
 #baskets .SSTT img {
     max-height: 18px;
-    vertical-align: top;
+    vertical-align: middle;
     cursor: help;
+    margin-right: 9px;
 }
 
 #baskets .SSTT.grouping.active {
@@ -1012,7 +1136,10 @@ div.diapo {
 }
 
 #baskets .SSTT.active.ui-corner-top {
-    border-bottom: none;
+    border: none;
+    border-top: 1px solid #000;
+    top: 0;
+    background-color: #212121;
 }
 
 .ui-accordion .ui-accordion-header.baskDrop {
@@ -1023,7 +1150,7 @@ form.phrasea_query input.query {
     padding-left: 30px;
     font-size: 16px;
     margin: 0;
-    width: 370px;
+    width: 80%;
 }
 
 #basket-rename-box .btn, #reorder_box .btn {
@@ -1574,11 +1701,12 @@ input.btn-mini {
 
 .gui_vsplitter,.ui-resizable-e {
     top: 50%;
-    width: 10px;
-    padding: 35px 0;
-    height: 0;
+    width: 13px;
+    padding: 0 0;
+    height: 54px;
     position: absolute;
     background-image:  url('../../icons/vsplitter.png');
+    background-color: #3b3b3b;
     background-position:  center center;
     background-repeat:  no-repeat;
     right: 0;
@@ -1767,7 +1895,7 @@ H4 {
 
 .bodyprofile .ui-tabs .ui-tabs-panel {
     background-color: #a3a3a3;
-    color: #333333;
+    color: #3b3b3b;
 }
 
 .bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-active {
@@ -2689,8 +2817,19 @@ DIV.thesaurus U.w {
 
 /*******  MAINMENU ************************************************************/
 
+#mainMenu {
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+}
+
+#mainMenu li, #mainMenu li span {
+    height: 40px;
+    line-height: 40px;
+}
+
 #mainMenu, .publi_group {
-    background-color: #404040;
+    background-color: #3b3b3b;
 }
 
 .context-menu-item a {
@@ -3947,7 +4086,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #uploadBox .well {
     margin: 0;
     padding: 0.5%;
-    color: #333333;
+    color: #3b3b3b;
 }
 
 #uploadBox #fileupload {
@@ -4198,7 +4337,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #lazaretBox .lazaret-file a,
 #lazaretBox .lazaret-proposals a {
     font-weight: normal;
-    color: #333333;
+    color: #3b3b3b;
 }
 
 #lazaretBox .lazaret-file a:hover,
@@ -4251,4 +4390,22 @@ ui-dialog-titlebar {
 .chim-wrapper {
     position: relative;
     float: left;
+}
+
+#clientModal,  #clientModal .modal-footer {
+    background-color: #404040;
+}
+
+#clientModal .close {
+    color: #fff;
+}
+
+#answers .status img {
+    max-width: 16px;
+    max-heigh: 16px;
+}
+
+#answers .status img {
+    max-width: 16px;
+    max-heigh: 16px;
 }

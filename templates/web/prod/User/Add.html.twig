@@ -61,45 +61,51 @@
     </form>
 </div>
 
-<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        geonames.init($('#QuickAddUser input.geoname_field'), {
-            "server": "{{ app['geonames.server-uri'] }}",
-            "limit": 40
+        define([
+            "jquery",
+            "common/geonames"
+        ], function (geonames) {
+            $(document).ready(function() {
+                geonames.init($('#QuickAddUser input.geoname_field'), {
+                    "server": "{{ app['geonames.server-uri'] }}",
+                    "limit": 40
+                });
+
+                $quickAddUser = $("#QuickAddUser");
+
+                $("button", $quickAddUser).button();
+
+                $("form", $quickAddUser).bind('submit', function() {
+                    return false;
+                });
+
+                $("form button.cancel", $quickAddUser).bind('click', function() {
+                    var dialog = $(this).closest('.ui-dialog-content');
+                    if (dialog.data("ui-dialog")) {
+                        dialog.dialog('destroy');
+                    }
+
+                    dialog.remove();
+
+                    return false;
+                });
+
+                $("form button.valid", $quickAddUser).bind('click', function() {
+                    var $form = $(this).closest('form');
+                    var $this = $(this);
+
+                    var callback = function() {
+                        var dialog = $this.closest('.ui-dialog-content');
+                        if (dialog.data("ui-dialog")) {
+                            dialog.dialog('destroy').remove();
+                        }
+                    };
+
+                    p4.Feedback.addUser($form, callback);
+
+                    return false;
+                });
+            });
         });
-
-        $("#QuickAddUser button").button();
-
-        $("#QuickAddUser form").bind('submit', function() {
-            return false;
-        });
-
-        $("#QuickAddUser form button.cancel").bind('click', function() {
-            var dialog = $(this).closest('.ui-dialog-content');
-            if (dialog.data("ui-dialog")) {
-                dialog.dialog('destroy');
-            }
-
-            dialog.remove();
-
-            return false;
-        });
-
-        $("#QuickAddUser form button.valid").bind('click', function() {
-            var $form = $(this).closest('form');
-            var $this = $(this);
-
-            var callback = function() {
-                var dialog = $this.closest('.ui-dialog-content');
-                if (dialog.data("ui-dialog")) {
-                    dialog.dialog('destroy').remove();
-                }
-            };
-
-            p4.Feedback.addUser($form, callback);
-
-            return false;
-        });
-    });
     </script>

@@ -9,7 +9,7 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $nbApps = count(self::$DI['app']['repo.api-accounts']->findAll());
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $this->assertGreaterThan($nbApps, count(self::$DI['app']['repo.api-accounts']->findAll()));
@@ -20,7 +20,7 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $accountMem = clone $account;
         $countBefore = count(self::$DI['app']['repo.api-accounts']->findAll());
@@ -33,7 +33,7 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 
     public function testUpdate()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $account->setApiVersion(24);
         $manipulator->update($account);
@@ -43,7 +43,7 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 
     public function testAuthorizeAccess()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $manipulator->authorizeAccess($account);
         $this->assertFalse($account->isRevoked());
@@ -51,7 +51,7 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 
     public function testRevokeAccess()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $manipulator->revokeAccess($account);
         $this->assertTrue($account->isRevoked());

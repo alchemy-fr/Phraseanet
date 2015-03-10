@@ -32,7 +32,7 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
      */
     public function isApplyable(Application $app)
     {
-        return $this->tableExists($app['EM'], 'feeds');
+        return $this->tableExists($app['orm.em'], 'feeds');
     }
 
     /**

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -80,7 +80,6 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         } catch (\Exception $e) {
 
         }
-
         $tmp = new self($app, $sbasid, $sbas_coll, $dmin, $dmax);
 
         $app['phraseanet.appbox']->set_data_to_cache($tmp, $cache_id);
@@ -138,6 +137,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['nb_dl'] = module_report_download::getNbDl(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
+
             //Get Number of connexions
             $this->report['nb_conn'] = module_report_connexion::getNbConn(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection

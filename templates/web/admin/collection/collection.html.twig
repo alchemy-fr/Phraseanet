@@ -213,31 +213,6 @@
     {% endif %}
 </div>
 
-{# Bandeau de présentation #}
-<div class="well well-small action-block">
-    <h5>{{ 'admin::base:collection: image de presentation :' | trans }}</h5>
-    {% if collection.getPresentation(bas_id) is not empty %}
-        <div class="thumbnail" style="width:650px;height:200px">{{ collection.getPresentation(bas_id)| raw }}</div>
-        {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(bas_id, 'manage') %}
-            <form method="post" action="{{ path('admin_collection_delete_banner', { 'bas_id' : bas_id }) }}" style="margin:0;">
-                <button class="btn btn-danger btn-mini">
-                    <i class="icon-trash icon-white"></i>
-                    {{ 'boutton::supprimer' | trans }}
-                </button>
-            </form>
-        {% endif%}
-    {% elseif app['acl'].get(app['authentication'].getUser()).has_right_on_base(bas_id, 'manage') %}
-        <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
-        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_banner', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <span class="btn btn-success fileinput-button">
-                <i class="icon-plus icon-white"></i>
-                <span>{% trans %}Select files...{% endtrans %}</span>
-                <input name="newBanner" type="file" accept="image/*" />
-            </span>
-        </form>
-    {% endif %}
-</div>
-
 {# Invalid file type modal shown when uploaded logo file is invalid #}
 <div id="invalid-modal" class="modal hide fade">
     <div class="modal-header">

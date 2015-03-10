@@ -1,6 +1,6 @@
 <?php
 
-class report_sqlActionTest extends \PhraseanetAuthenticatedTestCase
+class report_sqlActionTest extends \report_abstractReportTestCase
 {
     protected $action;
     protected $mock;

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
-use Silex\Application;
+use Silex\Application as SilexApp;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Symfony\Component\HttpKernel\Client;
@@ -104,7 +104,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 
     private function getAppThatReturnLocale()
     {
-        $app = new Application();
+        $app = new SilexApp();
         $app['debug'] = true;
         $app->register(new LocaleServiceProvider());
         $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
@@ -117,14 +117,14 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 
         $app['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($app));
 
-        $app->get('/', function (Application $app, Request $request) {
+        $app->get('/', function (SilexApp $app, Request $request) {
             return $app['locale'] ? $app['locale'] : '';
         });
 
         return $app;
     }
 
-    private function mockRegistryAndReturnLocale(Application $app, $locale)
+    private function mockRegistryAndReturnLocale(SilexApp $app, $locale)
     {
         $app['conf']->expects($this->any())
             ->method('get')
@@ -141,7 +141,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
             }));
     }
 
-    private function getClientWithCookie(Application $app, $locale = 'fr')
+    private function getClientWithCookie(SilexApp $app, $locale = 'fr')
     {
         $cookieJar = new CookieJar();
         if ($locale) {

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Minifier;
+use Alchemy\Phrasea\Controller\Permalink;
+use Alchemy\Phrasea\Controller\Datafiles;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiCorsSubscriber;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Controller\Api\Oauth2;
@@ -51,7 +54,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
         foreach (V1::$extendedContentTypes['json'] as $priorities[]);
         foreach (V1::$extendedContentTypes['yaml'] as $priorities[]);
-        $format = $app['format.negociator']->getBest($request->headers->get('accept') ,$priorities);
+        $format = $app['format.negociator']->getBest($request->headers->get('accept', 'application/json') ,$priorities);
 
         // throw unacceptable http error if API can not handle asked format
         if (null === $format) {
@@ -107,7 +110,10 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     });
 
     $app->mount('/api/oauthv2', new Oauth2());
+    $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
+    $app->mount('/permalink/', new Permalink());
+    $app->mount('/include/minify/', new Minifier());
 
     $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
         $dispatcher->addSubscriber(new ApiOauth2ErrorsSubscriber($app['phraseanet.exception_handler'], $app['translator']));

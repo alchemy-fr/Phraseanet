@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -131,7 +131,9 @@ use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
+use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
+use Gedmo\DoctrineExtensions as GedmoExtension;
 use Monolog\Logger;
 use Monolog\Processor\IntrospectionProcessor;
 use Neutron\Silex\Provider\ImagineServiceProvider;
@@ -145,6 +147,7 @@ use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Application\TranslationTrait;
+use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
@@ -159,7 +162,6 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
-
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -201,116 +203,66 @@ class Application extends SilexApplication
 
         $this->environment = $environment;
 
-        $this->setupApplicationPaths($this);
-
-        $this['charset'] = 'UTF-8';
-        mb_internal_encoding($this['charset']);
+        $this->setupCharset();
+        $this->setupApplicationPaths();
+        $this->setupConstants();
 
         $this['debug'] = $this->share(function (Application $app) {
             return Application::ENV_PROD !== $app->getEnvironment();
         });
 
-        if ($this['debug'] === true) {
+        if ($this['debug']) {
             ini_set('log_errors', 'on');
             ini_set('error_log', $this['root.path'].'/logs/php_error.log');
         }
 
+        $this->register(new ConfigurationServiceProvider());
+        $this->register(new MonologServiceProvider());
+        $this->setupMonolog();
+        $this->register(new FilesystemServiceProvider());
+        $this->register(new CacheServiceProvider());
+        $this->register(new CacheConnectionServiceProvider());
+        $this->register(new PhraseanetServiceProvider());
+        $this->register(new ConfigurationTesterServiceProvider());
+        $this->register(new ORMServiceProvider());
+        $this->register(new DoctrineServiceProvider(), $this['dbs.service.conf']);
+        $this->setupDBAL();
+        $this->register(new DoctrineOrmServiceProvider(), $this['orm.service.conf']);
+        $this->setupOrms();
         $this->register(new BasketMiddlewareProvider());
         $this->register(new TokenMiddlewareProvider());
         $this->register(new ApiApplicationMiddlewareProvider());
-
         $this->register(new ACLServiceProvider());
         $this->register(new APIServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
-        $this->register(new FilesystemServiceProvider());
-        $this->register(new ConfigurationServiceProvider());
-        $this->register(new ConfigurationTesterServiceProvider);
         $this->register(new ConvertersServiceProvider());
         $this->register(new CSVServiceProvider());
         $this->register(new RegistrationServiceProvider());
-        $this->register(new CacheServiceProvider());
-        $this->register(new CacheConnectionServiceProvider());
         $this->register(new ImagineServiceProvider());
+        $this->setUpImagine();
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
         $this->register(new StatusServiceProvider());
-        $this['geonames.server-uri'] = $this->share(function (Application $app) {
-            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
-        });
-
+        $this->setupGeonames();
         $this->register(new MediaAlchemystServiceProvider());
-        $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
-            $configuration = [];
-
-            foreach ([
-                    'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
-                    'swftools.swfrender.binaries'  => 'swf_render_binary',
-                    'swftools.swfextract.binaries' => 'swf_extract_binary',
-                    'unoconv.binaries'             => 'unoconv_binary',
-                    'mp4box.binaries'              => 'mp4box_binary',
-                    'gs.binaries'                  => 'ghostscript_binary',
-                    'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
-                    'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
-                    'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
-                    'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
-                    'gs.timeout'                   => 'gs_timeout',
-                    'mp4box.timeout'               => 'mp4box_timeout',
-                    'swftools.timeout'             => 'swftools_timeout',
-                    'unoconv.timeout'              => 'unoconv_timeout',
-            ] as $parameter => $key) {
-                if ($this['conf']->has(['main', 'binaries', $key])) {
-                    $configuration[$parameter] = $this['conf']->get(['main', 'binaries', $key]);
-                }
-            }
-
-            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']) ?: null;
-            $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
-
-            return $configuration;
-        });
-        $this['media-alchemyst.logger'] = $this->share(function (Application $app) {
-            return $app['monolog'];
-        });
-
+        $this->setupMediaAlchemyst();
         $this->register(new MediaVorusServiceProvider());
-        $this->register(new MonologServiceProvider());
-        $this['monolog.name'] = 'Phraseanet logger';
-        $this['monolog.handler'] = $this->share(function () {
-            return new NullHandler();
-        });
-        $this['monolog'] = $this->share($this->extend('monolog', function (Logger $monolog) {
-            $monolog->pushProcessor(new IntrospectionProcessor());
-
-            return $monolog;
-        }));
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
-        $this->register(new ORMServiceProvider());
         $this->register(new RepositoriesServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new InstallerServiceProvider());
-        $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new RandomGeneratorServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());
-
-        $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
-                return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
-            }
-        });
-        $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
-                return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
-            }
-        });
+        $this->setupRecaptacha();
 
         if ($this['configuration.store']->isSetup()) {
             $this->register(new SearchEngineServiceProvider());
@@ -322,21 +274,11 @@ class Application extends SilexApplication
             'session.test' => $this->getEnvironment() === static::ENV_TEST,
             'session.storage.options' => ['cookie_lifetime' => 0]
         ]);
-
-        $this['session.storage.test'] = $this->share(function ($app) {
-            return new MockArraySessionStorage();
-        });
-
-        $this['session.storage.handler'] = $this->share(function ($app) {
-            if (!$this['phraseanet.configuration-tester']->isInstalled()) {
-                return new NullSessionHandler();
-            }
-            return $this['session.storage.handler.factory']->create($app['conf']);
-        });
-
+        $this->setupSession();
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
+        $this->setupSwiftMailer();
         $this->register(new TasksServiceProvider());
         $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
@@ -345,178 +287,38 @@ class Application extends SilexApplication
                 'cache' => $this->share(function($app) {return $app['cache.path'].'/twig';}),
             ],
         ]);
-
+        $this->setupTwig();
         $this->register(new TranslationServiceProvider(), [
             'locale_fallbacks' => ['fr'],
             'translator.cache-options' => [
                 'debug' => $this['debug'],
-                'cache_dir' => $this->share(function($app) {return $app['cache.path'].'/translations';}),
+                'cache_dir' => $this->share(function($app) {
+                    return $app['cache.path'].'/translations';
+                }),
             ],
         ]);
-
-        $this['translator'] = $this->share($this->extend('translator', function (CachedTranslator $translator, $app) {
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.fr.xlf', 'fr', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.fr.xlf', 'fr', 'validators');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.en.xlf', 'en', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.en.xlf', 'en', 'validators');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.de.xlf', 'de', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.de.xlf', 'de', 'validators');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.nl.xlf', 'nl', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.nl.xlf', 'nl', 'validators');
-
-            return $translator;
-        }));
-
+        $this->setupTranslation();
         $this->register(new FormServiceProvider());
-
-        $this['form.type.extensions'] = $this->share($this->extend('form.type.extensions', function ($extensions) {
-            $extensions[] = new HelpTypeExtension();
-
-            return $extensions;
-        }));
-
-        $this->setupTwig();
+        $this->setupForm();
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
         $this->setupUrlGenerator();
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
+        $this->setupXpdf();
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
         $this->register(new ContentNegotiationServiceProvider());
-
+        $this->register(new LocaleServiceProvider());
+        $this->setupEventDispatcher();
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             $handler =  PhraseaExceptionHandler::register($app['debug']);
             $handler->setTranslator($app['translator']);
 
             return $handler;
-        });
-
-        $this['swiftmailer.transport'] = $this->share(function ($app) {
-            if ($app['conf']->get(['registry', 'email', 'smtp-enabled'])) {
-                $transport = new \Swift_Transport_EsmtpTransport(
-                    $app['swiftmailer.transport.buffer'],
-                    [$app['swiftmailer.transport.authhandler']],
-                    $app['swiftmailer.transport.eventdispatcher']
-                );
-
-                $encryption = null;
-
-                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls'])) {
-                    $encryption = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
-                }
-
-                $options = $app['swiftmailer.options'] = array_replace([
-                    'host'       => $app['conf']->get(['registry', 'email', 'smtp-host']),
-                    'port'       => $app['conf']->get(['registry', 'email', 'smtp-port']),
-                    'username'   => $app['conf']->get(['registry', 'email', 'smtp-user']),
-                    'password'   => $app['conf']->get(['registry', 'email', 'smtp-password']),
-                    'encryption' => $encryption,
-                    'auth_mode'  => null,
-                ], $app['swiftmailer.options']);
-
-                $transport->setHost($options['host']);
-                $transport->setPort($options['port']);
-                // tls or ssl
-                $transport->setEncryption($options['encryption']);
-
-                if ($app['conf']->get(['registry', 'email', 'smtp-auth-enabled'])) {
-                    $transport->setUsername($options['username']);
-                    $transport->setPassword($options['password']);
-                    $transport->setAuthMode($options['auth_mode']);
-                }
-            } else {
-                $transport = new \Swift_Transport_MailTransport(
-                    new \Swift_Transport_SimpleMailInvoker(),
-                    $app['swiftmailer.transport.eventdispatcher']
-                );
-            }
-
-            return $transport;
-        });
-
-        $this['imagine.factory'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
-                return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
-            }
-            if (class_exists('\Gmagick')) {
-                return 'gmagick';
-            }
-            if (class_exists('\Imagick')) {
-                return 'imagick';
-            }
-            if (extension_loaded('gd')) {
-                return 'gd';
-            }
-
-            throw new \RuntimeException('No Imagine driver available');
-        });
-
-        $app = $this;
-        $this['phraseanet.logger'] = $this->protect(function ($databox) use ($app) {
-            try {
-                return \Session_Logger::load($app, $databox);
-            } catch (\Exception_Session_LoggerNotFound $e) {
-                return \Session_Logger::create($app, $databox, $app['browser']);
-            }
-        });
-
-        $this['date-formatter'] = $this->share(function (Application $app) {
-            return new \phraseadate($app);
-        });
-
-        $this['xpdf.pdftotext'] = $this->share(
-            $this->extend('xpdf.pdftotext', function (PdfToText $pdftotext, Application $app) {
-                if ($app['conf']->get(['registry', 'executables', 'pdf-max-pages'])) {
-                    $pdftotext->setPageQuantity($app['conf']->get(['registry', 'executables', 'pdf-max-pages']));
-                }
-
-                return $pdftotext;
-            })
-        );
-
-        $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
-                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
-                $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
-                $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
-                $dispatcher->addSubscriber(new RegistrationSubscriber($app));
-                $dispatcher->addSubscriber(new BridgeSubscriber($app));
-                $dispatcher->addSubscriber(new ExportSubscriber($app));
-                $dispatcher->addSubscriber(new OrderSubscriber($app));
-                $dispatcher->addSubscriber(new BasketSubscriber($app));
-                $dispatcher->addSubscriber(new LazaretSubscriber($app));
-                $dispatcher->addSubscriber(new ValidationSubscriber($app));
-
-                return $dispatcher;
-            })
-        );
-
-        $this['log.channels'] = ['monolog', 'task-manager.logger'];
-
-        $this->register(new LocaleServiceProvider());
-
-        $this->mount('/include/minify/', new Minifier());
-        $this->mount('/permalink/', new Permalink());
-        $this->mount('/lightbox/', new Lightbox());
-
-        $app['plugins.directory'] = $app->share(function () {
-            $dir = __DIR__ . '/../../../plugins';
-
-            if (is_dir($dir)) {
-                return realpath($dir);
-            }
-
-            return $dir;
         });
     }
 
@@ -526,7 +328,7 @@ class Application extends SilexApplication
     public function loadPlugins()
     {
         call_user_func(function ($app) {
-            require $app['plugins.directory'] . '/services.php';
+            require $app['plugin.path'] . '/services.php';
         }, $this);
     }
 
@@ -575,40 +377,13 @@ class Application extends SilexApplication
         return $this->redirect($this->url($route, $parameters));
     }
 
-    public function addUTF8Charset(FilterResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        $event->getResponse()->setCharset('UTF-8');
-    }
-
-    private function setupUrlGenerator()
-    {
-        $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, $app) {
-            if ($app['configuration.store']->isSetup()) {
-                $data = parse_url($app['conf']->get('servername'));
-
-                if (isset($data['scheme'])) {
-                    $urlGenerator->getContext()->setScheme($data['scheme']);
-                }
-                if (isset($data['host'])) {
-                    $urlGenerator->getContext()->setHost($data['host']);
-                }
-            }
-
-            return $urlGenerator;
-        }));
-    }
-
     public function setupTwig()
     {
         $this['twig'] = $this->share(
             $this->extend('twig', function ($twig, $app) {
                 $twig->setCache($app['cache.path'].'/twig');
 
-                $paths = require $app['plugins.directory'] . '/twig-paths.php';
+                $paths = require $app['plugin.path'] . '/twig-paths.php';
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
                     $paths[] = $app['root.path'] . '/config/templates/mobile';
@@ -832,6 +607,9 @@ class Application extends SilexApplication
         return [];
     }
 
+    /**
+     * Mount all controllers
+     */
     public function bindRoutes()
     {
         $this->mount('/', new Root());
@@ -898,6 +676,11 @@ class Application extends SilexApplication
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
+
+        $this->mount('/include/minify/', new Minifier());
+        $this->mount('/permalink/', new Permalink());
+
+        $this->mount('/lightbox/', new Lightbox());
     }
 
     /**
@@ -920,38 +703,44 @@ class Application extends SilexApplication
         return static::$flashTypes;
     }
 
-    private function setupApplicationPaths(Application $app)
+    private function setupApplicationPaths()
     {
         // app root path
         $this['root.path'] = realpath(__DIR__ . '/../../..');
         // temporary resources default path such as download zip, quarantined documents etc ..
         $this['tmp.path'] = $this['root.path'].'/tmp';
+        // plugin path
+        $this['plugin.path'] = $dir = $this['root.path'].'/plugins';
+        // thumbnails path
+        $this['thumbnail.path'] = $dir = $this['root.path'].'/www/thumbnails';
 
         // cache path for dev env
-        $this['cache.dev.path'] = $app->share(function() use ($app) {
-            $path =  sys_get_temp_dir().'/'.md5($app['root.path']);
+        $this['cache.dev.path'] = $this->share(function() {
+            $path =  sys_get_temp_dir().'/'.md5($this['root.path']);
             // ensure path is created
-            $app['filesystem']->mkdir($path);
+            $this['filesystem']->mkdir($path);
 
             return $path;
         });
 
         // cache path (twig, minify, translations, configuration, doctrine metas serializer metas, profiler etc ...)
-        $this['cache.path'] = $app->share(function() use ($app) {
-//            if ($app->getEnvironment() !== Application::ENV_PROD) {
+        $this['cache.path'] = $this->share(function() {
+//            if ($this->getEnvironment() !== Application::ENV_PROD) {
 //                return $this['cache.dev.path'];
 //            }
-            $path = $app['root.path'].'/cache';
-            if ($app['phraseanet.configuration']->isSetup()) {
-                $path = $app['conf']->get(['main', 'storage', 'cache'], $path);
+            $defaultPath = $path = $this['root.path'].'/cache';
+            if ($this['phraseanet.configuration']->isSetup()) {
+                $path = $this['conf']->get(['main', 'storage', 'cache'], $path);
             }
+            $path = $path ?: $defaultPath;
+
             // ensure path is created
-            $app['filesystem']->mkdir($path);
+            $this['filesystem']->mkdir($path);
 
             return $path;
         });
 
-        $app['cache.paths'] = $app->share(function() use ($app) {
+        $this['cache.paths'] = $this->share(function() {
             return array(
                 self::ENV_DEV => $this['cache.path'],
                 self::ENV_TEST => $this['cache.path'],
@@ -960,51 +749,357 @@ class Application extends SilexApplication
         });
 
         // log path
-        $this['log.path'] = $app->share(function() use ($app) {
-            $path = $this['root.path'].'/logs';
-            if ($app['phraseanet.configuration']->isSetup()) {
-                return $app['conf']->get(['main', 'storage', 'log'], $path);
+        $this['log.path'] = $this->share(function() {
+            $defaultPath = $path = $this['root.path'].'/logs';
+            if ($this['phraseanet.configuration']->isSetup()) {
+                return $this['conf']->get(['main', 'storage', 'log'], $path);
             }
+            $path = $path ?: $defaultPath;
+
             // ensure path is created
-            $app['filesystem']->mkdir($path);
+            $this['filesystem']->mkdir($path);
 
             return $path;
         });
 
         // temporary download file path (zip file)
-        $this['tmp.download.path'] = $app->share(function() use ($app) {
-            $path = $this['tmp.path'].'/download';
-            if ($app['phraseanet.configuration']->isSetup()) {
-                return $app['conf']->get(['main', 'storage', 'download'], $path);
+        $this['tmp.download.path'] = $this->share(function() {
+            $defaultPath = $path = $this['tmp.path'].'/download';
+            if ($this['phraseanet.configuration']->isSetup()) {
+                return $this['conf']->get(['main', 'storage', 'download'], $path);
             }
+            $path = $path ?: $defaultPath;
+
             // ensure path is created
-            $app['filesystem']->mkdir($path);
+            $this['filesystem']->mkdir($path);
 
             return $path;
         });
 
         // quarantined file path
-        $this['tmp.lazaret.path'] = $app->share(function() use ($app) {
-            $path = $this['tmp.path'].'/lazaret';
-            if ($app['phraseanet.configuration']->isSetup()) {
-                return $app['conf']->get(['main', 'storage', 'quarantine'], $path);
+        $this['tmp.lazaret.path'] = $this->share(function() {
+            $defaultPath = $path = $this['tmp.path'].'/lazaret';
+            if ($this['phraseanet.configuration']->isSetup()) {
+                return $this['conf']->get(['main', 'storage', 'quarantine'], $path);
             }
+            $path = $path ?: $defaultPath;
+
             // ensure path is created
-            $app['filesystem']->mkdir($path);
+            $this['filesystem']->mkdir($path);
 
             return $path;
         });
 
         // document caption file path
-        $this['tmp.caption.path'] = $app->share(function() use ($app) {
-            $path = $this['tmp.path'].'/caption';
-            if ($app['phraseanet.configuration']->isSetup()) {
-                return $app['conf']->get(['main', 'storage', 'caption'], $path);
+        $this['tmp.caption.path'] = $this->share(function() {
+            $defaultPath = $path = $this['tmp.path'].'/caption';
+            if ($this['phraseanet.configuration']->isSetup()) {
+                return $this['conf']->get(['main', 'storage', 'caption'], $path);
             }
+            $path = $path ?: $defaultPath;
+
             // ensure path is created
-            $app['filesystem']->mkdir($path);
+            $this['filesystem']->mkdir($path);
 
             return $path;
         });
+    }
+
+
+    private function setupXpdf()
+    {
+        $this['xpdf.pdftotext'] = $this->share(
+            $this->extend('xpdf.pdftotext', function (PdfToText $pdftotext, Application $app) {
+                if ($app['conf']->get(['registry', 'executables', 'pdf-max-pages'])) {
+                    $pdftotext->setPageQuantity($app['conf']->get(['registry', 'executables', 'pdf-max-pages']));
+                }
+
+                return $pdftotext;
+            })
+        );
+    }
+
+    private function setupForm()
+    {
+        $this['form.type.extensions'] = $this->share($this->extend('form.type.extensions', function ($extensions, Application $app) {
+            $extensions[] = new HelpTypeExtension();
+
+            return $extensions;
+        }));
+    }
+
+    private function setUpImagine()
+    {
+        $this['imagine.factory'] = $this->share(function (Application $app) {
+            if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
+                return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
+            }
+            if (class_exists('\Gmagick')) {
+                return 'gmagick';
+            }
+            if (class_exists('\Imagick')) {
+                return 'imagick';
+            }
+            if (extension_loaded('gd')) {
+                return 'gd';
+            }
+
+            throw new \RuntimeException('No Imagine driver available');
+        });
+    }
+
+    private function setupTranslation()
+    {
+        $this['translator'] = $this->share($this->extend('translator', function (CachedTranslator $translator, Application $app) {
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.fr.xlf', 'fr', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.fr.xlf', 'fr', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.en.xlf', 'en', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.en.xlf', 'en', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.de.xlf', 'de', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.de.xlf', 'de', 'validators');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.nl.xlf', 'nl', 'messages');
+            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.nl.xlf', 'nl', 'validators');
+
+            return $translator;
+        }));
+    }
+
+    private function setupOrms()
+    {
+        $this['orm.ems'] = $this->share($this->extend('orm.ems', function ($ems, $app) {
+            GedmoExtension::registerAnnotations();
+
+            foreach ($ems->keys() as $key) {
+                $app['orm.annotation.register']($key);
+                $connection = $ems[$key]->getConnection();
+
+                $app['connection.pool.manager']->add($connection);
+
+                $types = $app['orm.ems.options'][$key]['types'];
+                $app['dbal.type.register']($connection, $types);
+            }
+
+            return $ems;
+        }));
+    }
+
+    private function setupSession()
+    {
+        $this['session.storage.test'] = $this->share(function (Application $app) {
+            return new MockArraySessionStorage();
+        });
+
+        $this['session.storage.handler'] = $this->share(function (Application $app) {
+            if (!$this['phraseanet.configuration-tester']->isInstalled()) {
+                return new NullSessionHandler();
+            }
+            return $this['session.storage.handler.factory']->create($app['conf']);
+        });
+    }
+    private function setupRecaptacha()
+    {
+        $this['recaptcha.public-key'] = $this->share(function (Application $app) {
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+                return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
+            }
+        });
+        $this['recaptcha.private-key'] = $this->share(function (Application $app) {
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+                return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
+            }
+        });
+    }
+
+    private function setupGeonames()
+    {
+        $this['geonames.server-uri'] = $this->share(function (Application $app) {
+
+            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
+        });
+    }
+
+    private function setupDBAL()
+    {
+        $this['dbs.config'] = $this->share($this->extend('dbs.config', function ($configs, $app) {
+            if ($app->getEnvironment() !== self::ENV_DEV) {
+                return $configs;
+            }
+
+            foreach($configs->keys() as $service) {
+                $app['dbal.config.register.loggers']($configs[$service]);
+            }
+
+            return $configs;
+        }));
+
+        $this['dbs.event_manager'] = $this->share($this->extend('dbs.event_manager', function ($eventManagers, $app) {
+            foreach ($eventManagers->keys() as $name) {
+                $app['dbal.evm.register.listeners']($eventManagers[$name]);
+            }
+
+            return $eventManagers;
+        }));
+    }
+
+    private function setupMediaAlchemyst()
+    {
+        $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
+            $configuration = [];
+
+            foreach ([
+                         'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
+                         'swftools.swfrender.binaries'  => 'swf_render_binary',
+                         'swftools.swfextract.binaries' => 'swf_extract_binary',
+                         'unoconv.binaries'             => 'unoconv_binary',
+                         'mp4box.binaries'              => 'mp4box_binary',
+                         'gs.binaries'                  => 'ghostscript_binary',
+                         'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
+                         'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
+                         'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
+                         'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
+                         'gs.timeout'                   => 'gs_timeout',
+                         'mp4box.timeout'               => 'mp4box_timeout',
+                         'swftools.timeout'             => 'swftools_timeout',
+                         'unoconv.timeout'              => 'unoconv_timeout',
+                     ] as $parameter => $key) {
+                if ($this['conf']->has(['main', 'binaries', $key])) {
+                    $configuration[$parameter] = $this['conf']->get(['main', 'binaries', $key]);
+                }
+            }
+
+            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']) ?: null;
+            $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
+
+            return $configuration;
+        });
+        $this['media-alchemyst.logger'] = $this->share(function (Application $app) {
+            return $app['monolog'];
+        });
+    }
+
+    private function setupUrlGenerator()
+    {
+        $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, Application $app) {
+            if ($app['configuration.store']->isSetup()) {
+                $data = parse_url($app['conf']->get('servername'));
+
+                if (isset($data['scheme'])) {
+                    $urlGenerator->getContext()->setScheme($data['scheme']);
+                }
+                if (isset($data['host'])) {
+                    $urlGenerator->getContext()->setHost($data['host']);
+                }
+            }
+
+            return $urlGenerator;
+        }));
+    }
+
+    private function setupSwiftMailer()
+    {
+        $this['swiftmailer.transport'] = $this->share(function (Application $app) {
+            if ($app['conf']->get(['registry', 'email', 'smtp-enabled'])) {
+                $transport = new \Swift_Transport_EsmtpTransport(
+                    $app['swiftmailer.transport.buffer'],
+                    [$app['swiftmailer.transport.authhandler']],
+                    $app['swiftmailer.transport.eventdispatcher']
+                );
+
+                $encryption = null;
+
+                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls'])) {
+                    $encryption = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
+                }
+
+                $options = $app['swiftmailer.options'] = array_replace([
+                    'host'       => $app['conf']->get(['registry', 'email', 'smtp-host']),
+                    'port'       => $app['conf']->get(['registry', 'email', 'smtp-port']),
+                    'username'   => $app['conf']->get(['registry', 'email', 'smtp-user']),
+                    'password'   => $app['conf']->get(['registry', 'email', 'smtp-password']),
+                    'encryption' => $encryption,
+                    'auth_mode'  => null,
+                ], $app['swiftmailer.options']);
+
+                $transport->setHost($options['host']);
+                $transport->setPort($options['port']);
+                // tls or ssl
+                $transport->setEncryption($options['encryption']);
+
+                if ($app['conf']->get(['registry', 'email', 'smtp-auth-enabled'])) {
+                    $transport->setUsername($options['username']);
+                    $transport->setPassword($options['password']);
+                    $transport->setAuthMode($options['auth_mode']);
+                }
+            } else {
+                $transport = new \Swift_Transport_MailTransport(
+                    new \Swift_Transport_SimpleMailInvoker(),
+                    $app['swiftmailer.transport.eventdispatcher']
+                );
+            }
+
+            return $transport;
+        });
+    }
+
+    private function setupMonolog()
+    {
+        $this['monolog.name'] = 'phraseanet';
+        $this['monolog.handler'] = $this->share(function () {
+            return new NullHandler();
+        });
+        $this['monolog'] = $this->share($this->extend('monolog', function (Logger $logger) {
+            $logger->pushProcessor(new IntrospectionProcessor());
+
+            return $logger;
+        }));
+    }
+
+    private function setupEventDispatcher()
+    {
+        $this['dispatcher'] = $this->share(
+            $this->extend('dispatcher', function ($dispatcher, Application $app) {
+                //$dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
+                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+                $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
+                $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
+                $dispatcher->addSubscriber(new RegistrationSubscriber($app));
+                $dispatcher->addSubscriber(new BridgeSubscriber($app));
+                $dispatcher->addSubscriber(new ExportSubscriber($app));
+                $dispatcher->addSubscriber(new OrderSubscriber($app));
+                $dispatcher->addSubscriber(new BasketSubscriber($app));
+                $dispatcher->addSubscriber(new LazaretSubscriber($app));
+                $dispatcher->addSubscriber(new ValidationSubscriber($app));
+
+                return $dispatcher;
+            })
+        );
+    }
+
+    private function setupConstants()
+    {
+        if (!defined('JETON_MAKE_SUBDEF')) {
+            define('JETON_MAKE_SUBDEF', 0x01);
+        }
+        if (!defined('JETON_WRITE_META_DOC')) {
+            define('JETON_WRITE_META_DOC', 0x02);
+        }
+        if (!defined('JETON_WRITE_META_SUBDEF')) {
+            define('JETON_WRITE_META_SUBDEF', 0x04);
+        }
+        if (!defined('JETON_WRITE_META')) {
+            define('JETON_WRITE_META', 0x06);
+        }
+    }
+
+    private function setupCharset()
+    {
+        $this['charset'] = 'UTF-8';
+        mb_internal_encoding($this['charset']);
     }
 }

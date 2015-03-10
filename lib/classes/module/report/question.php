@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -39,7 +39,7 @@ class module_report_question extends module_report
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, '');
         $this->title = $this->app->trans('report:: question');
     }
 

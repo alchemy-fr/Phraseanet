@@ -54,7 +54,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    public function testEtag()
+    public function testLastModified()
     {
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
@@ -83,7 +83,6 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
-        $this->assertNotNull($response->getEtag());
         $this->assertInstanceOf('DateTime', $response->getLastModified());
         $this->assertEquals(0, $response->getMaxAge());
         $this->assertEquals(0, $response->getTtl());
@@ -314,7 +313,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 2);
+        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 2);
         $entry = $feed->getEntries()->first();
         $item = $entry->getItems()->first();
 

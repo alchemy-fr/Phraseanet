@@ -692,9 +692,9 @@ function Xclick(e)
                 var idx0 = lip.index(p4.thesau.lastClickedCandidate.item);
                 var idx1 = lip.index(li);
                 if(idx0 < idx1)
-                  lip.filter(function(index){return(index >= idx0 && index <idx1); }).addClass('selected');
+                  lip.filter(function(index){return(index >= idx0 && index < idx1); }).addClass('selected');
                 else
-                  lip.filter(function(index){return(index > idx1 && index <=idx0); }).addClass('selected');
+                  lip.filter(function(index){return(index > idx1 && index <= idx0); }).addClass('selected');
               }
             }
           }
@@ -1185,7 +1185,7 @@ function startThesaurus(){
 
   p4.thesau.thlist = {
     {% set first = 1 %}
-    {% for base in module_prod.get_search_datas['bases'] %}
+    {% for base in search_datas['bases'] %}
     {% if base['thesaurus'] %}
     {% if first == 0 %},{% endif %}
     "s{{base['sbas_id']}}": new ThesauThesaurusSeeker({{base['sbas_id']}})

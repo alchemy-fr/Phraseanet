@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -242,8 +242,8 @@ class Lazaret implements ControllerProviderInterface
             }
 
             //Delete lazaret file
-            $app['EM']->remove($lazaretFile);
-            $app['EM']->flush();
+            $app['orm.em']->remove($lazaretFile);
+            $app['orm.em']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -295,8 +295,8 @@ class Lazaret implements ControllerProviderInterface
         $lazaretFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
         $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
 
-        $app['EM']->remove($lazaretFile);
-        $app['EM']->flush();
+        $app['orm.em']->remove($lazaretFile);
+        $app['orm.em']->flush();
 
         try {
             $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
@@ -317,22 +317,58 @@ class Lazaret implements ControllerProviderInterface
      */
     public function emptyLazaret(Application $app, Request $request)
     {
-        $ret = ['success' => false, 'message' => '', 'result'  => []];
+        $ret = array(
+            'success' => false,
+            'message' => '',
+            'result'  => array(
+                'tobedone'  => 0,
+                'done'      => 0,
+                'todo'      => 0,
+                'max'       => '',
+            )
+        );
 
-        $lazaretFiles = $app['repo.lazaret-files']->findAll();
+        $maxTodo = -1;  // all
+        if($request->get('max') !== null) {
+            $maxTodo = (int)($request->get('max'));
+            $ret['result']['max'] = $maxTodo;
+            if( $maxTodo <= 0) {
+                $maxTodo = -1;      // all
+            }
+        }
+        $ret['result']['max'] = $maxTodo;
 
-        $app['EM']->beginTransaction();
+        $repo = $app['repo.lazaret-files'];
+
+        $ret['result']['tobedone'] = $repo->createQueryBuilder('id')
+            ->select('COUNT(id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if($maxTodo == -1) {
+            // all
+            $lazaretFiles = $repo->findAll();
+        }
+        else {
+            // limit maxTodo
+            $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
+        }
+
+
+        $app['orm.em']->beginTransaction();
 
         try {
             foreach ($lazaretFiles as $lazaretFile) {
                 $this->denyLazaretFile($app, $lazaretFile);
+                $ret['result']['done']++;
             }
-            $app['EM']->commit();
+            $app['orm.em']->commit();
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $app['EM']->rollback();
+            $app['orm.em']->rollback();
             $ret['message'] = $app->trans('An error occured');
         }
+        $ret['result']['todo'] = $ret['result']['tobedone'] - $ret['result']['done'];
 
         return $app->json($ret);
     }
@@ -400,8 +436,8 @@ class Lazaret implements ControllerProviderInterface
             );
 
             //Delete lazaret file
-            $app['EM']->remove($lazaretFile);
-            $app['EM']->flush();
+            $app['orm.em']->remove($lazaretFile);
+            $app['orm.em']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -437,6 +473,6 @@ class Lazaret implements ControllerProviderInterface
 
         $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
 
-        return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg', 3600);
+        return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg');
     }
 }

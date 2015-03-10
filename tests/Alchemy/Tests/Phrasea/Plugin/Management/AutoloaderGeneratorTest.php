@@ -52,7 +52,7 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
         $this->assertTrue(class_exists('Vendor\PluginService'));
 
         // load services
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         $app['conf']->set(['plugins', $manifest->getName(), 'enabled'], true);
         $retrievedApp = require $pluginsDir . '/services.php';
 

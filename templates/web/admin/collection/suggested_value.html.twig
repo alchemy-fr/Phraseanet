@@ -427,23 +427,24 @@ function desactiv4VS()
 
     if( o2.length > 0 )
     {
-        var optionLength = o2.find("options").length;
-        if ( optionLength > 1) {
+        var optionLength = o2.find("option").length;
+        var index = o2.prop("selectedIndex");
 
-            if ((o2.prop("selectedIndex")+1) != optionLength) {
+        if ( optionLength > 1) {
+            if ((index+1) == optionLength) {
                 activer_bout('bout_desc',false);
             } else {
                 activer_bout('bout_desc',true);
             }
 
-            if (o2.prop("selectedIndex")!=0 && optionLength>1) {
+            if (index == 0 && optionLength>1) {
                 activer_bout('bout_mont',false);
             } else {
                 activer_bout('bout_mont',true);
             }
         } else {
-            activer_bout('bout_desc',true);
-            activer_bout('bout_mont',true);
+            activer_bout('bout_desc',false);
+            activer_bout('bout_mont',false);
         }
 
     }
@@ -461,7 +462,7 @@ function activ4VS()
     }
 
     desactiv4VS();
-    activer_bout('bout_supp',false);
+    activer_bout('bout_supp',true);
 }
 
 // supprime une valsug
@@ -516,7 +517,7 @@ function supprimer()
       }
 
       if(o2.prop("selectedIndex")<0) {
-          activer_bout('bout_supp',true);
+          activer_bout('bout_supp',false);
       }
 
       desactiv4VS();
@@ -766,7 +767,11 @@ function activer_bout(idBout,val)
     o = $("#"+idBout);
 
     if( o.length > 0 ) {
-        o.attr("disabled", val);
+        if (!val) {
+            o.attr("disabled", true);
+        } else {
+            o.removeAttr("disabled");
+        }
      }
 }
 

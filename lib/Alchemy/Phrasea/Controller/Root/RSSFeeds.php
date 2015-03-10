@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -68,7 +68,7 @@ class RSSFeeds implements ControllerProviderInterface
 
             $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($user));
 
-            $aggregate = new Aggregate($app['EM'], $feeds, $token);
+            $aggregate = new Aggregate($app['orm.em'], $feeds, $token);
 
             $request = $app['request'];
 

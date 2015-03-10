@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -302,6 +302,10 @@ class Root implements ControllerProviderInterface
      */
     public function doReportDownloads(Application $app, Request $request)
     {
+
+        // no_// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
+
         $download = new \module_report_download(
             $app,
             $request->request->get('dmin'),
@@ -333,25 +337,36 @@ class Root implements ControllerProviderInterface
             $download->setHasLimit(false);
             $download->setPrettyString(false);
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
             $this->doReport($app, $request, $download, $conf);
 
-            return $this->getCSVResponse($app, $download, 'download');
+            $r = $this->getCSVResponse($app, $download, 'download');
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($r, true)), FILE_APPEND);
+
+            return $r;
         }
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
         $report = $this->doReport($app, $request, $download, $conf);
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         if ($report instanceof Response) {
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
             return $report;
         }
 
         return $app->json([
                 'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                'result'      => isset($report['report']) ? $report['report'] : $report,
-                'is_infouser' => false,
-                'is_nav'      => false,
-                'is_groupby'  => false,
-                'is_plot'     => false,
-                'is_doc'      => false
+                    'result'      => isset($report['report']) ? $report['report'] : $report,
+                    'is_infouser' => false,
+                    'is_nav'      => false,
+                    'is_groupby'  => false,
+                    'is_plot'     => false,
+                    'is_doc'      => false
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -383,7 +398,7 @@ class Root implements ControllerProviderInterface
         $conf_pref = [];
 
         foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
-            $conf_pref[strtolower($field)] = [$field, 0, 0, 0, 0];
+            $conf_pref[$field] = array($field, 0, 0, 0, 0);
         }
 
         $conf = array_merge([
@@ -401,7 +416,11 @@ class Root implements ControllerProviderInterface
 
             $this->doReport($app, $request, $document, $conf, 'record_id');
 
-            return $this->getCSVResponse($app, $document, 'documents');
+            $r = $this->getCSVResponse($app, $document, 'documents');
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($r, true)), FILE_APPEND);
+
+            return $r;
         }
 
         $report = $this->doReport($app, $request, $document, $conf, 'record_id');
@@ -509,6 +528,7 @@ class Root implements ControllerProviderInterface
             $response = new CSVFileResponse($filename, function () use ($app, $result) {
                 $app['csv.exporter']->export('php://output', $result);
             });
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
             return $response;
         }
@@ -548,6 +568,7 @@ class Root implements ControllerProviderInterface
                 unset($conf['ip']);
             }
         }
+
         //save initial conf
         $base_conf = $conf;
         //format conf according user preferences
@@ -612,13 +633,20 @@ class Root implements ControllerProviderInterface
             $filter->addFilter('record_id', '=', $request->request->get('word', ''));
         }
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         //set filters to current report
         $report->setFilter($filter->getTabFilter());
         $report->setActiveColumn($filter->getActiveColumn());
         $report->setPostingFilter($filter->getPostingFilter());
 
         // display a new arraywhere results are group
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         if ('' !== $groupby = $request->request->get('groupby', '')) {
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
             $report->setConfig(false);
             $groupby = current(explode(' ', $groupby));
 
@@ -644,6 +672,8 @@ class Root implements ControllerProviderInterface
             ]);
         }
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         //set Limit
         if ($report->getEnableLimit()
                 && ('' !== $page = $request->request->get('page', ''))
@@ -653,12 +683,16 @@ class Root implements ControllerProviderInterface
             $report->setLimit(false, false);
         }
 
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+
         //time to build our report
         if (false === $what) {
             $reportArray = $report->buildReport($conf);
         } else {
             $reportArray = $report->buildReport($conf, $what, $request->request->get('tbl', false));
         }
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
         return $reportArray;
     }
@@ -681,19 +715,33 @@ class Root implements ControllerProviderInterface
         foreach (array_keys($report->getDisplay()) as $k) {
             $headers[$k] = $k;
         }
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s \n\n", __FILE__, __LINE__, var_export($headers, true)), FILE_APPEND);
+
         // set headers as first row
         $result = $report->getResult();
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s \n\n", __FILE__, __LINE__, var_export($result[0], true)), FILE_APPEND);
+
         array_unshift($result, $headers);
 
-        $collection = new CallbackCollection($result, function ($row) use ($report) {
+        $collection = new CallbackCollection($result, function ($row) use ($headers) {
             // restrict fields to the displayed ones
-            return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
+            //    return array_map("strip_tags", array_intersect_key($row, $report->getDisplay()));
+            $ret = array();
+            foreach($headers as $f) {
+                $ret[$f] = array_key_exists($f, $row) ? strip_tags($row[$f]) : '';
+            }
+            return $ret;
         });
 
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
-        $response = new CSVFileResponse($filename, function () use ($app, $collection) {
+
+        $cb = function () use ($app, $collection) {
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($collection, true)), FILE_APPEND);
             $app['csv.exporter']->export('php://output', $collection);
-        });
+        };
+
+        $response = new CSVFileResponse($filename, $cb);
 
         return $response;
     }

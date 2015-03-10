@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Process\Process;
 
 class PhraseaInstallSubscriber implements EventSubscriberInterface
 {
@@ -37,6 +38,7 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
     {
         $this->createNavigatorApplication();
         $this->createOfficePluginApplication();
+        $this->generateProxies();
     }
 
     private function createNavigatorApplication()
@@ -73,5 +75,12 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
         $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
 
         $this->app['manipulator.api-application']->update($application);
+    }
+
+    private function generateProxies()
+    {
+        $process = new Process('php ' . $this->app['root.path']. '/bin/developer orm:generate:proxies');
+        $process->setTimeout(300);
+        $process->run();
     }
 }

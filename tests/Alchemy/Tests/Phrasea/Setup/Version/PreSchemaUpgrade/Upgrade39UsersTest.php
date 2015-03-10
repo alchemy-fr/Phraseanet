@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\Setup\Version;
 use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39Users;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Migrations\Configuration\YamlConfiguration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -22,8 +23,14 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $this->loadFixture($fixture);
 
         $em = $this->createEntityManager();
+
         $upgrader = new Upgrade39Users();
-        $upgrader->apply($em, $this->createAppboxMock(), self::$DI['cli']['doctrine-migration.configuration']);
+        $configuration = new YamlConfiguration($em->getConnection());
+
+        $configuration->load(__DIR__.'/../../../../../../../lib/conf.d/migrations.yml');
+        $configuration->setMigrationsDirectory(__DIR__.'/../../../../../../../lib/Alchemy/Phrasea/Setup/DoctrineMigration');
+
+        $upgrader->apply($em, $this->createAppboxMock(), $configuration);
 
         $this->assertUsrTableIsSanitized($em);
         // check usr_ids are preserved
@@ -124,28 +131,14 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
 
     private function createEntityManager($dbname = self::DB_NAME)
     {
-        $params = self::$DI['cli']['conf']->get(['main', 'database']);
+        $app = self::$DI['cli'];
+        $params = $app['db.appbox.info'];
         $params['dbname'] = $dbname;
-        self::$DI['cli']['EM.dbal-conf'] = $params;
 
-        $em = EntityManager::create($params, self::$DI['cli']['EM.config'], self::$DI['cli']['EM.events-manager']);
+        $info = $app['db.info']($params);
+        $key = $app['orm.add']($info);
 
-        $platform = $em->getConnection()->getDatabasePlatform();
-
-        $types = [
-            'blob' => 'Alchemy\Phrasea\Model\Types\Blob',
-            'enum' => 'Alchemy\Phrasea\Model\Types\Blob',
-            'longblob' => 'Alchemy\Phrasea\Model\Types\LongBlob',
-            'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
-            'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
-        ];
-
-        foreach ($types as $type => $class) {
-            if (!Type::hasType($type)) {
-                Type::addType($type, $class);
-            }
-            $platform->registerDoctrineTypeMapping($type, $type);
-        }
+        $em = $app['orm.ems'][$key];
 
         return $em;
     }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -810,6 +810,9 @@ abstract class base implements cache_cacheableInterface
 
         $success = true;
 
+        // disable mail
+        $app['swiftmailer.transport'] = null;
+
         foreach ($list_patches as $patch) {
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
@@ -822,7 +825,7 @@ abstract class base implements cache_cacheableInterface
                 $migration = $version->getMigration();
 
                 // Inject entity manager
-                $migration->setEntityManager($app['EM']);
+                $migration->setEntityManager($app['orm.em']);
 
                 // Execute migration if not marked as migrated and not already applied by an older patch
                 if (!$migration->isAlreadyApplied()) {

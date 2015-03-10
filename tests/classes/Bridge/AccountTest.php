@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
+class Bridge_AccountTest extends \PhraseanetTestCase
 {
     /**
      * @var Bridge_Account
@@ -13,11 +13,12 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
     private static $named;
     private static $id;
 
-    public function bootTestCase()
+    public function setUp()
     {
-        self::$DI['user'];
+        parent::setup();
 
         if (!self::$object) {
+            self::$DI['user'];
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
@@ -150,10 +151,5 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
     {
         $account = Bridge_Account::load_account(self::$DI['app'], self::$object->get_id());
         $this->assertEquals(self::$object->get_id(), $account->get_id());
-    }
-
-    public function testLoad_account_from_distant_id()
-    {
-        $this->markTestIncomplete();
     }
 }

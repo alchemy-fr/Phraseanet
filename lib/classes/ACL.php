@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -886,7 +886,6 @@ class ACL implements cache_cacheableInterface
 
             return $this;
         } catch (\Exception $e) {
-
         }
 
         $sql = 'SELECT  u.* FROM basusr u, bas b, sbas s
@@ -1473,12 +1472,10 @@ class ACL implements cache_cacheableInterface
     public function delete_injected_rights_sbas(databox $databox)
     {
         $sql = 'DELETE FROM collusr WHERE usr_id = :usr_id AND site = :site';
-        $params = [
-            ':usr_id' => $this->user->getId()
-            , ':site'   => $this->app['conf']->get(['main', 'key'])
-        ];
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
+        $stmt->execute([
+            ':usr_id' => $this->user->getId(), ':site'   => $this->app['conf']->get(['main', 'key'])
+        ]);
         $stmt->closeCursor();
 
         return $this;

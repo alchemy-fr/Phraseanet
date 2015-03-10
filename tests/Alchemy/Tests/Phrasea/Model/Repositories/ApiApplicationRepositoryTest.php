@@ -8,19 +8,19 @@ class ApiApplicationRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindByCreator()
     {
-        $app = self::$DI['app']['EM']->getRepository('Phraseanet:ApiApplication')->findByCreator(self::$DI['user']);
+        $app = self::$DI['app']['orm.em']->getRepository('Phraseanet:ApiApplication')->findByCreator(self::$DI['user']);
         $this->assertCount(1, $app);
     }
 
     public function testFindByUser()
     {
-        $app = self::$DI['app']['EM']->getRepository('Phraseanet:ApiApplication')->findByUser(self::$DI['user']);
+        $app = self::$DI['app']['orm.em']->getRepository('Phraseanet:ApiApplication')->findByUser(self::$DI['user']);
         $this->assertCount(1, $app);
     }
 
     public function testFindAuthorizedAppsByUser()
     {
-        $app = self::$DI['app']['EM']->getRepository('Phraseanet:ApiApplication')->findAuthorizedAppsByUser(self::$DI['user']);
+        $app = self::$DI['app']['orm.em']->getRepository('Phraseanet:ApiApplication')->findAuthorizedAppsByUser(self::$DI['user']);
         $this->assertCount(1, $app);
     }
 }

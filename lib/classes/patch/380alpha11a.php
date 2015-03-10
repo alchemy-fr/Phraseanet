@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -73,7 +73,7 @@ class patch_380alpha11a extends patchAbstract
         }
 
         foreach ($rs as $row) {
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 
@@ -117,14 +117,14 @@ class patch_380alpha11a extends patchAbstract
 
                     $session->addModule($module);
 
-                    $app['EM']->persist($module);
+                    $app['orm.em']->persist($module);
                 }
             }
 
-            $app['EM']->persist($session);
+            $app['orm.em']->persist($session);
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return true;
     }

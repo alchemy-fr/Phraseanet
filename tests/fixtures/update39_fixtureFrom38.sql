@@ -25278,16 +25278,16 @@ CREATE TABLE IF NOT EXISTS `ValidationParticipants` (
   `can_agree` tinyint(1) NOT NULL,
   `can_see_others` tinyint(1) NOT NULL,
   `reminded` datetime DEFAULT NULL,
-  `ValidationSession_id` int(11) DEFAULT NULL,
+  `validation_session_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `IDX_17850D7BF25B0F5B` (`ValidationSession_id`)
+  KEY `IDX_17850D7BF25B0F5B` (`validation_session_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=32 ;
 
 --
 -- Dumping data for table `ValidationParticipants`
 --
 
-INSERT INTO `ValidationParticipants` (`id`, `usr_id`, `is_aware`, `is_confirmed`, `can_agree`, `can_see_others`, `reminded`, `ValidationSession_id`) VALUES
+INSERT INTO `ValidationParticipants` (`id`, `usr_id`, `is_aware`, `is_confirmed`, `can_agree`, `can_see_others`, `reminded`, `validation_session_id`) VALUES
 (1, 153, 1, 0, 1, 1, '2012-03-12 17:00:19', 1),
 (2, 1, 1, 0, 1, 1, '2012-03-12 17:00:19', 1),
 (14, 6, 1, 0, 1, 0, NULL, 8),
@@ -25399,7 +25399,7 @@ ALTER TABLE `ValidationDatas`
 -- Constraints for table `ValidationParticipants`
 --
 ALTER TABLE `ValidationParticipants`
-  ADD CONSTRAINT `FK_17850D7BF25B0F5B` FOREIGN KEY (`ValidationSession_id`) REFERENCES `ValidationSessions` (`id`);
+  ADD CONSTRAINT `FK_17850D7BF25B0F5B` FOREIGN KEY (`validation_session_id`) REFERENCES `ValidationSessions` (`id`);
 
 --
 -- Constraints for table `ValidationSessions`

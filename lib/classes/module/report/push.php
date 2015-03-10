@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -54,7 +54,7 @@ class module_report_push extends module_report
     protected function buildReq($groupby = false, $on = false)
     {
         $sqlBuilder = $this->sqlBuilder('action')->setGroupBy($groupby)->setOn($on)
-                ->setAction('push')->buildSql();
+                ->setAction('validate')->buildSql();
         $this->req = $sqlBuilder->getSql();
         $this->params = $sqlBuilder->getParams();
         $this->total = $sqlBuilder->getTotalRows();
@@ -62,7 +62,7 @@ class module_report_push extends module_report
 
     public function colFilter($field, $on = false)
     {
-        $sqlBuilder = $this->sqlBuilder('action')->setAction('push');
+        $sqlBuilder = $this->sqlBuilder('action')->setAction('validate');
         $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];

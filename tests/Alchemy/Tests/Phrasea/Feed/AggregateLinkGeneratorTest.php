@@ -22,14 +22,14 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
         $feeds = [$feed, $another_feed];
 
-        $aggregate = new Aggregate(self::$DI['app']['EM'], $feeds);
+        $aggregate = new Aggregate(self::$DI['app']['orm.em'], $feeds);
 
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()
             ->getMock();
 
         if ($alreadyCreated) {
-            $token = self::$DI['app']['EM']->find('Phraseanet:AggregateToken', 1);
+            $token = self::$DI['app']['orm.em']->find('Phraseanet:AggregateToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -45,7 +45,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
         $random = self::$DI['app']['random.low'];
 
-        $linkGenerator = new AggregateLinkGenerator($generator, self::$DI['app']['EM'], $random);
+        $linkGenerator = new AggregateLinkGenerator($generator, self::$DI['app']['orm.em'], $random);
 
         $link = $linkGenerator->generate($aggregate, self::$DI['user'], $format, $page, $renew);
 
@@ -65,10 +65,10 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 }
                 $this->assertNotEquals($tokenValue, $capture['token']);
 
-                $this->assertCount(0, self::$DI['app']['EM']
+                $this->assertCount(0, self::$DI['app']['orm.em']
                     ->getRepository('Phraseanet:AggregateToken')
                     ->findBy(['value' => $tokenValue]));
-                $this->assertCount(1, self::$DI['app']['EM']
+                $this->assertCount(1, self::$DI['app']['orm.em']
                     ->getRepository('Phraseanet:AggregateToken')
                     ->findBy(['value' => $capture['token']]));
             } else {
@@ -83,7 +83,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
                 $this->assertEquals($expectedParams, $capture);
 
-                $this->assertCount(1, self::$DI['app']['EM']
+                $this->assertCount(1, self::$DI['app']['orm.em']
                     ->getRepository('Phraseanet:AggregateToken')
                     ->findBy(['value' => $tokenValue]));
             }
@@ -94,7 +94,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals($format, $capture['format']);
             $this->assertEquals(64, strlen($capture['token']));
 
-            $this->assertCount(1, self::$DI['app']['EM']
+            $this->assertCount(1, self::$DI['app']['orm.em']
                 ->getRepository('Phraseanet:AggregateToken')
                 ->findBy(['value' => $capture['token']]));
         }

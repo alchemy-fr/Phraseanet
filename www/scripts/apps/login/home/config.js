@@ -1,7 +1,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,9 +15,9 @@ require.config({
         "jquery.ui": "../assets/jquery.ui/jquery-ui",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
-        i18n: "../assets/i18next/i18next.amd-1.6.3",
-        bootstrap: "../assets/bootstrap/js/bootstrap.min",
-        multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect",
+        i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
+        bootstrap: "../skins/build/bootstrap/js/bootstrap.min",
+        multiselect: "../assets/bootstrap-multiselect/dist/js/bootstrap-multiselect",
         "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
     },
     shim: {

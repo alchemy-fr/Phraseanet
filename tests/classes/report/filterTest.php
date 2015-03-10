@@ -1,6 +1,6 @@
 <?php
 
-class report_filterTest extends \PhraseanetAuthenticatedTestCase
+class report_filterTest extends \report_abstractReportTestCase
 {
     protected $ret;
     protected $dmin;

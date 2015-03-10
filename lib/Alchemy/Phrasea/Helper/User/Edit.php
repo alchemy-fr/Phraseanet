@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Edit extends \Alchemy\Phrasea\Helper\Helper
 {
@@ -598,7 +599,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $user->setFirstName($parm['first_name'])
             ->setLastName($parm['last_name'])
-            ->setGender($parm['gender'])
+            ->setGender((int) $parm['gender'])
             ->setEmail($parm['email'])
             ->setAddress($parm['address'])
             ->setZipCode($parm['zip'])
@@ -644,6 +645,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $template = $this->app['repo.users']->find($this->request->get('template'));
 
+        if (null === $template) {
+            throw new NotFoundHttpException(sprintf('Given template "%s" could not be found', $this->request->get('template')));
+        }
         if (null === $template->getTemplateOwner() || $template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
@@ -652,11 +656,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
-
-            if ($user->isTemplate()) {
-                continue;
-            }
-
+            
             $this->app['acl']->get($user)->apply_model($template, $base_ids);
         }
 

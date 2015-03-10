@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -48,8 +48,8 @@ class WorkZone extends Helper
             $basket->setName($this->app->trans('Default basket'));
             $basket->setUser($this->app['authentication']->getUser());
 
-            $this->app['EM']->persist($basket);
-            $this->app['EM']->flush();
+            $this->app['orm.em']->persist($basket);
+            $this->app['orm.em']->flush();
             $baskets = [$basket];
         }
 

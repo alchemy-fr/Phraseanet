@@ -25,7 +25,6 @@ use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Registration;
-use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -36,7 +35,6 @@ use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
-use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
@@ -61,133 +59,119 @@ class RegenerateSqliteDb extends Command
     {
         $fs = new Filesystem();
 
-        $source = sys_get_temp_dir().'/db-ref.sqlite';
-        $target = sys_get_temp_dir().'/db-ref.sqlite.bkp';
-        $json = sys_get_temp_dir().'/fixtures.json';
-        $renamed = false;
+        $json = sprintf('%s/fixtures.json', sys_get_temp_dir());
 
-        if (is_file($source)) {
-            $renamed = true;
-            $fs->rename($source, $target, true);
+        if ($fs->exists($json)) {
+            $fs->remove($json);
         }
 
-        try {
-            $dbParams = [
-                'driver'  => 'pdo_sqlite',
-                'path'    => $source,
-                'charset' => 'UTF8',
-            ];
+        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
+            return $app['orm.ems'][$app['db.fixture.hash.key']];
+        });
 
-            $this->container->register(new ORMServiceProvider());
-            $this->container['EM.dbal-conf'] = $dbParams;
+        $em = $this->container['orm.em'];
 
-            $metadatas = $this->container['EM']->getMetadataFactory()->getAllMetadata();
-            $schemaTool = new SchemaTool($this->container['EM']);
-            $schemaTool->createSchema($metadatas);
-
-            $fixtures = [];
-
-            $DI = new \Pimple();
-
-            $this->generateUsers($this->container['EM'], $DI);
-            $this->insertOauthApps($DI);
-            $this->insertOauthAccounts($DI);
-            $this->insertNativeApps();
-            $this->generateCollection($DI);
-            $this->generateRecord($DI);
-            $this->insertTwoTasks($this->container['EM']);
-            $this->insertTwoBasket($this->container['EM'], $DI);
-            $this->insertOneStoryInWz($this->container['EM'], $DI);
-            $this->insertUsrLists($this->container['EM'], $DI);
-            $this->insertOnePrivateFeed($this->container['EM'], $DI);
-            $this->insertOnePublicFeed($this->container['EM'], $DI);
-            $this->insertOneExtraFeed($this->container['EM'], $DI);
-            $this->insertOneAggregateToken($this->container['EM'], $DI);
-            $this->insertLazaretFiles($this->container['EM'], $DI);
-            $this->insertAuthFailures($this->container['EM'], $DI);
-            $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_alt1'], $DI['coll'], 'now', 'registration_1');
-            $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_alt2'], $DI['coll'], '-3 months', 'registration_2');
-            $this->insertOneRegistration($DI, $this->container['EM'], $DI['user_notAdmin'], $DI['coll'], 'now', 'registration_3');
-            $this->insertTwoTokens($this->container['EM'], $DI);
-            $this->insertOneInvalidToken($this->container['EM'], $DI);
-            $this->insertOneValidationToken($this->container['EM'], $DI);
-            $this->insertWebhookEvent($this->container['EM'], $DI);
-            $this->insertWebhookEventDelivery($this->container['EM'], $DI);
-
-            $this->container['EM']->flush();
-
-            $fixtures['basket']['basket_1'] = $DI['basket_1']->getId();
-            $fixtures['basket']['basket_2'] = $DI['basket_2']->getId();
-            $fixtures['basket']['basket_3'] = $DI['basket_3']->getId();
-            $fixtures['basket']['basket_4'] = $DI['basket_4']->getId();
-
-            $fixtures['token']['token_1'] = $DI['token_1']->getValue();
-            $fixtures['token']['token_2'] = $DI['token_2']->getValue();
-            $fixtures['token']['token_invalid'] = $DI['token_invalid']->getValue();
-            $fixtures['token']['token_validation'] = $DI['token_validation']->getValue();
-
-            $fixtures['user']['test_phpunit'] = $DI['user']->getId();
-            $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
-            $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->getId();
-            $fixtures['user']['test_phpunit_alt2'] = $DI['user_alt2']->getId();
-            $fixtures['user']['user_guest'] = $DI['user_guest']->getId();
-
-            $fixtures['oauth']['user'] = $DI['api-app-user']->getId();
-            $fixtures['oauth']['acc-user'] = $DI['api-app-acc-user']->getId();
-            $fixtures['oauth']['user-not-admin'] = $DI['api-app-user-not-admin']->getId();
-            $fixtures['oauth']['acc-user-not-admin'] = $DI['api-app-acc-user-not-admin']->getId();
-
-            $fixtures['databox']['records'] = $DI['databox']->get_sbas_id();
-
-            $fixtures['collection']['coll'] = $DI['coll']->get_base_id();
-            $fixtures['collection']['coll_no_access'] = $DI['coll_no_access']->get_base_id();
-            $fixtures['collection']['coll_no_status'] = $DI['coll_no_status']->get_base_id();
-
-            $fixtures['record']['record_story_1'] = $DI['record_story_1']->get_record_id();
-            $fixtures['record']['record_story_2'] = $DI['record_story_2']->get_record_id();
-            $fixtures['record']['record_story_3'] = $DI['record_story_3']->get_record_id();
-
-            $fixtures['record']['record_1'] = $DI['record_1']->get_record_id();
-            $fixtures['record']['record_2'] = $DI['record_2']->get_record_id();
-            $fixtures['record']['record_3'] = $DI['record_3']->get_record_id();
-            $fixtures['record']['record_4'] = $DI['record_4']->get_record_id();
-            $fixtures['record']['record_5'] = $DI['record_5']->get_record_id();
-            $fixtures['record']['record_6'] = $DI['record_6']->get_record_id();
-            $fixtures['record']['record_7'] = $DI['record_7']->get_record_id();
-
-            $fixtures['registrations']['registration_1'] = $DI['registration_1']->getId();
-            $fixtures['registrations']['registration_2'] = $DI['registration_2']->getId();
-            $fixtures['registrations']['registration_3'] = $DI['registration_3']->getId();
-
-            $fixtures['lazaret']['lazaret_1'] = $DI['lazaret_1']->getId();
-
-            $fixtures['user']['user_1'] = $DI['user_1']->getId();
-            $fixtures['user']['user_2'] = $DI['user_1']->getId();
-            $fixtures['user']['user_3'] = $DI['user_1']->getId();
-            $fixtures['user']['user_1_deleted'] = $DI['user_1_deleted']->getId();
-            $fixtures['user']['user_2_deleted'] = $DI['user_2_deleted']->getId();
-            $fixtures['user']['user_3_deleted'] = $DI['user_3_deleted']->getId();
-            $fixtures['user']['user_template'] = $DI['user_template']->getId();
-
-            $fixtures['feed']['public']['feed'] = $DI['feed_public']->getId();
-            $fixtures['feed']['public']['entry'] = $DI['feed_public_entry']->getId();
-            $fixtures['feed']['public']['token'] = $DI['feed_public_token']->getId();
-
-            $fixtures['feed']['private']['feed'] = $DI['feed_private']->getId();
-            $fixtures['feed']['private']['entry'] = $DI['feed_private_entry']->getId();
-            $fixtures['feed']['private']['token'] = $DI['feed_private_token']->getId();
-
-            $fixtures['webhook']['event'] = $DI['event_webhook_1']->getId();
-        } catch (\Exception $e) {
-            $output->writeln("<error>".$e->getMessage()."</error>");
-            if ($renamed) {
-                $fs->remove($source);
-                $fs->rename($target, $source);
-            }
-            throw $e;
+        if ($fs->exists($em->getConnection()->getParams()['path'])) {
+            $fs->remove($em->getConnection()->getParams()['path']);
         }
 
-        $fs->remove($target);
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
+
+        $fixtures = [];
+
+        $DI = new \Pimple();
+
+        $this->generateUsers($em, $DI);
+        $this->insertOauthApps($DI);
+        $this->insertOauthAccounts($DI);
+        $this->insertNativeApps();
+        $this->generateCollection($DI);
+        $this->generateRecord($DI);
+        $this->insertTwoTasks($em);
+        $this->insertTwoBasket($em, $DI);
+        $this->insertOneStoryInWz($em, $DI);
+        $this->insertUsrLists($em, $DI);
+        $this->insertOnePrivateFeed($em, $DI);
+        $this->insertOnePublicFeed($em, $DI);
+        $this->insertOneExtraFeed($em, $DI);
+        $this->insertOneAggregateToken($em, $DI);
+        $this->insertLazaretFiles($em, $DI);
+        $this->insertAuthFailures($em, $DI);
+        $this->insertOneRegistration($DI, $em, $DI['user_alt1'], $DI['coll'], 'now', 'registration_1');
+        $this->insertOneRegistration($DI, $em, $DI['user_alt2'], $DI['coll'], '-3 months', 'registration_2');
+        $this->insertOneRegistration($DI, $em, $DI['user_notAdmin'], $DI['coll'], 'now', 'registration_3');
+        $this->insertTwoTokens($em, $DI);
+        $this->insertOneInvalidToken($em, $DI);
+        $this->insertOneValidationToken($em, $DI);
+        $this->insertWebhookEvent($em, $DI);
+        $this->insertWebhookEventDelivery($em, $DI);
+
+        $em->flush();
+
+        $fixtures['basket']['basket_1'] = $DI['basket_1']->getId();
+        $fixtures['basket']['basket_2'] = $DI['basket_2']->getId();
+        $fixtures['basket']['basket_3'] = $DI['basket_3']->getId();
+        $fixtures['basket']['basket_4'] = $DI['basket_4']->getId();
+
+        $fixtures['token']['token_1'] = $DI['token_1']->getValue();
+        $fixtures['token']['token_2'] = $DI['token_2']->getValue();
+        $fixtures['token']['token_invalid'] = $DI['token_invalid']->getValue();
+        $fixtures['token']['token_validation'] = $DI['token_validation']->getValue();
+
+        $fixtures['user']['test_phpunit'] = $DI['user']->getId();
+        $fixtures['user']['test_phpunit_not_admin'] = $DI['user_notAdmin']->getId();
+        $fixtures['user']['test_phpunit_alt1'] = $DI['user_alt1']->getId();
+        $fixtures['user']['test_phpunit_alt2'] = $DI['user_alt2']->getId();
+        $fixtures['user']['user_guest'] = $DI['user_guest']->getId();
+
+        $fixtures['oauth']['user'] = $DI['api-app-user']->getId();
+        $fixtures['oauth']['acc-user'] = $DI['api-app-acc-user']->getId();
+        $fixtures['oauth']['user-not-admin'] = $DI['api-app-user-not-admin']->getId();
+        $fixtures['oauth']['acc-user-not-admin'] = $DI['api-app-acc-user-not-admin']->getId();
+
+        $fixtures['databox']['records'] = $DI['databox']->get_sbas_id();
+
+        $fixtures['collection']['coll'] = $DI['coll']->get_base_id();
+        $fixtures['collection']['coll_no_access'] = $DI['coll_no_access']->get_base_id();
+        $fixtures['collection']['coll_no_status'] = $DI['coll_no_status']->get_base_id();
+
+        $fixtures['record']['record_story_1'] = $DI['record_story_1']->get_record_id();
+        $fixtures['record']['record_story_2'] = $DI['record_story_2']->get_record_id();
+        $fixtures['record']['record_story_3'] = $DI['record_story_3']->get_record_id();
+
+        $fixtures['record']['record_1'] = $DI['record_1']->get_record_id();
+        $fixtures['record']['record_2'] = $DI['record_2']->get_record_id();
+        $fixtures['record']['record_3'] = $DI['record_3']->get_record_id();
+        $fixtures['record']['record_4'] = $DI['record_4']->get_record_id();
+        $fixtures['record']['record_5'] = $DI['record_5']->get_record_id();
+        $fixtures['record']['record_6'] = $DI['record_6']->get_record_id();
+        $fixtures['record']['record_7'] = $DI['record_7']->get_record_id();
+
+        $fixtures['registrations']['registration_1'] = $DI['registration_1']->getId();
+        $fixtures['registrations']['registration_2'] = $DI['registration_2']->getId();
+        $fixtures['registrations']['registration_3'] = $DI['registration_3']->getId();
+
+        $fixtures['lazaret']['lazaret_1'] = $DI['lazaret_1']->getId();
+
+        $fixtures['user']['user_1'] = $DI['user_1']->getId();
+        $fixtures['user']['user_2'] = $DI['user_1']->getId();
+        $fixtures['user']['user_3'] = $DI['user_1']->getId();
+        $fixtures['user']['user_1_deleted'] = $DI['user_1_deleted']->getId();
+        $fixtures['user']['user_2_deleted'] = $DI['user_2_deleted']->getId();
+        $fixtures['user']['user_3_deleted'] = $DI['user_3_deleted']->getId();
+        $fixtures['user']['user_template'] = $DI['user_template']->getId();
+
+        $fixtures['feed']['public']['feed'] = $DI['feed_public']->getId();
+        $fixtures['feed']['public']['entry'] = $DI['feed_public_entry']->getId();
+        $fixtures['feed']['public']['token'] = $DI['feed_public_token']->getId();
+
+        $fixtures['feed']['private']['feed'] = $DI['feed_private']->getId();
+        $fixtures['feed']['private']['entry'] = $DI['feed_private_entry']->getId();
+        $fixtures['feed']['private']['token'] = $DI['feed_private_token']->getId();
+
+        $fixtures['webhook']['event'] = $DI['event_webhook_1']->getId();
+
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
 
         return 0;
@@ -195,23 +179,28 @@ class RegenerateSqliteDb extends Command
 
     private function insertOauthApps(\Pimple $DI)
     {
-        $DI['api-app-user'] = $this->container['manipulator.api-application']->create(
-            'test application for user',
-            ApiApplication::WEB_TYPE,
-            'an api application description',
-            'http://website.com/',
-            $DI['user'],
-            'http://callback.com/callback/'
-        );
+        if (null === $DI['api-app-user'] = $this->container['repo.api-applications']->findOneByName('api-app-user')) {
+            $DI['api-app-user'] = $this->container['manipulator.api-application']->create(
+                'test-web',
+                ApiApplication::WEB_TYPE,
+                '',
+                'http://website.com/',
+                $DI['user'],
+                'http://callback.com/callback/'
+            );
+        }
 
-        $DI['api-app-user-not-admin'] = $this->container['manipulator.api-application']->create(
-            'test application for user',
-            ApiApplication::WEB_TYPE,
-            'an api application description',
-            'http://website.com/',
-            $DI['user_notAdmin'],
-            'http://callback.com/callback/'
-        );
+        if (null === $DI['api-app-user-not-admin'] = $this->container['repo.api-applications']->findOneByName('test-desktop')) {
+            $DI['api-app-user-not-admin'] = $this->container['manipulator.api-application']->create(
+                'test-desktop',
+                ApiApplication::WEB_TYPE,
+                '',
+                'http://website.com/',
+                $DI['user_notAdmin'],
+                'http://callback.com/callback/'
+            );
+        }
+
     }
 
     public function insertOauthAccounts(\Pimple $DI)

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -122,7 +122,7 @@ class Records implements ControllerProviderInterface
             ]),
             "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
-                'baskets'       => $record->get_container_baskets($app['EM'], $app['authentication']->getUser())
+                'baskets'       => $record->get_container_baskets($app['orm.em'], $app['authentication']->getUser())
             ]),
             "current"       => $train,
             "history"       => $app['twig']->render('prod/preview/short_history.html.twig', [
@@ -135,7 +135,9 @@ class Records implements ControllerProviderInterface
                 'record'        => $record
             ]),
             "pos"           => $record->get_number(),
-            "title"         => str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], $record->get_title($query, $searchEngine))
+            "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
+            "collection_name" => $record->get_collection()->get_name(),
+            "collection_logo" => $record->get_collection()->getLogo($record->get_base_id(), $app)
         ]);
     }
 
@@ -162,14 +164,14 @@ class Records implements ControllerProviderInterface
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
 
                 foreach ($basketElements as $element) {
-                    $app['EM']->remove($element);
+                    $app['orm.em']->remove($element);
                     $deleted[] = $element->getRecord($app)->get_serialize_key();
                 }
 
                 $attachedStories = $StoryWZRepository->findByRecord($app, $record);
 
                 foreach ($attachedStories as $attachedStory) {
-                    $app['EM']->remove($attachedStory);
+                    $app['orm.em']->remove($attachedStory);
                 }
 
                 $deleted[] = $record->get_serialize_key();
@@ -179,7 +181,7 @@ class Records implements ControllerProviderInterface
             }
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         return $app->json($deleted);
     }

@@ -41,14 +41,21 @@ class UserProviderTest extends \PhraseanetTestCase
     public function testFind()
     {
         // mandatory until user rights are managed by doctrine
-        self::$DI['app']['EM'] = EntityManager::create(self::$DI['app']['conf']->get(['main', 'database']), self::$DI['app']['EM.config'], self::$DI['app']['EM.events-manager']);
+        //self::$DI['app']['orm.em'] = EntityManager::create(self::$DI['app']['conf']->get(['main', 'database']), self::$DI['app']['db.config'], self::$DI['app']['db.event_manager']);
+
+        $app = self::$DI['app'];
+        $params = $app['db.appbox.info'];
+        $info = $app['db.info']($params);
+        $key = $app['orm.add']($info);
+
+        self::$DI['app']['orm.em'] = $app['orm.ems'][$key];
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('test'), 'a_password', uniqid('test').'@domain.fr');
         self::giveRightsToUser(self::$DI['app'], $user);
         $user->setFirstName('John');
         $user->setLastName('Doe');
-        self::$DI['app']['EM']->persist($user);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($user);
+        self::$DI['app']['orm.em']->flush();
 
         $results = $this->object->find('BABE', $user,  self::$DI['collection']->get_databox());
 

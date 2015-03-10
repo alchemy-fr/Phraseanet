@@ -80,14 +80,14 @@ class patch_390alpha9a extends patchAbstract
     private function updateDoctrineUsers(Application $app)
     {
         $dql = 'SELECT u FROM Phraseanet:User u WHERE u.locale IS NOT NULL';
-        $users = $app['EM']->createQuery($dql)->getResult();
+        $users = $app['orm.em']->createQuery($dql)->getResult();
 
         foreach ($users as $user) {
             $user->setLocale($this->extractLocale($user->getLocale()));
-            $app['EM']->persist($user);
+            $app['orm.em']->persist($user);
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
     }
 
     private function updateDataboxPrefs(\appbox $appbox)

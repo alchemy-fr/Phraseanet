@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -29,16 +29,25 @@ final class PhraseaEvents
     const ORDER_CREATE = 'order.create';
     const ORDER_DELIVER = 'order.deliver';
     const ORDER_DENY = 'order.deny';
+
     const FEED_ENTRY_CREATE = 'feed-entry.create';
+
     const REGISTRATION_CREATE = 'registration.create';
     const REGISTRATION_AUTOREGISTER = 'registration.autoregister';
+
     const BASKET_PUSH = 'basket.push';
+
     const VALIDATION_CREATE = 'validation.create';
     const VALIDATION_DONE = 'validation.done';
     const VALIDATION_REMINDER = 'validation.reminder';
 
     const LAZARET_CREATE = 'lazaret.create';
+
     const BRIDGE_UPLOAD_FAILURE = 'bridge.upload-failure';
+
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE = 'export.create';
+
+    const RECORD_EDIT = 'record.edit';
+    const RECORD_UPLOAD = 'record.upload';
 }

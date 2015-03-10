@@ -181,14 +181,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         }
     }
 
-    public function testGet_status_icons()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_type()
     {
         $this->assertTrue(in_array(self::$DI['record_1']->get_type(), ['video', 'audio', 'image', 'document', 'flash', 'unknown']));
@@ -242,17 +234,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         }
     }
 
-    /**
-     * @todo Implement testGet_collection_logo().
-     */
-    public function testGet_collection_logo()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_technical_infos()
     {
         $this->assertTrue(is_array(self::$DI['record_1']->get_technical_infos()));
@@ -293,14 +274,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_sbas_id()
     {
         $this->assertTrue(is_int(self::$DI['record_1']->get_sbas_id()));
-    }
-
-    public function testSubstitute_subdef()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
     }
 
     public function testSet_metadatas()
@@ -488,26 +461,16 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertInstanceOf('\SplFileInfo', self::$DI['record_1']->get_hd_file());
     }
 
-    /**
-     * @todo Implement testLog_view().
-     */
-    public function testLog_view()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
 
     public function testGet_container_baskets()
     {
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $found = $sselcont_id = false;
 
         $sbas_id = self::$DI['record_1']->get_sbas_id();
         $record_id = self::$DI['record_1']->get_record_id();
 
-        foreach (self::$DI['record_1']->get_container_baskets(self::$DI['app']['EM'], self::$DI['app']['authentication']->getUser()) as $c_basket) {
+        foreach (self::$DI['record_1']->get_container_baskets(self::$DI['app']['orm.em'], self::$DI['user']) as $c_basket) {
             if ($c_basket->getId() == $basket->getId()) {
                 $found = true;
                 foreach ($c_basket->getElements() as $b_el) {

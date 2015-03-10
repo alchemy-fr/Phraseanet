@@ -1638,7 +1638,7 @@ function GUI(varname, idbody, skin) {
     node.style.left = "50px";
     node.style.zIndex = 99;
     node.style.visibility = "hidden";
-    node.src = "cursors/nodrop01.gif";
+    node.src = "/skins/icons/nodrop01.gif";
     dragObj.objCursor = desk.appendChild(node);
 
     desk.onmousemove = function (e) {

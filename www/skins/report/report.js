@@ -64,7 +64,8 @@ function bindEvents() {
     $('#dminDash, #dmaxDash').datepicker({
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy',
+//        dateFormat: 'dd-mm-yy',
+        dateFormat: 'yy-mm-dd',
         numberOfMonths: 1,
         maxDate: "-0d"
     });
@@ -73,9 +74,14 @@ function bindEvents() {
         loadDash();
     });
     //load all the report
-    $('form .formsubmiter').bind('click', function () {
+    $('form input.formsubmiter').bind('click', function () {
         submiterAction($(this));
     });
+
+    $('form select.formsubmiter').bind('change', function () {
+        submiterAction($("option:selected", $(this)));
+    });
+
     //reload the content by pressing enter key, it concerns the number of result by report
     $('form .entersubmiter').bind('keypress', function (event) {
         if (event.keyCode == '13') {
@@ -119,7 +125,8 @@ function reportDatePicker() {
         defaultDate: -10,
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy',
+//        dateFormat: 'dd-mm-yy',
+        dateFormat: 'yy-mm-dd',
         numberOfMonths: 3,
         maxDate: "-0d",
         onSelect: function (selectedDate, instance) {
@@ -136,7 +143,8 @@ function dashboardDatePicker() {
             defaultDate: -3,
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-mm-yy',
+//            dateFormat: 'dd-mm-yy',
+            dateFormat: 'yy-mm-dd',
             numberOfMonths: 3,
             maxDate: "-0d"
         });

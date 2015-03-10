@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -31,11 +31,11 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.autoloader-generator'] = $app->share(function (Application $app) {
-            return new AutoloaderGenerator($app['plugins.directory']);
+            return new AutoloaderGenerator($app['plugin.path']);
         });
 
         $app['plugins.assets-manager'] = $app->share(function (Application $app) {
-            return new AssetsManager($app['filesystem'], $app['plugins.directory'], $app['root.path']);
+            return new AssetsManager($app['filesystem'], $app['plugin.path'], $app['root.path']);
         });
 
         $app['plugins.composer-installer'] = $app->share(function (Application $app) {
@@ -46,10 +46,10 @@ class PluginServiceProvider implements ServiceProviderInterface
                 $phpBinary = $finder->find();
             }
 
-            return new ComposerInstaller($app['composer-setup'], $app['plugins.directory'], $phpBinary);
+            return new ComposerInstaller($app['composer-setup'], $app['plugin.path'], $phpBinary);
         });
         $app['plugins.explorer'] = $app->share(function (Application $app) {
-            return new PluginsExplorer($app['plugins.directory']);
+            return new PluginsExplorer($app['plugin.path']);
         });
 
         $app['plugins.importer'] = $app->share(function (Application $app) {

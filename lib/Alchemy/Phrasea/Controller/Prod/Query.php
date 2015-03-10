@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -152,7 +152,7 @@ class Query implements ControllerProviderInterface
         $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . $app->trans('reponses:: %total% reponses', ['%total%' => $result->getTotal()]) . '</a> | ' . $app->trans('reponses:: %number% documents selectionnes', ['%number%' => '<span id="nbrecsel"></span>']);
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' .$app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;

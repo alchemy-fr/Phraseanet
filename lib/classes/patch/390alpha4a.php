@@ -70,14 +70,14 @@ class patch_390alpha4a extends patchAbstract
         $stmt->closeCursor();
 
         $n = 0;
-        $em = $app['EM'];
+        $em = $app['orm.em'];
 
         foreach ($rs as $row) {
             if (substr($row['prop'], 0, 13) === "notification_") {
                 continue;
             }
 
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 

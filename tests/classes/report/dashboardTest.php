@@ -1,6 +1,6 @@
 <?php
 
-class report_dashboardTest extends \PhraseanetAuthenticatedTestCase
+class report_dashboardTest extends \report_abstractReportTestCase
 {
     protected $dashboard;
 
@@ -24,11 +24,6 @@ class report_dashboardTest extends \PhraseanetAuthenticatedTestCase
             $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $coll['name']);
             $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $coll['coll']);
         }
-    }
-
-    public function testValid()
-    {
-        $this->markTestIncomplete('');
     }
 
     public function testExecute()

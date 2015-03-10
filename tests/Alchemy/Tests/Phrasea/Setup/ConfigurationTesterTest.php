@@ -84,7 +84,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
             ->method('isMigrable')
             ->will($this->returnValue(true));
 
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
             ->disableOriginalConstructor()
@@ -125,7 +125,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
      */
     public function testUpgradable()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
 
         $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
             ->disableOriginalConstructor()
@@ -149,7 +149,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
 
     public function testGetRequirements()
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['phraseanet.SE'] = $this->createSearchEngineMock();
 
         foreach ($this->getTester($app)->getRequirements() as $requirements) {
@@ -159,7 +159,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
 
     private function getTester(Application $app = null)
     {
-        $app = $app ? : new Application('test');
+        $app = $app ? : new Application(Application::ENV_TEST);
 
         return new ConfigurationTester($app);
     }

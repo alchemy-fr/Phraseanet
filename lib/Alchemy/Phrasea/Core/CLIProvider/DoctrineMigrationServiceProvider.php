@@ -20,7 +20,7 @@ class DoctrineMigrationServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['doctrine-migration.configuration'] = $app->share(function ($app) {
-            $configuration = new YamlConfiguration($app['EM']->getConnection());
+            $configuration = new YamlConfiguration($app['orm.em']->getConnection());
             $configuration->load(__DIR__.'/../../../../conf.d/migrations.yml');
             $configuration->setMigrationsDirectory(__DIR__.'/../../../../Alchemy/Phrasea/Setup/DoctrineMigration');
 

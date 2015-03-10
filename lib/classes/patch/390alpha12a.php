@@ -69,7 +69,7 @@ class patch_390alpha12a extends patchAbstract
         $finder = new Finder();
         $finder
             ->depth(0)
-            ->in($app['plugins.directory'])
+            ->in($app['plugin.path'])
             ->directories();
 
         $plugins = [];

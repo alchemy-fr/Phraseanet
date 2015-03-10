@@ -34,7 +34,7 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
         ];
 
         try {
-            $rs = $this->app['EM.native-query']->getAdminsOfBases(array_keys($baseIds));
+            $rs = $this->app['orm.em.native-query']->getAdminsOfBases(array_keys($baseIds));
             $adminUsers = array_map(function ($row) { return $row[0]; }, $rs);
         } catch (\Exception $e) {
             return;
@@ -82,7 +82,7 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
         ];
 
         try {
-            $rs = $this->app['EM.native-query']->getAdminsOfBases(array_keys($baseIds));
+            $rs = $this->app['orm.em.native-query']->getAdminsOfBases(array_keys($baseIds));
             $adminUsers = array_map(function ($row) { return $row[0]; }, $rs);
         } catch (\Exception $e) {
             return;

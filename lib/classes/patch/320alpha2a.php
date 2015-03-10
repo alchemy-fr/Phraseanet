@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -58,21 +58,21 @@ class patch_320alpha2a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $dql = 'SELECT u FROM Phraseanet:User u WHERE u.nonce IS NULL';
-        $q = $app['EM']->createQuery($dql);
+        $q = $app['orm.em']->createQuery($dql);
         $q->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
         $users = $q->getResult();
 
         $n = 0;
         foreach ($users as $user) {
             $user->setNonce($app['random.medium']->generateString(64));
-            $app['EM']->persist($user);
+            $app['orm.em']->persist($user);
             $n++;
             if ($n %100 === 0) {
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
         }
 
-        $app['EM']->flush();
+        $app['orm.em']->flush();
 
         $sql = 'SELECT task_id, `class` FROM task2';
         $stmt = $appbox->get_connection()->prepare($sql);

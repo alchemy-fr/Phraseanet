@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -27,7 +27,7 @@ interface DeliverDataInterface
      * @param string|null $mimeType
      * @param integer     $cacheDuration
      */
-    public function deliverFile($file, $filename = null, $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = 3600);
+    public function deliverFile($file, $filename = null, $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = null);
 
     /**
      * Return a HTTP Response ready to deliver data
@@ -38,5 +38,5 @@ interface DeliverDataInterface
      * @param string  $disposition
      * @param integer $cacheDuration
      */
-    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = 3600);
+    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = null);
 }

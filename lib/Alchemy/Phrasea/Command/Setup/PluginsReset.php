@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,8 +26,8 @@ class PluginsReset extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->container['filesystem']->remove($this->container['plugins.directory']);
-        $this->container['filesystem']->mirror(__DIR__ . '/../../../../conf.d/plugins', $this->container['plugins.directory']);
+        $this->container['filesystem']->remove($this->container['plugin.path']);
+        $this->container['filesystem']->mirror(__DIR__ . '/../../../../conf.d/plugins', $this->container['plugin.path']);
 
         return 0;
     }

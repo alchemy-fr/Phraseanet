@@ -3,6 +3,9 @@
 namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -19,7 +22,7 @@ class MaintenanceSubscriberTest extends \PhraseanetTestCase
 
     public function testCheckNegative()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new MaintenanceSubscriber($app));
         $app->get('/', function () {
@@ -35,7 +38,7 @@ class MaintenanceSubscriberTest extends \PhraseanetTestCase
 
     public function testCheckPositive()
     {
-        $app = new Application();
+        $app = new Application(Application::ENV_TEST);
 
         $app['phraseanet.configuration.config-path'] = __DIR__ . '/Fixtures/configuration-maintenance.yml';
         $app['phraseanet.configuration.config-compiled-path'] = __DIR__ . '/Fixtures/configuration-maintenance.php';
@@ -43,6 +46,16 @@ class MaintenanceSubscriberTest extends \PhraseanetTestCase
         if (is_file($app['phraseanet.configuration.config-compiled-path'])) {
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
+
+        $app['configuration.store'] = new HostConfiguration(new Configuration(
+            $app['phraseanet.configuration.yaml-parser'],
+            $app['phraseanet.configuration.compiler'],
+            $app['phraseanet.configuration.config-path'],
+            $app['phraseanet.configuration.config-compiled-path'],
+            $app['debug']
+        ));
+
+        $app['conf'] = new PropertyAccess($app['configuration.store']);
 
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new MaintenanceSubscriber($app));

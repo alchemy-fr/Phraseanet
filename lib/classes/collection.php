@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -421,6 +421,8 @@ class collection implements cache_cacheableInterface
         $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
 
         $this->get_databox()->delete_data_from_cache(databox::CACHE_COLLECTIONS);
+        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        phrasea::reset_baseDatas($appbox);
 
         return;
     }
@@ -611,9 +613,7 @@ class collection implements cache_cacheableInterface
 
         $new_bas = $conn->lastInsertId();
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        cache_databox::update($app, $sbas_id, 'structure');
 
         phrasea::reset_baseDatas($appbox);
 

@@ -2,13 +2,20 @@
 
     {% if lazaretFiles is not none %}
         {% if lazaretFiles|length > 0 %}
+            <div id="QUARANTINE_TOOLBAR_EMPTYING_MSG"></div>
             <div class="btn-toolbar">
-                <div class="btn-group" style="text-align:center; padding:5px 0;">
+                <div class="btn-group emptying" style="text-align:center; padding:5px 0;">
+                    <button class="btn stopempty-lazaret" title="{{ "Stop"|trans }}">
+                        <img src="/skins/icons/delete.png">
+                        &nbsp;<span id="QUARANTINE_TOOLBAR_EMPTYING_TODO"> </span>&nbsp;{{ "Stop"|trans }}
+                    </button>
+                </div>
+                <div class="btn-group empty" style="text-align:center; padding:5px 0;">
                     <button class="btn empty-lazaret" title="{{ "Empty quarantine" | trans }}">
                         <img src="/skins/icons/delete.png">{{ "Empty quarantine" | trans }}
                     </button>
                 </div>
-                <div class="btn-group" style="text-align:center; padding:5px 0;">
+                <div class="btn-group empty" style="text-align:center; padding:5px 0;">
                     <button class="btn" title="{{ "Page" | trans }}">
                         {{ "Page" | trans }}
                     </button>
@@ -42,6 +49,8 @@
 
 <script>
     $('document').ready(function(){
+        $(".btn-group.emptying").hide();
+
         var scope = $('#lazaretBox');
 
         $("#tab-lazaret").scrollTop(0);
@@ -90,47 +99,79 @@
             $(this).addClass("thumb-selected");
         });
 
+
+        var emptying = false;   // true=emptying, set to false to stop
+
+        // stop emptying lazaret
+        $('button.stopempty-lazaret', scope).bind('click', function() {
+            emptying = false;
+        });
+
         // empty lazaret
         $('button.empty-lazaret', scope).bind('click', function(){
 
+            var that = $(this);
+            
             if(!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
                 return false;
             }
 
-            var that = $(this);
-            $.ajax({
-                type : 'POST',
-                url: '/prod/lazaret/empty/',
-                dataType: 'json',
-                data : {
-                },
-                beforeSend: function(){
-                    startAjax(that);
-                },
-                success: function(data){
-                    if(data.success){
+            $(".btn-group.empty").hide();
+            $(".btn-group.emptying").show();
 
-                    }else{
-                        var html = _.template($("#alert_error_tpl").html(), {
-                             content:data.message
+            var f = function() {
+                var todo = 0;
+                var msg_html = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '/prod/lazaret/empty/',
+                    dataType: 'json',
+                    data: {
+                        "max": 10
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            todo = data.result.todo;
+                            $("#QUARANTINE_TOOLBAR_EMPTYING_TODO").text(""+todo);
+                        } else {
+                            emptying = false;   // force stop
+                            msg_html = _.template($("#alert_error_tpl").html(), {
+                                content: data.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        emptying = false;   // force stop
+                        msg_html = _.template($("#alert_error_tpl").html(), {
+                            content: language.errorAjaxRequest
                         });
-
-                        that.closest(".btn-group").before( html );
                     }
-                },
-                error: function(){
-                    stopAjax(that);
-                    var html = _.template($("#alert_error_tpl").html(), {
-                        content:language.errorAjaxRequest
-                    });
+                })
+                .done(function(data) {
+                    if(emptying && todo > 0) {
+                        window.setTimeout(f, 500);  // wait between loops
+                    }
+                })
+                .fail(function() {
+                    emptying = false;   // force stop
+                })
+                .always(function(){
+                    if(!emptying || todo <= 0) {
+                        $(".btn-group.emptying").hide();
+                        $(".btn-group.empty").show();
+                        if(msg_html != "") {
+                            $("#QUARANTINE_TOOLBAR_EMPTYING_MSG").html(msg_html);
+                        }
+                        else {
+                            reloadContent(true);
+                        }
+                    }
+                });
+            };
 
-                    that.closest(".btn-group").before( html );
-                },
-                complete: function(){
-                    stopAjax(that);
-                    reloadContent(true);
-                }
-            });
+            // start emptying
+            emptying = true;
+            f();
         });
 
         //add lazaret file click action

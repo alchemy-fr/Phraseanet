@@ -28,13 +28,14 @@
                         <div class="thumbnail" style="min-height:205px">
                             {{ thumbnail.format(record.get_thumbnail(), 160, 120, "", false, false) }}
                             <div class="caption">
-                                <h5>{{ record.get_title() }}</h5>
+                                <h5 style="word-break:break-all;">{{ record.get_title() }}</h5>
                                 <p>
-                                    <select name="types[{{record.get_serialize_key()}}]" style="width:100%">
+                                    <select name="types[{{record.get_serialize_key()}}]" class="input-block-level">
                                         {% for option in typesEnum %}
                                             <option value="{{ option }}" {{ record.is_grouping() ? "disabled='disabled'": "" }} {{ option == record.get_type() ? "selected='selected'" : '' }}>{{ option }}</option>
                                         {% endfor %}
                                     </select>
+                                    <input class="input-block-level" type="text" name="mimes[{{record.get_serialize_key()}}]" value="{{ record.get_mime }}" style="width:100%">
                                 </p>
                             </div>
                         </div>

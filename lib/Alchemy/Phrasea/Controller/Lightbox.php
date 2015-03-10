@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -211,15 +211,15 @@ class Lightbox implements ControllerProviderInterface
             );
 
             if ($basket->getIsRead() === false) {
-                $basket = $app['EM']->merge($basket);
+                $basket = $app['orm.em']->merge($basket);
                 $basket->setIsRead(true);
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
 
             if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
-                $basket = $app['EM']->merge($basket);
+                $basket = $app['orm.em']->merge($basket);
                 $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
 
             $template = 'lightbox/validate.html.twig';
@@ -258,15 +258,15 @@ class Lightbox implements ControllerProviderInterface
             );
 
             if ($basket->getIsRead() === false) {
-                $basket = $app['EM']->merge($basket);
+                $basket = $app['orm.em']->merge($basket);
                 $basket->setIsRead(true);
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
 
             if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
-                $basket = $app['EM']->merge($basket);
+                $basket = $app['orm.em']->merge($basket);
                 $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
-                $app['EM']->flush();
+                $app['orm.em']->flush();
             }
 
             $template = 'lightbox/validate.html.twig';
@@ -348,9 +348,9 @@ class Lightbox implements ControllerProviderInterface
 
             $validationDatas->setNote($note);
 
-            $app['EM']->merge($validationDatas);
+            $app['orm.em']->merge($validationDatas);
 
-            $app['EM']->flush();
+            $app['orm.em']->flush();
 
             if ($app['browser']->isMobile()) {
                 $datas = $app['twig']->render('lightbox/sc_note.html.twig', ['basket_element' => $basket_element]);
@@ -408,9 +408,9 @@ class Lightbox implements ControllerProviderInterface
                     ->getValidation()
                     ->getParticipant($app['authentication']->getUser());
 
-                $app['EM']->merge($basket_element);
+                $app['orm.em']->merge($basket_element);
 
-                $app['EM']->flush();
+                $app['orm.em']->flush();
 
                 $releasable = false;
                 if ($participant->isReleasable() === true) {
@@ -468,8 +468,8 @@ class Lightbox implements ControllerProviderInterface
 
                 $participant->setIsConfirmed(true);
 
-                $app['EM']->merge($participant);
-                $app['EM']->flush();
+                $app['orm.em']->merge($participant);
+                $app['orm.em']->flush();
 
                 $datas = ['error' => false, 'datas' => $app->trans('Envoie avec succes')];
             } catch (ControllerException $e) {

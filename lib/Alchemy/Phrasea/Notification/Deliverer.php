@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -47,7 +47,7 @@ class Deliverer
      * @throws LogicException In case no Receiver provided
      * @throws LogicException In case a read-receipt is asked but no Emitter provided
      */
-    public function deliver(MailInterface $mail, $readReceipt = false)
+    public function deliver(MailInterface $mail, $readReceipt = false, array $attachments = null)
     {
         if (!$mail->getReceiver()) {
             throw new LogicException('You must provide a receiver for a mail notification');
@@ -61,6 +61,12 @@ class Deliverer
 
         if ($mail->getEmitter()) {
             $message->setReplyTo($mail->getEmitter()->getEmail(), $mail->getEmitter()->getName());
+        }
+
+        if(is_array($attachments)) {
+            foreach($attachments as $attachment) {
+                $message->attach($attachment->As_Swift_Attachment());
+            }
         }
 
         if ($readReceipt) {

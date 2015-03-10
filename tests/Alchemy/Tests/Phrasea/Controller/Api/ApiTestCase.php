@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -86,10 +87,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testThatSessionIsClosedAfterRequest()
     {
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
         $this->setToken($this->userAccessToken);
         self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Phraseanet:Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
     }
 
     public function provideEventNames()
@@ -723,17 +724,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('stories', $response['results']);
         $this->assertArrayHasKey('records', $response['results']);
 
-        $found = false;
-
-        foreach ($response['results']['records'] as $record) {
-            $this->evaluateGoodRecord($record);
-            $found = true;
-            break;
-        }
-
-        if (!$found) {
-            $this->fail('Unable to find record back');
-        }
+        $this->assertTrue(count($response['results']['records']) > 0);
     }
 
     public function testSearchRouteWithStories()
@@ -1258,7 +1249,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basketElement = self::$DI['app']['EM']->find('Phraseanet:BasketElement', 1);
+        $basketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/content/';
@@ -1293,7 +1284,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setname/';
 
@@ -1341,7 +1332,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setdescription/';
 
@@ -1531,7 +1522,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testFeedList()
     {
-        $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
 
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/list/';
@@ -1574,15 +1565,15 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $created_entry->setAuthorEmail($author_email);
         $created_entry->setAuthorName($author);
         $created_entry->setTitle($entry_title);
         $created_entry->setSubtitle($entry_subtitle);
-        self::$DI['app']['EM']->persist($created_entry);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($created_entry);
+        self::$DI['app']['orm.em']->flush();
 
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/content/';
@@ -1626,7 +1617,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $this->setToken($this->userAccessToken);
@@ -1653,7 +1644,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
 
         $created_feed->setCollection(self::$DI['collection_no_access']);
@@ -1679,12 +1670,12 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
 
-        $created_feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
         $created_entry->setTitle($entry_title);
         $created_entry->setSubtitle($entry_subtitle);
-        self::$DI['app']['EM']->persist($created_entry);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($created_entry);
+        self::$DI['app']['orm.em']->flush();
 
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/' . $created_feed->getId() . '/content/';
@@ -1771,8 +1762,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function getQuarantineItem()
     {
-        $lazaretSession = new \Entities\LazaretSession();
-        self::$DI['app']['EM']->persist($lazaretSession);
+        $lazaretSession = new LazaretSession();
+        self::$DI['app']['orm.em']->persist($lazaretSession);
 
         $quarantineItem = null;
         $callback = function ($element, $visa, $code) use (&$quarantineItem) {
@@ -2438,7 +2429,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->assertTrue(is_int($status['bit']));
             $this->assertTrue(is_bool($status['state']));
 
-            $retrieved = !!substr($r_status, ($status['bit'] - 1), 1);
+            $retrieved = !!substr($r_status, ($status['bit']), 1);
 
             $this->assertEquals($retrieved, $status['state']);
         }

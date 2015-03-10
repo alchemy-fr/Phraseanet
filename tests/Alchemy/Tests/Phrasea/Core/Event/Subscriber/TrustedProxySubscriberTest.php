@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Subscriber\TrustedProxySubscriber;
-use Silex\Application;
+use Silex\Application as SilexApp;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,7 +32,7 @@ class TrustedProxySubscriberTest extends \PhraseanetTestCase
             ->with('trusted-proxies')
             ->will($this->returnValue(true));
 
-        $app = new Application();
+        $app = new SilexApp();
         $app['dispatcher']->addSubscriber(new TrustedProxySubscriber($configuration));
         $app->get('/', function () {
             return 'data';
@@ -56,7 +56,7 @@ class TrustedProxySubscriberTest extends \PhraseanetTestCase
             ->with('trusted-proxies')
             ->will($this->returnValue(false));
 
-        $app = new Application();
+        $app = new SilexApp();
         $app['dispatcher']->addSubscriber(new TrustedProxySubscriber($configuration));
         $app->get('/', function () {
             return 'data';

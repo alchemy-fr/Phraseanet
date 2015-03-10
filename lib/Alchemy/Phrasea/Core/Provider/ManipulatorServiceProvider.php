@@ -34,7 +34,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
     public function register(SilexApplication $app)
     {
         $app['manipulator.task'] = $app->share(function (SilexApplication $app) {
-            return new TaskManipulator($app['EM'], $app['task-manager.notifier'], $app['translator'], $app['repo.tasks']);
+            return new TaskManipulator($app['orm.em'], $app['task-manager.notifier'], $app['translator'], $app['repo.tasks']);
         });
 
         $app['manipulator.user'] = $app->share(function ($app) {
@@ -42,11 +42,11 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.token'] = $app->share(function ($app) {
-            return new TokenManipulator($app['EM'], $app['random.medium'], $app['repo.tokens']);
+            return new TokenManipulator($app['orm.em'], $app['random.medium'], $app['repo.tokens']);
         });
 
         $app['manipulator.preset'] = $app->share(function ($app) {
-            return new PresetManipulator($app['EM'], $app['repo.presets']);
+            return new PresetManipulator($app['orm.em'], $app['repo.presets']);
         });
 
         $app['manipulator.acl'] = $app->share(function ($app) {
@@ -54,43 +54,43 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['model.user-manager'] = $app->share(function ($app) {
-            return new UserManager($app['EM'], $app['phraseanet.appbox']->get_connection());
+            return new UserManager($app['orm.em'], $app['phraseanet.appbox']->get_connection());
         });
 
         $app['manipulator.registration'] = $app->share(function ($app) {
-            return new RegistrationManipulator($app, $app['EM'], $app['acl'], $app['phraseanet.appbox'], $app['repo.registrations']);
+            return new RegistrationManipulator($app, $app['orm.em'], $app['acl'], $app['phraseanet.appbox'], $app['repo.registrations']);
         });
 
         $app['manipulator.api-application'] = $app->share(function ($app) {
-            return new ApiApplicationManipulator($app['EM'], $app['repo.api-applications'], $app['random.medium']);
+            return new ApiApplicationManipulator($app['orm.em'], $app['repo.api-applications'], $app['random.medium']);
         });
 
         $app['manipulator.api-account'] = $app->share(function ($app) {
-            return new ApiAccountManipulator($app['EM'], $app['repo.api-accounts']);
+            return new ApiAccountManipulator($app['orm.em'], $app['repo.api-accounts']);
         });
 
         $app['manipulator.api-oauth-code'] = $app->share(function ($app) {
-            return new ApiOauthCodeManipulator($app['EM'], $app['repo.api-oauth-codes'], $app['random.medium']);
+            return new ApiOauthCodeManipulator($app['orm.em'], $app['repo.api-oauth-codes'], $app['random.medium']);
         });
 
         $app['manipulator.api-oauth-token'] = $app->share(function ($app) {
-            return new ApiOauthTokenManipulator($app['EM'], $app['repo.api-oauth-tokens'], $app['random.medium']);
+            return new ApiOauthTokenManipulator($app['orm.em'], $app['repo.api-oauth-tokens'], $app['random.medium']);
         });
 
         $app['manipulator.api-oauth-refresh-token'] = $app->share(function ($app) {
-            return new ApiOauthRefreshTokenManipulator($app['EM'], $app['repo.api-oauth-refresh-tokens'], $app['random.medium']);
+            return new ApiOauthRefreshTokenManipulator($app['orm.em'], $app['repo.api-oauth-refresh-tokens'], $app['random.medium']);
         });
 
         $app['manipulator.api-log'] = $app->share(function ($app) {
-            return new ApiLogManipulator($app['EM'], $app['repo.api-logs']);
+            return new ApiLogManipulator($app['orm.em'], $app['repo.api-logs']);
         });
 
         $app['manipulator.webhook-event'] = $app->share(function ($app) {
-            return new WebhookEventManipulator($app['EM'], $app['repo.webhook-event']);
+            return new WebhookEventManipulator($app['orm.em'], $app['repo.webhook-event']);
         });
 
         $app['manipulator.webhook-delivery'] = $app->share(function ($app) {
-            return new WebhookEventDeliveryManipulator($app['EM'], $app['repo.webhook-delivery']);
+            return new WebhookEventDeliveryManipulator($app['orm.em'], $app['repo.webhook-delivery']);
         });
     }
 

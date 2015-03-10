@@ -83,7 +83,7 @@ class ApiCorsSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function request(array $conf, $method = 'GET', array $extraHeaders = [])
     {
-        $app = new Application('test');
+        $app = new Application(Application::ENV_TEST);
         $app['phraseanet.configuration']['api_cors'] = $conf;
         $app['dispatcher']->addSubscriber(new ApiCorsSubscriber($app));
         $app->get('/api/v1/test-route', function () {

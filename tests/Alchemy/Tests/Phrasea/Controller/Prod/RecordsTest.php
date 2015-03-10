@@ -83,15 +83,15 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $basket->setUser(self::$DI['user_guest']);
         $basket->setName('test');
 
-        self::$DI['app']['EM']->persist($basket);
+        self::$DI['app']['orm.em']->persist($basket);
 
         $element = new BasketElement();
         $element->setRecord(self::$DI['record_1']);
         $element->setBasket($basket);
         $basket->addElement($element);
 
-        self::$DI['app']['EM']->persist($element);
-        self::$DI['app']['EM']->flush();
+        self::$DI['app']['orm.em']->persist($element);
+        self::$DI['app']['orm.em']->flush();
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'            => 'BASK',
@@ -189,7 +189,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     public function testGetRecordDetailBasket()
     {
         $this->authenticate(self::$DI['app']);
-        $basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env'   => 'BASK',
@@ -225,7 +225,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $feed = self::$DI['app']['EM']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $feedEntry = $feed->getEntries()->first();
 
         $this->XMLHTTPRequest('POST', '/prod/records/', [

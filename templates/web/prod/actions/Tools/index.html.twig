@@ -1,7 +1,7 @@
 {% set selectionLength = records|length %}
 
 {% set nbHdSubstitute = 0 %}
-{% set nbThumbSubstitute = 0 %}
+{% set nbSubdefSubstitute = 0 %}
 
 {% for record in records %}
   {% set subdefs = record.get_subdefs() %}
@@ -9,10 +9,8 @@
     {% for key, subdef in subdefs if subdef.is_substituted() %}
       {% if key == 'document' %}
         {% set nbHdSubstitute = nbHdSubstitute + 1 %}
-      {% endif%}
-
-      {% if key == 'thumbnail' %}
-        {% set nbThumbSubstitute = nbThumbSubstitute + 1 %}
+      {% else %}
+        {% set nbSubdefSubstitute = nbSubdefSubstitute + 1 %}
       {% endif%}
 
     {% endfor %}
@@ -68,27 +66,22 @@
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
                     <legend style='color:#EEE'>&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
-                    {% if nbThumbSubstitute > 0 %}
+                    {% if nbSubdefSubstitute > 0 %}
                         <div style="color:#A00;">
                             {{ "Attention, certain documents ont des sous-definitions substituees" | trans }}
                         </div>
                         <label for="FTS" class="checkbox">
-                            <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
+                            <input type="checkbox" name="force_substitution" value="1" id="FTS" />
                             {{ "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" | trans }}
                         </label>
                         <br/>
                     {% else %}
-                        <input type="hidden" name="ForceThumbSubstit" value="1">
+                        <input type="hidden" name="force_substitution" value="1">
                     {% endif %}
                     <div>
-                        <select name="rebuild">
-                            <option selected="selected" value="none">
-                                {{ "recreer aucune sous-definitions" | trans }}
-                            </option>
-                            <option value="all">
-                                {{ "recreer toutes les sous-definitions" | trans }}
-                            </option>
-                        </select>
+                        <p>
+                            {{ 'Are you sure you want to rebuild the sub-definitions of selected records?' | trans }}
+                        </p>
                     </div>
                     <input type="hidden" name="ACT" value="SEND" />
                     <input type="hidden" name="lst" value="{{records.serializedList()}}" />

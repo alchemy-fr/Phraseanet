@@ -43,7 +43,7 @@ class FilenameTest extends \PhraseanetTestCase
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$DI['app']['EM'], new File(self::$DI['app'], $this->media, self::$DI['collection']));
+        $response = $this->object->check(self::$DI['app']['orm.em'], new File(self::$DI['app'], $this->media, self::$DI['collection']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -63,7 +63,7 @@ class FilenameTest extends \PhraseanetTestCase
             ->will($this->returnValue(self::$DI['app']['random.low']->generateString(32)))
         ;
 
-        $response = $this->object->check(self::$DI['app']['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['orm.em'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -86,14 +86,14 @@ class FilenameTest extends \PhraseanetTestCase
             ->will($this->returnValue(strtoupper($this->media->getFile()->getFilename())))
         ;
 
-        $response = $this->object->check(self::$DI['app']['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['orm.em'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
         $this->assertFalse($response->isOk());
 
         $objectSensitive = new Filename(self::$DI['app'], ['sensitive'        => true]);
-        $responseSensitive = $objectSensitive->check(self::$DI['app']['EM'], $mock);
+        $responseSensitive = $objectSensitive->check(self::$DI['app']['orm.em'], $mock);
 
         $this->assertTrue($responseSensitive->isOk());
 

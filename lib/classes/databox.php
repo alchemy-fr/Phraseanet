@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -122,7 +122,7 @@ class databox extends base
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $this->connection = $app['dbal.provider']->get([
+        $this->connection = $app['db.provider']([
             'host'     => $connection_params[$sbas_id]['host'],
             'port'     => $connection_params[$sbas_id]['port'],
             'user'     => $connection_params[$sbas_id]['user'],
@@ -215,11 +215,7 @@ class databox extends base
         $ret = [];
 
         foreach ($this->get_available_collections() as $coll_id) {
-            try {
-                $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
-            } catch (\Exception $e) {
-
-            }
+            $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
         }
 
         return $ret;
@@ -249,6 +245,7 @@ class databox extends base
         foreach ($rs as $row) {
             $ret[] = (int) $row['server_coll_id'];
         }
+
         $this->set_data_to_cache($ret, self::CACHE_COLLECTIONS);
 
         return $ret;
@@ -455,21 +452,6 @@ class databox extends base
 
     public function unmount_databox()
     {
-        if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
-            $sql = "SELECT path, file FROM subdef WHERE `name`='thumbnail'";
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            foreach ($rows as $row) {
-                $pathfile = $this->app['phraseanet.thumb-symlinker']->getSymlinkPath(sprintf(
-                    '%s/%s',
-                    rtrim($row['path'], '/'),
-                    $row['file']
-                ));
-                $this->app['filesystem']->remove($pathfile);
-            }
-        }
         foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($this->app);
         }
@@ -493,14 +475,14 @@ class databox extends base
         }
 
         foreach ($this->app['repo.story-wz']->findByDatabox($this->app, $this) as $story) {
-            $this->app['EM']->remove($story);
+            $this->app['orm.em']->remove($story);
         }
 
         foreach ($this->app['repo.basket-elements']->findElementsByDatabox($this) as $element) {
-            $this->app['EM']->remove($element);
+            $this->app['orm.em']->remove($element);
         }
 
-        $this->app['EM']->flush();
+        $this->app['orm.em']->flush();
 
         $params = [':site_id' => $this->app['conf']->get(['main', 'key'])];
 
@@ -597,10 +579,19 @@ class databox extends base
         $stmt->closeCursor();
         $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
+        $app['orm.add']([
+            'host'     => $host,
+            'port'     => $port,
+            'dbname'   => $dbname,
+            'user'     => $user,
+            'password' => $password
+        ]);
+
         $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $databox->insert_datas();
+
         $databox->setNewStructure(
             $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
@@ -620,7 +611,7 @@ class databox extends base
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname)
     {
-        $conn = $app['dbal.provider']->get([
+        $conn = $app['db.provider']([
             'host'     => $host,
             'port'     => $port,
             'user'     => $user,
@@ -683,6 +674,8 @@ class databox extends base
      */
     public function get_meta_structure()
     {
+        $metaStructData = array();
+
         if ($this->meta_struct) {
             return $this->meta_struct;
         }
@@ -704,10 +697,8 @@ class databox extends base
 
         $this->meta_struct = new databox_descriptionStructure();
 
-        if ($metaStructData) {
-            foreach ($metaStructData as $row) {
-                $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
-            }
+        foreach ((array) $metaStructData as $row) {
+            $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
         }
 
         return $this->meta_struct;
@@ -896,7 +887,10 @@ class databox extends base
 
     public function saveCterms(DOMDocument $dom_cterms)
     {
-
+        if (null === $dom_cterms->documentElement) {
+            $cterms = $dom_cterms->createElement('cterms');
+            $dom_cterms->appendChild($cterms);
+        }
         $dom_cterms->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
 
         $sql = "UPDATE pref SET value = :xml, updated_on = :date

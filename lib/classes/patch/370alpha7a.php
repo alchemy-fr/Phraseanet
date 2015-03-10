@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -81,16 +81,16 @@ class patch_370alpha7a extends patchAbstract
 
         //order matters for foreign keys constraints
         //truncate all altered tables
-        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute');
-        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck');
-        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretFile');
-        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretSession');
+        $this->truncateTable($app['orm.em'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute');
+        $this->truncateTable($app['orm.em'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck');
+        $this->truncateTable($app['orm.em'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretFile');
+        $this->truncateTable($app['orm.em'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretSession');
 
         $i = 0;
 
         foreach ($rs as $row) {
             $filePath = $app['tmp.lazaret.path'].'/'.$row['filepath'];
-            if (null === $user = $this->loadUser($app['EM'], $row['usr_id'])) {
+            if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 
@@ -140,17 +140,17 @@ class patch_370alpha7a extends patchAbstract
                 $lazaretFile->setCreated(new \DateTime($row['created_on']));
                 $lazaretFile->setSession($lazaretSession);
 
-                $app['EM']->persist($lazaretFile);
+                $app['orm.em']->persist($lazaretFile);
 
                 if (0 === ++$i % 100) {
-                    $app['EM']->flush();
-                    $app['EM']->clear();
+                    $app['orm.em']->flush();
+                    $app['orm.em']->clear();
                 }
             }
         }
 
-        $app['EM']->flush();
-        $app['EM']->clear();
+        $app['orm.em']->flush();
+        $app['orm.em']->clear();
 
         $stmt->closeCursor();
 

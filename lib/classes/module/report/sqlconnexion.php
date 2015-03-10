@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -27,7 +27,7 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
         if ($this->groupby == false) {
             $this->sql = "
                 SELECT
-                 DISTINCT(log_colls.log_id),
+                 log.id,
                  log.user,
                  log.usrid,
                  log.date as ddate,
@@ -40,8 +40,9 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                  log.appli,
                  log.ip
                 FROM log FORCE INDEX (date_site)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE (" . $filter['sql'] .")";
+                WHERE (" . $filter['sql'] .") AND !ISNULL(log.usrid)";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -59,11 +60,12 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 FROM (
                     SELECT DISTINCT(log.id),  TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
                     FROM  log FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     WHERE (" . $filter['sql'] .")
                 ) AS tt
                 GROUP BY " . $this->groupby. "
                 ORDER BY nb DESC";
+
+// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -84,7 +86,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
             FROM (
                 SELECT DISTINCT(log.id), ' . $this->getTransQuery($field) . ' AS val
                 FROM log FORCE INDEX (date_site)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE (' . $filter['sql'] . ')
             ) AS tt ORDER BY val ASC';
 

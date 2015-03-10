@@ -11,10 +11,10 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
         $nbLogs = count(self::$DI['app']['repo.api-logs']->findAll());
-        $manipulator = new ApiLogManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-logs']);
+        $manipulator = new ApiLogManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-logs']);
         $manipulator->create($account, Request::create('/databoxes/list/', 'POST'), new Response());
         $this->assertGreaterThan($nbLogs, count(self::$DI['app']['repo.api-accounts']->findAll()));
     }
@@ -36,9 +36,9 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
-        $manipulator = new ApiLogManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-logs']);
+        $manipulator = new ApiLogManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-logs']);
         $log = $manipulator->create($account, Request::create('/databoxes/list/', 'POST'), new Response());
         $countBefore = count(self::$DI['app']['repo.api-logs']->findAll());
         $manipulator->delete($log);
@@ -47,9 +47,9 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
 
     public function testUpdate()
     {
-        $manipulator = new ApiAccountManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-accounts']);
+        $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
         $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
-        $manipulator = new ApiLogManipulator(self::$DI['app']['EM'], self::$DI['app']['repo.api-logs']);
+        $manipulator = new ApiLogManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-logs']);
         $log = $manipulator->create($account, Request::create('/databoxes/list/', 'POST'), new Response());
         $log->setAspect('a-new-aspect');
         $manipulator->update($log);

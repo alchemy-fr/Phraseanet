@@ -5,7 +5,7 @@
         <subdefgroup name="image">
             <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>800</size>
+                <size>1024</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>no</strip>
@@ -18,7 +18,7 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>200</size>
+                <size>240</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
@@ -26,7 +26,7 @@
                 <meta>no</meta>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
-                <label lang="fr">Imagette</label>
+                <label lang="fr">Vignette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
@@ -50,144 +50,81 @@
                 <mediatype>image</mediatype>
                 <meta>no</meta>
                 <devices>handheld</devices>
-                <label lang="fr">Imagette mobile</label>
+                <label lang="fr">Vignette mobile</label>
                 <label lang="en">Mobile Thumbnail</label>
             </subdef>
         </subdefgroup>
         <subdefgroup name="video">
-            <subdef class="preview" name="preview_mobile_webm" downloadable="false">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>video</mediatype>
-                <bitrate>300</bitrate>
-                <threads>2</threads>
-                <GOPsize>25</GOPsize>
-                <size>480</size>
-                <fps>15</fps>
-                <devices>handheld</devices>
-                <vcodec>libvpx</vcodec>
-                <acodec>libvorbis</acodec>
-                <label lang="fr">Prévisualisation mobile WebM</label>
-                <label lang="en">WebM mobile Preview</label>
-            </subdef>
-            <subdef class="preview" name="preview_mobile_ogg" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>video</mediatype>
-                <bitrate>300</bitrate>
-                <threads>2</threads>
-                <GOPsize>25</GOPsize>
-                <size>480</size>
-                <fps>15</fps>
-                <devices>handheld</devices>
-                <vcodec>libtheora</vcodec>
-                <acodec>libvorbis</acodec>
-                <label lang="fr">Prévisualisation mobile Ogg</label>
-                <label lang="en">Ogg mobile Preview</label>
-            </subdef>
-            <subdef class="preview" name="preview_mobile_x264" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>video</mediatype>
-                <bitrate>300</bitrate>
-                <threads>2</threads>
-                <GOPsize>25</GOPsize>
-                <size>480</size>
-                <fps>15</fps>
-                <devices>handheld</devices>
-                <acodec>libfaac</acodec>
-                <vcodec>libx264</vcodec>
-                <label lang="fr">Prévisualisation X264</label>
-                <label lang="en">X264 Preview</label>
-            </subdef>
-            <subdef class="preview" name="preview_webm" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>video</mediatype>
+                <size>240</size>
                 <devices>screen</devices>
-                <bitrate>1000</bitrate>
-                <threads>1</threads>
-                <acodec>libvorbis</acodec>
-                <GOPsize>25</GOPsize>
-                <size>800</size>
-                <fps>15</fps>
-                <vcodec>libvpx</vcodec>
-                <label lang="fr">Prévisualisation WebM</label>
-                <label lang="en">WebM Preview</label>
-            </subdef>
-            <subdef class="preview" name="preview_ogg" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>video</mediatype>
-                <devices>screen</devices>
-                <bitrate>1000</bitrate>
-                <threads>1</threads>
-                <acodec>libvorbis</acodec>
-                <GOPsize>25</GOPsize>
-                <size>800</size>
-                <fps>15</fps>
-                <vcodec>libtheora</vcodec>
-                <label lang="fr">Prévisualisation Ogg</label>
-                <label lang="en">Ogg Preview</label>
-            </subdef>
-            <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
-                <resolution>72</resolution>
-                <strip>yes</strip>
-                <quality>75</quality>
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <meta>no</meta>
-                <devices>handheld</devices>
-                <label lang="fr">Imagette mobile</label>
-                <label lang="en">Mobile Thumbnail</label>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
             </subdef>
-            <subdef class="preview" name="preview" downloadable="true">
+            <subdef class="thumbnail" name="thumbnailgif" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>800</size>
-                <mediatype>video</mediatype>
-                <writeDatas>yes</writeDatas>
-                <acodec>libfaac</acodec>
-                <vcodec>libx264</vcodec>
-                <devices>screen</devices>
-                <bitrate>1000</bitrate>
-                <threads>8</threads>
-                <fps>15</fps>
-                <label lang="fr">Prévisualisation</label>
-                <label lang="en">Preview</label>
-            </subdef>
-            <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>200</size>
+                <size>240</size>
                 <mediatype>gif</mediatype>
-                <delay>500</delay>
+                <delay>150</delay>
                 <devices>screen</devices>
                 <writeDatas>no</writeDatas>
                 <label lang="fr">Animation GIF</label>
                 <label lang="en">GIF Animation</label>
             </subdef>
-            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+            <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>200</size>
+                <size>748</size>
+                <mediatype>video</mediatype>
+                <writeDatas>yes</writeDatas>
+                <acodec>libfaac</acodec>
+                <vcodec>libx264</vcodec>
                 <devices>screen</devices>
-                <mediatype>image</mediatype>
-                <writeDatas>no</writeDatas>
-                <label lang="fr">Imagette</label>
-                <label lang="en">Thumbnail</label>
+                <bitrate>1000</bitrate>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <fps>25</fps>
+                <GOPsize>25</GOPsize>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="preview_webm" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>748</size>
+                <mediatype>video</mediatype>
+                <devices>screen</devices>
+                <bitrate>1000</bitrate>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <acodec>libvorbis</acodec>
+                <fps>25</fps>
+                <GOPsize>25</GOPsize>
+                <vcodec>libvpx</vcodec>
+                <label lang="fr">Prévisualisation WebM</label>
+                <label lang="en">WebM Preview</label>
             </subdef>
         </subdefgroup>
         <subdefgroup name="audio">
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>240</size>
+                <devices>screen</devices>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
             <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>audio</mediatype>
                 <writeDatas>yes</writeDatas>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
-            </subdef>
-            <subdef class="thumbnail" name="thumbnail" downloadable="true">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>200</size>
-                <devices>screen</devices>
-                <writeDatas>no</writeDatas>
-                <label lang="fr">Imagette</label>
-                <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -196,20 +133,19 @@
                 <label lang="fr">Prévisualisation Mobile</label>
                 <label lang="en">Mobile Preview</label>
             </subdef>
-            <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
-                <resolution>72</resolution>
-                <strip>yes</strip>
-                <quality>75</quality>
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <meta>no</meta>
-                <devices>handheld</devices>
-                <label lang="fr">Imagette mobile</label>
-                <label lang="en">Mobile Thumbnail</label>
-            </subdef>
         </subdefgroup>
         <subdefgroup name="document">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <size>240</size>
+                <writeDatas>no</writeDatas>
+                <devices>screen</devices>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>flexpaper</mediatype>
@@ -218,38 +154,19 @@
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
+        </subdefgroup>
+        <subdefgroup name="flash">
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
+                <size>240</size>
+                <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <size>200</size>
-                <writeDatas>no</writeDatas>
                 <devices>screen</devices>
-                <label lang="fr">Imagette</label>
+                <label lang="fr">Vignette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
-            <subdef class="preview" name="preview_mobile" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
-                <devices>handheld</devices>
-                <label lang="fr">Prévisualisation Mobile</label>
-                <label lang="en">Mobile Preview</label>
-            </subdef>
-            <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
-                <resolution>72</resolution>
-                <strip>yes</strip>
-                <quality>75</quality>
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <meta>no</meta>
-                <devices>handheld</devices>
-                <label lang="fr">Imagette mobile</label>
-                <label lang="en">Mobile Thumbnail</label>
-            </subdef>
-        </subdefgroup>
-        <subdefgroup name="flash">
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
@@ -260,41 +177,6 @@
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
-            </subdef>
-            <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>200</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Imagette</label>
-                <label lang="en">Thumbnail</label>
-            </subdef>
-            <subdef class="preview" name="preview_mobile" downloadable="false">
-                <size>480</size>
-                <resolution>72</resolution>
-                <strip>yes</strip>
-                <quality>75</quality>
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <meta>no</meta>
-                <devices>handheld</devices>
-                <label lang="fr">Prévisualisation Mobile</label>
-                <label lang="en">Mobile Preview</label>
-            </subdef>
-            <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
-                <resolution>72</resolution>
-                <strip>yes</strip>
-                <quality>75</quality>
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <meta>no</meta>
-                <devices>handheld</devices>
-                <label lang="fr">Imagette mobile</label>
-                <label lang="en">Mobile Thumbnail</label>
             </subdef>
         </subdefgroup>
     </subdefs>

@@ -191,9 +191,9 @@ class WriteMetadataJob extends AbstractJob
                     try {
                         $app['exiftool.writer']->write($file, $metadata);
 
-                        $this->log(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name), self::LOG_INFO);
+                        $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
-                        $this->log(sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()), self::LOG_ERROR);
+                        $this->log('error',sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
                     }
                 }
 
