@@ -114,6 +114,7 @@ class CandidateTerms
             $element->setAttribute('field', $field);
             $element->setAttribute('nextid', 0);
             $this->insertElement($this->document->documentElement, $element);
+            $this->visitor->cacheFieldNode($field, $element);
         }
 
         return $element;
