@@ -250,7 +250,8 @@ span.ww_winTitle {
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li.th_tab {
-    height: 34px;
+    height: 23px;
+    margin-left: 10px;
 }
 
 #THPD_T, #THPD_C {
@@ -931,6 +932,7 @@ div.diapo {
     top: 0px;
     left: 10px;
     right: 10px;
+    margin-top: 21px;
 }
 
 #idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
