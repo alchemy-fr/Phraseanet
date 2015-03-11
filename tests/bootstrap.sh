@@ -10,4 +10,5 @@ fi
 ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs -vvv
 php resources/hudson/cleanupSubdefs.php
 ./bin/developer ini:setup-tests-dbs -vvv
+./bin/console searchengine:index:create
 ./bin/developer phraseanet:regenerate-sqlite -vvv

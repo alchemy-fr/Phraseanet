@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
 use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
-use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
 use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
@@ -88,7 +87,6 @@ class Setup implements ControllerProviderInterface
             new FilesystemRequirements(),
             new LocalesRequirements(),
             new PhpRequirements(),
-            new PhraseaRequirements(),
             new SystemRequirements(),
         ];
     }

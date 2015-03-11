@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Setup\Probe\FilesystemProbe;
 use Alchemy\Phrasea\Setup\Probe\LocalesProbe;
 use Alchemy\Phrasea\Setup\Probe\OpcodeCacheProbe;
 use Alchemy\Phrasea\Setup\Probe\PhpProbe;
-use Alchemy\Phrasea\Setup\Probe\PhraseaProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
 use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
 use Alchemy\Phrasea\Setup\Probe\SystemProbe;
@@ -47,7 +46,6 @@ class CheckConfig extends AbstractCheckCommand
             FilesystemProbe::create($this->container),
             LocalesProbe::create($this->container),
             OpcodeCacheProbe::create($this->container),
-            PhraseaProbe::create($this->container),
             PhpProbe::create($this->container),
             SearchEngineProbe::create($this->container),
             SubdefsPathsProbe::create($this->container),

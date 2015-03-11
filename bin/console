@@ -78,7 +78,6 @@ $cli->command(new \module_console_aboutAuthors('about:authors'));
 $cli->command(new \module_console_aboutLicense('about:license'));
 
 $cli->command(new CheckConfig('check:config'));
-$cli->command(new \module_console_checkExtension('check:extension'));
 
 $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
 
@@ -130,8 +129,6 @@ if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
     $cli->command(new QueryParseCommand());
     $cli->command(new FindConceptsCommand());
 }
-
-$cli->command(new WebsocketServer('ws-server:run'));
 
 $cli->loadPlugins();
 
