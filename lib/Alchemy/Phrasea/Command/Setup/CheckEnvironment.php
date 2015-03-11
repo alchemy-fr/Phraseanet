@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
 use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\OpcodeCacheRequirement;
 use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
-use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
 use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 
 class CheckEnvironment extends AbstractCheckCommand
@@ -47,7 +46,6 @@ class CheckEnvironment extends AbstractCheckCommand
             new FilesystemRequirements(),
             new LocalesRequirements(),
             new OpcodeCacheRequirement(),
-            new PhraseaRequirements(),
             new PhpRequirements(),
             new SystemRequirements(),
         ];

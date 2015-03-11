@@ -33,13 +33,17 @@ class SetupTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostGlobals()
     {
+        $database =  self::$DI['app']['conf']->get(['main', 'database']);
         $registry = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getMock();
 
         $registry->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($prop, $default = null) {
+            ->will($this->returnCallback(function ($prop, $default = null) use ($database) {
+                if ($prop === ['main', 'database']) {
+                    return $database;
+                }
                 return $default;
             }));
 
