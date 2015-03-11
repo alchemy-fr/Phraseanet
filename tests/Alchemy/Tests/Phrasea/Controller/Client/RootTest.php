@@ -10,6 +10,6 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
         self::$DI['client']->request("GET", "/client/");
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 }
