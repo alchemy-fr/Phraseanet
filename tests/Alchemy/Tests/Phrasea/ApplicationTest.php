@@ -446,7 +446,10 @@ class ApplicationTest extends \PhraseanetTestCase
                         return false;
                         break;
                     case ['main', 'search-engine', 'type']:
-                        return 'Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine';
+                        return 'elasticsearch';
+                        break;
+                    case ['main', 'search-engine', 'options']:
+                        return [];
                         break;
                 }
             }));

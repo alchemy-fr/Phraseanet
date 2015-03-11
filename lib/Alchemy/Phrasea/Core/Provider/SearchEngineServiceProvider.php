@@ -45,10 +45,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             switch ($type) {
                 case SearchEngineInterface::TYPE_ELASTICSEARCH:
                     return $app['elasticsearch.engine'];
-                case SearchEngineInterface::TYPE_PHRASEA:
-                    return new PhraseaEngine($app);
-                default:
-                    throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
             }
         });
 
@@ -58,11 +54,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['phraseanet.SE.logger'] = $app->share(function (Application $app) {
             return new SearchEngineLogger($app);
-        });
-
-        // Only used for Phrasea search engine
-        $app['phraseanet.SE.subscriber'] = $app->share(function ($app) {
-            return new PhraseaEngineSubscriber($app);
         });
 
         $app['elasticsearch.engine'] = $app->share(function ($app) {
@@ -134,7 +125,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.options'] = $app->share(function($app) {
-            $options = $app['conf']->get(['main', 'search-engine', 'options']);
+            $options = $app['conf']->get(['main', 'search-engine', 'options'], []);
 
             $indexName = sprintf('phraseanet_%s', str_replace(
                 array('/', '.'), array('', ''),

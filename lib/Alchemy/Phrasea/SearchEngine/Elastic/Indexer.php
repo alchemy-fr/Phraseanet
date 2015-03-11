@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
 use appbox;
 use Closure;
 use Elasticsearch\Client;

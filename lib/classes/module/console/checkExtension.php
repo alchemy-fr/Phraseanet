@@ -55,12 +55,6 @@ class module_console_checkExtension extends Command
             )
         );
 
-        $output->writeln("PHRASEA FUNCTIONS");
-
-        foreach (get_extension_funcs("phrasea2") as $function) {
-            $output->writeln("<info>$function</info>");
-        }
-
         $configuration = $this->getService('configuration');
         $connexion = $configuration['main']['database'];
         $hostname = $connexion['host'];

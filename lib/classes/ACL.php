@@ -168,7 +168,7 @@ class ACL implements cache_cacheableInterface
         $params = [
             ':usr_id'    => $this->user->getId()
             , ':sbas_id'   => $record->getDataboxId()
-            , ':record_id' => $record->getRecordI()
+            , ':record_id' => $record->getRecordId()
             , ':case'      => $action
             , ':pusher'    => $pusher->getId()
         ];

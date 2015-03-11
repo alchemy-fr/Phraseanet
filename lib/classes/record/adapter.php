@@ -2027,4 +2027,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         return new ArrayCollection($this->get_technical_infos());
     }
+
+    public function getStatusStructure()
+    {
+        return $this->databox->getStatusStructure();
+    }
 }

@@ -131,8 +131,6 @@ if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
     $cli->command(new FindConceptsCommand());
 }
 
-$cli->command(new WebsocketServer('ws-server:run'));
-
 $cli->loadPlugins();
 
 exit(is_int($cli->run()) ? : 1);

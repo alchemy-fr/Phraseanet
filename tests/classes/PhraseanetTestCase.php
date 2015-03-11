@@ -377,7 +377,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         \caption_field::purge();
         \caption_Field_Value::purge();
         \databox_field::purge();
-        \databox_status::purge();
         \thesaurus_xpath::purge();
 
         self::deleteResources();

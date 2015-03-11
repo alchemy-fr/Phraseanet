@@ -542,7 +542,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
         $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
-        $ref_status = $databox->get_statusbits();
+        $statusStructure = $databox->getStatusStructure();
         $route = '/api/v1/databoxes/' . $databox_id . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
@@ -570,12 +570,12 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->assertArrayHasKey('searchable', $status);
             $this->assertArrayHasKey('printable', $status);
             $this->assertTrue(is_bool($status['searchable']));
-            $this->assertTrue($status['searchable'] === (bool) $ref_status[$status['bit']]['searchable']);
+            $this->assertTrue($status['searchable'] === (bool) $statusStructure->getStatus($status['bit'])['searchable']);
             $this->assertTrue(is_bool($status['printable']));
-            $this->assertTrue($status['printable'] === (bool) $ref_status[$status['bit']]['printable']);
-            $this->assertTrue($status['label_on'] === $ref_status[$status['bit']]['labelon']);
-            $this->assertTrue($status['img_off'] === $ref_status[$status['bit']]['img_off']);
-            $this->assertTrue($status['img_on'] === $ref_status[$status['bit']]['img_on']);
+            $this->assertTrue($status['printable'] === (bool) $statusStructure->getStatus($status['bit'])['printable']);
+            $this->assertTrue($status['label_on'] === $statusStructure->getStatus($status['bit'])['labelon']);
+            $this->assertTrue($status['img_off'] === $statusStructure->getStatus($status['bit'])['img_off']);
+            $this->assertTrue($status['img_on'] === $statusStructure->getStatus($status['bit'])['img_on']);
             break;
         }
         $route = '/api/v1/databoxes/24892534/status/';
@@ -1124,10 +1124,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
 
         $record_status = strrev(self::$DI['record_1']->get_status());
-        $status_bits = self::$DI['record_1']->get_databox()->get_statusbits();
+        $statusStructure = self::$DI['record_1']->getStatusStructure();
 
         $tochange = [];
-        foreach ($status_bits as $n => $datas) {
+        foreach ($statusStructure as $n => $datas) {
             $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
         }
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
@@ -2417,11 +2417,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function evaluateRecordsStatusResponse(\record_adapter $record, $content)
     {
-        $status = $record->get_databox()->get_statusbits();
+        $statusStructure = $record->get_databox()->getStatusStructure();
 
         $r_status = strrev($record->get_status());
         $this->assertArrayHasKey('status', $content['response']);
-        $this->assertEquals(count((array) $content['response']['status']), count($status));
+        $this->assertEquals(count((array) $content['response']['status']), count($statusStructure->toArray()));
         foreach ($content['response']['status'] as $status) {
             $this->assertTrue(is_array($status));
             $this->assertArrayHasKey('bit', $status);

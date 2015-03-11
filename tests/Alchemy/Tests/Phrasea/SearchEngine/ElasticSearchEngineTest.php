@@ -9,6 +9,7 @@ class ElasticSearchEngineTest extends SearchEngineAbstractTest
 {
     public function setUp()
     {
+        $this->markTestSkipped();
         if (false === @file_get_contents('http://localhost:9200')) {
             $this->markTestSkipped('Unable to connect to elasticsearch.');
         }

@@ -31,7 +31,7 @@ class Thesaurus
         $this->index = $index;
     }
 
-    public function findConceptsBulk(array $terms, $lang = null, Filter $filter, $strict = false)
+    public function findConceptsBulk(array $terms, $lang = null, Filter $filter = null, $strict = false)
     {
         // TODO Use bulk queries for performance
         $concepts = array();

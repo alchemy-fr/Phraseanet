@@ -23,7 +23,6 @@ use Alchemy\Phrasea\Setup\Probe\FilesystemProbe;
 use Alchemy\Phrasea\Setup\Probe\LocalesProbe;
 use Alchemy\Phrasea\Setup\Probe\OpcodeCacheProbe;
 use Alchemy\Phrasea\Setup\Probe\PhpProbe;
-use Alchemy\Phrasea\Setup\Probe\PhraseaProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
 use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
 use Alchemy\Phrasea\Setup\Probe\SystemProbe;
@@ -60,7 +59,6 @@ class ConfigurationTester
             FilesystemProbe::create($this->app),
             LocalesProbe::create($this->app),
             PhpProbe::create($this->app),
-            PhraseaProbe::create($this->app),
             SearchEngineProbe::create($this->app),
             SubdefsPathsProbe::create($this->app),
             SystemProbe::create($this->app),
