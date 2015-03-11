@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2014-02-11T14:23:06Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2015-03-11T18:09:43Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords.">
-        <jms:reference-file line="44">Form/Login/PhraseaRecoverPasswordForm.php</jms:reference-file>
-        <jms:reference-file line="50">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
-        <jms:reference-file line="36">Form/Login/PhraseaRenewPasswordForm.php</jms:reference-file>
         <source>Please provide the same passwords.</source>
         <target state="new">Please provide the same passwords.</target>
+        <jms:reference-file line="44">Form/Login/PhraseaRecoverPasswordForm.php</jms:reference-file>
+        <jms:reference-file line="51">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
+        <jms:reference-file line="36">Form/Login/PhraseaRenewPasswordForm.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="90b8c9717bb7ed061dbf20fe1986c8b8593d43d4" resname="The token provided is not valid anymore">
         <source>The token provided is not valid anymore</source>
