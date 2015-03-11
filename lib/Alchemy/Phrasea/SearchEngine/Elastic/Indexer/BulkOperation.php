@@ -26,7 +26,7 @@ class BulkOperation
     private $flushLimit = 1000;
     private $throwOnError;
 
-    public function __construct(Client $client, $throwOnError = false)
+    public function __construct(Client $client, $throwOnError = true)
     {
         $this->client = $client;
         $this->throwOnError = $throwOnError;
