@@ -54,18 +54,4 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('current', $datas);
         unset($response, $datas);
     }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Query::queryRegTrain
-     */
-    public function testQueryRegTrain()
-    {
-       self::$DI['client']->request('POST', '/prod/query/reg-train/', [
-            'pos'  => 1,
-            'cont' => self::$DI['record_story_1']->get_serialize_key()
-            ]);
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isOk());
-        unset($response);
-    }
 }
