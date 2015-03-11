@@ -69,4 +69,13 @@ class CandidateTermVisitor implements VisitorInterface
     {
         return isset($this->fields[$field]) ? $this->fields[$field] : null;
     }
+
+    public function cacheFieldNode($field, DOMElement $element)
+    {
+        if (isset($this->fields[$field])) {
+            throw new LogicException(sprintf('Node for field "%s" already exists.', $field));
+        }
+
+        $this->fields[$field] = $element;
+    }
 }
