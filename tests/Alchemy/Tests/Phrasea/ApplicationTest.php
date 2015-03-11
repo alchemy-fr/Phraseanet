@@ -425,12 +425,13 @@ class ApplicationTest extends \PhraseanetTestCase
 
     private function mockRegistryAndReturnLocale(Application $app, $locale)
     {
+        $database =  $app['conf']->get(['main', 'database']);
         $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
             ->disableOriginalConstructor()
             ->getmock();
         $app['conf']->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($param) use ($locale) {
+            ->will($this->returnCallback(function ($param) use ($locale, $database) {
 
                 switch ($param) {
                     case ['languages', 'default']:
@@ -451,6 +452,10 @@ class ApplicationTest extends \PhraseanetTestCase
                     case ['main', 'search-engine', 'options']:
                         return [];
                         break;
+                    case ['main', 'database']:
+                        return $database;
+                        break;
+
                 }
             }));
     }

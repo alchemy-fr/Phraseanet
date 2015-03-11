@@ -8,12 +8,9 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetClient()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 is required for this test');
-        }
-
         $this->authenticate(self::$DI['app']);
         self::$DI['client']->request("GET", "/client/");
+        var_dump(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 }

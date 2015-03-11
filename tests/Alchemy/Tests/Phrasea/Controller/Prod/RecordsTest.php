@@ -119,9 +119,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetRecordDetailResult()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 is required for this test');
-        }
         $this->authenticate(self::$DI['app']);
         self::$DI['record_1'];
 

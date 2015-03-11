@@ -78,7 +78,6 @@ $cli->command(new \module_console_aboutAuthors('about:authors'));
 $cli->command(new \module_console_aboutLicense('about:license'));
 
 $cli->command(new CheckConfig('check:config'));
-$cli->command(new \module_console_checkExtension('check:extension'));
 
 $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
 

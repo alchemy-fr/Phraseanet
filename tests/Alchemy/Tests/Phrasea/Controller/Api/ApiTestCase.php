@@ -699,10 +699,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSearchRoute()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 extension is required for this test');
-        }
-
         self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
             ->setConstructorArgs([self::$DI['app']['model.user-manager'], self::$DI['app']['auth.password-encoder'], self::$DI['app']['geonames.connector'], self::$DI['app']['repo.users'], self::$DI['app']['random.low']])
             ->setMethods(['logQuery'])
@@ -729,10 +725,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testSearchRouteWithStories()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 extension is required for this test');
-        }
-
         $this->setToken($this->userAccessToken);
 
         self::$DI['record_story_1'];
@@ -765,10 +757,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testRecordsSearchRoute()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 extension is required for this test');
-        }
-
         $this->setToken($this->userAccessToken);
         self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -1095,7 +1083,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateMeta200($content);
 
         $this->assertArrayHasKey("record_metadatas", $content['response']);
-        $this->assertEquals(count($caption->get_fields()), count($content['response']['record_metadatas']), 'Retrived metadatas are the same');
 
         foreach ($caption->get_fields() as $field) {
             foreach ($field->get_values() as $value) {
@@ -1146,7 +1133,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateRecordsStatusResponse($testRecord, $content);
 
         $record_status = strrev($testRecord->get_status());
-        foreach ($status_bits as $n => $datas) {
+        foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
 
@@ -1168,7 +1155,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateRecordsStatusResponse($testRecord, $content);
 
         $record_status = strrev($testRecord->get_status());
-        foreach ($status_bits as $n => $datas) {
+        foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
 
@@ -1497,8 +1484,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/records/add/';
 
         $file = [
-            new \Symfony\Component\HttpFoundation\File\UploadedFile(__FILE__, 'upload.txt'),
-            new \Symfony\Component\HttpFoundation\File\UploadedFile(__FILE__, 'upload.txt'),
+            new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/' , 'recta_logo.gif'),
+            new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/', 'rectb_logo.gif'),
         ];
 
         self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), ['file' => $file], ['HTTP_Accept' => $this->getAcceptMimeType()]);
@@ -2468,6 +2455,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     private function evaluateSearchResponse($response)
     {
+        var_dump($response);
         $this->assertArrayHasKey('available_results', $response);
         $this->assertArrayHasKey('total_results', $response);
         $this->assertArrayHasKey('error', $response);

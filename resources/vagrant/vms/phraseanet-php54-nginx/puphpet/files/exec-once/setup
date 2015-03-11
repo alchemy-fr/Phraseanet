@@ -86,28 +86,6 @@ sudo make install
 sudo sh -c 'echo "extension=twig.so" > /etc/php5/cli/conf.d/twig.ini'
 sudo sh -c 'echo "extension=twig.so" > /etc/php5/fpm/conf.d/twig.ini'
 
-# phraseanet-extension
-cd /tmp
-git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
-cd Phraseanet-Extension
-phpize
-./configure
-make
-sudo make install
-if [ $? -eq 0 ]; then
-    sudo sh -c 'echo "extension=phrasea2.so" > /etc/php5/cli/conf.d/phrasea.ini'
-    sudo sh -c 'echo "extension=phrasea2.so" > /etc/php5/fpm/conf.d/phrasea.ini'
-fi
-
-# phraseanet-indexer
-cd /tmp
-git clone git://github.com/alchemy-fr/Phraseanet-Indexer.git
-cd Phraseanet-Indexer
-autoreconf --force --install
-./configure
-make
-sudo make install
-
 # swftools
 cd /tmp
 wget –quiet http://www.swftools.org/swftools-0.9.2.tar.gz

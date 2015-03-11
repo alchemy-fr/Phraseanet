@@ -14,8 +14,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -415,7 +413,8 @@ class ElasticSearchEngine implements SearchEngineInterface
             // filter aggregation to allowed databoxes
             // declare aggregation on current field
             $agg = array();
-            $agg['filter']['terms']['databox_id'] = $databoxes;
+            // array_values is needed to ensure array serialization
+            $agg['filter']['terms']['databox_id'] = array_values($databoxes);
             $agg['aggs']['distinct_occurrence']['terms']['field'] =
                 sprintf('%s.%s.raw', $prefix, $field_name);
 
@@ -476,10 +475,9 @@ class ElasticSearchEngine implements SearchEngineInterface
             $filters[]['term']['phrasea_type'] = $options->getRecordType();
         }
 
-        if (count($options->getCollections()) > 0) {
-            $filters[]['terms']['base_id'] = array_map(function($collection) {
-                return $collection->get_base_id();
-            }, $options->getCollections());
+        $collections = $options->getCollections();
+        if (count($collections) > 0) {
+            $filters[]['terms']['base_id'] = array_keys($collections);
         }
 
         if (count($options->getStatus()) > 0) {
