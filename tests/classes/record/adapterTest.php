@@ -484,16 +484,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             $this->fail();
     }
 
-    public function testReindex()
-    {
-        $record = new \record_adapter(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
-        self::$DI['app']['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
-        self::$DI['app']['phraseanet.SE']->expects($this->once())
-                ->method('updateRecord')
-                ->with($record);
-        $record->reindex();
-    }
-
     public function testSetStatus()
     {
         $record = new \record_adapter(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());

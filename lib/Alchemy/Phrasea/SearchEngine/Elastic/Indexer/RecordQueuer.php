@@ -37,7 +37,7 @@ class RecordQueuer
         // Set TO_INDEX flag on all records from this collection
         $sql = <<<SQL
             UPDATE record
-            SET jeton = (jeton | :flag)
+            SET jeton = (jeton | :token)
             WHERE coll_id = :coll_id
 SQL;
         $stmt = $connection->prepare($sql);

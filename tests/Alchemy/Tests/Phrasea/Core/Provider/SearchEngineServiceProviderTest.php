@@ -9,9 +9,6 @@ class SearchEngineServiceProviderTest extends ServiceProviderTestCase
 {
     public function setUp()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 is required for this test');
-        }
         parent::setUp();
     }
 

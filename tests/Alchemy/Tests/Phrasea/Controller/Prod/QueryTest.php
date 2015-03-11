@@ -14,9 +14,6 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testQuery()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 is required for this test');
-        }
         $route = '/prod/query/';
 
         self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
@@ -39,9 +36,6 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testQueryAnswerTrain()
     {
-        if (!extension_loaded('phrasea2')) {
-            $this->markTestSkipped('Phrasea2 is required for this test');
-        }
         $this->authenticate(self::$DI['app']);
         self::$DI['record_2'];
 

@@ -8,6 +8,7 @@ services:
   - mysql
   - memcached
   - redis
+  - elasticsearch
 
 before_script:
   - node --version
@@ -25,11 +26,6 @@ before_script:
   - mysql -e 'SET @@global.sql_mode= STRICT_ALL_TABLES;'
   - mysql -e 'SET @@global.max_allowed_packet= 33554432;'
   - mysql -e 'SET @@global.wait_timeout= 999999;'
-  - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
-  - sh -c "cd Phraseanet-Extension && phpize && ./configure --quiet && make -j --quiet && sudo make install"
-  - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - git clone git://github.com/alchemy-fr/Phraseanet-Indexer.git
-  - sh -c "cd Phraseanet-Indexer && autoreconf --force --install && ./configure --quiet && make -j --quiet && sudo make install"
 
 php:
   - 5.4
@@ -52,6 +48,7 @@ script:
               php resources/hudson/cleanupSubdefs.php;
             fi"
   - bin/developer ini:setup-tests-dbs
+  - bin/console searchengine:index:create
   - bin/developer phraseanet:regenerate-sqlite
   - bin/developer phraseanet:generate-js-fixtures
   - ./node_modules/.bin/grunt test

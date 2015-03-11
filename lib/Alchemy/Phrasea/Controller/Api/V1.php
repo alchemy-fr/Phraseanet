@@ -689,6 +689,8 @@ class V1 implements ControllerProviderInterface
         $ret['results'] = ['records' => [], 'stories' => []];
 
         foreach ($search_result->getResults() as $record) {
+            $record = new \record_adapter($app, $record->getDataboxId(), $record->getBaseId());
+
             if ($record->is_grouping()) {
                 $ret['results']['stories'][] = $this->list_story($app, $request, $record);
             } else {
@@ -745,7 +747,7 @@ class V1 implements ControllerProviderInterface
 
         $app['phraseanet.SE']->clearCache();
 
-        $ret = ['offset_start' => $offsetStart, 'per_page' => $perPage, 'available_results' => $search_result->getAvailable(), 'total_results' => $search_result->getTotal(), 'error' => $search_result->getError(), 'warning' => $search_result->getWarning(), 'query_time' => $search_result->getDuration(), 'search_indexes' => $search_result->getIndexes(), 'suggestions' => array_map(function (SearchEngineSuggestion $suggestion) {
+        $ret = ['offset_start' => $offsetStart, 'per_page' => $perPage, 'available_results' => $search_result->getAvailable(), 'total_results' => $search_result->getTotal(), 'error' => (string) $search_result->getError(), 'warning' => (string) $search_result->getWarning(), 'query_time' => $search_result->getDuration(), 'search_indexes' => $search_result->getIndexes(), 'suggestions' => array_map(function (SearchEngineSuggestion $suggestion) {
             return $suggestion->toArray();
         }, $search_result->getSuggestions()->toArray()), 'results' => [], 'query' => $search_result->getQuery(),];
 
