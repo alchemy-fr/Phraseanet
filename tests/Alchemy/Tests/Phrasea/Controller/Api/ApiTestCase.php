@@ -1484,8 +1484,8 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/records/add/';
 
         $file = [
-            new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/' , 'recta_logo.gif'),
-            new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/', 'rectb_logo.gif'),
+            new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/recta_logo.gif' , 'recta_logo.gif'),
+            new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/rectb_logo.gif', 'rectb_logo.gif'),
         ];
 
         self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), ['file' => $file], ['HTTP_Accept' => $this->getAcceptMimeType()]);
