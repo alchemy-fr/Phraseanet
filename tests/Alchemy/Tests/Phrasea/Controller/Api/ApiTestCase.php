@@ -10,6 +10,7 @@ use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Rhumsaa\Uuid\Uuid;
@@ -729,7 +730,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         self::$DI['record_story_1'];
 
-        self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(['search_type' => 1]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(['search_type' => SearchEngineOptions::RECORD_GROUPING]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
