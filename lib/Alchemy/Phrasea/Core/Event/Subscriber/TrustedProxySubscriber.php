@@ -33,7 +33,7 @@ class TrustedProxySubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function setProxyConf(GetResponseEvent $event)
+    public function setProxyConf()
     {
         if (!$this->configuration->isSetup()) {
             return;
