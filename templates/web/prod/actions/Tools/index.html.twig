@@ -45,7 +45,7 @@
                         {{ "image tool" | trans }}
                     </a>
                 </li>
-                {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
+                {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}
                     <li>
                         <a href="#substitution">
                             {{ "substitution" | trans }}
