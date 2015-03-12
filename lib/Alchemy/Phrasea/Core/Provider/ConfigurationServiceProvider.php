@@ -34,8 +34,12 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         $app['phraseanet.configuration.compiler'] = $app->share(function (SilexApplication $app) {
             return new Compiler();
         });
-        $app['phraseanet.configuration.config-path'] = $app['root.path'].'/config/configuration.yml';
-        $app['phraseanet.configuration.config-compiled-path'] = $app['root.path'].'/config/configuration-compiled.php';
+        $app['phraseanet.configuration.config-path'] = function (SilexApplication $app) {
+            return sprintf('%s/config/configuration.yml', $app['root.path']);
+        };
+        $app['phraseanet.configuration.config-compiled-path'] = function (SilexApplication $app) {
+            return sprintf('%s/config/configuration-compiled.php', $app['root.path']);
+        };
 
         $app['configuration.store'] = $app->share(function (SilexApplication $app) {
             return new HostConfiguration(new Configuration(
