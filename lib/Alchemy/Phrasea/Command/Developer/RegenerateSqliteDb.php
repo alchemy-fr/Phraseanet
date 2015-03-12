@@ -108,6 +108,7 @@ class RegenerateSqliteDb extends Command
         $this->insertWebhookEventDelivery($em, $DI);
 
         $em->flush();
+        $this->container['elasticsearch.indexer']->flushQueue();
 
         $fixtures['basket']['basket_1'] = $DI['basket_1']->getId();
         $fixtures['basket']['basket_2'] = $DI['basket_2']->getId();

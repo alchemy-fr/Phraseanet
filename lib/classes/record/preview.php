@@ -80,22 +80,20 @@ class record_preview extends record_adapter
 
     protected $original_item;
 
-    /**
-     *
-     * @param Application           $app
-     * @param string                $env
-     * @param integer               $pos
-     * @param mixed                 $contId
-     * @param SearchEngineInterface $search_engine
-     * @param string                $query
-     *
-     * @return record_preview
-     */
+    protected $pos;
+    protected$search_engine;
+    protected $query;
+    protected $options;
+
     public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '', SearchEngineOptions $options = null)
     {
         $number = null;
         $this->env = $env;
         $this->app = $app;
+        $this->pos = $pos;
+        $this->searchEngine = $search_engine;
+        $this->query = $query;
+        $this->options = $options;
 
         switch ($env) {
             case "RESULT":
@@ -204,7 +202,7 @@ class record_preview extends record_adapter
         return $this;
     }
 
-    public function get_train($pos = 0, $query = '', SearchEngineInterface $search_engine = null, SearchEngineOptions $options)
+    public function get_train()
     {
         if ($this->train) {
             return $this->train;
@@ -213,8 +211,8 @@ class record_preview extends record_adapter
         switch ($this->env) {
             case 'RESULT':
                 $perPage = 56;
-                $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-                $results = $search_engine->query($query, $index, $perPage, $options);
+                $index = ($this->pos - 3) < 0 ? 0 : ($this->pos - 3);
+                $results = $this->searchEngine->query($this->query, $index, $perPage, $this->option);
 
                 $this->train = $results->getResults()->toArray();
                 break;

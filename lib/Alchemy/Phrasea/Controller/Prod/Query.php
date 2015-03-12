@@ -221,26 +221,9 @@ class Query implements ControllerProviderInterface
 
         return $app->json([
             'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
-                'records'  => $record->get_train($pos, $query, $app['phraseanet.SE'], $options),
+                'records'  => $record->get_train(),
                 'selected' => $pos
             ])
         ]);
-    }
-
-    /**
-     * Get a preview reg train
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @return Response
-     */
-    public function queryRegTrain(Application $app, Request $request)
-    {
-        $record = new \record_preview($app, 'REG', $request->request->get('pos'), $request->request->get('cont'));
-
-        return new Response($app['twig']->render('prod/preview/reg_train.html.twig', [
-            'container_records' => $record->get_container()->get_children(),
-            'record'            => $record
-        ]));
     }
 }

@@ -27,7 +27,6 @@ use Alchemy\Phrasea\Controller\Admin\SearchEngine;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Admin\Users;
-use Alchemy\Phrasea\Controller\Client\Baskets as ClientBasket;
 use Alchemy\Phrasea\Controller\Client\Root as ClientRoot;
 use Alchemy\Phrasea\Controller\Minifier;
 use Alchemy\Phrasea\Controller\Prod\BasketController;
@@ -635,7 +634,6 @@ class Application extends SilexApplication
         $this->mount('/admin/subdefs', new Subdefs());
 
         $this->mount('/client/', new ClientRoot());
-        $this->mount('/client/baskets', new ClientBasket());
 
         $this->mount('/prod/query/', new Query());
         $this->mount('/prod/order/', new Order());

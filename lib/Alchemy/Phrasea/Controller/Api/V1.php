@@ -688,8 +688,13 @@ class V1 implements ControllerProviderInterface
 
         $ret['results'] = ['records' => [], 'stories' => []];
 
-        foreach ($search_result->getResults() as $record) {
-            $record = new \record_adapter($app, $record->getDataboxId(), $record->getBaseId());
+        foreach ($search_result->getResults() as $es_record) {
+            try {
+                $record = new \record_adapter($app, $es_record->getDataboxId(), $es_record->getRecordId());
+            } catch (\Exception $e) {
+
+            }
+
 
             if ($record->is_grouping()) {
                 $ret['results']['stories'][] = $this->list_story($app, $request, $record);
@@ -714,7 +719,13 @@ class V1 implements ControllerProviderInterface
     {
         list($ret, $search_result) = $this->prepare_search_request($app, $request);
 
-        foreach ($search_result->getResults() as $record) {
+        foreach ($search_result->getResults() as $es_record) {
+            try {
+                $record = new \record_adapter($app, $es_record->getDataboxId(), $es_record->getRecordId());
+            } catch (\Exception $e) {
+
+            }
+
             $ret['results'][] = $this->list_record($app, $record);
         }
 
