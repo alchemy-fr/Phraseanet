@@ -12,74 +12,37 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use vierbergenlars\SemVer\version;
-use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 abstract class base implements cache_cacheableInterface
 {
     protected $version;
 
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $id;
-
-    /**
-     *
-     * @var string
-     */
     protected $schema;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $dbname;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $passwd;
-
-    /**
-     * Database Username
-     *
-     * @var <type>
-     */
     protected $user;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $port;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $host;
 
-    /**
-     *
-     */
+    /** @var Connection */
+    protected $connection;
+    /** @var Application */
+    protected $app;
+
     const APPLICATION_BOX = 'APPLICATION_BOX';
-    /**
-     *
-     */
     const DATA_BOX = 'DATA_BOX';
 
-    /**
-     *
-     */
+    public function __construct(Application $application, Connection $connection)
+    {
+        $this->app = $application;
+        $this->connection = $connection;
+    }
+
     abstract public function get_base_type();
 
-    /**
-     *
-     * @return <type>
-     */
     public function get_schema()
     {
         if ($this->schema) {
@@ -91,55 +54,32 @@ abstract class base implements cache_cacheableInterface
         return $this->schema;
     }
 
-    /**
-     *
-     * @return <type>
-     */
     public function get_dbname()
     {
         return $this->dbname;
     }
 
-    /**
-     *
-     * @return <type>
-     */
     public function get_passwd()
     {
         return $this->passwd;
     }
 
-    /**
-     *
-     * @return <type>
-     */
     public function get_user()
     {
         return $this->user;
     }
 
-    /**
-     *
-     * @return <type>
-     */
     public function get_port()
     {
         return $this->port;
     }
 
-    /**
-     *
-     * @return <type>
-     */
     public function get_host()
     {
         return $this->host;
     }
 
-    /**
-     *
-     * @return Connection
-     */
+    /** @return Connection */
     public function get_connection()
     {
         return $this->connection;
@@ -150,11 +90,6 @@ abstract class base implements cache_cacheableInterface
         return $this->app['cache'];
     }
 
-    /**
-     *
-     * @param  <type> $option
-     * @return <type>
-     */
     public function get_data_from_cache($option = null)
     {
         if ($this->get_base_type() == self::DATA_BOX) {
@@ -340,7 +275,7 @@ abstract class base implements cache_cacheableInterface
         try {
             $sql = '';
             if ($this->get_base_type() === self::APPLICATION_BOX)
-                $sql = 'UPDATE sitepreff SET version = "' . $version->getNumber() . '"';
+                $sql = 'UPDATE sitepreff SET version = :version';
             if ($this->get_base_type() === self::DATA_BOX) {
                 $sql = 'DELETE FROM pref WHERE prop="version" AND locale IS NULL';
                 $this->get_connection()->query($sql);
@@ -363,7 +298,6 @@ abstract class base implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return base
      */
     protected function load_schema()
@@ -387,7 +321,6 @@ abstract class base implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return base
      */
     public function insert_datas()
@@ -404,7 +337,6 @@ abstract class base implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  SimpleXMLElement $table
      * @return base
      */

@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
@@ -357,7 +358,11 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         );
 
         $em->getConnection()->executeUpdate('UPDATE Users SET geoname_id=NULL WHERE geoname_id=0');
-        $em->getConnection()->executeUpdate('UPDATE Users SET locale=NULL WHERE locale NOT IN ("'.implode('", "', array_keys(Application::getAvailableLanguages())).'")');
+        $em->getConnection()->executeUpdate(
+            'UPDATE Users SET locale=NULL WHERE locale NOT IN (:locales)',
+            ['locales' => array_keys(Application::getAvailableLanguages())],
+            ['locales' => Connection::PARAM_STR_ARRAY]
+        );
         $em->getConnection()->executeUpdate('UPDATE Users SET deleted=1, login=SUBSTRING(login, 11) WHERE login LIKE "(#deleted_%"');
     }
 
@@ -367,14 +372,28 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         $perBatch = 100;
 
         do {
-            $sql = 'SELECT usr_id, activeFTP, addrFTP, loginFTP,
-                        retryFTP, passifFTP, pwdFTP, destFTP, prefixFTPfolder
-                    FROM usr
-                    WHERE
-                        usr_login NOT LIKE "(#deleted_%"
-                        AND model_of = 0
-                        AND addrFTP != ""'
-                    .sprintf(' LIMIT %d, %d', $offset, $perBatch);
+            $builder = $em->getConnection()->createQueryBuilder();
+            $sql = $builder
+                ->select(
+                    'u.usr_id',
+                    'u.activeFTP',
+                    'u.addrFTP',
+                    'u.loginFTP',
+                    'u.retryFTP',
+                    'u.passifFTP',
+                    'u.pwdFTP',
+                    'u.destFTP',
+                    'u.prefixFTPfolder'
+                )
+                ->from('usr', 'u')
+                ->where(
+                    $builder->expr()->notLike('u.usr_login', $builder->expr()->literal('(#deleted_%')),
+                    $builder->expr()->eq('u.model_of', 0),
+                    $builder->expr()->neq('u.addrFTP', $builder->expr()->literal(''))
+                )
+                ->setFirstResult($offset)
+                ->setMaxResults($perBatch)
+                ->getSQL();
 
             $rs = $em->getConnection()->fetchAll($sql);
 

@@ -348,13 +348,13 @@ class Edit implements ControllerProviderInterface
                 if (!in_array($statbits, ['', 'null'])) {
                     $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
                     if ($mask_and != '') {
-                        $newstat = \databox_status::operation_and_not($app, $newstat, $mask_and);
+                        $newstat = \databox_status::operation_and_not($newstat, $mask_and);
                     }
 
                     $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
 
                     if ($mask_or != '') {
-                        $newstat = \databox_status::operation_or($app, $newstat, $mask_or);
+                        $newstat = \databox_status::operation_or($newstat, $mask_or);
                     }
 
                     $record->set_binary_status($newstat);

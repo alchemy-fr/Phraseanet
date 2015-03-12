@@ -12,7 +12,8 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -101,42 +102,42 @@ class databox extends base
     const PIC_PDF = 'logopdf';
 
     protected $cache;
-    protected $connection;
-    protected $app;
     private $labels = [];
     private $ord;
     private $viewname;
     private $loaded = false;
 
+    /**
+     * @param Application $app
+     * @param int         $sbas_id
+     */
     public function __construct(Application $app, $sbas_id)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
 
-        $this->app = $app;
         $this->id = $sbas_id;
 
-        $connection_params = phrasea::sbas_params($this->app);
+        $connection_params = phrasea::sbas_params($app);
 
         if (! isset($connection_params[$sbas_id])) {
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $this->connection = $app['db.provider']([
+        $params = [
             'host'     => $connection_params[$sbas_id]['host'],
             'port'     => $connection_params[$sbas_id]['port'],
             'user'     => $connection_params[$sbas_id]['user'],
             'password' => $connection_params[$sbas_id]['pwd'],
             'dbname'   => $connection_params[$sbas_id]['dbname'],
-        ]);
+        ];
+        parent::__construct($app, $app['db.provider']($params));
 
-        $this->host = $connection_params[$sbas_id]['host'];
-        $this->port = $connection_params[$sbas_id]['port'];
-        $this->user = $connection_params[$sbas_id]['user'];
-        $this->passwd = $connection_params[$sbas_id]['pwd'];
-        $this->dbname = $connection_params[$sbas_id]['dbname'];
-
-        return $this;
+        $this->host = $params['host'];
+        $this->port = $params['port'];
+        $this->user = $params['user'];
+        $this->passwd = $params['password'];
+        $this->dbname = $params['dbname'];
     }
 
     private function load()
@@ -796,6 +797,7 @@ class databox extends base
      */
     public function get_mountable_colls()
     {
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $colls = [];
 
@@ -804,6 +806,7 @@ class databox extends base
         $stmt->execute([':sbas_id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+        unset($stmt);
 
         foreach ($rs as $row) {
             $colls[] = (int) $row['server_coll_id'];
@@ -811,16 +814,22 @@ class databox extends base
 
         $mountable_colls = [];
 
-        $sql = 'SELECT coll_id, asciiname FROM coll';
-
+        $builder = $this->get_connection()->createQueryBuilder();
+        $builder
+            ->select('c.coll_id', 'c.asciiname')
+            ->from('coll', 'c');
         if (count($colls) > 0) {
-            $sql .= ' WHERE coll_id NOT IN (' . implode(',', $colls) . ')';
+            $builder
+                ->where($builder->expr()->notIn('c.coll_id', [':colls']))
+                ->setParameter('colls', $colls, Connection::PARAM_INT_ARRAY)
+            ;
         }
 
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
+        /** @var Statement $stmt */
+        $stmt = $builder->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+        unset($stmt);
 
         foreach ($rs as $row) {
             $mountable_colls[$row['coll_id']] = $row['asciiname'];
@@ -831,6 +840,7 @@ class databox extends base
 
     public function get_activable_colls()
     {
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $base_ids = [];
 
@@ -858,8 +868,7 @@ class databox extends base
         $dom_struct->documentElement
             ->setAttribute("modification_date", $now = date("YmdHis"));
 
-        $sql = "UPDATE pref SET value= :structure, updated_on= :now
-        WHERE prop='structure'";
+        $sql = "UPDATE pref SET value= :structure, updated_on= :now WHERE prop='structure'";
 
         $this->structure = $dom_struct->saveXML();
 
@@ -1075,10 +1084,7 @@ class databox extends base
     public function clear_logs()
     {
         foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
-            $sql = 'DELETE FROM ' . $table;
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $this->get_connection()->delete($table, []);
         }
 
         return $this;
@@ -1086,10 +1092,7 @@ class databox extends base
 
     public function reindex()
     {
-        $sql = 'UPDATE pref SET updated_on="0000-00-00 00:00:00" WHERE prop="indexes"';
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
 
         return $this;
     }

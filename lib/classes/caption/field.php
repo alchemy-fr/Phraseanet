@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\Driver\Statement;
 
 class caption_field implements cache_cacheableInterface
 {
@@ -284,35 +285,35 @@ class caption_field implements cache_cacheableInterface
 
     public static function rename_all_metadatas(Application $app, databox_field $databox_field)
     {
-        $sql = 'SELECT count(id) as count_id FROM metadatas
-            WHERE meta_struct_id = :meta_struct_id';
-        $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
-        $params = [
-            ':meta_struct_id' => $databox_field->get_id()
-        ];
+        $connection = $databox_field->get_databox()->get_connection();
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->select('COUNT(m.id) AS count_id')
+            ->from('metadatas', 'm')
+            ->where($builder->expr()->eq('m.meta_struct_id', ':meta_struct_id'))
+            ->setParameter('meta_struct_id', $databox_field->get_id())
+        ;
 
-        $stmt->execute($params);
-        $rowcount = $stmt->rowCount();
+        /** @var Statement $stmt */
+        $stmt = $builder->execute();
+        $rowcount = $stmt->fetchColumn();
         $stmt->closeCursor();
+        unset($stmt);
 
         $n = 0;
         $increment = 500;
 
+        $builder
+            ->select('m.record_id', 'm.id')
+            ->setMaxResults($increment)
+        ;
         while ($n < $rowcount) {
-            $sql = 'SELECT record_id, id FROM metadatas
-              WHERE meta_struct_id = :meta_struct_id LIMIT ' . $n . ', ' . $increment;
+            /** @var Statement $stmt */
+            $stmt = $builder
+                ->setFirstResult($n)
+                ->execute();
 
-            $params = [
-                ':meta_struct_id' => $databox_field->get_id()
-            ];
-
-            $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
-            $stmt->execute($params);
-            $rowcount = $stmt->rowCount();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            unset($stmt);
-
+            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
@@ -326,43 +327,39 @@ class caption_field implements cache_cacheableInterface
 
             $n += $increment;
         }
-
-        return;
     }
 
     public static function delete_all_metadatas(Application $app, databox_field $databox_field)
     {
-        $sql = 'SELECT count(id) as count_id FROM metadatas
-            WHERE meta_struct_id = :meta_struct_id';
+        $connection = $databox_field->get_databox()->get_connection();
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->select('COUNT(m.id) AS count_id')
+            ->from('metadatas', 'm')
+            ->where($builder->expr()->eq('m.meta_struct_id', ':meta_struct_id'))
+            ->setParameter('meta_struct_id', $databox_field->get_id())
+        ;
 
-        $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
-        $params = [
-            ':meta_struct_id' => $databox_field->get_id()
-        ];
-
-        $stmt->execute($params);
-        $rowcount = $stmt->rowCount();
+        /** @var Statement $stmt */
+        $stmt = $builder->execute();
+        $rowcount = $stmt->fetchColumn();
         $stmt->closeCursor();
+        unset($stmt);
 
         $n = 0;
         $increment = 500;
 
+        $builder
+            ->select('m.record_id', 'm.id')
+            ->setMaxResults($increment)
+        ;
         while ($n < $rowcount) {
-            $sql = 'SELECT record_id, id FROM metadatas
-              WHERE meta_struct_id = :meta_struct_id
-              LIMIT ' . $n . ', ' . $increment;
+            /** @var Statement $stmt */
+            $stmt = $builder
+                ->setFirstResult($n)
+                ->execute();
 
-            $params = [
-                ':meta_struct_id' => $databox_field->get_id()
-            ];
-
-            $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
-            $stmt->execute($params);
-            $rowcount = $stmt->rowCount();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            unset($stmt);
-
+            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);

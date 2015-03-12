@@ -21,22 +21,14 @@ use vierbergenlars\SemVer\version;
 
 class appbox extends base
 {
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
     /**
-     *
      * constant defining the app type
      */
     const BASE_TYPE = self::APPLICATION_BOX;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $cache;
     protected $connection;
     protected $app;
@@ -46,25 +38,16 @@ class appbox extends base
     const CACHE_LIST_BASES = 'list_bases';
     const CACHE_SBAS_IDS = 'sbas_ids';
 
-    /**
-     * Constructor
-     *
-     * @return appbox
-     */
     public function __construct(Application $app)
     {
-        $this->app = $app;
         $connexion = $app['conf']->get(['main', 'database']);
-
-        $this->connection = $app['db.provider']($connexion);
+        parent::__construct($app, $app['db.provider']($connexion));
 
         $this->host = $connexion['host'];
         $this->port = $connexion['port'];
         $this->user = $connexion['user'];
         $this->passwd = $connexion['password'];
         $this->dbname = $connexion['dbname'];
-
-        return $this;
     }
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
@@ -372,8 +355,7 @@ class appbox extends base
     }
 
     /**
-     *
-     * @return Array
+     * @return databox[]
      */
     public function get_databoxes()
     {

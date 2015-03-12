@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Version;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Version;
+use Doctrine\DBAL\Driver\Statement;
 
 /**
  * In version 3.9 the user table have been removed.
@@ -21,23 +21,42 @@ use Alchemy\Phrasea\Core\Version;
  */
 class MailChecker
 {
+    /** @var \appbox */
+    private $appbox;
+    /** @var string */
+    private $table;
+
+    /**
+     * Constructor
+     *
+     * @param \appbox $appbox
+     * @param string  $table
+     */
+    public function __construct(\appbox $appbox, $table = 'usr')
+    {
+        $this->appbox = $appbox;
+        $this->table = $table;
+    }
+
     /**
      * Returns users with duplicated emails
      *
-     * @param \Application $app
-     * @param string       $table The table name where to look
-     *
      * @return array An array of User
      */
-    public static function getWrongEmailUsers(Application $app, $table = 'usr')
+    public function getWrongEmailUsers()
     {
-        if (version_compare(Version::getNumber(), '3.9', '>')) {
+        if (version_compare($this->appbox->get_version(), '3.9', '>=')) {
             return [];
         }
 
-        $sql = 'SELECT usr_mail, usr_id, last_conn, usr_login FROM '. $table .' WHERE usr_mail IS NOT NULL';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute();
+        $builder = $this->appbox->get_connection()->createQueryBuilder();
+        /** @var Statement $stmt */
+        $stmt = $builder
+            ->select('u.usr_mail', 'u.usr_id', 'u.last_conn', 'u.usr_login')
+            ->from($this->table, 'u')
+            ->where($builder->expr()->isNotNull('u.usr_mail'))
+            ->execute()
+        ;
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -65,5 +84,15 @@ class MailChecker
         unset($users);
 
         return $badUsers;
+    }
+
+    /**
+     * Whether there is users with same emails
+     *
+     * @return bool
+     */
+    public function hasWrongEmailUsers()
+    {
+        return count($this->getWrongEmailUsers()) > 0;
     }
 }

@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -131,25 +132,39 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 ON (bu.base_id = b.base_id AND u.id = bu.usr_id)
               LEFT join  sbasusr sbu
                 ON (sbu.sbas_id = b.sbas_id AND u.id = sbu.usr_id)
-            WHERE ( (u.id = " . implode(' OR u.id = ', $this->users) . " )
+            WHERE ( (u.id IN (:users) )
                     AND b.sbas_id = s.sbas_id
-                    AND (b.base_id = '" . implode("' OR b.base_id = '", $list) . "'))
+                    AND (b.base_id IN (:bases)))
             GROUP BY b.base_id
             ORDER BY s.ord, s.sbas_id, b.ord, b.base_id ";
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $this->app['phraseanet.appbox']->get_connection()->fetchAll(
+            $sql,
+            [
+                'users' => $this->users,
+                'bases' => $list,
+            ],
+            [
+                'users' => Connection::PARAM_INT_ARRAY,
+                'bases' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
 
         $sql = 'SELECT base_id, sum(1) as access FROM basusr
-            WHERE (usr_id = ' . implode(' OR usr_id = ', $this->users) . ')
-              AND  (base_id = ' . implode(' OR base_id = ', $list) . ')
+            WHERE (usr_id IN (:users))
+              AND  (base_id IN (:bases))
             GROUP BY base_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute();
-        $access = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $access = $this->app['phraseanet.appbox']->get_connection()->fetchAll(
+            $sql,
+            [
+                'users' => $this->users,
+                'bases' => $list,
+            ],
+            [
+                'users' => Connection::PARAM_INT_ARRAY,
+                'bases' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
 
         $base_ids = [];
         foreach ($access as $acc) {
@@ -194,14 +209,20 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $sql = "SELECT u.id, restrict_dwnld, remain_dwnld, month_dwnld_max
       FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
-      WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
-      AND bu.base_id = :base_id";
+      WHERE (u.id IN (:users)) AND bu.base_id = :base_id";
 
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':base_id' => $this->base_id]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $conn->fetchAll($sql,
+            [
+                'base_id' => $this->base_id,
+                'users' => $this->users,
+            ],
+            [
+                'base_id' => \PDO::PARAM_INT,
+                'users' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
 
         $this->users_datas = $rs;
 
@@ -220,14 +241,21 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $sql = "SELECT BIN(mask_and) AS mask_and, BIN(mask_xor) AS mask_xor
             FROM basusr
-            WHERE usr_id IN (" . implode(',', $this->users) . ")
+            WHERE usr_id IN (:users)
               AND base_id = :base_id";
 
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':base_id' => $this->base_id]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $conn->fetchAll($sql,
+            [
+                'base_id' => $this->base_id,
+                'users' => $this->users,
+            ],
+            [
+                'base_id' => \PDO::PARAM_INT,
+                'users' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
 
         $tbits_and = [];
         $tbits_xor = [];
@@ -317,14 +345,20 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $sql = "SELECT u.id, time_limited, limited_from, limited_to
       FROM (Users u INNER JOIN basusr bu ON u.id = bu.usr_id)
-      WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
-      AND bu.base_id = :base_id";
+      WHERE (u.id IN (:users)) AND bu.base_id = :base_id";
 
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':base_id' => $this->base_id]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $conn->fetchAll($sql,
+            [
+                'base_id' => $this->base_id,
+                'users' => $this->users,
+            ],
+            [
+                'base_id' => \PDO::PARAM_INT,
+                'users' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
 
         $time_limited = -1;
         $limited_from = $limited_to = false;
@@ -373,14 +407,20 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             FROM (Users u
               INNER JOIN basusr bu ON u.id = bu.usr_id
               INNER JOIN bas b ON b.base_id = bu.base_id)
-            WHERE (u.id = " . implode(' OR u.id = ', $this->users) . ")
-              AND b.sbas_id = :sbas_id";
+            WHERE (u.id IN (:users)) AND b.sbas_id = :sbas_id";
 
+        /** @var Connection $conn */
         $conn = $this->app['phraseanet.appbox']->get_connection();
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $sbas_id]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $conn->fetchAll($sql,
+            [
+                'sbas_id' => $sbas_id,
+                'users' => $this->users,
+            ],
+            [
+                'sbas_id' => \PDO::PARAM_INT,
+                'users' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
 
         $time_limited = $limited_from = $limited_to = [];
 

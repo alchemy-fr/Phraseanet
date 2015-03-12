@@ -106,8 +106,6 @@ class module_report_activity extends module_report
                 WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
             GROUP BY heures;";
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
-
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

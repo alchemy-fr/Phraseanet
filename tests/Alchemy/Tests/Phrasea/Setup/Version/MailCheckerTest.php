@@ -8,8 +8,13 @@ class MailCheckerTest extends \PhraseanetTestCase
 {
     public function testMailChecker()
     {
-        $users = MailChecker::getWrongEmailUsers(self::$DI['app'], 'usr_tmp');
+        $checker = new MailChecker(self::$DI['app']['phraseanet.appbox'], 'usr_tmp');
+        $this->assertEmpty($checker->getWrongEmailUsers());
+    }
 
-        $this->assertEquals(0, count($users));
+    public function testItHasNoDuplicateEmailUsers()
+    {
+        $checker = new MailChecker(self::$DI['app']['phraseanet.appbox'], 'usr_tmp');
+        $this->assertFalse($checker->hasWrongEmailUsers());
     }
 }

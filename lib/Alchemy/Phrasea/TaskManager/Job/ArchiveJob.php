@@ -985,7 +985,7 @@ class ArchiveJob extends AbstractJob
 
     public function createStory(Application $app, \collection $collection, $pathfile, $captionFile, $stat0, $stat1)
     {
-        $status = \databox_status::operation_or($app, $stat0, $stat1);
+        $status = \databox_status::operation_or($stat0, $stat1);
 
         $media = $app['mediavorus']->guess($pathfile);
 
@@ -1000,7 +1000,7 @@ class ArchiveJob extends AbstractJob
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = \databox_status::operation_mask($app, $status, $captionStatus);
+                $status = \databox_status::operation_mask($status, $captionStatus);
             }
         }
 
@@ -1013,7 +1013,7 @@ class ArchiveJob extends AbstractJob
             $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
         }
 
-        $story->set_binary_status(\databox_status::operation_or($app, $stat0, $stat1));
+        $story->set_binary_status(\databox_status::operation_or($stat0, $stat1));
         $story->rebuild_subdefs();
 
         unset($media);
@@ -1033,7 +1033,7 @@ class ArchiveJob extends AbstractJob
      */
     public function createRecord(Application $app, \collection $collection, $pathfile, $captionFile, $grp_rid, $force, $stat0, $stat1)
     {
-        $status = \databox_status::operation_or($app, $stat0, $stat1);
+        $status = \databox_status::operation_or($stat0, $stat1);
 
         $media = $app['mediavorus']->guess($pathfile);
 
@@ -1048,7 +1048,7 @@ class ArchiveJob extends AbstractJob
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = \databox_status::operation_mask($app, $status, $captionStatus);
+                $status = \databox_status::operation_mask($status, $captionStatus);
             }
         }
         $file = new File($app, $media, $collection);

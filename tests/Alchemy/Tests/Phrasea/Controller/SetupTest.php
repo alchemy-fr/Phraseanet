@@ -207,7 +207,7 @@ class SetupTest extends \PhraseanetWebTestCase
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
-            "dbname"   => $connexion['dbname'],
+            "db_name"  => $connexion['dbname'],
         );
         
         $client = $this->createClient();
@@ -266,7 +266,7 @@ class SetupTest extends \PhraseanetWebTestCase
             "port"     => $connexion['port'],
             "user"     => $connexion['user'],
             "password" => $connexion['password'],
-            "dbname"   => "fake-DTABASE-name"
+            "db_name"  => "fake-DTABASE-name"
         );
 
         $client = $this->createClient();

@@ -1381,7 +1381,7 @@ class Xmlhttp implements ControllerProviderInterface
         // first, count the number of records to update
         foreach ($tsbas as $ksbas => $sbas) {
 
-            /* @var $databox databox */
+            /* @var $databox \databox */
             try {
                 $databox = $appbox->get_databox($sbas['sbas_id']);
                 $connbas = $databox->get_connection();
@@ -1394,7 +1394,7 @@ class Xmlhttp implements ControllerProviderInterface
                 continue;
             }
 
-            $lid = '';
+            $lids = [];
             $xpathct = new \DOMXPath($tsbas[$ksbas]['domct']);
 
             foreach ($sbas['tids'] as $tid) {
@@ -1403,7 +1403,7 @@ class Xmlhttp implements ControllerProviderInterface
                 if ($nodes->length == 1) {
                     $sy = $nodes->item(0);
                     $syid = str_replace('.', 'd', $sy->getAttribute('id')) . 'd';
-                    $lid .= ( $lid ? ',' : '') . "'" . $syid . "'";
+                    $lids[] = $syid;
                     $field = $sy->parentNode->parentNode->getAttribute('field');
 
                     if (!array_key_exists($field, $tsbas[$ksbas]['tvals'])) {
@@ -1413,19 +1413,18 @@ class Xmlhttp implements ControllerProviderInterface
                 }
             }
 
-            if ($lid == '') {
+            if (empty($lids)) {
                 // no cterm was found
                 continue;
             }
-            $tsbas[$ksbas]['lid'] = $lid;
+            $tsbas[$ksbas]['lid'] = "'" . implode("','", $lids) . "'";
 
             // count records
             $sql = 'SELECT DISTINCT record_id AS r
-                    FROM thit WHERE value IN (' . $lid . ')
+                    FROM thit WHERE value IN (:lids)
                     ORDER BY record_id';
             $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-
+            $stmt->execute(['lids' => $lids]);
             $tsbas[$ksbas]['trids'] = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
             $stmt->closeCursor();
 

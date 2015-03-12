@@ -149,126 +149,68 @@ class databox_status
         return true;
     }
 
-    public static function operation_and(Application $app, $stat1, $stat2)
+    public static function operation_and($stat1, $stat2)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
-
-        $status = '0';
-
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin($app, substr($stat1, 2));
+            $stat1 = self::hex2bin(substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin($app, substr($stat2, 2));
+            $stat2 = self::hex2bin(substr($stat2, 2));
         }
 
-        $sql = 'select bin(0b' . trim($stat1) . ' & 0b' . trim($stat2) . ') as result';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $status = $row['result'];
-        }
-
-        return $status;
+        return dechex(hexdec($stat1) & hexdec($stat2));
     }
 
     /**
      * compute ((0 M s1) M s2) where M is the "mask" operator
      * nb : s1,s2 are binary mask strings as "01x0xx1xx0x", no other format (hex) supported
      *
-     * @param Application $app
      * @param $stat1 a binary mask "010x1xx0.." STRING
      * @param $stat2 a binary mask "x100x1..." STRING
      *
-     * @return binary string
+     * @return string
      */
-    public static function operation_mask(Application $app, $stat1, $stat2)
+    public static function operation_mask($stat1, $stat2)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
+        $stat1_or  = bindec(trim(str_replace("x", "0", $stat1)));
+        $stat1_and = bindec(trim(str_replace("x", "1", $stat1)));
+        $stat2_or  = bindec(trim(str_replace("x", "0", $stat2)));
+        $stat2_and = bindec(trim(str_replace("x", "1", $stat2)));
 
-        $status = '0';
-        $stat1_or  = '0b' . trim(str_replace("x", "0", $stat1));
-        $stat1_and = '0b' . trim(str_replace("x", "1", $stat1));
-        $stat2_or  = '0b' . trim(str_replace("x", "0", $stat2));
-        $stat2_and = '0b' . trim(str_replace("x", "1", $stat2));
-
-        // $sql = "SELECT BIN(((((0 | :o1) & :a1)) | :o2) & :a2) AS result";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute(array(':o1'=>$stat1_or, ':a1'=>$stat1_and, ':o2'=>$stat2_or, ':a2'=>$stat2_and));
-
-        $sql = "SELECT BIN(((((0 | $stat1_or) & $stat1_and)) | $stat2_or) & $stat2_and) AS result";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $status = $row['result'];
-        }
-
-        return $status;
+        return decbin((((0 | $stat1_or) & $stat1_and) | $stat2_or) & $stat2_and);
     }
 
-    public static function operation_and_not(Application $app, $stat1, $stat2)
+    public static function operation_and_not($stat1, $stat2)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
-
-        $status = '0';
-
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin($app, substr($stat1, 2));
+            $stat1 = self::hex2bin(substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin($app, substr($stat2, 2));
+            $stat2 = self::hex2bin(substr($stat2, 2));
         }
+        $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
 
-        $sql = 'select bin(0b' . trim($stat1) . ' & ~0b' . trim($stat2) . ') as result';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $status = $row['result'];
-        }
-
-        return $status;
+        return decbin(bindec($stat1) & ~bindec($stat2));
     }
 
-    public static function operation_or(Application $app, $stat1, $stat2)
+    public static function operation_or($stat1, $stat2)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
-
-        $status = '0';
-
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin($app, substr($stat1, 2));
+            $stat1 = self::hex2bin(substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin($app, substr($stat2, 2));
+            $stat2 = self::hex2bin(substr($stat2, 2));
         }
+        $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
+        $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
 
-        $sql = 'select bin(0b' . trim($stat1) . ' | 0b' . trim($stat2) . ') as result';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $status = $row['result'];
-        }
-
-        return $status;
+        return decbin(bindec($stat1) | bindec($stat2));
     }
 
-    public static function dec2bin(Application $app, $status)
+    public static function dec2bin($status)
     {
         $status = (string) $status;
 
@@ -276,25 +218,10 @@ class databox_status
             throw new \Exception(sprintf('`%s`is non-decimal value', $status));
         }
 
-        $conn = $app['phraseanet.appbox']->get_connection();
-
-        $sql = 'select bin(' . $status . ') as result';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $status = '0';
-
-        if ($row) {
-            $status = $row['result'];
-        }
-
-        return $status;
+        return decbin($status);
     }
 
-    public static function hex2bin(Application $app, $status)
+    public static function hex2bin($status)
     {
         $status = (string) $status;
         if (substr($status, 0, 2) === '0x') {
@@ -305,22 +232,7 @@ class databox_status
             throw new \Exception('Non-hexadecimal value');
         }
 
-        $conn = $app['phraseanet.appbox']->get_connection();
-
-        $sql = 'select BIN( CAST( 0x' . trim($status) . ' AS UNSIGNED ) ) as result';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $status = '0';
-
-        if ($row) {
-            $status = $row['result'];
-        }
-
-        return $status;
+        return base_convert($status, 16, 2);
     }
 
     public static function bitIsSet($bitValue, $nthBit)

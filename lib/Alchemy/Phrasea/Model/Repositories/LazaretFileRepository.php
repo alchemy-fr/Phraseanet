@@ -24,20 +24,18 @@ class LazaretFileRepository extends EntityRepository
 {
     public function findPerPage(array $base_ids, $offset = 0, $perPage = 10)
     {
-        $base_ids = implode(', ', array_map(function ($int) {
-            return (int) $int;
-        }, $base_ids));
+        $builder = $this->createQueryBuilder('f');
 
-        $dql = '
-            SELECT f
-            FROM Phraseanet:LazaretFile f'
-            . ('' === $base_ids ? '' : ' WHERE f.base_id IN  (' . $base_ids . ')')
-            . ' ORDER BY f.id DESC';
+        if (! empty($base_ids)) {
+            $builder->where($builder->expr()->in('f.base_id', $base_ids));
+        }
 
-        $query = $this->_em->createQuery($dql);
-        $query->setFirstResult($offset)
-            ->setMaxResults($perPage);
+        $builder
+            ->orderBy('f.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage)
+        ;
 
-        return new Paginator($query, true);
+        return new Paginator($builder->getQuery(), true);
     }
 }

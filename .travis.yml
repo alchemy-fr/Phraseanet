@@ -49,10 +49,11 @@ script:
   - bin/developer assets:compile-less
   - bin/developer system:uninstall
   - bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
-  - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
-              bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
-              php resources/hudson/cleanupSubdefs.php;
-            fi"
+  - >
+    sh -c "if [ '$SETUP_MODE' = 'update' ]; then
+      bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
+      php resources/hudson/cleanupSubdefs.php;
+    fi"
   - bin/developer ini:setup-tests-dbs
   - bin/console searchengine:index:create
   - bin/developer phraseanet:regenerate-sqlite
