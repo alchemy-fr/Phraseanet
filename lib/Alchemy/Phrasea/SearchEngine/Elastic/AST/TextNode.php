@@ -12,8 +12,9 @@ class TextNode extends AbstractTermNode
     {
         $query = array(
             'multi_match' => array(
-                'fields'    => $context->getLocalizedFields(),
-                'query'     => $this->text,
+                'fields'   => $context->getLocalizedFields(),
+                'query'    => $this->text,
+                'operator' => 'and',
             )
         );
 
