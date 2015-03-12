@@ -110,7 +110,9 @@ $groups = [
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//assets/jquery.treeview/jquery.treeview.js'
-        , '//assets/jquery.treeview/jquery.treeview.async.js'],
+        , '//assets/jquery.treeview/jquery.treeview.async.js'
+        , '//assets/requirejs/require.js'
+    ],
     'thesaurus' => [
          '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
