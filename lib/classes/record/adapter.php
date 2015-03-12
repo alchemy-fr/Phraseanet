@@ -29,7 +29,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
-use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Alchemy\Phrasea\Core\PhraseaTokens;

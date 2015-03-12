@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
 use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\RecordSubDefinitionCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
@@ -67,6 +68,9 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function onRecordChange(RecordEvent $event)
     {
+        if ($event instanceof RecordSubDefinitionCreatedEvent && $event->getSubDefinitionName() !== 'thumbnail') {
+            return;
+        }
         $record = $event->getRecord();
         $this->indexer->indexRecord($record);
     }

@@ -75,6 +75,7 @@ class SubdefsJob extends AbstractJob
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
+            $i = 0;
             foreach ($rs as $row) {
                 if (!$this->isStarted()) {
                     break;
@@ -106,7 +107,14 @@ class SubdefsJob extends AbstractJob
                 $stmt->closeCursor();
 
                 unset($record);
+                $i++;
+
+                if ($i % 5 === 0) {
+                    $app['elasticsearch.indexer']->flushQueue();
+                }
             }
         }
+
+        $app['elasticsearch.indexer']->flushQueue();
     }
 }
