@@ -23,7 +23,7 @@ class Thesaurus
     private $client;
     private $index;
 
-    const MIN_SCORE = 6;
+    const MIN_SCORE = 4;
 
     public function __construct(Client $client, $index)
     {
