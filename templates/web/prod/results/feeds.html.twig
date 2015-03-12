@@ -62,7 +62,7 @@
 
             {% for entry in entries %}
                 {% block content_item %}
-                    {% include 'prod/results/entry.html.twig' with {
+                    {% include 'prod/results/feeds_entry.html.twig' with {
                         'feed': feed,
                         'entry': entry,
                         'settings': {
