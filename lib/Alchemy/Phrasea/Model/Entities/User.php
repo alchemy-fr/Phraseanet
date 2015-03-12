@@ -418,19 +418,26 @@ class User
     /**
      * @param string $gender
      *
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setGender($gender)
     {
-        if (null !== $gender && !in_array($gender, [
-            self::GENDER_MISS,
-            self::GENDER_MR,
-            self::GENDER_MRS
+        if (null !== $gender) {
+            $gender = (string)$gender;
+
+        }
+
+        if (!in_array($gender, [
+            null,
+            (string)self::GENDER_MISS,
+            (string)self::GENDER_MR,
+            (string)self::GENDER_MRS,
         ], true)) {
             throw new InvalidArgumentException(sprintf("Invalid gender %s.", $gender));
         }
 
-        $this->gender = $gender;
+        $this->gender = $gender ? (int)$gender : null;
 
         return $this;
     }
