@@ -395,6 +395,12 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $aggs = [];
+
+        // We always a collection facet right now
+        $collection_facet_agg = array();
+        $collection_facet_agg['terms']['field'] = 'collection_name';
+        $aggs['Collection'] = $collection_facet_agg;
+
         foreach ($this->recordHelper->getFieldsStructure() as $field_name => $params) {
             // skip if field is not searchable or not aggregated
             if (!$params['searchable'] || !$params['to_aggregate']) {
