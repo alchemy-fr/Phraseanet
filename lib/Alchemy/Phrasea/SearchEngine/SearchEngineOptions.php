@@ -606,15 +606,14 @@ class SearchEngineOptions
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
 
-        if (is_array($request->get('bases'))) {
-            $bas = array_map(function ($base_id) use ($app) {
+        $selected_bases = $request->get('bases');
+        if (is_array($selected_bases)) {
+            $bas = [];
+            foreach ($selected_bases as $bas_id) {
                 try {
-                    return \collection::get_from_base_id($app, $base_id);
-                } catch (\Exception_Databox_CollectionNotFound $e) {
-                    return null;
-                }
-
-            }, $request->get('bases'));
+                    $bas[$bas_id] = \collection::get_from_base_id($app, $bas_id);
+                } catch (\Exception_Databox_CollectionNotFound $e) {}
+            }
         } elseif (!$app['authentication']->isAuthenticated()) {
             $bas = $app->getOpenCollections();
         } else {
@@ -647,7 +646,6 @@ class SearchEngineOptions
 
             $options->allowBusinessFieldsOn($BF);
         }
-
 
         $status = is_array($request->get('status')) ? $request->get('status') : [];
         $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
