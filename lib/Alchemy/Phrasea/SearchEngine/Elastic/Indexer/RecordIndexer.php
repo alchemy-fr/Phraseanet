@@ -183,7 +183,7 @@ class RecordIndexer
             ->add('databox_id', 'integer') // Compound primary key
             ->add('base_id', 'integer') // Unique collection ID
             ->add('collection_id', 'integer')->notIndexed() // Useless collection ID (local to databox)
-            ->add('collection_name', 'string')->notIndexed() // Collection name
+            ->add('collection_name', 'string')->notAnalyzed() // Collection name (still indexed for facets)
             ->add('uuid', 'string')->notIndexed()
             ->add('sha256', 'string')->notIndexed()
             // Mandatory metadata
