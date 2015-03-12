@@ -41,7 +41,19 @@ class Helper
 
     public static function candidatesFromDatabox(databox $databox)
     {
-        return self::document($databox->get_dom_cterms());
+        $document = $databox->get_dom_cterms();
+        if (!$document) {
+            $document = new DOMDocument('1.0', 'UTF-8');
+            $document->xmlStandalone = true;
+            $document->formatOutput = true;
+            $element = $document->createElement('cterms');
+            $element->setAttribute('creation_date', date('YmdHis'));
+            $element->setAttribute('next_id', 0);
+            $element->setAttribute('version', '2.0.5');
+            $document->appendChild($element);
+        }
+
+        return $document;
     }
 
     private static function document($document)
