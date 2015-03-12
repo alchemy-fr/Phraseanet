@@ -498,15 +498,27 @@ function initAnswerForm() {
                         "folder": true,
                         "children" : []
                     };
-                    _.each(field_aggs, function (agg) {
-                        _.each(agg.buckets, function(bucket) {
+
+                    if(field_aggs.hasOwnProperty('buckets')){
+                        _.each(field_aggs.buckets, function(bucket) {
                             entry.children.push({
                                 "title": bucket.key + ' ('+ bucket.doc_count + ')',
                                 "key": bucket.key,
                                 "query": '"'+ bucket.key + '" IN ' + key
                             });
                         });
-                    });
+                    } else {
+                        _.each(field_aggs, function (agg) {
+                            _.each(agg.buckets, function(bucket) {
+                                entry.children.push({
+                                    "title": bucket.key + ' ('+ bucket.doc_count + ')',
+                                    "key": bucket.key,
+                                    "query": '"'+ bucket.key + '" IN ' + key
+                                });
+                            });
+                        });
+                    }
+
                     treeData.push(entry);
                 });
 
