@@ -170,22 +170,30 @@ class Mapping
     public function addAnalyzedVersion(array $locales)
     {
         $field = &$this->currentField();
-        $field['fields']['light'] = [
-            'type' => $field['type'],
-            'analyzer' => 'general_light'
-        ];
+        $this->addMultiField('light', 'general_light');
 
         return $this->addLocalizedSubfields($locales);
     }
 
     public function addLocalizedSubfields(array $locales)
     {
-        $field = &$this->currentField();
-
         foreach ($locales as $locale) {
-            $field['fields'][$locale] = array();
-            $field['fields'][$locale]['type'] = $field['type'];
-            $field['fields'][$locale]['analyzer'] = sprintf('%s_full', $locale);
+            $this->addMultiField($locale, sprintf('%s_full', $locale));
+        }
+
+        return $this;
+    }
+
+    public function addMultiField($name, $analyzer = null)
+    {
+        $field = &$this->currentField();
+        if (isset($field['fields'][$name])) {
+            throw new LogicException(sprintf('There is already a "%s" multi field.', $name));
+        }
+        $field['fields'][$name] = array();
+        $field['fields'][$name]['type'] = $field['type'];
+        if ($analyzer) {
+            $field['fields'][$name]['analyzer'] = $analyzer;
         }
 
         return $this;

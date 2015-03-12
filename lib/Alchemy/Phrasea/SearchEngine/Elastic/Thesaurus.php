@@ -23,7 +23,7 @@ class Thesaurus
     private $client;
     private $index;
 
-    const MIN_SCORE = 6;
+    const MIN_SCORE = 4;
 
     public function __construct(Client $client, $index)
     {
@@ -60,9 +60,16 @@ class Thesaurus
             $term = new Term($term);
         }
 
-        // TODO Check that term queries are ok with multiple words
+        if ($strict) {
+            $field_suffix = '.strict';
+        } elseif ($lang) {
+            $field_suffix = sprintf('.%s', $lang);
+        } else {
+            $field_suffix = '';
+        }
+
+        $field = sprintf('value%s', $field_suffix);
         $query = array();
-        $field = $lang ? sprintf('value.%s', $lang) : 'value';
         $query['match'][$field]['query'] = $term->getValue();
         $query['match'][$field]['operator'] = 'and';
         // Allow 25% of non-matching tokens
@@ -70,10 +77,14 @@ class Thesaurus
         // $query['match'][$field]['minimum_should_match'] = '-25%';
 
         if ($term->hasContext()) {
-            $term_query = $query;
+            $value_query = $query;
+            $field = sprintf('context%s', $field_suffix);
+            $context_query = array();
+            $context_query['match'][$field]['query'] = $term->getContext();
+            $context_query['match'][$field]['operator'] = 'and';
             $query = array();
-            $query['bool']['must'][0] = $term_query;
-            $query['bool']['must'][1]['term']['context'] = $term->getContext();
+            $query['bool']['must'][0] = $value_query;
+            $query['bool']['must'][1] = $context_query;
         } elseif ($strict) {
             $context_filter = array();
             $context_filter['missing']['field'] = 'context';

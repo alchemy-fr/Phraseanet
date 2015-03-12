@@ -308,6 +308,12 @@ class Indexer
                 'thesaurus_path' => [
                     'type'      => 'custom',
                     'tokenizer' => 'thesaurus_path'
+                ],
+                // Thesaurus strict term lookup
+                'thesaurus_term_strict' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'keyword',
+                    'filter'    => 'nfkc_normalizer'
                 ]
             ],
             'tokenizer' => [
