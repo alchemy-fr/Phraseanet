@@ -1,11 +1,5 @@
 {% import 'prod/results/macro.html.twig' as result_macro %}
 
-{% set feed = entry.feed %}
-{% set images_size = user_setting('images_size') %}
-{% set technical_display = user_setting('technical_display') %}
-{% set rollover_thumbnail = user_setting('rollover_thumbnail') %}
-{% set doctype_display = user_setting('doctype_display') %}
-
 <div class="entry ui-corner-all" id="entry_{{ entry.id }}">
     <table class="head">
         <tr>

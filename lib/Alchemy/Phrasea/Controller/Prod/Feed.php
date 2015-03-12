@@ -168,7 +168,7 @@ class Feed implements ControllerProviderInterface
             return $app->json([
                 'error' => false,
                 'message' => 'succes',
-                'datas' => $app['twig']->render('prod/feeds/entry.html.twig', [
+                'datas' => $app['twig']->render('prod/results/entry.html.twig', [
                     'entry' => $entry
                 ])
             ]);
@@ -226,7 +226,7 @@ class Feed implements ControllerProviderInterface
             }
             $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
-            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', ['feed' => $feed, 'feeds' => $feeds, 'page' => $page]);
+            $datas = $app['twig']->render('prod/results/feeds.html.twig', ['feed' => $feed, 'feeds' => $feeds, 'page' => $page]);
 
             return new Response($datas);
         })

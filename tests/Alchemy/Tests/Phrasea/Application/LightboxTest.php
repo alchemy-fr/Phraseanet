@@ -166,7 +166,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $entry->getId() . '/' . $item->getId() . '/');
+        self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $entry->getId() . '/' . $item->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertNotEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
     }

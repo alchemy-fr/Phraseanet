@@ -212,7 +212,7 @@ class record_preview extends record_adapter
             case 'RESULT':
                 $perPage = 56;
                 $index = ($this->pos - 3) < 0 ? 0 : ($this->pos - 3);
-                $results = $this->searchEngine->query($this->query, $index, $perPage, $this->option);
+                $results = $this->searchEngine->query($this->query, $index, $perPage, $this->options);
 
                 $this->train = $results->getResults()->toArray();
                 break;
