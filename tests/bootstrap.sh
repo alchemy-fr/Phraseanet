@@ -2,6 +2,7 @@
 
 set -e
 
+mysql -uroot -ptoor -e 'SET @@global.sql_mode=STRICT_ALL_TABLES;'
 if ! ./bin/developer system:uninstall > /dev/null 2>&1
 then
     rm -f config/configuration.yml config/configuration-compiled.php
