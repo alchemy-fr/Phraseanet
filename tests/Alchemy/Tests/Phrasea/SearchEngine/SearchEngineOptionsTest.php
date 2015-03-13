@@ -48,7 +48,10 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
 
             $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
 
-            $this->assertEquals([self::$DI['collection']], $options->getCollections());
+            // Check done this way because returned array can be indexed differently
+            $collections = $options->getCollections();
+            $this->assertCount(1, $collections);
+            $this->assertContains(self::$DI['collection'], $collections);
             $this->assertEquals([$field], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
             $this->assertEquals('1', $options->getSearchType());

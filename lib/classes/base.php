@@ -275,11 +275,11 @@ abstract class base implements cache_cacheableInterface
         try {
             $sql = '';
             if ($this->get_base_type() === self::APPLICATION_BOX)
-                $sql = 'UPDATE sitepreff SET version = :version';
+                $sql = 'UPDATE sitepreff SET version = :version WHERE id = 1';
             if ($this->get_base_type() === self::DATA_BOX) {
-                $sql = 'DELETE FROM pref WHERE prop="version" AND locale IS NULL';
+                $sql = 'DELETE FROM pref WHERE prop="version"';
                 $this->get_connection()->query($sql);
-                $sql = 'REPLACE INTO pref (id, prop, value,locale, updated_on) VALUES (null, "version", :version,"", NOW())';
+                $sql = 'INSERT INTO pref (prop, value, locale, updated_on) VALUES ("version", :version, "", NOW())';
             }
             if ($sql !== '') {
                 $stmt = $this->get_connection()->prepare($sql);
@@ -449,17 +449,11 @@ abstract class base implements cache_cacheableInterface
         $stmt->closeCursor();
 
         foreach ($defaults_stmt as $def) {
-            try {
-                $stmt = $this->get_connection()->prepare($def['sql']);
-                $stmt->execute($def['params']);
-                $stmt->closeCursor();
-            } catch (\Exception $e) {
-                $recommends[] = [
-                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
-                    'sql'     => $def['sql']
-                ];
-            }
+            $stmt = $this->get_connection()->prepare($def['sql']);
+            $stmt->execute($def['params']);
+            $stmt->closeCursor();
         }
+        unset($stmt);
 
         return $this;
     }

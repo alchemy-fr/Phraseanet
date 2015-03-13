@@ -31,76 +31,40 @@ class SearchEngineOptions
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $record_type;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $search_type = 0;
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     protected $collections = [];
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     protected $fields = [];
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     protected $status = [];
 
-    /**
-     *
-     * @var \DateTime
-     */
+    /** @var \DateTime */
     protected $date_min;
 
-    /**
-     *
-     * @var \DateTime
-     */
+    /** @var \DateTime */
     protected $date_max;
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     protected $date_fields = [];
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $i18n;
 
-    /**
-     *
-     * @var boolean
-     */
+    /** @var boolean */
     protected $stemming = true;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $sort_by;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $sort_ord = self::SORT_MODE_DESC;
     protected $business_fields = [];
 
@@ -108,6 +72,7 @@ class SearchEngineOptions
      * Defines locale code to use for query
      *
      * @param string $locale An i18n locale code
+     * @return $this
      */
     public function setLocale($locale)
     {
@@ -131,9 +96,8 @@ class SearchEngineOptions
     }
 
     /**
-     *
-     * @param  const               $sort_by
-     * @param  const               $sort_ord
+     * @param  string $sort_by
+     * @param  string $sort_ord
      * @return SearchEngineOptions
      */
     public function setSort($sort_by, $sort_ord = self::SORT_MODE_DESC)
@@ -295,8 +259,8 @@ class SearchEngineOptions
     }
 
     /**
-     *
      * @param array $fields An array of Databox fields
+     * @return $this
      */
     public function setFields(Array $fields)
     {
@@ -305,17 +269,13 @@ class SearchEngineOptions
         return $this;
     }
 
-    /**
-     *
-     * @return array
-     */
+    /** @return array */
     public function getFields()
     {
         return $this->fields;
     }
 
     /**
-     *
      * @param  array               $status
      * @return SearchEngineOptions
      */
@@ -327,7 +287,6 @@ class SearchEngineOptions
     }
 
     /**
-     *
      * @return array
      */
     public function getStatus()
@@ -336,7 +295,6 @@ class SearchEngineOptions
     }
 
     /**
-     *
      * @param  string              $record_type
      * @return SearchEngineOptions
      */
@@ -370,10 +328,7 @@ class SearchEngineOptions
         return $this;
     }
 
-    /**
-     *
-     * @return string
-     */
+    /** @return string */
     public function getRecordType()
     {
         return $this->record_type;
@@ -393,9 +348,7 @@ class SearchEngineOptions
         return $this;
     }
 
-    /**
-     *
-     * @return DateTime
+    /** @return \DateTime
      */
     public function getMinDate()
     {
@@ -403,8 +356,7 @@ class SearchEngineOptions
     }
 
     /**
-     *
-     * @param  string              $max_date
+     * @param \DateTime|string $max_date
      * @return SearchEngineOptions
      */
     public function setMaxDate(\DateTime $max_date = null)
@@ -418,17 +370,13 @@ class SearchEngineOptions
         return $this;
     }
 
-    /**
-     *
-     * @return DateTime
-     */
+    /** @return \DateTime */
     public function getMaxDate()
     {
         return $this->date_max;
     }
 
     /**
-     *
      * @param  array               $fields
      * @return SearchEngineOptions
      */
@@ -439,19 +387,12 @@ class SearchEngineOptions
         return $this;
     }
 
-    /**
-     *
-     * @return array
-     */
+    /** @return array */
     public function getDateFields()
     {
         return $this->date_fields;
     }
 
-    /**
-     *
-     * @return string
-     */
     public function serialize()
     {
         $ret = [];
