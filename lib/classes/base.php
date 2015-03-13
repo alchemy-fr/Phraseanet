@@ -449,17 +449,12 @@ abstract class base implements cache_cacheableInterface
         $stmt->closeCursor();
 
         foreach ($defaults_stmt as $def) {
-            try {
-                $stmt = $this->get_connection()->prepare($def['sql']);
-                $stmt->execute($def['params']);
-                $stmt->closeCursor();
-            } catch (\Exception $e) {
-                $recommends[] = [
-                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
-                    'sql'     => $def['sql']
-                ];
-            }
+            $stmt = $this->get_connection()->prepare($def['sql']);
+            $stmt->execute($def['params']);
+            $stmt->closeCursor();
         }
+
+        unset($stmt);
 
         return $this;
     }

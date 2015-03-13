@@ -17,9 +17,6 @@ services:
   - redis
 
 before_script:
-  - node --version
-  - npm --version
-  - travis_retry npm install
   - phpenv config-rm xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -45,15 +42,8 @@ matrix:
 
 script:
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
-  - travis_retry grunt install-assets
-  - bin/developer assets:compile-less
   - bin/developer system:uninstall
   - bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
-  - >
-    sh -c "if [ '$SETUP_MODE' = 'update' ]; then
-      bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
-      php resources/hudson/cleanupSubdefs.php;
-    fi"
   - bin/developer ini:setup-tests-dbs
   - bin/console searchengine:index:create
   - bin/developer phraseanet:regenerate-sqlite

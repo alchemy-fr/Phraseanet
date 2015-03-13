@@ -386,14 +386,20 @@
           <default>
             <data key="id">null</data>
             <data key="name">youtube</data>
+            <data key="created_on">NOW()</data>
+            <data key="updated_on">NOW()</data>
           </default>
           <default>
             <data key="id">null</data>
             <data key="name">flickr</data>
+            <data key="created_on">NOW()</data>
+            <data key="updated_on">NOW()</data>
           </default>
           <default>
             <data key="id">null</data>
             <data key="name">dailymotion</data>
+            <data key="created_on">NOW()</data>
+            <data key="updated_on">NOW()</data>
           </default>
         </defaults>
         <engine>InnoDB</engine>
@@ -2254,11 +2260,7 @@
                                 </paramsite>
                             ]]>
             </data>
-            <data key="version"></data>
-            <data key="maj">0000-00-00</data>
             <data key="schedstatus">stopped</data>
-            <data key="schedqtime"></data>
-            <data key="schedpid"></data>
           </default>
         </defaults>
         <engine>InnoDB</engine>
