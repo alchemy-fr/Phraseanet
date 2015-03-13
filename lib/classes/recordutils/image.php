@@ -37,7 +37,13 @@ class recordutils_image
 
         $xmlToColor = function ($attr, $ret = [255, 255, 255]) use ($palette) {
             try {
-                return $palette->color($attr, 0);
+                $alpha = 100;
+                $attr = explode(',', $attr);
+                if(count($attr) == 4) {
+                    // 0..127 -> 100..0
+                    $alpha = (int)((127 - (int)array_pop($attr)) / 1.27);
+                }
+                return $palette->color($attr, $alpha);
             } catch (ImagineException $e) {
                 return $palette->color($ret);
             }

@@ -199,6 +199,10 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
+        $controllers->post('/stories', 'controller.api.v1:createStories');
+        
+        $controllers->post('/stories/{databox_id}/{story_id}/records', 'controller.api.v1:createRecordStory')->assert('databox_id', '\d+')->assert('story_id', '\d+');
+
         $controllers->get('/me/', 'controller.api.v1:get_current_user');
 
 
@@ -1069,6 +1073,136 @@ class V1 implements ControllerProviderInterface
         $app['orm.em']->flush();
 
         return $this->search_baskets($app, $request);
+    }
+
+    /**
+     * @param Application $app
+     * @param Request     $request
+     * @return mixed
+     */
+    public function createStories(Application $app, Request $request)
+    {
+        $content = $request->getContent();
+
+        $data = @json_decode($content);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
+        }
+
+        if (!isset($data->{'stories'})) {
+            $app->abort(400, 'Missing "stories" property');
+        }
+
+        $schemaStory = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story.json');
+        $schemaRecordStory = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+
+        $storyData = $data->{'stories'};
+
+        if (!is_array($storyData)) {
+            $storyData = array($storyData);
+        }
+
+        $stories = array();
+        foreach ($storyData as $data) {
+            $stories[] = $this->create_story($app, $data, $schemaStory, $schemaRecordStory);
+        }
+
+        $result = Result::create($request, array('stories' => array_map(function($story) {
+            return sprintf('/stories/%s/%s/', $story->get_sbas_id(), $story->get_record_id());
+        }, $stories)));
+
+        return $result->createResponse();
+    }
+
+    public function createRecordStory(Application $app, Request $request, $databox_id, $story_id)
+    {
+        $content = $request->getContent();
+
+        $data = @json_decode($content);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
+        }
+
+        if (!isset($data->{'story_records'})) {
+            $app->abort(400, 'Missing "story_records" property');
+        }
+
+        $recordsData = $data->{'story_records'};
+
+        if (!is_array($recordsData)) {
+            $recordsData = array($recordsData);
+        }
+
+        $story = new \record_adapter($app, $databox_id, $story_id);
+
+        $schema = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+
+        $records = array();
+        foreach ($recordsData as $data) {
+            $records[] = $this->add_record_to_story($app, $story, $data, $schema);
+        }
+
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        $result = Result::create($request, array('records' => $records));
+        return $result->createResponse();
+    }
+
+
+    protected function create_story(Application $app, $data, $schemaStory, $schemaRecordStory)
+    {
+        $app['json-schema.validator']->check($data, $schemaStory);
+
+        if (false === $app['json-schema.validator']->isValid()) {
+            $app->abort(400, 'Request body does not contains a valid "story" object');
+        }
+
+        $collection = \collection::get_from_base_id($app, $data->{'collection_id'});
+
+        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+            $app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
+        }
+
+        $story = \record_adapter::createStory($app, $collection);
+
+        if (isset($data->{'title'})) {
+            $story->set_original_name((string) $data->{'title'});
+        }
+
+        if (isset($data->{'story_records'})) {
+            $recordsData = (array) $data->{'story_records'};
+            foreach ($recordsData as $data) {
+                $this->add_record_to_story($app, $story, $data, $schemaRecordStory);
+            }
+        }
+
+        return $story;
+    }
+
+    protected function add_record_to_story(Application $app, \record_adapter $story, $data, $jsonSchema)
+    {
+        $app['json-schema.validator']->check($data, $jsonSchema);
+
+        if (false === $app['json-schema.validator']->isValid()) {
+            $app->abort(400, 'Request body contains not a valid "record story" object');
+        }
+
+        $databox_id = $data->{'databox_id'};
+        $record_id = $data->{'record_id'};
+
+        try {
+            $record = new \record_adapter($app, $databox_id, $record_id);
+        } catch (\Exception_Record_AdapterNotFound $e) {
+            $app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
+        }
+
+        if (!$story->hasChild($record)) {
+            $story->appendChild($record);
+        }
+
+        return $record->get_serialize_key();
     }
 
     /**

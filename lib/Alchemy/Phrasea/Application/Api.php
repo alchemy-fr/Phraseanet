@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
+use Alchemy\Phrasea\Core\Provider\JsonSchemaServiceProvider;
 use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Application as SilexApplication;
@@ -88,6 +89,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         }
     });
 
+    $app->register(new JsonSchemaServiceProvider());
     $app->get('/api/', function (Request $request, SilexApplication $app) {
         return Result::create($request, [
             'name'          => $app['conf']->get(['registry', 'general', 'title']),
