@@ -14,22 +14,24 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Elasticsearch\Client;
 use igorw;
+use Psr\Log\LoggerInterface;
 
 class BulkOperation
 {
     private $client;
+    /** @var LoggerInterface */
+    private $logger;
 
     private $stack = array();
     private $opCount = 0;
     private $index;
     private $type;
     private $flushLimit = 1000;
-    private $throwOnError;
 
-    public function __construct(Client $client, $throwOnError = true)
+    public function __construct(Client $client, LoggerInterface $logger)
     {
         $this->client = $client;
-        $this->throwOnError = $throwOnError;
+        $this->logger = $logger;
     }
 
     public function setDefaultIndex($index)
@@ -91,15 +93,13 @@ class BulkOperation
         }
         $params['body'] = $this->stack;
 
-        if (php_sapi_name() === 'cli') {
-            printf("ES Bulk query with %d items\n", $this->opCount);
-        }
+        $this->logger->debug("ES Bulk query about to be performed\n", ['opCount' => $this->opCount]);
 
         $response = $this->client->bulk($params);
         $this->stack = array();
         $this->opCount = 0;
 
-        if ($this->throwOnError && igorw\get_in($response, ['errors'], true)) {
+        if (igorw\get_in($response, ['errors'], true)) {
             foreach ($response['items'] as $key => $item) {
                 if ($item['index']['status'] >= 400) { // 4xx or 5xx error
                     throw new Exception(sprintf('%d: %s', $key, $item['index']['error']));

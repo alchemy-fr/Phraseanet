@@ -21,6 +21,7 @@ use Closure;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
+use Psr\Log\NullLogger;
 use Symfony\Component\Stopwatch\Stopwatch;
 use SplObjectStorage;
 
@@ -33,6 +34,8 @@ class Indexer
     private $client;
     private $options;
     private $appbox;
+    /** @var LoggerInterface|null */
+    private $logger;
 
     private $recordIndexer;
     private $termIndexer;
@@ -45,13 +48,14 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    public function __construct(Client $client, array $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox)
+    public function __construct(Client $client, array $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
     {
         $this->client   = $client;
         $this->options  = $options;
         $this->termIndexer = $termIndexer;
         $this->recordIndexer = $recordIndexer;
         $this->appbox   = $appbox;
+        $this->logger = $logger ?: new NullLogger();
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
@@ -196,7 +200,7 @@ class Indexer
 
         try {
             // Prepare the bulk operation
-            $bulk = new BulkOperation($this->client);
+            $bulk = new BulkOperation($this->client, $this->logger);
             $bulk->setDefaultIndex($this->options['index']);
             $bulk->setAutoFlushLimit(1000);
             // Do the work
