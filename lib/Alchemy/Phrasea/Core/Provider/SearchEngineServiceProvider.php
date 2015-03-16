@@ -58,6 +58,11 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new SearchEngineLogger($app);
         });
 
+        // Only used for Phrasea search engine
+        $app['phraseanet.SE.subscriber'] = $app->share(function ($app) {
+            return new PhraseaEngineSubscriber($app);
+        });
+
         $app['elasticsearch.engine'] = $app->share(function ($app) {
             return new ElasticSearchEngine(
                 $app,
