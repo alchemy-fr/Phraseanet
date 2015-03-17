@@ -552,21 +552,40 @@ function getFacetsTree() {
 var $searchForm;
 var $searchInput;
 var $facetsBackButton;
+var facetsQueriesStack = [];
 
-function facetSearch(query) {
+function facetCombinedSearch(query) {
     var currentQuery = $searchInput.val();
+    facetsQueriesStack.push(currentQuery);
+    $facetsBackButton.show();
     if (currentQuery) {
         query = '(' + currentQuery + ') AND (' + query + ')';
     }
+    facetSearch(query);
+}
+
+function facetSearch(query) {
     checkFilters();
     newSearch();
     $searchInput.val(query);
     $searchForm.trigger('submit');
 }
 
+function facetsBack() {
+    var previousQuery = facetsQueriesStack.pop();
+    if (previousQuery != null) {
+        facetSearch(previousQuery);
+    }
+    if (!facetsQueriesStack.length) {
+        $facetsBackButton.hide();
+    }
+}
+
 $(document).ready(function() {
     $searchForm = $('#searchForm');
     $searchInput = $searchForm.find('input[name="qry"]');
+    $facetsBackButton = $('#facets-back-btn');
+    $facetsBackButton.on('click', facetsBack);
 });
 
 function answerSizer() {
