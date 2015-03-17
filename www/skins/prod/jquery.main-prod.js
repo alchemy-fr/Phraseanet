@@ -464,100 +464,12 @@ function initAnswerForm() {
             success: function (datas) {
 
                 // DEBUG QUERY PARSER
-                var query = datas.parsed_query;
-                try {
-                    query = JSON.parse(query);
-                }
-                catch (e) {}
-                console.info(query);
+                console.info(JSON.parse(datas.parsed_query));
 
-                var aggs = datas.aggregations;
-                try {
-                  aggs = JSON.parse(aggs);
-                }
-                catch (e) {}
-
-                console.debug('Aggregations:');
-                var toDisplay = [];
-                _.each(aggs, function(field_aggs, key) {
-                    _.each(field_aggs, function(value) {
-                        _.each(value.buckets, function(bucket, keyBis) {
-                            if (!toDisplay[keyBis]) { toDisplay[keyBis] = {}; }
-                            toDisplay[keyBis][key] = bucket.key + ' ('+ bucket.doc_count + ')';
-                        });
-                    });
-                });
-
-                console.table(toDisplay);
-
-                var treeData = [];
-                _.each(aggs, function(field_aggs, key) {
-                    var entry = {
-                        "title" : key,
-                        "key": key,
-                        "folder": true,
-                        "children" : []
-                    };
-
-                    if(field_aggs.hasOwnProperty('buckets')){
-                        _.each(field_aggs.buckets, function(bucket) {
-                            entry.children.push({
-                                "title": bucket.key + ' ('+ bucket.doc_count + ')',
-                                "key": bucket.key,
-                                "query": '"'+ bucket.key + '" IN ' + key
-                            });
-                        });
-                    } else {
-                        _.each(field_aggs, function (agg) {
-                            _.each(agg.buckets, function(bucket) {
-                                entry.children.push({
-                                    "title": bucket.key + ' ('+ bucket.doc_count + ')',
-                                    "key": bucket.key,
-                                    "query": '"'+ bucket.key + '" IN ' + key
-                                });
-                            });
-                        });
-                    }
-
-                    treeData.push(entry);
-                });
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
 
-                var $tree = $("#proposals");
-
-                if ($tree.data("ui-fancytree")) {
-                    $tree.fancytree("destroy");
-                }
-
-                if (treeData.length > 0) {
-                    $tree.fancytree({
-                        source: treeData,
-                        activate: function(event, data){
-                            var node = data.node;
-                            if (typeof node.data.query === "undefined") {
-                                return;
-                            }
-
-                            var $input = $('form[name="phrasea_query"] input[name="qry"]');
-                            var current_query = $input.val();
-                            var query = node.data.query;
-
-                            if (current_query != '') {
-                                query = '('+current_query+') AND ('+query+')';
-                            }
-                            $input.val(query);
-
-                            checkFilters();
-                            newSearch();
-                            $('searchForm').trigger('submit');
-                        }
-                    });
-
-                    $tree.fancytree("getRootNode").visit(function(node){
-                        node.setExpanded(true);
-                    });
-                }
+                loadFacets(datas.facets);
 
                 $("#answers img.lazyload").lazyload({
                     container: $('#answers')
@@ -600,6 +512,63 @@ function initAnswerForm() {
         searchForm.removeClass('triggerAfterInit').trigger('submit');
     }
 }
+
+function loadFacets(facets) {
+    // Convert facets data to fancytree source format
+    var treeSource = _.map(facets, function(facet) {
+        // Values
+        var values = _.map(facet.values, function(value) {
+            return {
+                title: value.value + ' (' + value.count + ')',
+                query: value.query
+            }
+        });
+        // Facet
+        return {
+            title: facet.name,
+            folder: true,
+            children: values,
+            expanded: true
+        };
+    });
+    return getFacetsTree().reload(treeSource);
+}
+
+function getFacetsTree() {
+    var $facetsTree = $('#proposals');
+    if (!$facetsTree.data('ui-fancytree')) {
+        $facetsTree.fancytree({
+            source: [],
+            activate: function(event, data){
+                var query = data.node.data.query;
+                if (!query) return;
+                facetCombinedSearch(query);
+            }
+        });
+    }
+    return $facetsTree.fancytree('getTree');
+}
+
+var $searchForm;
+var $searchInput;
+var $facetsBackButton;
+
+function facetSearch(query) {
+    var currentQuery = $searchInput.val();
+    if (currentQuery) {
+        query = '(' + currentQuery + ') AND (' + query + ')';
+    }
+    checkFilters();
+    newSearch();
+    $searchInput.val(query);
+    $searchForm.trigger('submit');
+}
+
+$(document).ready(function() {
+    $searchForm = $('#searchForm');
+    $searchInput = $searchForm.find('input[name="qry"]');
+});
+
 function answerSizer() {
     var el = $('#idFrameC').outerWidth();
     if (!$.support.cssFloat) {
