@@ -87,6 +87,16 @@ sudo sh -c 'echo "extension=twig.so" > /etc/php5/mods-available/twig.ini'
 sudo sh -c 'ln -s ../../mods-available/twig.ini /etc/php5/cli/conf.d/20-twig.ini'
 sudo sh -c 'ln -s ../../mods-available/twig.ini /etc/php5/fpm/conf.d/20-twig.ini'
 
+# ZMQ php extension
+# The empty string is important as zmq asks for specific directory
+yes '' | pecl install zmq-beta
+if [ $? -eq 0 ]
+then
+    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/mods-available/zmq.ini'
+    sudo sh -c 'ln -s ../../mods-available/zmq.ini /etc/php5/cli/conf.d/20-zmq.ini'
+    sudo sh -c 'ln -s ../../mods-available/zmq.ini /etc/php5/fpm/conf.d/20-zmq.ini'
+fi
+
 # swftools
 cd /tmp
 wget –quiet http://www.swftools.org/swftools-0.9.2.tar.gz
