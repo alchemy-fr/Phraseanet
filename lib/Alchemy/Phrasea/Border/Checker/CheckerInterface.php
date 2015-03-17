@@ -45,5 +45,5 @@ interface CheckerInterface
      *
      * @return string
      */
-    public static function getMessage(TranslatorInterface $translator);
+    public function getMessage(TranslatorInterface $translator);
 }

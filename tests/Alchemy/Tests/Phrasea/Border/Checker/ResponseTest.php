@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Checker\Response;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
@@ -9,7 +10,9 @@ class ResponseTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
 
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $mock;
+    /** @var Response */
     protected $object;
 
     /**
@@ -18,7 +21,7 @@ class ResponseTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\Checker\\CheckerInterface', ['getMessage', 'check', 'isApplicable']);
+        $this->mock = $this->getMock(CheckerInterface::class);
         $this->object = new Response(true, $this->mock);
     }
 
@@ -58,7 +61,7 @@ class ResponseTest extends \PhraseanetTestCase
     public function testGetMessage()
     {
         $this->mock
-            ->staticExpects($this->any())
+            ->expects($this->any())
             ->method('getMessage')
             ->will($this->returnValue('Hello World'));
 

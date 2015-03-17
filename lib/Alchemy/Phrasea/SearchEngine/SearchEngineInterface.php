@@ -13,9 +13,8 @@ namespace Alchemy\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Doctrine\Common\Collections\ArrayCollection;
 
 interface SearchEngineInterface
 {

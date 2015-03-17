@@ -111,7 +111,8 @@ class DimensionTest extends \PhraseanetTestCase
      */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', Dimension::getMessage($this->createTranslatorMock()));
+        $checker = new Dimension(self::$DI['app'], ['width' => 800]);
+        $this->assertInternalType('string', $checker->getMessage($this->createTranslatorMock()));
     }
 
      /**

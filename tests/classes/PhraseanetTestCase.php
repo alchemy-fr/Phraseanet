@@ -1,22 +1,22 @@
 <?php
 
-use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
-use Monolog\Logger;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\TaskManager\Notifier;
+use Alchemy\Tests\Tools\TranslatorMockTrait;
+use Guzzle\Http\Client as Guzzle;
 use Monolog\Handler\NullHandler;
+use Monolog\Logger;
 use Silex\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\RequestContext;
-use Alchemy\Tests\Tools\TranslatorMockTrait;
-use Alchemy\Phrasea\Authentication\ACLProvider;
-use Alchemy\Phrasea\TaskManager\Notifier;
-use Guzzle\Http\Client as Guzzle;
-use Symfony\Component\Filesystem\Filesystem;
 
 abstract class PhraseanetTestCase extends WebTestCase
 {
@@ -342,10 +342,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         $app['translator'] = $this->createTranslatorMock();
 
-        $app['phraseanet.SE.subscriber'] = $this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface');
-        $app['phraseanet.SE.subscriber']::staticExpects($this->any())
-            ->method('getSubscribedEvents')
-            ->will($this->returnValue([]));
+        $app['phraseanet.SE.subscriber'] = new PhraseanetSeTestSubscriber();
 
         $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
 
@@ -710,7 +707,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function createSearchEngineMock()
     {
-        $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $mock = $this->getMock(SearchEngineInterface::class);
         $mock->expects($this->any())
             ->method('createSubscriber')
             ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
@@ -720,9 +717,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         $mock->expects($this->any())
             ->method('getStatus')
             ->will($this->returnValue([]));
-        $mock->staticExpects($this->any())
-            ->method('createSubscriber')
-            ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
 
         return $mock;
     }
