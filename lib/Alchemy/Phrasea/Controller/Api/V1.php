@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\Attribute\Status;
+use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
@@ -21,6 +22,7 @@ use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Model\Entities\Basket;
@@ -28,6 +30,7 @@ use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
@@ -43,6 +46,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class V1 implements ControllerProviderInterface
 {
@@ -808,8 +812,20 @@ class V1 implements ControllerProviderInterface
 
     private function list_lazaret_file(Application $app, LazaretFile $file)
     {
-        $checks = array_map(function ($checker) use ($app) {
-            return $checker->getMessage($app['translator']);
+        /** @var CheckerInterface[] $checkers */
+        $checkers = $app['border-manager']->getCheckers();
+        /** @var TranslatorInterface $translator */
+        $translator = $app['translator'];
+
+        $checks = array_map(function (LazaretCheck $checker) use ($checkers, $translator) {
+            $checkerFQCN = $checker->getCheckClassname();
+            foreach ($checkers as $actualChecker) {
+                if (get_class($actualChecker) === $checkerFQCN) {
+                    return $actualChecker->getMessage($translator);
+                }
+            }
+
+            throw new RuntimeException('Could not find checker');
         }, iterator_to_array($file->getChecks()));
 
         $usr_id = $user = null;

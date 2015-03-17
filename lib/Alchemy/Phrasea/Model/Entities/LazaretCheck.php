@@ -93,20 +93,4 @@ class LazaretCheck
     {
         return $this->lazaretFile;
     }
-
-    /**
-     * Get checker message
-     *
-     * @return string
-     */
-    public function getMessage(TranslatorInterface $translator)
-    {
-        $className = $this->getCheckClassname();
-
-        if (method_exists($className, "getMessage")) {
-            return $className::getMessage($translator);
-        }
-
-        return '';
-    }
 }
