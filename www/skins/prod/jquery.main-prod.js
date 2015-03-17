@@ -464,7 +464,10 @@ function initAnswerForm() {
             success: function (datas) {
 
                 // DEBUG QUERY PARSER
-                console.info(JSON.parse(datas.parsed_query));
+                try {
+                    console.info(JSON.parse(datas.parsed_query));
+                }
+                catch(e) {}
 
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
