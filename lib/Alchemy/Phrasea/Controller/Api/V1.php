@@ -16,13 +16,13 @@ use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Model\Entities\Basket;
@@ -812,20 +812,14 @@ class V1 implements ControllerProviderInterface
 
     private function list_lazaret_file(Application $app, LazaretFile $file)
     {
-        /** @var CheckerInterface[] $checkers */
-        $checkers = $app['border-manager']->getCheckers();
+        /** @var Manager $manager */
+        $manager = $app['border-manager'];
         /** @var TranslatorInterface $translator */
         $translator = $app['translator'];
 
-        $checks = array_map(function (LazaretCheck $checker) use ($checkers, $translator) {
+        $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
             $checkerFQCN = $checker->getCheckClassname();
-            foreach ($checkers as $actualChecker) {
-                if (get_class($actualChecker) === $checkerFQCN) {
-                    return $actualChecker->getMessage($translator);
-                }
-            }
-
-            throw new RuntimeException('Could not find checker');
+            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
         }, iterator_to_array($file->getChecks()));
 
         $usr_id = $user = null;

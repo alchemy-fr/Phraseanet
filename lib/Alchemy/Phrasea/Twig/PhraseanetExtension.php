@@ -5,14 +5,15 @@ namespace Alchemy\Phrasea\Twig;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
+use Silex\Application;
 
 class PhraseanetExtension extends \Twig_Extension
 {
+    /** @var Application */
     private $app;
 
-    public function __construct(
-        $app
-    ) {
+    public function __construct(Application $app)
+    {
         $this->app = $app;
     }
 
@@ -37,7 +38,8 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('collection_logo', array($this, 'getCollectionLogo'), array(
                 'is_safe' => array('html')
             )),
-            new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags'))
+            new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
+            new \Twig_SimpleFunction('border_checker_from_fqcn', array($this->app['border-manager'], 'getCheckerFromFQCN')),
         );
     }
 

@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -143,7 +143,7 @@ class Manager
      */
     public function registerChecker(CheckerInterface $checker)
     {
-        $this->checkers[] = $checker;
+        $this->checkers[get_class($checker)] = $checker;
 
         return $this;
     }
@@ -184,13 +184,29 @@ class Manager
     }
 
     /**
+     * Get checker instance from its class name.
+     *
+     * @param string $checkerName
+     * @return CheckerInterface
+     */
+    public function getCheckerFromFQCN($checkerName)
+    {
+        $checkerName = trim($checkerName, '\\');
+        if (!isset($this->checkers[$checkerName])) {
+            throw new RuntimeException('Checker could not be found');
+        }
+
+        return $this->checkers[$checkerName];
+    }
+
+    /**
      * Returns all the checkers registered
      *
      * @return array
      */
     public function getCheckers()
     {
-        return $this->checkers;
+        return array_values($this->checkers);
     }
 
     /**

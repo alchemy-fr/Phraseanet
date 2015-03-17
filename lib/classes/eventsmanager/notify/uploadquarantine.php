@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Border\Checker\CheckerInterface;
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -32,19 +32,13 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function datas(array $data, $unread)
     {
-        /** @var CheckerInterface[] $checkers */
-        $checkers = $this->app['border-manager']->getCheckers();
+        /** @var Manager $manager */
+        $manager = $this->app['border-manager'];
         /** @var TranslatorInterface $translator */
         $translator = $this->app['translator'];
 
-        $reasons = array_map(function ($checkerFQCN) use ($checkers, $translator) {
-            foreach ($checkers as $actualChecker) {
-                if (get_class($actualChecker) === $checkerFQCN) {
-                    return $actualChecker->getMessage($translator);
-                }
-            }
-
-            throw new RuntimeException('Could not find checker');
+        $reasons = array_map(function ($checkerFQCN) use ($manager, $translator) {
+            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
         }, $data['reasons']);
 
         $filename = $data['filename'];
