@@ -282,7 +282,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $params['body']['aggs'] = $aggs;
         }
 
-        $res = $this->doExecute('search', $params);
+        $res = $this->client->search($params);
 
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
@@ -531,17 +531,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $sort;
-    }
-
-    private function doExecute($method, array $params)
-    {
-        $res = call_user_func([$this->client, $method], $params);
-
-        if (isset($res['error'])) {
-            throw new RuntimeException('Unable to execute method '.$method);
-        }
-
-        return $res;
     }
 
     private function getFlagsKey(\appbox $appbox)
