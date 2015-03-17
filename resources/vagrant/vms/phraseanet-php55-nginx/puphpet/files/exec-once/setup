@@ -83,8 +83,9 @@ phpize
 ./configure
 make
 sudo make install
-sudo sh -c 'echo "extension=twig.so" > /etc/php5/cli/conf.d/twig.ini'
-sudo sh -c 'echo "extension=twig.so" > /etc/php5/fpm/conf.d/twig.ini'
+sudo sh -c 'echo "extension=twig.so" > /etc/php5/mods-available/twig.ini'
+sudo sh -c 'ln -s ../../mods-available/twig.ini /etc/php5/cli/conf.d/20-twig.ini'
+sudo sh -c 'ln -s ../../mods-available/twig.ini /etc/php5/fpm/conf.d/20-twig.ini'
 
 # swftools
 cd /tmp
@@ -94,22 +95,6 @@ cd swftools-0.9.2
 ./configure
 make
 sudo make install
-
-# zmq php extension
-yes | sudo pecl install zmq-beta
-if [ $? -eq 0 ]; then
-    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/cli/conf.d/zmq.ini'
-    sudo sh -c 'echo "extension=zmq.so" > /etc/php5/fpm/conf.d/zmq.ini'
-fi
-
-# libevent php extension
-sudo apt-get autoremove --yes --purge libevent-dev
-sudo apt-get install --yes libevent-dev
-yes | sudo pecl install libevent-beta
-if [ $? -eq 0 ]; then
-    sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/cli/conf.d/libevent.ini'
-    sudo sh -c 'echo ";extension=libevent.so" > /etc/php5/fpm/conf.d/libevent.ini'
-fi
 
 # cache file sd
 sudo sh -c 'echo "RUN=yes" > /etc/default/cachefilesd'
