@@ -171,14 +171,13 @@ class Manager
      */
     public function unregisterChecker(CheckerInterface $checker)
     {
-        $checkers = $this->checkers;
-        foreach ($this->checkers as $offset => $registered) {
-
-            if ($checker == $registered) {
-                array_splice($checkers, $offset, 1);
+        $class = get_class($checker);
+        if (isset($this->checkers[$class])) {
+            if ($checker !== $this->checkers[$class]) {
+                throw new \LogicException('Trying to unregister wrong checker');
             }
+            unset($this->checkers[$class]);
         }
-        $this->checkers = $checkers;
 
         return $this;
     }
