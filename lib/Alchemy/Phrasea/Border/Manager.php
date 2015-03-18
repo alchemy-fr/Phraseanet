@@ -44,6 +44,8 @@ class Manager
     protected $checkers = [];
     protected $app;
     protected $filesystem;
+    /** @var boolean */
+    private $enabled = true;
 
     const RECORD_CREATED = 1;
     const LAZARET_CREATED = 2;
@@ -67,6 +69,27 @@ class Manager
     public function __destruct()
     {
         $this->app = null;
+    }
+
+    /**
+     * Whether checks are activated while electing Visa
+     *
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
     }
 
     /**
@@ -127,6 +150,10 @@ class Manager
     public function getVisa(File $file)
     {
         $visa = new Visa();
+
+        if (!$this->isEnabled()) {
+            return $visa;
+        }
 
         foreach ($this->checkers as $checker) {
             $visa->addResponse($checker->check($this->app['orm.em'], $file));
@@ -205,6 +232,10 @@ class Manager
      */
     public function getCheckers()
     {
+        if (!$this->enabled) {
+            return [];
+        }
+
         return array_values($this->checkers);
     }
 
