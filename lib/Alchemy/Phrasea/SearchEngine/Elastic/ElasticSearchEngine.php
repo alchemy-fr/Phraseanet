@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -281,7 +282,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $params['body']['aggs'] = $aggs;
         }
 
-        $res = $this->doExecute('search', $params);
+        $res = $this->client->search($params);
 
         $results = new ArrayCollection();
         $suggestions = new ArrayCollection();
@@ -291,6 +292,8 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
+        $facets = new FacetsResponse($res);
+
         $query['ast'] = $this->app['query_parser']->parse($string)->dump();
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
@@ -298,7 +301,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
             $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
-            $this->indexName, isset($res['aggregations']) ? $res['aggregations'] : []);
+            $this->indexName, $facets);
     }
 
     /**
@@ -419,9 +422,13 @@ class ElasticSearchEngine implements SearchEngineInterface
             // filter aggregation to allowed databoxes
             // declare aggregation on current field
             $agg = array();
-            // array_values is needed to ensure array serialization
-            $agg['filter']['terms']['databox_id'] = array_values($databoxes);
-            $agg['aggs']['distinct_occurrence']['terms']['field'] =
+            // TODO (mdarse) Remove databox filtering. It's already done by the
+            // ACL filter in the query scope, so no document that shouldn't be
+            // displayed can go this far.
+            // // array_values is needed to ensure array serialization
+            // $agg['filter']['terms']['databox_id'] = array_values($databoxes);
+            // $agg['aggs']['distinct_occurrence']['terms']['field'] =
+            $agg['terms']['field'] =
                 sprintf('%s.%s.raw', $prefix, $field_name);
 
             $aggs[$field_name] = $agg;
@@ -524,17 +531,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $sort;
-    }
-
-    private function doExecute($method, array $params)
-    {
-        $res = call_user_func([$this->client, $method], $params);
-
-        if (isset($res['error'])) {
-            throw new RuntimeException('Unable to execute method '.$method);
-        }
-
-        return $res;
     }
 
     private function getFlagsKey(\appbox $appbox)

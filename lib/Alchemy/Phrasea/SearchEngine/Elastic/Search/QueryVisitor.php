@@ -62,6 +62,9 @@ class QueryVisitor implements Visit
             case NodeTypes::CONTEXT:
                 return $this->visitContext($element);
 
+            case NodeTypes::COLLECTION:
+                return $this->visitCollectionNode($element);
+
             default:
                 throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
         }
@@ -181,5 +184,15 @@ class QueryVisitor implements Visit
         }
 
         return $root;
+    }
+
+    private function visitCollectionNode(Element $element)
+    {
+        if ($element->getChildrenNumber() !== 1) {
+            throw new \Exception('Collection filter can only have a single child.');
+        }
+        $collectionName = $element->getChild(0)->getValue()['value'];
+
+        return new AST\CollectionExpression($collectionName);
     }
 }

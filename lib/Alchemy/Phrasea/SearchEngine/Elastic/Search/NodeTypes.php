@@ -15,6 +15,7 @@ class NodeTypes
     const TERM          = '#thesaurus_term';
     const TEXT          = '#text';
     const CONTEXT       = '#context';
+    const COLLECTION    = '#collection';
     // Token types for leaf nodes
     const TOKEN_WORD    = 'word';
     const TOKEN_STRING  = 'string';

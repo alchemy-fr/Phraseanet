@@ -11,6 +11,7 @@
 %token  and             AND
 %token  or              OR
 %token  except          EXCEPT
+%token  collection      collection:
 %token  word            [^\s\(\)\[\]]+
 
 // relative order of precedence is NOT > XOR > AND > OR
@@ -28,7 +29,13 @@ ternary:
     quaternary() ( ::and:: #and primary() )?
 
 quaternary:
+    ( collection_filter() #collection) | quinary()
+
+quinary:
     ( group() | term() ) ( ::in:: #in word() )?
+
+collection_filter:
+    ::collection:: word()
 
 group:
     ( ::parenthese_:: #group primary() ::_parenthese:: )
@@ -52,7 +59,7 @@ string:
     ::quote_:: <string> ::_quote::
 
 keyword:
-    <in> | <except> | <and> | <or>
+    <in> | <except> | <and> | <or> | <collection>
 
 symbol:
     ::parenthese_:: | ::_parenthese:: | ::bracket_:: | ::_bracket::

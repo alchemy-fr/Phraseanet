@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class SearchEngineResult
@@ -26,10 +27,10 @@ class SearchEngineResult
     protected $suggestions;
     protected $propositions;
     protected $indexes;
-    protected $aggregations;
+    protected $facets;
 
     public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error,
-        $warning, ArrayCollection $suggestions, $propositions, $indexes, $aggregations = array())
+        $warning, ArrayCollection $suggestions, $propositions, $indexes, FacetsResponse $facets = null)
     {
         $this->results = $results;
         $this->query = $query;
@@ -42,7 +43,7 @@ class SearchEngineResult
         $this->suggestions = $suggestions;
         $this->propositions = $propositions;
         $this->indexes = $indexes;
-        $this->aggregations = $aggregations;
+        $this->facets = $facets;
 
         return $this;
     }
@@ -179,8 +180,8 @@ class SearchEngineResult
     /**
      * @return array
      */
-    public function getAggregations()
+    public function getFacets()
     {
-        return $this->aggregations;
+        return $this->facets;
     }
 }
