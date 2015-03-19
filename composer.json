@@ -48,7 +48,10 @@
         "gedmo/doctrine-extensions":             "~2.3.0",
         "goodby/csv":                            "dev-master",
         "guzzle/guzzle":                         "~3.0",
-        "hoa/compiler":                          "2.14.09.23",
+        "hoa/console":                           "~2.0",
+        "hoa/compiler":                          "~2.0",
+        "hoa/dispatcher":                        "~0.0",
+        "hoa/router":                            "~2.0",
         "igorw/get-in":                          "~1.0",
         "imagine/imagine":                       "dev-alchemy-0.6.2 as 0.6.2",
         "ircmaxell/random-lib":                  "~1.0",
@@ -83,8 +86,6 @@
         "zend/gdata":                            "~1.12.1"
     },
     "require-dev":  {
-        "hoa/console":     "2.14.09.23",
-        "hoa/dispatcher":  "0.14.09.23",
         "phpunit/phpunit": "~4.5"
     },
     "autoload":     {
