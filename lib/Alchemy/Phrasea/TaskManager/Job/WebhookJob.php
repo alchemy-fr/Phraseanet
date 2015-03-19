@@ -38,7 +38,8 @@ class WebhookJob extends AbstractJob
         parent::__construct($dispatcher, $logger, $translator);
 
         $this->httpClient = $httpClient ?: new GuzzleClient();
-        $this->httpClient->setUserAgent(sprintf('Phraseanet/%s (%s)', Version::getNumber(), Version::getName()));
+        $version = new Version();
+        $this->httpClient->setUserAgent(sprintf('Phraseanet/%s (%s)', $version->getNumber(), $version->getName()));
     }
 
     /**

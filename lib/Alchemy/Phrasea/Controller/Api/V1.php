@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\Attribute\Status;
-use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Alchemy\Phrasea\Border\Manager;

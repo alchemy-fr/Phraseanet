@@ -27,6 +27,7 @@ use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$version = new Version();
 $app = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
@@ -45,7 +46,7 @@ $app = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' SETUP', Version::getName() . ' ' . Version::getNumber());
+            . ' SETUP', $version->getName() . ' ' . $version->getNumber());
 
 $app->register(new DoctrineMigrationServiceProvider());
 
