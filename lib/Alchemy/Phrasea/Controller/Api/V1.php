@@ -508,8 +508,8 @@ class V1 implements ControllerProviderInterface
         $ret = [];
 
         $ret['phraseanet']['version'] = [
-            'name'   => $app['phraseanet.version']::getName(),
-            'number' => $app['phraseanet.version']::getNumber(),
+            'name'   => $app['phraseanet.version']->getName(),
+            'number' => $app['phraseanet.version']->getNumber(),
         ];
 
         $ret['phraseanet']['environment'] = $app->getEnvironment();
