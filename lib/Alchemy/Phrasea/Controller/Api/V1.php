@@ -24,6 +24,7 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Feed;
@@ -73,6 +74,7 @@ class V1 implements ControllerProviderInterface
         ;
 
         $controllers->after(function (Request $request, Response $response) use ($app) {
+            /** @var ApiOauthToken $token */
             $token = $app['session']->get('token');
             $app['manipulator.api-log']->create($token->getAccount(), $request, $response);
             $app['manipulator.api-oauth-token']->setLastUsed($token, new \DateTime());
@@ -551,7 +553,11 @@ class V1 implements ControllerProviderInterface
      */
     public function get_phraseanet_monitor(Application $app, Request $request)
     {
-        $ret = array_merge($this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app));
+        $ret = array_merge(
+            $this->get_config_info($app),
+            $this->get_cache_info($app),
+            $this->get_gv_info($app)
+        );
 
         return Result::create($request, $ret)->createResponse();
     }

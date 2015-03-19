@@ -8,14 +8,10 @@ use Alchemy\Phrasea\Border\Manager;
 use DataURI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Client;
 
 class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    /**
-     *
-     * @return Client A Client instance
-     */
-    protected $client;
     protected $tmpFile;
 
     public function setUp()
@@ -39,8 +35,11 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testFlashUploadForm()
     {
-        self::$DI['client']->request('GET', '/prod/upload/flash-version/');
-        $response = self::$DI['client']->getResponse();
+        /** @var Client $client */
+        $client = self::$DI['client'];
+
+        $client->request('GET', '/prod/upload/flash-version/');
+        $response = $client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -50,8 +49,10 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUploadForm()
     {
-        self::$DI['client']->request('GET', '/prod/upload/');
-        $response = self::$DI['client']->getResponse();
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request('GET', '/prod/upload/');
+        $response = $client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -79,9 +80,12 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        /** @var Client $client */
+        $client = self::$DI['client'];
 
-        $response = self::$DI['client']->getResponse();
+        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+
+        $response = $client->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -89,7 +93,9 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        if ($datas['element'] == 'record') {
+        $this->assertArrayHasKey('element', $datas);
+        // Below is useless test as currently a lazaret intance is returned
+        if ('record' == $datas['element']) {
             $id = explode('_', $datas['id']);
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
@@ -121,9 +127,11 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->checkJsonResponse($response);
 

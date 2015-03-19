@@ -6,7 +6,6 @@ use Alchemy\Phrasea\Core\Version;
 
 class VersionTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testGetNumber()
     {
         $version = new Version();
