@@ -11,7 +11,7 @@ use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Compiler\Visitor\Dump as DumpVisitor;
 use Hoa\Visitor\Visit;
 
-class QueryParser
+class QueryCompiler
 {
     private $parser;
     private $thesaurus;

@@ -272,7 +272,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $options = $options ?: new SearchEngineOptions();
 
         $queryContext = new QueryContext($this->locales, $this->app['locale']);
-        $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
+        $recordQuery = $this->app['query_compiler']->compile($string, $queryContext);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
 
@@ -295,7 +295,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $this->app['query_parser']->parse($string)->dump();
+        $query['ast'] = $this->app['query_compiler']->parse($string)->dump();
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
