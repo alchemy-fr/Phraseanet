@@ -36,6 +36,7 @@ class ComposerInstaller
     public function install($directory)
     {
         $process = $this->createProcessBuilder()
+            ->setTimeout(null)
             ->add('install')
             ->add('--working-dir')
             ->add($directory)
