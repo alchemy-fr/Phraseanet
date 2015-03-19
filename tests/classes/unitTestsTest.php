@@ -11,6 +11,7 @@ class unitTestsTest extends \PhraseanetTestCase
             "PhraseanetAuthenticatedTestCase.php",
             "PhraseanetAuthenticatedWebTestCase.php",
             "PhraseanetPHPUnitListener.php",
+            "PhraseanetSeTestSubscriber.php",
             "PDOMock.php",
             "CsrfTestProvider.php",
         ];

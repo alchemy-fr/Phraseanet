@@ -37,11 +37,12 @@ before_script:
 php:
   - 5.5
   - 5.6
+  - nightly
 
 matrix:
   fast_finish: true
   allow_failures:
-    - php: 5.6
+    - php: nightly
 
 script:
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
