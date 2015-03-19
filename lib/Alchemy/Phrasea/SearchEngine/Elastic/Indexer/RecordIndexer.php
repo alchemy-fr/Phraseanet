@@ -188,7 +188,7 @@ class RecordIndexer
             ->add('sha256', 'string')->notIndexed()
             // Mandatory metadata
             ->add('original_name', 'string')->notIndexed()
-            ->add('mime', 'string')->notIndexed()
+            ->add('mime', 'string')->notAnalyzed() // Indexed for Kibana only
             ->add('type', 'string')->notAnalyzed()
             ->add('record_type', 'string')->notAnalyzed() // record or story
             // Dates
