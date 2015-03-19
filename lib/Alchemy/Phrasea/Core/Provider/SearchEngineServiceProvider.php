@@ -20,6 +20,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\IndexerSubscriber;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryParser;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
@@ -67,8 +69,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new ElasticSearchEngine(
                 $app,
                 $app['elasticsearch.client'],
-                $app['elasticsearch.options']['index']
+                $app['elasticsearch.options']['index'],
+                $app['locales.available'],
+                $app['elasticsearch.record_helper'],
+                $app['elasticsearch.facets_response.factory']
             );
+        });
+
+        $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
+            return new FacetsResponse(new Excaper(), $response);
         });
 
 
