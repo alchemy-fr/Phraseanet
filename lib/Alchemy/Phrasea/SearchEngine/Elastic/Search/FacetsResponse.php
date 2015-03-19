@@ -7,10 +7,13 @@ use JsonSerializable;
 
 class FacetsResponse implements JsonSerializable
 {
+    private $escaper;
     private $facets = array();
 
-    public function __construct(array $response)
+    public function __construct(Escaper $escaper, array $response)
     {
+        $this->escaper = $escaper;
+
         if (!isset($response['aggregations'])) {
             return;
         }
@@ -47,12 +50,10 @@ class FacetsResponse implements JsonSerializable
 
     private function buildQuery($name, $value)
     {
-        // Strip double quotes from values to prevent broken queries
-        $value = str_replace('/"/u', ' ', $value);
-        // TODO escape value when escaping is supported in query parser
+        $value = $this->escaper->escapeWord($value);
         return ($name === 'Collection') ?
-            sprintf('collection:"%s"', $value) :
-            sprintf('"%s" IN %s', $value, $name);
+            sprintf('collection:%s', $value) :
+            sprintf('%s IN %s', $value, $name);
     }
 
     private function throwAggregationResponseError()

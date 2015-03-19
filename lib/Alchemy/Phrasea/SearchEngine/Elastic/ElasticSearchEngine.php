@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -39,12 +40,13 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $locales;
     private $recordHelper;
 
-    public function __construct(Application $app, Client $client, $indexName)
+    public function __construct(Application $app, Client $client, $indexName, array $locales, RecordHelper $recordHelper, Closure $facetsResponseFactory)
     {
         $this->app = $app;
         $this->client = $client;
-        $this->locales = array_keys($app['locales.available']);
-        $this->recordHelper = $this->app['elasticsearch.record_helper'];
+        $this->locales = array_keys($locales);
+        $this->recordHelper = $recordHelper;
+        $this->facetsResponseFactory = $facetsResponseFactory;
 
         if ('' === trim($indexName)) {
             throw new \InvalidArgumentException('The provided index name is invalid.');
@@ -292,7 +294,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
         }
 
-        $facets = new FacetsResponse($res);
+        $facets = $this->facetsResponseFactory->__invoke($res);
 
         $query['ast'] = $this->app['query_parser']->parse($string)->dump();
         $query['query_main'] = $recordQuery;
