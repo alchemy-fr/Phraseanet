@@ -343,20 +343,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
     }
 
-    private function createTermQueryParams($query, SearchEngineOptions $options)
-    {
-        $params = [
-            'index' => $this->indexName,
-            'type'  => TermIndexer::TYPE_NAME,
-            'body'  => [],
-            'size'  => 20,
-        ];
-
-        $params['body']['query'] = $query;
-
-        return $params;
-    }
-
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [
