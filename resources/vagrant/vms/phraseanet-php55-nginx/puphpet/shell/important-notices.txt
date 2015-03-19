@@ -16,7 +16,7 @@ was generated successfully!
 * You can print current ssh information by running 'vagrant ssh-config'
   command
 
-* To access to phraseanet just type 'phraseanet-php54-nginx' in
+* To access to phraseanet just type 'phraseanet-php55-nginx' in
   your web browser address bar.
 
 * The mysql default credentials are:

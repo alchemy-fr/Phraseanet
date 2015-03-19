@@ -4,18 +4,19 @@ namespace Alchemy\Tests\Phrasea\Core;
 
 use Alchemy\Phrasea\Core\Version;
 
-class VersionTest extends \PhraseanetTestCase
+class VersionTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testGetNumber()
     {
-        $this->assertTrue(is_string(Version::getNumber()));
-        $this->assertRegExp('/[\d]{1}\.[\d]{1,2}\.[\d]{1,2}/', Version::getNumber());
+        $version = new Version();
+        $this->assertTrue(is_string($version->getNumber()));
+        $this->assertRegExp('/[\d]{1}\.[\d]{1,2}\.[\d]{1,2}/', $version->getNumber());
     }
 
     public function testGetName()
     {
-        $this->assertTrue(is_string(Version::getName()));
-        $this->assertTrue(strlen(Version::getName()) > 3);
+        $version = new Version();
+        $this->assertTrue(is_string($version->getName()));
+        $this->assertTrue(strlen($version->getName()) > 3);
     }
 }

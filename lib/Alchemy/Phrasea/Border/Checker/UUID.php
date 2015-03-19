@@ -42,7 +42,7 @@ class UUID extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getMessage(TranslatorInterface $translator)
+    public function getMessage(TranslatorInterface $translator)
     {
         return $translator->trans('A file with the same UUID already exists in database');
     }

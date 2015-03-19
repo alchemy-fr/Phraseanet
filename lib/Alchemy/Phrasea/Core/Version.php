@@ -13,16 +13,16 @@ namespace Alchemy\Phrasea\Core;
 
 class Version
 {
-    protected static $number = '3.9.0-alpha.20';
-    protected static $name = 'Herrerasaurus';
+    private $number = '3.9.0-alpha.20';
+    private $name = 'Herrerasaurus';
 
-    public static function getNumber()
+    public function getNumber()
     {
-        return static::$number;
+        return $this->number;
     }
 
-    public static function getName()
+    public function getName()
     {
-        return static::$name;
+        return $this->name;
     }
 }

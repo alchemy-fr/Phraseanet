@@ -18,7 +18,9 @@ class AbstractCheckerTest extends \PhraseanetTestCase
     {
         parent::setUp();
 
-        $this->object = new AbstractCheckerTester(self::$DI['app']);
+        $this->object = $this->getMockBuilder(AbstractChecker::class)
+            ->setConstructorArgs([self::$DI['app']])
+            ->getMockForAbstractClass();
         $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getCollection'], [], 'CheckerTesterMock' . mt_rand(), false);
     }
 
@@ -197,19 +199,5 @@ class AbstractCheckerTest extends \PhraseanetTestCase
         return [
             [$databox, $collection],
         ];
-    }
-}
-
-class AbstractCheckerTester extends AbstractChecker
-{
-
-    public static function getMessage(TranslatorInterface $translator)
-    {
-
-    }
-
-    public function check(EntityManager $em, File $file)
-    {
-
     }
 }

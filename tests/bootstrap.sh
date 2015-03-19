@@ -22,11 +22,12 @@ VERBOSITY=$@
 
 set -x
 mysql -uroot -ptoor -e 'SET @@global.sql_mode=STRICT_ALL_TABLES;'
+mysql -uroot -ptoor -e 'CREATE SCHEMA IF NOT EXISTS ab_test;CREATE SCHEMA IF NOT EXISTS db_test;'
 if ! ./bin/developer system:uninstall > /dev/null 2>&1
 then
     rm -f config/configuration.yml config/configuration-compiled.php
 fi
-./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y $VERBOSITY
+./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=en --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y $VERBOSITY
 case "$INSTALL_MODE" in
     update)
         ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs $VERBOSITY

@@ -55,6 +55,7 @@ use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
+$version = new Version();
 $cli = new CLI("
  ___  ___  _  _  ___  __    __  ___  ___  ___     ____  __    __  __    ___
 (   \(  _)( )( )(  _)(  )  /  \(  ,\(  _)(  ,)   (_  _)/  \  /  \(  )  / __)
@@ -65,7 +66,7 @@ $cli = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
+            . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
 
 if ($cli['configuration.store']->isSetup()) {
     $helpers = [

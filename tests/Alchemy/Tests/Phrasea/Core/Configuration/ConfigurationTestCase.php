@@ -211,11 +211,12 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $compiler->expects($this->never())
                  ->method('compile');
 
-        $yaml = $this->getMockBuilder('Symfony\Component\Yaml\Yaml')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-        $yaml::staticExpects($this->never())
-             ->method('parse');
+        // This Yaml Parser throws exception when trying to parse.
+        $yaml = new YamlCountingParse();
+        $yaml::reset();
+        $yaml::setParseBehavior(function () {
+            throw new \RuntimeException('Should not be called');
+        });
 
         $conf = $this->provideConfiguration($configFile, null, $compiler, $yaml);
         $conf->getConfig();
@@ -247,13 +248,11 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
                  ->with(['main' => 'tiptop'])
                  ->will($this->returnValue('<?php return ["main" => "tiptop"];'));
 
-        $yaml = $this->getMockBuilder('Symfony\Component\Yaml\Yaml')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-        $yaml::staticExpects($this->once())
-             ->method('parse')
-             ->will($this->returnValue(['main' => 'tiptop']));
-
+        $yaml = new YamlCountingParse();
+        $yaml::reset();
+        $yaml::setParseBehavior(function () {
+            return ['main' => 'tiptop'];
+        });
         $conf = $this->provideConfiguration($configFile, null, $compiler, $yaml, true);
         $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
         $this->assertSame(['main' => 'tiptop'], $conf->getConfig());
@@ -261,6 +260,7 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $this->assertSame('tiptop', $conf['main']);
         $this->assertSame('tiptop', $conf['main']);
         $this->assertSame('tiptop', $conf['main']);
+        $this->assertEquals(1, $yaml::getParseCount());
     }
 
     public function testCompileAndWrite()

@@ -209,10 +209,11 @@ class IniReset extends Command
         }
 
         if ($input->getOption('run-patches') || false === $this->container['phraseanet.configuration']->isUpToDate()) {
+            $version = new Version();
             if ($input->getOption('run-patches')) {
-                $output->write(sprintf('Upgrading... from version <info>3.1.21</info> to <info>%s</info>', Version::getNumber()), true);
+                $output->write(sprintf('Upgrading... from version <info>3.1.21</info> to <info>%s</info>', $version->getNumber()), true);
             } else {
-                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app['phraseanet.appbox']->get_version(), Version::getNumber()), true);
+                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app['phraseanet.appbox']->get_version(), $version->getNumber()), true);
             }
             
             $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';

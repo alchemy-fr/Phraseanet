@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -44,6 +44,8 @@ class Manager
     protected $checkers = [];
     protected $app;
     protected $filesystem;
+    /** @var boolean */
+    private $enabled = true;
 
     const RECORD_CREATED = 1;
     const LAZARET_CREATED = 2;
@@ -67,6 +69,27 @@ class Manager
     public function __destruct()
     {
         $this->app = null;
+    }
+
+    /**
+     * Whether checks are activated while electing Visa
+     *
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
     }
 
     /**
@@ -128,6 +151,10 @@ class Manager
     {
         $visa = new Visa();
 
+        if (!$this->isEnabled()) {
+            return $visa;
+        }
+
         foreach ($this->checkers as $checker) {
             $visa->addResponse($checker->check($this->app['orm.em'], $file));
         }
@@ -143,7 +170,7 @@ class Manager
      */
     public function registerChecker(CheckerInterface $checker)
     {
-        $this->checkers[] = $checker;
+        $this->checkers[get_class($checker)] = $checker;
 
         return $this;
     }
@@ -171,16 +198,31 @@ class Manager
      */
     public function unregisterChecker(CheckerInterface $checker)
     {
-        $checkers = $this->checkers;
-        foreach ($this->checkers as $offset => $registered) {
-
-            if ($checker == $registered) {
-                array_splice($checkers, $offset, 1);
+        $class = get_class($checker);
+        if (isset($this->checkers[$class])) {
+            if ($checker !== $this->checkers[$class]) {
+                throw new \LogicException('Trying to unregister wrong checker');
             }
+            unset($this->checkers[$class]);
         }
-        $this->checkers = $checkers;
 
         return $this;
+    }
+
+    /**
+     * Get checker instance from its class name.
+     *
+     * @param string $checkerName
+     * @return CheckerInterface
+     */
+    public function getCheckerFromFQCN($checkerName)
+    {
+        $checkerName = trim($checkerName, '\\');
+        if (!isset($this->checkers[$checkerName])) {
+            throw new RuntimeException('Checker could not be found');
+        }
+
+        return $this->checkers[$checkerName];
     }
 
     /**
@@ -190,7 +232,11 @@ class Manager
      */
     public function getCheckers()
     {
-        return $this->checkers;
+        if (!$this->enabled) {
+            return [];
+        }
+
+        return array_values($this->checkers);
     }
 
     /**

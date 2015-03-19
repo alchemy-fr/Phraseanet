@@ -49,7 +49,7 @@ class MediaType extends AbstractChecker
         return new Response($boolean, $this);
     }
 
-    public static function getMessage(TranslatorInterface $translator)
+    public function getMessage(TranslatorInterface $translator)
     {
         return $translator->trans('The file does not match required media type');
     }

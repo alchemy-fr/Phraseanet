@@ -43,7 +43,7 @@ class Sha256 extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getMessage(TranslatorInterface $translator)
+    public function getMessage(TranslatorInterface $translator)
     {
         return $translator->trans('A file with the same checksum already exists in database');
     }

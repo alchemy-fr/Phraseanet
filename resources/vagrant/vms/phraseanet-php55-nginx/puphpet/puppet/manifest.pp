@@ -40,10 +40,10 @@ file { "/home/${::ssh_username}":
 # copy dot files to ssh user's home directory
 exec { 'dotfiles':
   cwd     => "/home/${::ssh_username}",
-  command => "cp -r /vagrant/resources/vagrant/vms/phraseanet-php54-nginx/puphpet/files/dot/.[a-zA-Z0-9]* /home/${::ssh_username}/ \
+  command => "cp -r /vagrant/resources/vagrant/vms/phraseanet-php55-nginx/puphpet/files/dot/.[a-zA-Z0-9]* /home/${::ssh_username}/ \
               && chown -R ${::ssh_username} /home/${::ssh_username}/.[a-zA-Z0-9]* \
-              && cp -r /vagrant/resources/vagrant/vms/phraseanet-php54-nginx/puphpet/files/dot/.[a-zA-Z0-9]* /root/",
-  onlyif  => 'test -d /vagrant/resources/vagrant/vms/phraseanet-php54-nginx/puphpet/files/dot',
+              && cp -r /vagrant/resources/vagrant/vms/phraseanet-php55-nginx/puphpet/files/dot/.[a-zA-Z0-9]* /root/",
+  onlyif  => 'test -d /vagrant/resources/vagrant/vms/phraseanet-php55-nginx/puphpet/files/dot',
   returns => [0, 1],
   require => User[$::ssh_username]
 }
@@ -372,7 +372,7 @@ if is_hash($firewall_values['rules']) and count($firewall_values['rules']) > 0 {
 ## Begin Apache manifest
 
 if $yaml_values == undef {
-  $yaml_values = loadyaml('/vagrant/resources/vagrant/vms/phraseanet-php54-nginx/puphpet/config.yaml')
+  $yaml_values = loadyaml('/vagrant/resources/vagrant/vms/phraseanet-php55-nginx/puphpet/config.yaml')
 } if $apache_values == undef {
   $apache_values = $yaml_values['apache']
 } if $php_values == undef {

@@ -90,10 +90,8 @@ class ConfigurationTesterTest extends AbstractSetupTester
             ->disableOriginalConstructor()
             ->getMock();
 
-        /**
-         * Must return version + 1
-         */
-        $app['phraseanet.version']::staticExpects($this->any())
+        // Must return version + 1
+        $app['phraseanet.version']->expects($this->any())
             ->method('getNumber')
             ->will($this->returnValue('3.10'));
 
@@ -134,7 +132,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
         /**
          * Must return version + 1
          */
-        $app['phraseanet.version']::staticExpects($this->any())
+        $app['phraseanet.version']->expects($this->any())
             ->method('getNumber')
             ->will($this->returnValue('3.10'));
 

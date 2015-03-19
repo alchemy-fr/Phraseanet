@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 {
@@ -30,13 +32,14 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function datas(array $data, $unread)
     {
-        $reasons = [];
+        /** @var Manager $manager */
+        $manager = $this->app['border-manager'];
+        /** @var TranslatorInterface $translator */
+        $translator = $this->app['translator'];
 
-        foreach ($data['reasons'] as $reason) {
-            if (class_exists($reason)) {
-                $reasons[] = $reason::getMessage($this->app['translator']);
-            }
-        }
+        $reasons = array_map(function ($checkerFQCN) use ($manager, $translator) {
+            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
+        }, $data['reasons']);
 
         $filename = $data['filename'];
 

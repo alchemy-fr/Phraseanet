@@ -334,7 +334,7 @@
                     </div>
                     <div class="caption">
                         {% for check in file.getChecks() %}
-                            <p>{{ check.getMessage(app['translator']) }}</p>
+                            <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
                     <div class="btn-group" style="text-align:center; padding:5px;">

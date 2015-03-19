@@ -11,39 +11,42 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
-use Alchemy\Phrasea\Status\StatusStructure;
-use Silex\ControllerProviderInterface;
-use Alchemy\Phrasea\Cache\Cache as CacheInterface;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
+use Alchemy\Phrasea\Border\Attribute\Status;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Border\Manager as BorderManager;
+use Alchemy\Phrasea\Border\Manager;
+use Alchemy\Phrasea\Cache\Cache as CacheInterface;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Silex\Application as SilexApplication;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
-use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Border\Attribute\Status;
-use Alchemy\Phrasea\Border\Manager as BorderManager;
+use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Silex\Application;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
-use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
+use Alchemy\Phrasea\Status\StatusStructure;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class V1 implements ControllerProviderInterface
 {
@@ -53,9 +56,13 @@ class V1 implements ControllerProviderInterface
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
-    public static $extendedContentTypes = array('json' => array('application/vnd.phraseanet.record-extended+json'), 'yaml' => array('application/vnd.phraseanet.record-extended+yaml'), 'jsonp' => array('application/vnd.phraseanet.record-extended+jsonp'),);
+    public static $extendedContentTypes = [
+        'json'  => ['application/vnd.phraseanet.record-extended+json'],
+        'yaml'  => ['application/vnd.phraseanet.record-extended+yaml'],
+        'jsonp' => ['application/vnd.phraseanet.record-extended+jsonp'],
+    ];
 
-    public function connect(SilexApplication $app)
+    public function connect(Application $app)
     {
         $app['controller.api.v1'] = $this;
 
@@ -67,6 +74,7 @@ class V1 implements ControllerProviderInterface
         ;
 
         $controllers->after(function (Request $request, Response $response) use ($app) {
+            /** @var ApiOauthToken $token */
             $token = $app['session']->get('token');
             $app['manipulator.api-log']->create($token->getAccount(), $request, $response);
             $app['manipulator.api-oauth-token']->setLastUsed($token, new \DateTime());
@@ -77,35 +85,69 @@ class V1 implements ControllerProviderInterface
         })
         ;
 
-        $controllers->get('/monitor/scheduler/', 'controller.api.v1:get_scheduler')->before([$this, 'ensureAdmin']);
+        $controllers->get('/monitor/scheduler/', 'controller.api.v1:get_scheduler')
+            ->before([$this, 'ensureAdmin'])
+        ;
 
-        $controllers->get('/monitor/tasks/', 'controller.api.v1:get_task_list')->before([$this, 'ensureAdmin']);
+        $controllers->get('/monitor/tasks/', 'controller.api.v1:get_task_list')
+            ->before([$this, 'ensureAdmin'])
+        ;
 
-        $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin'])->assert('task', '\d+');
+        $controllers->get('/monitor/task/{task}/', 'controller.api.v1:get_task')
+            ->convert('task', $app['converter.task-callback'])
+            ->before([$this, 'ensureAdmin'])
+            ->assert('task', '\d+')
+        ;
 
-        $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin'])->assert('task', '\d+');
+        $controllers->post('/monitor/task/{task}/', 'controller.api.v1:set_task_property')
+            ->convert('task', $app['converter.task-callback'])
+            ->before([$this, 'ensureAdmin'])
+            ->assert('task', '\d+')
+        ;
 
-        $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin']);
+        $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:start_task')
+            ->convert('task', $app['converter.task-callback'])
+            ->before([$this, 'ensureAdmin'])
+        ;
 
-        $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')->convert('task', $app['converter.task-callback'])->before([$this, 'ensureAdmin']);
+        $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stop_task')
+            ->convert('task', $app['converter.task-callback'])
+            ->before([$this, 'ensureAdmin'])
+        ;
 
-        $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')->before([$this, 'ensureAdmin']);
+        $controllers->get('/monitor/phraseanet/', 'controller.api.v1:get_phraseanet_monitor')
+            ->before([$this, 'ensureAdmin'])
+        ;
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:get_databoxes');
 
-        $controllers->get('/databoxes/{databox_id}/collections/', 'controller.api.v1:get_databox_collections')->before([$this, 'ensureAccessToDatabox'])->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/collections/', 'controller.api.v1:get_databox_collections')
+            ->before([$this, 'ensureAccessToDatabox'])
+            ->assert('databox_id', '\d+')
+        ;
 
         $controllers->get('/databoxes/{any_id}/collections/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/databoxes/{databox_id}/status/', 'controller.api.v1:get_databox_status')->before([$this, 'ensureAccessToDatabox'])->before([$this, 'ensureCanSeeDataboxStructure'])->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/status/', 'controller.api.v1:get_databox_status')
+            ->before([$this, 'ensureAccessToDatabox'])
+            ->before([$this, 'ensureCanSeeDataboxStructure'])
+            ->assert('databox_id', '\d+')
+        ;
 
         $controllers->get('/databoxes/{any_id}/status/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/databoxes/{databox_id}/metadatas/', 'controller.api.v1:get_databox_metadatas')->before([$this, 'ensureAccessToDatabox'])->before([$this, 'ensureCanSeeDataboxStructure'])->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/metadatas/', 'controller.api.v1:get_databox_metadatas')
+            ->before([$this, 'ensureAccessToDatabox'])
+            ->before([$this, 'ensureCanSeeDataboxStructure'])
+            ->assert('databox_id', '\d+')
+        ;
 
         $controllers->get('/databoxes/{any_id}/metadatas/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/databoxes/{databox_id}/termsOfUse/', 'controller.api.v1:get_databox_terms')->before([$this, 'ensureAccessToDatabox'])->assert('databox_id', '\d+');
+        $controllers->get('/databoxes/{databox_id}/termsOfUse/', 'controller.api.v1:get_databox_terms')
+            ->before([$this, 'ensureAccessToDatabox'])
+            ->assert('databox_id', '\d+')
+        ;
 
         $controllers->get('/databoxes/{any_id}/termsOfUse/', 'controller.api.v1:getBadRequest');
 
@@ -118,44 +160,90 @@ class V1 implements ControllerProviderInterface
         $controllers->post('/records/add/', 'controller.api.v1:add_record');
 
         $controllers->post('/embed/substitute/', 'controller.api.v1:substitute');
-        
+
         $controllers->match('/search/', 'controller.api.v1:search');
 
         $controllers->match('/records/search/', 'controller.api.v1:search_records');
 
-        $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:caption_records')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:caption_records')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/records/{any_id}/{anyother_id}/caption/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', 'controller.api.v1:get_record_metadatas')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', 'controller.api.v1:get_record_metadatas')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/records/{any_id}/{anyother_id}/metadatas/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/status/', 'controller.api.v1:get_record_status')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/status/', 'controller.api.v1:get_record_status')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/records/{any_id}/{anyother_id}/status/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/related/', 'controller.api.v1:get_record_related')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/related/', 'controller.api.v1:get_record_related')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/records/{any_id}/{anyother_id}/related/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/records/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_record_embed')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_record_embed')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/records/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', 'controller.api.v1:set_record_metadatas')->before([$this, 'ensureCanAccessToRecord'])->before([$this, 'ensureCanModifyRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', 'controller.api.v1:set_record_metadatas')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->before([$this, 'ensureCanModifyRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->post('/records/{any_id}/{anyother_id}/setmetadatas/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', 'controller.api.v1:set_record_status')->before([$this, 'ensureCanAccessToRecord'])->before([$this, 'ensureCanModifyRecordStatus'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', 'controller.api.v1:set_record_status')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->before([$this, 'ensureCanModifyRecordStatus'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->post('/records/{any_id}/{anyother_id}/setstatus/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', 'controller.api.v1:set_record_collection')->before([$this, 'ensureCanAccessToRecord'])->before([$this, 'ensureCanMoveRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->post(
+            '/records/{databox_id}/{record_id}/setcollection/',
+            'controller.api.v1:set_record_collection'
+        )
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->before([$this, 'ensureCanMoveRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
-        $controllers->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', 'controller.api.v1:getBadRequest');
+        $controllers->post(
+            '/records/{wrong_databox_id}/{wrong_record_id}/setcollection/',
+            'controller.api.v1:getBadRequest'
+        )
+        ;
 
-        $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:get_record')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:get_record')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/records/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
@@ -163,19 +251,35 @@ class V1 implements ControllerProviderInterface
 
         $controllers->post('/baskets/add/', 'controller.api.v1:create_basket');
 
-        $controllers->get('/baskets/{basket}/content/', 'controller.api.v1:get_basket')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-access'])->assert('basket', '\d+');
+        $controllers->get('/baskets/{basket}/content/', 'controller.api.v1:get_basket')
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access'])
+            ->assert('basket', '\d+')
+        ;
 
         $controllers->get('/baskets/{wrong_basket}/content/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/baskets/{basket}/setname/', 'controller.api.v1:set_basket_title')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-is-owner'])->assert('basket', '\d+');
+        $controllers->post('/baskets/{basket}/setname/', 'controller.api.v1:set_basket_title')
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+')
+        ;
 
         $controllers->post('/baskets/{wrong_basket}/setname/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/baskets/{basket}/setdescription/', 'controller.api.v1:set_basket_description')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-is-owner'])->assert('basket', '\d+');
+        $controllers->post('/baskets/{basket}/setdescription/', 'controller.api.v1:set_basket_description')
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+')
+        ;
 
         $controllers->post('/baskets/{wrong_basket}/setdescription/', 'controller.api.v1:getBadRequest');
 
-        $controllers->post('/baskets/{basket}/delete/', 'controller.api.v1:delete_basket')->before($app['middleware.basket.converter'])->before($app['middleware.basket.user-is-owner'])->assert('basket', '\d+');
+        $controllers->post('/baskets/{basket}/delete/', 'controller.api.v1:delete_basket')
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+')
+        ;
 
         $controllers->post('/baskets/{wrong_basket}/delete/', 'controller.api.v1:getBadRequest');
 
@@ -183,25 +287,40 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/feeds/content/', 'controller.api.v1:get_publications');
 
-        $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:get_feed_entry')->assert('entry_id', '\d+');
+        $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:get_feed_entry')
+            ->assert('entry_id', '\d+')
+        ;
 
         $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/feeds/{feed_id}/content/', 'controller.api.v1:get_publication')->assert('feed_id', '\d+');
+        $controllers->get('/feeds/{feed_id}/content/', 'controller.api.v1:get_publication')
+            ->assert('feed_id', '\d+')
+        ;
 
         $controllers->get('/feeds/{wrong_feed_id}/content/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/stories/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_story_embed')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/stories/{databox_id}/{record_id}/embed/', 'controller.api.v1:get_story_embed')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequest');
 
-        $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v1:get_story')->before([$this, 'ensureCanAccessToRecord'])->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v1:get_story')
+            ->before([$this, 'ensureCanAccessToRecord'])
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+        ;
 
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequest');
 
         $controllers->post('/stories', 'controller.api.v1:createStories');
-        
-        $controllers->post('/stories/{databox_id}/{story_id}/records', 'controller.api.v1:createRecordStory')->assert('databox_id', '\d+')->assert('story_id', '\d+');
+
+        $controllers->post('/stories/{databox_id}/{story_id}/records', 'controller.api.v1:createRecordStory')
+            ->assert('databox_id', '\d+')
+            ->assert('story_id', '\d+')
+        ;
 
         $controllers->get('/me/', 'controller.api.v1:get_current_user');
 
@@ -251,7 +370,24 @@ class V1 implements ControllerProviderInterface
     {
         $data = $app['task-manager.live-information']->getTask($task);
 
-        return ['id' => $task->getId(), 'title' => $task->getName(), 'name' => $task->getName(), 'state' => $task->getStatus(), 'status' => $task->getStatus(), 'actual-status' => $data['actual'], 'process-id' => $data['process-id'], 'pid' => $data['process-id'], 'jobId' => $task->getJobId(), 'period' => $task->getPeriod(), 'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null, 'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null, 'updated' => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null, 'created' => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null, 'auto_start' => $task->getStatus() === Task::STATUS_STARTED, 'crashed' => $task->getCrashed(), 'status' => $task->getStatus(),];
+        return [
+            'id'             => $task->getId(),
+            'title'          => $task->getName(),
+            'name'           => $task->getName(),
+            'state'          => $task->getStatus(),
+            'status'         => $task->getStatus(),
+            'actual-status'  => $data['actual'],
+            'process-id'     => $data['process-id'],
+            'pid'            => $data['process-id'],
+            'jobId'          => $task->getJobId(),
+            'period'         => $task->getPeriod(),
+            'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
+            'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
+            'updated'        => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null,
+            'created'        => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null,
+            'auto_start'     => $task->getStatus() === Task::STATUS_STARTED,
+            'crashed'        => $task->getCrashed(),
+        ];
     }
 
     /**
@@ -335,13 +471,23 @@ class V1 implements ControllerProviderInterface
      */
     private function get_cache_info(Application $app)
     {
-        $caches = ['main' => $app['cache'], 'op_code' => $app['opcode-cache'], 'doctrine_metadatas' => $app['orm.em']->getConfiguration()->getMetadataCacheImpl(), 'doctrine_query' => $app['orm.em']->getConfiguration()->getQueryCacheImpl(), 'doctrine_result' => $app['orm.em']->getConfiguration()->getResultCacheImpl(),];
+        $caches = [
+            'main'               => $app['cache'],
+            'op_code'            => $app['opcode-cache'],
+            'doctrine_metadatas' => $app['orm.em']->getConfiguration()->getMetadataCacheImpl(),
+            'doctrine_query'     => $app['orm.em']->getConfiguration()->getQueryCacheImpl(),
+            'doctrine_result'    => $app['orm.em']->getConfiguration()->getResultCacheImpl(),
+        ];
 
         $ret = [];
 
         foreach ($caches as $name => $service) {
             if ($service instanceof CacheInterface) {
-                $ret['cache'][$name] = ['type' => $service->getName(), 'online' => $service->isOnline(), 'stats' => $service->getStats(),];
+                $ret['cache'][$name] = [
+                    'type'   => $service->getName(),
+                    'online' => $service->isOnline(),
+                    'stats'  => $service->getStats(),
+                ];
             } else {
                 $ret['cache'][$name] = null;
             }
@@ -361,7 +507,10 @@ class V1 implements ControllerProviderInterface
     {
         $ret = [];
 
-        $ret['phraseanet']['version'] = ['name' => $app['phraseanet.version']::getName(), 'number' => $app['phraseanet.version']::getNumber(),];
+        $ret['phraseanet']['version'] = [
+            'name'   => $app['phraseanet.version']->getName(),
+            'number' => $app['phraseanet.version']->getNumber(),
+        ];
 
         $ret['phraseanet']['environment'] = $app->getEnvironment();
         $ret['phraseanet']['debug'] = $app['debug'];
@@ -404,7 +553,11 @@ class V1 implements ControllerProviderInterface
      */
     public function get_phraseanet_monitor(Application $app, Request $request)
     {
-        $ret = array_merge($this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app));
+        $ret = array_merge(
+            $this->get_config_info($app),
+            $this->get_cache_info($app),
+            $this->get_gv_info($app)
+        );
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -577,11 +730,11 @@ class V1 implements ControllerProviderInterface
 
         return Result::create($request, $ret)->createResponse();
     }
-    
+
     public function substitute(Application $app, Request $request)
     {
         $ret = array();
-        
+
         if (count($request->files->get('file')) == 0) {
             throw new API_V1_exception_badrequest('Missing file parameter');
         }
@@ -664,8 +817,14 @@ class V1 implements ControllerProviderInterface
 
     private function list_lazaret_file(Application $app, LazaretFile $file)
     {
-        $checks = array_map(function ($checker) use ($app) {
-            return $checker->getMessage($app['translator']);
+        /** @var Manager $manager */
+        $manager = $app['border-manager'];
+        /** @var TranslatorInterface $translator */
+        $translator = $app['translator'];
+
+        $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
+            $checkerFQCN = $checker->getCheckClassname();
+            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
         }, iterator_to_array($file->getChecks()));
 
         $usr_id = $user = null;
