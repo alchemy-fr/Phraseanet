@@ -469,16 +469,23 @@ function initAnswerForm() {
                 }
                 catch(e) {}
 
-
                 $('#answers').empty().append(datas.results).removeClass('loading');
-
-                loadFacets(datas.facets);
 
                 $("#answers img.lazyload").lazyload({
                     container: $('#answers')
                 });
+
+                loadFacets(datas.facets);
+
+                $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
+
                 $('#tool_results').empty().append(datas.infos);
                 $('#tool_navigate').empty().append(datas.navigation);
+
+                if($('input.btn-mini').length > 0){
+                    $('#answers .diapo').last().after('<div id="answersNext" class="IMGT diapo  type-image ui-draggable">Next</div>');
+                }
+
 
                 $.each(p4.Results.Selection.get(), function (i, el) {
                     $('#IMGT_' + el).addClass('selected');
@@ -489,7 +496,7 @@ function initAnswerForm() {
                 p4.tot_query = datas.query;
 
                 if (datas.next_page) {
-                    $("#NEXT_PAGE").bind('click', function () {
+                    $("#NEXT_PAGE, #answersNext").bind('click', function () {
                         gotopage(datas.next_page);
                     });
                 }

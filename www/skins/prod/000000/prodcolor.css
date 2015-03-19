@@ -865,6 +865,16 @@ div.diapo {
     margin-right: 5px;
 }
 
+#idFrameT .tools #settings {
+  display: block;
+  float: right;
+  line-height: 45px;
+  padding-right: 30px;
+  margin-right: 21px;
+  color: #949494;
+  background: url('../../icons/icone_settings.png') right 15px no-repeat;
+}
+
 .dropdown-menu .divider {
     background-color: #515151;
     border-bottom: 1px solid #404040;
@@ -1808,6 +1818,7 @@ input.btn-mini {
     float: left;
     padding: 3px;
     z-index: 97;
+    bottom: 0;
 }
 
 .prevTrainCurrent .doc_infos img,.diapo .doc_infos img {
@@ -4417,10 +4428,19 @@ ui-dialog-titlebar {
     max-heigh: 16px;
 }
 
+#answers #answersNext {
+  width: 150px;
+  margin: 5px;
+  height: 193px;
+  line-height: 193px;
+  font-size: 25px;
+  color: #666666;
+  cursor: pointer;
+}
+
 #paginate {
-    position: absolute;
-    bottom: 30px;
-    right: 65px;
+    float: right;
+    margin: 0 65px 30px 0;
 }
 
 #paginate #tool_navigate {

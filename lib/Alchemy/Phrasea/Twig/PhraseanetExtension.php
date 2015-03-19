@@ -143,23 +143,23 @@ class PhraseanetExtension extends \Twig_Extension
 
         switch ($record->getType()) {
             case 'image':
-                $src = '/skins/icons/icon_image.gif';
+                $src = '/skins/icons/icon_image.png';
                 $title = $this->app['translator']->trans('image');
                 break;
             case 'document':
-                $src = '/skins/icons/icon_document.gif';
+                $src = '/skins/icons/icon_document.png';
                 $title = $this->app['translator']->trans('document');
                 break;
             case 'video':
-                $src = '/skins/icons/icon_video.gif';
+                $src = '/skins/icons/icon_video.png';
                 $title = $this->app['translator']->trans('reportage');
                 break;
             case 'audio':
-                $src = '/skins/icons/icon_audio.gif';
+                $src = '/skins/icons/icon_audio.png';
                 $title = $this->app['translator']->trans('audio');
                 break;
             case 'flash':
-                $src = '/skins/icons/icon_flash.gif';
+                $src = '/skins/icons/icon_flash.png';
                 $title = $this->app['translator']->trans('flash');
                 break;
         }
