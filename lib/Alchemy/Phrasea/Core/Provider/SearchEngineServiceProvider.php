@@ -77,7 +77,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
-            return new FacetsResponse(new Excaper(), $response);
+            return new FacetsResponse(new Escaper(), $response);
         });
 
 
