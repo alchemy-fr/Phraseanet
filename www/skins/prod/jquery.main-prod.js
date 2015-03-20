@@ -482,11 +482,6 @@ function initAnswerForm() {
                 $('#tool_results').empty().append(datas.infos);
                 $('#tool_navigate').empty().append(datas.navigation);
 
-                if($('input.btn-mini').length > 0){
-                    $('#answers .diapo').last().after('<div id="answersNext" class="IMGT diapo  type-image ui-draggable">Next</div>');
-                }
-
-
                 $.each(p4.Results.Selection.get(), function (i, el) {
                     $('#IMGT_' + el).addClass('selected');
                 });
