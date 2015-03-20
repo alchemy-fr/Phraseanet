@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-* 3.9.0 (xxxx-xx-xx)
+## 3.9.0 (xxxx-xx-xx)
 
   - Convert Orders custom adapter to Doctrine entity.
   - Convert Feeds custom adapter to Doctrine entity.
