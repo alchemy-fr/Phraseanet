@@ -608,6 +608,18 @@ span.ww_winTitle {
 
 /******* PRESENTATION DE MINIATURES *******************************************/
 
+.infoTips {
+    background: none !important;
+    width: 13px !important;
+    height: 10px !important;
+    padding-top: 4px;
+    margin-right: 9px;
+}
+
+.contextMenuTrigger {
+    color: #fff;
+}
+
 .captionRolloverTips, .previewTips, .infoTips,
 .baskAdder, .printer, .downloader, .baskDeleter {
     background-image: url('../../icons/zoom.gif');
