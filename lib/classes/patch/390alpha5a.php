@@ -49,7 +49,7 @@ class patch_390alpha5a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['user-notif-setting'];
+        return ['20131118000012'];
     }
 
     /**

@@ -47,4 +47,9 @@ abstract class patchAbstract implements patchInterface
             ->listTableDetails($tableName)
             ->hasColumn($fieldName);
     }
+
+    public function getDoctrineMigrations()
+    {
+        return [];
+    }
 }

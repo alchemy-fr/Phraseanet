@@ -30,14 +30,6 @@ class patch_381alpha4a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function require_all_upgrades()
     {
         return false;

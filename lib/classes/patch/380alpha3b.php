@@ -46,14 +46,6 @@ class patch_380alpha3b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         $app['conf']->set(['main', 'search-engine'], [

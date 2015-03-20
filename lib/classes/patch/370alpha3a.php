@@ -42,7 +42,7 @@ class patch_370alpha3a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['api'];
+        return ['20140324000001'];
     }
 
     /**

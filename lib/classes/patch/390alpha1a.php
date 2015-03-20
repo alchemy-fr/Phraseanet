@@ -53,7 +53,7 @@ class patch_390alpha1a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['user', 'order'];
+        return ['20131118000009', '20131118000008'];
     }
 
     /**

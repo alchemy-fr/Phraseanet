@@ -52,7 +52,7 @@ class patch_390alpha13a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return ['registration'];
+        return ['20140226000001'];
     }
 
     /**

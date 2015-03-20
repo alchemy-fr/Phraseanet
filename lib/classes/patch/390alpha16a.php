@@ -50,7 +50,7 @@ class patch_390alpha16a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['preset'];
+        return ['20140314000002'];
     }
 
     /**

@@ -47,14 +47,6 @@ class patch_390alpha9b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         $this->upgradeConf($app);

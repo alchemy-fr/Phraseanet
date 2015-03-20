@@ -45,14 +45,9 @@ class patch_386alpha3a implements patchInterface
         return $this->concern;
     }
 
-    /**
-     * Returns doctrine migrations needed for the patch.
-     *
-     * @return array
-     */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**

@@ -4,69 +4,25 @@ migrations_directory: lib/Alchemy/Phrasea/Setup/DoctrineMigrations
 table_name: doctrine_migration_versions
 
 migrations:
-  migration1:
-    version: feed
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FeedMigration
-  migration2:
-    version: workzone
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\WorkzoneMigration
-  migration3:
-    version: lazaret
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\LazaretMigration
-  migration4:
-    version: task
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\TaskMigration
-  migration5:
-    version: auth-failure
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\AuthFailureMigration
-  migration6:
-    version: session
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\SessionMigration
-  migration7:
-    version: ftp-credential
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpCredentialMigration
-  migration8:
-    version: order
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\OrderMigration
-  migration9:
-    version: user
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserMigration
-  migration10:
-    version: user-query
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserQueryMigration
-  migration11:
-    version: user-setting
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserSettingMigration
-  migration12:
-    version: user-notif-setting
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserNotificationSettingMigration
-  migration13:
-    version: ftp-export
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration
-  migration14:
-    version: user-field
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserFieldMigration
-  migration15:
-    version: user-id-field-delete
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\DeleteUsrIdFieldMigration
-  migration16:
-    version: user-list
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserListMigration
-  migration17:
-    version: user-auth-provider
-    class: Alchemy\Phrasea\Setup\DoctrineMigrations\UserAuthProviderMigration
-  migration18:
-      version: registration
-      class: Alchemy\Phrasea\Setup\DoctrineMigrations\RegistrationMigration
-  migration19:
-      version: token
-      class: Alchemy\Phrasea\Setup\DoctrineMigrations\TokenMigration
-  migration20:
-      version: api
-      class: Alchemy\Phrasea\Setup\DoctrineMigrations\ApiMigration
-  migration21:
-      version: aggregate-token
-      class: Alchemy\Phrasea\Setup\DoctrineMigrations\AggregateTokenMigration
-  migration22:
-      version: preset
-      class: Alchemy\Phrasea\Setup\DoctrineMigrations\PresetMigration
+  - {version: '20131118000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\FeedMigration'}
+  - {version: '20131118000002', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\WorkzoneMigration'}
+  - {version: '20131118000003', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\LazaretMigration'}
+  - {version: '20131118000004', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\TaskMigration'}
+  - {version: '20131118000005', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\AuthFailureMigration'}
+  - {version: '20131118000006', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\SessionMigration'}
+  - {version: '20131118000007', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\FtpCredentialMigration'}
+  - {version: '20131118000008', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\OrderMigration'}
+  - {version: '20131118000009', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserMigration'}
+  - {version: '20131118000010', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserQueryMigration'}
+  - {version: '20131118000011', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserSettingMigration'}
+  - {version: '20131118000012', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserNotificationSettingMigration'}
+  - {version: '20131118000013', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration'}
+  - {version: '20140219000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserFieldMigration'}
+  - {version: '20140219000002', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\DeleteUsrIdFieldMigration'}
+  - {version: '20140219000003', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserListMigration'}
+  - {version: '20140219000004', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserAuthProviderMigration'}
+  - {version: '20140226000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\RegistrationMigration'}
+  - {version: '20140305000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\TokenMigration'}
+  - {version: '20140324000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\ApiMigration'}
+  - {version: '20140314000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\AggregateTokenMigration'}
+  - {version: '20140314000002', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\PresetMigration'}

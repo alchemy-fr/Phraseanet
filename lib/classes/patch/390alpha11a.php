@@ -47,14 +47,6 @@ class patch_390alpha11a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         $app['conf']->set(['main', 'task-manager', 'status'], 'started');

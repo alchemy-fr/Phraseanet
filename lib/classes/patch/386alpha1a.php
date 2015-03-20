@@ -27,14 +27,9 @@ class patch_386alpha1a implements patchInterface
         return $this->release;
     }
 
-    /**
-     * Returns doctrine migrations needed for the patch.
-     *
-     * @return array
-     */
     public function getDoctrineMigrations()
     {
-        return array();
+        return [];
     }
 
     /**

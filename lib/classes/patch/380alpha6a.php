@@ -46,14 +46,6 @@ class patch_380alpha6a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         $app['configuration.store']->setDefault('registration-fields');

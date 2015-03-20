@@ -48,7 +48,7 @@ class patch_360alpha1a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['workzone', 'session'];
+        return ['20131118000002', '20131118000006'];
     }
 
     /**

@@ -46,14 +46,6 @@ class patch_371alpha1a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $databox, Application $app)
     {
         foreach ($databox->get_meta_structure() as $databox_field) {

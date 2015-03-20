@@ -42,7 +42,7 @@ class patch_386alpha4a implements patchInterface
      */
     public function getDoctrineMigrations()
     {
-        return array('user-list');
+        return array('20140219000003');
     }
 
     /**

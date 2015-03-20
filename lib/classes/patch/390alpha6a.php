@@ -51,7 +51,7 @@ class patch_390alpha6a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['ftp-export'];
+        return ['20131118000013'];
     }
 
     /**
