@@ -1835,7 +1835,6 @@ input.btn-mini {
     float: left;
     padding: 3px;
     z-index: 97;
-    bottom: 0;
 }
 
 .prevTrainCurrent .doc_infos img,.diapo .doc_infos img {
