@@ -1,5 +1,6 @@
 name: Phraseanet Migrations
 migrations_namespace: Alchemy\Phrasea\Setup\DoctrineMigrations
+migrations_directory: lib/Alchemy/Phrasea/Setup/DoctrineMigrations
 table_name: doctrine_migration_versions
 
 migrations:
