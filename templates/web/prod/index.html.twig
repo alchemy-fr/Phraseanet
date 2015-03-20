@@ -590,7 +590,7 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="TOOL_print_btn results_window">
-                                        <img src="/skins/prod/000000/images/print_history.gif" height="16" width="16" />
+                                        <img src="/skins/prod/000000/images/print_history.png" height="16" width="16" />
                                         {{ 'action : print' | trans }}
                                     </a>
                                 </li>
@@ -609,13 +609,13 @@
                         {% set label %}
                             {{ 'action : status' | trans }}
                         {% endset %}
-                        {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
+                        {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.png", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
                     {% endif %}
                     {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
                         {% set label %}
                             {{ 'action : collection' | trans }}
                         {% endset %}
-                        {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.gif", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
+                        {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.png", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
                     {% endif %}
 
                     {% set n_actions = actions|length %}
