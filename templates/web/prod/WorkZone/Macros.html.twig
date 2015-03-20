@@ -85,13 +85,20 @@
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
-              <img src='/skins/icons/basket.png' title=''/>
+              {% if basket.getValidation() %}
+                <img src='/skins/icons/basket_validation.png' title=''/>
+              {% elseif basket.getPusher() %}
+                <img src='/skins/icons/basket_push.png' title=''/>
+              {% else %}
+                <img src='/skins/icons/basket.png' title=''/>
+              {% endif %}
               {{basket.getName()}}
             </span>
           </a>
           <div class="menu">
             <table>
                   <tr>
+                    <!--
                        {% if basket.getValidation() %}
                             <td>
                                 <img
@@ -111,6 +118,7 @@
                                     src="/skins/icons/push16.png"/>
                             </td>
                         {% endif %}
+                      -->
                         <td>
                             <a class="contextMenuTrigger"></a>
                         </td>

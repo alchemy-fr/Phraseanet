@@ -562,13 +562,13 @@ span.ww_winTitle {
 }
 
 #searchForm {
-    width: 80%;
+    width: 90%;
     float: left;
 }
 
 #searchForm .input-append {
     float: left;
-    width: 80%;
+    width: 60%;
 }
 
 #searchForm .control-group {
@@ -665,7 +665,7 @@ div.diapo {
     background-color: #111111;
     border: 1px solid #111111;
     top: 55px;
-    bottom: 30px;
+    bottom: 0;
 }
 
 #answers_status{
@@ -741,6 +741,7 @@ div.diapo {
 
 #idFrameT {
     margin-left: -20px;
+    margin-right: -20px;
 }
 
 .submenu .ui-buttonset{
@@ -1172,7 +1173,7 @@ form.phrasea_query input.query {
     padding-left: 30px;
     font-size: 16px;
     margin: 0;
-    width: 80%;
+    width: 60%;
 }
 
 #basket-rename-box .btn, #reorder_box .btn {
