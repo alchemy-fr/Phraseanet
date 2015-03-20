@@ -216,6 +216,22 @@ span.ww_winTitle {
     top: 0 !important;
 }
 
+
+#idFrameC #retractableButton {
+    cursor: pointer;
+    width: 70px;
+    height: 70px;
+    float: right;
+    text-align: center;
+    line-height: 70px;
+    margin-bottom: -20px;
+    background: url("/skins/icons/workzoneEscamote.png") 30px 30px no-repeat;
+}
+
+#idFrameC.closed #retractableButton {
+    background: url("/skins/icons/workzoneEscamote_on.png") 30px 30px no-repeat;
+}
+
 #idFrameC .wrapper {
     background-color: #3b3b3b;
     right: 10px;

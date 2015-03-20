@@ -185,6 +185,7 @@
         <div id="idFrameC" class="PNB" style="right:auto;width:{{ w1 ~ '%' }}">
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
+                    <div id="retractableButton"></div>
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
                         {% if GV_thesaurus %}
                         <li class="proposals_WZ">
@@ -199,11 +200,6 @@
                             </a>
                         </li>
                         {% endif %}
-                        <li style="float:right;">
-                            <a href="#" class="escamote">
-                                <img src="/skins/icons/workzoneEscamote.png" title="{{ 'Close the WorkZone' | trans }}"/>
-                            </a>
-                        </li>
                         <li class="ui-tabs-selected ui-corner-top">
                             <a href="#baskets" class="WZbasketTab">
                                 <div id="basket_menu_trigger">&#9660;</div>
