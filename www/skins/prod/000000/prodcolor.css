@@ -665,7 +665,7 @@ div.diapo {
     background-color: #111111;
     border: 1px solid #111111;
     top: 55px;
-    bottom: 30px;
+    bottom: 0;
 }
 
 #answers_status{
@@ -741,6 +741,7 @@ div.diapo {
 
 #idFrameT {
     margin-left: -20px;
+    margin-right: -20px;
 }
 
 .submenu .ui-buttonset{
