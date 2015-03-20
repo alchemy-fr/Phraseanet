@@ -214,6 +214,11 @@ span.ww_winTitle {
 
 #idFrameC {
     top: 0 !important;
+    min-width: 300px;
+}
+
+#idFrameC.closed {
+    min-width: 0;
 }
 
 
@@ -608,6 +613,7 @@ span.ww_winTitle {
 
 /******* PRESENTATION DE MINIATURES *******************************************/
 
+/*
 .infoTips {
     background: none !important;
     width: 13px !important;
@@ -615,8 +621,17 @@ span.ww_winTitle {
     padding-top: 4px;
     margin-right: 9px;
 }
+*/
 
 .contextMenuTrigger {
+    color: #fff;
+    font-size: 10px;
+    margin-left: 5px;
+    line-height: 18px;
+    vertical-align: middle;
+}
+
+.contextMenuTrigger:hover {
     color: #fff;
 }
 
