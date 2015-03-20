@@ -214,6 +214,11 @@ span.ww_winTitle {
 
 #idFrameC {
     top: 0 !important;
+    min-width: 300px;
+}
+
+#idFrameC.closed {
+    min-width: 0;
 }
 
 
