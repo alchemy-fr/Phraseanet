@@ -385,7 +385,7 @@
                                 <table class="main_content_table">
                                     {% for key,binary in discovered_binaries %}
                                         {% set required = '0' %}
-                                        {% if key == 'php' or key == 'phraseanet_indexer' or key == 'convert' or key == 'composite' or key == 'exiftool' %}
+                                        {% if key == 'php' or key == 'convert' or key == 'composite' or key == 'exiftool' %}
                                             {% set required = '1' %}
                                         {% endif %}
                                         <tr>

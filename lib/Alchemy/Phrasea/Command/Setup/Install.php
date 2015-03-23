@@ -316,7 +316,6 @@ class Install extends Command
     {
         return [
             'php_binary'           => $this->executableFinder->find('php'),
-            'phraseanet_indexer'   => $this->executableFinder->find('phraseanet_indexer'),
             'pdf2swf_binary'       => $this->executableFinder->find('pdf2swf'),
             'swf_extract_binary'   => $this->executableFinder->find('swfextract'),
             'swf_render_binary'    => $this->executableFinder->find('swfrender'),

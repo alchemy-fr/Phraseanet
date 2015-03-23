@@ -59,7 +59,6 @@ main:
         mp4box_binary: null
         pdftotext_binary: null
         recess_binary: null
-        phraseanet_indexer: null
         ffmpeg_timeout: 3600
         ffprobe_timeout: 60
         gs_timeout: 60

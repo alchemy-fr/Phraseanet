@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\TaskManager\Job\JobInterface;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -82,7 +83,8 @@ class Installer
             ]
         );
 
-        foreach (['PhraseanetIndexer', 'Subdefs', 'WriteMetadata'] as $jobName) {
+        foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
+            /** @var JobInterface $job */
             $job = $this->app['task-manager.job-factory']->create($jobName);
             $this->app['manipulator.task']->create(
                 $job->getName(),

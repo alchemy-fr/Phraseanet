@@ -155,7 +155,6 @@ class SetupTest extends \PhraseanetWebTestCase
             'db_name'           => $dbName,
             'db_template'       => 'en',
             'create_task'       => array(),
-            'binary_phraseanet_indexer' => '/path/to/phraseanet_indexer',
         );
 
         $client->request('POST', '/setup/installer/install/', $params);

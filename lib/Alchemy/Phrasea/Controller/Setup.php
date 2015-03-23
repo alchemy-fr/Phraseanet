@@ -204,7 +204,6 @@ class Setup implements ControllerProviderInterface
             $binaryData = [];
             foreach ([
                 'php_binary'         => $request->request->get('binary_php'),
-                'phraseanet_indexer' => $request->request->get('binary_phraseanet_indexer'),
                 'swf_extract_binary' => $request->request->get('binary_swfextract'),
                 'pdf2swf_binary'     => $request->request->get('binary_pdf2swf'),
                 'swf_render_binary'  => $request->request->get('binary_swfrender'),
