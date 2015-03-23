@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Setup\RequirementCollection;
 
 class SystemRequirements extends RequirementCollection implements RequirementInterface
 {
-    const REQUIRED_PHP_VERSION = '5.4.0';
+    const REQUIRED_PHP_VERSION = '5.5.0';
 
     public function __construct()
     {
@@ -281,11 +281,10 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         );
 
         $accelerator =
-            (function_exists('apc_store') && ini_get('apc.enabled'))
-            ||
-            function_exists('eaccelerator_put') && ini_get('eaccelerator.enable')
-            ||
-            function_exists('xcache_set')
+            version_compare(phpversion(), '5.5.0', '>=')
+            || (function_exists('apc_store') && ini_get('apc.enabled'))
+            || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable')
+            || function_exists('xcache_set')
         ;
 
         $this->addRecommendation(

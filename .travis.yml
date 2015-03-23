@@ -22,7 +22,6 @@ before_script:
   - npm --version
   - travis_retry npm install
   - phpenv config-rm xdebug.ini
-  - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini

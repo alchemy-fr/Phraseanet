@@ -19,6 +19,10 @@ class OpcodeCacheRequirement extends RequirementCollection implements Requiremen
     {
         $this->setName('Opcode Cache');
 
+        if (version_compare(phpversion(), '5.5.0', '>=')) {
+            return;
+        }
+
         $this->addRecommendation(
             extension_loaded('apc') || class_exists('xcache') || class_exists('wincache'),
             'A cache opcode extension such as apc, xcache or wincache is recommended',
