@@ -2667,10 +2667,6 @@ function set_start_page() {
     var start_page_query = $('#look_box_settings input[name=start_page_value]').val();
 
     if (val === 'QUERY') {
-        if ($.trim(start_page_query) === '') {
-            alert(language.start_page_query_error);
-            return;
-        }
         setPref('start_page_query', start_page_query);
     }
 
