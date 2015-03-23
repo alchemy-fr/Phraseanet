@@ -39,7 +39,7 @@ class PhraseanetExtension extends \Twig_Extension
                 'is_safe' => array('html')
             )),
             new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
-            new \Twig_SimpleFunction('border_checker_from_fqcn', array($this->app['border-manager'], 'getCheckerFromFQCN')),
+            new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
         );
     }
 
@@ -213,6 +213,11 @@ class PhraseanetExtension extends \Twig_Extension
         }
 
         return $this->app['settings']->getUserSetting($this->app['authentication']->getUser(), $setting, $default);
+    }
+
+    public function getCheckerFromFQCN($checkerFQCN)
+    {
+        return $this->app['border-manager']->getCheckerFromFQCN($checkerFQCN);
     }
 
     public function getName()
