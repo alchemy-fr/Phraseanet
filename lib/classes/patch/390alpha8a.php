@@ -111,10 +111,6 @@ class patch_390alpha8a extends patchAbstract
             case 'archive':
                 $name = 'Archive';
                 break;
-            case 'task_period_cindexer':
-            case 'cindexer':
-                $name = 'PhraseanetIndexer';
-                break;
             case 'task_period_emptycoll':
             case 'emptycoll':
                 $name = 'EmptyCollection';
