@@ -23,10 +23,6 @@ class setup
                 'name'               => 'PHP CLI',
                 'binary'             => $phpFinder->find()
             ],
-            'phraseanet_indexer' => [
-                'name'    => 'Indexeur Phrasea',
-                'binary'  => $finder->find('phraseanet_indexer')
-            ],
             'convert' => [
                 'name'      => 'ImageMagick (convert)',
                 'binary'    => $finder->find('convert')
