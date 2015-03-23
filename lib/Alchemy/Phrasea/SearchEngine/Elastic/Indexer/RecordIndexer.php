@@ -206,8 +206,16 @@ class RecordIndexer
         // Caption mapping
         $captionMapping = new Mapping();
         $mapping->add('caption', $captionMapping);
+        $mapping
+            ->add('caption_all', 'string')
+            ->addLocalizedSubfields($this->locales)
+        ;
         $privateCaptionMapping = new Mapping();
         $mapping->add('private_caption', $privateCaptionMapping);
+        $mapping
+            ->add('private_caption_all', 'string')
+            ->addLocalizedSubfields($this->locales)
+        ;
         // Inferred thesaurus concepts
         $conceptPathMapping = new Mapping();
         $mapping->add('concept_path', $conceptPathMapping);

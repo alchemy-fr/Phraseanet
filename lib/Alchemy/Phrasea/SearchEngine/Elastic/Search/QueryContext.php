@@ -19,10 +19,14 @@ class QueryContext
 
     public function narrowToFields(array $fields)
     {
-        // Ensure we are not escaping from original fields restrictions
-        $fields = array_intersect($this->fields, $fields);
-        if (!$fields) {
-            throw new QueryException('Query narrowed to non available fields');
+        if (is_array($this->fields)) {
+            // Ensure we are not escaping from original fields restrictions
+            $fields = array_intersect($this->fields, $fields);
+            if (!$fields) {
+                throw new QueryException('Query narrowed to non available fields');
+            }
+        } else {
+            $fields = null;
         }
 
         return new static($this->locales, $this->queryLocale, $fields);
@@ -30,13 +34,14 @@ class QueryContext
 
     public function getLocalizedFields()
     {
+        // TODO Private fields handling
         if ($this->fields === null) {
-            return $this->localizeField('*');
+            return $this->localizeField('caption_all');
         }
 
         $fields = array();
         foreach ($this->fields as $field) {
-            foreach ($this->localizeField($field) as $fields[]);
+            foreach ($this->localizeField(sprintf('caption.%s', $field)) as $fields[]);
         }
 
         return $fields;
@@ -47,10 +52,10 @@ class QueryContext
         $fields = array();
         foreach ($this->locales as $locale) {
             $boost = ($locale === $this->queryLocale) ? '^5' : '';
-            $fields[] = sprintf('caption.%s.%s%s', $field, $locale, $boost);
+            $fields[] = sprintf('%s.%s%s', $field, $locale, $boost);
         }
         // TODO Put generic analyzers on main field instead of "light" sub-field
-        $fields[] = sprintf('caption.%s.%s', $field, 'light^10');
+        $fields[] = sprintf('%s.light^10', $field);
 
         return $fields;
     }
