@@ -23,19 +23,16 @@ class TaskManipulator implements ManipulatorInterface
 {
     /** @var Notifier */
     private $notifier;
-    /** @var Objectmanager */
+    /** @var ObjectManager */
     private $om;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var EntityRepository */
-    private $repository;
 
-    public function __construct(ObjectManager $om, Notifier $notifier, TranslatorInterface $translator, EntityRepository $repo)
+    public function __construct(ObjectManager $om, Notifier $notifier, TranslatorInterface $translator)
     {
         $this->om = $om;
         $this->notifier = $notifier;
         $this->translator = $translator;
-        $this->repository = $repo;
     }
 
     /**
@@ -176,14 +173,6 @@ class TaskManipulator implements ManipulatorInterface
         $this->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRepository()
-    {
-        return $this->om->getRepository('Phraseanet:Task');
     }
 
     private function notify($message)
