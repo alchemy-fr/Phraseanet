@@ -16,17 +16,8 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 
-class Notifier
+class Notifier implements NotifierInterface
 {
-    /** Alerts the task manager a new Task has been created */
-    const MESSAGE_CREATE = 'create';
-    /** Alerts the task manager a Task has been updated */
-    const MESSAGE_UPDATE = 'update';
-    /** Alerts the task manager a Task has been deleted */
-    const MESSAGE_DELETE = 'delete';
-    /** Alerts the task manager to send its informations data */
-    const MESSAGE_INFORMATIONS = 'informations';
-
     /** @var \ZMQSocket */
     private $socket;
 
@@ -98,7 +89,7 @@ class Notifier
             case static::MESSAGE_UPDATE:
             case static::MESSAGE_DELETE:
                 return TaskManager::MESSAGE_PROCESS_UPDATE;
-            case static::MESSAGE_INFORMATIONS:
+            case static::MESSAGE_INFORMATION:
                 return TaskManager::MESSAGE_STATE;
             default:
                 throw new InvalidArgumentException(sprintf('Unable to understand %s message notification', $message));

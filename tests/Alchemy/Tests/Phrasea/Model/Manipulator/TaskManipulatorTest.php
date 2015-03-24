@@ -3,13 +3,13 @@
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
-use Alchemy\Phrasea\TaskManager\Notifier;
+use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class TaskManipulatorTest extends \PhraseanetTestCase
 {
-    /** @var Notifier|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var NotifierInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $notifier;
 
     /** @var TaskManipulator */
@@ -20,7 +20,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         parent::setUp();
         $this->notifier = $this->createNotifierMock();
 
-        $this->sut = new TaskManipulator(self::$DI['app']['orm.em'], $this->notifier, self::$DI['app']['translator']);
+        $this->sut = new TaskManipulator(self::$DI['app']['orm.em'], self::$DI['app']['translator'], $this->notifier);
     }
 
     public function testCreate()
@@ -28,7 +28,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->notifier
             ->expects($this->once())
             ->method('notify')
-            ->with(Notifier::MESSAGE_CREATE);
+            ->with(NotifierInterface::MESSAGE_CREATE);
 
         $this->assertCount(2, $this->findAllTasks());
 
@@ -49,7 +49,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->notifier
             ->expects($this->once())
             ->method('notify')
-            ->with(Notifier::MESSAGE_UPDATE);
+            ->with(NotifierInterface::MESSAGE_UPDATE);
 
         $task = $this->loadTask();
         $task->setName('new name');
@@ -64,7 +64,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->notifier
             ->expects($this->once())
             ->method('notify')
-            ->with(Notifier::MESSAGE_DELETE);
+            ->with(NotifierInterface::MESSAGE_DELETE);
 
         $task = $this->loadTask();
         $this->sut->delete($task);
@@ -76,7 +76,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->notifier
             ->expects($this->once())
             ->method('notify')
-            ->with(Notifier::MESSAGE_UPDATE);
+            ->with(NotifierInterface::MESSAGE_UPDATE);
 
         $task = $this->loadTask();
         $task->setStatus(Task::STATUS_STOPPED);
@@ -92,7 +92,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->notifier
             ->expects($this->once())
             ->method('notify')
-            ->with(Notifier::MESSAGE_UPDATE);
+            ->with(NotifierInterface::MESSAGE_UPDATE);
 
         $task = $this->loadTask();
         $task->setStatus(Task::STATUS_STARTED);
@@ -109,7 +109,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->notifier
             ->expects($this->once())
             ->method('notify')
-            ->with(Notifier::MESSAGE_UPDATE);
+            ->with(NotifierInterface::MESSAGE_UPDATE);
 
         $task = $this->loadTask();
         $task->setCrashed(42);
@@ -137,6 +137,14 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $this->assertEquals(42, (int) $settings->bas_id);
     }
 
+    public function testItsNotifierCanBeChanged()
+    {
+        $notifier = $this->createNotifierMock();
+
+        $this->assertSame($this->sut, $this->sut->setNotifier($notifier));
+        $this->assertAttributeSame($notifier, 'notifier', $this->sut);
+    }
+
     /**
      * @return Task[]
      */
@@ -162,8 +170,6 @@ class TaskManipulatorTest extends \PhraseanetTestCase
      */
     private function createNotifierMock()
     {
-        return $this->getMockBuilder(Notifier::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->getMockBuilder(NotifierInterface::class)->getMock();
     }
 }
