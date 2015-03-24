@@ -177,11 +177,18 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                        <label for="aggregable" class="checkbox">
-                            <input id="aggregable" type="checkbox" <%= field.aggregable ? "checked='checked'" : "" %> />
-                                {% trans %}Aggregable fields{% endtrans %}
-                            </label>
+                    <td>
+                        <label for="aggregable">{% trans %}Aggregation{% endtrans %}</label>
+                    </td>
+                    <td>
+                        <select id="aggregable">
+                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'>{% trans %}Not aggregated{% endtrans %}</option>
+                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
+                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
+                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
+                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
+                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
+                        </select>
                     </td>
                 </tr>
                 <tr>
