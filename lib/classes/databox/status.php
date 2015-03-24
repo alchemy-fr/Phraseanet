@@ -35,9 +35,9 @@ class databox_status
 
         foreach ($structures as $databox_id => $structure) {
             if (false === $see_all[$databox_id]) {
-                $structure = array_filter(function($status) {
+                $structure = array_filter($structure->toArray(), function ($status) {
                     return (bool) $status['searchable'];
-                }, $structure->toArray());
+                });
             }
 
             foreach($structure as $bit => $status) {
