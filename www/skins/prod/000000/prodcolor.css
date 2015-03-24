@@ -2993,6 +2993,11 @@ DIV.thesaurus U.w {
     vertical-align: middle;
 }
 
+#mainMenu #mainLogo {
+    margin:0 10px;
+    margin-top: -4px;
+}
+
 #mainMenu li, #mainMenu li span {
     height: 40px;
     line-height: 40px;
