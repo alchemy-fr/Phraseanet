@@ -19,7 +19,7 @@ class LiveInformation
     private $status;
     private $notifier;
 
-    public function __construct(TaskManagerStatus $status, Notifier $notifier)
+    public function __construct(TaskManagerStatus $status, NotifierInterface $notifier)
     {
         $this->status = $status;
         $this->notifier = $notifier;
@@ -87,7 +87,7 @@ class LiveInformation
     private function query($throwException)
     {
         try {
-            return $this->notifier->notify(Notifier::MESSAGE_INFORMATIONS);
+            return $this->notifier->notify(NotifierInterface::MESSAGE_INFORMATION);
         } catch (RuntimeException $e) {
             if ($throwException) {
                 throw $e;

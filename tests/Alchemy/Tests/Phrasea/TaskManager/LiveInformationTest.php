@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\TaskManager;
 
 use Alchemy\Phrasea\TaskManager\LiveInformation;
-use Alchemy\Phrasea\TaskManager\Notifier;
+use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\Model\Entities\Task;
 
@@ -14,7 +14,7 @@ class LiveInformationTest extends \PhraseanetTestCase
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
                 ->method('notify')
-                ->with(Notifier::MESSAGE_INFORMATIONS)
+                ->with(NotifierInterface::MESSAGE_INFORMATION)
                 ->will($this->returnValue([
                     'manager' => [
                         'process-id' => 1234,
@@ -35,7 +35,7 @@ class LiveInformationTest extends \PhraseanetTestCase
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
                 ->method('notify')
-                ->with(Notifier::MESSAGE_INFORMATIONS)
+                ->with(NotifierInterface::MESSAGE_INFORMATION)
                 ->will($this->returnValue(null));
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
@@ -54,7 +54,7 @@ class LiveInformationTest extends \PhraseanetTestCase
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
                 ->method('notify')
-                ->with(Notifier::MESSAGE_INFORMATIONS)
+                ->with(NotifierInterface::MESSAGE_INFORMATION)
                 ->will($this->returnValue([
                     'manager' => [
                         'process-id' => 1234,
@@ -83,7 +83,7 @@ class LiveInformationTest extends \PhraseanetTestCase
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
                 ->method('notify')
-                ->with(Notifier::MESSAGE_INFORMATIONS)
+                ->with(NotifierInterface::MESSAGE_INFORMATION)
                 ->will($this->returnValue(null));
 
         $live = new LiveInformation($this->createStatusMock(TaskManagerStatus::STATUS_STARTED), $notifier);
@@ -109,8 +109,6 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     private function createNotifierMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\TaskManager\Notifier')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->getMock(NotifierInterface::class);
     }
 }

@@ -12,13 +12,13 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Doctrine\DBAL\Driver\Connection;
+use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Console\Helper\DialogHelper;
 
 class Install extends Command
 {
@@ -41,7 +41,6 @@ class Install extends Command
             ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template (available are fr (french) and en (english))', null)
             ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
-            ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
             ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
             ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
@@ -98,7 +97,6 @@ class Install extends Command
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
-        $indexer = $this->getindexer($input, $output);
 
         if (!$input->getOption('yes')) {
             $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
@@ -110,7 +108,6 @@ class Install extends Command
             }
         }
 
-        $this->container['phraseanet.installer']->setPhraseaIndexerPath($indexer);
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
 
         if (null !== $this->getApplication()) {
@@ -299,17 +296,6 @@ class Install extends Command
         }
 
         return $serverName;
-    }
-
-    private function getindexer(InputInterface $input, OutputInterface $output)
-    {
-        if ($input->getOption('indexer') == 'auto') {
-            $indexer = $this->executableFinder->find('phraseanet_indexer');
-        } else {
-            $indexer = $input->getOption('indexer');
-        }
-
-        return $indexer;
     }
 
     private function detectBinaries()

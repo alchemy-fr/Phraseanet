@@ -22,6 +22,7 @@ use Alchemy\Phrasea\TaskManager\Job\WebhookJob;
 use Alchemy\Phrasea\TaskManager\Job\WriteMetadataJob;
 use Alchemy\Phrasea\TaskManager\Job\Factory as JobFactory;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
+use Alchemy\Phrasea\TaskManager\NullNotifier;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Alchemy\Phrasea\TaskManager\Notifier;
@@ -33,6 +34,10 @@ class TasksServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['task-manager.notifier'] = $app->share(function (Application $app) {
+            if (isset($app['phraseanet.setup_mode']) && $app['phraseanet.setup_mode']) {
+                return new NullNotifier();
+            }
+
             return Notifier::create($app['monolog'], $app['task-manager.options']);
         });
 

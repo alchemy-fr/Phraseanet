@@ -75,4 +75,6 @@ $app->command(new CheckEnvironment('check:system'));
 $app->command(new Install('system:install'));
 $app->command(new CrossDomainGenerator());
 
+$app['phraseanet.setup_mode'] = true;
+
 exit(is_int($app->run()) ? : 1);

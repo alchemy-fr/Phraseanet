@@ -152,7 +152,7 @@ class TaskManager implements ControllerProviderInterface
         }
 
         $tasks = [];
-        foreach ($app['manipulator.task']->getRepository()->findAll() as $task) {
+        foreach ($app['repo.tasks']->findAll() as $task) {
             $tasks[$task->getId()] = $app['task-manager.live-information']->getTask($task);
         }
 
