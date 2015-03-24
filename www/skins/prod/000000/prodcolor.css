@@ -292,18 +292,122 @@ span.ww_winTitle {
     z-index: 10;
 }
 
+#idFrameC .ui-tabs #thesaurus_tab .ui-state-active,
+#idFrameC .ui-tabs #thesaurus_tab .ui-state-active a {
+    border-bottom: 1px solid #884c92;
+}
+
 #idFrameC .ui-tabs #thesaurus_tab li a {
     color: #FFF;
 }
 
+#idFrameC .ui-tabs #thesaurus_tab li.th_tab a {
+    height: 39px;
+    line-height: 39px;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0 20px;
+    display: block;
+    text-decoration: none;
+}
+
 #idFrameC .ui-tabs #thesaurus_tab li.th_tab {
-    height: 23px;
-    margin-left: 10px;
+    height: 39px;
+    margin: 0;
 }
 
 #THPD_T, #THPD_C {
     margin-top: 10px;
-    margin-left: 5px;
+    margin-left: 0px;
+}
+
+#THPD_WIZARDS .gform .input-append {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #303030;
+}
+
+#THPD_WIZARDS .gform .input-append input.input-medium {
+    width: 80%;
+    border-radius: 0;
+    height: 50px;
+    padding: 0 2.5%;
+    background: #d4d4d4;
+    border: none;
+    float: left;
+    margin: 0;
+}
+
+#THPD_WIZARDS .gform .input-append .th_ok {
+    width: 15%;
+    line-height: 50px;
+    vertical-align: middle;
+    padding: 0;
+    border-radius: 0;
+    background: #3b3b3b url('/skins/icons/icon_magnify.png') 50% no-repeat;
+    border: none;
+    margin: 0;
+    outline:none;
+    float: left;
+    box-shadow: none;
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+}
+
+.treeview li {
+    background-image: none;
+}
+
+.treeview>li.expandable {
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    position: relative;
+    border-left: 5px #884c93 solid;
+    background: none;
+}
+
+.treeviewul li {
+    color: #a1a1a1;
+    vertical-align: middle;
+}
+
+.treeview .hitarea {
+    background: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.treeview ul li .hitarea {
+    background: url('/skins/icons/icon_tree.png') 0 0 no-repeat;    
+    position: relative;
+    height: 9px;
+    width: 9px;
+    margin-top: 5px;
+}
+
+.treeview ul li:hover {
+    color: #fff;
+}
+
+.treeview ul li span.h {
+    color: #884c92 !important;
+}
+
+
+.treeview ul li span {
+    color: #a6a6a6;
+}
+
+#THPD_tabs .treeview LI.selected SPAN {
+    background-color: #884c92 !important;
+    color: #fff !important;
+}
+
+#THPD_tabs .treeview ul li.expandable {
+    
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
@@ -1017,7 +1121,7 @@ div.diapo {
 
 #idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
     position: absolute;
-    top: 44px;
+    top: 51px;
     left: 0px;
     bottom: 0px;
     right: 0px;
