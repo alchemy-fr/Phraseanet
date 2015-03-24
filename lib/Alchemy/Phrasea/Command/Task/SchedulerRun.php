@@ -11,11 +11,10 @@
 
 namespace Alchemy\Phrasea\Command\Task;
 
-use Alchemy\TaskManager\TaskManager;
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\TaskManager\Event\TaskManagerSubscriber\LockFileSubscriber;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
