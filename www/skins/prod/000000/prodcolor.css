@@ -1224,9 +1224,6 @@ div.diapo {
     border: 3px solid #404040;
 }
 
-.ui-accordion .ui-accordion-header.grouping {
-    background-image: url('../../icons/group_back.png');
-}
 
 .ui-accordion .ui-accordion-content {
     background-color: #212121;

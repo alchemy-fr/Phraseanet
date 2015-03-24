@@ -200,16 +200,14 @@
           <a class="workzone-menu-title" href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
             <span>
             {# story.getRecord(app).get_base_id()|get_collection_logo(app)|raw #}
-            <i> {{ story.getRecord(app).get_title() }} </i>
+            {{ story.getRecord(app).get_title() }}
             </span>
           </a>
           <div class="menu">
               <table>
                   <tr>
                       <td>
-                          <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
-                            &#9660;
-                          </a>
+                          <a class="contextMenuTrigger"></a>
                       </td>
                   </tr>
               </table>
