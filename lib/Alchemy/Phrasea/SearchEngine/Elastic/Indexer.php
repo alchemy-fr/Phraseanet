@@ -83,8 +83,7 @@ class Indexer
         $params['index'] = $this->options['index'];
         $params['type'] = RecordIndexer::TYPE_NAME;
         $params['body'][RecordIndexer::TYPE_NAME] = $this->recordIndexer->getMapping();
-
-        // @todo Add term mapping
+        $params['body'][TermIndexer::TYPE_NAME]   = $this->termIndexer->getMapping();
 
         // @todo This must throw a new indexation if a mapping is edited
         $this->client->indices()->putMapping($params);

@@ -72,6 +72,12 @@ SQL;
                         $record[$type][$key] = array();
                     }
                     $record[$type][$key][] = $value;
+                    // Collect value in the "all" field
+                    $field = sprintf('%s_all', $type);
+                    if (!isset($record[$field])) {
+                        $record[$field] = array();
+                    }
+                    $record[$field][] = $value;
                     break;
 
                 case 'exif':
