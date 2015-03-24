@@ -11,16 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
-use Alchemy\Phrasea\SearchEngine\Elastic\Fetcher\ScheduledIndexationRecordFetcher;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\TaskManager\Editor\IndexerEditor;
-use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Platforms\SQLAnywhere11Platform;
-use Doctrine\DBAL\SQLParserUtils;
-use MediaAlchemyst\Transmuter\Image2Image;
 
 class IndexerJob extends AbstractJob
 {

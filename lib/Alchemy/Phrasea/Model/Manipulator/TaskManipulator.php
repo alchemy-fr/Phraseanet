@@ -28,14 +28,14 @@ class TaskManipulator implements ManipulatorInterface
     /** @var TranslatorInterface */
     private $translator;
 
-    public function __construct(ObjectManager $om, TranslatorInterface $translator, NotifierInterface $notifier=null)
+    public function __construct(ObjectManager $om, TranslatorInterface $translator, NotifierInterface $notifier = null)
     {
         $this->om = $om;
         $this->translator = $translator;
         $this->setNotifier($notifier);
     }
 
-    public function setNotifier(NotifierInterface $notifier=null)
+    public function setNotifier(NotifierInterface $notifier = null)
     {
         $this->notifier = $notifier ?: new NullNotifier();
         return $this;
