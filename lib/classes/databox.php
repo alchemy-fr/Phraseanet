@@ -992,7 +992,7 @@ class databox extends base
                 ->set_separator(isset($field['separator']) ? (string) $field['separator'] : '')
                 ->set_required((isset($field['required']) && (string) $field['required'] == 1))
                 ->set_business((isset($field['business']) && (string) $field['business'] == 1))
-                ->set_aggregable((isset($field['aggregable']) && (string) $field['aggregable'] == 1))
+                ->set_aggregable((isset($field['aggregable']) ? (string) $field['aggregable'] : 0))
                 ->set_type($type)
                 ->set_tbranch(isset($field['tbranch']) ? (string) $field['tbranch'] : '')
                 ->set_thumbtitle(isset($field['thumbtitle']) ? (string) $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))

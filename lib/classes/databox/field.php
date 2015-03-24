@@ -122,8 +122,6 @@ class databox_field implements cache_cacheableInterface
      */
     protected $Business;
 
-    protected $aggregable;
-
     protected $renamed = false;
 
     /**
@@ -146,6 +144,7 @@ class databox_field implements cache_cacheableInterface
     protected $VocabularyRestriction = false;
     protected $on_error = false;
     protected $original_src;
+    protected $aggregable;
 
     const TYPE_TEXT = "text";
     const TYPE_DATE = "date";
@@ -221,7 +220,7 @@ class databox_field implements cache_cacheableInterface
         $this->multi = (Boolean) $row['multi'];
         $this->Business = (Boolean) $row['business'];
         $this->report = (Boolean) $row['report'];
-        $this->aggregable = (Boolean) $row['aggregable'];
+        $this->aggregable = (Int) $row['aggregable'];
         $this->position = (Int) $row['sorter'];
         $this->type = $row['type'] ? : self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
@@ -271,7 +270,7 @@ class databox_field implements cache_cacheableInterface
 
     public function isAggregable()
     {
-        return $this->aggregable;
+        return $this->aggregable != 0;
     }
 
     /**
@@ -408,7 +407,7 @@ class databox_field implements cache_cacheableInterface
             ':separator'             => $this->separator,
             ':multi'                 => $this->multi ? '1' : '0',
             ':business'              => $this->Business ? '1' : '0',
-            ':aggregable'            => $this->aggregable ? '1' : '0',
+            ':aggregable'            => $this->aggregable,
             ':report'                => $this->report ? '1' : '0',
             ':type'                  => $this->type,
             ':tbranch'               => $this->tbranch,
@@ -460,7 +459,7 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('multi', $this->multi ? '1' : '0');
         $meta->setAttribute('report', $this->report ? '1' : '0');
         $meta->setAttribute('business', $this->Business ? '1' : '0');
-        $meta->setAttribute('aggregable', $this->aggregable ? '1' : '0');
+        $meta->setAttribute('aggregable', $this->aggregable);
         $meta->setAttribute('type', $this->type);
         $meta->setAttribute('tbranch', $this->tbranch);
         if ($this->multi) {
@@ -721,9 +720,9 @@ class databox_field implements cache_cacheableInterface
         return $this;
     }
 
-    public function set_aggregable($boolean)
+    public function set_aggregable($int)
     {
-        $this->aggregable = ! ! $boolean;
+        $this->aggregable = $int;
 
 
         return $this;

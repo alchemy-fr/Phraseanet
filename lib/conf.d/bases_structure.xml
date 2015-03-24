@@ -2655,7 +2655,7 @@
           </field>
           <field>
             <name>aggregable</name>
-            <type>int(1) unsigned</type>
+            <type>int(5)</type>
             <null></null>
             <extra></extra>
             <default>0</default>
