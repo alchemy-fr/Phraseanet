@@ -15,9 +15,13 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Form\TaskForm;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Process\Process;
 
 class TaskManager implements ControllerProviderInterface
 {
@@ -125,12 +129,42 @@ class TaskManager implements ControllerProviderInterface
     {
         $app['task-manager.status']->start();
 
+        $cmdLine = sprintf(
+            '%s %s %s',
+            $app['conf']->get(['main', 'binaries', 'php_binary']),
+            realpath(__DIR__ . '/../../../../../bin/console'),
+            'task-manager:scheduler:run'
+        );
+
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = $app['dispatcher'];
+        $dispatcher->addListener(KernelEvents::TERMINATE, function () use ($cmdLine) {
+            $process = new Process($cmdLine);
+            $process->setTimeout(0);
+            $process->disableOutput();
+            set_time_limit(0);
+            ignore_user_abort(true);
+
+            $process->run();
+        }, -1000);
+
         return $app->redirectPath('admin_tasks_list');
     }
 
     public function stopScheduler(Application $app, Request $request)
     {
         $app['task-manager.status']->stop();
+
+        /** @var LiveInformation $info */
+        $info = $app['task-manager.live-information'];
+        $data = $info->getManager();
+        if (null !== $pid = $data['process-id']) {
+            if (substr(php_uname(), 0, 7) == "Windows"){
+                exec(sprintf('TaskKill /PID %d', $pid));
+            } else {
+                exec(sprintf('kill %d', $pid));
+            }
+        }
 
         return $app->redirectPath('admin_tasks_list');
     }
