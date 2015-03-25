@@ -160,7 +160,7 @@ class Query implements ControllerProviderInterface
         $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' .$app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' .$app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a><div id="docInfo">' . $app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>']).'</div>';
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;

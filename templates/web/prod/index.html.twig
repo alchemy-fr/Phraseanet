@@ -96,6 +96,10 @@
     <![endif]-->
 
     <style title="color_selection" type="text/css">
+        /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
+            color: #{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF') }};
+            background-color: #{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection-disabled', '333333')}}};
+        }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF')}};
             background-color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
@@ -106,7 +110,7 @@
 
     {% if step %}
         <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/joyride/joyride-2.1.css' }) }}" >
-            <style type="text/css" title="step_by_step_tour">
+            <style>
                 .joyride-tip-guide {
                     background-color: #eee;
                     color: #000;
@@ -171,7 +175,7 @@
                 $('#clientModal').modal();
             </script>
         {% endif %}
-
+        
         {% set ratio = app['settings'].getUserSetting(app['authentication'].getUser(), 'search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
@@ -500,13 +504,6 @@
                             </table>
                         </div>
                     </form>
-                    <div id="answers_status">
-                        <div class="infos">
-                            <span id="tool_results">
-
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
                 <!--
@@ -528,7 +525,214 @@
 
             <div id="idFrameT" class="PNB ui-corner-top">
                 <div class="tools PNB10 btn-toolbar">
-                    {% include "prod/toolbar.html.twig" with {acl: app['acl'].get(app['authentication'].getUser()) } %}
+
+                    <span class="dropdownButton">
+                        <div class="btn-group">
+                            <button id="selectCase" class="default_action btn btn-inverse">&nbsp;</button>
+                            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="answer_selector all_selector">
+                                        {{ 'reponses:: selectionner tout' | trans }}
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a class="answer_selector none_selector">
+                                        {{ 'reponses:: selectionner rien' | trans }}
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a class="answer_selector image_selector">
+                                        {{ 'phraseanet::type:: images' | trans }}
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a class="answer_selector document_selector">
+                                        {{ 'phraseanet::type:: documents' | trans }}
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a class="answer_selector video_selector">
+                                        {{ 'phraseanet::type:: videos' | trans }}
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a class="answer_selector audio_selector">
+                                        {{ 'phraseanet::type:: audios' | trans }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
+
+                    <span class="dropdownButton">
+                        <div class="btn-group">
+                            <button  id="TOOL_disktt" class="default_action TOOL_disktt_btn results_window btn btn-inverse">
+                                <img src="/skins/prod/000000/images/disktt_history.png" height="16" width="16" /> {{ 'action : exporter' | trans }}
+                            </button>
+                            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="TOOL_print_btn results_window">
+                                        <img src="/skins/prod/000000/images/print_history.png" height="16" width="16" />
+                                        {{ 'action : print' | trans }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
+
+                    {% set actions = {} %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('modifyrecord') %}
+                        {% set label %}
+                            {{ 'action : editer' | trans }}
+                        {% endset %}
+                        {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+                    {% endif %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('changestatus') %}
+                        {% set label %}
+                            {{ 'action : status' | trans }}
+                        {% endset %}
+                        {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.png", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
+                    {% endif %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
+                        {% set label %}
+                            {{ 'action : collection' | trans }}
+                        {% endset %}
+                        {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.png", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
+                    {% endif %}
+
+                    {% set n_actions = actions|length %}
+                    {% if n_actions > 1 %}
+                        <span class="dropdownButton">
+                            <div class="btn-group">
+                                {% for action in actions %}
+                                    {% if loop.first %}
+                                        <button class="default_action {{ action.class }} results_window btn btn-inverse">
+                                            <img src="{{ action.icon }}" height="16" width="16" /> {{ action.label }}
+                                        </button>
+                                    {% endif %}
+                                {% endfor %}
+                                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    {% for action in actions %}
+                                        {% if not loop.first %}
+                                            <li>
+                                                <a class="{{ action.class }} results_window">
+                                                    <img src="{{ action.icon }}" height="16" width="16" />
+                                                    {{ action.label }}
+                                                </a>
+                                            </li>
+                                            {% if not loop.last %}
+                                                <li class="divider"></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </span>
+                    {% elseif n_actions == 1 %}
+                        <span class="classicButton">
+                            <div class="btn-group">
+                            {% for action in actions %}
+                                <button class="{{ action.class }} results_window btn btn-inverse">
+                                    <img src="{{ action.icon }}"/> {{ action.label }}
+                                </button>
+                            {% endfor %}
+                            </div>
+                        </span>
+                    {% endif %}
+
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('push') and app['acl'].get(app['authentication'].getUser()).has_right('bas_chupub') %}
+                        <span class="dropdownButton">
+                            <div class="btn-group">
+                                <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
+                                    <img src="/skins/icons/push16.png" height="16" width="16" /> {{ 'action : push' | trans }}
+                                </button>
+                                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="TOOL_feedback_btn results_window">
+                                            <img src="/skins/icons/feedback16.png" height="16" width="16" />
+                                            {{ 'Feedback' | trans }}
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a class="TOOL_bridge_btn results_window" href="{{ path("prod_bridge_manager") }}">
+                                            <img src="/skins/icons/door.png" height="16" width="16" />
+                                            {{ 'action : bridge' | trans }}
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a class="TOOL_publish_btn results_window">
+                                            <img src="/skins/icons/rss16.png" height="16" width="16" />
+                                            {{ 'action : publier' | trans }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </span>
+                    {% elseif app['acl'].get(app['authentication'].getUser()).has_right('push') %}
+                        <span class="dropdownButton">
+                            <div class="btn-group">
+                                <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
+                                    <img src="/skins/icons/push16.png" height="16" width="16" /> {{ 'action : push' | trans }}
+                                </button>
+                                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="TOOL_feedback_btn results_window">
+                                            <img src="/skins/icons/feedback16.png" height="16" width="16" />
+                                            {{ 'Feedback' | trans }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </span>
+                    {% elseif app['acl'].get(app['authentication'].getUser()).has_right('bas_chupub') %}
+                        <span class="dropdownButton">
+                            <div class="btn-group">
+                                <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
+                                    <img src="/skins/icons/door.png" height="16" width="16" /> {{ 'action : bridge' | trans }}
+                                </button>
+                                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="TOOL_publish_btn results_window">
+                                            <img src="/skins/icons/rss16.png" height="16" width="16" />
+                                            {{ 'action : publier' | trans }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </span>
+                    {% endif %}
+
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('doctools') %}
+                        <span class="classicButton">
+                            <div class="btn-group">
+                                <button class="TOOL_imgtools_btn results_window btn btn-inverse" >
+                                    <img src="/skins/prod/000000/images/imgtools_history.gif" height="16" width="16" /> {{ 'action : outils' | trans }}
+                                </button>
+                            </div>
+                        </span>
+                    {% endif %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') %}
+                        <span class="classicButton">
+                            <div class="btn-group">
+                                <button class="TOOL_trash_btn results_window btn btn-inverse" >
+                                    <img src="/skins/icons/delete.png" height="16" width="16" /> {{ 'action : supprimer' | trans }}
+                                </button>
+                            </div>
+                        </span>
+                    {% endif %}
                     <a href="#" id="settings" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
                 </div>
                 <div id="answers" class=" PNB10">
@@ -543,6 +747,13 @@
                             {% endif %}
                         });
                     </script>
+                </div>
+                <div id="answers_status">
+                    <div class="infos">
+                        <span id="tool_results">
+
+                        </span>
+                    </div>
                 </div>
                 <!--div id="answers_status" class="PNB">
                     <table>
@@ -590,6 +801,7 @@
 {% endblock %}
 
 {% block extra_content %}
+
     <div id="MESSAGE"></div>
     <div id="MESSAGE-push"></div>
     <div id="MESSAGE-publi"></div>
