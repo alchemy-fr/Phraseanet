@@ -25,7 +25,7 @@ class NginxMode extends AbstractServerMode implements ModeInterface
         $xAccelMapping = [];
 
         foreach ($this->mapping as $entry) {
-            $xAccelMapping[] = sprintf('%s=%s', $entry['mount-point'], $entry['directory']);
+            $xAccelMapping[] = sprintf('%s=%s', $entry['directory'], $entry['mount-point']);
         }
 
         if (count($xAccelMapping) > 0 ) {

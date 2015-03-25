@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\Request;
 
-class NginxModeTest extends \PhraseanetTestCase
+class NginxModeTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetVirtualHost()
     {
@@ -43,7 +43,7 @@ class NginxModeTest extends \PhraseanetTestCase
         $mode->setHeaders($request);
         $this->assertArrayHasKey('x-sendfile-type', $request->headers->all());
         $this->assertArrayHasKey('x-accel-mapping', $request->headers->all());
-        $this->assertEquals('/protected='.realpath($protected).',/uploads='.realpath($upload), $request->headers->get('X-Accel-Mapping'));
+        $this->assertEquals(realpath($protected).'=/protected,'.realpath($upload).'=/uploads', $request->headers->get('X-Accel-Mapping'));
     }
 
     public function testSetInvalidHeaders()
