@@ -40,6 +40,7 @@ class PhraseanetExtension extends \Twig_Extension
             )),
             new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
             new \Twig_SimpleFunction('border_checker_from_fqcn', array($this->app['border-manager'], 'getCheckerFromFQCN')),
+            new \Twig_SimpleFunction('format_duration', array($this, 'formatDuration')),
         );
     }
 
@@ -219,4 +220,11 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return 'phraseanet';
     }
+    
+    public function formatDuration($mediaDuration)
+    {
+        $duration = gmdate("H:i:s", $mediaDuration);
+        return $duration;
+    }
+
 }

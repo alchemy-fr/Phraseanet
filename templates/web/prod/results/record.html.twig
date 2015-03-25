@@ -31,7 +31,7 @@
                 {% endif %}
                 <span class="duration">
                     {% if record.type == 'video' and attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) is defined %}
-                        {{ attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) }}
+                        {{ format_duration(attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION'))) }}
                     {% endif %}
                 </span>
             </div>
