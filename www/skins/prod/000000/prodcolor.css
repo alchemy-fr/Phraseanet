@@ -4597,6 +4597,29 @@ ui-dialog-titlebar {
     /*border: 1px solid #3b3b3b;*/
 }
 
+#paginate #tool_navigate #NEXT_PAGE:hover,
+#paginate #tool_navigate #PREV_PAGE:hover,
+#paginate #tool_navigate #last:hover,
+#paginate #tool_navigate #first:hover {
+    background-color: #076882;
+}
+
+#paginate #tool_navigate #NEXT_PAGE {
+    background: url('../../icons/sprite_paginate.png') -82px 20px no-repeat;
+}
+
+#paginate #tool_navigate #PREV_PAGE {
+    background: url('../../icons/sprite_paginate.png') -39px 20px no-repeat;
+}
+
+#paginate #tool_navigate #last {
+    background: url('../../icons/sprite_paginate.png') -131px 20px no-repeat;
+}
+
+#paginate #tool_navigate #first {
+    background: url('../../icons/sprite_paginate.png') 11px 20px no-repeat;
+}
+
 
 #paginate #tool_navigate input,
 #paginate #tool_navigate a {
