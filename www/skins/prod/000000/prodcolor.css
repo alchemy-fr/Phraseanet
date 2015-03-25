@@ -687,13 +687,13 @@ span.ww_winTitle {
 }
 
 #searchForm {
-    width: 90%;
+    width: 100%;
     float: left;
 }
 
 #searchForm .input-append {
     float: left;
-    width: 60%;
+    width: 70%;
 }
 
 #searchForm .control-group {
@@ -816,8 +816,11 @@ div.diapo {
 }
 
 #answers_status{
-    width: auto;
-    float: right;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  height: 60px;
+  width: 400px;
 }
 
 #answers_status table{
@@ -838,27 +841,46 @@ div.diapo {
     line-height: 18px;
     font-size: 11px;
     color: #949494;
+    height: 60px;
 }
 
 #answers_status .infos .infoDialog {
     float: left;
     color: #949494;
-    margin-top: 2px;
-    margin-right: 30px;
+    height: 60px;
+    background: #0c4554;
+    color: #fff;
+    padding: 0 25px;
+    border-right: 1px solid #000;
+    font-size: 11px;
+    text-transform: capitalize;
 }
 
 #answers_status .infos .infoDialog span {
+    margin-top: 13px;
     font-size: 20px;
     display: block;
+    margin-bottom: 3px;
 }
 
-#answers_status .infos #nbrecsel {
+#answers_status #docInfo {
+    height: 40px;
+    background: #0c4554;
+    color: #fff;
+    padding: 0 25px;
+    padding-top: 20px;
     float: left;
-    font-size: 20px;
-    margin-right: 10px;
-    height: 30px;
-    line-height: 36px;
-    vertical-align: middle;
+    min-width: 105px;
+    font-size: 11px;
+    line-height: 12px;
+}
+
+
+#answers_status .infos #nbrecsel {
+    font-size: 35px;
+    margin-top: 7px;
+    float: left;
+    margin-right: 15px;
 }
 
 
@@ -1997,7 +2019,7 @@ DIV.onglets SPAN {
 }
 
 DIV.onglets SPAN.actif {
-    BORDER:	#404040 1px none;
+    BORDER: #404040 1px none;
     BORDER-BOTTOM: #404040 1px solid;
     BACKGROUND-COLOR: #404040;
     COLOR: #949494;
@@ -4593,7 +4615,7 @@ ui-dialog-titlebar {
 }
 
 #paginate #tool_navigate {
-    background-color: #000;
+    background-color: #141414;
     /*border: 1px solid #3b3b3b;*/
 }
 
