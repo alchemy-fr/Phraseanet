@@ -33,32 +33,35 @@ before_install:
   - yes | pecl install imagick
 
 install:
+  - npm --version
+  - travis_retry npm install
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
-  - travis_retry grunt install-assets
+  - travis_retry ./node_modules/.bin/grunt install-assets
   - ./bin/developer assets:compile-less
 
 before_script:
-  - node --version
-  - npm --version
-  - travis_retry npm install
-  - mysql -e 'create database update39_test;create database ab_test;create database db_test;'
-  - mysql -e 'SET @@global.sql_mode= STRICT_ALL_TABLES;'
-  - mysql -e 'SET @@global.max_allowed_packet= 33554432;'
-  - mysql -e 'SET @@global.wait_timeout= 999999;'
-
-script:
+  - >
+    mysql -e '
+    CREATE DATABASE update39_test;
+    CREATE DATABASE ab_test;
+    CREATE DATABASE db_test;
+    SET @@global.sql_mode= STRICT_ALL_TABLES;
+    SET @@global.max_allowed_packet= 33554432;
+    SET @@global.wait_timeout= 999999;
+    '
   - ./bin/developer system:uninstall
   - ./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
-  - mysql -e 'SELECT version FROM ab_test.sitepreff \G'
-  - mysql -e 'SELECT * FROM db_test.pref WHERE prop = "version" \G'
   - >
     if [ "$SETUP_MODE" = "update" ]; then
       ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
       php resources/hudson/cleanupSubdefs.php;
     fi
+  - mysql -e 'SELECT ab.version AS applibox_version, db.value AS databox_version FROM ab_test.sitepreff ab, db_test.pref db WHERE db.prop = "version"'
   - ./bin/developer ini:setup-tests-dbs
   - ./bin/console searchengine:index:create
   - ./bin/developer phraseanet:regenerate-sqlite
   - ./bin/developer phraseanet:generate-js-fixtures
+
+script:
   - ./node_modules/.bin/grunt test
   - ./bin/phpunit

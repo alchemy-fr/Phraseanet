@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3ecc359e45901eca385f83233299d840",
+    "hash": "92474e976576454608ed9d95a2bd5362",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
