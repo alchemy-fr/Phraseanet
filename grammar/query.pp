@@ -70,7 +70,7 @@ string_keyword_symbol:
   | symbol()
 
 #context:
-    ::parenthese_:: string()+ ::_parenthese::
+    ::parenthese_:: ::space::? string()+ ::space::? ::_parenthese::
 
 string:
     <word>
