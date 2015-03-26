@@ -89,8 +89,8 @@ keyword:
   | <collection>
 
 symbol:
-    ::parenthese_::
-  | ::_parenthese::
-  | ::bracket_::
-  | ::_bracket::
-  | ::colon::
+    <parenthese_>
+  | <_parenthese>
+  | <bracket_>
+  | <_bracket>
+  | <colon>
