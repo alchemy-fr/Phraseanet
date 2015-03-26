@@ -58,7 +58,7 @@ bracketed_text:
 text:
     string_keyword_symbol()
   ( <space>? string_keyword_symbol() )*
-    context()?
+  ( ::space::? context() )?
 
 string_keyword_symbol:
     string()
