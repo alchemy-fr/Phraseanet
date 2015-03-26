@@ -5,12 +5,12 @@
 %token _parenthese      \)
 %token  bracket_        \[
 %token _bracket         \]
+%token  colon           :
 
 // Strings
 %token  quote_          "        -> string
 %token  string:quoted   [^"]+
 %token  string:_quote   "        -> default
-%token  colon           :
 
 // Operators
 %token  in              IN
