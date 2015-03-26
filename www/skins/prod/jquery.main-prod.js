@@ -28,7 +28,8 @@ function getHome(cas, page) {
 
     switch (cas) {
         case 'QUERY':
-            newSearch();
+            selectedFacetValues = [];
+            newSearch($("#EDIT_query").val());
             break;
         case 'PUBLI':
             answAjax = $.ajax({
@@ -333,18 +334,19 @@ function reset_adv_search() {
 }
 
 function search_doubles() {
+    selectedFacetValues = [];
     $('#EDIT_query').val('sha256=sha256');
-    newSearch();
+    newSearch('sha256=sha256');
 }
 
-function newSearch() {
+function newSearch(query) {
     p4.Results.Selection.empty();
 
     clearAnswers();
-    var val = $('#searchForm input[name="qry"]').val();
+    $('#searchForm input[name="qry"]').val(query);
     var histo = $('#history-queries ul');
 
-    histo.prepend('<li onclick="doSpecialSearch(\'' + val.replace(/\'/g, "\\'") + '\')">' + val + '</li>');
+    histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
 
     var lis = $('li', histo);
     if (lis.length > 25) {
@@ -432,9 +434,8 @@ function initAnswerForm() {
 
     var searchForm = $('#searchForm');
     $('button[type="submit"]', searchForm).bind('click', function () {
-
-        newSearch();
-        $('searchForm').trigger('submit');
+        selectedFacetValues = [];
+        newSearch($("#EDIT_query").val());
         return false;
     });
 
@@ -518,6 +519,8 @@ function initAnswerForm() {
     }
 }
 
+var selectedFacetValues = [];
+
 function loadFacets(facets) {
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
@@ -525,7 +528,8 @@ function loadFacets(facets) {
         var values = _.map(facet.values, function(value) {
             return {
                 title: value.value + ' (' + value.count + ')',
-                query: value.query
+                query: value.query,
+                label: value.value
             }
         });
         // Facet
@@ -536,61 +540,97 @@ function loadFacets(facets) {
             expanded: true
         };
     });
-    return getFacetsTree().reload(treeSource);
+
+    var ret = getFacetsTree().reload(treeSource);
+
+    $(".facetFilter-closer").click(
+        function(event) {
+            event.stopPropagation();
+            var facetTitle = $(this).data("facetTitle");
+            delete selectedFacetValues[facetTitle];
+            facetCombinedSearch();
+            return false;
+        }
+    );
+
+    return ret;
 }
 
 function getFacetsTree() {
     var $facetsTree = $('#proposals');
     if (!$facetsTree.data('ui-fancytree')) {
         $facetsTree.fancytree({
+            clickFolderMode: 3, // activate and expand
+            icons:false,
             source: [],
             activate: function(event, data){
                 var query = data.node.data.query;
-                if (!query) return;
-                facetCombinedSearch(query);
+                if (query) {
+                    var facet = data.node.parent;
+                    selectedFacetValues[facet.title] = data.node.data;
+                    facetCombinedSearch();
+                }
+            },
+            renderNode: function(event, data){
+                var facetFilter = "";
+                if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
+                    facetFilter = selectedFacetValues[data.node.title].label;
+
+                    var s_label = document.createElement("SPAN");
+                    s_label.setAttribute("class", "facetFilter-label");
+                    s_label.appendChild(document.createTextNode(facetFilter));
+
+                    var s_closer = document.createElement("A");
+                    s_closer.setAttribute("class", "facetFilter-closer");
+                    s_closer.appendChild(document.createTextNode("X"));
+
+                    var s_gradient = document.createElement("SPAN");
+                    s_gradient.setAttribute("class", "facetFilter-gradient");
+                    s_gradient.appendChild(document.createTextNode("\u00A0"));
+
+                    s_label.appendChild(s_gradient);
+
+                    var s_facet = document.createElement("SPAN");
+                    s_facet.setAttribute("class", "facetFilter");
+                    s_facet.appendChild(s_label);
+                    s_closer = $(s_facet.appendChild(s_closer));
+                    s_closer.data("facetTitle", data.node.title);
+
+                    $(".fancytree-folder", data.node.li).append(
+                        $(s_facet)
+                    );
+                }
             }
         });
+
     }
     return $facetsTree.fancytree('getTree');
 }
 
-var $searchForm;
-var $searchInput;
-var $facetsBackButton;
-var facetsQueriesStack = [];
+function facetCombinedSearch() {
 
-function facetCombinedSearch(query) {
-    var currentQuery = $searchInput.val();
-    facetsQueriesStack.push(currentQuery);
-    $facetsBackButton.show();
-    if (currentQuery) {
-        query = '(' + currentQuery + ') AND (' + query + ')';
+    var q = $("#EDIT_query").val();
+    console.debug(selectedFacetValues);
+    var q_facet = "";
+    _.each(_.values(selectedFacetValues), function(facetValue) {
+        q_facet += (q_facet ? " AND " : "") + '(' + facetValue.query + ')';
+    });
+    if(q_facet) {
+        if(q) {
+            q = '(' + q + ') AND '
+        }
+        q += q_facet;
     }
-    facetSearch(query);
-}
 
-function facetSearch(query) {
     checkFilters();
-    newSearch();
-    $searchInput.val(query);
-    $searchForm.trigger('submit');
+    newSearch(q);
 }
 
-function facetsBack() {
-    var previousQuery = facetsQueriesStack.pop();
-    if (previousQuery != null) {
-        facetSearch(previousQuery);
-    }
-    if (!facetsQueriesStack.length) {
-        $facetsBackButton.hide();
-    }
-}
+
+
+
 
 $(document).ready(function() {
-    $searchForm = $('#searchForm');
-    $searchInput = $searchForm.find('input[name="qry"]');
-    $facetsBackButton = $('#facets-back-btn');
-    $facetsBackButton.on('click', facetsBack);
 });
 
 function answerSizer() {
@@ -2420,8 +2460,9 @@ function doSpecialSearch(qry, allbase) {
     if (allbase) {
         checkBases(true);
     }
+    selectedFacetValues = [];
     $('#EDIT_query').val(decodeURIComponent(qry).replace(/\+/g, " "));
-    newSearch();
+    newSearch(qry);
 }
 
 function clktri(id) {
@@ -2451,8 +2492,9 @@ function chgProp(path, v, k) {
     for (i = 0; i < q.length; i++)
         q2 += q.charCodeAt(i) == 160 ? " " : q.charAt(i);
 
+    selectedFacetValues = [];
     $('#EDIT_query').val(q);
-    newSearch();
+    newSearch(q);
 
     return(false);
 }
