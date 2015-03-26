@@ -49,7 +49,7 @@ class patch_390alpha8a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['task'];
+        return ['20131118000004'];
     }
 
     /**

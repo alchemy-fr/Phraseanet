@@ -30,14 +30,6 @@ class patch_380alpha10a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function require_all_upgrades()
     {
         return true;

@@ -39,7 +39,7 @@ class patch_320alpha4b extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['user', 'feed'];
+        return ['20131118000009', '20131118000001'];
     }
 
     /**

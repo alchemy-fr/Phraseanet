@@ -46,14 +46,6 @@ class patch_380alpha9a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $databox, Application $app)
     {
         $sxe = $databox->get_sxml_structure();

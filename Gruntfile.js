@@ -30,14 +30,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        shell : {
-            generate_js_fixtures: {
-                options: {
-                    stdout: true
-                },
-                command  : 'bin/developer phraseanet:generate-js-fixtures'
-            }
-        },
         bower_postinst: {
             dist: {
                 options: {
@@ -439,5 +431,6 @@ module.exports = function(grunt) {
         "copy-assets",
         "clean:bower"
     ]);
-    grunt.registerTask('test', ["shell:generate_js_fixtures", "qunit", "mocha_phantomjs"]);
+    // js fixtures should be present (./bin/developer phraseanet:generate-js-fixtures)
+    grunt.registerTask('test', ["qunit", "mocha_phantomjs"]);
 };

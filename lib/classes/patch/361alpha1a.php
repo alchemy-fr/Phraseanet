@@ -49,7 +49,7 @@ class patch_361alpha1a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['workzone'];
+        return ['20131118000002'];
     }
 
     /**

@@ -46,14 +46,6 @@ class patch_390alpha19a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         $storage = $app['conf']->get(['main', 'storage']);

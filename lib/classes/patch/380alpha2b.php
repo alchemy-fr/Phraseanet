@@ -38,14 +38,6 @@ class patch_380alpha2b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function concern()
     {
         return $this->concern;

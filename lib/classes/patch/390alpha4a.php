@@ -49,7 +49,7 @@ class patch_390alpha4a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['user-setting'];
+        return ['20131118000011'];
     }
 
     /**

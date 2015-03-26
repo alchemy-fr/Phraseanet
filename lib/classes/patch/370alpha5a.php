@@ -46,14 +46,6 @@ class patch_370alpha5a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $databox, Application $app)
     {
         $sql = 'SELECT id, src FROM metadatas_structure';

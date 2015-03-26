@@ -49,7 +49,7 @@ class patch_380alpha4a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['auth-failure'];
+        return ['20131118000005'];
     }
 
     /**

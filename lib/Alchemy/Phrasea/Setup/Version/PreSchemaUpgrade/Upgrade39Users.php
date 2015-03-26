@@ -31,11 +31,11 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         // Sanitize usr table
         $this->sanitizeUsrTable($em);
         // Creates User schema
-        $version = $conf->getVersion('user');
+        $version = $conf->getVersion('20131118000009');
         if (false === $version->isMigrated()) {
             $version->execute('up');
         }
-        $version = $conf->getVersion('ftp-credential');
+        $version = $conf->getVersion('20131118000007');
         if (false === $version->isMigrated()) {
             $version->execute('up');
         }
@@ -78,11 +78,11 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         $this->emptyTables($em);
         // rollback schema
         $this->alterTablesDown($em);
-        $version = $conf->getVersion('ftp-credential');
+        $version = $conf->getVersion('20131118000007');
         if ($version->isMigrated()) {
             $version->execute('down');
         }
-        $version = $conf->getVersion('user');
+        $version = $conf->getVersion('20131118000009');
         if ($version->isMigrated()) {
             $version->execute('down');
         }

@@ -48,7 +48,7 @@ class patch_390alpha15a extends patchAbstract
      */
     public function getDoctrineMigrations()
     {
-        return ['token'];
+        return ['20140305000001'];
     }
 
     /**

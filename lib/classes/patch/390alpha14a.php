@@ -46,14 +46,6 @@ class patch_390alpha14a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         $app['conf']->remove(['main', 'api-timers']);

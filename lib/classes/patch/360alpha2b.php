@@ -31,14 +31,6 @@ class patch_360alpha2b extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function require_all_upgrades()
     {
         return true;

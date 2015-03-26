@@ -49,14 +49,6 @@ class patch_390alpha12a extends patchAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function apply(base $appbox, Application $app)
     {
         foreach ($this->listPlugins($app) as $name => $plugin) {
