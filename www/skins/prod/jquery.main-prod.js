@@ -529,7 +529,8 @@ function loadFacets(facets) {
             return {
                 title: value.value + ' (' + value.count + ')',
                 query: value.query,
-                label: value.value
+                label: value.value,
+                tooltip: value.value + ' (' + value.count + ')'
             }
         });
         // Facet
@@ -537,23 +538,11 @@ function loadFacets(facets) {
             title: facet.name,
             folder: true,
             children: values,
-            expanded: true
+            expanded: _.isUndefined(selectedFacetValues[facet.name])
         };
     });
 
-    var ret = getFacetsTree().reload(treeSource);
-
-    $(".facetFilter-closer").click(
-        function(event) {
-            event.stopPropagation();
-            var facetTitle = $(this).data("facetTitle");
-            delete selectedFacetValues[facetTitle];
-            facetCombinedSearch();
-            return false;
-        }
-    );
-
-    return ret;
+    return getFacetsTree().reload(treeSource);
 }
 
 function getFacetsTree() {
@@ -578,11 +567,11 @@ function getFacetsTree() {
 
                     var s_label = document.createElement("SPAN");
                     s_label.setAttribute("class", "facetFilter-label");
+                    s_label.setAttribute("title", facetFilter);
                     s_label.appendChild(document.createTextNode(facetFilter));
 
                     var s_closer = document.createElement("A");
                     s_closer.setAttribute("class", "facetFilter-closer");
-                    s_closer.appendChild(document.createTextNode("X"));
 
                     var s_gradient = document.createElement("SPAN");
                     s_gradient.setAttribute("class", "facetFilter-gradient");
@@ -595,6 +584,17 @@ function getFacetsTree() {
                     s_facet.appendChild(s_label);
                     s_closer = $(s_facet.appendChild(s_closer));
                     s_closer.data("facetTitle", data.node.title);
+
+                    s_closer.click(
+                        function(event) {
+                            console.debug(this);
+                            event.stopPropagation();
+                            var facetTitle = $(this).data("facetTitle");
+                            delete selectedFacetValues[facetTitle];
+                            facetCombinedSearch();
+                            return false;
+                        }
+                    );
 
                     $(".fancytree-folder", data.node.li).append(
                         $(s_facet)

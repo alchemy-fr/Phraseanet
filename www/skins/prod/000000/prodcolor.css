@@ -2060,6 +2060,8 @@ H4 {
 #proposals UL.fancytree-container UL {
     padding: 0;
     padding-left: 6px;
+    margin-right: 30px;
+    overflow: hidden;
 }
 
 #proposals .fancytree-folder {
@@ -2070,7 +2072,30 @@ H4 {
 }
 
 #proposals .fancytree-expander {
-    display: none;
+    position:absolute;
+    right: 10px;
+    background-image: none;
+    margin: 0px;
+    padding: 0px;
+    width: auto;
+    height: auto;
+    font-weight: normal;
+    font-size: 65%;
+}
+
+#proposals .fancytree-folder .fancytree-expander:before {
+    content: '\25C0';     /* U+25C0 BLACK LEFT-POINTING TRIANGLE */
+    color: #a0a0a0;
+}
+
+#proposals .fancytree-expanded .fancytree-expander:before {
+    content: '\25BC';     /* U+25BC BLACK BLACK DOWN-POINTING TRIANGLE */
+    color: #ffffff;
+}
+
+#proposals .fancytree-folder .fancytree-expander:hover:before {
+    /* display: none; */
+    color: #076882;
 }
 
 #proposals .fancytree-title {
@@ -2085,7 +2110,7 @@ H4 {
     width:100px;
     height:22px;
     border-radius: 4px;
-    right:10px;
+    right:30px;
     background-color: #606060;
     padding-top: 3px;
     padding-left: 4px;
@@ -2097,6 +2122,7 @@ H4 {
     left:4px;
     right: 14px;
     overflow:hidden;
+    cursor: default;
 }
 
 #proposals .facetFilter-gradient {
@@ -2108,8 +2134,12 @@ H4 {
 
 #proposals .facetFilter-closer {
     position:absolute;
-    right:3px;
+    right:5px;
     cursor: pointer;
+}
+
+#proposals .facetFilter-closer:before {
+    content: 'x';
 }
 
 /******* /PROPOSALS ************************************************************/
