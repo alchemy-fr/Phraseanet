@@ -23,7 +23,7 @@ class QueryVisitor implements Visit
             case NodeTypes::TOKEN_WORD:
                 return new AST\TextNode($value);
 
-            case NodeTypes::TOKEN_STRING:
+            case NodeTypes::TOKEN_QUOTED_STRING:
                 return new AST\QuotedTextNode($value);
 
             default:
