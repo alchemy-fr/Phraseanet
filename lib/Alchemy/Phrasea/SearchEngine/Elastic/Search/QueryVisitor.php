@@ -139,7 +139,7 @@ class QueryVisitor implements Visit
             }
         }
 
-        return new AST\TermNode(implode(' ', $words), $context);
+        return new AST\TermNode(implode($words), $context);
     }
 
     private function visitContext(Element $element)
@@ -154,33 +154,45 @@ class QueryVisitor implements Visit
             }
         }
 
-        return new AST\Context(implode(' ', $words));
+        return new AST\Context(implode($words));
     }
 
     private function visitText(Element $element)
     {
-        $root = null;
+        $nodes = array();
+
+        // Walk childs and merge adjacent text nodes if needed
+        $last = null;
+        $last_index = -1;
         foreach ($element->getChildren() as $child) {
             $node = $child->accept($this);
+            // Merge text nodes together
+            if ($last instanceof AST\TextNode &&
+                $node instanceof AST\TextNode) {
+                // Prevent merge once a context is set
+                if ($last->hasContext()) {
+                    throw new \Exception('Unexpected text node after context');
+                }
+                $nodes[$last_index] = $last = AST\TextNode::merge($last, $node);
+            } else {
+                $nodes[] = $node;
+                $last = $node;
+                $last_index++;
+            }
+        }
+
+        // Once nodes are merged, we just "AND" them all together.
+        $root = null;
+        foreach ($nodes as $index => $node) {
             if (!$root) {
                 $root = $node;
                 continue;
             }
             if ($node instanceof AST\Context) {
-                $root = new AST\TextNode($root->getValue(), $node);
+                $root = $root->withContext($node);
                 continue;
             }
-            // Merge text nodes together (quoted nodes do not)
-            if ($root instanceof AST\TextNode &&
-                $node instanceof AST\TextNode) {
-                // Prevent merge once a context is set
-                if ($root->hasContext()) {
-                    throw new \Exception('Unexpected text node after context');
-                }
-                $root = new AST\TextNode(sprintf('%s %s', $root->getValue(), $node->getValue()));
-            } else {
-                $root = new AST\AndExpression($root, $node);
-            }
+            $root = new AST\AndExpression($root, $node);
         }
 
         return $root;
