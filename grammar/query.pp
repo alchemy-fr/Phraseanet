@@ -43,7 +43,11 @@ collection_filter:
     ::collection:: ::colon:: string()
 
 quinary:
-    ( group() #group | term() ) ( ::space:: ::in:: ::space:: string() #in )?
+    senary() ( ::space:: ::in:: ::space:: string() #in )?
+
+senary:
+    group() #group
+  | term()
 
 group:
     ::space::? ::parenthese_:: primary() ::_parenthese:: ::space::?
