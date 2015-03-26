@@ -23,7 +23,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg');
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('inline; filename="cestlafete.jpg"', $response->headers->get('content-disposition'));
         $this->assertEquals(0, $response->getMaxAge());
         $response->setPrivate();
@@ -45,7 +45,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg');
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('inline; filename="toto.jpg"', $response->headers->get('content-disposition'));
     }
 
@@ -55,7 +55,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
     }
 
@@ -77,7 +77,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
         $response->prepare($request);
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
         $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
     }
@@ -100,7 +100,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
         $response->prepare($request);
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
         $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
     }
@@ -136,7 +136,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile($file, 'PhraseanetTestCase.php', 'attachment');
         $response->prepare($request);
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename="PhraseanetTestCase.php"', $response->headers->get('content-disposition'));
         $this->assertEquals(realpath($file), $response->headers->get('x-accel-redirect'));
     }
@@ -152,7 +152,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $response = $this->factory->deliverData($data, 'data.csv', 'text/csv', 'attachment');
 
-        $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename="data.csv"', $response->headers->get('content-disposition'));
         $this->assertEquals('text/csv', $response->headers->get('content-type'));
         $this->assertEquals($data, $response->getContent());

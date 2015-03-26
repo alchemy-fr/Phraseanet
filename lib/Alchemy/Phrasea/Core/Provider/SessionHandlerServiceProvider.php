@@ -14,6 +14,9 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Configuration\SessionHandlerFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class SessionHandlerServiceProvider implements ServiceProviderInterface
 {
@@ -27,10 +30,24 @@ class SessionHandlerServiceProvider implements ServiceProviderInterface
         });
     }
 
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
+        $session = $event->getRequest()->getSession();
+        if ($session && $session->isStarted()) {
+            $session->save();
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
     public function boot(Application $app)
     {
+        // Priority should be lower than test session mock listener
+        $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'onKernelResponse'), -129);
     }
 }

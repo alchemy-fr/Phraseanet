@@ -32,7 +32,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($client->getResponse()->isRedirect());
         $this->assertNotNUll($client->getResponse()->headers->get('x-phraseanet-end-session'));
         $this->assertNotNUll($client->getResponse()->headers->get('location'));
-        $this->assertEquals('/login?redirect=..%2Fprod', $client->getResponse()->headers->get('location'));
+        $this->assertRegExp('#/login\?redirect=..(?:%2F|/)prod#', $client->getResponse()->headers->get('location'));
     }
 
     public function testEndSessionXmlXhttpRequest()
@@ -132,7 +132,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($client->getResponse()->isRedirect());
         $this->assertNotNUll($client->getResponse()->headers->get('x-phraseanet-end-session'));
         $this->assertNotNUll($client->getResponse()->headers->get('location'));
-        $this->assertEquals('/login?redirect=..%2Fprod', $client->getResponse()->headers->get('location'));
+        $this->assertRegExp('#/login\?redirect=..(?:%2F|/)prod#', $client->getResponse()->headers->get('location'));
     }
 
     public function testEndSessionAuthenticatedWithOutdatedIdleXmlHttpRequest()

@@ -22,11 +22,13 @@
     </testsuites>
 
     <filter>
-      <blacklist>
-        <directory>lib/vendor</directory>
-        <directory>tests</directory>
-        <directory>vendor</directory>
-      </blacklist>
+        <blacklist>
+            <directory>tests</directory>
+            <directory>vendor</directory>
+        </blacklist>
+        <whitelist>
+            <directory suffix=".php">lib</directory>
+        </whitelist>
     </filter>
 
     <!--<listeners>-->
