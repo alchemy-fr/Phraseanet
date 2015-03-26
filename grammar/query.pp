@@ -66,15 +66,17 @@ text:
 
 string_keyword_symbol:
     string()
-  | keyword()
   | symbol()
 
 #context:
-    ::parenthese_:: ::space::? string()+ ::space::? ::_parenthese::
+    ::parenthese_:: ::space::? string() ::space::? ::_parenthese::
 
 string:
-    <word>
+    word_or_keyword() ( <space>? word_or_keyword() )*
   | quoted_string()
+
+word_or_keyword:
+    <word> | keyword()
 
 quoted_string:
     ::quote_:: <quoted> ::_quote::
