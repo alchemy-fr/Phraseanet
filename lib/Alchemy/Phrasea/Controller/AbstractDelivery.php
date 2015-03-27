@@ -45,12 +45,12 @@ abstract class AbstractDelivery
 
         if (in_array($subdef, array('document', 'preview'))) {
             $response->setPrivate();
-            $this->logView($this->app, $record, $request);
+            $this->logView($record, $request);
         } elseif ($subdef !== 'thumbnail') {
             try {
                 if ($file->getDataboxSubdef()->get_class() != \databox_subdef::CLASS_THUMBNAIL) {
                     $response->setPrivate();
-                    $this->logView($this->app, $record, $request);
+                    $this->logView($record, $request);
                 }
             } catch (\Exception $e) {
                 // Ignore exception
