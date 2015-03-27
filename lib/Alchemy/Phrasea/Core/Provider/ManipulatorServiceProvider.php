@@ -66,7 +66,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.api-account'] = $app->share(function ($app) {
-            return new ApiAccountManipulator($app['orm.em'], $app['repo.api-accounts']);
+            return new ApiAccountManipulator($app['orm.em']);
         });
 
         $app['manipulator.api-oauth-code'] = $app->share(function ($app) {
