@@ -51,11 +51,14 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $request->setFormat(Result::FORMAT_JSONP_EXTENDED, V1::$extendedContentTypes['jsonp']);
         $request->setFormat(Result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
 
-        // handle content negociation
-        $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
-        foreach (V1::$extendedContentTypes['json'] as $priorities[]);
-        foreach (V1::$extendedContentTypes['yaml'] as $priorities[]);
-        $format = $app['format.negociator']->getBest($request->headers->get('accept', 'application/json') ,$priorities);
+        $format = $app['format.negotiator']->getBest(
+            $request->headers->get('accept', 'application/json'),
+            array_merge(
+                ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
+                V1::$extendedContentTypes['json'],
+                V1::$extendedContentTypes['yaml']
+            )
+        );
 
         // throw unacceptable http error if API can not handle asked format
         if (null === $format) {
