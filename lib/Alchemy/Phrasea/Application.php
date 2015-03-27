@@ -11,9 +11,7 @@
 
 namespace Alchemy\Phrasea;
 
-use Alchemy\Phrasea\ControllerProvider\Lightbox;
-use Alchemy\Phrasea\ControllerProvider\Datafiles;
-use Alchemy\Phrasea\ControllerProvider\Permalink;
+use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\ControllerProvider\Admin\Collection;
 use Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers;
 use Alchemy\Phrasea\ControllerProvider\Admin\Dashboard;
@@ -22,17 +20,20 @@ use Alchemy\Phrasea\ControllerProvider\Admin\Databoxes;
 use Alchemy\Phrasea\ControllerProvider\Admin\Fields;
 use Alchemy\Phrasea\ControllerProvider\Admin\Publications;
 use Alchemy\Phrasea\ControllerProvider\Admin\Root as AdminRoot;
-use Alchemy\Phrasea\ControllerProvider\Admin\Setup;
 use Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine;
+use Alchemy\Phrasea\ControllerProvider\Admin\Setup;
 use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
 use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
 use Alchemy\Phrasea\ControllerProvider\Admin\Users;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
+use Alchemy\Phrasea\ControllerProvider\Datafiles;
+use Alchemy\Phrasea\ControllerProvider\Lightbox;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
+use Alchemy\Phrasea\ControllerProvider\Permalink;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
-use Alchemy\Phrasea\ControllerProvider\Prod\Download;
 use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
+use Alchemy\Phrasea\ControllerProvider\Prod\Download;
 use Alchemy\Phrasea\ControllerProvider\Prod\Edit;
 use Alchemy\Phrasea\ControllerProvider\Prod\Export;
 use Alchemy\Phrasea\ControllerProvider\Prod\Feed;
@@ -41,9 +42,9 @@ use Alchemy\Phrasea\ControllerProvider\Prod\Lazaret;
 use Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection;
 use Alchemy\Phrasea\ControllerProvider\Prod\Order;
 use Alchemy\Phrasea\ControllerProvider\Prod\Printer;
+use Alchemy\Phrasea\ControllerProvider\Prod\Property;
 use Alchemy\Phrasea\ControllerProvider\Prod\Push;
 use Alchemy\Phrasea\ControllerProvider\Prod\Query;
-use Alchemy\Phrasea\ControllerProvider\Prod\Property;
 use Alchemy\Phrasea\ControllerProvider\Prod\Records;
 use Alchemy\Phrasea\ControllerProvider\Prod\Root as Prod;
 use Alchemy\Phrasea\ControllerProvider\Prod\Share;
@@ -74,29 +75,28 @@ use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
-use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
-use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
-use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
+use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
+use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
 use Alchemy\Phrasea\Core\Provider\APIServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
-use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
-use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
+use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheConnectionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider;
-use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
-use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
+use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
+use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
-use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
@@ -105,8 +105,8 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
-use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RandomGeneratorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
@@ -122,53 +122,50 @@ use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
-use Alchemy\Phrasea\Twig\JSUniqueID;
-use Alchemy\Phrasea\Twig\Fit;
-use Alchemy\Phrasea\Twig\Camelize;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Twig\BytesConverter;
+use Alchemy\Phrasea\Twig\Camelize;
+use Alchemy\Phrasea\Twig\Fit;
+use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Gedmo\DoctrineExtensions as GedmoExtension;
+use MediaAlchemyst\MediaAlchemystServiceProvider;
+use MediaVorus\MediaVorusServiceProvider;
+use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Monolog\Processor\IntrospectionProcessor;
-use Neutron\Silex\Provider\ImagineServiceProvider;
-use MediaVorus\MediaVorusServiceProvider;
-use MediaAlchemyst\MediaAlchemystServiceProvider;
-use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
-use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
+use Neutron\Silex\Provider\FilesystemServiceProvider;
+use Neutron\Silex\Provider\ImagineServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
-use Silex\Application\UrlGeneratorTrait;
 use Silex\Application\TranslationTrait;
+use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
+use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
-use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
+use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Form\Exception\FormException;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Exception\FormException;
 
 class Application extends SilexApplication
 {
@@ -319,6 +316,12 @@ class Application extends SilexApplication
 
             return $handler;
         });
+
+        $providers = [
+        ];
+        foreach ($providers as $class => $values) {
+            $this->register(new $class, $values);
+        }
     }
 
     /**
@@ -379,7 +382,7 @@ class Application extends SilexApplication
     public function setupTwig()
     {
         $this['twig'] = $this->share(
-            $this->extend('twig', function ($twig, $app) {
+            $this->extend('twig', function (\Twig_Environment $twig, $app) {
                 $twig->setCache($app['cache.path'].'/twig');
 
                 $paths = require $app['plugin.path'] . '/twig-paths.php';
@@ -679,6 +682,12 @@ class Application extends SilexApplication
         $this->mount('/permalink/', new Permalink());
 
         $this->mount('/lightbox/', new Lightbox());
+
+        $providers = [
+        ];
+        foreach ($providers as $prefix => $class) {
+            $this->mount($prefix, new $class);
+        }
     }
 
     /**
