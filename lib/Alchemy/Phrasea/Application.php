@@ -317,6 +317,7 @@ class Application extends SilexApplication
 
         $providers = [
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
+            'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
         ];
         foreach ($providers as $class => $values) {
@@ -678,10 +679,9 @@ class Application extends SilexApplication
 
         $this->mount('/include/minify/', new Minifier());
 
-        $this->mount('/lightbox/', new Lightbox());
-
         $providers = [
             '/datafiles' => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/lightbox' => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink' => 'Alchemy\Phrasea\ControllerProvider\Permalink',
         ];
         foreach ($providers as $prefix => $class) {

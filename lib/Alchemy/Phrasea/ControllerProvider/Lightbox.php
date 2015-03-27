@@ -11,53 +11,41 @@
 
 namespace Alchemy\Phrasea\ControllerProvider;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LightboxController;
 use Alchemy\Phrasea\Core\Event\ValidationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
+use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Silex\ControllerProviderInterface;
-use Silex\Application as SilexApplication;
+use Silex\Application;
+use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Lightbox implements ControllerProviderInterface
+class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
 {
-    public function connect(SilexApplication $app)
+    public function register(Application $app)
     {
-        $app['controller.lightbox'] = $this;
+        $app['controller.lightbox'] = $app->share(function () use ($app) {
+            return new LightboxController($app);
+        });
+    }
 
+    public function boot(Application $app)
+    {
+    }
+
+    public function connect(Application $app)
+    {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            if (!$request->query->has('LOG')) {
-                return;
-            }
-
-            if ($app['authentication']->isAuthenticated()) {
-                $app['authentication']->closeAccount();
-            }
-
-            if (null === $token = $app['repo.tokens']->findValidToken($request->query->get('LOG'))) {
-                $app->addFlash('error', $app->trans('The URL you used is out of date, please login'));
-
-                return $app->redirectPath('homepage');
-            }
-
-            $app['authentication']->openAccount($token->getUser());
-
-            switch ($token->getType()) {
-                case TokenManipulator::TYPE_FEED_ENTRY:
-                    return $app->redirectPath('lightbox_feed_entry', ['entry_id' => $token->getData()]);
-                    break;
-                case TokenManipulator::TYPE_VALIDATE:
-                case TokenManipulator::TYPE_VIEW:
-                    return $app->redirectPath('lightbox_validation', ['basket' => $token->getData()]);
-                    break;
-            }
-        });
+        $controllers->before([$this, 'redirectOnLogRequests']);
 
         $app['firewall']->addMandatoryAuthentication($controllers);
 
@@ -66,99 +54,21 @@ class Lightbox implements ControllerProviderInterface
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access']);
 
-        $controllers->get('/', function (SilexApplication $app) {
-            try {
-                \Session_Logger::updateClientInfos($app, 6);
-            } catch (SessionNotFound $e) {
-                return $app->redirectPath('logout');
-            }
+        $controllers->get('/', 'controller.lightbox:rootAction')
+            ->bind('lightbox')
+        ;
 
-            $repository = $app['repo.baskets'];
-
-            $basket_collection = array_merge(
-                $repository->findActiveByUser($app['authentication']->getUser())
-                , $repository->findActiveValidationByUser($app['authentication']->getUser())
-            );
-
-            $template = 'lightbox/index.html.twig';
-            if (!$app['browser']->isNewGeneration() && !$app['browser']->isMobile()) {
-                $template = 'lightbox/IE6/index.html.twig';
-            }
-
-            return new Response($app['twig']->render($template, [
-                    'baskets_collection' => $basket_collection,
-                    'module_name'        => 'Lightbox',
-                    'module'             => 'lightbox'
-                    ]
-            ));
-        })
-            ->bind('lightbox');
-
-        $controllers->get('/ajax/NOTE_FORM/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-
-            if (!$app['browser']->isMobile()) {
-                return new Response('');
-            }
-
-            $basketElement = $app['repo.basket-elements']
-                ->findUserElement($sselcont_id, $app['authentication']->getUser());
-
-            $parameters = [
-                'basket_element' => $basketElement,
-                'module_name'    => '',
-            ];
-
-            return $app['twig']->render('lightbox/note_form.html.twig', $parameters);
-        })
+        $controllers->get('/ajax/NOTE_FORM/{sselcont_id}/', 'controller.lightbox:ajaxNoteFormAction')
             ->bind('lightbox_ajax_note_form')
-            ->assert('sselcont_id', '\d+');
+            ->assert('sselcont_id', '\d+')
+        ;
 
-        $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            $repository = $app['repo.basket-elements'];
-
-            $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
-
-            if ($app['browser']->isMobile()) {
-                $output = $app['twig']->render('lightbox/basket_element.html.twig', [
-                    'basket_element' => $BasketElement,
-                    'module_name'    => $BasketElement->getRecord($app)->get_title()
-                    ]
-                );
-
-                return new Response($output);
-            } else {
-                $template_options = 'lightbox/sc_options_box.html.twig';
-                $template_agreement = 'lightbox/agreement_box.html.twig';
-                $template_selector = 'lightbox/selector_box.html.twig';
-                $template_note = 'lightbox/sc_note.html.twig';
-                $template_preview = 'common/preview.html.twig';
-                $template_caption = 'common/caption.html.twig';
-
-                if (!$app['browser']->isNewGeneration()) {
-                    $template_options = 'lightbox/IE6/sc_options_box.html.twig';
-                    $template_agreement = 'lightbox/IE6/agreement_box.html.twig';
-                }
-
-                $Basket = $BasketElement->getBasket();
-
-                $ret = [];
-                $ret['number'] = $BasketElement->getRecord($app)->get_number();
-                $ret['title'] = $BasketElement->getRecord($app)->get_title();
-
-                $ret['preview'] = $app['twig']->render($template_preview, ['record'             => $BasketElement->getRecord($app), 'not_wrapped'        => true]);
-                $ret['options_html'] = $app['twig']->render($template_options, ['basket_element'       => $BasketElement]);
-                $ret['agreement_html'] = $app['twig']->render($template_agreement, ['basket'              => $Basket, 'basket_element'      => $BasketElement]);
-                $ret['selector_html'] = $app['twig']->render($template_selector, ['basket_element'  => $BasketElement]);
-                $ret['note_html'] = $app['twig']->render($template_note, ['basket_element' => $BasketElement]);
-                $ret['caption'] = $app['twig']->render($template_caption, ['view'   => 'preview', 'record' => $BasketElement->getRecord($app)]);
-
-                return $app->json($ret);
-            }
-        })
+        $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', 'controller.lightbox:ajaxLoadBasketElementAction')
             ->bind('lightbox_ajax_load_basketelement')
-            ->assert('sselcont_id', '\d+');
+            ->assert('sselcont_id', '\d+')
+        ;
 
-        $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function (SilexApplication $app, $entry_id, $item_id) {
+        $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function (Application $app, $entry_id, $item_id) {
 
             $entry = $app['repo.feed-entries']->find($entry_id);
             $item = $entry->getItem($item_id);
@@ -197,7 +107,7 @@ class Lightbox implements ControllerProviderInterface
             ->assert('entry_id', '\d+')
             ->assert('item_id', '\d+');
 
-        $controllers->get('/validate/{basket}/', function (SilexApplication $app, $basket) {
+        $controllers->get('/validate/{basket}/', function (Application $app, $basket) {
             try {
                 \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
@@ -243,7 +153,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_validation')
             ->assert('basket', '\d+');
 
-        $controllers->get('/compare/{basket}/', function (SilexApplication $app, Basket $basket) {
+        $controllers->get('/compare/{basket}/', function (Application $app, Basket $basket) {
 
             try {
                 \Session_Logger::updateClientInfos($app, 6);
@@ -290,7 +200,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_compare')
             ->assert('basket', '\d+');
 
-        $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
+        $controllers->get('/feeds/entry/{entry_id}/', function (Application $app, $entry_id) {
             try {
                 \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
@@ -324,13 +234,13 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_feed_entry')
             ->assert('entry_id', '\d+');
 
-        $controllers->get('/ajax/LOAD_REPORT/{basket}/', function (SilexApplication $app, Basket $basket) {
+        $controllers->get('/ajax/LOAD_REPORT/{basket}/', function (Application $app, Basket $basket) {
             return new Response($app['twig']->render('lightbox/basket_content_report.html.twig', ['basket' => $basket]));
         })
             ->bind('lightbox_ajax_report')
             ->assert('basket', '\d+');
 
-        $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
+        $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (Application $app, $sselcont_id) {
             $output = ['error' => true, 'datas' => $app->trans('Erreur lors de l\'enregistrement des donnees')];
 
             $request = $app['request'];
@@ -369,7 +279,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_set_note')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
+        $controllers->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function (Application $app, $sselcont_id) {
             $request = $app['request'];
             $agreement = $request->request->get('agreement');
 
@@ -431,7 +341,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_set_element_agreement')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->post('/ajax/SET_RELEASE/{basket}/', function (SilexApplication $app, Basket $basket) {
+        $controllers->post('/ajax/SET_RELEASE/{basket}/', function (Application $app, Basket $basket) {
 
             $datas = ['error' => true, 'datas' => ''];
 
@@ -482,5 +392,40 @@ class Lightbox implements ControllerProviderInterface
             ->assert('basket', '\d+');
 
         return $controllers;
+    }
+
+    /**
+     * @param Request            $request
+     * @param PhraseaApplication $app
+     * @return RedirectResponse|null
+     */
+    public function redirectOnLogRequests(Request $request, PhraseaApplication $app)
+    {
+        if (!$request->query->has('LOG')) {
+            return null;
+        }
+
+        if ($app['authentication']->isAuthenticated()) {
+            $app['authentication']->closeAccount();
+        }
+
+        if (null === $token = $app['repo.tokens']->findValidToken($request->query->get('LOG'))) {
+            $app->addFlash('error', $app->trans('The URL you used is out of date, please login'));
+
+            return $app->redirectPath('homepage');
+        }
+
+        /** @var Token $token */
+        $app['authentication']->openAccount($token->getUser());
+
+        switch ($token->getType()) {
+            case TokenManipulator::TYPE_FEED_ENTRY:
+                return $app->redirectPath('lightbox_feed_entry', ['entry_id' => $token->getData()]);
+            case TokenManipulator::TYPE_VALIDATE:
+            case TokenManipulator::TYPE_VIEW:
+               return $app->redirectPath('lightbox_validation', ['basket' => $token->getData()]);
+        }
+
+        return null;
     }
 }
