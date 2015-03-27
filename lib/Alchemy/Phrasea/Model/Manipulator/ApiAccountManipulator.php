@@ -11,8 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Controller\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;

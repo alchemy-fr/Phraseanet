@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Controller\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 
 class ApiAccountManipulatorTest extends \PhraseanetTestCase

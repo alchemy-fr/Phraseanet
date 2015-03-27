@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
+use Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers;
 
 class ConnectedUserTest extends \PhraseanetAuthenticatedWebTestCase
 {

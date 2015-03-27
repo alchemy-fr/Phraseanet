@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Controller\Api\Result;
-use Alchemy\Phrasea\Controller\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Parser;
 

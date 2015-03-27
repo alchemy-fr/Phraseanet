@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Controller\Prod\Share;
+use Alchemy\Phrasea\ControllerProvider\Prod\Share;
 
 class ShareTest extends \PhraseanetAuthenticatedWebTestCase
 {
