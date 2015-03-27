@@ -500,9 +500,8 @@ function T_search(menuItem, menu, cmenu, e, label)
     }
   }
 
-  $('form[name="phrasea_query"] input[name="qry"]').val(v);
   checkFilters();
-  newSearch();
+  newSearch(v);
 }
 
 
@@ -807,9 +806,8 @@ function doThesSearch(type, sbid, term, field)
     v = '[' + term + ']';
   else
     v = '"' + term + '" IN ' + field;
-  $('form[name="phrasea_query"] input[name="qry"]').val(v);
   checkFilters();
-  newSearch();
+  newSearch(v);
 }
 
 

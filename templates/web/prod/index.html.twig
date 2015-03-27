@@ -332,8 +332,9 @@
             <div id="headBlock" class="PNB" style="height: 90px; bottom: auto;">
                 <div class="searchFormWrapper">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
+                        <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
                         <div class="input-append">
-                            <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
+                            <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
                             <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                 <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                             </a>

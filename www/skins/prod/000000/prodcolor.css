@@ -2047,6 +2047,104 @@ H4 {
 
 /******* PROPOSALS ************************************************************/
 
+#proposals *:focus{
+    outline: none;
+}
+
+#proposals UL.fancytree-container {
+    background-color:  #3b3b3b;
+    border: 0px none transparent;
+    overflow-x: hidden;
+}
+
+#proposals UL.fancytree-container UL {
+    padding: 0;
+    padding-left: 6px;
+    margin-right: 30px;
+    overflow: hidden;
+}
+
+#proposals .fancytree-folder {
+    font-weight: bold;
+    height: 30px;
+    padding-top: 7px;
+    border-left: 4px solid #076882;
+}
+
+#proposals .fancytree-expander {
+    position:absolute;
+    right: 10px;
+    background-image: none;
+    margin: 0px;
+    padding: 0px;
+    width: auto;
+    height: auto;
+    font-weight: normal;
+    font-size: 65%;
+}
+
+#proposals .fancytree-folder .fancytree-expander:before {
+    content: '\25C0';     /* U+25C0 BLACK LEFT-POINTING TRIANGLE */
+    color: #a0a0a0;
+}
+
+#proposals .fancytree-expanded .fancytree-expander:before {
+    content: '\25BC';     /* U+25BC BLACK BLACK DOWN-POINTING TRIANGLE */
+    color: #ffffff;
+}
+
+#proposals .fancytree-folder .fancytree-expander:hover:before {
+    /* display: none; */
+    color: #076882;
+}
+
+#proposals .fancytree-title {
+    color: #FFFFFF;
+    background-color: transparent;
+    border: 0px none transparent;
+}
+
+#proposals .facetFilter {
+    font-weight: normal;
+    position:absolute;
+    width:100px;
+    height:22px;
+    border-radius: 4px;
+    right:30px;
+    background-color: #606060;
+    padding-top: 3px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+#proposals .facetFilter-label {
+    position:absolute;
+    left:4px;
+    right: 14px;
+    overflow:hidden;
+    cursor: default;
+}
+
+#proposals .facetFilter-gradient {
+    position:absolute;
+    width:20px;
+    right: 0px;
+    background-image: linear-gradient(to right, transparent, #606060);
+}
+
+#proposals .facetFilter-closer {
+    position:absolute;
+    right:5px;
+    cursor: pointer;
+}
+
+#proposals .facetFilter-closer:before {
+    content: 'x';
+}
+
+/******* /PROPOSALS ************************************************************/
+
+
 .proposals {                    /*** page proposals.php ***/
     POSITION: relative;
     LEFT: 5px;
