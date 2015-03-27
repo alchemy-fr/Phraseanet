@@ -26,10 +26,8 @@ use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
 use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
 use Alchemy\Phrasea\ControllerProvider\Admin\Users;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
-use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\Lightbox;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
-use Alchemy\Phrasea\ControllerProvider\Permalink;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
 use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
@@ -318,6 +316,8 @@ class Application extends SilexApplication
         });
 
         $providers = [
+            'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
+            'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
         ];
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
@@ -620,8 +620,6 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/datafiles/', new Datafiles());
-
         $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());
         $this->mount('/admin/collection', new Collection());
@@ -679,11 +677,12 @@ class Application extends SilexApplication
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
         $this->mount('/include/minify/', new Minifier());
-        $this->mount('/permalink/', new Permalink());
 
         $this->mount('/lightbox/', new Lightbox());
 
         $providers = [
+            '/datafiles' => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/permalink' => 'Alchemy\Phrasea\ControllerProvider\Permalink',
         ];
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);
