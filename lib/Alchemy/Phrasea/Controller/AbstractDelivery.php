@@ -13,10 +13,9 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
-use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class AbstractDelivery implements ControllerProviderInterface
+abstract class AbstractDelivery
 {
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)
     {
