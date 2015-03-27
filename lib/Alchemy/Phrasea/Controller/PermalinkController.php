@@ -53,7 +53,7 @@ class PermalinkController extends AbstractDelivery
     {
         $databox = $this->getDatabox($sbas_id);
         $token = $request->query->get('token');
-        $record = $this->retrieveRecord($this->app, $databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
+        $record = $this->retrieveRecord($databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
 
         if (null === $record) {
             throw new NotFoundHttpException("Caption not found");
@@ -65,12 +65,12 @@ class PermalinkController extends AbstractDelivery
 
     public function deliverPermaview(Request $request, $sbas_id, $record_id, $subdef)
     {
-        return $this->doDeliverPermaview($request, $sbas_id, $record_id, $request->query->get('token'), $subdef);
+        return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
-    public function deliverPermaviewOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
+    public function deliverPermaviewOldWay($sbas_id, $record_id, $token, $subdef)
     {
-        return $this->doDeliverPermaview($request, $sbas_id, $record_id, $token, $subdef);
+        return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef);
     }
 
     public function deliverPermalink(Request $request, $sbas_id, $record_id, $subdef)
