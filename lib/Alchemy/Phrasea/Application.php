@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers;
 use Alchemy\Phrasea\ControllerProvider\Admin\Dashboard;
 use Alchemy\Phrasea\ControllerProvider\Admin\Databox;
 use Alchemy\Phrasea\ControllerProvider\Admin\Databoxes;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
 
         $providers = [
             'Alchemy\Phrasea\ControllerProvider\Admin\Collection' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -443,9 +443,6 @@ class Application extends SilexApplication
                 $twig->addFilter('count', new \Twig_Filter_Function('count'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-                $twig->addFilter(new \Twig_SimpleFilter('AppName', function ($value) use ($app) {
-                    return ConnectedUsers::appName($app['translator'], $value);
-                }));
                 $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
                     return str_replace("'", "\\'", $value);
                 }));
@@ -626,7 +623,6 @@ class Application extends SilexApplication
         $this->mount('/admin/databoxes', new Databoxes());
         $this->mount('/admin/setup', new Setup());
         $this->mount('/admin/search-engine', new SearchEngine());
-        $this->mount('/admin/connected-users', new ConnectedUsers());
         $this->mount('/admin/publications', new Publications());
         $this->mount('/admin/users', new Users());
         $this->mount('/admin/fields', new Fields());
@@ -674,12 +670,13 @@ class Application extends SilexApplication
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
         $providers = [
-            '/admin/collection' => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
-            '/datafiles'        => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
-            '/include/minify'   => 'Alchemy\Phrasea\ControllerProvider\Minifier',
-            '/lightbox'         => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
-            '/permalink'        => 'Alchemy\Phrasea\ControllerProvider\Permalink',
-            '/setup'            => 'Alchemy\Phrasea\ControllerProvider\Setup',
+            '/admin/collection'      => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
+            '/admin/connected-users' => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
+            '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
+            '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
+            '/permalink'             => 'Alchemy\Phrasea\ControllerProvider\Permalink',
+            '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);
