@@ -26,7 +26,6 @@ use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
 use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
 use Alchemy\Phrasea\ControllerProvider\Admin\Users;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
-use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
 use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
@@ -317,6 +316,7 @@ class Application extends SilexApplication
         $providers = [
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
+            'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
             'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
         ];
         foreach ($providers as $class => $values) {
@@ -676,10 +676,9 @@ class Application extends SilexApplication
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
-        $this->mount('/include/minify/', new Minifier());
-
         $providers = [
             '/datafiles' => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/include/minify' => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/lightbox' => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink' => 'Alchemy\Phrasea\ControllerProvider\Permalink',
         ];
