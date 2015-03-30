@@ -22,13 +22,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryParser;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
-use Hoa\Compiler\Llk\Llk;
-use Hoa\File\Read;
+use Hoa\Compiler;
+use Hoa\File;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Silex\Application;
@@ -179,9 +179,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['query_parser'] = $app->share(function ($app) {
             $grammarPath = $app['query_parser.grammar_path'];
-            $parser = Llk::load(new Read($grammarPath));
+            return Compiler\Llk\Llk::load(new File\Read($grammarPath));
+        });
 
-            return new QueryParser($parser, $app['thesaurus']);
+        $app['query_compiler'] = $app->share(function ($app) {
+            return new QueryCompiler(
+                $app['query_parser'],
+                $app['thesaurus']
+            );
         });
     }
 

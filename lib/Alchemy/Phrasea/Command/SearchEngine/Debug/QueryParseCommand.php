@@ -64,15 +64,15 @@ class QueryParseCommand extends Command
 
         $postprocessing = !$input->getOption('no-compiler-postprocessing');
 
-        $parser = $this->container['query_parser'];
+        $compiler = $this->container['query_compiler'];
 
         $stopwatch = new Stopwatch();
         $stopwatch->start('parsing');
 
         if ($input->getOption('compiler-dump')) {
-            $dump = $parser->dump($string, $postprocessing);
+            $dump = $compiler->dump($string, $postprocessing);
         } else {
-            $query = $parser->parse($string, $postprocessing);
+            $query = $compiler->parse($string, $postprocessing);
             $dump = $query->dump();
         }
 
