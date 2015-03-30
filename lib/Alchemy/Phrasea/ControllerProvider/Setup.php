@@ -12,23 +12,29 @@
 namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\SetupController;
 use Alchemy\Phrasea\Helper\DatabaseHelper;
 use Alchemy\Phrasea\Helper\PathHelper;
-use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
-use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
-use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
-use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
-use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
+use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class Setup implements ControllerProviderInterface
+class Setup implements ControllerProviderInterface, ServiceProviderInterface
 {
+    public function register(SilexApplication $app)
+    {
+        $app['controller.setup'] = $app->share(function ($application) {
+            return new SetupController($application);
+        });
+    }
+
+    public function boot(SilexApplication $app)
+    {
+    }
+
     public function connect(SilexApplication $app)
     {
-        $app['controller.setup'] = $this;
-
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function (Application $app) {
@@ -66,168 +72,5 @@ class Setup implements ControllerProviderInterface
         });
 
         return $controllers;
-    }
-
-    public function rootInstaller(Application $app, Request $request)
-    {
-        $requirementsCollection = $this->getRequirementsCollection();
-
-        return $app['twig']->render('/setup/index.html.twig', [
-            'locale'                 => $app['locale'],
-            'available_locales'      => Application::getAvailableLanguages(),
-            'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
-            'requirementsCollection' => $requirementsCollection,
-        ]);
-    }
-
-    private function getRequirementsCollection()
-    {
-        return [
-            new BinariesRequirements(),
-            new FilesystemRequirements(),
-            new LocalesRequirements(),
-            new PhpRequirements(),
-            new SystemRequirements(),
-        ];
-    }
-
-    public function displayUpgradeInstructions(Application $app, Request $request)
-    {
-        return $app['twig']->render('/setup/upgrade-instructions.html.twig', [
-            'locale'              => $app['locale'],
-            'available_locales'   => Application::getAvailableLanguages(),
-        ]);
-    }
-
-    public function getInstallForm(Application $app, Request $request)
-    {
-        $warnings = [];
-
-        $requirementsCollection = $this->getRequirementsCollection();
-
-        foreach ($requirementsCollection as $requirements) {
-            foreach ($requirements->getRequirements() as $requirement) {
-                if (!$requirement->isFulfilled() && !$requirement->isOptional()) {
-                    $warnings[] = $requirement->getTestMessage();
-                }
-            }
-        }
-
-        if ($request->getScheme() == 'http') {
-            $warnings[] = $app->trans('It is not recommended to install Phraseanet without HTTPS support');
-        }
-
-        return $app['twig']->render('/setup/step2.html.twig', [
-            'locale'              => $app['locale'],
-            'available_locales'   => Application::getAvailableLanguages(),
-            'available_templates' => ['en', 'fr'],
-            'warnings'            => $warnings,
-            'error'               => $request->query->get('error'),
-            'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
-            'discovered_binaries' => \setup::discover_binaries(),
-            'rootpath'            => realpath(__DIR__ . '/../../../../'),
-        ]);
-    }
-
-    public function doInstall(Application $app, Request $request)
-    {
-        set_time_limit(360);
-
-        $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-
-        $abConn = $dbConn = null;
-
-        $database_host = $request->request->get('hostname');
-        $database_port = $request->request->get('port');
-        $database_user = $request->request->get('user');
-        $database_password = $request->request->get('db_password');
-
-        $appbox_name = $request->request->get('ab_name');
-        $databox_name = $request->request->get('db_name');
-
-        try {
-            $abInfo = [
-                'host'     => $database_host,
-                'port'     => $database_port,
-                'user'     => $database_user,
-                'password' => $database_password,
-                'dbname'   => $appbox_name,
-            ];
-
-            $abConn = $app['dbal.provider']($abInfo);
-            $abConn->connect();
-        } catch (\Exception $e) {
-            return $app->redirectPath('install_step2', [
-                'error' => $app->trans('Appbox is unreachable'),
-            ]);
-        }
-
-        try {
-            if ($databox_name) {
-                $dbInfo = [
-                    'host'     => $database_host,
-                    'port'     => $database_port,
-                    'user'     => $database_user,
-                    'password' => $database_password,
-                    'dbname'   => $databox_name,
-                ];
-
-                $dbConn = $app['dbal.provider']($dbInfo);
-                $dbConn->connect();
-            }
-        } catch (\Exception $e) {
-            return $app->redirectPath('install_step2', [
-                'error' => $app->trans('Databox is unreachable'),
-            ]);
-        }
-
-        $app['dbs.options'] = array_merge(
-            $app['db.options.from_info']($dbInfo),
-            $app['db.options.from_info']($abInfo),
-            $app['dbs.options']
-        );
-        $app['orm.ems.options'] = array_merge(
-            $app['orm.em.options.from_info']($dbInfo),
-            $app['orm.em.options.from_info']($abInfo),
-            $app['orm.ems.options']
-        );
-
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
-        $template = $request->request->get('db_template');
-        $dataPath = $request->request->get('datapath_noweb');
-
-        try {
-            $installer = $app['phraseanet.installer'];
-            $installer->setPhraseaIndexerPath($request->request->get('binary_phraseanet_indexer'));
-
-            $binaryData = [];
-            foreach ([
-                'php_binary'         => $request->request->get('binary_php'),
-                'swf_extract_binary' => $request->request->get('binary_swfextract'),
-                'pdf2swf_binary'     => $request->request->get('binary_pdf2swf'),
-                'swf_render_binary'  => $request->request->get('binary_swfrender'),
-                'unoconv_binary'     => $request->request->get('binary_unoconv'),
-                'ffmpeg_binary'      => $request->request->get('binary_ffmpeg'),
-                'mp4box_binary'      => $request->request->get('binary_MP4Box'),
-                'pdftotext_binary'   => $request->request->get('binary_xpdf'),
-                'recess_binary'      => $request->request->get('binary_recess'),
-            ] as $key => $path) {
-                $binaryData[$key] = $path;
-            }
-
-            $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
-
-            $app['authentication']->openAccount($user);
-
-            return $app->redirectPath('admin', [
-                'section' => 'taskmanager',
-                'notice'  => 'install_success',
-            ]);
-        } catch (\Exception $e) {
-            return $app->redirectPath('install_step2', [
-                'error' => $app->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
-            ]);
-        }
     }
 }

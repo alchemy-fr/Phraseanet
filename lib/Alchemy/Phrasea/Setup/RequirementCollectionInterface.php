@@ -114,7 +114,7 @@ interface RequirementCollectionInterface extends \IteratorAggregate
     /**
      * Returns all mandatory requirements.
      *
-     * @return array Array of Requirement instances
+     * @return RequirementInterface[] Array of Requirement instances
      */
     public function getRequirements();
 

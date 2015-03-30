@@ -60,7 +60,6 @@ use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\ControllerProvider\Root\Root;
 use Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds;
 use Alchemy\Phrasea\ControllerProvider\Root\Session;
-use Alchemy\Phrasea\ControllerProvider\Setup as SetupController;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\ControllerProvider\User\Notifications;
@@ -318,6 +317,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
             'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
+            'Alchemy\Phrasea\ControllerProvider\Setup' => [],
         ];
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
@@ -667,8 +667,6 @@ class Application extends SilexApplication
         $this->mount('/download/', new DoDownload());
         $this->mount('/session/', new Session());
 
-        $this->mount('/setup', new SetupController());
-
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());
         $this->mount('/report/informations', new ReportInformations());
@@ -681,6 +679,7 @@ class Application extends SilexApplication
             '/include/minify' => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/lightbox' => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink' => 'Alchemy\Phrasea\ControllerProvider\Permalink',
+            '/setup' => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);
