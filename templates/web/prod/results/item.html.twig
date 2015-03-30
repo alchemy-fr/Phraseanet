@@ -55,10 +55,10 @@
                     </td>
                     {% set l_width = 30 %}
                     {% if rollover_thumbnail == 'preview' %}
-                        {% set l_width = l_width + 20 %}
+                        {% set l_width = l_width + 50 %}
                     {% endif %}
                     {% if technical_display == '1' %}
-                        {% set l_width = l_width + 20 %}
+                        {% set l_width = l_width + 50 %}
                     {% endif %}
                     <td style='text-align:right;width:{{ l_width }}px;' valign='bottom'>
                         {% if record.has_preview and has_access_subdef(record, 'preview') %}

@@ -215,6 +215,7 @@ span.ww_winTitle {
 #idFrameC {
     top: 0 !important;
     min-width: 300px;
+    bottom: 0 !important;
 }
 
 #idFrameC.closed {
@@ -360,12 +361,18 @@ span.ww_winTitle {
 }
 
 .treeview>li.expandable {
-    height: 50px;
+    min-height: 50px;
     line-height: 50px;
     vertical-align: middle;
     position: relative;
-    border-left: 5px #884c93 solid;
     background: none;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.treeview>li.expandable>.hitarea {
+    height: 50px;
+    border-left: 5px #884c93 solid;
 }
 
 .treeviewul li {
@@ -817,10 +824,11 @@ div.diapo {
 
 #answers_status{
   position: absolute;
-  bottom: 10px;
+  bottom: 0px;
   left: 10px;
   height: 60px;
   width: 400px;
+  z-index: 1000;
 }
 
 #answers_status table{
@@ -4725,19 +4733,34 @@ ui-dialog-titlebar {
 }
 
 #paginate #tool_navigate #NEXT_PAGE {
-    background: url('../../icons/sprite_paginate.png') -82px 20px no-repeat;
+    background: url('../../icons/sprite_paginate.png') -72px 20px no-repeat;
+    width: 49px;
+    border-left: 1px solid #3b3b3b; 
 }
 
 #paginate #tool_navigate #PREV_PAGE {
-    background: url('../../icons/sprite_paginate.png') -39px 20px no-repeat;
+    background: url('../../icons/sprite_paginate.png') -29px 20px no-repeat;
+    width: 49px;
+    border-right: 1px solid #3b3b3b; 
 }
 
 #paginate #tool_navigate #last {
-    background: url('../../icons/sprite_paginate.png') -131px 20px no-repeat;
+    background: url('../../icons/sprite_paginate.png') -121px 20px no-repeat;
+    width: 49px;
+    border-left: 1px solid #3b3b3b; 
 }
 
 #paginate #tool_navigate #first {
-    background: url('../../icons/sprite_paginate.png') 11px 20px no-repeat;
+    background: url('../../icons/sprite_paginate.png') 21px 20px no-repeat;
+    width: 49px;
+    border-right: 1px solid #3b3b3b; 
+}
+
+#paginate #tool_navigate #NEXT_PAGE:hover,
+#paginate #tool_navigate #PREV_PAGE:hover,
+#paginate #tool_navigate #last:hover,
+#paginate #tool_navigate #first:hover {
+    background-image: url('../../icons/sprite_paginate_hover.png');
 }
 
 

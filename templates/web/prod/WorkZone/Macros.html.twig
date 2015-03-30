@@ -199,7 +199,8 @@
                     {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
           <a class="workzone-menu-title" href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
             <span>
-            {# story.getRecord(app).get_base_id()|get_collection_logo(app)|raw #}
+            {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
+            <img src='/skins/icons/story.png' title=''/>
             {{ story.getRecord(app).get_title() }}
             </span>
           </a>
