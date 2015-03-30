@@ -270,7 +270,7 @@ class BasketRepository extends EntityRepository
      * Return all actives validation where current user is involved and user basket
      *
      * @param  User  $user
-     * @param  type  $sort
+     * @param  string  $sort
      * @return Basket[]
      */
     public function findActiveValidationAndBasketByUser(User $user, $sort = null)

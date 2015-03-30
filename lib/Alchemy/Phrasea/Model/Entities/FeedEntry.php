@@ -335,7 +335,7 @@ class FeedEntry
      *
      * @param int $id
      *
-     * @return null
+     * @return null|FeedItem
      */
     public function getItem($id)
     {

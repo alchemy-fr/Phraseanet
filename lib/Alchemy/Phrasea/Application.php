@@ -26,7 +26,6 @@ use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
 use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
 use Alchemy\Phrasea\ControllerProvider\Admin\Users;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
-use Alchemy\Phrasea\ControllerProvider\Lightbox;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
