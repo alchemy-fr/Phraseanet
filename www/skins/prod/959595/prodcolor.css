@@ -360,11 +360,18 @@ span.ww_winTitle {
 }
 
 .treeview>li.expandable {
+    min-height: 50px;
     line-height: 50px;
     vertical-align: middle;
     position: relative;
-    border-left: 5px #884c93 solid;
     background: none;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.treeview>li.expandable>.hitarea {
+    height: 50px;
+    border-left: 5px #884c93 solid;
 }
 
 .treeviewul li {
