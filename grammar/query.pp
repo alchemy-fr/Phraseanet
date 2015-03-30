@@ -30,6 +30,9 @@
 #query:
     ::space::? primary()? ::space::?
 
+
+// Boolean operators
+
 primary:
     secondary() ( ::space:: ::except:: ::space:: primary() #except )?
 
@@ -39,14 +42,23 @@ secondary:
 ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
+
+// Collection matcher
+
 quaternary:
     collection_filter() #collection | quinary()
 
 collection_filter:
     ::collection:: ::colon:: string()
 
+
+// Field narrowing
+
 quinary:
     senary() ( ::space:: ::in:: ::space:: string() #in )?
+
+
+// Field level matchers (*may* be restricted to a field subset)
 
 senary:
     group() #group
@@ -55,12 +67,18 @@ senary:
 group:
     ::space::? ::parenthese_:: primary() ::_parenthese:: ::space::?
 
+
+// Thesaurus terms
+
 term:
     ( bracketed_text() #thesaurus_term )
   | ( text() #text )
 
 bracketed_text:
     ::bracket_:: text() ::_bracket::
+
+
+// Free text handling
 
 text:
     string_keyword_symbol()
@@ -73,6 +91,9 @@ string_keyword_symbol:
 
 #context:
     ::parenthese_:: ::space::? string() ::space::? ::_parenthese::
+
+
+// Generic helpers
 
 string:
     word_or_keyword() ( <space>? word_or_keyword() )*
