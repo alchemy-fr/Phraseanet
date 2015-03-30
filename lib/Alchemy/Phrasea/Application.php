@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Admin\Collection;
 use Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers;
 use Alchemy\Phrasea\ControllerProvider\Admin\Dashboard;
 use Alchemy\Phrasea\ControllerProvider\Admin\Databox;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
         });
 
         $providers = [
+            'Alchemy\Phrasea\ControllerProvider\Admin\Collection' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -622,7 +622,6 @@ class Application extends SilexApplication
 
         $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());
-        $this->mount('/admin/collection', new Collection());
         $this->mount('/admin/databox', new Databox());
         $this->mount('/admin/databoxes', new Databoxes());
         $this->mount('/admin/setup', new Setup());
@@ -675,11 +674,12 @@ class Application extends SilexApplication
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
         $providers = [
-            '/datafiles' => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
-            '/include/minify' => 'Alchemy\Phrasea\ControllerProvider\Minifier',
-            '/lightbox' => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
-            '/permalink' => 'Alchemy\Phrasea\ControllerProvider\Permalink',
-            '/setup' => 'Alchemy\Phrasea\ControllerProvider\Setup',
+            '/admin/collection' => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
+            '/datafiles'        => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/include/minify'   => 'Alchemy\Phrasea\ControllerProvider\Minifier',
+            '/lightbox'         => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
+            '/permalink'        => 'Alchemy\Phrasea\ControllerProvider\Permalink',
+            '/setup'            => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);

@@ -38,11 +38,18 @@ class Authenticator
         $this->reinitUser();
     }
 
+    /**
+     * @return User|null
+     */
     public function getUser()
     {
         return $this->user;
     }
 
+    /**
+     * @param User|null $user
+     * @return $this
+     */
     public function setUser(User $user = null)
     {
         $this->user = $user;
