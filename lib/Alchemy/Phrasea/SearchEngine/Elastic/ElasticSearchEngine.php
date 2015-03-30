@@ -116,18 +116,20 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getAvailableDateFields()
     {
-        if (!$this->dateFields) {
+        if ($this->dateFields === null) {
+            $dateFields = array();
+
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_meta_structure() as $databox_field) {
                     if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
                         continue;
                     }
 
-                    $this->dateFields[] = $databox_field->get_name();
+                    $dateFields[] = $databox_field->get_name();
                 }
             }
 
-            $this->dateFields = array_unique($this->dateFields);
+            $this->dateFields = array_unique($dateFields);
         }
 
         return $this->dateFields;
