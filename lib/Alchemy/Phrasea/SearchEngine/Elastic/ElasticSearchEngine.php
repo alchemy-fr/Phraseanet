@@ -116,18 +116,20 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getAvailableDateFields()
     {
-        if (!$this->dateFields) {
+        if ($this->dateFields === null) {
+            $dateFields = array();
+
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_meta_structure() as $databox_field) {
                     if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
                         continue;
                     }
 
-                    $this->dateFields[] = $databox_field->get_name();
+                    $dateFields[] = $databox_field->get_name();
                 }
             }
 
-            $this->dateFields = array_unique($this->dateFields);
+            $this->dateFields = array_unique($dateFields);
         }
 
         return $this->dateFields;
@@ -272,7 +274,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $options = $options ?: new SearchEngineOptions();
 
         $queryContext = new QueryContext($this->locales, $this->app['locale']);
-        $recordQuery = $this->app['query_parser']->compile($string, $queryContext);
+        $recordQuery = $this->app['query_compiler']->compile($string, $queryContext);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
 
@@ -295,7 +297,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $this->app['query_parser']->parse($string)->dump();
+        $query['ast'] = $this->app['query_compiler']->parse($string)->dump();
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use databox;
 use DOMDocument;
 use DOMElement;
@@ -49,21 +50,11 @@ class CandidateTerms
 
     public function save()
     {
-        // '北京' -> 'bei jing'
-        $latin = Transliterator::create('Any-Latin');
-        $ascii = Transliterator::create('Latin-ASCII');
-        $case_fold = Transliterator::create('Any-Lower');
-        $ascii_case_fold = function($input) use ($latin, $ascii, $case_fold) {
-            $output = $latin->transliterate($input);
-            $output = $ascii->transliterate($output);
-            return $case_fold->transliterate($output);
-        };
-
         $this->ensureDocumentLoaded();
         foreach ($this->new_candidates as $raw_value => $field) {
             $term = Term::parse($raw_value);
-            $norm_value = $ascii_case_fold($term->getValue());
-            $norm_context = $ascii_case_fold($term->getContext());
+            $norm_value = StringUtils::asciiLowerFold($term->getValue());
+            $norm_context = StringUtils::asciiLowerFold($term->getContext());
             $element = $this->createElement($raw_value, $norm_value, $norm_context);
             $container = $this->findOrCreateFieldNode($field);
             $this->insertElement($container, $element);

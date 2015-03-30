@@ -1,65 +1,96 @@
-%skip   space           \s
+%token  space           \s+
 
+// Symbols
 %token  parenthese_     \(
 %token _parenthese      \)
 %token  bracket_        \[
 %token _bracket         \]
+%token  colon           :
+
+// Strings
 %token  quote_          "        -> string
-%token  string:string   [^"]+
+%token  string:quoted   [^"]+
 %token  string:_quote   "        -> default
+
+// Operators
 %token  in              IN
 %token  and             AND
 %token  or              OR
 %token  except          EXCEPT
-%token  collection      collection:
+
+// Rest
+%token  collection      collection
 %token  word            [^\s\(\)\[\]]+
 
 // relative order of precedence is NOT > XOR > AND > OR
 
 #query:
-    primary() ?
+    ::space::? primary()? ::space::?
 
 primary:
-    secondary() ( ::except:: #except primary() )?
+    secondary() ( ::space:: ::except:: ::space:: primary() #except )?
 
 secondary:
-    ternary() ( ::or:: #or primary() )?
+    ternary() ( ::space:: ::or:: ::space:: primary() #or )?
 
 ternary:
-    quaternary() ( ::and:: #and primary() )?
+    quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
 quaternary:
-    ( collection_filter() #collection) | quinary()
-
-quinary:
-    ( group() | term() ) ( ::in:: #in word() )?
+    collection_filter() #collection | quinary()
 
 collection_filter:
-    ::collection:: word()
+    ::collection:: ::colon:: string()
+
+quinary:
+    senary() ( ::space:: ::in:: ::space:: string() #in )?
+
+senary:
+    group() #group
+  | term()
 
 group:
-    ( ::parenthese_:: #group primary() ::_parenthese:: )
+    ::space::? ::parenthese_:: primary() ::_parenthese:: ::space::?
 
 term:
-    ( bracketed_text() #thesaurus_term ) | ( text() #text )
+    ( bracketed_text() #thesaurus_term )
+  | ( text() #text )
 
 bracketed_text:
     ::bracket_:: text() ::_bracket::
 
 text:
-    ( word() | keyword() | symbol() )+ context()?
+    string_keyword_symbol()
+  ( <space>? string_keyword_symbol() )*
+  ( ::space::? context() )?
+
+string_keyword_symbol:
+    string()
+  | symbol()
 
 #context:
-    ::parenthese_:: ( word() )+ ::_parenthese::
-
-word:
-    <word> | string()
+    ::parenthese_:: ::space::? string() ::space::? ::_parenthese::
 
 string:
-    ::quote_:: <string> ::_quote::
+    word_or_keyword() ( <space>? word_or_keyword() )*
+  | quoted_string()
+
+word_or_keyword:
+    <word> | keyword()
+
+quoted_string:
+    ::quote_:: <quoted> ::_quote::
 
 keyword:
-    <in> | <except> | <and> | <or> | <collection>
+    <in>
+  | <except>
+  | <and>
+  | <or>
+  | <collection>
 
 symbol:
-    ::parenthese_:: | ::_parenthese:: | ::bracket_:: | ::_bracket::
+    <parenthese_>
+  | <_parenthese>
+  | <bracket_>
+  | <_bracket>
+  | <colon>

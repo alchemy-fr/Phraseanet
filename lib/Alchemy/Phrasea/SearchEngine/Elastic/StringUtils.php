@@ -11,8 +11,12 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Transliterator;
+
 class StringUtils
 {
+    private static $transliterator;
+
     public static function slugify($string, $separator = '-')
     {
         // Replace non letter or digits by _
@@ -29,5 +33,17 @@ class StringUtils
         $string = strtolower($string);
 
         return $string;
+    }
+
+    public static function asciiLowerFold($string)
+    {
+        // '北京' -> 'bei jing'
+
+        if (!self::$transliterator) {
+            $id = 'Any-Latin; Latin-ASCII; Any-Lower';
+            self::$transliterator = Transliterator::create($id);
+        }
+
+        return self::$transliterator->transliterate($string);
     }
 }
