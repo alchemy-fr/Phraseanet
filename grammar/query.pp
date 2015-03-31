@@ -46,10 +46,8 @@ ternary:
 // Collection matcher
 
 quaternary:
-    collection_filter() #collection | quinary()
-
-collection_filter:
-    ::collection:: ::colon:: string()
+    ::collection:: ::colon:: string() #collection
+  | quinary()
 
 
 // Field narrowing
@@ -71,11 +69,8 @@ group:
 // Thesaurus terms
 
 term:
-    ( bracketed_text() #thesaurus_term )
-  | ( text() #text )
-
-bracketed_text:
-    ::bracket_:: text() ::_bracket::
+    ::bracket_:: text() ::_bracket:: #thesaurus_term
+  | text() #text
 
 
 // Free text handling
