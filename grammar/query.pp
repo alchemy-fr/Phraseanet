@@ -83,14 +83,17 @@ term:
 text:
     string_keyword_symbol()
   ( <space>? string_keyword_symbol() )*
-  ( ::space::? context() )?
+  ( ::space::? context_block() )?
 
 string_keyword_symbol:
     string()
   | symbol()
 
-#context:
-    ::parenthese_:: ::space::? string() ::space::? ::_parenthese::
+context_block:
+    ::parenthese_:: ::space::? context() ::space::? ::_parenthese:: #context
+
+context:
+    word_or_keyword() ( <space>? word_or_keyword() )*
 
 
 // Generic helpers
