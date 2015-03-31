@@ -6,6 +6,10 @@
 %token  bracket_        \[
 %token _bracket         \]
 %token  colon           :
+%token  lte             <=|≤
+%token  gte             >=|≥
+%token  lt              <
+%token  gt              >
 
 // Strings
 %token  quote_          "        -> string
@@ -23,7 +27,7 @@
 
 // Rest
 %token  collection      collection
-%token  word            [^\s\(\)\[\]]+
+%token  word            [^\s()\[\]:<>≤≥]+
 
 // relative order of precedence is NOT > XOR > AND > OR
 
@@ -55,9 +59,8 @@ quaternary:
 quinary:
     senary() ( ::space:: ::in:: ::space:: field() #in )?
 
-field:
-    <word>
-  | keyword()
+#field:
+    word_or_keyword()+
   | quoted_string()
 
 
@@ -65,7 +68,15 @@ field:
 
 senary:
     group() #group
+  | field() ::space::? ::lt:: ::space::? value() #lower_than
+  | field() ::space::? ::gt:: ::space::? value() #greater_than
+  | field() ::space::? ::lte:: ::space::? value() #lower_than_or_equal_to
+  | field() ::space::? ::gte:: ::space::? value() #greater_than_or_equal_to
   | term()
+
+#value:
+    word_or_keyword()+
+  | quoted_string()
 
 group:
     ::space::? ::parenthese_:: primary() ::_parenthese:: ::space::?
