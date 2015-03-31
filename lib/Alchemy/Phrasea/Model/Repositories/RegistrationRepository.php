@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\Registration;
 use Doctrine\ORM\EntityRepository;
 use Alchemy\Phrasea\Model\Entities\User;
 
@@ -28,7 +29,7 @@ class RegistrationRepository extends EntityRepository
      * @param User          $user
      * @param \collection[] $collections
      *
-     * @return array
+     * @return Registration[]
      */
     public function getUserRegistrations(User $user, array $collections)
     {

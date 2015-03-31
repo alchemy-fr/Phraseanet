@@ -22,7 +22,6 @@ use Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine;
 use Alchemy\Phrasea\ControllerProvider\Admin\Setup;
 use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
 use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
-use Alchemy\Phrasea\ControllerProvider\Admin\Users;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
         $providers = [
             'Alchemy\Phrasea\ControllerProvider\Admin\Collection' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -624,7 +624,6 @@ class Application extends SilexApplication
         $this->mount('/admin/setup', new Setup());
         $this->mount('/admin/search-engine', new SearchEngine());
         $this->mount('/admin/publications', new Publications());
-        $this->mount('/admin/users', new Users());
         $this->mount('/admin/fields', new Fields());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
@@ -672,6 +671,7 @@ class Application extends SilexApplication
         $providers = [
             '/admin/collection'      => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
             '/admin/connected-users' => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
+            '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',

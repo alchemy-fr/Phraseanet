@@ -38,6 +38,9 @@ class Manage extends Helper
      */
     protected $usr_id;
 
+    /**
+     * @return User[]
+     */
     public function export()
     {
         $request = $this->request;

@@ -661,7 +661,7 @@ class ACL implements cache_cacheableInterface
      *
      * @param  array      $rights
      * @param  array|null $sbas_ids Optionnal sbas_id to restrict the query on
-     * @return array      An array of collection
+     * @return collection[] An array of collection
      */
     public function get_granted_base(Array $rights = [], array $sbas_ids = null)
     {
