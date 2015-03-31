@@ -53,7 +53,12 @@ quaternary:
 // Field narrowing
 
 quinary:
-    senary() ( ::space:: ::in:: ::space:: string() #in )?
+    senary() ( ::space:: ::in:: ::space:: field() #in )?
+
+field:
+    <word>
+  | keyword()
+  | quoted_string()
 
 
 // Field level matchers (*may* be restricted to a field subset)
