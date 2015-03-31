@@ -99,7 +99,7 @@ context:
 // Generic helpers
 
 string:
-    word_or_keyword() ( <space>? word_or_keyword() )*
+    word_or_keyword()+
   | quoted_string()
   | raw_quoted_string()
 
