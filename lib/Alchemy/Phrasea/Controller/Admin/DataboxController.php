@@ -11,6 +11,12 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -71,33 +77,42 @@ class DataboxController
     /**
      * Delete a databox
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function deleteBase(Application $app, Request $request, $databox_id)
+    public function deleteBase(Request $request, $databox_id)
     {
+        $databox = null;
         $success = false;
-        $msg = $app->trans('An error occured');
+        $msg = $this->app->trans('An error occured');
         try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+            $databox = $this->findDataboxById($databox_id);
 
             if ($databox->get_record_amount() > 0) {
-                $msg = $app->trans('admin::base: vider la base avant de la supprimer');
+                $msg = $this->app->trans('admin::base: vider la base avant de la supprimer');
             } else {
                 $databox->unmount_databox();
-                $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, null, \databox::PIC_PDF);
+                $this->getApplicationBox()->write_databox_pic(
+                    $this->app['media-alchemyst'],
+                    $this->app['filesystem'],
+                    $databox,
+                    null,
+                    \databox::PIC_PDF
+                );
                 $databox->delete();
                 $success = true;
-                $msg = $app->trans('Successful removal');
+                $msg = $this->app->trans('Successful removal');
             }
         } catch (\Exception $e) {
 
         }
+        if (!$databox) {
+            $this->app->abort(404, $this->app->trans('admin::base: databox not found', ['databox_id' => $databox_id]));
+        }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
                 'msg'     => $msg,
                 'sbas_id' => $databox->get_sbas_id()
@@ -113,23 +128,23 @@ class DataboxController
             $params['error'] = 'databox-not-empty';
         }
 
-        return $app->redirectPath('admin_database', $params);
+        return $this->app->redirectPath('admin_database', $params);
     }
 
-    public function setLabels(Application $app, Request $request, $databox_id)
+    public function setLabels(Request $request, $databox_id)
     {
         if (null === $labels = $request->request->get('labels')) {
-            $app->abort(400, $app->trans('Missing labels parameter'));
+            $this->app->abort(400, $this->app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {
-            $app->abort(400, $app->trans('Invalid labels parameter'));
+            $this->app->abort(400, $this->app->trans('Invalid labels parameter'));
         }
 
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $this->findDataboxById($databox_id);
         $success = true;
 
         try {
-            foreach ($app['locales.available'] as $code => $language) {
+            foreach ($this->app['locales.available'] as $code => $language) {
                 if (!isset($labels[$code])) {
                     continue;
                 }
@@ -140,44 +155,47 @@ class DataboxController
             $success = false;
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured')
+                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
             ]);
         }
 
-        return $app->redirect('/admin/databox/' . $databox->get_sbas_id() . '/?success=' . (int) $success . '&reload-tree=1');
+        return $this->app->redirect(sprintf(
+            '/admin/databox/%d/?success=%d&reload-tree=1',
+            $databox->get_sbas_id(),
+            (int) $success
+        ));
     }
 
     /**
      * Reindex databox content
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function reindex(Application $app, Request $request, $databox_id)
+    public function reindex(Request $request, $databox_id)
     {
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->get_databox($databox_id)->reindex();
+            $this->findDataboxById($databox_id)->reindex();
             $success = true;
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
+                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database', [
+        return $this->app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'success'    => (int) $success,
         ]);
@@ -186,31 +204,32 @@ class DataboxController
     /**
      * Make a databox indexable
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function setIndexable(Application $app, Request $request, $databox_id)
+    public function setIndexable(Request $request, $databox_id)
     {
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id), !!$request->request->get('indexable', false));
+            $databox = $this->findDataboxById($databox_id);
+            $indexable = !!$request->request->get('indexable', false);
+            $this->getApplicationBox()->set_databox_indexable($databox, $indexable);
             $success = true;
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
+                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database', [
+        return $this->app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'success'    => (int) $success,
         ]);
@@ -219,27 +238,26 @@ class DataboxController
     /**
      * Update databox CGU's
      *
-     * @param  Application      $app        The silex application
      * @param  Request          $request    The current HTTP request
      * @param  integer          $databox_id The requested databox
      * @return RedirectResponse
      */
-    public function updateDatabaseCGU(Application $app, Request $request, $databox_id)
+    public function updateDatabaseCGU(Request $request, $databox_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $this->findDataboxById($databox_id);
 
         try {
             foreach ($request->request->get('TOU', []) as $loc => $terms) {
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_database_display_cgus', [
+            return $this->app->redirectPath('admin_database_display_cgus', [
                 'databox_id' => $databox_id,
                 'success'    => 0,
             ]);
         }
 
-        return $app->redirectPath('admin_database_display_cgus', [
+        return $this->app->redirectPath('admin_database_display_cgus', [
             'databox_id' => $databox_id,
             'success'    => 1,
         ]);
@@ -248,45 +266,55 @@ class DataboxController
     /**
      * Mount a collection on a databox
      *
-     * @param  Application      $app           The silex application
-     * @param  Request          $request       The current HTTP request
-     * @param  integer          $databox_id    The requested databox
-     * @param  integer          $collection_id The requested collection id
+     * @param  Request $request       The current HTTP request
+     * @param  integer $databox_id    The requested databox
+     * @param  integer $collection_id The requested collection id
      * @return RedirectResponse
      */
-    public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
+    public function mountCollection(Request $request, $databox_id, $collection_id)
     {
-        $app['phraseanet.appbox']->get_connection()->beginTransaction();
+        $connection = $this->getApplicationBox()->get_connection();
+        $connection->beginTransaction();
         try {
-            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $app['authentication']->getUser());
+            /** @var Authenticator $authenticator */
+            $authenticator = $this->app['authentication'];
+            $baseId = \collection::mount_collection(
+                $this->app,
+                $this->findDataboxById($databox_id),
+                $collection_id,
+                $authenticator->getUser()
+            );
 
             $othCollSel = (int) $request->request->get("othcollsel") ?: null;
 
             if (null !== $othCollSel) {
-                $query = $app['phraseanet.user-query'];
+                /** @var \User_Query $query */
+                $query = $this->app['phraseanet.user-query'];
                 $n = 0;
 
+                /** @var ACLProvider $aclProvider */
+                $aclProvider = $this->app['acl'];
                 while ($n < $query->on_base_ids([$othCollSel])->get_total()) {
                     $results = $query->limit($n, 50)->execute()->get_results();
 
                     foreach ($results as $user) {
-                        $app['acl']->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
+                        $aclProvider->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
                     }
 
                     $n += 50;
                 }
             }
 
-            $app['phraseanet.appbox']->get_connection()->commit();
+            $connection->commit();
 
-            return $app->redirectPath('admin_database', [
+            return $this->app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'mount'      => 'ok',
             ]);
         } catch (\Exception $e) {
-            $app['phraseanet.appbox']->get_connection()->rollBack();
+            $connection->rollBack();
 
-            return $app->redirectPath('admin_database', [
+            return $this->app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'mount'      => 'ko',
             ]);
@@ -296,41 +324,46 @@ class DataboxController
     /**
      * Set a new logo for a databox
      *
-     * @param  Application      $app        The silex application
-     * @param  Request          $request    The current HTTP request
-     * @param  integer          $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return RedirectResponse
      */
-    public function sendLogoPdf(Application $app, Request $request, $databox_id)
+    public function sendLogoPdf(Request $request, $databox_id)
     {
         try {
             if (null !== ($file = $request->files->get('newLogoPdf')) && $file->isValid()) {
 
                 if ($file->getClientSize() < 65536) {
-                    $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-                    $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, $file, \databox::PIC_PDF);
+                    $databox = $this->findDataboxById($databox_id);
+                    $this->getApplicationBox()->write_databox_pic(
+                        $this->app['media-alchemyst'],
+                        $this->app['filesystem'],
+                        $databox,
+                        $file,
+                        \databox::PIC_PDF
+                    );
                     unlink($file->getPathname());
 
-                    return $app->redirectPath('admin_database', [
+                    return $this->app->redirectPath('admin_database', [
                         'databox_id' => $databox_id,
                         'success'    => '1',
                     ]);
                 } else {
-                    return $app->redirectPath('admin_database', [
+                    return $this->app->redirectPath('admin_database', [
                         'databox_id' => $databox_id,
                         'success'    => '0',
                         'error'      => 'file-too-big',
                     ]);
                 }
             } else {
-                return $app->redirectPath('admin_database', [
+                return $this->app->redirectPath('admin_database', [
                     'databox_id' => $databox_id,
                     'success'    => '0',
                     'error'      => 'file-invalid',
                 ]);
             }
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_database', [
+            return $this->app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'success'    => '0',
                 'error'      => 'file-error',
@@ -341,31 +374,37 @@ class DataboxController
     /**
      * Delete an existing logo for a databox
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function deleteLogoPdf(Application $app, Request $request, $databox_id)
+    public function deleteLogoPdf(Request $request, $databox_id)
     {
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $app['phraseanet.appbox']->get_databox($databox_id), null, \databox::PIC_PDF);
+            $this->getApplicationBox()->write_databox_pic(
+                $this->app['media-alchemyst'],
+                $this->app['filesystem'],
+                $this->findDataboxById($databox_id),
+                null,
+                \databox::PIC_PDF
+            );
             $success = true;
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful removal') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
+                'msg'     => $success ? $this->app->trans('Successful removal') : $this->app->trans('An error occured'),
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database', [
+        // TODO: Check whether html call is still valid
+        return $this->app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
         ]);
@@ -374,31 +413,31 @@ class DataboxController
     /**
      * Clear databox logs
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function clearLogs(Application $app, Request $request, $databox_id)
+    public function clearLogs(Request $request, $databox_id)
     {
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->get_databox($databox_id)->clear_logs();
+            $this->findDataboxById($databox_id)->clear_logs();
             $success = true;
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
+                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database', [
+        // TODO: Check whether html call is still valid
+        return $this->app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
         ]);
@@ -407,35 +446,35 @@ class DataboxController
     /**
      * Change the name of a databox
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function changeViewName(Application $app, Request $request, $databox_id)
+    public function changeViewName(Request $request, $databox_id)
     {
         if (null === $viewName = $request->request->get('viewname')) {
-            $app->abort(400, $app->trans('Missing view name parameter'));
+            $this->app->abort(400, $this->app->trans('Missing view name parameter'));
         }
 
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->get_databox($databox_id)->set_viewname($viewName);
+            $this->findDataboxById($databox_id)->set_viewname($viewName);
             $success = true;
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
+                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database', [
+        // TODO: Check whether html call is still valid
+        return $this->app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
         ]);
@@ -444,17 +483,16 @@ class DataboxController
     /**
      * Unmount a databox
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function unmountDatabase(Application $app, Request $request, $databox_id)
+    public function unmountDatabase(Request $request, $databox_id)
     {
         $success = false;
 
         try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+            $databox = $this->findDataboxById($databox_id);
             $databox->unmount_databox();
 
             $success = true;
@@ -462,15 +500,18 @@ class DataboxController
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            $msg = $success
+                ? $this->app->trans('The publication has been stopped')
+                : $this->app->trans('An error occured');
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('The publication has been stopped') : $app->trans('An error occured'),
+                'msg'     => $msg,
                 'sbas_id' => $databox_id
             ]);
         }
 
-        return $app->redirectPath('admin_databases', [
+        return $this->app->redirectPath('admin_databases', [
             'reload-tree' => 1,
         ]);
     }
@@ -478,47 +519,49 @@ class DataboxController
     /**
      * Empty a databox
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function emptyDatabase(Application $app, Request $request, $databox_id)
+    public function emptyDatabase(Request $request, $databox_id)
     {
-        $msg = $app->trans('An error occurred');
+        $msg = $this->app->trans('An error occurred');
         $success = false;
         $taskCreated = false;
 
         try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+            $databox = $this->findDataboxById($databox_id);
 
             foreach ($databox->get_collections() as $collection) {
                 if ($collection->get_record_amount() <= 500) {
                     $collection->empty_collection(500);
                 } else {
-                    $app['manipulator.task']->createEmptyCollectionJob($collection);
+                    /** @var TaskManipulator $taskManipulator */
+                    $taskManipulator = $this->app['manipulator.task'];
+                    $taskManipulator->createEmptyCollectionJob($collection);
                 }
             }
 
-            $msg = $app->trans('Base empty successful');
+            $msg = $this->app->trans('Base empty successful');
             $success = true;
 
             if ($taskCreated) {
-                $msg = $app->trans('A task has been created, please run it to complete empty collection');
+                $msg = $this->app->trans('A task has been created, please run it to complete empty collection');
             }
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
                 'msg'     => $msg,
-                'sbas_id' => $databox_id
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database', [
+        // TODO: Can this method be called as HTML?
+        return $this->app->redirectPath('admin_database', [
             'databox_id' => $databox_id,
             'error'      => 'file-too-big',
         ]);
@@ -527,83 +570,83 @@ class DataboxController
     /**
      * Get number of indexed items for a databox
      *
-     * @param  Application  $app        The silex application
-     * @param  Request      $request    The current HTTP request
-     * @param  integer      $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse
      */
-    public function progressBarInfos(Application $app, Request $request, $databox_id)
+    public function progressBarInfos(Request $request, $databox_id)
     {
-        if (!$app['request']->isXmlHttpRequest() || 'json' !== $app['request']->getRequestFormat()) {
-            $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
+        if (!$request->isXmlHttpRequest() || 'json' !== $request->getRequestFormat()) {
+            $this->app->abort(400, $this->app->trans('Bad request format, only JSON is allowed'));
         }
 
-        $app['phraseanet.appbox'] = $app['phraseanet.appbox'];
+        $appbox = $this->getApplicationBox();
 
         $ret = [
             'success'           => false,
-            'msg'               => $app->trans('An error occured'),
+            'msg'               => $this->app->trans('An error occured'),
             'sbas_id'           => null,
             'indexable'         => false,
             'records'           => 0,
             'xml_indexed'       => 0,
             'thesaurus_indexed' => 0,
             'viewname'          => null,
-            'printLogoURL'      => null
+            'printLogoURL'      => null,
         ];
 
         try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $datas = $databox->get_indexed_record_amount();
+            $databox = $this->findDataboxById($databox_id);
+            $data = $databox->get_indexed_record_amount();
 
-            $ret['indexable'] = $app['phraseanet.appbox']->is_databox_indexable($databox);
-            $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? $app->trans('admin::base: aucun alias') : $databox->get_viewname());
+            $ret['indexable'] = $appbox->is_databox_indexable($databox);
+            $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname())
+                ? $this->app->trans('admin::base: aucun alias')
+                : $databox->get_viewname());
             $ret['records'] = $databox->get_record_amount();
             $ret['sbas_id'] = $databox_id;
-            $ret['xml_indexed'] = $datas['xml_indexed'];
-            $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
-            $ret['jeton_subdef'] = $datas['jeton_subdef'];
-            if ($app['filesystem']->exists($app['root.path'] . '/config/minilogos/logopdf_' . $databox_id . '.jpg')) {
+            $ret['xml_indexed'] = $data['xml_indexed'];
+            $ret['thesaurus_indexed'] = $data['thesaurus_indexed'];
+            $ret['jeton_subdef'] = $data['jeton_subdef'];
+            if ($this->app['filesystem']->exists($this->app['root.path'] . '/config/minilogos/logopdf_' . $databox_id . '.jpg')) {
                 $ret['printLogoURL'] = '/custom/minilogos/logopdf_' . $databox_id . '.jpg';
             }
 
             $ret['success'] = true;
-            $ret['msg'] = $app->trans('Successful update');
+            $ret['msg'] = $this->app->trans('Successful update');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
-     * Display page for reaorder collections on a databox
+     * Display page for reorder collections on a databox
      *
-     * @param  Application $app        The silex application
-     * @param  Request     $request    The current HTTP request
-     * @param  integer     $databox_id The requested databox
+     * @param  integer $databox_id The requested databox
      * @return Response
      */
-    public function getReorder(Application $app, Request $request, $databox_id)
+    public function getReorder($databox_id)
     {
-        return $app['twig']->render('admin/collection/reorder.html.twig', [
-            'collections' => $app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox_id]),
+        $acl = $this->getAclForUser();
+
+        return $this->render('admin/collection/reorder.html.twig', [
+            'collections' => $acl->get_granted_base([], [$databox_id]),
         ]);
     }
 
     /**
      * Apply collection reorder changes
      *
-     * @param  Application                   $app        The silex application
-     * @param  Request                       $request    The current HTTP request
-     * @param  integer                       $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return JsonResponse|RedirectResponse
      */
-    public function setReorder(Application $app, Request $request, $databox_id)
+    public function setReorder(Request $request, $databox_id)
     {
         try {
             foreach ($request->request->get('order', []) as $data) {
-                $collection = \collection::get_from_base_id($app, $data['id']);
+                $collection = \collection::get_from_base_id($this->app, $data['id']);
                 $collection->set_ord($data['offset']);
             }
             $success = true;
@@ -611,15 +654,15 @@ class DataboxController
             $success = false;
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $app->trans('Successful update') : $app->trans('An error occured'),
-                'sbas_id' => $databox_id
+                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
+                'sbas_id' => $databox_id,
             ]);
         }
 
-        return $app->redirectPath('admin_database_display_collections_order', [
+        return $this->app->redirectPath('admin_database_display_collections_order', [
             'databox_id' => $databox_id,
             'success'    => (int) $success,
         ]);
@@ -628,68 +671,76 @@ class DataboxController
     /**
      * Display page to create a new collection
      *
-     * @param  Application $app        The silex application
-     * @param  Request     $request    The current HTTP request
-     * @param  integer     $databox_id The requested databox
      * @return Response
      */
-    public function getNewCollection(Application $app, Request $request, $databox_id)
+    public function getNewCollection()
     {
-        return $app['twig']->render('admin/collection/create.html.twig');
+        return $this->render('admin/collection/create.html.twig');
     }
 
     /**
      * Create a new collection
      *
-     * @param  Application $app        The silex application
-     * @param  Request     $request    The current HTTP request
-     * @param  integer     $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return Response
      */
-    public function createCollection(Application $app, Request $request, $databox_id)
+    public function createCollection(Request $request, $databox_id)
     {
         if (($name = trim($request->request->get('name', ''))) === '') {
-            return $app->redirectPath('admin_database_display_new_collection_form', [
+            return $this->app->redirectPath('admin_database_display_new_collection_form', [
                 'databox_id' => $databox_id,
                 'error'      => 'name',
             ]);
         }
 
         try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], $name, $app['authentication']->getUser());
+            $databox = $this->findDataboxById($databox_id);
+            $collection = \collection::create(
+                $this->app, $databox,
+                $this->getApplicationBox(),
+                $name,
+                $this->getAuthenticator()->getUser()
+            );
 
             if (($request->request->get('ccusrothercoll') === "on")
                 && (null !== $othcollsel = $request->request->get('othcollsel'))) {
-                $query = $app['phraseanet.user-query'];
+                /** @var \User_Query $query */
+                $query = $this->app['phraseanet.user-query'];
                 $total = $query->on_base_ids([$othcollsel])->get_total();
                 $n = 0;
                 while ($n < $total) {
                     $results = $query->limit($n, 20)->execute()->get_results();
                     foreach ($results as $user) {
-                        $app['acl']->get($user)->duplicate_right_from_bas($othcollsel, $collection->get_base_id());
+                        $this->getAclForUser($user)->duplicate_right_from_bas($othcollsel, $collection->get_base_id());
                     }
                     $n += 20;
                 }
             }
 
-            return $app->redirectPath('admin_display_collection', ['bas_id' => $collection->get_base_id(), 'success' => 1, 'reload-tree' => 1]);
+            return $this->app->redirectPath('admin_display_collection', [
+                'bas_id' => $collection->get_base_id(),
+                'success' => 1,
+                'reload-tree' => 1,
+            ]);
         } catch (\Exception $e) {
-            return $app->redirectPath('admin_database_submit_collection', ['databox_id' => $databox_id, 'error' => 'error']);
+            return $this->app->redirectPath('admin_database_submit_collection', [
+                'databox_id' => $databox_id,
+                'error' => 'error',
+            ]);
         }
     }
 
     /**
      * Display page to get some details on a appbox
      *
-     * @param  Application $app        The silex application
-     * @param  Request     $request    The current HTTP request
-     * @param  integer     $databox_id The requested databox
+     * @param  Request $request    The current HTTP request
+     * @param  integer $databox_id The requested databox
      * @return Response
      */
-    public function getDetails(Application $app, Request $request, $databox_id)
+    public function getDetails(Request $request, $databox_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $this->findDataboxById($databox_id);
 
         $details = [];
         $total = ['total_subdefs' => 0, 'total_size' => 0];
@@ -715,11 +766,19 @@ class DataboxController
             }
         }
 
-        return $app['twig']->render('admin/databox/details.html.twig', [
+        return $this->render('admin/databox/details.html.twig', [
             'databox' => $databox,
             'table'   => $details,
             'total'   => $total
         ]);
+    }
+
+    /**
+     * @return \appbox
+     */
+    private function getApplicationBox()
+    {
+        return $this->app['phraseanet.appbox'];
     }
 
     /**
@@ -728,8 +787,8 @@ class DataboxController
      */
     private function findDataboxById($id)
     {
-        /** @var \appbox $appbox */
-        $appbox = $this->app['phraseanet.appbox'];
+        $appbox = $this->getApplicationBox();
+
         return $appbox->get_databox($id);
     }
 
@@ -746,5 +805,35 @@ class DataboxController
             $name,
             $context
         );
+    }
+
+    /**
+     * @return ACLProvider
+     */
+    private function getAclProvider()
+    {
+        return $this->app['acl'];
+    }
+
+    /**
+     * @return Authenticator
+     */
+    private function getAuthenticator()
+    {
+        return $this->app['authentication'];
+    }
+
+    /**
+     * @param User|null $user
+     * @return \ACL
+     */
+    private function getAclForUser(User $user = null)
+    {
+        $aclProvider = $this->getAclProvider();
+        if (null === $user) {
+            $user = $this->getAuthenticator()->getUser();
+        }
+
+        return $aclProvider->get($user);
     }
 }
