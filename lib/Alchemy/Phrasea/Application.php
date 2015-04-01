@@ -312,6 +312,7 @@ class Application extends SilexApplication
         $providers = [
             'Alchemy\Phrasea\ControllerProvider\Admin\Collection' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -618,7 +619,6 @@ class Application extends SilexApplication
         $this->mount('/developers/', new Developers());
 
         $this->mount('/admin/', new AdminRoot());
-        $this->mount('/admin/dashboard', new Dashboard());
         $this->mount('/admin/databox', new Databox());
         $this->mount('/admin/databoxes', new Databoxes());
         $this->mount('/admin/setup', new Setup());
@@ -671,6 +671,7 @@ class Application extends SilexApplication
         $providers = [
             '/admin/collection'      => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
             '/admin/connected-users' => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
+            '/admin/dashboard'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard',
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',

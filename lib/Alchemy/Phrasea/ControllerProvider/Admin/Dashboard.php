@@ -11,25 +11,31 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
-use Alchemy\Phrasea\Controller\Admin\RedirectResponse;
-use Alchemy\Phrasea\Notification\Receiver;
-use Alchemy\Phrasea\Notification\Mail\MailTest;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Controller\Admin\DashboardController;
 use Silex\Application;
+use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Silex\ServiceProviderInterface;
 
-class Dashboard implements ControllerProviderInterface
+class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
 {
+    public function register(Application $app)
+    {
+        $app['controller.admin.dashboard'] = $app->share(function () use ($app) {
+            return new DashboardController($app);
+        });
+    }
+
+    public function boot(Application $app)
+    {
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.admin.dashboard'] = $this;
-
+        /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
+        $controllers->before(function () use ($app) {
             $app['firewall']->requireAdmin();
         });
 
@@ -49,124 +55,5 @@ class Dashboard implements ControllerProviderInterface
             ->bind('admin_dashboard_add_admins');
 
         return $controllers;
-    }
-
-    /**
-     * Display admin dashboard page
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @return Response
-     */
-    public function slash(Application $app, Request $request)
-    {
-        switch ($emailStatus = $request->query->get('email')) {
-            case 'sent';
-                $emailStatus = $app->trans('Mail sent');
-                break;
-            case 'error':
-                $emailStatus = $app->trans('Could not send email');
-                break;
-        }
-
-        $parameters = [
-            'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
-            'admins'                        => $app['repo.users']->findAdmins(),
-            'email_status'                  => $emailStatus,
-        ];
-
-        return $app['twig']->render('admin/dashboard.html.twig', $parameters);
-    }
-
-    /**
-     * Flush all cash services
-     *
-     * @param  Application      $app
-     * @param  Request          $request
-     * @return RedirectResponse
-     */
-    public function flush(Application $app, Request $request)
-    {
-        if ($app['phraseanet.cache-service']->flushAll()) {
-            return $app->redirectPath('admin_dashboard', ['flush_cache' => 'ok']);
-        }
-
-        return $app->redirectPath('admin_dashboard', ['flush_cache' => 'ko']);
-    }
-
-    /**
-     * Test a mail address
-     *
-     * @param  Application      $app
-     * @param  Request          $request
-     * @return RedirectResponse
-     */
-    public function sendMail(Application $app, Request $request)
-    {
-        if (null === $mail = $request->request->get('email')) {
-            $app->abort(400, 'Bad request missing email parameter');
-        };
-
-        if (!\Swift_Validate::email($request->request->get('email'))) {
-            $app->abort(400, 'Bad request missing email parameter');
-        };
-
-        try {
-            $receiver = new Receiver(null, $mail);
-        } catch (InvalidArgumentException $e) {
-            return $app->redirectPath('admin_dashboard', ['email' => 'not-sent']);
-        }
-
-        $mail = MailTest::create($app, $receiver);
-
-        $app['notification.deliverer']->deliver($mail);
-        $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
-
-        return $app->redirectPath('admin_dashboard', ['email' => 'sent']);
-    }
-
-    /**
-     * Reset admin rights
-     *
-     * @param  Application      $app
-     * @param  Request          $request
-     * @return RedirectResponse
-     */
-    public function resetAdminRights(Application $app, Request $request)
-    {
-        $app['manipulator.acl']->resetAdminRights($app['repo.users']->findAdmins());
-
-        return $app->redirectPath('admin_dashboard');
-    }
-
-    /**
-     * Grant to an user admin rights
-     *
-     * @param  Application      $app
-     * @param  Request          $request
-     * @return RedirectResponse
-     */
-    public function addAdmins(Application $app, Request $request)
-    {
-        $admins = $request->request->get('admins', []);
-        if (count($admins) === 0 || !is_array($admins)) {
-            $app->abort(400, '"admins" parameter must contains at least one value.');
-        }
-        if (!in_array($app['authentication']->getUser()->getId(), $admins)) {
-            $admins[] = $app['authentication']->getUser()->getId();
-        }
-
-        $admins = array_map(function ($usrId) use ($app) {
-            if (null === $user = $app['repo.users']->find($usrId)) {
-                throw new RuntimeException(sprintf('Invalid usrId %s provided.', $usrId));
-            }
-
-            return $user;
-        }, $admins);
-
-        $app['manipulator.user']->promote($admins);
-        $app['manipulator.acl']->resetAdminRights($admins);
-
-        return $app->redirectPath('admin_dashboard');
     }
 }
