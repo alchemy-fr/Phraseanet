@@ -34,7 +34,7 @@ class Dashboard implements ControllerProviderInterface
         });
 
         $controllers->get('/', 'controller.admin.dashboard:slash')
-            ->bind('admin_dashbord');
+            ->bind('admin_dashboard');
 
         $controllers->post('/flush-cache/', 'controller.admin.dashboard:flush')
             ->bind('admin_dashboard_flush_cache');
@@ -88,10 +88,10 @@ class Dashboard implements ControllerProviderInterface
     public function flush(Application $app, Request $request)
     {
         if ($app['phraseanet.cache-service']->flushAll()) {
-            return $app->redirectPath('admin_dashbord', ['flush_cache' => 'ok']);
+            return $app->redirectPath('admin_dashboard', ['flush_cache' => 'ok']);
         }
 
-        return $app->redirectPath('admin_dashbord', ['flush_cache' => 'ko']);
+        return $app->redirectPath('admin_dashboard', ['flush_cache' => 'ko']);
     }
 
     /**
@@ -114,7 +114,7 @@ class Dashboard implements ControllerProviderInterface
         try {
             $receiver = new Receiver(null, $mail);
         } catch (InvalidArgumentException $e) {
-            return $app->redirectPath('admin_dashbord', ['email' => 'not-sent']);
+            return $app->redirectPath('admin_dashboard', ['email' => 'not-sent']);
         }
 
         $mail = MailTest::create($app, $receiver);
@@ -122,7 +122,7 @@ class Dashboard implements ControllerProviderInterface
         $app['notification.deliverer']->deliver($mail);
         $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
 
-        return $app->redirectPath('admin_dashbord', ['email' => 'sent']);
+        return $app->redirectPath('admin_dashboard', ['email' => 'sent']);
     }
 
     /**
@@ -136,7 +136,7 @@ class Dashboard implements ControllerProviderInterface
     {
         $app['manipulator.acl']->resetAdminRights($app['repo.users']->findAdmins());
 
-        return $app->redirectPath('admin_dashbord');
+        return $app->redirectPath('admin_dashboard');
     }
 
     /**
@@ -167,6 +167,6 @@ class Dashboard implements ControllerProviderInterface
         $app['manipulator.user']->promote($admins);
         $app['manipulator.acl']->resetAdminRights($admins);
 
-        return $app->redirectPath('admin_dashbord');
+        return $app->redirectPath('admin_dashboard');
     }
 }

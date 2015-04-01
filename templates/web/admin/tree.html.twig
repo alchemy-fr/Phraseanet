@@ -4,7 +4,7 @@
 
   {% if app['acl'].get(app['authentication'].getUser()).is_admin() %}
   <li>
-    <a target="right" href="{{ path('admin_dashbord') }}" class="ajax">
+    <a target="right" href="{{ path('admin_dashboard') }}" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
       <span>{{ 'Tableau de bord' | trans }}</span>
     </a>
