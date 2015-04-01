@@ -471,37 +471,7 @@ function T_search(menuItem, menu, cmenu, e, label)
   var sbid = tcids.shift();
   var term = menu._li.find("span span").html();
 
-  v = '[' + term + ']';
-
-  var nck = 0;
-  $('#searchForm .adv_options :checkbox[name="bases[]"]').each(function(a)
-  {
-    bas2sbas["b"+this.value].ckobj = this;
-    bas2sbas["b"+this.value].waschecked = this.checked;
-    if(bas2sbas["b"+this.value].sbid == sbid)
-    {
-      if(this.checked)
-        nck++;
-    }
-    else
-    {
-      this.checked = false;
-    }
-  }
-);
-
-  if(nck == 0)
-  {
-    var i;
-    for(i in bas2sbas)
-    {
-      if(bas2sbas[i].sbid == sbid)
-        bas2sbas[i].ckobj.checked = true;
-    }
-  }
-
-  checkFilters();
-  newSearch(v);
+        doThesSearch('T', sbid, term, null);
 }
 
 
@@ -806,6 +776,8 @@ function doThesSearch(type, sbid, term, field)
     v = '[' + term + ']';
   else
     v = '"' + term + '" IN ' + field;
+  selectedFacetValues = [];
+  $('#EDIT_query').val(v);
   checkFilters();
   newSearch(v);
 }
