@@ -14,25 +14,27 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Metadata\TagProvider;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FieldsController extends Controller
 {
-    public function updateFields(Application $app, Request $request, $sbas_id)
+    public function updateFields(Request $request, $sbas_id)
     {
         $fields = [];
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $databox = $this->findDataboxById((int) $sbas_id);
         $metaStructure = $databox->get_meta_structure();
         $connection = $databox->get_connection();
-        $data = $this->getFieldsJsonFromRequest($app, $request);
+        $data = $this->getFieldsJsonFromRequest($request);
 
         $connection->beginTransaction();
 
         foreach ($data as $jsonField) {
             try {
-                $field = \databox_field::get_instance($app, $databox, $jsonField['id']);
+                $field = \databox_field::get_instance($this->app, $databox, $jsonField['id']);
 
                 if ($field->get_name() !== $jsonField['name']) {
                     $this->validateNameField($metaStructure, $jsonField);
@@ -40,64 +42,64 @@ class FieldsController extends Controller
 
                 $this->validateTagField($jsonField);
 
-                $this->updateFieldWithData($app, $field, $jsonField);
+                $this->updateFieldWithData($field, $jsonField);
                 $field->save();
                 $fields[] = $field->toArray();
             } catch (\Exception $e) {
                 $connection->rollback();
-                $app->abort(500, $app->trans('Field %name% could not be saved, please try again or contact an admin.', ['%name%' => $jsonField['name']]));
+                $this->app->abort(500, $this->app->trans('Field %name% could not be saved, please try again or contact an admin.', ['%name%' => $jsonField['name']]));
                 break;
             }
         }
 
         $connection->commit();
 
-        return $app->json($fields);
+        return $this->app->json($fields);
     }
 
-    public function getLanguage(Application $app, Request $request)
+    public function getLanguage()
     {
-        return $app->json([
-            'something_wrong'           => $app->trans('Something wrong happened, please try again or contact an admin.'),
-            'created_success'           => $app->trans('%s field has been created with success.'),
-            'deleted_success'           => $app->trans('%s field has been deleted with success.'),
-            'are_you_sure_delete'       => $app->trans('Do you really want to delete the field %s ?'),
-            'validation_blank'          => $app->trans('Field can not be blank.'),
-            'validation_name_exists'    => $app->trans('Field name already exists.'),
-            'validation_name_invalid'   => $app->trans('Field name is not valid.'),
-            'validation_tag_invalid'    => $app->trans('Field source is not valid.'),
-            'field_error'               => $app->trans('Field %s contains errors.'),
-            'fields_save'               => $app->trans('Your configuration has been successfuly saved.'),
+        return $this->app->json([
+            'something_wrong'           => $this->app->trans('Something wrong happened, please try again or contact an admin.'),
+            'created_success'           => $this->app->trans('%s field has been created with success.'),
+            'deleted_success'           => $this->app->trans('%s field has been deleted with success.'),
+            'are_you_sure_delete'       => $this->app->trans('Do you really want to delete the field %s ?'),
+            'validation_blank'          => $this->app->trans('Field can not be blank.'),
+            'validation_name_exists'    => $this->app->trans('Field name already exists.'),
+            'validation_name_invalid'   => $this->app->trans('Field name is not valid.'),
+            'validation_tag_invalid'    => $this->app->trans('Field source is not valid.'),
+            'field_error'               => $this->app->trans('Field %s contains errors.'),
+            'fields_save'               => $this->app->trans('Your configuration has been successfuly saved.'),
         ]);
     }
 
-    public function displayApp(Application $app, Request $request, $sbas_id)
+    public function displayApp($sbas_id)
     {
         $languages = [];
 
-        foreach ($app['locales.available'] as $code => $language) {
+        foreach ($this->app['locales.available'] as $code => $language) {
             $data = explode('_', $code);
             $languages[$data[0]] = $language;
         }
 
-        return $app['twig']->render('/admin/fields/index.html.twig', [
+        return $this->render('/admin/fields/index.html.twig', [
             'sbas_id'   => $sbas_id,
             'languages' => $languages,
         ]);
     }
 
-    public function listDcFields(Application $app, Request $request)
+    public function listDcFields()
     {
-        $data = $app['serializer']->serialize(array_values(\databox::get_available_dcfields()), 'json');
+        $data = $this->app['serializer']->serialize(array_values(\databox::get_available_dcfields()), 'json');
 
         return new Response($data, 200, ['content-type' => 'application/json']);
     }
 
-    public function listVocabularies(Application $app, Request $request)
+    public function listVocabularies()
     {
-        $vocabularies = VocabularyController::getAvailable($app);
+        $vocabularies = VocabularyController::getAvailable($this->app);
 
-        return $app->json(array_map(function ($vocabulary) {
+        return $this->app->json(array_map(function (ControlProviderInterface $vocabulary) {
             return [
                 'type' => $vocabulary->getType(),
                 'name' => $vocabulary->getName(),
@@ -105,17 +107,17 @@ class FieldsController extends Controller
         }, $vocabularies));
     }
 
-    public function getVocabulary(Application $app, Request $request, $type)
+    public function getVocabulary($type)
     {
-        $vocabulary = VocabularyController::get($app, $type);
+        $vocabulary = VocabularyController::get($this->app, $type);
 
-        return $app->json([
+        return $this->app->json([
             'type' => $vocabulary->getType(),
             'name' => $vocabulary->getName(),
         ]);
     }
 
-    public function searchTag(Application $app, Request $request)
+    public function searchTag(Request $request)
     {
         $term = trim(strtolower($request->query->get('term')));
         $res = [];
@@ -141,61 +143,64 @@ class FieldsController extends Controller
             }
         }
 
-        return $app->json($res);
+        return $this->app->json($res);
     }
 
-    public function getTag(Application $app, Request $request, $tagname)
+    public function getTag($tagname)
     {
         $tag = \databox_field::loadClassFromTagName($tagname);
-        $json = $app['serializer']->serialize($tag, 'json');
+        $json = $this->app['serializer']->serialize($tag, 'json');
 
         return new Response($json, 200, ['Content-Type' => 'application/json']);
     }
 
-    public function createField(Application $app, Request $request, $sbas_id)
+    public function createField(Request $request, $sbas_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $data = $this->getFieldJsonFromRequest($app, $request);
+        $databox = $this->findDataboxById((int) $sbas_id);
+        $data = $this->getFieldJsonFromRequest($request);
 
         $metaStructure = $databox->get_meta_structure();
         $this->validateNameField($metaStructure, $data);
         $this->validateTagField($data);
 
         try {
-            $field = \databox_field::create($app, $databox, $data['name'], $data['multi']);
-            $this->updateFieldWithData($app, $field, $data);
+            $field = \databox_field::create($this->app, $databox, $data['name'], $data['multi']);
+            $this->updateFieldWithData($field, $data);
             $field->save();
         } catch (\Exception $e) {
-            $app->abort(500, $app->trans('Field %name% could not be created, please try again or contact an admin.', ['%name%' => $data['name']]));
+            throw new HttpException(500, $this->app->trans(
+                'Field %name% could not be created, please try again or contact an admin.',
+                ['%name%' => $data['name']]
+            ));
         }
 
-        return $app->json($field->toArray(), 201, [
-            'location' => $app->path('admin_fields_show_field', [
+        return $this->app->json($field->toArray(), 201, [
+            'location' => $this->app->path('admin_fields_show_field', [
                 'sbas_id' => $sbas_id,
-                'id' => $field->get_id()
+                'id' => $field->get_id(),
             ])]);
     }
 
-    public function listFields(Application $app, $sbas_id)
+    public function listFields($sbas_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $databox = $this->findDataboxById((int) $sbas_id);
 
-        return $app->json($databox->get_meta_structure()->toArray());
+        return $this->app->json($databox->get_meta_structure()->toArray());
     }
 
-    public function getField(Application $app, $sbas_id, $id)
+    public function getField($sbas_id, $id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $field = \databox_field::get_instance($app, $databox, $id);
+        $databox = $this->findDataboxById((int) $sbas_id);
+        $field = \databox_field::get_instance($this->app, $databox, $id);
 
-        return $app->json($field->toArray());
+        return $this->app->json($field->toArray());
     }
 
-    public function updateField(Application $app, Request $request, $sbas_id, $id)
+    public function updateField(Request $request, $sbas_id, $id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $field = \databox_field::get_instance($app, $databox, $id);
-        $data = $this->getFieldJsonFromRequest($app, $request);
+        $databox = $this->findDataboxById((int) $sbas_id);
+        $field = \databox_field::get_instance($this->app, $databox, $id);
+        $data = $this->getFieldJsonFromRequest($request);
 
         $this->validateTagField($data);
 
@@ -204,35 +209,35 @@ class FieldsController extends Controller
             $this->validateNameField($metaStructure, $data);
         }
 
-        $this->updateFieldWithData($app, $field, $data);
+        $this->updateFieldWithData($field, $data);
         $field->save();
 
-        return $app->json($field->toArray());
+        return $this->app->json($field->toArray());
     }
 
-    public function deleteField(Application $app, $sbas_id, $id)
+    public function deleteField($sbas_id, $id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        \databox_field::get_instance($app, $databox, $id)->delete();
+        $databox = $this->findDataboxById((int) $sbas_id);
+        \databox_field::get_instance($this->app, $databox, $id)->delete();
 
         return new Response('', 204);
     }
 
-    private function getFieldJsonFromRequest(Application $app, Request $request)
+    private function getFieldJsonFromRequest(Request $request)
     {
         $data = $this->requestBodyToJson($request);
         $required = $this->getMandatoryFieldProperties();
 
         foreach ($required as $key) {
             if (false === array_key_exists($key, $data)) {
-                $app->abort(400, sprintf('The entity must contain a key `%s`', $key));
+                $this->app->abort(400, sprintf('The entity must contain a key `%s`', $key));
             }
         }
 
         return $data;
     }
 
-    private function getFieldsJsonFromRequest(Application $app, Request $request)
+    private function getFieldsJsonFromRequest(Request $request)
     {
         $data = $this->requestBodyToJson($request);
         $required = $this->getMandatoryFieldProperties();
@@ -240,7 +245,7 @@ class FieldsController extends Controller
         foreach ($data as $field) {
             foreach ($required as $key) {
                 if (false === array_key_exists($key, $field)) {
-                    $app->abort(400, sprintf('The entity must contain a key `%s`', $key));
+                    $this->app->abort(400, sprintf('The entity must contain a key `%s`', $key));
                 }
             }
         }
@@ -248,7 +253,7 @@ class FieldsController extends Controller
         return $data;
     }
 
-    private function updateFieldWithData(Application $app, \databox_field $field, array $data)
+    private function updateFieldWithData(\databox_field $field, array $data)
     {
         $field
             ->set_name($data['name'])
@@ -275,7 +280,7 @@ class FieldsController extends Controller
         }
 
         try {
-            $vocabulary = VocabularyController::get($app, $data['vocabulary-type']);
+            $vocabulary = VocabularyController::get($this->app, $data['vocabulary-type']);
             $field->setVocabularyControl($vocabulary);
             $field->setVocabularyRestricted($data['vocabulary-restricted']);
         } catch (\InvalidArgumentException $e) {
