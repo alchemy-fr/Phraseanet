@@ -266,7 +266,7 @@ class RecordIndexer
             ->add(media_subdef::TC_DATA_COLORDEPTH, 'integer')
             ->add(media_subdef::TC_DATA_DURATION, 'float')
             ->add(media_subdef::TC_DATA_AUDIOCODEC, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_AUDIOSAMPLERATE, 'integer')
+            ->add(media_subdef::TC_DATA_AUDIOSAMPLERATE, 'float')
             ->add(media_subdef::TC_DATA_VIDEOCODEC, 'string')->notAnalyzed()
             ->add(media_subdef::TC_DATA_FRAMERATE, 'float')
             ->add(media_subdef::TC_DATA_MIMETYPE, 'string')->notAnalyzed()
