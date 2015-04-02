@@ -516,6 +516,13 @@ class databox extends base
         return;
     }
 
+    /**
+     * @param Application $app
+     * @param Connection  $connection
+     * @param SplFileInfo $data_template
+     * @return databox
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public static function create(Application $app, Connection $connection, \SplFileInfo $data_template)
     {
         if ( ! file_exists($data_template->getRealPath())) {

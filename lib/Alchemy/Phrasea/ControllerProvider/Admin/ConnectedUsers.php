@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\ConnectedUsersController;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -21,7 +22,7 @@ class ConnectedUsers implements ControllerProviderInterface, ServiceProviderInte
 {
     public function register(Application $app)
     {
-        $app['controller.admin.connected-users'] = $app->share(function () use ($app) {
+        $app['controller.admin.connected-users'] = $app->share(function (PhraseaApplication $app) {
             return new ConnectedUsersController($app);
         });
 

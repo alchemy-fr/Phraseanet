@@ -25,7 +25,7 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['controller.lightbox'] = $app->share(function () use ($app) {
+        $app['controller.lightbox'] = $app->share(function (PhraseaApplication $app) {
             return new LightboxController($app);
         });
     }

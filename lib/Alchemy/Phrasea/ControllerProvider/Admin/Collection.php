@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\CollectionController;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -21,7 +22,7 @@ class Collection implements ControllerProviderInterface, ServiceProviderInterfac
 {
     public function register(Application $app)
     {
-        $app['controller.admin.collection'] = $app->share(function () use ($app) {
+        $app['controller.admin.collection'] = $app->share(function (PhraseaApplication $app) {
             return new CollectionController($app);
         });
     }

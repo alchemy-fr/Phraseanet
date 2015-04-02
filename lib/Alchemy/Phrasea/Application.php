@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Admin\Databoxes;
 use Alchemy\Phrasea\ControllerProvider\Admin\Fields;
 use Alchemy\Phrasea\ControllerProvider\Admin\Publications;
 use Alchemy\Phrasea\ControllerProvider\Admin\Root as AdminRoot;
@@ -312,6 +311,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Databox' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -618,7 +618,6 @@ class Application extends SilexApplication
         $this->mount('/developers/', new Developers());
 
         $this->mount('/admin/', new AdminRoot());
-        $this->mount('/admin/databoxes', new Databoxes());
         $this->mount('/admin/setup', new Setup());
         $this->mount('/admin/search-engine', new SearchEngine());
         $this->mount('/admin/publications', new Publications());
@@ -671,6 +670,7 @@ class Application extends SilexApplication
             '/admin/connected-users' => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
             '/admin/dashboard'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard',
             '/admin/databox'         => 'Alchemy\Phrasea\ControllerProvider\Admin\Databox',
+            '/admin/databoxes'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes',
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',

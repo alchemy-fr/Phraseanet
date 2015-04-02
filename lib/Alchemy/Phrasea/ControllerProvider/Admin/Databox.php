@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\DataboxController;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application;
@@ -23,7 +24,7 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['controller.admin.databox'] = $app->share(function () use ($app) {
+        $app['controller.admin.databox'] = $app->share(function (PhraseaApplication $app) {
             return new DataboxController($app);
         });
     }

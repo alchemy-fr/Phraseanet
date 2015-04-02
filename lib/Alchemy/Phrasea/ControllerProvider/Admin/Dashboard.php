@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\DashboardController;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -21,7 +22,7 @@ class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['controller.admin.dashboard'] = $app->share(function () use ($app) {
+        $app['controller.admin.dashboard'] = $app->share(function (PhraseaApplication $app) {
             return new DashboardController($app);
         });
     }

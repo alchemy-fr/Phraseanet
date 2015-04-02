@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\DatafileController;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -21,7 +22,7 @@ class Datafiles implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['controller.datafiles'] = $app->share(function () use ($app) {
+        $app['controller.datafiles'] = $app->share(function (PhraseaApplication $app) {
             return new DatafileController($app, $app['phraseanet.appbox'], $app['acl'], $app['authentication']);
         });
     }
