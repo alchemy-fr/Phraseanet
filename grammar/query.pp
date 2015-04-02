@@ -68,9 +68,9 @@ quinary:
 
 senary:
     group() #group
-  | field() ::space::? ::lt:: ::space::? value() #lower_than
+  | field() ::space::? ::lt:: ::space::? value() #less_than
   | field() ::space::? ::gt:: ::space::? value() #greater_than
-  | field() ::space::? ::lte:: ::space::? value() #lower_than_or_equal_to
+  | field() ::space::? ::lte:: ::space::? value() #less_than_or_equal_to
   | field() ::space::? ::gte:: ::space::? value() #greater_than_or_equal_to
   | term()
 

@@ -9,7 +9,7 @@ class InExpression extends Node
     protected $field;
     protected $expression;
 
-    public function __construct(FieldNode $field, $expression)
+    public function __construct(Field $field, $expression)
     {
         $this->field = $field;
         $this->expression = $expression;
@@ -29,6 +29,6 @@ class InExpression extends Node
 
     public function __toString()
     {
-        return sprintf('(%s IN %s)', $this->expression, $this->field);
+        return sprintf('(%s IN <field:%s>)', $this->expression, $this->field->getValue());
     }
 }
