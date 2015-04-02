@@ -21,28 +21,8 @@ use Doctrine\DBAL\Connection;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 
-class SetupController
+class SetupController extends Controller
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * @param string $template
-     * @param array  $parameters
-     * @return string
-     */
-    private function render($template, array $parameters = [])
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
-        return $twig->render($template, $parameters);
-    }
-
     public function rootInstaller(Request $request)
     {
         $requirementsCollection = $this->getRequirementsCollection();

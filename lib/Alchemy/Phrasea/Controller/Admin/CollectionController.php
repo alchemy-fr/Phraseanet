@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
@@ -20,49 +21,8 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CollectionController
+class CollectionController extends Controller
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * @return User|null
-     */
-    private function getAuthenticatedUser()
-    {
-        /** @var Authenticator $authenticator */
-        $authenticator = $this->app['authentication'];
-        return $authenticator->getUser();
-    }
-
-    /**
-     * @return \ACL
-     */
-    private function getAuthenticatedUserAcl()
-    {
-        /** @var ACLProvider $acl */
-        $acl = $this->app['acl'];
-        return $acl->get($this->getAuthenticatedUser());
-    }
-
-    /**
-     * @param string $template
-     * @param array  $parameters
-     * @return string
-     */
-    private function render($template, array $parameters = [])
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
-
-        return $twig->render($template, $parameters);
-    }
-
     /**
      * Display collection information page
      *
@@ -76,7 +36,7 @@ class CollectionController
 
         $admins = [];
 
-        if ($this->getAuthenticatedUserAcl()->has_right_on_base($bas_id, 'manage')) {
+        if ($this->getAclForUser()->has_right_on_base($bas_id, 'manage')) {
             /** @var \User_Query $query */
             $query = $this->app['phraseanet.user-query'];
             $admins = $query->on_base_ids([$bas_id])

@@ -13,16 +13,15 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Geonames\Exception\ExceptionInterface;
 use Alchemy\Geonames\Geoname;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ConnectedUsersController
+class ConnectedUsersController extends Controller
 {
-    /** @var Application */
-    private $app;
     /** @var TranslatorInterface */
     private $translator;
     protected $moduleNames;
@@ -31,7 +30,7 @@ class ConnectedUsersController
 
     public function __construct(Application $app)
     {
-        $this->app = $app;
+        parent::__construct($app);
         $this->translator = $app['translator'];
         $this->logger = $app['monolog'];
     }

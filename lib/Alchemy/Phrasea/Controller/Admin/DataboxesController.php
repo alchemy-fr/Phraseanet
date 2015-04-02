@@ -11,25 +11,15 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ACLProvider;
-use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Controller\Controller;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class DataboxesController
+class DataboxesController extends Controller
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Get Databases control panel
      *
@@ -272,69 +262,5 @@ class DataboxesController
             }
         }
         return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
-    }
-    
-    /**
-     * @return \appbox
-     */
-    private function getApplicationBox()
-    {
-        return $this->app['phraseanet.appbox'];
-    }
-
-    /**
-     * @param int $id
-     * @return \databox
-     */
-    private function findDataboxById($id)
-    {
-        $appbox = $this->getApplicationBox();
-
-        return $appbox->get_databox($id);
-    }
-
-    /**
-     * @param       $name
-     * @param array $context
-     * @return string
-     */
-    private function render($name, array $context = [])
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
-        return $twig->render(
-            $name,
-            $context
-        );
-    }
-    
-    /**
-     * @return ACLProvider
-     */
-    private function getAclProvider()
-    {
-        return $this->app['acl'];
-    }
-
-    /**
-     * @return Authenticator
-     */
-    private function getAuthenticator()
-    {
-        return $this->app['authentication'];
-    }
-
-    /**
-     * @param User|null $user
-     * @return \ACL
-     */
-    private function getAclForUser(User $user = null)
-    {
-        $aclProvider = $this->getAclProvider();
-        if (null === $user) {
-            $user = $this->getAuthenticator()->getUser();
-        }
-
-        return $aclProvider->get($user);
     }
 }

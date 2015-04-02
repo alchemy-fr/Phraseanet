@@ -11,22 +11,15 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Metadata\TagProvider;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class FieldsController
+class FieldsController extends Controller
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     public function updateFields(Application $app, Request $request, $sbas_id)
     {
         $fields = [];

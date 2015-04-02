@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Cache\Cache;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
@@ -24,16 +25,8 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class DashboardController
+class DashboardController extends Controller
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Display admin dashboard page
      *
@@ -159,18 +152,6 @@ class DashboardController
         $aclManipulator->resetAdminRights($admins);
 
         return $this->app->redirectPath('admin_dashboard');
-    }
-
-    /**
-     * @param string $name
-     * @param array  $context
-     * @return string
-     */
-    public function render($name, array $context = [])
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
-        return $twig->render($name, $context);
     }
 
     /**

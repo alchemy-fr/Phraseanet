@@ -24,16 +24,8 @@ use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class LightboxController
+class LightboxController extends Controller
 {
-    /** @var Application */
-    protected $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     public function rootAction()
     {
         try {
@@ -58,28 +50,6 @@ class LightboxController
             'module_name'        => 'Lightbox',
             'module'             => 'lightbox',
         ]);
-    }
-
-    /**
-     * @param string $template
-     * @param array  $parameters
-     * @return Response
-     */
-    private function renderResponse($template, array $parameters = [])
-    {
-        return new Response($this->render($template, $parameters));
-    }
-
-    /**
-     * @param string $template
-     * @param array  $parameters
-     * @return string
-     */
-    private function render($template, array $parameters = [])
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
-        return $twig->render($template, $parameters);
     }
 
     /**
@@ -442,16 +412,6 @@ class LightboxController
         }
 
         return $this->app->json($ret);
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getAuthenticatedUser()
-    {
-        /** @var Authenticator $authentication */
-        $authentication = $this->app['authentication'];
-        return $authentication->getUser();
     }
 
     /**

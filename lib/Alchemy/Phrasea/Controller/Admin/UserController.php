@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
@@ -30,16 +31,8 @@ use Goodby\CSV\Import\Standard\Interpreter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController
+class UserController extends Controller
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     public function editRightsAction(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
@@ -926,19 +919,6 @@ class UserController
     }
 
     /**
-     * @param string $name
-     * @param array  $context
-     * @return string
-     */
-    private function render($name, array $context = [])
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
-
-        return $twig->render($name, $context);
-    }
-
-    /**
      * @param Request $request
      * @return UserHelper\Edit
      */
@@ -984,16 +964,6 @@ class UserController
     }
 
     /**
-     * @return User|null
-     */
-    private function getAuthenticatedUser()
-    {
-        /** @var Authenticator $authenticator */
-        $authenticator = $this->app['authentication'];
-        return $authenticator->getUser();
-    }
-
-    /**
      * @param array $template
      * @return array
      */
@@ -1029,17 +999,6 @@ class UserController
             }
         }
         return $deny;
-    }
-
-    /**
-     * @param User $user
-     * @return \ACL
-     */
-    private function getAclForUser(User $user)
-    {
-        /** @var ACLProvider $aclProvider */
-        $aclProvider = $this->app['acl'];
-        return $aclProvider->get($user);
     }
 
     /**
