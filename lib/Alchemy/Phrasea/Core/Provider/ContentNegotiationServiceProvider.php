@@ -21,15 +21,15 @@ class ContentNegotiationServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['negociator'] = $app->share(function ($app) {
+        $app['negotiator'] = $app->share(function ($app) {
             return new Negotiator();
         });
 
-        $app['format.negociator'] = $app->share(function ($app) {
+        $app['format.negotiator'] = $app->share(function ($app) {
             return new FormatNegotiator();
         });
 
-        $app['langage.negociator'] = $app->share(function ($app) {
+        $app['langage.negotiator'] = $app->share(function ($app) {
             return new LanguageNegotiator();
         });
     }

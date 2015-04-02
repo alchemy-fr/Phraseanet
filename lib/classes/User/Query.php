@@ -79,7 +79,7 @@ class User_Query implements User_QueryInterface
     /**
      * Return query results
      *
-     * @return array
+     * @return User[]
      */
     public function get_results()
     {

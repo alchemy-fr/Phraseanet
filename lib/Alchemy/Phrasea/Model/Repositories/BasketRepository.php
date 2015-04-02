@@ -28,7 +28,7 @@ class BasketRepository extends EntityRepository
      * Returns all basket for a given user that are not marked as archived
      *
      * @param  User                                         $user
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return Basket[]
      */
     public function findActiveByUser(User $user, $sort = null)
     {
@@ -54,7 +54,7 @@ class BasketRepository extends EntityRepository
      * Returns all unread basket for a given user that are not marked as archived
      *
      * @param  User                                         $user
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return Basket[]
      */
     public function findUnreadActiveByUser(User $user)
     {
@@ -89,7 +89,7 @@ class BasketRepository extends EntityRepository
      * where a specified user is participant (not owner)
      *
      * @param  User                                         $user
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return Basket[]
      */
     public function findActiveValidationByUser(User $user, $sort = null)
     {
@@ -270,8 +270,8 @@ class BasketRepository extends EntityRepository
      * Return all actives validation where current user is involved and user basket
      *
      * @param  User  $user
-     * @param  type  $sort
-     * @return Array
+     * @param  string  $sort
+     * @return Basket[]
      */
     public function findActiveValidationAndBasketByUser(User $user, $sort = null)
     {

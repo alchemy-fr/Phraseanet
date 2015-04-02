@@ -26,98 +26,36 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class databox_field implements cache_cacheableInterface
 {
-    /**
-     *
-     * @var <type>
-     */
     protected $id;
 
     /**
-     *
      * @var databox
      */
     protected $databox;
 
     /**
-     *
-     * @var \PHPExiftool\Driver\Tag
+     * @var TagInterface
      */
     protected $tag;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $name;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $indexable;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $readonly;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $position;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $required;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $multi;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $report;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $type;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $tbranch;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $separator;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $thumbtitle;
 
     /**
-     *
      * @var array
      */
     protected $labels = [];
 
     /**
-     *
      * @var boolean
      */
     protected $Business;
@@ -125,15 +63,6 @@ class databox_field implements cache_cacheableInterface
     protected $renamed = false;
 
     /**
-     *
-     *
-     * To implement : change multi
-     * Change vocab Id
-     *
-     */
-
-    /**
-     *
      * @var int
      */
     protected $sbas_id;
@@ -173,7 +102,7 @@ class databox_field implements cache_cacheableInterface
     /**
      *
      * @param  databox       $databox
-     * @param  <type>        $id
+     * @param  int           $id
      * @return databox_field
      */
     protected function __construct(Application $app, databox $databox, $id)
@@ -242,7 +171,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return type \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
      */
     public function getVocabularyControl()
@@ -251,7 +179,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return boolean
      */
     public function isVocabularyRestricted()
@@ -260,7 +187,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return boolean
      */
     public function isBusiness()
@@ -274,7 +200,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param Application $app
      * @param \databox    $databox
      * @param int         $id
@@ -306,7 +231,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param databox $databox
      */
     public function set_databox(databox $databox)
@@ -315,7 +239,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return Connection
      */
     public function get_connection()
@@ -329,7 +252,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return databox
      */
     public function get_databox()
@@ -548,8 +470,8 @@ class databox_field implements cache_cacheableInterface
     /**
      * Get a PHPExiftool Tag from tagName
      *
-     * @param  type                                          $tagName
-     * @return \PHPExiftool\Driver\Tag
+     * @param  string                                          $tagName
+     * @return \PHPExiftool\Driver\TagInterface
      * @throws Exception_Databox_metadataDescriptionNotFound
      */
     public static function loadClassFromTagName($tagName, $throwException = true)
@@ -592,7 +514,7 @@ class databox_field implements cache_cacheableInterface
         return $tag;
     }
 
-    public function set_tag(TagInterface $tag = null)
+    public function set_tag($tag = null)
     {
         if ($tag === null) {
             $tag = new Nosource();
@@ -989,7 +911,7 @@ class databox_field implements cache_cacheableInterface
      * @param type                         $name
      * @param type                         $multi
      *
-     * @return databox_field
+     * @return self
      *
      * @throws \Exception_InvalidArgument
      */

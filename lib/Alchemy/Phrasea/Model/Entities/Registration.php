@@ -116,6 +116,7 @@ class Registration
     }
 
     /**
+     * @param User $user
      * @return Registration
      */
     public function setUser(User $user)
@@ -126,7 +127,7 @@ class Registration
     }
 
     /**
-     * @return integer
+     * @return User
      */
     public function getUser()
     {

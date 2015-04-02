@@ -11,23 +11,19 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Controller\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityRepository;
 
 class ApiAccountManipulator implements ManipulatorInterface
 {
     private $om;
-    private $repository;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo)
+    public function __construct(ObjectManager $om)
     {
         $this->om = $om;
-        $this->repository = $repo;
     }
 
     public function create(ApiApplication $application, User $user)
