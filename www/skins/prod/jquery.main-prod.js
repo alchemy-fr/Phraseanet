@@ -1199,7 +1199,7 @@ $(document).ready(function () {
         }
 
         $('#idFrameC').attr('data-status', 'open');
-        $('.WZbasketTab').css('background-position', '9px 16px');
+        $('.WZbasketTab').css('background-position', '9px 21px');
         $('#idFrameC').removeClass('closed');
     });
 
@@ -3014,3 +3014,11 @@ function set_up_feed_box(data) {
 
     return;
 }
+
+
+//clear search
+$(document).ready(function () {
+    $('.th_clear').on('click', function(){
+        $('#thesaurus_tab .input-medium').val('');
+    });
+});

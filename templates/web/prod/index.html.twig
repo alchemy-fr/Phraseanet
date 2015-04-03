@@ -194,13 +194,13 @@
                                 <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{{ 'phraseanet:: propositions' | trans }}"/>
                             </a>
                         </li>
-                        <li>
+                        <li class="thesaurus">
                             <a href="#thesaurus_tab" class="WZtabs">
                                 <img src="/skins/icons/thesaurus_32.png" title="{{ 'phraseanet:: thesaurus' | trans }}"/>
                             </a>
                         </li>
                         {% endif %}
-                        <li class="ui-tabs-selected ui-corner-top">
+                        <li class="ui-tabs-selected ui-corner-top baskets">
                             <a href="#baskets" class="WZbasketTab">
                                 <div id="basket_menu_trigger">&#9660;</div>
                             </a>
@@ -215,7 +215,7 @@
                         ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
                         <button id="facets-back-btn" style="display:none;">back</button>
                     </div>
-                    <div id="thesaurus_tab" class="PNB" style="top:52px;">
+                    <div id="thesaurus_tab" class="PNB" style="top:66px;">
                         <div id="THPD_tabs">
                             <ul>
                                 <li class="th_tab"><a href="#THPD_T"><span>{{ 'prod::thesaurusTab:thesaurus' | trans }}</span></a></li>
@@ -239,11 +239,12 @@
                                             <div class="input-append">
                                                 <input type="text" name="search_value" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300);" />
                                                 <input type="submit" class="th_ok btn" value="" />
+                                                <input type="button" class="th_clear"/>
                                                 <input type="button" class="th_cancel btn" value="{{ 'boutton::annuler' | trans }}" onclick="thesauCancelWizard();return(false);"/>
                                              </div>
                                         </form>
                                     </div>
-                                    <div id='THPD_T_treeBox' class="searchZone" style="position:absolute; top:45px; bottom:0px; left:0px; width:100%; overflow:auto">
+                                    <div id='THPD_T_treeBox' class="searchZone" style="position:absolute; top:45px; bottom:0px; left:0px; width:100%;">
                                         <div onclick="Xclick(event);return(false);" ondblclick="TXdblClick(event);">
                                             <ul class="treeview" id="THPD_T_tree">
                                                 {% for base in search_datas['bases'] %}
@@ -329,7 +330,7 @@
         </div>
 
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
-            <div id="headBlock" class="PNB" style="height: 90px; bottom: auto;">
+            <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
