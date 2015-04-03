@@ -101,19 +101,19 @@
       </ol>
 
     </div>
-    <div class="PNB" style="left:auto;overflow:hidden;">
+    <div class="PNB right" style="left:auto;overflow:hidden;">
       <ol>
 
     {% if app['authentication'].isAuthenticated()  and module == "prod" %}
         <li id="notification_trigger">
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
-              {{ 'Notifications' | trans }}
               <button class="counter btn btn-danger" style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
                   {% if app['events-manager'].get_unread_notifications_number > 0 %}
                     {{app['events-manager'].get_unread_notifications_number}}
                   {% endif %}
               </button>
+              {{ 'Notifications' | trans }}
             </span>
           </a>
         </li>
