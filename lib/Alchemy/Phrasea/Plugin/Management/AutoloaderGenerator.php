@@ -160,11 +160,7 @@ EOF;
 
         $name = $manifest->getName();
 
-        return <<<EOF
-    if (\$app['plugins.manager']->isEnabled('$name')) {
-$wrapped
-    }
-EOF;
+        return "    if (\$app['plugins.manager']->isEnabled('$name')) {\n" . $wrapped . "    }\n";
     }
 
     private function createCommands($manifests)
@@ -202,6 +198,10 @@ EOF;
         return $buffer;
     }
 
+    /**
+     * @param Manifest[] $manifests
+     * @return string
+     */
     public function createTwigPathsMap($manifests)
     {
         $buffer = <<<EOF
@@ -224,16 +224,12 @@ EOF;
 
             if (is_dir($this->pluginDirectory . $path)) {
                 $path = $this->quote($path);
-                $pluginBuffer .= <<<EOF
-        \$paths[$namespace] = __DIR__ . $path;
-EOF;
+                $pluginBuffer .= "        \$paths[$namespace] = __DIR__ . $path;\n";
             }
 
             foreach ($manifest->getTwigPaths() as $path) {
                 $path = $this->quote(DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . $path);
-                $pluginBuffer .= <<<EOF
-        \$paths[] = __DIR__ . $path;
-EOF;
+                $pluginBuffer .= "        \$paths[] = __DIR__ . $path;\n";
             }
             $buffer .= $this->wrapWithConditionnal($manifest, $pluginBuffer);
         }
