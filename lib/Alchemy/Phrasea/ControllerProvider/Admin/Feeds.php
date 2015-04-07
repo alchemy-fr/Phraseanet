@@ -13,17 +13,13 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\FeedController;
-use Alchemy\Phrasea\Model\Entities\Feed;
-use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class Publications implements ControllerProviderInterface, ServiceProviderInterface
+class Feeds implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
