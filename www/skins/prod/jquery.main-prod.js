@@ -3021,4 +3021,15 @@ $(document).ready(function () {
     $('.th_clear').on('click', function(){
         $('#thesaurus_tab .input-medium').val('');
     });
+
+    $('.treeview>li.expandable>.hitarea').on('click', function(){
+        if($(this).css('background-position') == '95% 22px'){
+            $(this).css('background-position', '95% -28px');
+            $(this).addClass('active');
+        }else{
+            $(this).css('background-position', '95% 22px');
+            $(this).removeClass('active');
+        }
+    });
+
 });
