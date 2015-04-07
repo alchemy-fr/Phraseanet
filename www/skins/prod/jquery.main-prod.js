@@ -1225,6 +1225,7 @@ $(document).ready(function () {
             $('.ui-resizable-handle, #basket_menu_trigger').show();
             $('.WZbasketTab').css('background-position', '9px 16px');
             $('#idFrameC').removeClass('closed');
+            $('#idFrameC .icon-menu li').last().find('a').trigger('click');
             $('#idFrameC .icon-menu li').first().find('a').trigger('click');
             $(previousTab).find('a').trigger('click');
         }        

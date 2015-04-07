@@ -140,6 +140,9 @@ body {
     top: 77px;
 }
 
+div#PREVIEWTITLEWRAPPER {
+    top: 10px;
+}
 
 .PNB10 {
     position: absolute;
