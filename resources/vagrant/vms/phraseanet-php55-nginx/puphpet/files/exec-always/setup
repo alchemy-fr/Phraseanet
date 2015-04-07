@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # stoping iptable
 sudo service iptables-persistent stop

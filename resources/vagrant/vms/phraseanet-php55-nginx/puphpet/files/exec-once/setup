@@ -26,11 +26,11 @@ sudo apt-get update
 sudo apt-get install --force-yes -y libfaac-dev
 
 cd /tmp
-wget –quiet https://www.ffmpeg.org/releases/ffmpeg-1.2.8.tar.gz
+wget –-quiet https://www.ffmpeg.org/releases/ffmpeg-1.2.8.tar.gz
 tar -zxvf ffmpeg-1.2.8.tar.gz
 cd ffmpeg-1.2.8
 
-wget –quiet -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
+wget –-quiet -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
 sudo -u vagrant unzip fdk-aac.zip
 cd mstorsjo-fdk-aac*
 autoreconf -fiv
@@ -63,7 +63,7 @@ sudo make install
 
 # node + npm
 cd /tmp
-wget –quiet "http://nodejs.org/dist/v0.10.29/node-v0.10.29-linux-x64.tar.gz"
+wget –-quiet "http://nodejs.org/dist/v0.10.29/node-v0.10.29-linux-x64.tar.gz"
 tar -zxvf node-v0.10.29-linux-x64.tar.gz
 cd node-v0.10.29-linux-x64
 find . -maxdepth 1 -type f -exec rm {} \;
@@ -95,7 +95,7 @@ sudo sh -c 'ln -s ../../mods-available/zmq.ini /etc/php5/fpm/conf.d/20-zmq.ini'
 
 # swftools
 cd /tmp
-wget –quiet http://www.swftools.org/swftools-0.9.2.tar.gz
+wget –-quiet http://www.swftools.org/swftools-0.9.2.tar.gz
 tar -xzvf swftools-0.9.2.tar.gz
 cd swftools-0.9.2
 ./configure
@@ -113,7 +113,6 @@ if [ ! -f /var/www/phraseanet/config/configuration.yml ]
 then
     #copy configuration template
     mv /var/www/phraseanet/lib/conf.d/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml.bkp
-    cp /vagrant/resources/vagrant/config/phraseanet/configuration.yml /var/www/phraseanet/lib/conf.d/configuration.yml
     cd /var/www/phraseanet
     sudo -u vagrant composer install -n --prefer-source --dev
     sudo -u vagrant npm install
@@ -133,3 +132,5 @@ sudo service iptables-persistent stop
 
 # reload bash
 source ~/.bashrc
+
+exit 0
