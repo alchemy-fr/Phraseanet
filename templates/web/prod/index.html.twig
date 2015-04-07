@@ -428,7 +428,8 @@
                                                 <div class="status_filter">
                                                     <span>{{ 'Status des documents a rechercher' | trans }}</span>
                                                     <table style="width: 100%;">
-                                                        {% for databox_id, flag in search_status %}
+                                                        {% for status_key, flag in search_status %}
+                                                            {% for databox_id in flag.sbas %}
                                                             <tr>
                                                                 <td>
                                                                     <label class="checkbox inline">
@@ -453,6 +454,7 @@
                                                                     </label>
                                                                 </td>
                                                             </tr>
+                                                            {% endfor %}
                                                         {% endfor %}
                                                     </table>
                                                 </div>
