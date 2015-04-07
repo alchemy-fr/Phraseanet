@@ -74,7 +74,7 @@ class Query implements ControllerProviderInterface
         $app['manipulator.user']->logQuery($app['authentication']->getUser(), $result->getQuery());
 
         if ($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page') === 'LAST_QUERY') {
-            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $result->getQuery());
+            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $query);
         }
 
         foreach ($options->getDataboxes() as $databox) {

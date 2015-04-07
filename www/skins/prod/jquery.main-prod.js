@@ -195,8 +195,8 @@ function checkFilters(save) {
     $('select option:selected:not(".default-selection")', container).removeAttr('selected').selected(false);
 
     $('select option.field_switch', container).addClass("hidden");
-
     $('input.field_switch:checked', container).removeAttr('checked');
+    $('input.field_switch:checkbox', container).parent().hide();
 
     filters.removeClass('danger');
 
@@ -209,7 +209,6 @@ function checkFilters(save) {
         search.bases[sbas_id] = new Array();
 
         var bas_ckbox = $this.find('.checkbas');
-
         if (bas_ckbox.filter(':not(:checked)').length > 0) {
             danger = 'medium';
         }
@@ -444,10 +443,12 @@ function initAnswerForm() {
         var $this = $(this),
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
+        var data = $this.serializeArray();
+
         answAjax = $.ajax({
             type: method,
             url: $this.attr('action'),
-            data: $this.serialize(),
+            data: data,
             dataType: 'json',
             beforeSend: function (formData) {
                 if (answAjaxrunning && answAjax.abort)
