@@ -337,6 +337,7 @@ span.ww_winTitle {
     margin: 0;
     padding: 0;
     border: 1px solid #303030;
+    border-top: none;
 }
 
 #THPD_WIZARDS .gform .input-append input.input-medium {
@@ -390,16 +391,23 @@ span.ww_winTitle {
 
 .treeview>li.expandable {
     min-height: 50px;
-    line-height: 50px;
+    line-height: 47px;
     vertical-align: middle;
     position: relative;
     background: none;
     padding-top: 0;
     padding-bottom: 0;
+    border-bottom: 1px solid #303030;
 }
 
 .treeview>li.expandable>.hitarea {
-    height: 54px;
+    height: 51px;
+    background: url('/skins/icons/sprite_tree_first.png') 95% 22px no-repeat;
+    border-left: 5px #3b3b3b solid;
+}
+
+.treeview>li.expandable>.hitarea:hover,
+.treeview>li.expandable>.hitarea.active {
     border-left: 5px #884c93 solid;
 }
 
@@ -651,8 +659,9 @@ span.ww_winTitle {
     border-top: 1px solid #000;
 }
 
-.ui-accordion .ui-accordion-header.unread {
-    background-image: url('../../icons/bask_new_back.png');
+.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
+    font-style: italic;
+    font-weight: bold;
 }
 
 .ui-accordion .ui-accordion-header.header {
@@ -1029,7 +1038,7 @@ div.diapo {
 }
 
 #idFrameT .tools:first-child .btn-group {
-    border-left: 1px solid #474747;
+    border-right: 1px solid #474747;
 }
 
 #idFrameT .tools .btn-group {
@@ -1161,6 +1170,7 @@ div.diapo {
     font-weight: bold;
     font-size: 12px;
     display: none;
+    z-index: 5000;
 }
 
 #idFrameC #baskets .content.grouping .alert_datas_changed,
@@ -1225,6 +1235,7 @@ div.diapo {
     border-top: 1px solid #303030;
     border-radius: 0;
     height: 43px;
+    border-bottom: 1px solid #303030;
 }
 
 #idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
