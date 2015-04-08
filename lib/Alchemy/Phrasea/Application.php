@@ -330,7 +330,9 @@ class Application extends SilexApplication
     public function loadPlugins()
     {
         call_user_func(function ($app) {
-            require $app['plugin.path'] . '/services.php';
+            if (file_exists($app['plugin.path'] . '/services.php')) {
+                require $app['plugin.path'] . '/services.php';
+            }
         }, $this);
     }
 
@@ -385,7 +387,10 @@ class Application extends SilexApplication
             $this->extend('twig', function (\Twig_Environment $twig, $app) {
                 $twig->setCache($app['cache.path'].'/twig');
 
-                $paths = require $app['plugin.path'] . '/twig-paths.php';
+                $paths = [];
+                if (file_exists($app['plugin.path'] . '/twig-paths.php')) {
+                    $paths = require $app['plugin.path'] . '/twig-paths.php';
+                }
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
                     $paths[] = $app['root.path'] . '/config/templates/mobile';
