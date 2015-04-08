@@ -119,7 +119,7 @@ body {
 
 #mainContent {
     top: 40px;
-    min-width:900px;
+    min-width: 960px;
     overflow-x:auto;
     overflow-y:auto;
 }
@@ -133,7 +133,7 @@ body {
 }
 
 #rightFrame {
-    min-width: 900px !important;
+    min-width: 660px !important;
 }
 
 .PNB .ui-corner-top {
