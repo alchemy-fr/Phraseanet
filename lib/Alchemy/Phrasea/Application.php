@@ -622,7 +622,6 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/setup', new Setup());
         $this->mount('/admin/search-engine', new SearchEngine());
         $this->mount('/admin/task-manager', new TaskManager());
