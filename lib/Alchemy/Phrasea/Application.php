@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Admin\Root as AdminRoot;
 use Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine;
 use Alchemy\Phrasea\ControllerProvider\Admin\Setup;
 use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
@@ -312,6 +311,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Feeds' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Fields' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -669,6 +669,7 @@ class Application extends SilexApplication
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
         $providers = [
+            '/admin/'                => 'Alchemy\Phrasea\ControllerProvider\Admin\Root',
             '/admin/collection'      => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
             '/admin/connected-users' => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
             '/admin/dashboard'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard',

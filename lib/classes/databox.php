@@ -12,6 +12,8 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Status\StatusStructure;
+use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\Filesystem\Filesystem;
@@ -305,12 +307,13 @@ class databox extends base
     }
 
     /**
-     *
-     * @return databox_status
+     * @return StatusStructure
      */
     public function getStatusStructure()
     {
-        return $this->app['factory.status-structure']->getStructure($this);
+        /** @var StatusStructureFactory $structureFactory */
+        $structureFactory = $this->app['factory.status-structure'];
+        return $structureFactory->getStructure($this);
     }
 
     /**
@@ -1348,8 +1351,8 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  string $structure
+     * @param TranslatorInterface $translator
+     * @param  string             $structure
      * @return Array
      */
     public static function get_structure_errors(TranslatorInterface $translator, $structure)
