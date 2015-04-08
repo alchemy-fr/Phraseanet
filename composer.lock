@@ -4,15 +4,21 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "53b654099341b6e66a499ac71ae9e429",
+    "hash": "871249c945f0d4bb1df2bd374d638f69",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
             "version": "6.0.039",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/tcpdf-clone",
+                "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/tcpdf-clone/zipball/2ba0248a7187f1626df6c128750650416267f0e7",
+                "reference": "2ba0248a7187f1626df6c128750650416267f0e7",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -60,6 +66,10 @@
                 "qrcode",
                 "tcpdf"
             ],
+            "support": {
+                "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
+                "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
+            },
             "time": "2013-10-13 16:11:17"
         },
         {
@@ -103,7 +113,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "Nicolas Le Goff",
+                    "name": "nlegoff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -1259,13 +1269,13 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/igorw/evenement",
-                "reference": "v1.0.0"
+                "url": "https://github.com/igorw/evenement.git",
+                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/igorw/evenement/zipball/v1.0.0",
-                "reference": "v1.0.0",
+                "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
+                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
                 "shasum": ""
             },
             "require": {
@@ -1292,19 +1302,19 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 08:01:08"
+            "time": "2012-05-30 15:01:08"
         },
         {
             "name": "facebook/php-sdk",
             "version": "v3.2.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/facebook/facebook-php-sdk.git",
+                "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
                 "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/facebook-php-sdk/zipball/6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
+                "url": "https://api.github.com/repos/facebookarchive/facebook-php-sdk/zipball/6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
                 "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
                 "shasum": ""
             },
@@ -1338,6 +1348,7 @@
                 "facebook",
                 "sdk"
             ],
+            "abandoned": "facebook/php-sdk-v4",
             "time": "2013-11-19 23:11:14"
         },
         {
@@ -3035,7 +3046,7 @@
             ],
             "authors": [
                 {
-                    "name": "Stephen Clay",
+                    "name": "Steve Clay",
                     "email": "steve@mrclay.org",
                     "homepage": "http://www.mrclay.org/",
                     "role": "Developer"
@@ -3221,21 +3232,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "0.1.2"
+                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.2",
-                "reference": "0.1.2",
+                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
+                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": ">=1.0,<2.0"
+                "silex/silex": "~1.0"
             },
             "require-dev": {
-                "symfony/browser-kit": ">=2.0,<3.0"
+                "symfony/browser-kit": "~2.0"
             },
             "type": "library",
             "autoload": {
@@ -3261,48 +3272,6 @@
                 "silex"
             ],
             "time": "2013-05-03 18:48:51"
-        },
-        {
-            "name": "neutron/sphinxsearch-api",
-            "version": "2.0.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client.git",
-                "reference": "a108fda835a9f8717e8fc22f2f35106e0f49dbdc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Sphinx-Search-API-PHP-Client/zipball/a108fda835a9f8717e8fc22f2f35106e0f49dbdc",
-                "reference": "a108fda835a9f8717e8fc22f2f35106e0f49dbdc",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=4"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "sphinxapi.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL"
-            ],
-            "authors": [
-                {
-                    "name": "Andrew Aksyonoff",
-                    "homepage": "http://sphinxsearch.com/"
-                }
-            ],
-            "description": "SphinxSearch PHP API",
-            "homepage": "http://sphinxsearch.com/",
-            "keywords": [
-                "Sphinx Search",
-                "api",
-                "search-engine"
-            ],
-            "time": "2013-08-07 18:06:02"
         },
         {
             "name": "neutron/temporary-filesystem",
@@ -3749,7 +3718,7 @@
                 "metadata"
             ],
             "support": {
-                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/0.4.1-mwg-metadata-copy"
+                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/dev"
             },
             "time": "2014-10-08 16:09:02"
         },
@@ -4239,7 +4208,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "support@alchemy.fr",
+                    "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],

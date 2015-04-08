@@ -83,8 +83,6 @@ $cli->command(new CheckConfig('check:config'));
 
 $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
 
-$cli->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
-
 $cli->command(new \module_console_systemMailCheck('system:mail-check'));
 $cli->command(new \module_console_systemBackupDB('system:backup-db'));
 $cli->command(new \module_console_systemClearCache('system:clear-cache'));

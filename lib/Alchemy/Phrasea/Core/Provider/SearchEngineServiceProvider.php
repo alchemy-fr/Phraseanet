@@ -24,7 +24,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
-use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
 use Hoa\Compiler;
@@ -58,11 +57,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['phraseanet.SE.logger'] = $app->share(function (Application $app) {
             return new SearchEngineLogger($app);
-        });
-
-        // Only used for Phrasea search engine
-        $app['phraseanet.SE.subscriber'] = $app->share(function ($app) {
-            return new PhraseaEngineSubscriber($app);
         });
 
         $app['elasticsearch.engine'] = $app->share(function ($app) {
