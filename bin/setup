@@ -11,19 +11,13 @@
 
 namespace KonsoleKommander;
 
-use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Command\UpgradeDBDatas;
-use Alchemy\Phrasea\Command\Setup\Install;
-use Alchemy\Phrasea\Command\Setup\CrossDomainGenerator;
-use Alchemy\Phrasea\Command\Setup\PluginsReset;
-use Alchemy\Phrasea\Command\Plugin\ListPlugin;
-use Alchemy\Phrasea\Command\Plugin\AddPlugin;
-use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
-use Alchemy\Phrasea\Command\Plugin\EnablePlugin;
-use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
+use Alchemy\Phrasea\Command\Setup\CrossDomainGenerator;
+use Alchemy\Phrasea\Command\Setup\Install;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
+use Alchemy\Phrasea\Core\Version;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -65,12 +59,6 @@ if ($app['phraseanet.configuration-tester']->isInstalled()) {
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 }
 
-$app->command(new AddPlugin());
-$app->command(new ListPlugin());
-$app->command(new RemovePlugin());
-$app->command(new PluginsReset());
-$app->command(new EnablePlugin());
-$app->command(new DisablePlugin());
 $app->command(new CheckEnvironment('check:system'));
 $app->command(new Install('system:install'));
 $app->command(new CrossDomainGenerator());

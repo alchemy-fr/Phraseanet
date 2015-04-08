@@ -21,7 +21,6 @@ use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider;
-use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
@@ -65,7 +64,6 @@ class CLI extends Application
             })
         );
 
-        $this->register(new PluginServiceProvider());
         $this->register(new ComposerSetupServiceProvider());
         $this->register(new CLIDriversServiceProvider());
         $this->register(new LessBuilderServiceProvider());
@@ -125,17 +123,5 @@ class CLI extends Application
     {
         $command->setContainer($this);
         $this['console']->add($command);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadPlugins()
-    {
-        parent::loadPlugins();
-
-        call_user_func(function ($cli) {
-            require $cli['plugin.path'] . '/commands.php';
-        }, $this);
     }
 }

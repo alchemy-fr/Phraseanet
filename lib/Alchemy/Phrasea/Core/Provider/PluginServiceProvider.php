@@ -37,14 +37,18 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.manager'] = $app->share(function (Application $app) {
-            return new PluginManager($app['plugin.path'], $app['plugins.plugins-validator'], $app['conf']);
+            return new PluginManager(
+                $app['plugin.path'],
+                $app['plugins.plugins-validator'],
+                $app['conf']
+            );
         });
     }
 
     public function boot(Application $app)
     {
         $app['twig'] = $app->share(
-            $app->extend('twig', function ($twig, Application $app) {
+            $app->extend('twig', function (\Twig_Environment $twig) {
                 $function = new \Twig_SimpleFunction('plugin_asset', ['Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset']);
                 $twig->addFunction($function);
 

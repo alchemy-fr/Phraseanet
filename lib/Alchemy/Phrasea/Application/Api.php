@@ -32,7 +32,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app = new PhraseaApplication($environment);
-    $app->loadPlugins();
 
     $app['exception_handler'] = $app->share(function ($app) {
         return new ApiExceptionHandlerSubscriber($app);

@@ -89,7 +89,6 @@ use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
-use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RandomGeneratorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
@@ -288,7 +287,6 @@ class Application extends SilexApplication
         $this->setupXpdf();
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
-        $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
         $this->register(new ContentNegotiationServiceProvider());
         $this->register(new LocaleServiceProvider());
@@ -323,18 +321,6 @@ class Application extends SilexApplication
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
         }
-    }
-
-    /**
-     * Loads Phraseanet plugins
-     */
-    public function loadPlugins()
-    {
-        call_user_func(function ($app) {
-            if (file_exists($app['plugin.path'] . '/services.php')) {
-                require $app['plugin.path'] . '/services.php';
-            }
-        }, $this);
     }
 
     /**
@@ -389,10 +375,6 @@ class Application extends SilexApplication
                 $twig->setCache($app['cache.path'].'/twig');
 
                 $paths = [];
-                if (file_exists($app['plugin.path'] . '/twig-paths.php')) {
-                    $paths = require $app['plugin.path'] . '/twig-paths.php';
-                }
-
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
                     $paths[] = $app['root.path'] . '/config/templates/mobile';
                     $paths[] = $app['root.path'] . '/templates/mobile';
