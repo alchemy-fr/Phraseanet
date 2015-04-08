@@ -2,21 +2,21 @@
 
 ::-webkit-scrollbar-track
 {
-    border-radius: 7px;
-    background-color: #d9d9d9;
+    border-radius: 0;
+    background-color: #080808;
 }
 
 ::-webkit-scrollbar {
-    width: 14px;
+    width: 6px;
+    border-radius: 0;
 }
+
 ::-webkit-scrollbar-thumb {
-    height: 6px;
-    border: 4px solid rgba(0, 0, 0, 0);
-    background-clip: padding-box;
-    -webkit-border-radius: 7px;
-    background-color: #555;
-    -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 0;
+    width: 3px;
+    background-color: #3b3b3b;
 }
+
 ::-webkit-scrollbar-button {
     width: 0;
     height: 0;
@@ -135,11 +135,11 @@ body {
 }
 
 #rightFrame {
-    min-width: 660px;
+    min-width: 660px !important;
 }
 
 .PNB .ui-corner-top {
-    top: 100px;
+    top: 77px;
 }
 
 .PNB10 {
@@ -225,12 +225,12 @@ span.ww_winTitle {
 #idFrameC #retractableButton {
     cursor: pointer;
     width: 70px;
-    height: 70px;
+    height: 85px;
     float: right;
     text-align: center;
     line-height: 70px;
     margin-bottom: -20px;
-    background: url("/skins/icons/workzoneEscamote.png") 30px 30px no-repeat;
+    background: url("/skins/icons/workzoneEscamote.png") 30px 36px no-repeat;
 }
 
 #idFrameC.closed #retractableButton {
@@ -286,15 +286,22 @@ span.ww_winTitle {
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
     width: auto;
-    height: 73px;
+    height: 85px;
     display: inline-block;
     background-color: #B1B1B1;
     z-index: 10;
 }
 
-#idFrameC .ui-tabs #thesaurus_tab .ui-state-active,
-#idFrameC .ui-tabs #thesaurus_tab .ui-state-active a {
-    border-bottom: 1px solid #884c92;
+#idFrameC .ui-tabs .ui-tabs-nav li.proposals_WZ.ui-state-active a {
+    border-bottom: 3px solid #4c5d84;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li.thesaurus.ui-state-active a {
+    border-bottom: 3px solid #884c92;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li.baskets.ui-state-active a {
+    border-bottom: 3px solid #076882;
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li {
@@ -302,8 +309,8 @@ span.ww_winTitle {
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li.th_tab a {
-    height: 39px;
-    line-height: 39px;
+    height: 43px;
+    line-height: 43px;
     vertical-align: middle;
     margin: 0;
     padding: 0 20px;
@@ -311,8 +318,12 @@ span.ww_winTitle {
     text-decoration: none;
 }
 
+#idFrameC .ui-tabs #thesaurus_tab li.th_tab .ui-state-active {
+    border-bottom: 1px solid #884c92;
+}
+
 #idFrameC .ui-tabs #thesaurus_tab li.th_tab {
-    height: 39px;
+    height: 43px;
     margin: 0;
 }
 
@@ -355,6 +366,23 @@ span.ww_winTitle {
     -moz-appearance: none;
 }
 
+#THPD_WIZARDS .gform .input-append .th_clear {
+    position: relative;
+    z-index: 1000;
+    float: right;
+    margin: -50px 15% 0 0;
+    display: block !important;
+    width: 30px;
+    line-height: 50px;
+    padding: 0;
+    border-radius: 0;
+    background: url('/skins/icons/icon_clear_search.png') 50% no-repeat;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+}
+
 .treeview li {
     background-image: none;
 }
@@ -370,7 +398,7 @@ span.ww_winTitle {
 }
 
 .treeview>li.expandable>.hitarea {
-    height: 50px;
+    height: 54px;
     border-left: 5px #884c93 solid;
 }
 
@@ -402,6 +430,31 @@ span.ww_winTitle {
     color: #884c92 !important;
 }
 
+#THPD_T_treeBox {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+#THPD_T_treeBox>div {
+    width: 105%;
+    display: inline-block;
+}
+
+#THPD_T_treeBox:hover {
+    overflow-y: auto;
+}
+
+#THPD_T_treeBox::-webkit-scrollbar-track
+{
+    border-radius: 0;
+    background-color: #1f1f1f;
+}
+
+#THPD_T_treeBox::-webkit-scrollbar {
+    width: 6px;
+    background-color: #474747;
+} 
+
 #THPD_tabs .treeview LI.selected SPAN {
     background-color: #884c92 !important;
     color: #fff !important;
@@ -431,7 +484,8 @@ span.ww_winTitle {
 
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a {
     background-color: #999;
-    border-bottom: 3px solid #076882;
+    border-bottom: 1px solid #884c92;
+    height: 82px;
 }
 
 #idFrameC ul.icon-menu {
@@ -442,22 +496,22 @@ span.ww_winTitle {
     display: block;
     background-image: url("/skins/icons/workzone32.png");
     background-repeat: no-repeat;
-    background-position: 9px 16px;
+    background-position: 9px 21px;
     width: 70px;
-    height: 70px;
+    height: 82px;
 }
 
 #idFrameC .icon-menu .WZtabs {
     display: block;
     width: 70px;
-    height: 70px;
-    line-height: 70px;
+    height: 82px;
+    line-height: 82px;
     vertical-align: middle;
     text-align: center;
 }
 
 #basket_menu_trigger {
-    padding: 27px 7px 0 0;
+    padding: 32px 7px 0 0;
     float: right;
     font-size: 9px;
     cursor: pointer;
@@ -585,8 +639,12 @@ span.ww_winTitle {
     height: 44px;
     line-height: 44px;
     background-color: #B1B1B1;
-    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
     border-radius: 0;
+}
+
+.ui-accordion>div {
+    border-top: 1px solid #000;
 }
 
 .ui-accordion .ui-accordion-header.unread {
@@ -685,7 +743,7 @@ span.ww_winTitle {
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 
 .searchFormWrapper {
-    margin: 25px 0 0 5px;
+    margin: 30px 0 0 5px;
     line-height: 30px;
 }
 
@@ -744,6 +802,7 @@ span.ww_winTitle {
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
     background-position: inherit;
+    border-left: 1px solid #999;
 }
 
 /******* PRESENTATION DE MINIATURES *******************************************/
@@ -840,11 +899,18 @@ div.diapo {
     margin: 8px 5px;
 }
 
-#answers {
+#idFrameT #answers {
     background-color: #D9D9D9;
-    border:1px solid #D9D9D9;
+    border: 1px solid #D9D9D9;
     top: 55px;
     bottom: 0;
+    margin-right: 8px;
+    overflow-y: hidden;
+    padding-left: 10px;
+}
+
+#idFrameT #answers:hover {
+    overflow-y: auto;
 }
 
 #answers_status {
@@ -884,16 +950,16 @@ div.diapo {
     background: #999;
     color: #fff;
     padding: 0 25px;
-    border-right: 1px solid #B1B1B1;
     font-size: 11px;
-    text-transform: capitalize;
+    padding-top: 24px;
+    margin-right: 10px;
 }
  
 #answers_status .infos .infoDialog span {
-    margin-top: 13px;
-    font-size: 20px;
-    display: block;
+    font-size: 22px;
     margin-bottom: 3px;
+    float: left;
+    margin-right: 10px;
 }
 
 #answers_status #docInfo {
@@ -906,14 +972,17 @@ div.diapo {
     min-width: 105px;
     font-size: 11px;
     line-height: 12px;
+    border-right: 1px solid #999;
 }
 
 
 #answers_status .infos #nbrecsel {
-    font-size: 35px;
+    font-size: 22px;
     margin-top: 7px;
     float: left;
-    margin-right: 15px;
+    margin-right: 10px;
+    display: block;
+    height: 40px;
 }
 
 
@@ -1061,9 +1130,15 @@ div.diapo {
   float: right;
   line-height: 45px;
   padding-right: 30px;
+  padding-left: 21px;
   margin-right: 21px;
   color: #fff;
   background: url('../../icons/icone_settings.png') right 15px no-repeat;
+  border-left: 1px solid #999;
+}
+
+#idFrameT .tools #settings:hover {
+    background-color: #393939;
 }
 
 .dropdown-menu .divider {
@@ -1160,11 +1235,14 @@ div.diapo {
     left: 10px;
     right: 10px;
     margin-top: 21px;
+    border-top: 1px solid #999;
+    border-radius: 0;
+    height: 43px;
 }
 
 #idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
     position: absolute;
-    top: 51px;
+    top: 56px;
     left: 0px;
     bottom: 0px;
     right: 0px;
@@ -1251,10 +1329,6 @@ div.diapo {
 
 .diapo .bottom {
     position: absolute; bottom: 0px;
-}
-
-#answers {
-    padding: 20px 0 20px 20px;
 }
 
 #answers .list {
@@ -1881,7 +1955,7 @@ input.btn-mini {
     position: relative;
     *position: static;
     top: -2px;
-    margin: 0 2px;
+    margin: 11px 15px 0 0;
     padding: 1px 4px;
     background: none repeat scroll 0 0 red;
     background-color: #DA4F49;
@@ -1898,6 +1972,7 @@ input.btn-mini {
     text-align: center;
     color: #FFFFFF;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    float: left;
 }
 
 /******* GUI ******************************************************************/
@@ -3060,6 +3135,14 @@ DIV.thesaurus U.w {
     color: #fff;
 }
 
+#mainMenu .PNB.right li {
+    border-left: 1px solid #999;
+}
+
+#mainMenu .PNB.right li span {
+    padding: 0 15px;
+}
+
 #mainMenu, .publi_group {
     background-color: #B1B1B1;
 }
@@ -3361,6 +3444,14 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 
 #THPD_tabs .treeview UL {
     background-color: transparent;
+    background-color: #999;
+    margin-left: -16px;
+    padding-left: 16px;
+}
+
+#THPD_tabs .treeview ul li {
+    padding-top: 5px;
+    padding-bottom: 5px; 
 }
 
 #THPD_tabs .treeview SPAN {
@@ -4729,7 +4820,7 @@ ui-dialog-titlebar {
 
 #paginate {
     float: right;
-    margin: 0 65px 30px 0;
+    margin: 0 65px 15px 0;
 }
 
 #paginate #tool_navigate {
