@@ -12,11 +12,11 @@
 %token  string:quoted   [^"]+
 %token  string:_quote   "        -> default
 
-// Operators
-%token  in              IN
-%token  and             AND
-%token  or              OR
-%token  except          EXCEPT
+// Operators (too bad we can't use preg "i" flag)
+%token  in              [Ii][Nn]
+%token  and             [Aa][Nn][Dd]
+%token  or              [Oo][Rr]
+%token  except          [Ee][Xx][Cc][Ee][Pp][Tt]
 
 // Rest
 %token  collection      collection
