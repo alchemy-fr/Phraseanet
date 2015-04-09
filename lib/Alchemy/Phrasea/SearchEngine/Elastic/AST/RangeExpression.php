@@ -12,6 +12,26 @@ class RangeExpression extends Node
     private $higher_bound;
     private $higher_inclusive;
 
+    public static function lessThan(Field $field, $bound)
+    {
+        return new self($field, $bound, false);
+    }
+
+    public static function lessThanOrEqual(Field $field, $bound)
+    {
+        return new self($field, $bound, true);
+    }
+
+    public static function greaterThan(Field $field, $bound)
+    {
+        return new self($field, null, null, $bound, false);
+    }
+
+    public static function greaterThanOrEqual(Field $field, $bound)
+    {
+        return new self($field, null, null, $bound, true);
+    }
+
     public function __construct(Field $field, $lb, $li = false, $hb = null, $hi = false)
     {
         $this->field = $field;

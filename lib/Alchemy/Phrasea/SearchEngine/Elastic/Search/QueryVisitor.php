@@ -137,13 +137,13 @@ class QueryVisitor implements Visit
 
         switch ($node->getId()) {
             case NodeTypes::LT_EXPR:
-                return new AST\RangeExpression($field, $expression, false);
+                return AST\RangeExpression::lessThan($field, $expression);
             case NodeTypes::LTE_EXPR:
-                return new AST\RangeExpression($field, $expression, true);
+                return AST\RangeExpression::lessThanOrEqual($field, $expression);
             case NodeTypes::GT_EXPR:
-                return new AST\RangeExpression($field, null, null, $expression, false);
+                return AST\RangeExpression::greaterThan($field, $expression);
             case NodeTypes::GTE_EXPR:
-                return new AST\RangeExpression($field, null, null, $expression, true);
+                return AST\RangeExpression::greaterThanOrEqual($field, $expression);
         }
     }
 
