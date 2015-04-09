@@ -22,9 +22,6 @@ main:
     opcodecache:
         type: ArrayCache
         options: {  }
-    search-engine:
-        type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
-        options: {  }
     task-manager:
         options: ''
 trusted-proxies: {  }

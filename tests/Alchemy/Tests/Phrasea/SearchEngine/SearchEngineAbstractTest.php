@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
@@ -46,9 +45,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         if (!self::$searchEngine instanceof SearchEngineInterface) {
             $this->markTestSkipped('Unable to initialize search Engine');
         }
-
-        self::$DI['app']['phraseanet.SE'] = self::$searchEngine;
-        self::$DI['app']['phraseanet.SE.subscriber'] = new PhraseaEngineSubscriber(self::$DI['app']);
 
         $options = new SearchEngineOptions();
         $options->onCollections($databox->get_collections());
