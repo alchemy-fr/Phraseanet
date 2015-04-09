@@ -59,8 +59,9 @@ class RangeExpression extends Node
             }
         }
 
+        $field = $context->normalizeField($this->field->getValue());
         $query = array();
-        $query['range'][$this->field->getValue()] = $params;
+        $query['range'][$field] = $params;
 
         return $query;
     }

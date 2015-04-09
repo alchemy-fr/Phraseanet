@@ -73,6 +73,13 @@ class QueryContext
         return $fields;
     }
 
+    public function normalizeField($field)
+    {
+        // TODO Private fields handling
+        // TODO Field label dereferencing (we only want names)
+        return sprintf('caption.%s', $field);
+    }
+
     public function getFields()
     {
         return $this->fields;
