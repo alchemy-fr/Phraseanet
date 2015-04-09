@@ -1,0 +1,27 @@
+<?php
+
+namespace Alchemy\Tests\Phrasea\SearchEngine;
+
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
+
+class EscaperTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @dataProvider escapeRawProvider
+     */
+    public function testEscapeRaw($unescaped, $escaped)
+    {
+        $escaper = new Escaper();
+        $this->assertEquals($escaped, $escaper->escapeRaw($unescaped));
+    }
+
+    public function escapeRawProvider()
+    {
+        return [
+            ['foo', 'foo'],
+            ['"', '\\"'],
+            ['\\', '\\\\'],
+            ['foo"bar\\baz', 'foo\"bar\\\\baz'],
+        ];
+    }
+}

@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 
-class TextNode extends AbstractTermNode
+class TextNode extends AbstractTermNode implements ContextAbleInterface
 {
     /**
      * Merge two text nodes by concatenating their content.

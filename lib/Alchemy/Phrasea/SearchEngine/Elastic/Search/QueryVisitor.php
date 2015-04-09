@@ -26,6 +26,9 @@ class QueryVisitor implements Visit
             case NodeTypes::TOKEN_QUOTED_STRING:
                 return new AST\QuotedTextNode($value);
 
+            case NodeTypes::TOKEN_RAW_STRING:
+                return AST\RawNode::createFromEscaped($value);
+
             default:
                 // Generic handling off other tokens for unresctricted text
                 return new AST\TextNode($value);
@@ -189,10 +192,14 @@ class QueryVisitor implements Visit
                 continue;
             }
             if ($node instanceof AST\Context) {
-                $root = $root->withContext($node);
-                continue;
+                if ($root instanceof ContextAbleInterface) {
+                    $root = $root->withContext($node);
+                } else {
+                    throw new \Exception('Unexpected context after non-contextualizable node');
+                }
+            } elseif ($node instanceof AST\Node) {
+                $root = new AST\AndExpression($root, $node);
             }
-            $root = new AST\AndExpression($root, $node);
         }
 
         return $root;

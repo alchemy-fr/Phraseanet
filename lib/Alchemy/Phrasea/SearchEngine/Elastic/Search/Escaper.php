@@ -16,4 +16,9 @@ class Escaper
 
         return $value;
     }
+
+    public function escapeRaw($value)
+    {
+        return preg_replace('/"|\\\\/u', '\\\\$0', $value);
+    }
 }

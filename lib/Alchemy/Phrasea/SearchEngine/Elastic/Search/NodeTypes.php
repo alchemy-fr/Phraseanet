@@ -19,4 +19,5 @@ class NodeTypes
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
+    const TOKEN_RAW_STRING    = 'raw_quoted';
 }
