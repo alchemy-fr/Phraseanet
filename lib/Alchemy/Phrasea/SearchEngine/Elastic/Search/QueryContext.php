@@ -25,11 +25,24 @@ class QueryContext
             if (!$fields) {
                 throw new QueryException('Query narrowed to non available fields');
             }
-        } else {
-            $fields = null;
         }
 
         return new static($this->locales, $this->queryLocale, $fields);
+    }
+
+    public function getRawFields()
+    {
+        // TODO Private fields handling
+        if ($this->fields === null) {
+            return array('caption_all.raw');
+        }
+
+        $fields = array();
+        foreach ($this->fields as $field) {
+            $fields[] = sprintf('caption.%s.raw', $field);
+        }
+
+        return $fields;
     }
 
     public function getLocalizedFields()

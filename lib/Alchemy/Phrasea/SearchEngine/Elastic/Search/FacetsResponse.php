@@ -50,10 +50,9 @@ class FacetsResponse implements JsonSerializable
 
     private function buildQuery($name, $value)
     {
-        $value = $this->escaper->escapeWord($value);
         return ($name === 'Collection') ?
-            sprintf('collection:%s', $value) :
-            sprintf('%s IN %s', $value, $name);
+            sprintf('collection:%s', $this->escaper->escapeWord($value)) :
+            sprintf('r"%s" IN %s', $this->escaper->escapeRaw($value), $name);
     }
 
     private function throwAggregationResponseError()
