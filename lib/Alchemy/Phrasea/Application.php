@@ -312,6 +312,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\Fields' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Setup' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -622,7 +623,6 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/admin/setup', new Setup());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
 
@@ -676,6 +676,7 @@ class Application extends SilexApplication
             '/admin/fields'          => 'Alchemy\Phrasea\ControllerProvider\Admin\Fields',
             '/admin/publications'    => 'Alchemy\Phrasea\ControllerProvider\Admin\Feeds',
             '/admin/search-engine'   => 'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine',
+            '/admin/setup'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Setup',
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
