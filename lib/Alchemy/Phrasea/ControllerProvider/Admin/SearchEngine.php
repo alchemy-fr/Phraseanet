@@ -12,34 +12,36 @@
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Controller\Admin\SearchEngineController;
+use Silex\ControllerCollection;
+use Silex\ServiceProviderInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
-class SearchEngine implements ControllerProviderInterface
+class SearchEngine implements ControllerProviderInterface, ServiceProviderInterface
 {
+    public function register(Application $app)
+    {
+        $app['controller.admin.search-engine'] = $app->share(function (PhraseaApplication $app) {
+            return new SearchEngineController($app);
+        });
+    }
+
+    public function boot(Application $app)
+    {
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.admin.search-engine'] = $this;
-
+        /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', 'controller.admin.search-engine:getSearchEngineConfigurationPanel')
+        $controllers->get('/', 'controller.admin.search-engine:getConfigurationPanelAction')
                 ->bind('admin_searchengine_get');
 
-        $controllers->post('/', 'controller.admin.search-engine:postSearchEngineConfigurationPanel')
+        $controllers->post('/', 'controller.admin.search-engine:postConfigurationPanelAction')
                 ->bind('admin_searchengine_post');
 
         return $controllers;
-    }
-
-    public function getSearchEngineConfigurationPanel(PhraseaApplication $app, Request $request)
-    {
-        return $app['phraseanet.SE']->getConfigurationPanel()->get($app, $request);
-    }
-
-    public function postSearchEngineConfigurationPanel(PhraseaApplication $app, Request $request)
-    {
-        return $app['phraseanet.SE']->getConfigurationPanel()->post($app, $request);
     }
 }

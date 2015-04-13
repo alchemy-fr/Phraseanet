@@ -18,12 +18,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ConfigurationPanel extends AbstractConfigurationPanel
 {
-    private $searchEngine;
+    /** @var Application */
+    private $app;
 
-    public function __construct(ElasticSearchEngine $engine, PropertyAccess $conf)
+    public function __construct(Application $app, PropertyAccess $conf)
     {
-        $this->searchEngine = $engine;
-        $this->conf = $conf;
+        parent::__construct($conf);
+        $this->app = $app;
     }
 
     /**
@@ -37,15 +38,15 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     /**
      * {@inheritdoc}
      */
-    public function get(Application $app, Request $request)
+    public function get(Request $request)
     {
-        return $app['twig']->render('admin/search-engine/elastic-search.html.twig', ['configuration' => $this->getConfiguration()]);
+        return $this->app['twig']->render('admin/search-engine/elastic-search.html.twig', ['configuration' => $this->getConfiguration()]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function post(Application $app, Request $request)
+    public function post(Request $request)
     {
         $configuration = $this->getConfiguration();
 
@@ -54,7 +55,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $this->saveConfiguration($configuration);
 
-        return $app->redirectPath('admin_searchengine_get');
+        return $this->app->redirectPath('admin_searchengine_get');
     }
 
     /**

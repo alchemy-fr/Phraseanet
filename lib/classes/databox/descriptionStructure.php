@@ -60,7 +60,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
 
     /**
      *
-     * @return array
+     * @return databox_field[]
      */
     public function get_elements()
     {
