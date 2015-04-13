@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -109,5 +110,13 @@ class Controller
     public function getAuthenticatedUser()
     {
         return $this->getAuthenticator()->getUser();
+    }
+
+    /**
+     * @return PropertyAccess
+     */
+    protected function getConf()
+    {
+        return $this->app['conf'];
     }
 }

@@ -15,28 +15,36 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Form\TaskForm;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
+use Alchemy\Phrasea\Model\Repositories\TaskRepository;
+use Alchemy\Phrasea\TaskManager\Job\Factory;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
+use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
+use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Process\Process;
 
 class TaskManagerController extends Controller
 {
-    public function startScheduler(Application $app, Request $request)
+    public function startScheduler()
     {
-        $app['task-manager.status']->start();
-
+        /** @var TaskManagerStatus $status */
+        $status = $this->app['task-manager.status'];
+        $status->start();
+        
         $cmdLine = sprintf(
             '%s %s %s',
-            $app['conf']->get(['main', 'binaries', 'php_binary']),
+            $this->getConf()->get(['main', 'binaries', 'php_binary']),
             realpath(__DIR__ . '/../../../../../bin/console'),
             'task-manager:scheduler:run'
         );
 
         /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = $app['dispatcher'];
+        $dispatcher = $this->app['dispatcher'];
         $dispatcher->addListener(KernelEvents::TERMINATE, function () use ($cmdLine) {
             $process = new Process($cmdLine);
             $process->setTimeout(0);
@@ -47,15 +55,16 @@ class TaskManagerController extends Controller
             $process->run();
         }, -1000);
 
-        return $app->redirectPath('admin_tasks_list');
+        return $this->app->redirectPath('admin_tasks_list');
     }
 
-    public function stopScheduler(Application $app, Request $request)
+    public function stopScheduler()
     {
-        $app['task-manager.status']->stop();
+        /** @var TaskManagerStatus $status */
+        $status = $this->app['task-manager.status'];
+        $status->stop();
 
-        /** @var LiveInformation $info */
-        $info = $app['task-manager.live-information'];
+        $info = $this->getLiveInformationRequest();
         $data = $info->getManager();
         if (null !== $pid = $data['process-id']) {
             if (substr(php_uname(), 0, 7) == "Windows"){
@@ -65,61 +74,63 @@ class TaskManagerController extends Controller
             }
         }
 
-        return $app->redirectPath('admin_tasks_list');
+        return $this->app->redirectPath('admin_tasks_list');
     }
 
-    public function getRoot(Application $app, Request $request)
+    public function getRoot()
     {
-        return $app->redirectPath('admin_tasks_list');
+        return $this->app->redirectPath('admin_tasks_list');
     }
 
-    public function getLiveInformation(Application $app, Request $request)
+    public function getLiveInformation(Request $request)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
         if ($request->getRequestFormat() !== "json") {
-            $app->abort(406, 'Only JSON format is accepted.');
+            $this->app->abort(406, 'Only JSON format is accepted.');
         }
 
         $tasks = [];
-        foreach ($app['repo.tasks']->findAll() as $task) {
-            $tasks[$task->getId()] = $app['task-manager.live-information']->getTask($task);
+        /** @var Task $task */
+        foreach ($this->getTaskRepository()->findAll() as $task) {
+            $tasks[$task->getId()] = $this->getLiveInformationRequest()->getTask($task);
         }
 
-        return $app->json([
-            'manager' => $app['task-manager.live-information']->getManager(),
+        return $this->app->json([
+            'manager' => $this->getLiveInformationRequest()->getManager(),
             'tasks' => $tasks
         ]);
     }
 
-    public function getScheduler(Application $app, Request $request)
+    public function getScheduler(Request $request)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
         if ($request->getRequestFormat() !== "json") {
-            $app->abort(406, 'Only JSON format is accepted.');
+            $this->app->abort(406, 'Only JSON format is accepted.');
         }
 
-        return $app->json([
-            'name' => $app->trans('Task Scheduler'),
-            'configuration' => $app['task-manager.status']->getStatus(),
+        return $this->app->json([
+            'name' => $this->app->trans('Task Scheduler'),
+            'configuration' => $this->app['task-manager.status']->getStatus(),
             'urls' => [
-                'start' => $app->path('admin_tasks_scheduler_start'),
-                'stop' => $app->path('admin_tasks_scheduler_stop'),
-                'log' => $app->path('admin_tasks_scheduler_log'),
+                'start' => $this->app->path('admin_tasks_scheduler_start'),
+                'stop' => $this->app->path('admin_tasks_scheduler_stop'),
+                'log' => $this->app->path('admin_tasks_scheduler_log'),
             ]
         ]);
     }
 
-    public function getTasks(Application $app, Request $request)
+    public function getTasks(Request $request)
     {
         $tasks = [];
 
-        foreach ($app['repo.tasks']->findAll() as $task) {
+        /** @var Task $task */
+        foreach ($this->getTaskRepository()->findAll() as $task) {
             $tasks[] = [
                 'id' => $task->getId(),
                 'name' => $task->getName(),
@@ -129,185 +140,191 @@ class TaskManagerController extends Controller
 
         if ($request->getRequestFormat() === "json") {
             foreach ($tasks as $k => $task) {
-                $tasks[$k]['urls'] = $this->getTaskResourceUrls($app, $task['id']);
+                $tasks[$k]['urls'] = $this->getTaskResourceUrls($this->app, $task['id']);
             }
 
-            return $app->json($tasks);
+            return $this->app->json($tasks);
         }
 
-        return $app['twig']->render('admin/task-manager/index.html.twig', [
-            'available_jobs' => $app['task-manager.available-jobs'],
+        return $this->app['twig']->render('admin/task-manager/index.html.twig', [
+            'available_jobs' => $this->app['task-manager.available-jobs'],
             'tasks' => $tasks,
             'scheduler' => [
                 'id'   => null,
-                'name' => $app->trans('Task Scheduler'),
-                'status' => $app['task-manager.status']->getStatus(),
+                'name' => $this->app->trans('Task Scheduler'),
+                'status' => $this->app['task-manager.status']->getStatus(),
             ]
         ]);
     }
 
-    public function postCreateTask(Application $app, Request $request)
+    public function postCreateTask(Request $request)
     {
         try {
-            $job = $app['task-manager.job-factory']->create($request->request->get('job-name'));
+            /** @var Factory $factory */
+            $factory = $this->app['task-manager.job-factory'];
+            $job = $factory->create($request->request->get('job-name'));
         } catch (InvalidArgumentException $e) {
-            $app->abort(400, $e->getMessage());
+            throw new HttpException(400, $e->getMessage(), $e);
         }
 
-        $task = $app['manipulator.task']->create(
+        $task = $this->getTaskManipulator()->create(
             $job->getName(),
             $job->getJobId(),
-            $job->getEditor()->getDefaultSettings($app['conf']),
+            $job->getEditor()->getDefaultSettings($this->app['conf']),
             $job->getEditor()->getDefaultPeriod()
         );
 
-        return $app->redirectPath('admin_tasks_task_show', ['task' => $task->getId()]);
+        return $this->app->redirectPath('admin_tasks_task_show', ['task' => $task->getId()]);
     }
 
-    public function getSchedulerLog(Application $app, Request $request)
+    public function getSchedulerLog(Request $request)
     {
-        $logFile = $app['task-manager.log-file.factory']->forManager();
+        /** @var LogFileFactory $factory */
+        $factory = $this->app['task-manager.log-file.factory'];
+        $logFile = $factory->forManager();
         if ($request->query->get('clr')) {
             $logFile->clear();
         }
 
-        return $app['twig']->render('admin/task-manager/log.html.twig', [
+        return $this->render('admin/task-manager/log.html.twig', [
             'logfile' => $logFile,
             'logname' => 'Scheduler',
         ]);
     }
 
-    public function getTaskLog(Application $app, Request $request, Task $task)
+    public function getTaskLog(Request $request, Task $task)
     {
-        $logFile = $app['task-manager.log-file.factory']->forTask($task);
+        /** @var LogFileFactory $factory */
+        $factory = $this->app['task-manager.log-file.factory'];
+        $logFile = $factory->forTask($task);
         if ($request->query->get('clr')) {
             $logFile->clear();
         }
 
-        return $app['twig']->render('admin/task-manager/log.html.twig', [
+        return $this->render('admin/task-manager/log.html.twig', [
             'logfile' => $logFile,
             'logname' => sprintf('%s (task id %d)', $task->getName(), $task->getId()),
         ]);
     }
 
-    public function postTaskDelete(Application $app, Request $request, Task $task)
+    public function postTaskDelete(Task $task)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
-        $app['manipulator.task']->delete($task);
+        $this->getTaskManipulator()->delete($task);
 
-        return $app->redirectPath('admin_tasks_list');
+        return $this->app->redirectPath('admin_tasks_list');
     }
 
-    public function postStartTask(Application $app, Request $request, Task $task)
+    public function postStartTask(Task $task)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
-        $app['manipulator.task']->start($task);
+        $this->getTaskManipulator()->start($task);
 
-        return $app->redirectPath('admin_tasks_list');
+        return $this->app->redirectPath('admin_tasks_list');
     }
 
-    public function postStopTask(Application $app, Request $request, Task $task)
+    public function postStopTask(Task $task)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
-        $app['manipulator.task']->stop($task);
+        $this->getTaskManipulator()->stop($task);
 
-        return $app->redirectPath('admin_tasks_list');
+        return $this->app->redirectPath('admin_tasks_list');
     }
 
-    public function postResetCrashes(Application $app, Request $request, Task $task)
+    public function postResetCrashes(Task $task)
     {
-        $app['manipulator.task']->resetCrashes($task);
+        $this->getTaskManipulator()->resetCrashes($task);
 
-        return $app->json(['success' => true]);
+        return $this->app->json(['success' => true]);
     }
 
-    public function postSaveTask(Application $app, Request $request, Task $task)
+    public function postSaveTask(Request $request, Task $task)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
         if (!$this->doValidateXML($request->request->get('settings'))) {
-            return $app->json(['success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))]);
+            return $this->app->json(['success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))]);
         }
 
-        $form = $app->form(new TaskForm());
+        $form = $this->app->form(new TaskForm());
         $form->setData($task);
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
-            $app['manipulator.task']->update($task);
+            $this->getTaskManipulator()->update($task);
 
-            return $app->json(['success' => true]);
+            return $this->app->json(['success' => true]);
         }
 
-        return $app->json([
+        return $this->app->json([
             'success' => false,
-            'message' => implode("\n", $form->getErrors())
+            'message' => implode("\n", iterator_to_array($form->getErrors())),
         ]);
     }
 
-    public function postTaskFacility(Application $app, Request $request, Task $task)
+    public function postTaskFacility(Request $request, Task $task)
     {
-        return $app['task-manager.job-factory']
+        return $this->getJobFactory()
             ->create($task->getJobId())
             ->getEditor()
-            ->facility($app, $request);
+            ->facility($this->app, $request);
     }
 
-    public function postXMLFromForm(Application $app, Request $request, Task $task)
+    public function postXMLFromForm(Request $request, Task $task)
     {
-        return $app['task-manager.job-factory']
+        return $this->getJobFactory()
             ->create($task->getJobId())
             ->getEditor()
             ->updateXMLWithRequest($request);
     }
 
-    public function getTask(Application $app, Request $request, Task $task)
+    public function getTask(Request $request, Task $task)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
         if ('json' === $request->getContentType()) {
-            return $app->json(array_replace([
+            return $this->app->json(array_replace([
                 'id' => $task->getId(),
                 'name' => $task->getName(),
-                'urls' => $this->getTaskResourceUrls($app, $task->getId())
+                'urls' => $this->getTaskResourceUrls($this->app, $task->getId())
             ],
-                $app['task-manager.live-information']->getTask($task)
+                $this->getLiveInformationRequest()->getTask($task)
             ));
         }
 
-        $editor = $app['task-manager.job-factory']
+        $editor = $this->getJobFactory()
             ->create($task->getJobId())
             ->getEditor();
 
-        $form = $app->form(new TaskForm());
+        $form = $this->app->form(new TaskForm());
         $form->setData($task);
 
-        return $app['twig']->render($editor->getTemplatePath(), [
+        return $this->render($editor->getTemplatePath(), [
             'task' => $task,
             'form' => $form->createView(),
             'view' => 'XML',
         ]);
     }
 
-    public function validateXML(Application $app, Request $request)
+    public function validateXML(Request $request)
     {
-        if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
+        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
-        return $app->json(['success' => $this->doValidateXML($request->getContent())]);
+        return $this->app->json(['success' => $this->doValidateXML($request->getContent())]);
     }
 
     private function doValidateXML($string)
@@ -318,14 +335,46 @@ class TaskManagerController extends Controller
         return (Boolean) @$dom->loadXML($string);
     }
 
-    private function getTaskResourceUrls(Application $app, $taskId)
+    private function getTaskResourceUrls($taskId)
     {
         return [
-            'show' => $app->path('admin_tasks_task_show', ['task' => $taskId]),
-            'start' => $app->path('admin_tasks_task_start', ['task' => $taskId]),
-            'stop' => $app->path('admin_tasks_task_stop', ['task' => $taskId]),
-            'delete' => $app->path('admin_tasks_task_delete', ['task' => $taskId]),
-            'log' => $app->path('admin_tasks_task_log', ['task' => $taskId]),
+            'show' => $this->app->path('admin_tasks_task_show', ['task' => $taskId]),
+            'start' => $this->app->path('admin_tasks_task_start', ['task' => $taskId]),
+            'stop' => $this->app->path('admin_tasks_task_stop', ['task' => $taskId]),
+            'delete' => $this->app->path('admin_tasks_task_delete', ['task' => $taskId]),
+            'log' => $this->app->path('admin_tasks_task_log', ['task' => $taskId]),
         ];
+    }
+
+    /**
+     * @return TaskRepository
+     */
+    private function getTaskRepository()
+    {
+        return $this->app['repo.tasks'];
+    }
+
+    /**
+     * @return LiveInformation
+     */
+    private function getLiveInformationRequest()
+    {
+        return $this->app['task-manager.live-information'];
+    }
+
+    /**
+     * @return TaskManipulator
+     */
+    private function getTaskManipulator()
+    {
+        return $this->app['manipulator.task'];
+    }
+
+    /**
+     * @return Factory
+     */
+    private function getJobFactory()
+    {
+        return $this->app['task-manager.job-factory'];
     }
 }
