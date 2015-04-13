@@ -42,6 +42,14 @@ foo < 42|<range:foo lt="42">
 foo ≤ 42|<range:foo lte="42">
 foo > 42|<range:foo gt="42">
 foo ≥ 42|<range:foo gte="42">
+foo < 2015/01/01|<range:foo lt="2015/01/01">
+foo ≤ 2015/01/01|<range:foo lte="2015/01/01">
+foo > 2015/01/01|<range:foo gt="2015/01/01">
+foo ≥ 2015/01/01|<range:foo gte="2015/01/01">
+foo < "2015/01/01"|<range:foo lt="2015/01/01">
+foo ≤ "2015/01/01"|<range:foo lte="2015/01/01">
+foo > "2015/01/01"|<range:foo gt="2015/01/01">
+foo ≥ "2015/01/01"|<range:foo gte="2015/01/01">
 
 # Field narrowing
 foo IN bar|(<text:"foo"> IN <field:bar>)
