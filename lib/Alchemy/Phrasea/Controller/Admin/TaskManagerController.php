@@ -140,7 +140,7 @@ class TaskManagerController extends Controller
 
         if ($request->getRequestFormat() === "json") {
             foreach ($tasks as $k => $task) {
-                $tasks[$k]['urls'] = $this->getTaskResourceUrls($this->app, $task['id']);
+                $tasks[$k]['urls'] = $this->getTaskResourceUrls($task['id']);
             }
 
             return $this->app->json($tasks);
@@ -298,7 +298,7 @@ class TaskManagerController extends Controller
             return $this->app->json(array_replace([
                 'id' => $task->getId(),
                 'name' => $task->getName(),
-                'urls' => $this->getTaskResourceUrls($this->app, $task->getId())
+                'urls' => $this->getTaskResourceUrls($task->getId())
             ],
                 $this->getLiveInformationRequest()->getTask($task)
             ));
