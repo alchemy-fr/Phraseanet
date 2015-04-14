@@ -95,7 +95,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new RecordIndexer(
                 $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
-                $app['elasticsearch.engine'],
                 $app['phraseanet.appbox'],
                 array_keys($app['locales.available'])
             );

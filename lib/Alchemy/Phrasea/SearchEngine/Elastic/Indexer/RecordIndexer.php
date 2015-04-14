@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
@@ -49,21 +48,15 @@ class RecordIndexer
     private $appbox;
 
     /**
-     * @var \Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine
-     */
-    private $elasticSearchEngine;
-
-    /**
      * @var array
      */
     private $locales;
 
-    public function __construct(RecordHelper $helper, Thesaurus $thesaurus, ElasticSearchEngine $elasticSearchEngine, \appbox $appbox, array $locales)
+    public function __construct(RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales)
     {
         $this->helper = $helper;
         $this->thesaurus = $thesaurus;
         $this->appbox = $appbox;
-        $this->elasticSearchEngine = $elasticSearchEngine;
         $this->locales = $locales;
     }
 
@@ -138,7 +131,7 @@ class RecordIndexer
         $fetcher = new Fetcher($connection, array(
             new CoreHydrator($databox->get_sbas_id(), $this->helper),
             new TitleHydrator($connection),
-            new MetadataHydrator($connection),
+            new MetadataHydrator($connection, $this->helper),
             new ThesaurusHydrator($this->thesaurus, $candidateTerms, $this->helper),
             new SubDefinitionHydrator($connection)
         ), $delegate);
@@ -315,28 +308,12 @@ class RecordIndexer
      */
     private function transform($record)
     {
-        $dateFields = $this->elasticSearchEngine->getAvailableDateFields();
-
         $databox = $this->appbox->get_databox($record['databox_id']);
 
         foreach ($databox->getStatusStructure() as $bit => $status) {
             $key = RecordHelper::normalizeFlagKey($status['labelon']);
 
             $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bitfield'], $bit);
-        }
-
-        foreach ($dateFields as $field) {
-            if (!isset($record['caption'][$field])) {
-                continue;
-            }
-
-            try {
-                $date = new \DateTime($record['caption'][$field]);
-                $record['caption'][$field] = $date->format(Mapping::DATE_FORMAT_CAPTION_PHP);
-            } catch (\Exception $e) {
-                $record['caption'][$field] = null;
-                continue;
-            }
         }
 
         return $record;
