@@ -12,7 +12,7 @@
 %token  string:quoted   [^"]+
 %token  string:_quote   "        -> default
 %token  raw_quote_      r"       -> raw
-%token  raw:raw_quoted  [^"\\]*(?:\\.[^"\\]*)+
+%token  raw:raw_quoted  (?:(?>[^"\\]+)|\\.)+
 %token  raw:_raw_quote  "        -> default
 
 // Operators (too bad we can't use preg "i" flag)
