@@ -128,5 +128,8 @@ $cli['console']->addCommands([
     new StatusCommand(),
     new VersionCommand(),
 ]);
+foreach ($cli['plugins.commands'] as $pluginCommand) {
+    $cli->command($pluginCommand);
+}
 
 exit(is_int($cli->run()) ? : 1);

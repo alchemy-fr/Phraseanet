@@ -71,5 +71,8 @@ $app->command(new Install('system:install'));
 $app->command(new CrossDomainGenerator());
 
 $app['phraseanet.setup_mode'] = true;
+foreach ($app['plugins.commands'] as $pluginCommand) {
+    $app->command($pluginCommand);
+}
 
 exit(is_int($app->run()) ?: 1);

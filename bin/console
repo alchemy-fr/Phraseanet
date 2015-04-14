@@ -132,5 +132,8 @@ if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
     $cli->command(new QuerySampleCommand());
     $cli->command(new FindConceptsCommand());
 }
+foreach ($cli['plugins.commands'] as $pluginCommand) {
+    $cli->command($pluginCommand);
+}
 
 exit(is_int($cli->run()) ? : 1);
