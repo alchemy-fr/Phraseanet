@@ -22,17 +22,20 @@ class SetupController extends Controller
         $manipulator = $this->app['registry.manipulator'];
         $form = $manipulator->createForm($this->app['conf']);
 
+        $status = 200;
         if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
+            $form->submit($request->request->all());
             if ($form->isValid()) {
                 $this->app['conf']->set('registry', $manipulator->getRegistryData($form));
 
                 return $this->app->redirectPath('setup_display_globals');
             }
+
+            $status = 400;
         }
 
-        return $this->render('admin/setup.html.twig', [
+        return $this->renderResponse('admin/setup.html.twig', [
             'form' => $form->createView(),
-        ]);
+        ], $status);
     }
 }
