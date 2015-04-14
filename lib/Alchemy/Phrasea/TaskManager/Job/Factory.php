@@ -29,6 +29,10 @@ class Factory
         $this->translator = $translator;
     }
 
+    /**
+     * @param string $fqn
+     * @return JobInterface
+     */
     public function create($fqn)
     {
         if (!class_exists($fqn)) {

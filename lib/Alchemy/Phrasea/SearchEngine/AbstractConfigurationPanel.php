@@ -11,18 +11,28 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+
 abstract class AbstractConfigurationPanel implements ConfigurationPanelInterface
 {
+    /** @var PropertyAccess */
     protected $conf;
 
+    public function __construct(PropertyAccess $conf)
+    {
+        $this->conf = $conf;
+    }
+
     /**
-     * {@inheritdoc}
+     * @param \databox[] $databoxes
+     * @return array
      */
     public function getAvailableDateFields(array $databoxes)
     {
         $date_fields = [];
 
         foreach ($databoxes as $databox) {
+            /** @var \databox_field $field */
             foreach ($databox->get_meta_structure() as $field) {
                 if ($field->get_type() !== \databox_field::TYPE_DATE) {
                     continue;

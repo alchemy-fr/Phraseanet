@@ -11,45 +11,42 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
-use Alchemy\Phrasea\Application;
-use Silex\Application as SilexApplication;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Admin\SetupController;
+use Alchemy\Phrasea\Security\Firewall;
+use Silex\Application;
+use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Silex\ServiceProviderInterface;
 
-class Setup implements ControllerProviderInterface
+class Setup implements ControllerProviderInterface, ServiceProviderInterface
 {
-    public function connect(SilexApplication $app)
+    public function register(Application $app)
     {
-        $app['controller.admin.setup'] = $this;
+        $app['controller.admin.setup'] = $app->share(function (PhraseaApplication $app) {
+            return new SetupController($app);
+        });
+    }
 
+    public function boot(Application $app)
+    {
+    }
+
+    public function connect(Application $app)
+    {
+        /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAdmin();
+        /** @var Firewall $firewall */
+        $firewall = $app['firewall'];
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireAdmin();
         });
 
-        $controllers->match('/', 'controller.admin.setup:getGlobals')
+        $controllers->match('/', 'controller.admin.setup:submitGlobalsAction')
             ->bind('setup_display_globals')
             ->method('GET|POST');
 
         return $controllers;
-    }
-
-    public function getGlobals(Application $app, Request $request)
-    {
-        $form = $app['registry.manipulator']->createForm($app['conf']);
-
-        if ('POST' === $request->getMethod()) {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $app['conf']->set('registry', $app['registry.manipulator']->getRegistryData($form));
-
-                return $app->redirectPath('setup_display_globals');
-            }
-        }
-
-        return $app['twig']->render('admin/setup.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 }

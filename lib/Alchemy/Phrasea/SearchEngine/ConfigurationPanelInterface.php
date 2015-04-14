@@ -20,20 +20,18 @@ interface ConfigurationPanelInterface
     /**
      * Handles the GET request to the configuration panel
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param  Request $request
      * @return Response
      */
-    public function get(Application $app, Request $request);
+    public function get(Request $request);
 
     /**
      * Handles the POST request to the configuration panel
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param  Request $request
      * @return Response
      */
-    public function post(Application $app, Request $request);
+    public function post(Request $request);
 
     /**
      * Return the associated search engine name
@@ -60,7 +58,7 @@ interface ConfigurationPanelInterface
     /**
      * Return the names of the date fields
      *
-     * @param  array $databoxes
+     * @param  \databox[] $databoxes
      * @return array An array of date fields names
      */
     public function getAvailableDateFields(array $databoxes);

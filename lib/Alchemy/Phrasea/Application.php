@@ -12,9 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine;
-use Alchemy\Phrasea\ControllerProvider\Admin\Setup;
-use Alchemy\Phrasea\ControllerProvider\Admin\Subdefs;
 use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
@@ -312,6 +309,10 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\Feeds' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Fields' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Root' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Setup' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs' => [],
+            'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -622,11 +623,6 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/admin/setup', new Setup());
-        $this->mount('/admin/search-engine', new SearchEngine());
-        $this->mount('/admin/task-manager', new TaskManager());
-        $this->mount('/admin/subdefs', new Subdefs());
-
         $this->mount('/client/', new ClientRoot());
 
         $this->mount('/prod/query/', new Query());
@@ -676,6 +672,10 @@ class Application extends SilexApplication
             '/admin/databoxes'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes',
             '/admin/fields'          => 'Alchemy\Phrasea\ControllerProvider\Admin\Fields',
             '/admin/publications'    => 'Alchemy\Phrasea\ControllerProvider\Admin\Feeds',
+            '/admin/search-engine'   => 'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine',
+            '/admin/setup'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Setup',
+            '/admin/subdefs'         => 'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs',
+            '/admin/task-manager'    => 'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager',
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
