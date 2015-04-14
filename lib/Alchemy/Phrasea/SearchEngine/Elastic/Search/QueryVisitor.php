@@ -64,6 +64,9 @@ class QueryVisitor implements Visit
             case NodeTypes::GTE_EXPR:
                 return $this->visitRangeNode($element);
 
+            case NodeTypes::EQUAL_EXPR:
+                return $this->visitEqualNode($element);
+
             case NodeTypes::VALUE:
                 return $this->visitString($element);
 
@@ -156,6 +159,18 @@ class QueryVisitor implements Visit
         $right = $element->getChild(1)->accept($this);
 
         return $factory($left, $right);
+    }
+
+    private function visitEqualNode(TreeNode $node)
+    {
+        if ($node->getChildrenNumber() !== 2) {
+            throw new \Exception('Equality operator can only have 2 childs.');
+        }
+
+        return new AST\FieldEqualsExpression(
+            $node->getChild(0)->accept($this),
+            $node->getChild(1)->accept($this)
+        );
     }
 
     private function visitTerm(Element $element)

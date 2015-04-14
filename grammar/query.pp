@@ -10,6 +10,7 @@
 %token  gte             >=|≥
 %token  lt              <
 %token  gt              >
+%token  equal           =
 
 // Strings
 %token  quote_          "        -> string
@@ -27,7 +28,7 @@
 
 // Rest
 %token  collection      collection
-%token  word            [^\s()\[\]:<>≤≥]+
+%token  word            [^\s()\[\]:<>≤≥=]+
 
 // relative order of precedence is NOT > XOR > AND > OR
 
@@ -72,6 +73,7 @@ senary:
   | field() ::space::? ::gt:: ::space::? value() #greater_than
   | field() ::space::? ::lte:: ::space::? value() #less_than_or_equal_to
   | field() ::space::? ::gte:: ::space::? value() #greater_than_or_equal_to
+  | field() ::space::? ::equal:: ::space::? value() #equal_to
   | term()
 
 #value:

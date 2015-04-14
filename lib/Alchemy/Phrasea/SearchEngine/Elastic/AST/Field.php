@@ -17,4 +17,9 @@ class Field
     {
         return $this->field;
     }
+
+    public function __toString()
+    {
+        return sprintf('<field:%s>', $this->field);
+    }
 }

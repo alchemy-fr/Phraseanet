@@ -29,6 +29,6 @@ class InExpression extends Node
 
     public function __toString()
     {
-        return sprintf('(%s IN <field:%s>)', $this->expression, $this->field->getValue());
+        return sprintf('(%s IN %s)', $this->expression, $this->field);
     }
 }
