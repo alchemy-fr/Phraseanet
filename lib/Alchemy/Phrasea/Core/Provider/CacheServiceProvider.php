@@ -49,9 +49,9 @@ class CacheServiceProvider implements ServiceProviderInterface
         });
 
         $app['opcode-cache'] = $app->share(function (Application $app) {
-            $conf = $app['conf']->get(['main', 'opcodecache']);
-
-            return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);
+            /** @var CacheManager $service */
+            $service = $app['phraseanet.cache-service'];
+            return $service->factory('opcode-cache', 'ArrayCache', []);
         });
     }
 

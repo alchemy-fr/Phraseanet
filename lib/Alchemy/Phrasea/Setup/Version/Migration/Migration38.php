@@ -93,21 +93,12 @@ class Migration38 implements MigrationInterface
             if (isset($data[$env])) {
                 $conf['main']['servername'] = $data[$env]['phraseanet']['servername'];
                 $conf['main']['maintenance'] = $data[$env]['phraseanet']['maintenance'];
-                $opcodeCacheService = $data[$env]['opcodecache'];
                 $cacheService = $data[$env]['cache'];
             }
         }
 
         if (is_file($this->servicesYaml)) {
             $services = $this->yaml->parse($this->servicesYaml);
-            if (null !== $opcodeCacheService) {
-                $conf['main']['opcodecache']['type'] = str_replace('Cache\\', '', $services['Cache'][$opcodeCacheService]['type']);
-                if (isset($services['Cache'][$opcodeCacheService]['options'])) {
-                    $conf['main']['opcodecache']['options'] = $services['Cache'][$opcodeCacheService]['options'];
-                } else {
-                    $conf['main']['opcodecache']['options'] = [];
-                }
-            }
             if (null !== $cacheService) {
                 $conf['main']['cache']['type'] = str_replace('Cache\\', '', $services['Cache'][$cacheService]['type']);
                 if (isset($services['Cache'][$cacheService]['options'])) {
