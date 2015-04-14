@@ -273,14 +273,13 @@ class appbox extends base
 
         $finder = new Finder();
         $in = [];
-        foreach ($app['cache.paths'] as $path) {
-            $in[] = $path.'/minify/';
-            $in[] = $path.'/twig/';
-            $in[] = $path.'/translations/';
-            $in[] = $path.'/profiler/';
-            $in[] = $path.'/doctrine/';
-            $in[] = $path.'/serializer/';
-        };
+        $path = $app['cache.path'];
+        $in[] = $path.'/minify/';
+        $in[] = $path.'/twig/';
+        $in[] = $path.'/translations/';
+        $in[] = $path.'/profiler/';
+        $in[] = $path.'/doctrine/';
+        $in[] = $path.'/serializer/';
         $finder->in(array_filter($in, function($path) {
             return is_dir($path);
         }))
