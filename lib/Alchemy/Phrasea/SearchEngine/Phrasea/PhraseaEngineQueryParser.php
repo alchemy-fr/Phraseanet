@@ -744,7 +744,7 @@ class PhraseaEngineQueryParser
             $x0 = "@w=\"" . $w . "\"";
         }
 
-        $x = "/thesaurus//sy[" . $x0 . "]";
+        $x = "/thesaurus//sy[" . $this->app['unicode']->remove_diacritics($x0) . "]";
 
         if ($this->debug)
             printf("searching thesaurus with xpath='%s'<br/>\n", $x);
