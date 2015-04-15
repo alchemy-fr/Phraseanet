@@ -146,14 +146,14 @@ class RecordHelper
                 // Field type
                 switch ($fieldStructure->get_type()) {
                     case \databox_field::TYPE_DATE:
-                        $field['type'] = 'date';
+                        $field['type'] = Mapping::TYPE_DATE;
                         break;
                     case \databox_field::TYPE_NUMBER:
-                        $field['type'] = 'double';
+                        $field['type'] = Mapping::TYPE_DOUBLE;
                         break;
                     case \databox_field::TYPE_STRING:
                     case \databox_field::TYPE_TEXT:
-                        $field['type'] = 'string';
+                        $field['type'] = Mapping::TYPE_STRING;
                         break;
                     default:
                         throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $fieldStructure->get_type()));
@@ -173,7 +173,7 @@ class RecordHelper
                 $helper = new ThesaurusHelper();
 
                 // TODO Not the real option yet
-                $field['thesaurus_concept_inference'] = $field['type'] === 'string';
+                $field['thesaurus_concept_inference'] = $field['type'] === Mapping::TYPE_STRING;
                 // TODO Find thesaurus path prefixes
                 $field['thesaurus_prefix'] = '/categories';
 
