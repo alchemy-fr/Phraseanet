@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
 use appbox;
 use igorw;
@@ -23,6 +24,7 @@ class RecordHelper
     // Computation caches
     private $collectionMap;
     private $fieldStructure;
+    private $dateFields;
 
     public function __construct(appbox $appbox)
     {
@@ -74,6 +76,9 @@ class RecordHelper
         return StringUtils::slugify($key, '_');
     }
 
+    /**
+     * @todo Extract in a proper field construct
+     */
     public function getFields($includePrivate = false, $onlySearchable = true)
     {
         $fields = array();
@@ -92,6 +97,40 @@ class RecordHelper
         return $fields;
     }
 
+    /**
+     * @todo Extract in a proper field construct
+     */
+    public function getDateFields()
+    {
+        if ($this->dateFields === null) {
+            $fields = array();
+            foreach ($this->getFieldsStructure() as $name => $options) {
+                if ($options['type'] !== 'date') {
+                    continue;
+                }
+                $fields[] = $name;
+            }
+            $this->dateFields = $fields;
+        }
+
+        return $this->dateFields;
+    }
+
+    public function sanitizeDate($value)
+    {
+        // introduced in https://github.com/alchemy-fr/Phraseanet/commit/775ce804e0257d3a06e4e068bd17330a79eb8370#diff-bee690ed259e0cf73a31dee5295d2edcR286
+        // not sure if it's really needed
+        try {
+            $date = new \DateTime($value);
+            return $date->format(Mapping::DATE_FORMAT_CAPTION_PHP);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @todo Extract in a proper field construct
+     */
     public function getFieldsStructure()
     {
         if (!empty($this->fieldsStructure)) {
@@ -107,14 +146,14 @@ class RecordHelper
                 // Field type
                 switch ($fieldStructure->get_type()) {
                     case \databox_field::TYPE_DATE:
-                        $field['type'] = 'date';
+                        $field['type'] = Mapping::TYPE_DATE;
                         break;
                     case \databox_field::TYPE_NUMBER:
-                        $field['type'] = 'double';
+                        $field['type'] = Mapping::TYPE_DOUBLE;
                         break;
                     case \databox_field::TYPE_STRING:
                     case \databox_field::TYPE_TEXT:
-                        $field['type'] = 'string';
+                        $field['type'] = Mapping::TYPE_STRING;
                         break;
                     default:
                         throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $fieldStructure->get_type()));
@@ -134,7 +173,7 @@ class RecordHelper
                 $helper = new ThesaurusHelper();
 
                 // TODO Not the real option yet
-                $field['thesaurus_concept_inference'] = $field['type'] === 'string';
+                $field['thesaurus_concept_inference'] = $field['type'] === Mapping::TYPE_STRING;
                 // TODO Find thesaurus path prefixes
                 $field['thesaurus_prefix'] = '/categories';
 

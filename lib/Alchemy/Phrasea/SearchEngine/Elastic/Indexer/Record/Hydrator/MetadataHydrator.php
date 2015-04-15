@@ -12,16 +12,22 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
+use DomainException;
 
 class MetadataHydrator implements HydratorInterface
 {
     private $connection;
+    private $helper;
+    private $fields;
 
-    public function __construct(DriverConnection $connection)
+    public function __construct(DriverConnection $connection, RecordHelper $helper)
     {
         $this->connection = $connection;
+        $this->helper = $helper;
     }
 
     public function hydrateRecords(array &$records)
@@ -65,6 +71,24 @@ SQL;
 
             switch ($metadata['type']) {
                 case 'caption':
+                    // Sanitize fields
+                    switch ($this->getFieldType($key)) {
+                        case Mapping::TYPE_DATE:
+                            $value = $this->helper->sanitizeDate($value);
+                            break;
+
+                        case Mapping::TYPE_FLOAT:
+                        case Mapping::TYPE_DOUBLE:
+                            $value = (float) $value;
+                            break;
+
+                        case Mapping::TYPE_INTEGER:
+                        case Mapping::TYPE_LONG:
+                        case Mapping::TYPE_SHORT:
+                        case Mapping::TYPE_BYTE:
+                            $value = (int) $value;
+                            break;
+                    }
                     // Private caption fields are kept apart
                     $type = $metadata['private'] ? 'private_caption' : 'caption';
                     // Caption are multi-valued
@@ -90,5 +114,17 @@ SQL;
                     break;
             }
         }
+    }
+
+    private function getFieldType($key)
+    {
+        if ($this->fields === null) {
+            $this->fields = $this->helper->getFieldsStructure();
+        }
+        if (!isset($this->fields[$key]['type'])) {
+            throw new DomainException(sprintf('Unknown field "%s".', $key));
+        }
+
+        return $this->fields[$key]['type'];
     }
 }

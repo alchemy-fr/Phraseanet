@@ -1,0 +1,70 @@
+foo|<text:"foo">
+foo (bar)|<text:"foo" context:"bar">
+# foo ("bar baz")|<text:"foo" context:"bar baz">
+foo bar|<text:"foo bar">
+foo bar (baz qux)|<text:"foo bar" context:"baz qux">
+"foo bar"|<exact_text:"foo bar">
+# "foo bar" (baz)|<exact_text:"foo bar" context:"baz qux">
+[foo]|<term:"foo">
+[foo (bar)]|<term:"foo" context:"bar">
+[foo bar (baz qux)]|<term:"foo bar" context:"baz qux">
+
+# Parenthesis grouping
+(foo)|<text:"foo">
+(foo bar)|<text:"foo bar">
+(foo OR bar) AND baz|((<text:"foo"> OR <text:"bar">) AND <text:"baz">)
+
+# Boolean operators
+foo AND bar|(<text:"foo"> AND <text:"bar">)
+foo AND bar AND baz|((<text:"foo"> AND <text:"bar">) AND <text:"baz">)
+foo AND bar OR baz|((<text:"foo"> AND <text:"bar">) OR <text:"baz">)
+foo AND bar EXCEPT baz|((<text:"foo"> AND <text:"bar">) EXCEPT <text:"baz">)
+foo AND (bar AND baz)|(<text:"foo"> AND (<text:"bar"> AND <text:"baz">))
+foo AND (bar OR baz)|(<text:"foo"> AND (<text:"bar"> OR <text:"baz">))
+foo AND (bar EXCEPT baz)|(<text:"foo"> AND (<text:"bar"> EXCEPT <text:"baz">))
+foo OR bar|(<text:"foo"> OR <text:"bar">)
+foo OR bar AND baz|(<text:"foo"> OR (<text:"bar"> AND <text:"baz">))
+foo OR bar OR baz|((<text:"foo"> OR <text:"bar">) OR <text:"baz">)
+foo OR bar EXCEPT baz|((<text:"foo"> OR <text:"bar">) EXCEPT <text:"baz">)
+foo OR (bar AND baz)|(<text:"foo"> OR (<text:"bar"> AND <text:"baz">))
+foo OR (bar OR baz)|(<text:"foo"> OR (<text:"bar"> OR <text:"baz">))
+foo OR (bar EXCEPT baz)|(<text:"foo"> OR (<text:"bar"> EXCEPT <text:"baz">))
+foo EXCEPT bar|(<text:"foo"> EXCEPT <text:"bar">)
+foo EXCEPT bar AND baz|(<text:"foo"> EXCEPT (<text:"bar"> AND <text:"baz">))
+foo EXCEPT bar OR baz|(<text:"foo"> EXCEPT (<text:"bar"> OR <text:"baz">))
+foo EXCEPT bar EXCEPT baz|((<text:"foo"> EXCEPT <text:"bar">) EXCEPT <text:"baz">)
+foo EXCEPT (bar AND baz)|(<text:"foo"> EXCEPT (<text:"bar"> AND <text:"baz">))
+foo EXCEPT (bar OR baz)|(<text:"foo"> EXCEPT (<text:"bar"> OR <text:"baz">))
+foo EXCEPT (bar EXCEPT baz)|(<text:"foo"> EXCEPT (<text:"bar"> EXCEPT <text:"baz">))
+
+# Inequality operators
+foo < 42|<range:foo lt="42">
+foo ≤ 42|<range:foo lte="42">
+foo > 42|<range:foo gt="42">
+foo ≥ 42|<range:foo gte="42">
+foo < 2015/01/01|<range:foo lt="2015/01/01">
+foo ≤ 2015/01/01|<range:foo lte="2015/01/01">
+foo > 2015/01/01|<range:foo gt="2015/01/01">
+foo ≥ 2015/01/01|<range:foo gte="2015/01/01">
+foo < "2015/01/01"|<range:foo lt="2015/01/01">
+foo ≤ "2015/01/01"|<range:foo lte="2015/01/01">
+foo > "2015/01/01"|<range:foo gt="2015/01/01">
+foo ≥ "2015/01/01"|<range:foo gte="2015/01/01">
+
+# Field narrowing
+foo IN bar|(<text:"foo"> IN <field:bar>)
+foo bar IN baz|(<text:"foo bar"> IN <field:baz>)
+foo IN bar baz|<text:"foo IN bar baz">
+fooINbar|<text:"fooINbar">
+
+# Matchers
+collection:foo|<collection:foo>
+collection:foo AND bar|(<collection:foo> AND <text:"bar">)
+collection:foo bar|<text:"collection:foo bar">
+
+# Search terms with embedded keywords
+INA|<text:"INA">
+INA OREO|<text:"INA OREO">
+ARGENT OR (MÉTAUX PRECIEUX)|(<text:"ARGENT"> OR <text:"MÉTAUX PRECIEUX">)
+# ARGENT OR (MÉTAUX PRECIEUX)|<text:"ARGENT OR" context:"MÉTAUX PRECIEUX">
+# ARGENT OR (MÉTAUX PRECIEUX)|(<text:"ARGENT"> AND <text:"OR" context:"MÉTAUX PRECIEUX">)

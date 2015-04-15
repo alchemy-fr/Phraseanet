@@ -11,7 +11,13 @@ class NodeTypes
     const AND_EXPR            = '#and';
     const OR_EXPR             = '#or';
     const EXCEPT_EXPR         = '#except';
+    const LT_EXPR             = '#less_than';
+    const GT_EXPR             = '#greater_than';
+    const LTE_EXPR            = '#less_than_or_equal_to';
+    const GTE_EXPR            = '#greater_than_or_equal_to';
+    const EQUAL_EXPR          = '#equal_to';
     const FIELD               = '#field';
+    const VALUE               = '#value';
     const TERM                = '#thesaurus_term';
     const TEXT                = '#text';
     const CONTEXT             = '#context';

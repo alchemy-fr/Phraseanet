@@ -3,8 +3,10 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
+use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
+use InvalidArgumentException;
 
 class QueryVisitor implements Visit
 {
@@ -56,6 +58,18 @@ class QueryVisitor implements Visit
             case NodeTypes::EXCEPT_EXPR:
                 return $this->visitExceptNode($element);
 
+            case NodeTypes::LT_EXPR:
+            case NodeTypes::GT_EXPR:
+            case NodeTypes::LTE_EXPR:
+            case NodeTypes::GTE_EXPR:
+                return $this->visitRangeNode($element);
+
+            case NodeTypes::EQUAL_EXPR:
+                return $this->visitEqualNode($element);
+
+            case NodeTypes::VALUE:
+                return $this->visitString($element);
+
             case NodeTypes::TERM:
                 return $this->visitTerm($element);
 
@@ -63,7 +77,10 @@ class QueryVisitor implements Visit
                 return $this->visitText($element);
 
             case NodeTypes::CONTEXT:
-                return $this->visitContext($element);
+                return new AST\Context($this->visitString($element));
+
+            case NodeTypes::FIELD:
+                return new AST\Field($this->visitString($element));
 
             case NodeTypes::COLLECTION:
                 return $this->visitCollectionNode($element);
@@ -88,7 +105,7 @@ class QueryVisitor implements Visit
             throw new \Exception('IN expression can only have 2 childs.');
         }
         $expression = $element->getChild(0)->accept($this);
-        $field = new AST\FieldNode($element->getChild(1)->getValue()['value']);
+        $field = $this->visit($element->getChild(1));
         return new AST\InExpression($field, $expression);
     }
 
@@ -113,6 +130,26 @@ class QueryVisitor implements Visit
         });
     }
 
+    private function visitRangeNode(TreeNode $node)
+    {
+        if ($node->getChildrenNumber() !== 2) {
+            throw new \Exception('Comparison operator can only have 2 childs.');
+        }
+        $field = $node->getChild(0)->accept($this);
+        $expression = $node->getChild(1)->accept($this);
+
+        switch ($node->getId()) {
+            case NodeTypes::LT_EXPR:
+                return AST\RangeExpression::lessThan($field, $expression);
+            case NodeTypes::LTE_EXPR:
+                return AST\RangeExpression::lessThanOrEqual($field, $expression);
+            case NodeTypes::GT_EXPR:
+                return AST\RangeExpression::greaterThan($field, $expression);
+            case NodeTypes::GTE_EXPR:
+                return AST\RangeExpression::greaterThanOrEqual($field, $expression);
+        }
+    }
+
     private function handleBinaryOperator(Element $element, \Closure $factory)
     {
         if ($element->getChildrenNumber() !== 2) {
@@ -122,6 +159,18 @@ class QueryVisitor implements Visit
         $right = $element->getChild(1)->accept($this);
 
         return $factory($left, $right);
+    }
+
+    private function visitEqualNode(TreeNode $node)
+    {
+        if ($node->getChildrenNumber() !== 2) {
+            throw new \Exception('Equality operator can only have 2 childs.');
+        }
+
+        return new AST\FieldEqualsExpression(
+            $node->getChild(0)->accept($this),
+            $node->getChild(1)->accept($this)
+        );
     }
 
     private function visitTerm(Element $element)
@@ -143,21 +192,6 @@ class QueryVisitor implements Visit
         }
 
         return new AST\TermNode(implode($words), $context);
-    }
-
-    private function visitContext(Element $element)
-    {
-        $words = array();
-        foreach ($element->getChildren() as $child) {
-            $node = $child->accept($this);
-            if ($node instanceof AST\TextNode) {
-                $words[] = $node->getValue();
-            } else {
-                throw new \Exception('Context node can only contain text nodes');
-            }
-        }
-
-        return new AST\Context(implode($words));
     }
 
     private function visitText(Element $element)
@@ -203,6 +237,20 @@ class QueryVisitor implements Visit
         }
 
         return $root;
+    }
+
+    private function visitString(TreeNode $node)
+    {
+        $tokens = array();
+        foreach ($node->getChildren() as $child) {
+            $value = $child->getValue();
+            if ($value === null || !isset($value['value'])) {
+                throw new InvalidArgumentException(sprintf('A token node was expected, got "%s".', $child->getId()));
+            }
+            $tokens[] = $value['value'];
+        }
+
+        return implode($tokens);
     }
 
     private function visitCollectionNode(Element $element)

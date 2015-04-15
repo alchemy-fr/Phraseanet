@@ -9,7 +9,7 @@ class InExpression extends Node
     protected $field;
     protected $expression;
 
-    public function __construct(FieldNode $field, $expression)
+    public function __construct(Field $field, $expression)
     {
         $this->field = $field;
         $this->expression = $expression;
