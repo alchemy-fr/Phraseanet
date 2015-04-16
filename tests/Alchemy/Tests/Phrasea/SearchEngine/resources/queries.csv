@@ -9,6 +9,15 @@ foo bar (baz qux)|<text:"foo bar" context:"baz qux">
 [foo (bar)]|<term:"foo" context:"bar">
 [foo bar (baz qux)]|<term:"foo bar" context:"baz qux">
 
+# Raw string
+r"foo"|<raw:"foo">
+r"foo bar"|<raw:"foo bar">
+r"\"foo\""|<raw:""foo"">
+r"\o/"|<raw:"\o/">
+r"\\o/"|<raw:"\o/">
+r"foo \n bar"|<raw:"foo \n bar">
+r"foo\\nbar"|<raw:"foo\nbar">
+
 # Parenthesis grouping
 (foo)|<text:"foo">
 (foo bar)|<text:"foo bar">

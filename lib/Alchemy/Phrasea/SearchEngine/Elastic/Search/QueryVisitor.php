@@ -226,7 +226,7 @@ class QueryVisitor implements Visit
                 continue;
             }
             if ($node instanceof AST\Context) {
-                if ($root instanceof ContextAbleInterface) {
+                if ($root instanceof AST\ContextAbleInterface) {
                     $root = $root->withContext($node);
                 } else {
                     throw new \Exception('Unexpected context after non-contextualizable node');
