@@ -118,6 +118,8 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/api/v1', new V1());
     $app->mount('/permalink/', new Permalink());
     $app->mount('/include/minify/', new Minifier());
+    // mount routes of plugins
+    call_user_func($app['plugins.routes'], 'api');
 
     $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
         $dispatcher->addSubscriber(new ApiOauth2ErrorsSubscriber($app['phraseanet.exception_handler'], $app['translator']));

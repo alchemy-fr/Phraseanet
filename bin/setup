@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Setup\ConfigurationTester;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -47,15 +48,13 @@ $app->register(new DoctrineMigrationServiceProvider());
 $app->command(new \module_console_aboutAuthors('about:authors'));
 $app->command(new \module_console_aboutLicense('about:license'));
 
-if(
-    $app['phraseanet.configuration-tester']->isMigrable()
-    || $app['phraseanet.configuration-tester']->isUpgradable()
-    || $app['phraseanet.configuration-tester']->isInstalled()
-    ) {
+/** @var ConfigurationTester $tester */
+$tester = $app['phraseanet.configuration-tester'];
+if ($tester->isMigrable() || $tester->isUpgradable() || $tester->isInstalled()) {
     $app->command(new \module_console_systemUpgrade('system:upgrade'));
 }
 
-if ($app['phraseanet.configuration-tester']->isInstalled()) {
+if ($tester->isInstalled()) {
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 }
 
@@ -65,4 +64,4 @@ $app->command(new CrossDomainGenerator());
 
 $app['phraseanet.setup_mode'] = true;
 
-exit(is_int($app->run()) ? : 1);
+exit(is_int($app->run()) ?: 1);

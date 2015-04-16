@@ -11,20 +11,22 @@
 
 namespace Alchemy\Phrasea;
 
-use Alchemy\Phrasea\Command\CommandInterface;
+use Alchemy\Phrasea\Command\Command as ContainerAwareCommand;
+use Alchemy\Phrasea\Console\Application as CLIApplication;
 use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\PhraseaCLIExceptionHandler;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Shell;
 use Symfony\Component\Debug\ErrorHandler;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Phraseanet Command Line Application
@@ -49,12 +51,14 @@ class CLI extends Application
 
         $this['session.test'] = true;
 
-        $this['console'] = $this->share(function () use ($name, $version) {
-            return new Console\Application($name, $version);
+        $this['console'] = $this->share(function () use ($app, $name, $version) {
+            $console = new CLIApplication($name, $version);
+            $console->setDispatcher($app['dispatcher']);
+            return $console;
         });
 
         $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
+            $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addListener('phraseanet.notification.sent', function () use ($app) {
                     $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
                 });
@@ -90,7 +94,7 @@ class CLI extends Application
 
         $app = $this['console'];
         if ($interactive) {
-            $app = new Console\Shell($app);
+            $app = new Shell($app);
         }
 
         $app->run();
@@ -117,11 +121,13 @@ class CLI extends Application
      *
      * If a command with the same name already exists, it will be overridden.
      *
-     * @param CommandInterface $command A Command object
+     * @param Command $command A Command object
      */
-    public function command(CommandInterface $command)
+    public function command(Command $command)
     {
-        $command->setContainer($this);
+        if ($command instanceof ContainerAwareCommand) {
+            $command->setContainer($this);
+        }
         $this['console']->add($command);
     }
 }

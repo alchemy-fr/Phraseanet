@@ -14,11 +14,11 @@ namespace Alchemy\Phrasea\Command;
 use Alchemy\Phrasea\Application;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Symfony\Component\Console\Command\Command as SymfoCommand;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class Command extends SymfoCommand implements CommandInterface
+abstract class Command extends SymfonyCommand
 {
     /**
      * @var Application
@@ -32,7 +32,6 @@ abstract class Command extends SymfoCommand implements CommandInterface
     {
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_QUIET) {
             switch ($output->getVerbosity()) {
-                default:
                 case OutputInterface::VERBOSITY_NORMAL:
                     $level = Logger::WARNING;
                     break;
@@ -45,18 +44,20 @@ abstract class Command extends SymfoCommand implements CommandInterface
                 case OutputInterface::VERBOSITY_DEBUG:
                     $level = Logger::DEBUG;
                     break;
+                default:
+                    $level = Logger::WARNING;
             }
             $handler = new StreamHandler('php://stdout', $level);
 
             $this->container['monolog'] = $this->container->share(
-                $this->container->extend('monolog', function ($logger) use ($handler) {
+                $this->container->extend('monolog', function (Logger $logger) use ($handler) {
                     $logger->pushHandler($handler);
 
                     return $logger;
                 })
             );
             $this->container['task-manager.logger'] = $this->container->share(
-                $this->container->extend('task-manager.logger', function ($logger) use ($handler) {
+                $this->container->extend('task-manager.logger', function (Logger $logger) use ($handler) {
                     $logger->pushHandler($handler);
 
                     return $logger;
@@ -103,7 +104,7 @@ abstract class Command extends SymfoCommand implements CommandInterface
      *
      * @see self::getContainer()
      *
-     * @return ServiceProvider
+     * @return object
      */
     public function getService($name)
     {
@@ -113,7 +114,7 @@ abstract class Command extends SymfoCommand implements CommandInterface
     /**
      * Format a duration in seconds to human readable
      *
-     * @param  type   $seconds the time to format
+     * @param  int   $seconds the time to format
      * @return string
      */
     public function getFormattedDuration($seconds)
@@ -129,13 +130,5 @@ abstract class Command extends SymfoCommand implements CommandInterface
         }
 
         return $duration;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function create()
-    {
-        return new static();
     }
 }
