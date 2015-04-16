@@ -1975,6 +1975,47 @@ class V1Controller extends Controller
             $story->set_original_name((string) $data->{'title'});
         }
 
+        // set metadata for the story
+        $metadatas = array();
+        $thumbtitle_set = false;
+        /** @var \databox_field $field */
+        foreach ($collection->get_databox()->get_meta_structure() as $field) {
+            // the title goes into the first 'thumbtitle' field
+            if (isset($data->{'title'}) && !$thumbtitle_set && $field->get_thumbtitle()) {
+                $metadatas[] = array(
+                    'meta_struct_id' => $field->get_id(),
+                    'meta_id' => null,
+                    'value' => $data->{'title'}
+                );
+                $thumbtitle_set = true;
+            }
+            // if the field is set into data->metadatas, set it
+            $meta = null;
+            // the meta form json can be keyed by id or name
+            if(isset($data->{'metadatas'}->{$field->get_id()})) {
+                $meta = $data->{'metadatas'}->{$field->get_id()};
+            }
+            elseif(isset($data->{'metadatas'}->{$field->get_name()})) {
+                $meta = $data->{'metadatas'}->{$field->get_name()};
+            }
+            if($meta !== null) {
+                if(!is_array($meta)) {
+                    $meta = array($meta);
+                }
+                foreach($meta as $value) {
+                    $metadatas[] = array(
+                        'meta_struct_id' => $field->get_id(),
+                        'meta_id' => null,
+                        'value' => $value
+                    );
+                }
+            }
+        }
+
+        if(count($metadatas) > 0) {
+            $story->set_metadatas($metadatas);
+        }
+
         if (isset($data->{'story_records'})) {
             $recordsData = (array) $data->{'story_records'};
             foreach ($recordsData as $data) {
