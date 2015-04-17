@@ -789,7 +789,7 @@ define nginx_vhost (
     'include'                 => 'fastcgi_params'
   }, $fastcgi_pass_hash)
 
-  nginx::resource::location { "${server_name}-php":
+  nginx::resource::location { "${server_name}-index":
     ensure              => present,
     location            => '@rewriteapp',
     vhost               => $server_name,
@@ -799,17 +799,17 @@ define nginx_vhost (
     }
   }
 
-  nginx::resource::location { "${server_name}-php1":
+  nginx::resource::location { "${server_name}-api":
     ensure              => present,
     location            => '/api',
     vhost               => $server_name,
     www_root            => $www_root,
     location_cfg_append => {
-      rewrite           => '^(.*)$ /index.php/$1 last'
+      rewrite           => '^(.*)$ /api.php/$1 last'
     }
   }
 
-  nginx::resource::location { "${server_name}-php2":
+  nginx::resource::location { "${server_name}-php":
     ensure              => present,
     location            => '~ ^/(index|index_dev|api)\.php(/|$)',
     vhost               => $server_name,
