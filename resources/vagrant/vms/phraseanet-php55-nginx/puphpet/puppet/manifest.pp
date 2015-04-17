@@ -805,7 +805,7 @@ define nginx_vhost (
     vhost               => $server_name,
     www_root            => $www_root,
     location_cfg_append => {
-      rewrite           => '^(.*)$ /index.php/$1 last'
+      rewrite           => '^(.*)$ /api.php/$1 last'
     }
   }
 
