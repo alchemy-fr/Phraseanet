@@ -118,7 +118,7 @@
           </a>
         </li>
     {% endif %}
-        <li>
+        <li class="user">
           {% if app['authentication'].isAuthenticated() %}
             {% if app['authentication'].getUser().isGuest %}
               <span>
