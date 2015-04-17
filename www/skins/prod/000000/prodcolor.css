@@ -772,11 +772,11 @@ span.ww_winTitle {
 
 #searchForm .input-append {
     float: left;
-    width: 70%;
+    width: 50%;
 }
 
 #searchForm .control-group {
-    float: left;
+    float: right;
     margin-left: 0;
 }
 
@@ -786,12 +786,12 @@ span.ww_winTitle {
 
 #searchForm .input-append a.btn {
     height: 22px;
-    width: 5%;
+    width: 20px;
 }
 
 #searchForm .input-append button.btn {
     height: 30px;
-    width: 15%;
+    width: 110px;
     border-left: 1px solid #242424;
 }
 
@@ -1436,7 +1436,7 @@ form.phrasea_query input.query {
     padding-left: 30px;
     font-size: 16px;
     margin: 0;
-    width: 70%;
+    width: 59%;
 }
 
 #basket-rename-box .btn, #reorder_box .btn {
@@ -3229,7 +3229,7 @@ DIV.thesaurus U.w {
 
 #mainMenu .PNB.right li.user {
     background: url('/skins/icons/icon_user.png') 15px 7px no-repeat;
-    padding-left: 45px;
+    padding-left: 41px;
 }
 
 #mainMenu, .publi_group {
