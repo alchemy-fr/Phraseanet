@@ -3036,11 +3036,11 @@ $(document).ready(function () {
     });
 
     $('.treeview>li.expandable>.hitarea').on('click', function(){
-        if($(this).css('background-position') == '95% 22px'){
-            $(this).css('background-position', '95% -28px');
+        if($(this).css('background-position') == '99% 22px'){
+            $(this).css('background-position', '99% -28px');
             $(this).addClass('active');
         }else{
-            $(this).css('background-position', '95% 22px');
+            $(this).css('background-position', '99% 22px');
             $(this).removeClass('active');
         }
     });

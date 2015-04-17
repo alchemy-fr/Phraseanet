@@ -406,7 +406,7 @@ span.ww_winTitle {
 
 .treeview>li.expandable>.hitarea {
     height: 51px;
-    background: url('/skins/icons/sprite_tree_first.png') 95% 22px no-repeat;
+    background: url('/skins/icons/sprite_tree_first.png') 99% 22px no-repeat;
     border-left: 5px #3b3b3b solid;
 }
 
@@ -446,6 +446,10 @@ span.ww_winTitle {
 
 .treeview ul li span {
     color: #a6a6a6;
+}
+
+#THPD_T_treeBox {
+    font-size: 0.85em;
 }
 
 #THPD_T_treeBox {
@@ -3232,6 +3236,11 @@ DIV.thesaurus U.w {
     padding-left: 41px;
 }
 
+#mainMenu .PNB.right li.user:hover {
+    background-color: #FFF;
+    color: black;
+}
+
 #mainMenu, .publi_group {
     background-color: #3b3b3b;
 }
@@ -4906,4 +4915,10 @@ ui-dialog-titlebar {
 #paginate #tool_navigate a:hover {
     color: #fff;
     background: #076882;
+}
+
+@media screen and (max-width: 1200px) {
+  #idFrameT .tools .classicButton button.btn-inverse {
+    background: #ccc;
+  }
 }
