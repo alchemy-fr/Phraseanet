@@ -242,6 +242,7 @@ span.ww_winTitle {
 #idFrameC .wrapper {
     background-color: #3b3b3b;
     right: 10px;
+    border-top: 1px solid #000;
 }
 
 .ui-tabs {
