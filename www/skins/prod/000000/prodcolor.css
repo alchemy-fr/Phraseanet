@@ -4918,7 +4918,14 @@ ui-dialog-titlebar {
 }
 
 @media screen and (max-width: 1200px) {
-  #idFrameT .tools .classicButton button.btn-inverse {
-    background: #ccc;
+  #idFrameT .tools button.btn-inverse img {
+    display: none;
+  }
+  #idFrameT .tools #settings {
+    text-indent: -9000px;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: 8px;
+    width: 26px;
   }
 }
