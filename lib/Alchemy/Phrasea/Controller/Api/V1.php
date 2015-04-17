@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Silex\Application as SilexApplication;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -490,6 +491,10 @@ class V1 implements ControllerProviderInterface
          */
         $controllers->post('/stories', function (SilexApplication $app, Request $request) {
             return $app['api']->add_story($app, $request)->get_response();
+        })->before(function(Request $request, SilexApplication $app) {
+            if($request->getContentType() != 'json') {
+                $app->abort(406, 'Invalid Content Type given.');
+            }
         });
 
         /**
