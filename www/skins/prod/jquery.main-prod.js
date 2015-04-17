@@ -3020,8 +3020,19 @@ function set_up_feed_box(data) {
 
 //clear search
 $(document).ready(function () {
+
+    $('#thesaurus_tab .input-medium').on('keyup', function(){
+        if($('#thesaurus_tab .input-medium').val() != ''){
+            $('#thesaurus_tab .th_clear').show();
+        }else{
+            $('#thesaurus_tab .th_clear').hide();
+        }
+    });
+
     $('.th_clear').on('click', function(){
         $('#thesaurus_tab .input-medium').val('');
+        $('#thesaurus_tab .gform').submit();
+        $('#thesaurus_tab .th_clear').hide();
     });
 
     $('.treeview>li.expandable>.hitarea').on('click', function(){

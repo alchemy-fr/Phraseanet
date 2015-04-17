@@ -377,7 +377,7 @@ span.ww_winTitle {
     z-index: 1000;
     float: right;
     margin: -50px 15% 0 0;
-    display: block !important;
+    display: none;
     width: 30px;
     line-height: 50px;
     padding: 0;
