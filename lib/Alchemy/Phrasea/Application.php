@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Admin\TaskManager;
 use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
