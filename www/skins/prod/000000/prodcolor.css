@@ -2176,9 +2176,11 @@ H4 {
 }
 
 #proposals UL.fancytree-container UL {
-    padding: 20px 0;
-    overflow: hidden;
-    width: 101%;
+  padding: 20px 0;
+  overflow: auto;
+  width: 101%;
+  max-height: 400px;
+  overflow-x: hidden;
 }
 
 #proposals UL.fancytree-container UL li {
@@ -3305,6 +3307,10 @@ DIV.thesaurus U.w {
 #PREVIEWBOX a.bounce {
     BORDER-BOTTOM: #ffe000 1px dashed;
     cursor: pointer;
+}
+
+#PREVIEWBOX #PREVIEWTITLE_COLLNAME {
+    display:none;
 }
 
 .PREVIEW_PIC,.PREVIEW_HD {
