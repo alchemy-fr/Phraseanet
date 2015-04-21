@@ -569,7 +569,12 @@ function getFacetsTree() {
                     var s_label = document.createElement("SPAN");
                     s_label.setAttribute("class", "facetFilter-label");
                     s_label.setAttribute("title", facetFilter);
-                    s_label.appendChild(document.createTextNode(facetFilter));
+
+                    var length = 15;
+                    var facetFilterString = facetFilter;
+                    var facetFilterTruncatedString = facetFilterString.substring(0,length);
+
+                    s_label.appendChild(document.createTextNode(facetFilterTruncatedString));
 
                     var s_closer = document.createElement("A");
                     s_closer.setAttribute("class", "facetFilter-closer");

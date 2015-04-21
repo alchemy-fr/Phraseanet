@@ -2217,6 +2217,10 @@ H4 {
     font-size: 65%;
 }
 
+#proposals UL.fancytree-container UL li{
+      white-space: pre-line !important;
+}
+
 #proposals .fancytree-folder .fancytree-expander:before {
     content: '\25C0';     /* U+25C0 BLACK LEFT-POINTING TRIANGLE */
     color: #a0a0a0;
@@ -2241,7 +2245,7 @@ H4 {
 #proposals .facetFilter {
     font-weight: normal;
     position:absolute;
-    width:100px;
+    width:122px;
     height:25px;
     line-height: 25px;
     vertical-align: middle;
