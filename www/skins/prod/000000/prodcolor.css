@@ -2194,8 +2194,8 @@ H4 {
 
 #proposals .fancytree-folder {
     font-weight: bold;
-    height: 30px;
-    padding-top: 13px;    
+    height: 49px;
+    line-height: 49px;  
     margin-left: 0;
     border-left: 4px solid #3b3b3b;
     border-bottom: 1px solid #303030;
@@ -2268,7 +2268,7 @@ H4 {
     background-color: #4c5d84;
     padding-left: 13px;
     padding-right: 13px;
-    margin-top: -4px;
+    margin-top: 11px;
 }
 
 #proposals .facetFilter-label {
