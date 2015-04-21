@@ -2182,6 +2182,13 @@ class API_V1_adapter extends API_V1_Abstract
         );
     }
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return API_V1_result
+     *
+     * called by the route [POST] /stories/add/
+     */
     public function add_story(Application $app, Request $request)
     {
         $content = $request->getContent();
@@ -2197,7 +2204,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $schemaStory = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story.json');
-        $schemaRecordStory = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+        $schemaStoryRecord = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
 
         $storyData = $data->{'stories'};
 
@@ -2207,7 +2214,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $stories = array();
         foreach ($storyData as $data) {
-            $stories[] = $this->create_story($app, $data, $schemaStory, $schemaRecordStory);
+            $stories[] = $this->_create_story($app, $data, $schemaStory, $schemaStoryRecord);
         }
 
         $result = new API_V1_result($app, $request, $this);
@@ -2219,6 +2226,15 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param $databox_id
+     * @param $story_id
+     * @return API_V1_result
+     *
+     * called by the route [POST] /stories/{databox_id}/{story_id}/records
+     */
     public function add_records_to_story(Application $app, Request $request, $databox_id, $story_id)
     {
         $content = $request->getContent();
@@ -2233,22 +2249,12 @@ class API_V1_adapter extends API_V1_Abstract
             $app->abort(400, 'Missing "story_records" property');
         }
 
+        $schemaStoryRecord = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+
         $recordsData = $data->{'story_records'};
-
-        if (!is_array($recordsData)) {
-            $recordsData = array($recordsData);
-        }
-
         $story = new \record_adapter($app, $databox_id, $story_id);
 
-        $schema = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
-
-        $records = array();
-        foreach ($recordsData as $data) {
-            $records[] = $this->add_record_to_story($app, $story, $data, $schema);
-        }
-
-        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $records = $this->_add_records_to_story($app, $story, $recordsData, $schemaStoryRecord);
 
         $result = new API_V1_result($this->app, $request, $this);
 
@@ -2257,7 +2263,47 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    protected function create_story(Application $app, $data, $schemaStory, $schemaRecordStory)
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param $databox_id
+     * @param $story_id
+     * @return API_V1_result
+     *
+     * called by route [POST] /stories/{databox_id}/{story_id}/cover
+     */
+    public function set_story_cover(Application $app, Request $request, $databox_id, $story_id)
+    {
+        $content = $request->getContent();
+
+        $data = @json_decode($content);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
+        }
+
+        $schemaStoryCover = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_cover.json');
+
+        $app['json-schema.validator']->check($data, $schemaStoryCover);
+        if (false === $app['json-schema.validator']->isValid()) {
+            $app->abort(400, 'Request body contains not a valid "story cover" object');
+        }
+
+        $story = new \record_adapter($app, $databox_id, $story_id);
+
+        // we do NOT let "_set_story_cover()" fail : pass false as last arg
+        $record_key = $this->_set_story_cover($app, $story, $data->{'databox_id'}, $data->{'record_id'}, false);
+
+        $result = new API_V1_result($this->app, $request, $this);
+
+        $result->set_datas(array($record_key));
+
+        return $result;
+    }
+
+
+    protected function _create_story(Application $app, $data, $schemaStory, $schemaStoryRecord)
     {
         $app['json-schema.validator']->check($data, $schemaStory);
 
@@ -2318,18 +2364,38 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         if (isset($data->{'story_records'})) {
-            $recordsData = (array) $data->{'story_records'};
-            foreach ($recordsData as $data) {
-                $this->add_record_to_story($app, $story, $data, $schemaRecordStory);
-            }
+            $recordsData = $data->{'story_records'};
+            $this->_add_records_to_story($app, $story, $recordsData, $schemaStoryRecord);
         }
 
         return $story;
     }
 
-    protected function add_record_to_story(Application $app, record_adapter $story, $data, $jsonSchema)
+
+    protected function _add_records_to_story(Application $app, \record_adapter $story, $recordsData, $schemaStoryRecord)
     {
-        $app['json-schema.validator']->check($data, $jsonSchema);
+        if (!is_array($recordsData)) {
+            $recordsData = array($recordsData);
+        }
+
+        $cover_set = false;
+        $records = array();
+        foreach ($recordsData as $data) {
+            $records[] = $this->_add_record_to_story($app, $story, $data, $schemaStoryRecord);
+            if(!$cover_set && $data->{'use_as_cover'} === true) {
+                // because we can try many records as cover source, we let it fail
+                $cover_set = ($this->_set_story_cover($app, $story, $data->{'databox_id'}, $data->{'record_id'}, true) !== false);
+            }
+        }
+
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        return $records;
+    }
+
+    protected function _add_record_to_story(Application $app, record_adapter $story, $data, $schemaStoryRecord)
+    {
+        $app['json-schema.validator']->check($data, $schemaStoryRecord);
 
         if (false === $app['json-schema.validator']->isValid()) {
             $app->abort(400, 'Request body contains not a valid "record story" object');
@@ -2347,6 +2413,45 @@ class API_V1_adapter extends API_V1_Abstract
         if (!$story->hasChild($record)) {
             $story->appendChild($record);
         }
+
+        return $record->get_serialize_key();
+    }
+
+    protected function _set_story_cover(Application $app, \record_adapter $story, $databox_id, $record_id, $can_fail=false)
+    {
+        try {
+            $record = new \record_adapter($app, $databox_id, $record_id);
+        } catch (Exception_Record_AdapterNotFound $e) {
+            $app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
+        }
+
+        if (!$story->hasChild($record)) {
+            $app->abort(404, sprintf('Record identified by databox_is %s and record_id %s is not in the story', $databox_id, $record_id));
+        }
+
+        if ($record->get_type() !== 'image') {
+            // this can fail so we can loop on many records during story creation...
+            if($can_fail) {
+                return false;
+            }
+            $app->abort(403, sprintf('Record identified by databox_is %s and record_id %s is not an image', $databox_id, $record_id));
+        }
+
+        foreach ($record->get_subdefs() as $name => $value) {
+            if (!in_array($name, array('thumbnail', 'preview'))) {
+                continue;
+            }
+            $media = $app['mediavorus']->guess($value->get_pathfile());
+            $story->substitute_subdef($name, $media, $app);
+            $app['phraseanet.logger']($story->get_databox())->log(
+                $story,
+                \Session_Logger::EVENT_SUBSTITUTE,
+                $name == 'document' ? 'HD' : $name,
+                ''
+            );
+        }
+
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
         return $record->get_serialize_key();
     }
