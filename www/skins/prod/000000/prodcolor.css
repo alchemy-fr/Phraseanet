@@ -4912,6 +4912,7 @@ ui-dialog-titlebar {
 #paginate {
     float: right;
     margin: 0 65px 15px 0;
+    min-height: 52px;
 }
 
 #paginate #tool_navigate {
