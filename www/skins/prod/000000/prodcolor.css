@@ -1196,7 +1196,7 @@ div.diapo {
     left: 0pt;
     right: 1px;
     bottom: 0px;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
@@ -2149,6 +2149,20 @@ H4 {
 
 /******* PROPOSALS ************************************************************/
 
+#proposals {
+    border-top: 1px solid #303030;
+    top: 87px !important;
+}
+
+#proposals ul li {
+    line-height: 17px;
+    font-size: 13px;
+}
+
+#proposals ul ul {
+    background-color: #292929;
+}
+
 #proposals *:focus{
     outline: none;
 }
@@ -2157,21 +2171,47 @@ H4 {
     background-color:  #3b3b3b;
     border: 0px none transparent;
     overflow-x: hidden;
+    padding-left: 0;
+    padding-top: 0;
 }
 
 #proposals UL.fancytree-container UL {
-    padding: 0;
-    padding-left: 6px;
-    margin-right: 30px;
-    overflow: hidden;
+  padding: 17px 0;
+  overflow: auto;
+  width: 101%;
+  max-height: 400px;
+  overflow-x: hidden;
+}
+
+#proposals UL.fancytree-container UL li {
+    padding-left: 30px;
+    line-height: 25px;
+}
+
+#proposals UL.fancytree-container UL li:hover {
+    background-color: #4c5d84;
 }
 
 #proposals .fancytree-folder {
     font-weight: bold;
-    height: 30px;
-    padding-top: 7px;
-    border-left: 4px solid #4c5d84;
+    height: 49px;
+    line-height: 49px;  
     margin-left: 0;
+    border-left: 4px solid #3b3b3b;
+    border-bottom: 1px solid #303030;
+}
+
+#proposals .fancytree-folder:hover {
+    border-left: 4px solid #4c5d84;
+    color: #fff;
+}
+
+#proposals .fancytree-folder:hover .fancytree-title {
+    color: #fff;
+}
+
+#proposals .fancytree-folder .fancytree-title {
+    font-size: 13px;
 }
 
 #proposals .fancytree-expander {
@@ -2184,6 +2224,10 @@ H4 {
     height: auto;
     font-weight: normal;
     font-size: 65%;
+}
+
+#proposals UL.fancytree-container UL li{
+      white-space: pre-line !important;
 }
 
 #proposals .fancytree-folder .fancytree-expander:before {
@@ -2202,27 +2246,34 @@ H4 {
 }
 
 #proposals .fancytree-title {
-    color: #FFFFFF;
+    font-size: 12px;
+    color: #A6A6A6;
     background-color: transparent;
     border: 0px none transparent;
+}
+
+#proposals UL.fancytree-container UL li:hover .fancytree-title {
+    color: #fff;
 }
 
 #proposals .facetFilter {
     font-weight: normal;
     position:absolute;
-    width:100px;
-    height:22px;
+    width:122px;
+    height:25px;
+    line-height: 25px;
+    vertical-align: middle;
     border-radius: 4px;
-    right:30px;
-    background-color: #606060;
-    padding-top: 3px;
-    padding-left: 4px;
-    padding-right: 4px;
+    right:28px;
+    background-color: #4c5d84;
+    padding-left: 13px;
+    padding-right: 13px;
+    margin-top: 11px;
 }
 
 #proposals .facetFilter-label {
     position:absolute;
-    left:4px;
+    left:13px;
     right: 14px;
     overflow:hidden;
     cursor: default;
@@ -2232,17 +2283,18 @@ H4 {
     position:absolute;
     width:20px;
     right: 0px;
-    background-image: linear-gradient(to right, transparent, #606060);
 }
 
 #proposals .facetFilter-closer {
     position:absolute;
-    right:5px;
+    right:13px;
     cursor: pointer;
 }
 
-#proposals .facetFilter-closer:before {
-    content: 'x';
+#proposals .facetFilter-closer {
+    background: url('../../icons/bgd_facetFilter.png') 0 5px no-repeat;
+    height: 25px;
+    width: 14px;
 }
 
 /******* /PROPOSALS ************************************************************/
@@ -3275,6 +3327,10 @@ DIV.thesaurus U.w {
     cursor: pointer;
 }
 
+#PREVIEWBOX #PREVIEWTITLE_COLLNAME {
+    display:none;
+}
+
 .PREVIEW_PIC,.PREVIEW_HD {
     position: absolute;
 }
@@ -3385,6 +3441,24 @@ DIV.thesaurus U.w {
     overflow-x: auto;
     overflow-y: hidden;
 }
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar-track
+{
+    border-radius: 0;
+    background-color: #262626;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar {
+    height: 5px;
+    border-radius: 0;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    width: 3px;
+    background-color: #595959;
+}
+
 
 #PREVIEWCURRENTCONT ul {
     position: relative;
@@ -4838,6 +4912,7 @@ ui-dialog-titlebar {
 #paginate {
     float: right;
     margin: 0 65px 15px 0;
+    min-height: 52px;
 }
 
 #paginate #tool_navigate {
