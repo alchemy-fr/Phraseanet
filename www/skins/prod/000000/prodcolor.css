@@ -2176,7 +2176,7 @@ H4 {
 }
 
 #proposals UL.fancytree-container UL {
-  padding: 20px 0;
+  padding: 17px 0;
   overflow: auto;
   width: 101%;
   max-height: 400px;
@@ -2203,6 +2203,15 @@ H4 {
 
 #proposals .fancytree-folder:hover {
     border-left: 4px solid #4c5d84;
+    color: #fff;
+}
+
+#proposals .fancytree-folder:hover .fancytree-title {
+    color: #fff;
+}
+
+#proposals .fancytree-folder .fancytree-title {
+    font-size: 13px;
 }
 
 #proposals .fancytree-expander {
@@ -2237,9 +2246,14 @@ H4 {
 }
 
 #proposals .fancytree-title {
-    color: #FFFFFF;
+    font-size: 12px;
+    color: #A6A6A6;
     background-color: transparent;
     border: 0px none transparent;
+}
+
+#proposals UL.fancytree-container UL li:hover .fancytree-title {
+    color: #fff;
 }
 
 #proposals .facetFilter {
