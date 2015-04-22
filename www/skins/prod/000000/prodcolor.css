@@ -2211,7 +2211,8 @@ H4 {
 }
 
 #proposals .fancytree-folder .fancytree-title {
-    font-size: 13px;
+    font-size: 12px;
+    margin-left: 10px;
 }
 
 #proposals .fancytree-expander {
@@ -2259,7 +2260,7 @@ H4 {
 #proposals .facetFilter {
     font-weight: normal;
     position:absolute;
-    width:122px;
+    width:127px;
     height:25px;
     line-height: 25px;
     vertical-align: middle;
@@ -4913,6 +4914,10 @@ ui-dialog-titlebar {
     float: right;
     margin: 0 65px 15px 0;
     min-height: 52px;
+}
+
+#idFrameT #answers:hover #paginate {
+    margin-right: 59px;
 }
 
 #paginate #tool_navigate {

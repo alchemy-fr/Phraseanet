@@ -574,7 +574,7 @@ function getFacetsTree() {
                     var facetFilterString = facetFilter;
                     var facetFilterTruncatedString = facetFilterString.substring(0,length);
 
-                    s_label.appendChild(document.createTextNode(facetFilterTruncatedString));
+                    s_label.appendChild(document.createTextNode(facetFilterTruncatedString + "…"));
 
                     var s_closer = document.createElement("A");
                     s_closer.setAttribute("class", "facetFilter-closer");
