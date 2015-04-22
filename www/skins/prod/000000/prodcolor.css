@@ -4915,6 +4915,10 @@ ui-dialog-titlebar {
     min-height: 52px;
 }
 
+#idFrameT #answers:hover #paginate {
+    margin-right: 59px;
+}
+
 #paginate #tool_navigate {
     background-color: #141414;
     /*border: 1px solid #3b3b3b;*/
