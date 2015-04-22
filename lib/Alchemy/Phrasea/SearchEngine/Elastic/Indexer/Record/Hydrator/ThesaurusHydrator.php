@@ -36,9 +36,9 @@ class ThesaurusHydrator implements HydratorInterface
         // Fields with concept inference enabled
         $structure = $this->helper->getFieldsStructure();
         $fields = array();
-        foreach ($structure as $field => $options) {
+        foreach ($structure as $name => $options) {
             if ($options['thesaurus_concept_inference']) {
-                $fields[$field] = $options['thesaurus_prefix'];
+                $fields[$name] = $options['thesaurus_prefixes'];
             }
         }
         // Hydrate records with concepts
@@ -54,12 +54,13 @@ class ThesaurusHydrator implements HydratorInterface
         }
 
         $terms = array();
-        $fieldMap = array();
-        foreach ($fields as $field => $prefix) {
-            if (isset($record['caption'][$field])) {
-                foreach ($record['caption'][$field] as $value) {
+        $bulkFieldMap = array();
+        foreach ($fields as $name => $prefixes) {
+            if (isset($record['caption'][$name])) {
+                // Loop through all values to prepare bulk query
+                foreach ($record['caption'][$name] as $value) {
                     $terms[] = Term::parse($value);
-                    $fieldMap[] = $field;
+                    $bulkFieldMap[] = $name;
                 }
             }
         }
@@ -70,12 +71,12 @@ class ThesaurusHydrator implements HydratorInterface
 
         foreach ($bulk as $offset => $item_concepts) {
             if ($item_concepts) {
-                $field = $fieldMap[$offset];
+                $name = $bulkFieldMap[$offset];
                 foreach ($item_concepts as $concept) {
-                    $record['concept_path'][$field][] = $concept->getPath();
+                    $record['concept_path'][$name][] = $concept->getPath();
                 }
             } else {
-                $this->candidateTerms->insert($field, $value);
+                $this->candidateTerms->insert($name, $value);
             }
         }
     }

@@ -169,13 +169,14 @@ class RecordHelper
                 $field['to_aggregate'] = (bool) $fieldStructure->isAggregable();
 
                 // Thesaurus concept inference
-                // $xpath = "/thesaurus/te[@id='T26'] | /thesaurus/te[@id='T24']";
-                $helper = new ThesaurusHelper();
-
-                // TODO Not the real option yet
-                $field['thesaurus_concept_inference'] = $field['type'] === Mapping::TYPE_STRING;
-                // TODO Find thesaurus path prefixes
-                $field['thesaurus_prefix'] = '/categories';
+                $xpath = $fieldStructure->get_tbranch();
+                if ($field['type'] === Mapping::TYPE_STRING && $xpath ==! '') {
+                    $field['thesaurus_concept_inference'] = true;
+                    $field['thesaurus_prefixes'] = ThesaurusHelper::findPrefixesByXPath($databox, $xpath);
+                } else {
+                    $field['thesaurus_concept_inference'] = false;
+                    $field['thesaurus_prefixes'] = null;
+                }
 
                 //printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
 

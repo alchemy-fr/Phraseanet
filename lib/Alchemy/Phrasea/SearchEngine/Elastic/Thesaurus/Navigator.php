@@ -45,12 +45,12 @@ class Navigator
         }
     }
 
-    private function isConcept(DOMNode $node)
+    public static function isConcept(DOMNode $node)
     {
         return $node instanceof DOMElement && $node->tagName === self::CONCEPT_TAG_NAME;
     }
 
-    private function isTerm(DOMNode $node)
+    public static function isTerm(DOMNode $node)
     {
         return $node instanceof DOMElement && $node->tagName === self::TERM_TAG_NAME;
     }
