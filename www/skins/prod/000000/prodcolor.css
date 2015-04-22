@@ -2211,7 +2211,8 @@ H4 {
 }
 
 #proposals .fancytree-folder .fancytree-title {
-    font-size: 13px;
+    font-size: 12px;
+    margin-left: 10px;
 }
 
 #proposals .fancytree-expander {
