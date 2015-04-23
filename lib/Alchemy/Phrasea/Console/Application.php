@@ -11,10 +11,7 @@
 namespace Alchemy\Phrasea\Console;
 
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends BaseApplication
 {
@@ -22,6 +19,7 @@ class Application extends BaseApplication
     {
         $inputDefinition = parent::getDefaultInputDefinition();
         $inputDefinition->addOption(new InputOption('--disable-plugins', '', InputOption::VALUE_NONE, 'Disable the use of plugins in case of errors'));
+        $inputDefinition->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'select default environment', 'prod'));
         return $inputDefinition;
     }
 }

@@ -11,6 +11,7 @@
 
 namespace KonsoleKommander;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\BuildSubdefs;
@@ -43,9 +44,12 @@ use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Symfony\Component\Console\Input\ArgvInput;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], getenv('PHRASEANET_ENV') ?: Application::ENV_PROD);
 $version = new Version();
 $cli = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
@@ -63,7 +67,11 @@ $cli = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' KONSOLE KOMMANDER', $version->getName() . ' ' . $version->getNumber());
+            . ' KONSOLE KOMMANDER',
+    $version->getName() . ' ' . $version->getNumber(),
+    $env,
+    $input->hasParameterOption('--disable-plugins') ? ['plugins.enable' => false] : []
+);
 
 if (!$cli['phraseanet.configuration-tester']->isInstalled()) {
     throw new \RuntimeException('Phraseanet is not installed, use setup command instead');

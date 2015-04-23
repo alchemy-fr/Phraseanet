@@ -174,9 +174,9 @@ class Application extends SilexApplication
         return $this->environment;
     }
 
-    public function __construct($environment = self::ENV_PROD)
+    public function __construct($environment = self::ENV_PROD, array $values = [])
     {
-        parent::__construct();
+        parent::__construct($values);
 
         error_reporting(-1);
 

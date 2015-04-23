@@ -11,6 +11,7 @@
 
 namespace KonsoleKommander;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 use Alchemy\Phrasea\Command\Setup\CrossDomainGenerator;
@@ -19,9 +20,12 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Setup\ConfigurationTester;
+use Symfony\Component\Console\Input\ArgvInput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], getenv('PHRASEANET_ENV') ?: Application::ENV_PROD);
 $version = new Version();
 $app = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
@@ -41,7 +45,11 @@ $app = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' SETUP', $version->getName() . ' ' . $version->getNumber());
+            . ' SETUP',
+    $version->getName() . ' ' . $version->getNumber(),
+    $env,
+    $input->hasParameterOption('--disable-plugins') ? ['plugins.enable' => false] : []
+);
 
 $app->register(new DoctrineMigrationServiceProvider());
 

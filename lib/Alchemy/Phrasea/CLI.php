@@ -24,9 +24,12 @@ use Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Shell;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Phraseanet Command Line Application
@@ -41,11 +44,12 @@ class CLI extends Application
      *
      * @param string      $name        Name for this application.
      * @param string|null $version     Version number for this application.
-     * @param string|null $environment The environment.
+     * @param null|string $environment The environment.
+     * @param array       $values      Pimple values initializer
      */
-    public function __construct($name, $version = null, $environment = self::ENV_PROD)
+    public function __construct($name, $version = null, $environment = self::ENV_PROD, array $values = [])
     {
-        parent::__construct($environment);
+        parent::__construct($environment, $values);
 
         $app = $this;
 
@@ -86,34 +90,37 @@ class CLI extends Application
     /**
      * Executes this application.
      *
-     * @param bool $interactive runs in an interactive shell if true.
+     * @param bool            $interactive runs in an interactive shell if true.
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \Exception
      */
-    public function runCLI($interactive = false)
+    public function runCLI($interactive = false, InputInterface $input = null, OutputInterface $output = null)
     {
         $this->boot();
 
+        /** @var CLIApplication $app */
         $app = $this['console'];
         if ($interactive) {
             $app = new Shell($app);
+
+            // Shell does not returns exit code nor take Input/Output parameters
+            $app->run();
+
+            return 0;
         }
 
-        $app->run();
+        return $app->run($input, $output);
     }
 
-    public function boot()
-    {
-        parent::boot();
-
-        $this['console']->setDispatcher($this['dispatcher']);
-    }
-
-    public function run(\Symfony\Component\HttpFoundation\Request $request = null)
+    public function run(Request $request = null)
     {
         if (null !== $request) {
             throw new RuntimeException('Phraseanet Konsole can not run Http Requests.');
         }
 
-        $this->runCLI();
+        return $this->runCLI();
     }
 
     /**

@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Behat;
@@ -48,9 +49,12 @@ use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Symfony\Component\Console\Input\ArgvInput;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], getenv('PHRASEANET_ENV') ?: Application::ENV_PROD);
 $version = new Version();
 $cli = new CLI("
  ___  ___  _  _  ___  __    __  ___  ___  ___     ____  __    __  __    ___
@@ -62,7 +66,11 @@ $cli = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
+            . ' Phraseanet Developer Tools ',
+    $version->getName() . ' ' . $version->getNumber(),
+    $env,
+    $input->hasParameterOption('--disable-plugins') ? ['plugins.enable' => false] : []
+);
 
 if ($cli['configuration.store']->isSetup()) {
     $helpers = [
