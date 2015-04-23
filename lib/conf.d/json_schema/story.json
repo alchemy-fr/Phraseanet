@@ -16,10 +16,10 @@
       "description": "The databox identifier where the record is localized",
       "type": "integer"
     },
-    "collection_id": {
-      "description": "The collection identifier where the record is localized",
+    "base_id": {
+      "description": "The base identifier where the record is localized",
       "type": "integer"
     }
   },
-  "required": ["collection_id"]
+  "required": ["base_id"]
 }

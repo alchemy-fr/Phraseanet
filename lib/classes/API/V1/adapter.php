@@ -2233,7 +2233,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param $story_id
      * @return API_V1_result
      *
-     * called by the route [POST] /stories/{databox_id}/{story_id}/records
+     * called by the route [POST] /stories/{databox_id}/{story_id}/addrecords
      */
     public function add_records_to_story(Application $app, Request $request, $databox_id, $story_id)
     {
@@ -2271,7 +2271,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param $story_id
      * @return API_V1_result
      *
-     * called by route [POST] /stories/{databox_id}/{story_id}/cover
+     * called by route [POST] /stories/{databox_id}/{story_id}/setcover
      */
     public function set_story_cover(Application $app, Request $request, $databox_id, $story_id)
     {
@@ -2293,7 +2293,7 @@ class API_V1_adapter extends API_V1_Abstract
         $story = new \record_adapter($app, $databox_id, $story_id);
 
         // we do NOT let "_set_story_cover()" fail : pass false as last arg
-        $record_key = $this->_set_story_cover($app, $story, $data->{'databox_id'}, $data->{'record_id'}, false);
+        $record_key = $this->_set_story_cover($app, $story, $data->{'record_id'}, false);
 
         $result = new API_V1_result($this->app, $request, $this);
 
@@ -2311,7 +2311,7 @@ class API_V1_adapter extends API_V1_Abstract
             $app->abort(400, 'Request body does not contains a valid "story" object');
         }
 
-        $collection = \collection::get_from_base_id($app, $data->{'collection_id'});
+        $collection = \collection::get_from_base_id($app, $data->{'base_id'});
 
         if (!$app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
             $app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
@@ -2384,7 +2384,7 @@ class API_V1_adapter extends API_V1_Abstract
             $records[] = $this->_add_record_to_story($app, $story, $data, $schemaStoryRecord);
             if(!$cover_set && $data->{'use_as_cover'} === true) {
                 // because we can try many records as cover source, we let it fail
-                $cover_set = ($this->_set_story_cover($app, $story, $data->{'databox_id'}, $data->{'record_id'}, true) !== false);
+                $cover_set = ($this->_set_story_cover($app, $story, $data->{'record_id'}, true) !== false);
             }
         }
 
@@ -2417,16 +2417,16 @@ class API_V1_adapter extends API_V1_Abstract
         return $record->get_serialize_key();
     }
 
-    protected function _set_story_cover(Application $app, \record_adapter $story, $databox_id, $record_id, $can_fail=false)
+    protected function _set_story_cover(Application $app, \record_adapter $story, $record_id, $can_fail=false)
     {
         try {
-            $record = new \record_adapter($app, $databox_id, $record_id);
+            $record = new \record_adapter($app, $story->get_sbas_id(), $record_id);
         } catch (Exception_Record_AdapterNotFound $e) {
-            $app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
+            $app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->get_sbas_id(), $record_id));
         }
 
         if (!$story->hasChild($record)) {
-            $app->abort(404, sprintf('Record identified by databox_is %s and record_id %s is not in the story', $databox_id, $record_id));
+            $app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->get_sbas_id(), $record_id));
         }
 
         if ($record->get_type() !== 'image') {
@@ -2434,7 +2434,7 @@ class API_V1_adapter extends API_V1_Abstract
             if($can_fail) {
                 return false;
             }
-            $app->abort(403, sprintf('Record identified by databox_is %s and record_id %s is not an image', $databox_id, $record_id));
+            $app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image', $story->get_sbas_id(), $record_id));
         }
 
         foreach ($record->get_subdefs() as $name => $value) {

@@ -1,17 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Story cover",
-  "description": "A record to be used as source of cover",
+  "description": "A record to be used as source of cover, the record must be an element of the story",
   "type": "object",
   "properties": {
-    "databox_id": {
-      "description": "The databox identifier of the record used for cover",
-      "type": "integer"
-    },
     "record_id": {
-      "description": "The identifier of the record used for cover (contextualized by the databox)",
+      "description": "The identifier of the record used for cover (in the same databox as the story)",
       "type": "integer"
     }
   },
-  "required": ["databox_id", "record_id"]
+  "required": ["record_id"]
 }
