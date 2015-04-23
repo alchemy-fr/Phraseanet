@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "10842ebc1702e5e2e097fe883063b20d",
+    "hash": "8cf517da820a4cd490acb3b91bdbf073",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1082,16 +1082,16 @@
         },
         {
             "name": "goodby/csv",
-            "version": "dev-master",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goodby/csv.git",
-                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a"
+                "reference": "da672802985d196cae767da29b11618a676496b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goodby/csv/zipball/b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
-                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
+                "url": "https://api.github.com/repos/goodby/csv/zipball/da672802985d196cae767da29b11618a676496b0",
+                "reference": "da672802985d196cae767da29b11618a676496b0",
                 "shasum": ""
             },
             "require": {
@@ -1135,7 +1135,7 @@
                 "export",
                 "import"
             ],
-            "time": "2015-02-02 12:29:23"
+            "time": "2013-11-22 19:10:34"
         },
         {
             "name": "guzzle/guzzle",
@@ -3540,16 +3540,16 @@
         },
         {
             "name": "doctrine/data-fixtures",
-            "version": "dev-master",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "ac36ccc812454e057aec564e0725509e74ce6b35"
+                "reference": "422952ccf7151c02bb5c01fadb305dce266a3b5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/ac36ccc812454e057aec564e0725509e74ce6b35",
-                "reference": "ac36ccc812454e057aec564e0725509e74ce6b35",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/422952ccf7151c02bb5c01fadb305dce266a3b5f",
+                "reference": "422952ccf7151c02bb5c01fadb305dce266a3b5f",
                 "shasum": ""
             },
             "require": {
@@ -3590,7 +3590,7 @@
             "keywords": [
                 "database"
             ],
-            "time": "2014-08-18 12:52:16"
+            "time": "2015-03-27 21:01:43"
         },
         {
             "name": "fabpot/goutte",
@@ -4089,10 +4089,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "goodby/csv": 20,
         "imagine/imagine": 20,
-        "phpexiftool/phpexiftool": 20,
-        "doctrine/data-fixtures": 20
+        "phpexiftool/phpexiftool": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
