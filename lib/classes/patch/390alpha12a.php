@@ -10,9 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Plugin\Plugin;
-use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
-use Symfony\Component\Finder\Finder;
+use Alchemy\Phrasea\Plugin\PluginManager;
 
 class patch_390alpha12a extends patchAbstract
 {
@@ -51,34 +49,10 @@ class patch_390alpha12a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        foreach ($this->listPlugins($app) as $name => $plugin) {
-            $app['conf']->set(['plugins', $name, 'enabled'], true);
+        /** @var PluginManager $manager */
+        $manager = $app['plugins.manager'];
+        foreach ($app['conf']->get('plugins', []) as $name => $parameters) {
+            $manager->disablePlugin($name);
         }
-    }
-
-    private function listPlugins(Application $app)
-    {
-        $finder = new Finder();
-        $finder
-            ->depth(0)
-            ->in($app['plugin.path'])
-            ->directories();
-
-        $plugins = [];
-
-        foreach ($finder as $pluginDir) {
-            $manifest = $error = null;
-            $name = $pluginDir->getBasename();
-
-            try {
-                $manifest = $app['plugins.plugins-validator']->validatePlugin((string) $pluginDir);
-            } catch (PluginValidationException $e) {
-                $error = $e;
-            }
-
-            $plugins[$name] = new Plugin($name, $manifest, $error);
-        }
-
-        return $plugins;
     }
 }

@@ -180,6 +180,7 @@ h264-pseudo-streaming:
     enabled: false
     type: nginx
     mapping: []
+plugins: []
 api_cors:
   enabled: false
   allow_credentials: false
