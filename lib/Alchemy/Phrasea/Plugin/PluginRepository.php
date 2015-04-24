@@ -52,6 +52,10 @@ class PluginRepository
         return current($plugins);
     }
 
+    /**
+     * @return \Iterator
+     * @throws PluginException
+     */
     public function findAll()
     {
         $finder = $this->createFinder()->name('composer.json');
@@ -72,7 +76,7 @@ class PluginRepository
     /**
      * @param Finder $finder
      * @param int    $limit
-     * @return \Iterator[]
+     * @return \Iterator
      * @throws PluginException
      */
     private function gatherFoundPackages(Finder $finder, $limit = 0)
@@ -85,18 +89,18 @@ class PluginRepository
                 is_array($contents)
                 && isset($contents['name'])
                 && is_string($contents['name'])
-                && isset($contents['extra']['class'])
-                && is_string($contents['extra']['class'])
+                && (!isset($contents['extra']['class']) || is_string($contents['extra']['class']))
             )) {
                 throw new PluginException(sprintf('Expects %s to be a valid plugin manifest, got "%s".', $fileInfo->getPath(), $fileInfo->getContents()));
             }
-            $name = strtolower(substr($contents['name'], self::PHRASEANET_PLUGIN_PREFIX_LENGTH));
-            $class = $contents['extra']['class'];
-            if (!class_exists($class) || !in_array(Plugin::class, class_parents($class))) {
+            $prettyName = substr($contents['name'], self::PHRASEANET_PLUGIN_PREFIX_LENGTH);
+            $name = strtolower($prettyName);
+            $class = isset($contents['extra']['class']) ? $contents['extra']['class'] : Plugin::class;
+            if (!class_exists($class) || ($class != Plugin::class && !in_array(Plugin::class, class_parents($class)))) {
                 throw new PluginException(sprintf('Expects "%s" to be a valid class name extending %s.', $class, Plugin::class));
             }
 
-            yield  $name => $class;
+            yield  $name => ['name' => $prettyName, 'class'=> $class, 'basePath' => $fileInfo->getPath()];
 
             if ($limit && ++$found >= $limit) {
                 return;

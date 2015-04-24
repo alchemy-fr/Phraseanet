@@ -11,6 +11,7 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Plugin\Plugin;
 use Alchemy\Phrasea\Plugin\PluginManager;
 use Alchemy\Phrasea\Plugin\PluginRepository;
 use Alchemy\Tests\Phrasea\Plugin\Fixtures\BarPlugin;
@@ -22,7 +23,7 @@ use Prophecy\Argument;
 class PluginManagerTest extends \PHPUnit_Framework_TestCase
 {
     private $repository;
-    private $filename;
+    private $dir;
     /** @var PropertyAccess */
     private $propertyAccess;
     /** @var vfsStreamDirectory */
@@ -35,9 +36,21 @@ class PluginManagerTest extends \PHPUnit_Framework_TestCase
         $this->root = vfsStream::setup('root');
 
         $this->repository = $this->prophesize(PluginRepository::class);
-        $this->repository->findAll()->willReturn(['foo' => FooPlugin::class, 'bar' => BarPlugin::class]);
-        $this->repository->find('foo')->willReturn(FooPlugin::class);
-        $this->repository->find('bar')->willReturn(BarPlugin::class);
+        $repository = [
+            'foo' => [
+                'name'     => 'Foo',
+                'class'    => FooPlugin::class,
+                'basePath' => vfsStream::url('root/foo'),
+            ],
+            'bar' => [
+                'name'     => 'BAR',
+                'class'    => Plugin::class,
+                'basePath' => vfsStream::url('root/bar'),
+            ],
+        ];
+        $this->repository->findAll()->willReturn($repository);
+        $this->repository->find('foo')->willReturn($repository['foo']);
+        $this->repository->find('bar')->willReturn($repository['bar']);
 
         $prophesized = $this->prophesize(ConfigurationInterface::class);
         $prophesized->getConfig()->willReturn([]);
@@ -46,12 +59,12 @@ class PluginManagerTest extends \PHPUnit_Framework_TestCase
         });
         $this->propertyAccess = new PropertyAccess($prophesized->reveal());
 
-        $this->filename = vfsStream::url('root/plugins.php');
+        $this->dir = vfsStream::url('root');
 
         $this->sut = new PluginManager(
             $this->repository->reveal(),
             $this->propertyAccess,
-            $this->filename
+            $this->dir
         );
     }
 
@@ -59,13 +72,13 @@ class PluginManagerTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->sut->enablePlugin('foo'));
 
-        $this->assertEquals([
+        $expected = [
             'foo' => [
                 'enabled' => true,
             ],
-        ], $this->propertyAccess->get(['plugins']));
-
-        $this->assertFileEquals(__DIR__ . '/Fixtures/testFooPluginEnabled.txt', $this->filename);
+        ];
+        $this->assertEquals($expected, $this->propertyAccess->get(['plugins']));
+        $this->assertFileEquals(__DIR__ . '/Fixtures/testFooPluginEnabled.txt', vfsStream::url('root/plugins.php'));
     }
 
     public function testItDisablesPluginAndKeepConfiguration()
@@ -75,16 +88,16 @@ class PluginManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->sut->disablePlugin('foo'), 'Expects disablePlugin to return true while changing configuration');
 
-        $this->assertEquals([
+        $expected = [
             'foo' => [
-                'enabled' => false,
+                'enabled'    => false,
                 'parameters' => [
                     'test',
                 ],
             ],
-        ], $this->propertyAccess->get(['plugins']));
-
-        $this->assertFileEquals(__DIR__ . '/Fixtures/testNoEnabled.txt', $this->filename);
+        ];
+        $this->assertEquals($expected, $this->propertyAccess->get(['plugins']));
+        $this->assertFileEquals(__DIR__ . '/Fixtures/testNoEnabled.txt', vfsStream::url('root/plugins.php'));
     }
 
     public function testItEnablesPluginWithConfiguration()
@@ -93,18 +106,18 @@ class PluginManagerTest extends \PHPUnit_Framework_TestCase
         $this->sut->enablePlugin('bar');
         $this->sut->setPluginParameters('bar', ['test']);
 
-        $this->assertEquals([
+        $expected = [
             'foo' => [
                 'enabled' => true,
             ],
             'bar' => [
-                'enabled' => true,
+                'enabled'    => true,
                 'parameters' => [
                     'test',
                 ],
             ],
-        ], $this->propertyAccess->get(['plugins']));
-
-        $this->assertFileEquals(__DIR__ . '/Fixtures/testFooBarWithParamsEnabled.txt', $this->filename);
+        ];
+        $this->assertEquals($expected, $this->propertyAccess->get(['plugins']));
+        $this->assertFileEquals(__DIR__ . '/Fixtures/testFooBarWithParamsEnabled.txt', vfsStream::url('root/plugins.php'));
     }
 }

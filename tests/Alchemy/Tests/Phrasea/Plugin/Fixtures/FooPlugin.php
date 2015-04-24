@@ -13,8 +13,4 @@ use Alchemy\Phrasea\Plugin\Plugin;
 
 class FooPlugin extends Plugin
 {
-    function getName()
-    {
-        return 'foo';
-    }
 }

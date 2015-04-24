@@ -9,8 +9,10 @@
  */
 namespace Alchemy\Phrasea\Plugin;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PluginServiceProvider implements ServiceProviderInterface
 {
@@ -68,8 +70,8 @@ class PluginServiceProvider implements ServiceProviderInterface
            return new PluginRepository($app['plugins.path']);
         });
 
-        $app['plugins.manager'] = $app->share(function () use ($app, $filename) {
-            return new PluginManager($app['plugins.repository'], $app['conf'], $filename);
+        $app['plugins.manager'] = $app->share(function () use ($app) {
+            return new PluginManager($app['plugins.repository'], $app['conf'], $app['plugins.path']);
         });
 
         $app['twig'] = $app->share($app->extend('twig', function (\Twig_Environment $twig) {
@@ -83,5 +85,12 @@ class PluginServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = $app['dispatcher'];
+        $dispatcher->addListener(PhraseaEvents::INSTALL_FINISH, function () use ($app) {
+            /** @var PluginManager $manager */
+            $manager = $app['plugins.manager'];
+            $manager->dump();
+        });
     }
 }

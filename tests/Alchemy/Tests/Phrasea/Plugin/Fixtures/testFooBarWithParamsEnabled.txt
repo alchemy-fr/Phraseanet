@@ -4,12 +4,12 @@
 $plugins = array ();
 
 // plugin foo
-$plugins[] = new Alchemy\Tests\Phrasea\Plugin\Fixtures\FooPlugin(array ());
+$plugins[] = new Alchemy\Tests\Phrasea\Plugin\Fixtures\FooPlugin('Foo', array ());
 
 // plugin bar
 $parameters = array (
   0 => 'test',
 );
-$plugins[] = new Alchemy\Tests\Phrasea\Plugin\Fixtures\BarPlugin($parameters);
+$plugins[] = new Alchemy\Phrasea\Plugin\Plugin('BAR', $parameters);
 
 return $plugins;

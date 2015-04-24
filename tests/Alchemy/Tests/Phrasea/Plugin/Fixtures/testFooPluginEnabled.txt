@@ -4,6 +4,6 @@
 $plugins = array ();
 
 // plugin foo
-$plugins[] = new Alchemy\Tests\Phrasea\Plugin\Fixtures\FooPlugin(array ());
+$plugins[] = new Alchemy\Tests\Phrasea\Plugin\Fixtures\FooPlugin('Foo', array ());
 
 return $plugins;

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -167,7 +168,9 @@ class Installer
 
     private function createConfigFile(Connection $abConn, $serverName, $binaryData, $dataPath)
     {
-        $config = $this->app['configuration.store']->initialize()->getConfig();
+        /** @var ConfigurationInterface $store */
+        $store = $this->app['configuration.store'];
+        $config = $store->initialize()->getConfig();
 
         $config['main']['database']['host'] = $abConn->getHost();
         $config['main']['database']['port'] = $abConn->getPort();
@@ -197,6 +200,6 @@ class Installer
 
         $config['registry'] = $this->app['registry.manipulator']->getRegistryData();
 
-        $this->app['configuration.store']->setConfig($config);
+        $store->setConfig($config);
     }
 }

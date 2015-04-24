@@ -12,17 +12,31 @@ namespace Alchemy\Phrasea\Plugin;
 use Silex\Application;
 use Symfony\Component\Console\Command\Command;
 
-abstract class Plugin
+class Plugin
 {
+    /** @var string */
+    private $name;
+    /** @var string */
+    private $prettyName;
     /** @var array */
     protected $configuration;
 
-    public function __construct(array $configuration)
+    public function __construct($name, array $configuration)
     {
+        $this->prettyName = $name;
+        $this->name = strtolower($name);
         $this->configuration = $configuration;
     }
 
-    abstract function getName();
+    final public function getName()
+    {
+        return $this->name;
+    }
+
+    final public function getPrettyName()
+    {
+        return $this->prettyName;
+    }
 
     /**
      * Get path to assets to be installed

@@ -9,8 +9,8 @@
  */
 namespace Alchemy\Tests\Phrasea\Plugin;
 
+use Alchemy\Phrasea\Plugin\Plugin;
 use Alchemy\Phrasea\Plugin\PluginRepository;
-use Alchemy\Tests\Phrasea\Plugin\Fixtures\BarPlugin;
 use Alchemy\Tests\Phrasea\Plugin\Fixtures\FooPlugin;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -40,23 +40,29 @@ class PluginRepositoryTest extends \PHPUnit_Framework_TestCase
             'bar' => [
                 'composer.json' => json_encode([
                     'name' => 'phraseanet/plugin-BAR',
-                    'extra' => [
-                        'class' => BarPlugin::class,
-                    ],
                 ], JSON_PRETTY_PRINT),
             ],
         ], $this->root);
 
         $sut = new PluginRepository(vfsStream::url('root'));
 
-        $plugins = iterator_to_array($sut->findAll());
+        $iterator = $sut->findAll();
+        $this->assertInstanceOf('Iterator', $iterator);
 
-        $this->assertCount(2, $plugins);
-        $this->assertArrayHasKey('foo', $plugins);
-        $this->assertArrayHasKey('bar', $plugins);
+        $expected = [
+            'bar' => [
+                'name'     => 'BAR',
+                'class'    => Plugin::class,
+                'basePath' => vfsStream::url('root/bar'),
+            ],
+            'foo' => [
+                'name'     => 'Foo',
+                'class'    => FooPlugin::class,
+                'basePath' => vfsStream::url('root/foo'),
+            ]
+        ];
 
-        $this->assertEquals(FooPlugin::class, $plugins['foo']);
-        $this->assertEquals(BarPlugin::class, $plugins['bar']);
+        $this->assertEquals($expected, iterator_to_array($iterator));
     }
 
     public function testItFindsOnePackage()
@@ -74,17 +80,18 @@ class PluginRepositoryTest extends \PHPUnit_Framework_TestCase
             'bar' => [
                 'composer.json' => json_encode([
                     'name' => 'phraseanet/plugin-BAR',
-                    'extra' => [
-                        'class' => BarPlugin::class,
-                    ],
                 ], JSON_PRETTY_PRINT),
             ],
         ], $this->root);
 
         $sut = new PluginRepository(vfsStream::url('root'));
 
-        $fqcn = $sut->find('bar');
+        $expected = [
+            'name'     => 'BAR',
+            'class'    => Plugin::class,
+            'basePath' => vfsStream::url('root/bar'),
+        ];
 
-        $this->assertEquals(BarPlugin::class, $fqcn);
+        $this->assertEquals($expected, $sut->find('bar'));
     }
 }
