@@ -106,6 +106,7 @@ use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Plugin\PluginManager;
 use Alchemy\Phrasea\Plugin\PluginServiceProvider;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -1097,7 +1098,7 @@ class Application extends SilexApplication
     }
 
     /**
-     * @return PluginManagerInterface
+     * @return PluginManager
      */
     public function getPluginManager()
     {

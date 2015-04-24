@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Plugin\Command\PluginCommand;
 use Alchemy\Phrasea\Setup\ConfigurationTester;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -71,6 +72,11 @@ $app->command(new Install('system:install'));
 $app->command(new CrossDomainGenerator());
 
 $app['phraseanet.setup_mode'] = true;
+
+$app->command(new PluginCommand('enable'));
+$app->command(new PluginCommand('disable'));
+$app->command(new PluginCommand('list'));
+
 foreach ($app['plugins.commands'] as $pluginCommand) {
     $app->command($pluginCommand);
 }
