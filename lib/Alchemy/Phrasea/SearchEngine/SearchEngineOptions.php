@@ -245,7 +245,7 @@ class SearchEngineOptions
      * Returns an array containing all the databoxes where the search will
      * happen
      *
-     * @return array
+     * @return \databox[]
      */
     public function getDataboxes()
     {

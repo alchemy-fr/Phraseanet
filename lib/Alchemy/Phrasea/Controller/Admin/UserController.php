@@ -10,9 +10,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\ACLProvider;
-use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;

@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Feed;
 
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+
 interface FeedInterface
 {
     /**
@@ -33,7 +35,7 @@ interface FeedInterface
      * @param integer $offset_start
      * @param integer $how_many
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return FeedEntry[]
      */
     public function getEntries($offset_start = 0, $how_many = null);
 

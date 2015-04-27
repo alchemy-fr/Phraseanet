@@ -58,13 +58,16 @@ class caption_record implements caption_interface, cache_cacheableInterface
         return $this->record;
     }
 
+    /**
+     * @return \caption_field[]
+     * @throws \Doctrine\DBAL\DBALException
+     */
     protected function retrieve_fields()
     {
         if (is_array($this->fields)) {
             return $this->fields;
         }
 
-        $fields = [];
         try {
             $fields = $this->get_data_from_cache();
         } catch (\Exception $e) {
@@ -97,11 +100,10 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param array   $grep_fields
      * @param Boolean $IncludeBusiness
      *
-     * @return array
+     * @return \caption_field[]
      */
     public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
     {
