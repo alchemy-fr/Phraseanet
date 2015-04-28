@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app = new PhraseaApplication($environment);
 
+    $app->register(new OAuth2());
     $app->register(new V1());
     $app->loadPlugins();
 
