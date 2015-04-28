@@ -12,35 +12,19 @@
 namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
-use Alchemy\Phrasea\Core\Event\RecordEdit;
-use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Feed\Aggregate;
-use Alchemy\Phrasea\Feed\FeedInterface;
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\Feed;
-use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\Model\Entities\FeedItem;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class V1 implements ControllerProviderInterface, ServiceProviderInterface
 {
     const VERSION = '1.4.1';
 
     public static $extendedContentTypes = [
-        'json'  => ['application/vnd.phraseanet.record-extended+json'],
-        'yaml'  => ['application/vnd.phraseanet.record-extended+yaml'],
+        'json' => ['application/vnd.phraseanet.record-extended+json'],
+        'yaml' => ['application/vnd.phraseanet.record-extended+yaml'],
         'jsonp' => ['application/vnd.phraseanet.record-extended+jsonp'],
     ];
 
@@ -64,75 +48,55 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->after('controller.api.v1:after');
 
         $controllers->get('/monitor/scheduler/', 'controller.api.v1:getSchedulerAction')
-            ->before('controller.api.v1:ensureAdmin')
-        ;
+            ->before('controller.api.v1:ensureAdmin');
 
         $controllers->get('/monitor/tasks/', 'controller.api.v1:indexTasksAction')
-            ->before('controller.api.v1:ensureAdmin')
-        ;
-
+            ->before('controller.api.v1:ensureAdmin');
         $controllers->get('/monitor/task/{task}/', 'controller.api.v1:showTaskAction')
             ->convert('task', $app['converter.task-callback'])
             ->before('controller.api.v1:ensureAdmin')
-            ->assert('task', '\d+')
-        ;
-
+            ->assert('task', '\d+');
         $controllers->post('/monitor/task/{task}/', 'controller.api.v1:setTaskPropertyAction')
             ->convert('task', $app['converter.task-callback'])
             ->before('controller.api.v1:ensureAdmin')
-            ->assert('task', '\d+')
-        ;
-
+            ->assert('task', '\d+');
         $controllers->post('/monitor/task/{task}/start/', 'controller.api.v1:startTaskAction')
             ->convert('task', $app['converter.task-callback'])
-            ->before('controller.api.v1:ensureAdmin')
-        ;
-
+            ->before('controller.api.v1:ensureAdmin');
         $controllers->post('/monitor/task/{task}/stop/', 'controller.api.v1:stopTaskAction')
             ->convert('task', $app['converter.task-callback'])
-            ->before('controller.api.v1:ensureAdmin')
-        ;
+            ->before('controller.api.v1:ensureAdmin');
 
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:showPhraseanetConfigurationAction')
-            ->before('controller.api.v1:ensureAdmin')
-        ;
+            ->before('controller.api.v1:ensureAdmin');
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:listDataboxesAction');
 
         $controllers->get('/databoxes/{databox_id}/collections/', 'controller.api.v1:getDataboxCollectionsAction')
             ->before('controller.api.v1:ensureAccessToDatabox')
-            ->assert('databox_id', '\d+')
-        ;
-
+            ->assert('databox_id', '\d+');
         $controllers->get('/databoxes/{any_id}/collections/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/databoxes/{databox_id}/status/', 'controller.api.v1:getDataboxStatusAction')
             ->before('controller.api.v1:ensureAccessToDatabox')
             ->before('controller.api.v1:ensureCanSeeDataboxStructure')
-            ->assert('databox_id', '\d+')
-        ;
-
+            ->assert('databox_id', '\d+');
         $controllers->get('/databoxes/{any_id}/status/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/databoxes/{databox_id}/metadatas/', 'controller.api.v1:getDataboxMetadataAction')
             ->before('controller.api.v1:ensureAccessToDatabox')
             ->before('controller.api.v1:ensureCanSeeDataboxStructure')
-            ->assert('databox_id', '\d+')
-        ;
-
+            ->assert('databox_id', '\d+');
         $controllers->get('/databoxes/{any_id}/metadatas/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/databoxes/{databox_id}/termsOfUse/', 'controller.api.v1:getDataboxTermsAction')
             ->before('controller.api.v1:ensureAccessToDatabox')
-            ->assert('databox_id', '\d+')
-        ;
-
+            ->assert('databox_id', '\d+');
         $controllers->get('/databoxes/{any_id}/termsOfUse/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/quarantine/list/', 'controller.api.v1:listQuarantineAction');
 
         $controllers->get('/quarantine/item/{lazaret_id}/', 'controller.api.v1:listQuarantineItemAction');
-
         $controllers->get('/quarantine/item/{any_id}/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post('/records/add/', 'controller.api.v1:addRecordAction');
@@ -146,58 +110,48 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:getRecordCaptionAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
+            ->assert('record_id', '\d+');
         $controllers->get('/records/{any_id}/{anyother_id}/caption/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/records/{databox_id}/{record_id}/metadatas/', 'controller.api.v1:getRecordMetadataAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/records/{any_id}/{anyother_id}/metadatas/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/records/{databox_id}/{record_id}/status/', 'controller.api.v1:getRecordStatusAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/records/{any_id}/{anyother_id}/status/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/records/{databox_id}/{record_id}/related/', 'controller.api.v1:getRelatedRecordsAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/records/{any_id}/{anyother_id}/related/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/records/{databox_id}/{record_id}/embed/', 'controller.api.v1:getEmbeddedRecordAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/records/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequestAction');
 
-        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', 'controller.api.v1:setRecordMetadataAction')
+        $controllers->post(
+            '/records/{databox_id}/{record_id}/setmetadatas/',
+            'controller.api.v1:setRecordMetadataAction'
+        )
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->before('controller.api.v1:ensureCanModifyRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->post('/records/{any_id}/{anyother_id}/setmetadatas/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post('/records/{databox_id}/{record_id}/setstatus/', 'controller.api.v1:setRecordStatusAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->before('controller.api.v1:ensureCanModifyRecordStatus')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->post('/records/{any_id}/{anyother_id}/setstatus/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post(
@@ -207,9 +161,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->before('controller.api.v1:ensureCanMoveRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->post(
             '/records/{wrong_databox_id}/{wrong_record_id}/setcollection/',
             'controller.api.v1:getBadRequestAction'
@@ -218,9 +170,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:getRecordAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/records/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/baskets/list/', 'controller.api.v1:searchBasketsAction');
@@ -230,33 +180,25 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/baskets/{basket}/content/', 'controller.api.v1:getBasketAction')
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access'])
-            ->assert('basket', '\d+')
-        ;
-
+            ->assert('basket', '\d+');
         $controllers->get('/baskets/{wrong_basket}/content/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post('/baskets/{basket}/setname/', 'controller.api.v1:setBasketTitleAction')
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-is-owner'])
-            ->assert('basket', '\d+')
-        ;
-
+            ->assert('basket', '\d+');
         $controllers->post('/baskets/{wrong_basket}/setname/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post('/baskets/{basket}/setdescription/', 'controller.api.v1:setBasketDescriptionAction')
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-is-owner'])
-            ->assert('basket', '\d+')
-        ;
-
+            ->assert('basket', '\d+');
         $controllers->post('/baskets/{wrong_basket}/setdescription/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post('/baskets/{basket}/delete/', 'controller.api.v1:deleteBasketAction')
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-is-owner'])
-            ->assert('basket', '\d+')
-        ;
-
+            ->assert('basket', '\d+');
         $controllers->post('/baskets/{wrong_basket}/delete/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/feeds/list/', 'controller.api.v1:searchPublicationsAction');
@@ -264,42 +206,32 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/feeds/content/', 'controller.api.v1:getPublicationsAction');
 
         $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:getFeedEntryAction')
-            ->assert('entry_id', '\d+')
-        ;
-
+            ->assert('entry_id', '\d+');
         $controllers->get('/feeds/entry/{entry_id}/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/feeds/{feed_id}/content/', 'controller.api.v1:getPublicationAction')
-            ->assert('feed_id', '\d+')
-        ;
-
+            ->assert('feed_id', '\d+');
         $controllers->get('/feeds/{wrong_feed_id}/content/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/stories/{databox_id}/{record_id}/embed/', 'controller.api.v1:getStoryEmbedAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v1:getStoryAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
-            ->assert('record_id', '\d+')
-        ;
-
+            ->assert('record_id', '\d+');
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequestAction');
 
         $controllers->post('/stories', 'controller.api.v1:createStoriesAction');
 
         $controllers->post('/stories/{databox_id}/{story_id}/records', 'controller.api.v1:createRecordStoryAction')
             ->assert('databox_id', '\d+')
-            ->assert('story_id', '\d+')
-        ;
+            ->assert('story_id', '\d+');
 
         $controllers->get('/me/', 'controller.api.v1:getCurrentUserAction');
-
 
         return $controllers;
     }
