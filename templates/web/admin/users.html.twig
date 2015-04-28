@@ -147,11 +147,11 @@
                         <td>
                             {{usr.getCountry()}}
                         </td>
+                        <td>
                         {% if usr.getLastAppliedTemplate() is not none %}
-                            <td>
-                                {{ usr.getLastAppliedTemplate().getLogin() }}
-                            </td>
+                            {{ usr.getLastAppliedTemplate().getLogin() }}
                         {% endif %}
+                        </td>
                         <td>
                             {{ app['date-formatter'].getDate(usr.getCreated()) }}
                         </td>
