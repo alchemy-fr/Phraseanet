@@ -261,7 +261,7 @@
                 return true;
             }
 
-            $('#users th.sortable').live('click', function () {
+            $('#users th.sortable').on('click', function () {
                 var $this = $(this);
 
                 var sort = $('input', $this).val();
@@ -278,9 +278,9 @@
                 $('#users_page_form input[name="ord"]').val(ord);
 
                 $('#users_page_form').trigger('submit');
-            }).live('mouseover', function () {
+            }).on('mouseover', function () {
                 $(this).addClass('hover');
-            }).live('mouseout', function () {
+            }).on('mouseout', function () {
                 $(this).removeClass('hover');
             });
 
@@ -365,19 +365,19 @@
                 });
             }
 
-            $('#users_page .user_adder').live('click', function () {
+            $('#users_page .user_adder').on('click', function () {
                 if ($('#user_add_dialog').data("ui-dialog")) {
                     $('#user_add_dialog').dialog('open');
                 }
             });
 
-            $('#users_page .template_adder').live('click', function () {
+            $('#users_page .template_adder').on('click', function () {
                 if ($('#template_add_dialog').data("ui-dialog")) {
                     $('#template_add_dialog').dialog('open');
                 }
             });
 
-            $('#users_page_form').live('submit', function () {
+            $('#users_page_form').on('submit', function () {
                 var datas = $('#users_page_form').serializeArray();
                 $('#right-ajax').empty().addClass('loading');
                 $.ajax({
@@ -392,7 +392,7 @@
                 return false;
             });
 
-            $('#users_page_search').live('submit', function () {
+            $('#users_page_search').on('submit', function () {
                 var datas = $('#users_page_search').serializeArray();
                 $('#right-ajax').empty().addClass('loading');
                 $.ajax({
@@ -407,7 +407,7 @@
                 return false;
             });
 
-            $('#users_page_form .pager').live('click', function () {
+            $('#users_page_form .pager').on('click', function () {
                 var form = $('#users_page_form');
 
                 var current_page = parseInt($('input[name="page"]', form).val());
@@ -432,11 +432,11 @@
                 $('input[name="offset_start"]', form).val(offset_start);
             });
 
-            $('#users tbody tr, #users tbody td').live('dblclick', function (evt) {
+            $('#users tbody tr, #users tbody td').on('dblclick', function (evt) {
                 $('#users_page_form .user_modifier').trigger('click');
             });
 
-            $('#users tbody tr, #users tbody td').live('click', function (evt) {
+            $('#users tbody tr, #users tbody td').on('click', function (evt) {
                 if (evt.stopPropagation)
                     evt.stopPropagation();
                 evt.cancelBubble = true;
@@ -501,7 +501,7 @@
                 }
                 $('.last_selected', cont).removeClass('last_selected');
                 $(el).addClass('last_selected');
-            }).live('mousedown', function (evt) {
+            }).on('mousedown', function (evt) {
 
                 if (evt.stopPropagation)
                     evt.stopPropagation();
@@ -509,7 +509,7 @@
                 evt.preventDefault();
             });
 
-            $('#users_apply_template').live('submit', function () {
+            $('#users_apply_template').on('submit', function () {
                 var users = p4.users.sel.join(';');
                 if (users === '') {
                     return false;
@@ -542,7 +542,7 @@
                 return false;
             });
 
-            $('#users_page_form .user_modifier').live('click', function () {
+            $('#users_page_form .user_modifier').on('click', function () {
                 var users = p4.users.sel.join(';');
                 if (users === '') {
                     return false;
@@ -563,7 +563,7 @@
                 return false;
             });
 
-            $('#users_page_form .user_deleter').live('click', function () {
+            $('#users_page_form .user_deleter').on('click', function () {
                 var users = p4.users.sel.join(';');
                 if (users === '') {
                     return false;
@@ -583,7 +583,7 @@
                 });
                 return false;
             });
-            $('#users_page .invite_modifier, #users_page .autoregister_modifier').live('click', function () {
+            $('#users_page .invite_modifier, #users_page .autoregister_modifier').on('click', function () {
                 var users = $(this).next('input').val();
 
                 if ($.trim(users) === '') {
