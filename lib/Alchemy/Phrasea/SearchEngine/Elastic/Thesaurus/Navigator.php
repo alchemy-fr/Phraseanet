@@ -29,13 +29,13 @@ class Navigator
 
     public function walk(DOMNode $node, VisitorInterface $visitor)
     {
-        if ($this->isConcept($node)) {
+        if (self::isConcept($node)) {
             $visitor->visitConcept($node);
             foreach ($node->childNodes as $child) {
                 $this->walk($child, $visitor);
             }
             $visitor->leaveConcept($node);
-        } elseif ($this->isTerm($node)) {
+        } elseif (self::isTerm($node)) {
             $visitor->visitTerm($node);
         } elseif ($node->childNodes !== null) {
             // Sometimes childNodes is NULL (i.e. DOMText)
