@@ -175,7 +175,7 @@ class RecordHelper
                     $field['thesaurus_prefixes'] = ThesaurusHelper::findPrefixesByXPath($databox, $xpath);
                 } else {
                     $field['thesaurus_concept_inference'] = false;
-                    $field['thesaurus_prefixes'] = null;
+                    $field['thesaurus_prefixes'] = [];
                 }
 
                 //printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
