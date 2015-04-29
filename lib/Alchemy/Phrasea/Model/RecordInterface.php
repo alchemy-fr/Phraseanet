@@ -58,9 +58,9 @@ interface RecordInterface
     /** @return integer */
     public function getStatusBitField();
 
-    /** @return ArrayCollection */
+    /** @return array */
     public function getExif();
 
-    /** @return ArrayCollection */
+    /** @return array */
     public function getCaption();
 }

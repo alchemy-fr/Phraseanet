@@ -765,14 +765,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function getCaption()
     {
-        $collection = new ArrayCollection();
+        $collection = [];
 
+        /** @var caption_field $field */
         foreach ($this->get_caption()->get_fields() as $field) {
-            $values = array_map(function($fieldValue) {
+            $values = array_map(function(caption_Field_Value $fieldValue) {
                 return $fieldValue->getValue();
             }, $field->get_values());
 
-            $collection->set($field->get_name(), $values);
+            $collection[$field->get_name()] = $values;
         }
 
         return $collection;
@@ -2035,7 +2036,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** {@inheritdoc} */
     public function getExif()
     {
-        return new ArrayCollection($this->get_technical_infos());
+        return $this->get_technical_infos();
     }
 
     public function getStatusStructure()
