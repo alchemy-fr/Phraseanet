@@ -5,7 +5,7 @@
         {% set thumb_w = 70 %}
         {% set thumb_h = 70 %}
 
-        {% set thumbnail = record.subdefs.get('thumbnail') %}
+        {% set thumbnail = record.subdefs.thumbnail|default(null) %}
 
         {% if thumbnail is not none %}
             {% set thumb_w = thumbnail.width %}
@@ -50,4 +50,3 @@
     </div>
   </div>
   <div id="PREVIEWTOOL"></div>
-            

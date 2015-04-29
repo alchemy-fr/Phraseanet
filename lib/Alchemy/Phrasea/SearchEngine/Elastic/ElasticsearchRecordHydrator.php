@@ -41,12 +41,12 @@ class ElasticsearchRecordHydrator
         $record->setUpdated($updatedOn ? new \DateTime($updatedOn) : $updatedOn);
         $record->setUuid(igorw\get_in($data, ['uuid'], ''));
         $record->setStatusBitField(igorw\get_in($data, ['flags_bitfield'], 0));
-        $record->setTitles(new ArrayCollection((array) igorw\get_in($data, ['title'], [])));
-        $record->setCaption(new ArrayCollection((array) igorw\get_in($data, ['caption'], [])));
-        $record->setExif(new ArrayCollection((array) igorw\get_in($data, ['exif'], [])));
-        $record->setSubdefs(new ArrayCollection((array) igorw\get_in($data, ['subdefs'], [])));
-        $record->setFlags(new ArrayCollection((array) igorw\get_in($data, ['flags'], [])));
-        $record->setHighlight(new ArrayCollection($highlight));
+        $record->setTitles((array) igorw\get_in($data, ['title'], []));
+        $record->setCaption((array) igorw\get_in($data, ['caption'], []));
+        $record->setExif((array) igorw\get_in($data, ['exif'], []));
+        $record->setSubdefs((array) igorw\get_in($data, ['subdefs'], []));
+        $record->setFlags((array) igorw\get_in($data, ['flags'], []));
+        $record->setHighlight((array) $highlight);
 
         return $record;
     }

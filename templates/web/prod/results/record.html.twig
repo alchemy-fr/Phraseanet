@@ -34,7 +34,7 @@
                     {% endif %}
                 </span>
             </div>
-            {% set rollover = record.subdefs.containsKey('thumbnailgif') %}
+            {% set rollover = record.subdefs.thumbnailgif is defined %}
             {% set extraclass = '' %}
             <div class="{% if rollover %}rollovable{% endif %}">
                 {% if rollover %}
@@ -116,7 +116,7 @@
                             </tbody>
                         </table>
 
-                        {% if record.subdefs.containsKey('preview') and has_access_subdef(record, 'preview') %}
+                        {% if record.subdefs.preview is defined and has_access_subdef(record, 'preview') %}
                             <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" class="previewTips"></div>
                         {% endif %}
 

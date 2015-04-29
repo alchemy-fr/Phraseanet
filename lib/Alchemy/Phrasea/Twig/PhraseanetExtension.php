@@ -2,10 +2,10 @@
 
 namespace Alchemy\Phrasea\Twig;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
-use Silex\Application;
 
 class PhraseanetExtension extends \Twig_Extension
 {
@@ -49,11 +49,12 @@ class PhraseanetExtension extends \Twig_Extension
         if ($record instanceof ElasticsearchRecord) {
             $highlightKey = sprintf('caption.%s', $field);
 
-            if (false === $record->getHighlight()->containsKey($highlightKey)) {
+            $highlights = $record->getHighlight();
+            if (false === isset($highlights[$highlightKey])) {
                 return implode('; ', (array) $value);
             }
 
-            $highlightValue = $record->getHighlight()->get($highlightKey);
+            $highlightValue = $highlights[$highlightKey];
 
             // if field is multivalued, merge highlighted values with captions ones
             if (is_array($value)) {
@@ -71,7 +72,9 @@ class PhraseanetExtension extends \Twig_Extension
     public function getRecordFlags(RecordInterface $record)
     {
         $recordStatuses = [];
-        $databox = $this->app['phraseanet.appbox']->get_databox($record->getDataboxId());
+        /** @var \appbox $appbox */
+        $appbox = $this->app['phraseanet.appbox'];
+        $databox = $appbox->get_databox($record->getDataboxId());
 
         $structure = $databox->getStatusStructure()->toArray();
 
@@ -207,8 +210,9 @@ class PhraseanetExtension extends \Twig_Extension
     public function getSubdefUrl(RecordInterface $record, $subdefName)
     {
         if ($record instanceof ElasticsearchRecord) {
-            if ($record->getSubdefs()->containsKey($subdefName)) {
-                $thumbnail = $record->getSubdefs()->get($subdefName);
+            $subdefs = $record->getSubdefs();
+            if (isset($subdefs[$subdefName])) {
+                $thumbnail = $subdefs[$subdefName];
                 if (null !== $path = $thumbnail['path']) {
                     if (is_string($path) && '' !== $path) {
                         return $this->app['phraseanet.static-file']->getUrl($path);
