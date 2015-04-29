@@ -34,6 +34,7 @@ define([
             "indexable": true,
             "dces-element": null,
             "vocabulary-type": null,
+            "aggregable": 0,
             "vocabulary-restricted": false,
             "labels": {
                 "fr": "",
