@@ -92,11 +92,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
+            // TODO Use upcomming monolog factory
+            $logger = new \Monolog\Logger('indexer');
+            $logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
             return new RecordIndexer(
                 $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
                 $app['phraseanet.appbox'],
-                array_keys($app['locales.available'])
+                array_keys($app['locales.available']),
+                $logger
             );
         });
 
