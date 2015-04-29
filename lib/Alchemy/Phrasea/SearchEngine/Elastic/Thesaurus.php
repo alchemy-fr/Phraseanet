@@ -17,22 +17,27 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 use Elasticsearch\Client;
+use Psr\Log\LoggerInterface;
 
 class Thesaurus
 {
     private $client;
     private $index;
+    private $logger;
 
     const MIN_SCORE = 4;
 
-    public function __construct(Client $client, $index)
+    public function __construct(Client $client, $index, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->index = $index;
+        $this->logger = $logger;
     }
 
     public function findConceptsBulk(array $terms, $lang = null, Filter $filter = null, $strict = false)
     {
+        $this->logger->debug(sprintf('Finding linked concepts in bulk for %d terms', count($terms)));
+
         // TODO Use bulk queries for performance
         $concepts = array();
         foreach ($terms as $term) {
@@ -59,6 +64,11 @@ class Thesaurus
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
         }
+
+        $this->logger->info(sprintf('Searching for term %s', $term), array(
+            'strict' => $strict,
+            'lang' => $lang
+        ));
 
         if ($strict) {
             $field_suffix = '.strict';
@@ -98,6 +108,7 @@ class Thesaurus
         }
 
         if ($filter) {
+            $this->logger->debug('Using filter', array('filter' => $filter));
             $query = self::applyQueryFilter($query, $filter->getQueryFilter());
         }
 
@@ -124,11 +135,17 @@ class Thesaurus
         // Extract concept paths from response
         $concepts = array();
         $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
+        $keys = array();
         foreach ($buckets as $bucket) {
             if (isset($bucket['key'])) {
+                $keys[] = $bucket['key'];
                 $concepts[] = new Concept($bucket['key']);
             }
         }
+
+        $this->logger->info(sprintf('Found %d matching concepts', count($concepts)),
+            array('concepts' => $keys)
+        );
 
         return $concepts;
     }

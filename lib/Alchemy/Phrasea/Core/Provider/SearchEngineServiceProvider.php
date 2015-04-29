@@ -156,9 +156,13 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         /* Querying helper services */
 
         $app['thesaurus'] = $app->share(function ($app) {
+            // TODO Use upcomming monolog factory
+            $logger = new \Monolog\Logger('thesaurus');
+            $logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
             return new Thesaurus(
                 $app['elasticsearch.client'],
-                $app['elasticsearch.options']['index']
+                $app['elasticsearch.options']['index'],
+                $logger
             );
         });
 
