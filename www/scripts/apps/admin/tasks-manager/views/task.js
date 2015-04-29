@@ -57,7 +57,7 @@ define([
 
             if(url && url.indexOf('#') !== 0) {
                 // This is defined in admin/index.html.twig
-                window.loadRightAjax(url, link.attr("method") || "GET");
+//                window.loadRightAjax(url, link.attr("method") || "GET");
             }
         }
     });

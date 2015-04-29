@@ -103,7 +103,7 @@ class BuildSubdefs extends Command
                 $sqlCount .= " AND (s.substit = 0)";
             }
         } elseif ($substitutionOnly) {
-            throw new InvalidArgumentException('Conflict, you can not ask for --substituion-only && --with-substitution parameters at the same time');
+            throw new InvalidArgumentException('Conflict, you can not ask for --substitution-only && --with-substitution parameters at the same time');
         }
 
         list($sqlCount, $stmtParams) = SQLParserUtils::expandListParameters($sqlCount, $params, $types);
