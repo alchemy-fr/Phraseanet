@@ -81,7 +81,10 @@ class TermIndexer
                 ->analyzer('general_light')
                 ->addMultiField('strict', 'thesaurus_term_strict')
                 ->addLocalizedSubfields($this->locales)
-            ->add('path', 'string')->notAnalyzed()
+            ->add('path', 'string')
+                ->analyzer('thesaurus_path', 'indexing')
+                ->analyzer('keyword', 'searching')
+                ->addRawVersion()
             ->add('lang', 'string')->notAnalyzed()
             ->add('databox_id', 'integer')
         ;

@@ -38,7 +38,7 @@ class ThesaurusHydrator implements HydratorInterface
         $fields = array();
         foreach ($structure as $name => $options) {
             if ($options['thesaurus_concept_inference']) {
-                $fields[$name] = $options['thesaurus_prefixes'];
+                $fields[$name] = $options['thesaurus_root_concepts'];
             }
         }
         // Hydrate records with concepts
@@ -54,24 +54,29 @@ class ThesaurusHydrator implements HydratorInterface
         }
 
         $terms = array();
-        $bulkFieldMap = array();
-        foreach ($fields as $name => $prefixes) {
+        $filters = array();
+        $field_names = array();
+        foreach ($fields as $name => $root_concepts) {
+            // Concepts are databox's specific, but when no root concepts are
+            // given whe need to make sure we only match in the right databox.
+            $filter = $root_concepts
+                ? Filter::childOfConcepts($root_concepts)
+                : Filter::byDatabox($record['databox_id']);
+            // Loop through all values to prepare bulk query
             if (isset($record['caption'][$name])) {
-                // Loop through all values to prepare bulk query
                 foreach ($record['caption'][$name] as $value) {
                     $terms[] = Term::parse($value);
-                    $bulkFieldMap[] = $name;
+                    $filters[] = $filter;
+                    $field_names[] = $name;
                 }
             }
         }
 
-        // TODO Build prefix filter
-        $filter = Filter::byDatabox($record['databox_id']);
-        $bulk = $this->thesaurus->findConceptsBulk($terms, null, $filter, true);
+        $bulk = $this->thesaurus->findConceptsBulk($terms, null, $filters, true);
 
         foreach ($bulk as $offset => $item_concepts) {
             if ($item_concepts) {
-                $name = $bulkFieldMap[$offset];
+                $name = $field_names[$offset];
                 foreach ($item_concepts as $concept) {
                     $record['concept_path'][$name][] = $concept->getPath();
                 }

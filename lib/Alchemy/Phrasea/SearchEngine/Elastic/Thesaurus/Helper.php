@@ -26,12 +26,12 @@ class Helper
     const TERM_VALUE_ATTR = 'v';
     const PATH_LANG = 'en';
 
-    public static function findPrefixesByXPath(databox $databox, $expression)
+    public static function findConceptsByXPath(databox $databox, $expression)
     {
         $document = self::thesaurusFromDatabox($databox);
         $xpath = new DOMXPath($document);
         $nodes = $xpath->query($expression);
-        $prefixes = [];
+        $concepts = [];
         foreach ($nodes as $node) {
             $path_segments = [];
             $me_and_parents = [$node];
@@ -44,10 +44,15 @@ class Helper
                     break;
                 }
             }
-            $prefixes[] = sprintf('/%s', implode('/', array_reverse($path_segments)));
+            // Concept paths are have databox identifier at root level
+            $concepts[] = new Concept(sprintf(
+                '/%d/%s',
+                $databox->get_sbas_id(),
+                implode('/', array_reverse($path_segments))
+            ));
         }
 
-        return $prefixes;
+        return $concepts;
     }
 
     private static function getElementAncestors(DOMElement $element)

@@ -172,10 +172,10 @@ class RecordHelper
                 $xpath = $fieldStructure->get_tbranch();
                 if ($field['type'] === Mapping::TYPE_STRING && $xpath ==! '') {
                     $field['thesaurus_concept_inference'] = true;
-                    $field['thesaurus_prefixes'] = ThesaurusHelper::findPrefixesByXPath($databox, $xpath);
+                    $field['thesaurus_root_concepts'] = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
                 } else {
                     $field['thesaurus_concept_inference'] = false;
-                    $field['thesaurus_prefixes'] = [];
+                    $field['thesaurus_root_concepts'] = [];
                 }
 
                 //printf("Field \"%s\" <%s> (private: %b)\n", $name, $field['type'], $field['private']);
