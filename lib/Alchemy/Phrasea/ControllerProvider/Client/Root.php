@@ -11,49 +11,35 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Client;
 
-use Alchemy\Phrasea\Feed\Aggregate;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Client\RootController;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Silex\ServiceProviderInterface;
 
-class Root implements ControllerProviderInterface
+class Root implements ControllerProviderInterface, ServiceProviderInterface
 {
+    public function register(Application $app)
+    {
+        $app['controller.client'] = $app->share(
+            function (PhraseaApplication $app) {
+                return new RootController($app);
+            }
+        );
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.client'] = $this;
-
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-
-            if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
-                return $app->redirectPath('login_authenticate_as_guest', ['redirect' => 'client']);
-            }
-            if (null !== $response = $app['firewall']->requireAuthentication()) {
-                return $response;
-            }
-        });
-
-        $controllers->get('/', 'controller.client:getClient')
+        $controllers->get('/', 'controller.client:getClientAction')
             ->bind('get_client');
 
         return $controllers;
-    }
-
-    /**
-     * Gets client main page
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @return Response
-     */
-    public function getClient(Application $app, Request $request)
-    {
-        return $app->redirect($app->path('prod', array('client')));
     }
 }

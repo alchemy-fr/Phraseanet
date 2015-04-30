@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Client\Root as ClientRoot;
 use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
 use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
+            'Alchemy\Phrasea\ControllerProvider\Client\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -622,8 +622,6 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/client/', new ClientRoot());
-
         $this->mount('/prod/query/', new Query());
         $this->mount('/prod/order/', new Order());
         $this->mount('/prod/baskets', new BasketController());
@@ -676,6 +674,7 @@ class Application extends SilexApplication
             '/admin/subdefs'         => 'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs',
             '/admin/task-manager'    => 'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager',
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
+            '/client/'               => 'Alchemy\Phrasea\ControllerProvider\Client\Root',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
