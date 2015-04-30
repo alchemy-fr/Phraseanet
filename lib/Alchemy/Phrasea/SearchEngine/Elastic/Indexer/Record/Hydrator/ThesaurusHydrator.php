@@ -22,12 +22,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 class ThesaurusHydrator implements HydratorInterface
 {
     private $thesaurus;
+    private $candidate_terms;
     private $helper;
 
-    public function __construct(Thesaurus $thesaurus, CandidateTerms $candidateTerms, RecordHelper $helper)
+    public function __construct(Thesaurus $thesaurus, CandidateTerms $candidate_terms, RecordHelper $helper)
     {
         $this->thesaurus = $thesaurus;
-        $this->candidateTerms = $candidateTerms;
+        $this->candidate_terms = $candidate_terms;
         $this->helper = $helper;
     }
 
@@ -81,7 +82,7 @@ class ThesaurusHydrator implements HydratorInterface
                     $record['concept_path'][$name][] = $concept->getPath();
                 }
             } else {
-                $this->candidateTerms->insert($name, $value);
+                $this->candidate_terms->insert($name, $value);
             }
         }
     }
