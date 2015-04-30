@@ -58,7 +58,7 @@ class ThesaurusHydrator implements HydratorInterface
         $field_names = array();
         foreach ($fields as $name => $root_concepts) {
             // Concepts are databox's specific, but when no root concepts are
-            // given whe need to make sure we only match in the right databox.
+            // given we need to make sure we only match in the right databox.
             $filter = $root_concepts
                 ? Filter::childOfConcepts($root_concepts)
                 : Filter::byDatabox($record['databox_id']);

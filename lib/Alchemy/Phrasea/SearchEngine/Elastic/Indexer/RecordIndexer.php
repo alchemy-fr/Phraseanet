@@ -70,7 +70,7 @@ class RecordIndexer
             $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
             $fetcher = $this->createFetcherForDatabox($databox);
             $this->indexFromFetcher($bulk, $fetcher);
-            $this->logger->info(sprintf('Finnished database %s', $databox->get_viewname()));
+            $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
         }
     }
 
