@@ -12,19 +12,20 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class MoveCollection implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.prod.move-collection'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireRight('addrecord')

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Entities\Basket as BasketEntity;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
@@ -23,13 +24,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BasketController implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.prod.basket'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers
             // Silex\Route::convert is not used as this should be done prior the before middleware

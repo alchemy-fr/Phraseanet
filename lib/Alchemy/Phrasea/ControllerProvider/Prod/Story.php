@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -24,13 +25,13 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Story implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.prod.story'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->get('/create/', function (Application $app) {
             return $app['twig']->render('prod/Story/Create.html.twig', []);

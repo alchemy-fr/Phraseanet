@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\Prod\type;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Property implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -28,9 +31,7 @@ class Property implements ControllerProviderInterface
     {
         $app['controller.prod.property'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireNotGuest();

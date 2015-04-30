@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -30,6 +31,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Order implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -37,9 +40,7 @@ class Order implements ControllerProviderInterface
     {
         $app['controller.prod.order'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireRight('order');

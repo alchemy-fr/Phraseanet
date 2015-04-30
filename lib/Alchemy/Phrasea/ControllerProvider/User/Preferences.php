@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\User;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Preferences implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
 
     /**
      * {@inheritDoc}
@@ -26,9 +28,7 @@ class Preferences implements ControllerProviderInterface
     {
         $app['controller.user.preferences'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->post('/', 'controller.user.preferences:saveUserPref')
             ->bind('save_pref');

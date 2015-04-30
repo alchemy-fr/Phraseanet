@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -20,6 +21,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Records implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -27,9 +30,7 @@ class Records implements ControllerProviderInterface
     {
         $app['controller.prod.records'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')

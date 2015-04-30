@@ -12,13 +12,15 @@
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Controller\Admin\UserController;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
 class Users implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function register(Application $app)
     {
         $app['controller.admin.users'] = $app->share(function () use ($app) {
@@ -32,13 +34,11 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        /** @var ControllerCollection $controllers */
-        $controllers = $app['controllers_factory'];
+        $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $app['firewall']->addMandatoryAuthentication($controllers);
-
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAccessToModule('admin')
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireAccessToModule('admin')
                 ->requireRight('manageusers');
         });
 

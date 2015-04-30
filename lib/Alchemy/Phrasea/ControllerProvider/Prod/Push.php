@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Controller\Prod\record_adapter;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\PushEvent;
 use Alchemy\Phrasea\Core\Event\ValidationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -33,6 +34,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Push implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     protected function getUserFormatter(Application $app)
     {
         return function (User $user) use ($app) {
@@ -105,9 +108,7 @@ class Push implements ControllerProviderInterface
     {
         $app['controller.prod.push'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireRight('push');

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Thesaurus;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Doctrine\DBAL\Driver\Connection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -19,13 +20,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Thesaurus implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.thesaurus'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function () use ($app) {
             $app['firewall']->requireAccessToModule('thesaurus');

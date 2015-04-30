@@ -11,9 +11,10 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Thesaurus;
 
-use Alchemy\Phrasea\Controller\Thesaurus\caption_field;
-use Alchemy\Phrasea\Controller\Thesaurus\caption_Field_Value;
-use Alchemy\Phrasea\Controller\Thesaurus\databox;
+use caption_field;
+use caption_Field_Value;
+use databox;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -22,15 +23,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Xmlhttp implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     const SEARCH_REPLACE_MAXREC = 25;
 
     public function connect(Application $app)
     {
         $app['controller.thesaurus.xmlhttp'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->match('acceptcandidates.j.php', 'controller.thesaurus.xmlhttp:AcceptCandidatesJson')
             ->before(function () use ($app) {

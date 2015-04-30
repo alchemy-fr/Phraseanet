@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Root;
 
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
@@ -29,13 +30,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Account implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
-        $controllers = $app['controllers_factory'];
-
         $app['account.controller'] = $this;
 
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         // Displays current logged in user account
         $controllers->get('/', 'account.controller:displayAccount')

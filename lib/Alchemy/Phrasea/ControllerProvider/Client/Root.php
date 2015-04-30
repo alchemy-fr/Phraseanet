@@ -21,11 +21,9 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['controller.client'] = $app->share(
-            function (PhraseaApplication $app) {
-                return new RootController($app);
-            }
-        );
+        $app['controller.client'] = $app->share(function (PhraseaApplication $app) {
+            return new RootController($app);
+        });
     }
 
     public function boot(Application $app)

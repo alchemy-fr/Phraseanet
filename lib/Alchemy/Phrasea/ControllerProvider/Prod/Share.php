@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Share implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -25,9 +28,7 @@ class Share implements ControllerProviderInterface
     {
         $app['controller.prod.share'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireNotGuest();

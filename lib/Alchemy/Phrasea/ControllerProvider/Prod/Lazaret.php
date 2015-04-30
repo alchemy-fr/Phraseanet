@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
@@ -23,6 +24,8 @@ use Symfony\Component\Filesystem\Exception\IOException;
 
 class Lazaret implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -33,9 +36,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $app['controller.prod.lazaret'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireRight('addrecord');

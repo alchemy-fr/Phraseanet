@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
@@ -23,13 +24,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WorkZone implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.prod.workzone'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers
             // Silex\Route::convert is not used as this should be done prior the before middleware
