@@ -351,7 +351,7 @@ class module_report_nav extends module_report
 
         $sql = '
             SELECT appli
-                FROM log FORCE INDEX (date_site, appli)
+                FROM log FORCE INDEX (date_site)
                 WHERE ' . $report_filter['sql'] . ' AND appli != \'a:0:{}\' AND !ISNULL(usrid)
             GROUP BY appli';
 
