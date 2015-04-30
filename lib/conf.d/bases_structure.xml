@@ -2883,13 +2883,6 @@
             </fields>
           </index>
           <index>
-            <name>appli</name>
-            <type>INDEX</type>
-            <fields>
-              <field>appli</field>
-            </fields>
-          </index>
-          <index>
             <name>res</name>
             <type>INDEX</type>
             <fields>
@@ -3012,7 +3005,7 @@
           </field>
           <field>
             <name>search</name>
-            <type>varchar(256)</type>
+            <type>varchar(255)</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -3119,7 +3112,7 @@
           </field>
           <field>
             <name>final</name>
-            <type>varchar(256)</type>
+            <type>varchar(255)</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -3220,7 +3213,7 @@
           </field>
           <field>
             <name>referrer</name>
-            <type>varchar(256)</type>
+            <type>varchar(255)</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -3228,7 +3221,7 @@
           </field>
           <field>
             <name>site_id</name>
-            <type>varchar(256)</type>
+            <type>varchar(255)</type>
             <null></null>
             <extra></extra>
             <default></default>
