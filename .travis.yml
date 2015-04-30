@@ -33,7 +33,6 @@ before_install:
   - yes | pecl install imagick
 
 install:
-  - npm --version
   - travis_retry npm install
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
   - travis_retry ./node_modules/.bin/grunt install-assets
@@ -50,7 +49,7 @@ before_script:
     SET @@global.wait_timeout= 999999;
     '
   - ./bin/developer system:uninstall
-  - ./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+  - ./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
   - >
     if [ "$SETUP_MODE" = "update" ]; then
       ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
