@@ -39,7 +39,17 @@ class SubdefsEditor extends AbstractEditor
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-    <embedded>0</embedded>
+  <embedded>1</embedded>
+  <sbas>0</sbas>
+  <type_image>1</type_image>
+  <type_video>1</type_video>
+  <type_audio>1</type_audio>
+  <type_document>1</type_document>
+  <type_flash>1</type_flash>
+  <type_unknown>1</type_unknown>
+  <flush>5</flush>
+  <maxrecs>20</maxrecs>
+  <maxmegs>256</maxmegs>
 </tasksettings>
 EOF;
     }
@@ -50,7 +60,17 @@ EOF;
     protected function getFormProperties()
     {
         return [
-            'embedded' => static::FORM_TYPE_BOOLEAN,
+            'sbas' => static::FORM_TYPE_INTEGER,
+            'type_image' => static::FORM_TYPE_BOOLEAN,
+            'type_video' => static::FORM_TYPE_BOOLEAN,
+            'type_audio' => static::FORM_TYPE_BOOLEAN,
+            'type_document' => static::FORM_TYPE_BOOLEAN,
+            'type_flash' => static::FORM_TYPE_BOOLEAN,
+            'type_unknown' => static::FORM_TYPE_BOOLEAN,
+            'flush' => static::FORM_TYPE_INTEGER,
+            'maxrecs' => static::FORM_TYPE_INTEGER,
+            'maxmegs' => static::FORM_TYPE_INTEGER,
+            'embedded' => static::FORM_TYPE_BOOLEAN
         ];
     }
 }

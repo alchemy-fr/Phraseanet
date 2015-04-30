@@ -82,7 +82,6 @@ class TasksServiceProvider implements ServiceProviderInterface
                 new SubdefsJob($app['dispatcher'], $logger, $app['translator']),
                 new WriteMetadataJob($app['dispatcher'], $logger, $app['translator']),
                 new WebhookJob($app['dispatcher'], $logger, $app['translator']),
-                new IndexerJob($app['dispatcher'], $logger, $app['translator']),
             ];
         });
     }

@@ -1,6 +1,62 @@
 {% extends 'admin/task-manager/task-editor/task.html.twig' %}
 
 {% block form %}
+    <div class="control-group">
+        <label class="control-label"> {{ 'Databox' | trans }}</label>
+        <div class="controls">
+            <select name="sbas">
+                <option value="">{{ 'All' | trans }}</option>
+                {% for databox in app['phraseanet.appbox'].get_databoxes() %}
+                <option value="{{ databox.get_sbas_id() }}">
+                    {{ databox.get_viewname() }}
+                    ({{ databox.get_sbas_id() }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"> {{ 'recordtype' | trans }}</label>
+        <div class="controls">
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_image" value="image"> {{ 'image' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_video" value="video"> {{ 'video' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_audio" value="audio"> {{ 'audio' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_document" value="document"> {{ 'document' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_flash" value="flash"> {{ 'flash' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_unknown" value="unknown"> {{ 'unknown' | trans }}
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"> {{ 'Number of records to process per batch' | trans }}</label>
+        <div class="controls">
+            <input class="formElem input-mini" type="text" name="flush" value="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'Restart the task every X records' | trans }}</label>
+        <div class="controls">
+            <input class="formElem input-mini" type="text" name="maxrecs" value="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'Restart the task if memory reaches' | trans }}</label>
+        <div class="controls">
+            <input class="formElem input-mini" type="text" name="maxmegs" value="">
+            <span class="help-inline">Mo</span>
+        </div>
+    </div>
 <div class="control-group">
     <div class="controls">
         <label class="checkbox">
@@ -13,6 +69,18 @@
 
 
 {% block javascript %}
+    function minmax(v, _min, _max)
+    {
+        if(v == NaN || v < _min)
+        {
+            v = _min;
+        }
+        else if(v > _max)
+        {
+            v = _max;
+        }
+        return v;
+    }
     function taskFillGraphic(xml)
     {
         if (xml) {
@@ -22,6 +90,26 @@
             with(document.forms['graphicForm'])
             {
                 embedded.checked = !!parseInt(xml.find("embedded").text());
+                type_image.checked = !!parseInt(xml.find("type_image").text());
+                type_video.checked = !!parseInt(xml.find("type_video").text());
+                type_audio.checked = !!parseInt(xml.find("type_audio").text());
+                type_document.checked = !!parseInt(xml.find("type_document").text());
+                type_flash.checked = !!parseInt(xml.find("type_flash").text());
+                type_unknown.checked = !!parseInt(xml.find("type_unknown").text());
+                flush.value = minmax(parseInt(xml.find("flush").text()), 1, 100);
+                maxrecs.value = minmax(parseInt(xml.find("maxrecs").text()), 10, 100);
+                maxmegs.value = minmax(parseInt(xml.find("maxmegs").text()), 64, 512);
+                for(i in sbas.options)
+                {
+                    if(sbas.options[i].value == parseInt(xml.find("sbas").text()) )
+                    {
+                        sbas.options[i].selected = true;
+                    }
+                    else
+                    {
+                        sbas.options[i].selected = false;
+                    }
+                }
             }
         }
     }
