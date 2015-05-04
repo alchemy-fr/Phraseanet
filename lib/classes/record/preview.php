@@ -111,6 +111,7 @@ class record_preview extends record_adapter
                     $this->original_item = $record;
                     $sbas_id = $record->getDataboxId();
                     $record_id = $record->getRecordId();
+file_put_contents("/tmp/phraseanet_debug", sprintf("%s (%d) pos=%s, rid=%s\n", __FILE__, __LINE__, $pos, $record_id), FILE_APPEND);
                     break;
                 }
                 break;
@@ -212,9 +213,11 @@ class record_preview extends record_adapter
             case 'RESULT':
                 $perPage = 56;
                 $index = ($this->pos - 3) < 0 ? 0 : ($this->pos - 3);
+file_put_contents("/tmp/phraseanet_debug", sprintf("%s (%d) pos=%s, index=%s\n", __FILE__, __LINE__, $this->pos, $index), FILE_APPEND);
                 $results = $this->searchEngine->query($this->query, $index, $perPage, $this->options);
 
                 $this->train = $results->getResults()->toArray();
+file_put_contents("/tmp/phraseanet_debug", sprintf("%s (%d) train=%s\n", __FILE__, __LINE__, var_export($this->train, true)), FILE_APPEND);
                 break;
             case 'BASK':
                 $this->train = $this->container->getElements();
