@@ -52,7 +52,7 @@ class Compiler
         }
 
         if (!is_writable(dirname($target))) {
-            throw new RuntimeException(realpath(dirname($target)) . ' is not writable.');
+            throw new RuntimeException(dirname($target) . ' is not writable.');
         }
 
         $commands = $files;
