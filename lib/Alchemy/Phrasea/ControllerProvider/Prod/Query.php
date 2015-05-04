@@ -227,9 +227,11 @@ class Query implements ControllerProviderInterface
 
         $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query, $options);
 
+        $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
         return $app->json([
             'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
                 'records'  => $record->get_train(),
+                'index' => $index,
                 'selected' => $pos
             ])
         ]);
