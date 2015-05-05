@@ -25,9 +25,9 @@
                 {"width":box_w, "height":box_h}
             )
         %}
-
-        <li class="prevTrainCurrent current{{loop.index0}} {% if loop.index0 == selected %}selected{% endif %}">
-            <img jsargs="RESULT|{{loop.index0}}|" class="openPreview" src="{{url}}"
+        {%  set rec_number = loop.index0 + index %}
+        <li class="prevTrainCurrent current{{rec_number}} {% if rec_number == selected %}selected{% endif %}">
+            <img jsargs="RESULT|{{rec_number}}|" class="openPreview" src="{{url}}"
                src="{{url}}"
                style="
                    width:{{fit_size.width}}px;
