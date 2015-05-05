@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\SearchEngineController;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Silex\ControllerCollection;
 use Silex\ServiceProviderInterface;
 use Silex\Application;
@@ -23,7 +24,9 @@ class SearchEngine implements ControllerProviderInterface, ServiceProviderInterf
     public function register(Application $app)
     {
         $app['controller.admin.search-engine'] = $app->share(function (PhraseaApplication $app) {
-            return new SearchEngineController($app);
+            /** @var SearchEngineInterface $searchEngine */
+            $searchEngine = $app['search_engine'];
+            return new SearchEngineController($searchEngine->getConfigurationPanel());
         });
     }
 
