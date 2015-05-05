@@ -192,8 +192,6 @@ function checkFilters(save) {
     switches.filter('.was').removeClass('was');
     switches.filter('option:selected, input:checked').addClass('was');
 
-    $('select option:selected:not(".default-selection")', container).removeAttr('selected').selected(false);
-
     $('select option.field_switch', container).addClass("hidden");
     $('input.field_switch:checked', container).removeAttr('checked');
     $('input.field_switch:checkbox', container).parent().hide();
