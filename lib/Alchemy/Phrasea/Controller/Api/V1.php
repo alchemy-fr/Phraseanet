@@ -498,16 +498,37 @@ class V1 implements ControllerProviderInterface
         });
 
         /**
-         * Route : /stories/{story_id}/records
+         * Route : /stories/{databox_id}/{story_id}/addrecords
          *
          * Method : POST
          *
          * Parameters :
          *
          */
-        $controllers->post('/stories/{databox_id}/{story_id}/records', function (SilexApplication $app, Request $request, $databox_id, $story_id) {
+        $controllers->post('/stories/{databox_id}/{story_id}/addrecords', function (SilexApplication $app, Request $request, $databox_id, $story_id) {
             return $app['api']->add_records_to_story($app, $request, $databox_id, $story_id)->get_response();
+        })->before(function(Request $request, SilexApplication $app) {
+            if($request->getContentType() != 'json') {
+                $app->abort(406, 'Invalid Content Type given.');
+            }
         });
+
+        /**
+         * Route : /stories/{databox_id}/{story_id}/setcover
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *
+         */
+        $controllers->post('/stories/{databox_id}/{story_id}/setcover', function (SilexApplication $app, Request $request, $databox_id, $story_id) {
+            return $app['api']->set_story_cover($app, $request, $databox_id, $story_id)->get_response();
+        })->before(function(Request $request, SilexApplication $app) {
+            if($request->getContentType() != 'json') {
+                $app->abort(406, 'Invalid Content Type given.');
+            }
+        });
+
 
         /**
          * Route : /search/
