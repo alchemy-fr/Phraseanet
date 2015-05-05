@@ -3005,7 +3005,6 @@ function set_up_feed_box(data) {
     var $form = $('form.main_form', dialog.getDomElement());
 
     $feeds_item.bind('click',function () {
-        console.log("clcik");
         $feeds_item.removeClass('selected');
         $(this).addClass('selected');
         $('input[name="feed_id"]', $form).val($('input', this).val());

@@ -268,6 +268,12 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
+        $params['body']['highlight'] = [
+            'pre_tags' =>  ['[[em]]'],
+            'post_tags' =>  ['[[/em]]'],
+            'order' => 'score',
+            'fields' => ['caption.*' => new \stdClass()]
+        ];
 
         if ($aggs = $this->getAggregationQueryParams($options)) {
             $params['body']['aggs'] = $aggs;
@@ -280,7 +286,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
-            $results[] = ElasticsearchRecordHydrator::hydrate($hit['_source'], $n++);
+            $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n++);
         }
 
         $facets = $this->facetsResponseFactory->__invoke($res);

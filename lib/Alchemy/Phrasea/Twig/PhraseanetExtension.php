@@ -2,10 +2,10 @@
 
 namespace Alchemy\Phrasea\Twig;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
-use Silex\Application;
 
 class PhraseanetExtension extends \Twig_Extension
 {
@@ -40,13 +40,41 @@ class PhraseanetExtension extends \Twig_Extension
             )),
             new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
             new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
+            new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
         );
+    }
+
+    public function getCaptionField(RecordInterface $record, $field, $value)
+    {
+        if ($record instanceof ElasticsearchRecord) {
+            $highlightKey = sprintf('caption.%s', $field);
+
+            $highlights = $record->getHighlight();
+            if (false === isset($highlights[$highlightKey])) {
+                return implode('; ', (array) $value);
+            }
+
+            $highlightValue = $highlights[$highlightKey];
+
+            // if field is multivalued, merge highlighted values with captions ones
+            if (is_array($value)) {
+                $highlightValue = array_merge($highlightValue, array_diff($value, array_map(function($value) {
+                    return str_replace(array('[[em]]', '[[/em]]'), array('', ''), $value);
+                }, $highlightValue)));
+            }
+
+            return implode('; ', (array) $highlightValue);
+        }
+
+        return implode('; ', (array) $value);
     }
 
     public function getRecordFlags(RecordInterface $record)
     {
         $recordStatuses = [];
-        $databox = $this->app['phraseanet.appbox']->get_databox($record->getDataboxId());
+        /** @var \appbox $appbox */
+        $appbox = $this->app['phraseanet.appbox'];
+        $databox = $appbox->get_databox($record->getDataboxId());
 
         $structure = $databox->getStatusStructure()->toArray();
 
@@ -182,8 +210,9 @@ class PhraseanetExtension extends \Twig_Extension
     public function getSubdefUrl(RecordInterface $record, $subdefName)
     {
         if ($record instanceof ElasticsearchRecord) {
-            if ($record->getSubdefs()->containsKey($subdefName)) {
-                $thumbnail = $record->getSubdefs()->get($subdefName);
+            $subdefs = $record->getSubdefs();
+            if (isset($subdefs[$subdefName])) {
+                $thumbnail = $subdefs[$subdefName];
                 if (null !== $path = $thumbnail['path']) {
                     if (is_string($path) && '' !== $path) {
                         return $this->app['phraseanet.static-file']->getUrl($path);

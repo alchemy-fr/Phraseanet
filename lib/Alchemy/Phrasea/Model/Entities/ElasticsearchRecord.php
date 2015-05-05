@@ -11,9 +11,8 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\MutableRecordInterface;
+use Alchemy\Phrasea\Model\RecordInterface;
 
 /**
  * Record entity from elastic search
@@ -26,7 +25,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $baseId;
     private $collectionName;
     private $mimeType;
-    private $title;
+    private $title = [];
     private $originalName;
     private $updated;
     private $created;
@@ -36,14 +35,11 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $type;
     private $status;
     private $isStory;
-    /** @var ArrayCollection */
-    private $caption;
-    /** @var ArrayCollection */
-    private $exif;
-    /** @var ArrayCollection */
-    private $subdefs;
-    /** @var ArrayCollection */
-    private $flags;
+    private $caption = [];
+    private $exif = [];
+    private $subdefs = [];
+    private $flags = [];
+    private $highlight = [];
 
     /** {@inheritdoc} */
     public function getId()
@@ -108,7 +104,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     /** {@inheritdoc} */
     public function setIsStory($isStory)
     {
-        $this->isStory = (bool) $isStory;
+        $this->isStory = (bool)$isStory;
     }
 
     /** {@inheritdoc} */
@@ -185,12 +181,12 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
      */
     public function getTitle($locale = null)
     {
-        if ($locale && $this->title->containsKey($locale)) {
-            return $this->title->get($locale);
+        if ($locale && isset($this->title[$locale])) {
+            return $this->title[$locale];
         }
 
-        if ($this->title->containsKey('default')) {
-            return $this->title->get('default');
+        if (isset($this->title['default'])) {
+            return $this->title['default'];
         }
 
         return $this->getOriginalName();
@@ -199,9 +195,9 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     /**
      * Sets a collection of titles
      *
-     * @param ArrayCollection $titles
+     * @param string[] $titles
      */
-    public function setTitles(ArrayCollection $titles)
+    public function setTitles(array $titles)
     {
         $this->title = $titles;
     }
@@ -240,45 +236,41 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         $this->uuid = $uuid;
     }
 
-    /** @return ArrayCollection */
+    /** @return array */
     public function getCaption()
     {
         return $this->caption;
     }
 
-    public function setCaption(ArrayCollection $caption)
+    public function setCaption(array $caption)
     {
         $this->caption = $caption;
     }
 
-    /** @return ArrayCollection */
+    /** @return array */
     public function getExif()
     {
         return $this->exif;
     }
 
-    /**
-     * @param mixed $exif
-     */
-    public function setExif(ArrayCollection $exif)
+    public function setExif(array $exif)
     {
         $this->exif = $exif;
     }
 
-    /** @return ArrayCollection */
+    /** @return array */
     public function getSubdefs()
     {
         return $this->subdefs;
     }
 
-    /** @return ArrayCollection */
-    public function setSubdefs(ArrayCollection $subdefs)
+    public function setSubdefs(array $subdefs)
     {
         $this->subdefs = $subdefs;
     }
 
     /**
-     * @return ArrayCollection
+     * @return array
      */
     public function getFlags()
     {
@@ -286,9 +278,9 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     }
 
     /**
-     * @param ArrayCollection $flags
+     * @param array $flags
      */
-    public function setFlags(ArrayCollection $flags)
+    public function setFlags(array $flags)
     {
         $this->flags = $flags;
     }
@@ -318,5 +310,21 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setPosition($position)
     {
         $this->position = $position;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHighlight()
+    {
+        return $this->highlight;
+    }
+
+    /**
+     * @param array $highlight
+     */
+    public function setHighlight(array $highlight)
+    {
+        $this->highlight = $highlight;
     }
 }
