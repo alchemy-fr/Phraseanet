@@ -9,52 +9,52 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\CLI;
-use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Behat;
 use Alchemy\Phrasea\Command\Developer\BowerInstall;
 use Alchemy\Phrasea\Command\Developer\ComposerInstall;
-use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\IniReset;
 use Alchemy\Phrasea\Command\Developer\InstallAll;
 use Alchemy\Phrasea\Command\Developer\JsFixtures;
+use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 use Alchemy\Phrasea\Command\Developer\SetupTestsDbs;
-use Alchemy\Phrasea\Command\Developer\Uninstaller;
 use Alchemy\Phrasea\Command\Developer\TranslationDumper;
-
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
-// DBAL Commands
-use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
-use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
-// ORM Commands
-use Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand;
-use Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand;
-use Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand;
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
-use Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand;
-use Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand;
-use Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand;
-use Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand;
-use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
-use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
-use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
-use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
-// Migration Commands
+use Alchemy\Phrasea\Command\Developer\Uninstaller;
+use Alchemy\Phrasea\Core\Version;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
+use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand;
+use Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand;
+use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
+use Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand;
+use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
+use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Symfony\Component\Console\Input\ArgvInput;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], getenv('PHRASEANET_ENV') ?: Application::ENV_PROD);
 $version = new Version();
 $cli = new CLI("
  ___  ___  _  _  ___  __    __  ___  ___  ___     ____  __    __  __    ___
@@ -66,7 +66,11 @@ $cli = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
+            . ' Phraseanet Developer Tools ',
+    $version->getName() . ' ' . $version->getNumber(),
+    $env,
+    $input->hasParameterOption('--disable-plugins') ? ['plugins.enable' => false] : []
+);
 
 if ($cli['configuration.store']->isSetup()) {
     $helpers = [
@@ -124,5 +128,8 @@ $cli['console']->addCommands([
     new StatusCommand(),
     new VersionCommand(),
 ]);
+foreach ($cli['plugins.commands'] as $pluginCommand) {
+    $cli->command($pluginCommand);
+}
 
 exit(is_int($cli->run()) ? : 1);

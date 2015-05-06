@@ -72,10 +72,6 @@ class Migration38Test extends AbstractSetupTester
                 'port' => 21211,
             ]
         ];
-        $modified['main']['opcodecache'] = [
-            'type' => 'ApcCache',
-            'options' => [],
-        ];
         $modified['border-manager']['enabled'] = false;
 
         return $modified;

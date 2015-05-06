@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -8,58 +7,79 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Alchemy\Phrasea\Plugin;
 
-use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
-use Alchemy\Phrasea\Plugin\Schema\Manifest;
+use Silex\Application;
+use Symfony\Component\Console\Command\Command;
 
 class Plugin
 {
-    private $error;
-    private $manifest;
+    /** @var string */
     private $name;
+    /** @var string */
+    private $prettyName;
+    /** @var array */
+    protected $configuration;
 
-    public function __construct($name, Manifest $manifest = null, PluginValidationException $error = null)
+    public function __construct($name, array $configuration)
     {
-        if ($manifest === $error || (null !== $manifest && null !== $error)) {
-            throw new \LogicException('A plugin is either installed (with a stable manifest) or on error (given its error).');
-        }
-
-        $this->name = $name;
-        $this->manifest = $manifest;
-        $this->error = $error;
+        $this->prettyName = $name;
+        $this->name = strtolower($name);
+        $this->configuration = $configuration;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    final public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @return Boolean
-     */
-    public function isErroneous()
+    final public function getPrettyName()
     {
-        return null !== $this->error;
+        return $this->prettyName;
     }
 
     /**
-     * @return Manifest
+     * Get path to assets to be installed
+     *
+     * @return string
      */
-    public function getManifest()
+    public function getAssetsPath()
     {
-        return $this->manifest;
+        return null;
     }
 
     /**
-     * @return PluginValidationException
+     * Get commands to be registered on CLI. Using their isEnabled() method.
+     *
+     * In case Command extends Alchemy\Phrasea\Command\Command, the Pimple Container will be injected
+     * before checking for enabled.
+     *
+     * @return Command[]
      */
-    public function getError()
+    public function getCommands()
     {
-        return $this->error;
+        return [];
+    }
+
+    /**
+     * Use this to mount your routes.
+     *
+     * @param Application $app
+     * @return void
+     */
+    public function bindWebRoutes(Application $app)
+    {
+        // No routes bound by default
+    }
+
+    /**
+     * Use this to mount your api routes.
+     *
+     * @param Application $app
+     * @return void
+     */
+    public function bindApiRoutes(Application $app)
+    {
+        // No routes bound by default
     }
 }

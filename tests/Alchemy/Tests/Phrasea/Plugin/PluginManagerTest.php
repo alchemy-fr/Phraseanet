@@ -1,57 +1,123 @@
 <?php
-
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2015 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Alchemy\Tests\Phrasea\Plugin;
 
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Plugin\Plugin;
 use Alchemy\Phrasea\Plugin\PluginManager;
-use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
+use Alchemy\Phrasea\Plugin\PluginRepository;
+use Alchemy\Tests\Phrasea\Plugin\Fixtures\BarPlugin;
+use Alchemy\Tests\Phrasea\Plugin\Fixtures\FooPlugin;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use Prophecy\Argument;
 
-class PluginManagerTest extends PluginTestCase
+class PluginManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testListGoodPlugins()
+    private $repository;
+    private $dir;
+    /** @var PropertyAccess */
+    private $propertyAccess;
+    /** @var vfsStreamDirectory */
+    private $root;
+    /** @var PluginManager */
+    private $sut;
+
+    protected function setUp()
     {
-        $prevPlugins = self::$DI['cli']['conf']->get('plugins');
-        self::$DI['cli']['conf']->set('plugins', []);
-        self::$DI['cli']['conf']->set(['plugins', 'test-plugin', 'enabled'], true);
+        $this->root = vfsStream::setup('root');
 
-        $manager = new PluginManager(__DIR__ . '/Fixtures/PluginDirInstalled', self::$DI['cli']['plugins.plugins-validator'], self::$DI['cli']['conf']);
-        $plugins = $manager->listPlugins();
-        $this->assertCount(1, $plugins);
-        $plugin = array_pop($plugins);
+        $this->repository = $this->prophesize(PluginRepository::class);
+        $repository = [
+            'foo' => [
+                'name'     => 'Foo',
+                'class'    => FooPlugin::class,
+                'basePath' => vfsStream::url('root/foo'),
+            ],
+            'bar' => [
+                'name'     => 'BAR',
+                'class'    => Plugin::class,
+                'basePath' => vfsStream::url('root/bar'),
+            ],
+        ];
+        $this->repository->findAll()->willReturn($repository);
+        $this->repository->find('foo')->willReturn($repository['foo']);
+        $this->repository->find('bar')->willReturn($repository['bar']);
 
-        $this->assertFalse($plugin->isErroneous());
+        $prophesized = $this->prophesize(ConfigurationInterface::class);
+        $prophesized->getConfig()->willReturn([]);
+        $prophesized->setConfig(Argument::any())->will(function ($args) {
+            $this->getConfig()->willReturn($args[0]);
+        });
+        $this->propertyAccess = new PropertyAccess($prophesized->reveal());
 
-        self::$DI['cli']['conf']->set('plugins', $prevPlugins);
+        $this->dir = vfsStream::url('root');
+
+        $this->sut = new PluginManager(
+            $this->repository->reveal(),
+            $this->propertyAccess,
+            $this->dir
+        );
     }
 
-    public function testListWrongPlugins()
+    public function testItEnablesPlugin()
     {
-        $prevPlugins = self::$DI['cli']['conf']->get('plugins');
-        self::$DI['cli']['conf']->set('plugins', []);
-        self::$DI['cli']['conf']->set(['plugins', 'plugin-test', 'enabled'], true);
-        self::$DI['cli']['conf']->set(['plugins', 'plugin-test2', 'enabled'], true);
-        self::$DI['cli']['conf']->set(['plugins', 'plugin-test3', 'enabled'], true);
+        $this->assertTrue($this->sut->enablePlugin('foo'));
 
-        $manager = new PluginManager(__DIR__ . '/Fixtures/WrongPlugins', self::$DI['cli']['plugins.plugins-validator'], self::$DI['cli']['conf']);
-        $plugins = $manager->listPlugins();
-        $this->assertCount(3, $plugins);
-        $plugin = array_pop($plugins);
-
-        $this->assertTrue($plugin->isErroneous());
-
-        self::$DI['cli']['conf']->set('plugins', $prevPlugins);
+        $expected = [
+            'foo' => [
+                'enabled' => true,
+            ],
+        ];
+        $this->assertEquals($expected, $this->propertyAccess->get(['plugins']));
+        $this->assertFileEquals(__DIR__ . '/Fixtures/testFooPluginEnabled.txt', vfsStream::url('root/plugins.php'));
     }
 
-    public function testHasPlugin()
+    public function testItDisablesPluginAndKeepConfiguration()
     {
-        $manager = new PluginManager(__DIR__ . '/Fixtures/PluginDirInstalled', self::$DI['cli']['plugins.plugins-validator'], self::$DI['cli']['conf']);
-        $this->assertTrue($manager->hasPlugin('test-plugin'));
-        $this->assertFalse($manager->hasPlugin('test-plugin2'));
+        $this->sut->enablePlugin('foo');
+        $this->sut->setPluginParameters('foo', ['test']);
+
+        $this->assertTrue($this->sut->disablePlugin('foo'), 'Expects disablePlugin to return true while changing configuration');
+
+        $expected = [
+            'foo' => [
+                'enabled'    => false,
+                'parameters' => [
+                    'test',
+                ],
+            ],
+        ];
+        $this->assertEquals($expected, $this->propertyAccess->get(['plugins']));
+        $this->assertFileEquals(__DIR__ . '/Fixtures/testNoEnabled.txt', vfsStream::url('root/plugins.php'));
     }
 
-    private function createValidatorMock()
+    public function testItEnablesPluginWithConfiguration()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\PluginValidator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->sut->enablePlugin('foo');
+        $this->sut->enablePlugin('bar');
+        $this->sut->setPluginParameters('bar', ['test']);
+
+        $expected = [
+            'foo' => [
+                'enabled' => true,
+            ],
+            'bar' => [
+                'enabled'    => true,
+                'parameters' => [
+                    'test',
+                ],
+            ],
+        ];
+        $this->assertEquals($expected, $this->propertyAccess->get(['plugins']));
+        $this->assertFileEquals(__DIR__ . '/Fixtures/testFooBarWithParamsEnabled.txt', vfsStream::url('root/plugins.php'));
     }
 }

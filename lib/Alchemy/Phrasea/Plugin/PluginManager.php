@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -8,73 +7,257 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Alchemy\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
-use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
+use Silex\Application;
 
 class PluginManager
 {
-    private $pluginDir;
-    private $validator;
-    private $conf;
+    /** @var PropertyAccess */
+    private $config;
+    /** @var PluginRepository */
+    private $repository;
+    /** @var \Twig_Environment */
+    private $twig;
+    /** @var string Path to plugin files */
+    private $dir;
+    /** @var bool */
+    private $autoDumping = true;
 
-    public function __construct($pluginDir, PluginValidator $validator, PropertyAccess $conf)
+    /**
+     * @param PluginRepository $repository
+     * @param PropertyAccess   $config
+     * @param string           $dir
+     */
+    public function __construct(PluginRepository $repository, PropertyAccess $config, $dir)
     {
-        $this->pluginDir = $pluginDir;
-        $this->validator = $validator;
-        $this->conf = $conf;
+        $this->repository = $repository;
+        $this->config = $config;
+        if (!is_dir($dir) || !is_writable($dir)) {
+            throw new \UnexpectedValueException('expects dir to be a writable directory');
+        }
+        $this->dir = $dir;
     }
 
     /**
-     * @return Plugin[] An array containing plugins
+     * @param bool $autoDumping
      */
-    public function listPlugins()
+    public function setAutoDumping($autoDumping)
     {
-        $plugins = [];
-
-        foreach ($this->conf->get('plugins') as $name => $config) {
-            $manifest = $error = null;
-
-            try {
-                $manifest = $this->validator->validatePlugin($this->pluginDir.'/'.$name);
-            } catch (PluginValidationException $e) {
-                $error = $e;
-            }
-
-            $plugins[$name] = new Plugin($name, $manifest, $error);
-        }
-
-        return $plugins;
+        $this->autoDumping = (bool) $autoDumping;
     }
 
-    public function hasPlugin($name)
+    /**
+     * @return boolean
+     */
+    public function isAutoDumping()
     {
-        return array_key_exists($name, $this->conf->get('plugins'));
+        return $this->autoDumping;
     }
 
-    public function enable($name)
+    /**
+     * @param string $name
+     * @return bool Whether configuration was changed
+     * @throws PluginException
+     */
+    public function enablePlugin($name)
     {
-        $this->conf->set(['plugins', $name, 'enabled'], true);
-
-        return $this;
-    }
-
-    public function disable($name)
-    {
-        $this->conf->set(['plugins', $name, 'enabled'], false);
-
-        return $this;
-    }
-
-    public function isEnabled($name)
-    {
-        if (!$this->hasPlugin($name)) {
+        if ($this->isPluginEnabled($name)) {
             return false;
         }
 
-        return $this->conf->get(['plugins', $name, 'enabled'], false);
+        $name = strtolower($name);
+        $this->repository->find($name);
+        $this->config->set(['plugins', $name, 'enabled'], true);
+        if ($this->autoDumping) {
+            $this->dump();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $name
+     * @return bool Whether configuration was changed
+     */
+    public function disablePlugin($name)
+    {
+        if (!$this->isPluginEnabled($name)) {
+            return false;
+        }
+
+        $this->config->set(['plugins', strtolower($name), 'enabled'], false);
+        if ($this->autoDumping) {
+            $this->dump();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $name
+     * @return bool Whether configuration was changed
+     */
+    public function removePlugin($name)
+    {
+        $name = strtolower($name);
+        if (!$this->config->has(['plugins', $name])) {
+            return false;
+        }
+
+        $this->config->remove(['plugins', $name, 'enabled']);
+        if ($this->autoDumping) {
+            $this->dump();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $name
+     * @return null|array
+     */
+    public function getPluginParameters($name)
+    {
+        return $this->config->get(['plugins', strtolower($name), 'parameters'], []);
+    }
+
+    /**
+     * @param string $name
+     * @param array  $parameters
+     * @return bool Whether configuration was changed
+     */
+    public function setPluginParameters($name, array $parameters)
+    {
+        $this->config->set(['plugins', strtolower($name), 'parameters'], $parameters);
+        if ($this->autoDumping) {
+            $this->dump();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $name
+     * @return bool Whether configuration changed
+     */
+    public function unsetPluginParameters($name)
+    {
+        if (! $this->config->has(['plugins', strtolower($name), 'parameters'])) {
+            return false;
+        };
+
+        $this->config->remove(['plugins', strtolower($name), 'parameters']);
+        if ($this->autoDumping) {
+            $this->dump();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isPluginEnabled($name)
+    {
+        return $this->config->get(['plugins', strtolower($name), 'enabled'], false);
+    }
+
+    /**
+     * @param \Twig_Environment $twig
+     */
+    public function setTwig(\Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+    }
+
+    /**
+     * @return \Twig_Environment
+     */
+    public function getTwig()
+    {
+        if (!$this->twig) {
+            $templates = [
+                'plugins.php' => '<?php
+// This file is automatically generated, please do not edit it.
+
+{% if plugins is empty %}
+return [];
+{% else %}
+$plugins = array ();
+
+{% for name, plugin in plugins %}
+// plugin {{ name }}
+{% if plugin.parameters is empty %}
+$plugins[] = new {{ plugin.class }}(\'{{ plugin.name }}\', array ());
+{% else %}
+$parameters = {{ plugin.parameters|export }};
+$plugins[] = new {{ plugin.class }}(\'{{ plugin.name }}\', $parameters);
+{% endif %}
+
+{% endfor %}
+return $plugins;
+{% endif %}
+',
+                'lessfile.less' => '// This file is automatically generated, please do not edit it.
+{% for name, plugin in plugins %}
+{% set filename = plugin.basePath ~ \'/less/\' ~ lessfilename %}
+{% if file_exists(filename) %}
+@include "{{ filename }}";
+{% endif %}
+{% endfor %}
+',
+            ];
+            $loader = new \Twig_Loader_Array($templates);
+            $this->twig = new \Twig_Environment($loader, ['autoescape' => false]);
+            $this->twig->addFilter(new \Twig_SimpleFilter('export', function ($data) {
+                return var_export($data, true);
+            }));
+            $this->twig->addFunction(new \Twig_SimpleFunction('file_exists', 'file_exists'));
+        }
+
+        return $this->twig;
+    }
+
+    public function dump()
+    {
+        $plugins = [];
+        foreach ($this->repository->findAll() as $name => $data) {
+            if ($this->isPluginEnabled($name)) {
+                $plugins[$name] = array_merge($data, ['parameters' => $this->getPluginParameters($name)]);
+            }
+        }
+
+        $this->render($plugins);
+    }
+
+    /**
+     * @param Plugin[] $plugins
+     */
+    private function render(array $plugins)
+    {
+        $twig = $this->getTwig();
+
+        foreach ($this->getTemplates() as $filename => $env) {
+            $options = ['plugins' => $plugins];
+            if (isset($env['options'])) {
+                $options = array_merge($env['options'], $options);
+            }
+            file_put_contents($filename, $twig->render($env['name'], $options));
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function getTemplates()
+    {
+        return [
+            $this->dir . '/plugins.php' => ['name' => 'plugins.php'],
+            $this->dir . '/login.less' => ['name' => 'lessfile.less', 'options' => ['lessfile' => 'login']],
+            $this->dir . '/account.less' => ['name' => 'lessfile.less', 'options' => ['lessfile' => 'account']],
+        ];
     }
 }

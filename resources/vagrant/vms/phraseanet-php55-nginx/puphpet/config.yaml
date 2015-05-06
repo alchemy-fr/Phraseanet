@@ -6,7 +6,6 @@ vagrantfile-local:
         box_url: puphpet/debian75-x64
         hostname: phraseanet-php55-nginx
         memory: '4096'
-        cpus: '2'
         chosen_provider: virtualbox
         network:
             private_network: 192.168.56.101
@@ -17,6 +16,7 @@ vagrantfile-local:
         provider:
             virtualbox:
                 modifyvm:
+                    cpus: '2'
                     natdnshostresolver1: on
                 setextradata:
                     VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root: 1

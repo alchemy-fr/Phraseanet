@@ -65,25 +65,24 @@ class Uninstaller extends Command
             }
         }
 
-        foreach ($this->container['cache.paths'] as $path) {
-            foreach ([
-                 $path.'/cache_registry.php',
-                 $path.'/cache_registry.yml',
-                 $path.'/serializer',
-                 $path.'/doctrine',
-                 $path.'/twig',
-                 $path.'/translations',
-                 $path.'/minify',
-                 $path.'/profiler',
-            ] as $resource) {
-                if (is_dir($resource)) {
-                    $finder = new Finder();
-                    foreach ($finder->files()->in($resource) as $file) {
-                        $this->container['filesystem']->remove($file);
-                    }
-                } elseif (is_file($resource)) {
-                    $this->container['filesystem']->remove($resource);
+        $path = $this->container['cache.path'];
+        foreach ([
+             $path.'/cache_registry.php',
+             $path.'/cache_registry.yml',
+             $path.'/serializer',
+             $path.'/doctrine',
+             $path.'/twig',
+             $path.'/translations',
+             $path.'/minify',
+             $path.'/profiler',
+        ] as $resource) {
+            if (is_dir($resource)) {
+                $finder = new Finder();
+                foreach ($finder->files()->in($resource) as $file) {
+                    $this->container['filesystem']->remove($file);
                 }
+            } elseif (is_file($resource)) {
+                $this->container['filesystem']->remove($resource);
             }
         }
 

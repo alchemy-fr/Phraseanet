@@ -89,7 +89,6 @@ use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
-use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RandomGeneratorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
@@ -107,6 +106,8 @@ use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Plugin\PluginManager;
+use Alchemy\Phrasea\Plugin\PluginServiceProvider;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\Fit;
@@ -174,9 +175,9 @@ class Application extends SilexApplication
         return $this->environment;
     }
 
-    public function __construct($environment = self::ENV_PROD)
+    public function __construct($environment = self::ENV_PROD, array $values = [])
     {
-        parent::__construct();
+        parent::__construct($values);
 
         error_reporting(-1);
 
@@ -189,11 +190,6 @@ class Application extends SilexApplication
         $this['debug'] = $this->share(function (Application $app) {
             return Application::ENV_PROD !== $app->getEnvironment();
         });
-
-        if ($this['debug']) {
-            ini_set('log_errors', 'on');
-            ini_set('error_log', $this['root.path'].'/logs/php_error.log');
-        }
 
         $this->register(new ConfigurationServiceProvider());
         $this->register(new MonologServiceProvider());
@@ -288,7 +284,6 @@ class Application extends SilexApplication
         $this->setupXpdf();
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
-        $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
         $this->register(new ContentNegotiationServiceProvider());
         $this->register(new LocaleServiceProvider());
@@ -323,18 +318,9 @@ class Application extends SilexApplication
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
         }
-    }
 
-    /**
-     * Loads Phraseanet plugins
-     */
-    public function loadPlugins()
-    {
-        call_user_func(function ($app) {
-            if (file_exists($app['plugin.path'] . '/services.php')) {
-                require $app['plugin.path'] . '/services.php';
-            }
-        }, $this);
+        // This should be last added service register because all standard phraseanet services should be defined
+        $this->register(new PluginServiceProvider());
     }
 
     /**
@@ -389,10 +375,6 @@ class Application extends SilexApplication
                 $twig->setCache($app['cache.path'].'/twig');
 
                 $paths = [];
-                if (file_exists($app['plugin.path'] . '/twig-paths.php')) {
-                    $paths = require $app['plugin.path'] . '/twig-paths.php';
-                }
-
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
                     $paths[] = $app['root.path'] . '/config/templates/mobile';
                     $paths[] = $app['root.path'] . '/templates/mobile';
@@ -686,6 +668,9 @@ class Application extends SilexApplication
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);
         }
+
+        // mount routes of plugins
+        call_user_func($this['plugins.routes'], 'web');
     }
 
     /**
@@ -714,25 +699,11 @@ class Application extends SilexApplication
         $this['root.path'] = realpath(__DIR__ . '/../../..');
         // temporary resources default path such as download zip, quarantined documents etc ..
         $this['tmp.path'] = $this['root.path'].'/tmp';
-        // plugin path
-        $this['plugin.path'] = $dir = $this['root.path'].'/plugins';
         // thumbnails path
         $this['thumbnail.path'] = $dir = $this['root.path'].'/www/thumbnails';
 
-        // cache path for dev env
-        $this['cache.dev.path'] = $this->share(function() {
-            $path =  sys_get_temp_dir().'/'.md5($this['root.path']);
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
-
         // cache path (twig, minify, translations, configuration, doctrine metas serializer metas, profiler etc ...)
         $this['cache.path'] = $this->share(function() {
-//            if ($this->getEnvironment() !== Application::ENV_PROD) {
-//                return $this['cache.dev.path'];
-//            }
             $defaultPath = $path = $this['root.path'].'/cache';
             if ($this['phraseanet.configuration']->isSetup()) {
                 $path = $this['conf']->get(['main', 'storage', 'cache'], $path);
@@ -743,14 +714,6 @@ class Application extends SilexApplication
             $this['filesystem']->mkdir($path);
 
             return $path;
-        });
-
-        $this['cache.paths'] = $this->share(function() {
-            return array(
-                self::ENV_DEV => $this['cache.path'],
-                self::ENV_TEST => $this['cache.path'],
-                self::ENV_PROD => $this['cache.path']
-            );
         });
 
         // log path
@@ -1049,14 +1012,40 @@ class Application extends SilexApplication
     private function setupMonolog()
     {
         $this['monolog.name'] = 'phraseanet';
-        $this['monolog.handler'] = $this->share(function () {
-            return new NullHandler();
+        $this['monolog.logfile'] = function () {
+            return $this['root.path'].'/logs/php_error.log';
+        };
+        if (!$this['debug']) {
+            // Stop logging when in production mode (Current mode)
+            // Would be better to log only info++
+            $this['monolog.handler'] = new NullHandler();
+        }
+
+        $this['monolog.factory'] = $this->protect(function ($name) {
+            /** @var Logger $logger */
+            $logger = new $this['monolog.logger.class']($name);
+
+            $handlersId = 'monolog.' . $name . '.handlers';
+            $handlers = isset($this[$handlersId]) ? $this[$handlersId] : [$this['monolog.handler']];
+
+            foreach ($handlers as $handler) {
+                $logger->pushHandler($handler);
+            }
+
+            return $logger;
         });
+
         $this['monolog'] = $this->share($this->extend('monolog', function (Logger $logger) {
             $logger->pushProcessor(new IntrospectionProcessor());
 
             return $logger;
         }));
+
+        foreach (['plugins'] as $channel) {
+            $this['monolog.' . $channel] = $this->share(function () use ($channel) {
+                return $this['monolog.factory']($channel);
+            });
+        }
     }
 
     private function setupEventDispatcher()
@@ -1106,5 +1095,13 @@ class Application extends SilexApplication
     {
         $this['charset'] = 'UTF-8';
         mb_internal_encoding($this['charset']);
+    }
+
+    /**
+     * @return PluginManager
+     */
+    public function getPluginManager()
+    {
+        return $this['plugins.manager'];
     }
 }
