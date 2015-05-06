@@ -35,113 +35,32 @@ use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
-    /**
-     *
-     * @var <type>
-     */
     protected $xml;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $base_id;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $record_id;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $mime;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $number;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $status;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $subdefs;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $type;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $sha256;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $grouping;
-
-    /**
-     *
-     * @var <type>
-     */
     protected $duration;
-
-    /**
-     *
-     * @var databox
-     */
+    /** @var databox */
     protected $databox;
-
-    /**
-     *
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $creation_date;
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $original_name;
-
-    /**
-     *
-     * @var Array
-     */
+    /** @var array */
     protected $technical_datas;
-
-    /**
-     *
-     * @var caption_record
-     */
+    /** @var caption_record */
     protected $caption_record;
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $uuid;
-
-    /**
-     *
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $modification_date;
+    /** @var Application */
     protected $app;
 
     const CACHE_ORIGINAL_NAME = 'originalname';
@@ -154,13 +73,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     const CACHE_STATUS = 'status';
 
     /**
-     *
      * @param Application $app
      * @param integer     $sbas_id
      * @param integer     $record_id
      * @param integer     $number
-     *
-     * @return record_adapter
      */
     public function __construct(Application $app, $sbas_id, $record_id, $number = null)
     {
@@ -169,7 +85,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->number = (int) $number;
         $this->record_id = (int) $record_id;
 
-        return $this->load();
+        $this->load();
     }
 
     protected function load()
