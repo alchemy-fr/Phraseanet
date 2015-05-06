@@ -71,7 +71,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param databox       $databox
      * @param media_subdef  $media_subdef
      */
-    protected function __construct(Application $app, databox $databox, media_subdef $media_subdef)
+    public function __construct(Application $app, databox $databox, media_subdef $media_subdef)
     {
         $this->app = $app;
         $this->databox = $databox;
@@ -346,47 +346,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $permalink->set_label(strip_tags($media_subdef->get_record()->get_title(false, null, true)));
 
         return $permalink;
-    }
-
-    /**
-     *
-     * @param  Application    $app
-     * @param  databox        $databox
-     * @param  string         $token
-     * @param  int            $record_id
-     * @param  string         $name
-     * @return record_adapter
-     */
-    public static function challenge_token(Application $app, databox $databox, $token, $record_id, $name)
-    {
-        $sql = 'SELECT p.id
-            FROM permalinks p
-            INNER JOIN subdef s
-            ON (s.subdef_id = p.subdef_id)
-            WHERE s.record_id = :record_id
-              AND s.name = :name
-              AND activated = "1"
-              AND token = :token';
-
-        $params = [
-            ':record_id' => $record_id
-            , ':token'     => $token
-            , ':name'      => $name
-        ];
-
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
-        unset($stmt);
-
-        if ($row) {
-            return new record_adapter($app, $databox->get_sbas_id(), $record_id);
-        }
-
-        return null;
     }
 
     public function get_cache_key($option = null)
