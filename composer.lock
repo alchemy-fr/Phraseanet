@@ -3771,6 +3771,50 @@
             "time": "2014-01-09 22:37:17"
         },
         {
+            "name": "phraseanet/composer-installer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/phraseanet-composer-installer.git",
+                "reference": "82bb21ee57572b477ac7372b6bc27e8e60f5fed9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/phraseanet-composer-installer/zipball/82bb21ee57572b477ac7372b6bc27e8e60f5fed9",
+                "reference": "82bb21ee57572b477ac7372b6bc27e8e60f5fed9",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "1.0.0"
+            },
+            "require-dev": {
+                "composer/composer": "1.0.*@dev",
+                "phpunit/phpunit": "~4.5"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Composer\\Installers\\PhraseanetPlugin",
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Installers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Phraseanet framework Composer installer",
+            "keywords": [
+                "Phraseanet",
+                "installer"
+            ],
+            "time": "2015-04-10 13:55:44"
+        },
+        {
             "name": "pimple/pimple",
             "version": "v1.1.1",
             "source": {
@@ -5669,6 +5713,7 @@
         "jms/translation-bundle": 20,
         "neutron/process-manager": 20,
         "phpexiftool/phpexiftool": 20,
+        "phraseanet/composer-installer": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
