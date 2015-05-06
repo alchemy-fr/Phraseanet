@@ -22,9 +22,6 @@ main:
         options:
             host: localhost
             port: 11211
-    opcodecache:
-        type: ArrayCache
-        options: []
     search-engine:
         type: elasticsearch
         # type: phrasea

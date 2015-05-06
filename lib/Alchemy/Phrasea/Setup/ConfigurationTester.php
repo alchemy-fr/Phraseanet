@@ -21,7 +21,6 @@ use Alchemy\Phrasea\Setup\Probe\CacheServerProbe;
 use Alchemy\Phrasea\Setup\Probe\DataboxStructureProbe;
 use Alchemy\Phrasea\Setup\Probe\FilesystemProbe;
 use Alchemy\Phrasea\Setup\Probe\LocalesProbe;
-use Alchemy\Phrasea\Setup\Probe\OpcodeCacheProbe;
 use Alchemy\Phrasea\Setup\Probe\PhpProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
 use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
@@ -55,7 +54,6 @@ class ConfigurationTester
             BinariesProbe::create($this->app),
             CacheServerProbe::create($this->app),
             DataboxStructureProbe::create($this->app),
-            OpcodeCacheProbe::create($this->app),
             FilesystemProbe::create($this->app),
             LocalesProbe::create($this->app),
             PhpProbe::create($this->app),
@@ -75,7 +73,7 @@ class ConfigurationTester
     /**
      * Return true if got the latest configuration file.
      *
-     * @return type
+     * @return bool
      */
     public function isInstalled()
     {
@@ -125,7 +123,7 @@ class ConfigurationTester
     /**
      * Returns true if a major migration script can be executed
      *
-     * @return type
+     * @return bool
      */
     public function isMigrable()
     {

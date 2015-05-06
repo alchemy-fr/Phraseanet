@@ -719,20 +719,8 @@ class Application extends SilexApplication
         // thumbnails path
         $this['thumbnail.path'] = $dir = $this['root.path'].'/www/thumbnails';
 
-        // cache path for dev env
-        $this['cache.dev.path'] = $this->share(function() {
-            $path =  sys_get_temp_dir().'/'.md5($this['root.path']);
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
-
         // cache path (twig, minify, translations, configuration, doctrine metas serializer metas, profiler etc ...)
         $this['cache.path'] = $this->share(function() {
-//            if ($this->getEnvironment() !== Application::ENV_PROD) {
-//                return $this['cache.dev.path'];
-//            }
             $defaultPath = $path = $this['root.path'].'/cache';
             if ($this['phraseanet.configuration']->isSetup()) {
                 $path = $this['conf']->get(['main', 'storage', 'cache'], $path);
@@ -743,14 +731,6 @@ class Application extends SilexApplication
             $this['filesystem']->mkdir($path);
 
             return $path;
-        });
-
-        $this['cache.paths'] = $this->share(function() {
-            return array(
-                self::ENV_DEV => $this['cache.path'],
-                self::ENV_TEST => $this['cache.path'],
-                self::ENV_PROD => $this['cache.path']
-            );
         });
 
         // log path

@@ -32,9 +32,6 @@ main:
         options:
             host: localhost
             port: 11211
-    opcodecache:
-        type: ArrayCache
-        options: []
     task-manager:
         status: started
         enabled: true

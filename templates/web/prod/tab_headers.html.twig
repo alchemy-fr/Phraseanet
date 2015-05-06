@@ -1,0 +1,24 @@
+{% block tab_headers %}
+    <ul class="icon-menu ui-tabs-nav ui-helper-reset">
+        {% if GV_thesaurus %}
+            <li class="proposals_WZ">
+                <a href="#proposals" class="WZtabs">
+                    <img class="proposals_off" src="/skins/icons/proposition_off32.png"
+                         title="{{ 'phraseanet:: propositions' | trans }}"/>
+                    <img class="proposals_on" src="/skins/icons/proposition_on32.png"
+                         title="{{ 'phraseanet:: propositions' | trans }}"/>
+                </a>
+            </li>
+            <li class="thesaurus">
+                <a href="#thesaurus_tab" class="WZtabs">
+                    <img src="/skins/icons/thesaurus_32.png" title="{{ 'phraseanet:: thesaurus' | trans }}"/>
+                </a>
+            </li>
+        {% endif %}
+        <li class="ui-tabs-selected ui-corner-top baskets">
+            <a href="#baskets" class="WZbasketTab">
+                <div id="basket_menu_trigger">&#9660;</div>
+            </a>
+        </li>
+    </ul>
+{% endblock %}

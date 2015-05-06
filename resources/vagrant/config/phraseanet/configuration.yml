@@ -20,9 +20,6 @@ main:
     cache:
         type: ArrayCache
         options: []
-    opcodecache:
-        type: ArrayCache
-        options: []
     search-engine:
         type: elasticsearch
         options: []
