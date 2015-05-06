@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,15 +87,17 @@ class PermalinkController extends AbstractDelivery
 
     /**
      * @param \databox $databox
-     * @param          $token
-     * @param          $record_id
+     * @param string   $token
+     * @param int      $record_id
      * @param string   $subdef
      * @return \record_adapter
      */
     private function retrieveRecord(\databox $databox, $token, $record_id, $subdef)
     {
+        /** @var FeedItemRepository $feedItemsRepository */
+        $feedItemsRepository = $this->app['repo.feed-items'];
         if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL])
-            && $this->app['repo.feed-items']->isRecordInPublicFeed($this->app, $databox->get_sbas_id(), $record_id)
+            && $feedItemsRepository->isRecordInPublicFeed($databox->get_sbas_id(), $record_id)
         ) {
             return $databox->get_record($record_id);
         }
@@ -132,6 +136,7 @@ class PermalinkController extends AbstractDelivery
             $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
             if ($watermark) {
+                /** @var BasketElementRepository $repository */
                 $repository = $this->app['repo.basket-elements'];
 
                 if (count($repository->findReceivedValidationElementsByRecord($record, $this->authentication->getUser())) > 0) {

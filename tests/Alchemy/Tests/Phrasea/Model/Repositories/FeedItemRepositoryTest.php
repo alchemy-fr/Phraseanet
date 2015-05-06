@@ -9,13 +9,13 @@ class FeedItemRepositoryTest extends \PhraseanetTestCase
     public function testIs_record_in_public_feedInPublicFeed()
     {
         $record = self::$DI['record_7'];
-        $this->assertTrue(self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed(self::$DI['app'], $record->get_sbas_id(), $record->get_record_id()));
+        $this->assertTrue(self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed($record->get_sbas_id(), $record->get_record_id()));
     }
 
     public function testIs_record_in_public_feedInPrivateFeed()
     {
         $record = self::$DI['record_2'];
-        $this->assertFalse(self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed(self::$DI['app'], $record->get_sbas_id(), $record->get_record_id()));
+        $this->assertFalse(self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed($record->get_sbas_id(), $record->get_record_id()));
     }
 
     public function testLoadLatestItems()
