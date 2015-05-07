@@ -13,6 +13,9 @@ Vagrant.configure("2") do |config|
         configValues = YAML.load_file(f)
         data = configValues['vagrantfile-local']
 
+        # Force vagrant folder in nfs mode. Windows users should comment following line
+        config.vm.synced_folder ".", "/vagrant", type: "nfs"
+
         config.vm.define "vm-#{data['name']}" do |node|
             node.vm.box = "#{data['vm']['box']}"
             node.vm.box_url = "#{data['vm']['box_url']}"
