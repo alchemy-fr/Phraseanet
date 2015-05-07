@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,26 +87,36 @@ class PermalinkController extends AbstractDelivery
 
     /**
      * @param \databox $databox
-     * @param          $token
-     * @param          $record_id
+     * @param string   $token
+     * @param int      $record_id
      * @param string   $subdef
      * @return \record_adapter
      */
     private function retrieveRecord(\databox $databox, $token, $record_id, $subdef)
     {
+        try {
+            $record = new \record_adapter($this->app, $databox->get_sbas_id(), $record_id);
+            $subDefinition = new \media_subdef($this->app, $record, $subdef);
+            $permalink = new \media_Permalink_Adapter($this->app, $databox, $subDefinition);
+        } catch (\Exception $exception) {
+            throw new NotFoundHttpException('Wrong token.', $exception);
+        }
+
+        if (! $permalink->get_is_activated()) {
+            throw new NotFoundHttpException('This token has been disabled.');
+        }
+
+        /** @var FeedItemRepository $feedItemsRepository */
+        $feedItemsRepository = $this->app['repo.feed-items'];
         if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL])
-            && $this->app['repo.feed-items']->isRecordInPublicFeed($this->app, $databox->get_sbas_id(), $record_id)
+            && $feedItemsRepository->isRecordInPublicFeed($databox->get_sbas_id(), $record_id)
         ) {
-            return $databox->get_record($record_id);
+            return $record;
+        } elseif ($permalink->get_token() == (string) $token) {
+            return $record;
         }
 
-        $record = \media_Permalink_Adapter::challenge_token($this->app, $databox, $token, $record_id, $subdef);
-
-        if (!($record instanceof \record_adapter)) {
-            throw new NotFoundHttpException('Wrong token.');
-        }
-
-        return $record;
+        throw new NotFoundHttpException('Wrong token.');
     }
 
     private function doDeliverPermaview($sbas_id, $record_id, $token, $subdef)
@@ -132,6 +144,7 @@ class PermalinkController extends AbstractDelivery
             $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
             if ($watermark) {
+                /** @var BasketElementRepository $repository */
                 $repository = $this->app['repo.basket-elements'];
 
                 if (count($repository->findReceivedValidationElementsByRecord($record, $this->authentication->getUser())) > 0) {
@@ -140,12 +153,8 @@ class PermalinkController extends AbstractDelivery
                     $watermark = false;
                 }
             }
-            $response = $this->deliverContent($request, $record, $subdef, $watermark, $stamp);
 
-            $linkToCaption = $this->app->url("permalinks_caption", ['sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token]);
-            $response->headers->set('Link', $linkToCaption);
-
-            return $response;
+            return $this->deliverContentWithCaptionLink($request, $record, $subdef, $watermark, $stamp, $token);
         }
 
         $collection = \collection::get_from_base_id($this->app, $record->get_base_id());
@@ -162,12 +171,7 @@ class PermalinkController extends AbstractDelivery
                 break;
         }
 
-        $response = $this->deliverContent($request, $record, $subdef, $watermark, $stamp);
-
-        $linkToCaption = $this->app->url("permalinks_caption", ['sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token]);
-        $response->headers->set('Link', $linkToCaption);
-
-        return $response;
+        return $this->deliverContentWithCaptionLink($request, $record, $subdef, $watermark, $stamp, $token);
     }
 
     /**
@@ -177,5 +181,27 @@ class PermalinkController extends AbstractDelivery
     private function getDatabox($databoxId)
     {
         return $this->appbox->get_databox((int)$databoxId);
+    }
+
+    /**
+     * @param Request         $request
+     * @param \record_adapter $record
+     * @param string          $subdef
+     * @param bool            $watermark
+     * @param bool            $stamp
+     * @param string          $token
+     * @return Response
+     */
+    private function deliverContentWithCaptionLink(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, $token)
+    {
+        $response = $this->deliverContent($request, $record, $subdef, $watermark, $stamp);
+
+        $response->headers->set('Link', $this->app->url("permalinks_caption", [
+            'sbas_id'   => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id(),
+            'token'     => $token,
+        ]));
+
+        return $response;
     }
 }

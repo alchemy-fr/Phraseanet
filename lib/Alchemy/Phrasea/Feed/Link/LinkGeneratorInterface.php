@@ -21,13 +21,13 @@ interface LinkGeneratorInterface
      *
      * @param FeedInterface $feed
      * @param User          $user
-     * @param type          $format
-     * @param type          $page
-     * @param type          $renew
+     * @param string        $format
+     * @param int           $page
+     * @param bool          $renew
      *
-     * @return FeedLink
+     * @return FeedLinkInterface
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function generate(FeedInterface $feed, User $user, $format, $page = null, $renew = false);
 
@@ -35,21 +35,21 @@ interface LinkGeneratorInterface
      * Generates a public FeedLink based on given FeedInterface.
      *
      * @param FeedInterface $feed
-     * @param type          $format
-     * @param type          $page
+     * @param string        $format
+     * @param int           $page
      *
-     * @return FeedLink
+     * @return FeedLinkInterface
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function generatePublic(FeedInterface $feed, $format, $page = null);
 
     /**
-     * Returns an instance of FeedInterface supported by the class.
+     * Returns whether an instance of FeedInterface is supported by the class.
      *
-     * @param \Alchemy\Phrasea\Feed\FeedInterface $feed
+     * @param FeedInterface $feed
      *
-     * @return FeedInterface
+     * @return bool
      */
     public function supports(FeedInterface $feed);
 }

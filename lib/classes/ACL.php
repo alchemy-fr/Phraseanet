@@ -246,7 +246,7 @@ class ACL implements cache_cacheableInterface
             $granted = true;
         }
 
-        if (false === $granted && $this->app['repo.feed-items']->isRecordInPublicFeed($this->app, $record->getDataboxId(), $record->getRecordId())) {
+        if (false === $granted && $this->app['repo.feed-items']->isRecordInPublicFeed($record->getDataboxId(), $record->getRecordId())) {
             $granted = true;
         }
 

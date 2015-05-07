@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -26,15 +27,14 @@ class FeedItemRepository extends EntityRepository
     /**
      * Checks if a record is published in a public feed.
      *
-     * @param Application $app
-     * @param integer     $sbas_id
-     * @param integer     $record_id
+     * @param int $sbas_id
+     * @param int $record_id
      *
-     * @return Boolean
+     * @return bool
      */
-    public function isRecordInPublicFeed(Application $app, $sbas_id, $record_id)
+    public function isRecordInPublicFeed($sbas_id, $record_id)
     {
-        $dql = 'SELECT i
+        $dql = 'SELECT COUNT(i)
             FROM Phraseanet:FeedItem i
             JOIN i.entry e
             JOIN e.feed f
@@ -45,7 +45,7 @@ class FeedItemRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters(['sbas_id' => $sbas_id, 'record_id' => $record_id]);
 
-        return count($query->getResult()) > 0;
+        return $query->getSingleScalarResult() > 0;
     }
 
     /**

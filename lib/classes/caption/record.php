@@ -154,7 +154,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param  type          $label
+     * @param  string $label
      * @return caption_field
      */
     public function get_dc_field($label)

@@ -15,76 +15,42 @@ use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\DBAL\DBALException;
 use Guzzle\Http\Url;
 
-class media_Permalink_Adapter implements media_Permalink_Interface, cache_cacheableInterface
+class media_Permalink_Adapter implements cache_cacheableInterface
 {
-    /**
-     *
-     * @var databox
-     */
+    /** @var databox */
     protected $databox;
-
-    /**
-     *
-     * @var media_subdef
-     */
+    /** @var media_subdef */
     protected $media_subdef;
-
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $id;
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $token;
-
-    /**
-     *
-     * @var boolean
-     */
+    /** @var boolean */
     protected $is_activated;
-
-    /**
-     *
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $created_on;
-
-    /**
-     *
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $last_modified;
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $label;
+    /** @var Application */
     protected $app;
 
     /**
-     *
-     * @param  databox                 $databox
-     * @param  media_subdef            $media_subdef
-     * @return media_Permalink_Adapter
+     * @param Application   $app
+     * @param databox       $databox
+     * @param media_subdef  $media_subdef
      */
-    protected function __construct(Application $app, databox $databox, media_subdef $media_subdef)
+    public function __construct(Application $app, databox $databox, media_subdef $media_subdef)
     {
         $this->app = $app;
         $this->databox = $databox;
         $this->media_subdef = $media_subdef;
 
         $this->load();
-
-        return $this;
     }
 
     /**
-     *
      * @return int
      */
     public function get_id()
@@ -93,7 +59,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @return string
      */
     public function get_token()
@@ -102,8 +67,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function get_is_activated()
     {
@@ -111,7 +75,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_created_on()
@@ -120,7 +83,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_last_modified()
@@ -129,7 +91,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @return string
      */
     public function get_label()
@@ -138,7 +99,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @return Url
      */
     public function get_url()
@@ -156,7 +116,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @return string
      */
     public function get_page()
@@ -170,9 +129,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
-     * @param  string                  $token
-     * @return media_Permalink_Adapter
+     * @param  string $token
+     * @return $this
      */
     protected function set_token($token)
     {
@@ -190,9 +148,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
      * @param  string                  $is_activated
-     * @return media_Permalink_Adapter
+     * @return $this
      */
     public function set_is_activated($is_activated)
     {
@@ -216,9 +173,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
-     * @param  string                  $label
-     * @return media_Permalink_Adapter
+     * @param  string $label
+     * @return $this
      */
     public function set_label($label)
     {
@@ -242,8 +198,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
-     * @return media_Permalink_Adapter
+     * @return $this
      */
     protected function load()
     {
@@ -297,11 +252,10 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
-     * @param  Application             $app
-     * @param  databox                 $databox
-     * @param  media_subdef            $media_subdef
-     * @return media_Permalink_Adapter
+     * @param  Application  $app
+     * @param  databox      $databox
+     * @param  media_subdef $media_subdef
+     * @return $this
      */
     public static function getPermalink(Application $app, databox $databox, media_subdef $media_subdef)
     {
@@ -315,11 +269,10 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     }
 
     /**
-     *
-     * @param  Application             $app
-     * @param  databox                 $databox
-     * @param  media_subdef            $media_subdef
-     * @return media_Permalink_Adapter
+     * @param  Application  $app
+     * @param  databox      $databox
+     * @param  media_subdef $media_subdef
+     * @return $this
      */
     public static function create(Application $app, databox $databox, media_subdef $media_subdef)
     {
@@ -352,47 +305,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         return $permalink;
     }
 
-    /**
-     *
-     * @param  Application    $app
-     * @param  databox        $databox
-     * @param  string         $token
-     * @param  int            $record_id
-     * @param  string         $name
-     * @return record_adapter
-     */
-    public static function challenge_token(Application $app, databox $databox, $token, $record_id, $name)
-    {
-        $sql = 'SELECT p.id
-            FROM permalinks p
-            INNER JOIN subdef s
-            ON (s.subdef_id = p.subdef_id)
-            WHERE s.record_id = :record_id
-              AND s.name = :name
-              AND activated = "1"
-              AND token = :token';
-
-        $params = [
-            ':record_id' => $record_id
-            , ':token'     => $token
-            , ':name'      => $name
-        ];
-
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
-        unset($stmt);
-
-        if ($row) {
-            return new record_adapter($app, $databox->get_sbas_id(), $record_id);
-        }
-
-        return null;
-    }
-
     public function get_cache_key($option = null)
     {
         return 'permalink_' . $this->media_subdef->get_subdef_id() . ($option ? '_' . $option : '');
@@ -410,6 +322,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     public function delete_data_from_cache($option = null)
     {
-        return $this->databox->delete_data_from_cache($this->get_cache_key($option));
+        $this->databox->delete_data_from_cache($this->get_cache_key($option));
     }
 }

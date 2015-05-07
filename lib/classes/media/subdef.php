@@ -138,9 +138,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     /**
      * @param  Application    $app
      * @param  record_adapter $record
-     * @param  type           $name
-     * @param  type           $substitute
-     * @return media_subdef
+     * @param  string         $name
+     * @param  bool           $substitute
      */
     public function __construct(Application $app, record_adapter $record, $name, $substitute = false)
     {
@@ -150,8 +149,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->load($substitute);
 
         $this->generate_url();
-
-        return $this;
     }
 
     /**
