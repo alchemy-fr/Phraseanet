@@ -2,6 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -313,13 +316,25 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
+        /** @var Feed $feed */
         $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 2);
+        /** @var FeedEntry $entry */
         $entry = $feed->getEntries()->first();
+        /** @var FeedItem $item */
         $item = $entry->getItems()->first();
 
+        $record = $item->getRecord(self::$DI['app']);
+
+        // Ensure permalink is created
+        \media_Permalink_Adapter::getPermalink(
+            self::$DI['app'],
+            $record->get_databox(),
+            $record->get_subdef('preview')
+        );
+
         $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', [
-            'sbas_id' => $item->getRecord(self::$DI['app'])->get_sbas_id(),
-            'record_id' => $item->getRecord(self::$DI['app'])->get_record_id(),
+            'sbas_id' => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id(),
             'subdef' => 'preview',
         ]);
 
