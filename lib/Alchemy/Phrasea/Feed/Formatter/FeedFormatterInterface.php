@@ -21,9 +21,9 @@ interface FeedFormatterInterface
      * Returns a string representation of the feed.
      *
      * @param FeedInterface $feed
-     * @param type          $page
+     * @param int           $page
      * @param User          $user
-     * @param type          $generator
+     * @param string        $generator
      * @param Application   $app
      *
      * @return string
@@ -34,9 +34,9 @@ interface FeedFormatterInterface
      * Returns an HTTP Response containing a string representation of the feed.
      *
      * @param FeedInterface $feed
-     * @param type          $page
+     * @param int           $page
      * @param User          $user
-     * @param type          $generator
+     * @param string        $generator
      * @param Application   $app
      *
      * @return string

@@ -13,11 +13,13 @@ namespace Alchemy\Phrasea\Feed\Formatter;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Feed\Link\FeedLink;
+use Alchemy\Phrasea\Feed\RSS\Image as FeedRSSImage;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
-use Alchemy\Phrasea\Feed\RSS\FeedRSSImage;
 use Alchemy\Phrasea\Model\Entities\User;
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterInterface

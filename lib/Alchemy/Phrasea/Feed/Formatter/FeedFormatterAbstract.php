@@ -20,11 +20,11 @@ abstract class FeedFormatterAbstract
 
     /**
      *
-     * @param  DOMDocument $document
-     * @param  DOMNode     $node
-     * @param  string      $tagname
-     * @param  string      $tagcontent
-     * @return DOMElement
+     * @param  \DOMDocument $document
+     * @param  \DOMNode     $node
+     * @param  string       $tagname
+     * @param  string       $tagcontent
+     * @return \DOMElement
      */
     protected function addTag(\DOMDocument $document, \DOMNode $node, $tagname, $tagcontent = null)
     {
@@ -39,11 +39,11 @@ abstract class FeedFormatterAbstract
     }
 
     /**
-     *
-     * @param  DOMDocument           $document
-     * @param  DOMNode               $item
-     * @param  FeedItem              $content
-     * @return FeedFormaterInterface
+     * @param Application  $app
+     * @param \DOMDocument $document
+     * @param \DOMNode     $item
+     * @param FeedItem     $content
+     * @return $this
      */
     protected function addContent(Application $app, \DOMDocument $document, \DOMNode $item, FeedItem $content)
     {
