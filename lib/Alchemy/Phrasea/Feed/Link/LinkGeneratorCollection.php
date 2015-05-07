@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 class LinkGeneratorCollection implements LinkGeneratorInterface
 {
+    /** @var LinkGeneratorInterface[] */
     private $generators = [];
 
     /**
@@ -61,6 +62,10 @@ class LinkGeneratorCollection implements LinkGeneratorInterface
         return null !== $this->findGenerator($feed);
     }
 
+    /**
+     * @param FeedInterface $feed
+     * @return LinkGeneratorInterface|null
+     */
     private function findGenerator(FeedInterface $feed)
     {
         foreach ($this->generators as $generator) {
