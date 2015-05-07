@@ -1961,7 +1961,7 @@ class V1Controller extends Controller
             $this->app->abort(400, 'Request body does not contains a valid "story" object');
         }
 
-        $collection = \collection::get_from_base_id($this->app, $data->{'collection_id'});
+        $collection = \collection::get_from_base_id($this->app, $data->{'base_id'});
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
             $this->app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
