@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
@@ -14,6 +15,11 @@ use Doctrine\ORM\Query\Expr;
  */
 class ApiApplicationRepository extends EntityRepository
 {
+    /**
+     * @param $clientId
+     * @return ApiApplication
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findByClientId($clientId)
     {
         $qb = $this->createQueryBuilder('app');
@@ -41,6 +47,10 @@ class ApiApplicationRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param User $user
+     * @return ApiApplication[]
+     */
     public function findAuthorizedAppsByUser(User $user)
     {
         $qb = $this->createQueryBuilder('app');

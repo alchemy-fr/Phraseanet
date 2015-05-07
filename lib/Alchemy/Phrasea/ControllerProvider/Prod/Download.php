@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
@@ -20,6 +21,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Download implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -27,9 +30,7 @@ class Download implements ControllerProviderInterface
     {
         $app['controller.prod.download'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->post('/', 'controller.prod.download:checkDownload')
             ->bind('check_download');

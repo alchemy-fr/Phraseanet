@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\ExportFailureEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
@@ -25,6 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Export implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -32,10 +35,7 @@ class Export implements ControllerProviderInterface
     {
         $app['controller.prod.export'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
-
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->post('/multi-export/', 'controller.prod.export:displayMultiExport')
             ->bind('export_multi_export');

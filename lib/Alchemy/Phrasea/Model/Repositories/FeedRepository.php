@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -24,7 +25,7 @@ class FeedRepository extends EntityRepository
     /**
      * Returns all the feeds a user can access.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Feed[]
      */
     public function getAllForUser(\ACL $userACL, array $restrictions = [])
     {

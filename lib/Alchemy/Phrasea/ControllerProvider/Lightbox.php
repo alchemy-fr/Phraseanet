@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function register(Application $app)
     {
         $app['controller.lightbox'] = $app->share(function (PhraseaApplication $app) {
@@ -36,11 +38,12 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = $app['controllers_factory'];
+        $controllers = $this->createCollection($app);
 
         $controllers->before([$this, 'redirectOnLogRequests']);
 
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $firewall = $this->getFirewall($app);
+        $firewall->addMandatoryAuthentication($controllers);
 
         $controllers
             // Silex\Route::convert is not used as this should be done prior the before middleware

@@ -13,14 +13,15 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\RootController;
-use Alchemy\Phrasea\Security\Firewall;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
 class Root implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function register(Application $app)
     {
         $app['controller.admin.root'] = $app->share(function (PhraseaApplication $app) {
@@ -34,12 +35,8 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        /** @var ControllerCollection $controllers */
-        $controllers = $app['controllers_factory'];
-
-        /** @var Firewall $firewall */
-        $firewall = $app['firewall'];
-        $firewall->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
         $controllers->before(function () use ($firewall) {
             $firewall->requireAccessToModule('admin');

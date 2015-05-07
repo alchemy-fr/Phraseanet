@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Report;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
 use Silex\Application;
@@ -21,13 +22,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Activity implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.report.activity'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function () use ($app) {
             $app['firewall']->requireAccessToModule('report');

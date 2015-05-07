@@ -12,15 +12,16 @@
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Controller\Admin\TaskManagerController;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
-use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application;
-use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
 class TaskManager implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function register(Application $app)
     {
         $app['controller.admin.task'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
@@ -34,12 +35,8 @@ class TaskManager implements ControllerProviderInterface, ServiceProviderInterfa
 
     public function connect(Application $app)
     {
-        /** @var ControllerCollection $controllers */
-        $controllers = $app['controllers_factory'];
-
-        /** @var Firewall $firewall */
-        $firewall = $app['firewall'];
-        $firewall->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
         $converter = function ($task) use ($app) {
             /** @var TaskConverter $converter */

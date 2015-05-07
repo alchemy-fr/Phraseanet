@@ -27,6 +27,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
+use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
 use Alchemy\Phrasea\Model\RecordInterface;
@@ -755,7 +756,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return caption_record
      */
     public function get_caption()
@@ -1722,8 +1722,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_container_baskets(EntityManager $em, User $user)
     {
         return $em
-                ->getRepository('Phraseanet:Basket')
-                ->findContainingRecordForUser($this, $user);
+            ->getRepository('Phraseanet:Basket')
+            ->findContainingRecordForUser($this, $user);
     }
 
     /**

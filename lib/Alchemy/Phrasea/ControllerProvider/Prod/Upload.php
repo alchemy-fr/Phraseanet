@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\LazaretEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;use Alchemy\Phrasea\Core\PhraseaEvents;
 use DataURI\Parser;
@@ -28,6 +29,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Upload implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -38,9 +41,7 @@ class Upload implements ControllerProviderInterface
     {
         $app['controller.prod.upload'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireRight('addrecord');

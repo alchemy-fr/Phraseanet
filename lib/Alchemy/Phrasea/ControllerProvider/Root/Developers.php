@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Root;
 
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Silex\Application;
@@ -21,13 +22,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Developers implements ControllerProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function connect(Application $app)
     {
         $app['controller.account.developers'] = $this;
 
-        $controllers = $app['controllers_factory'];
-
-        $app['firewall']->addMandatoryAuthentication($controllers);
+        $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->get('/applications/', 'controller.account.developers:listApps')
             ->bind('developers_applications');

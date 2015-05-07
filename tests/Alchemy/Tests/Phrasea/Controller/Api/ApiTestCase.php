@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Controller\Api\V1Controller;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
@@ -981,7 +982,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->assertArrayHasKey('embed', $content['response']);
 
-        $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed']));
+        $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];}, $content['response']['embed']));
 
         //access to all subdefs
         $this->assertArrayHasKey('document', $embedTypes);
@@ -1895,7 +1896,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function evaluateGoodUserItem($data, User $user)
     {
         foreach ([
-            '@entity@'        => V1::OBJECT_TYPE_USER,
+            '@entity@'        => V1Controller::OBJECT_TYPE_USER,
             'id'              => $user->getId(),
             'email'           => $user->getEmail() ?: null,
             'login'           => $user->getLogin() ?: null,
@@ -2397,7 +2398,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('thumbnail', $story);
         $this->assertArrayHasKey('uuid', $story);
         $this->assertArrayHasKey('@entity@', $story);
-        $this->assertEquals(V1::OBJECT_TYPE_STORY, $story['@entity@']);
+        $this->assertEquals(V1Controller::OBJECT_TYPE_STORY, $story['@entity@']);
         $this->assertTrue(Uuid::isValid($story['uuid']));
 
         if ( ! is_null($story['thumbnail'])) {
@@ -2430,7 +2431,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
 
         $this->assertArrayHasKey('@entity@', $story['metadatas']);
-        $this->assertEquals(V1::OBJECT_TYPE_STORY_METADATA_BAG, $story['metadatas']['@entity@']);
+        $this->assertEquals(V1Controller::OBJECT_TYPE_STORY_METADATA_BAG, $story['metadatas']['@entity@']);
 
         foreach ($story['records'] as $record) {
             $this->evaluateGoodRecord($record);

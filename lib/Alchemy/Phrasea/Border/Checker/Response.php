@@ -24,8 +24,8 @@ class Response
     /**
      * Constructor
      *
-     * @param boolean $ok      True if the response is OK
-     * @param Checker $checker The checker attachedto the response
+     * @param boolean          $ok      True if the response is OK
+     * @param CheckerInterface $checker The checker attachedto the response
      */
     public function __construct($ok, CheckerInterface $checker)
     {

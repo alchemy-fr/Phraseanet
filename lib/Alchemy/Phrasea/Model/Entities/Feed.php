@@ -299,7 +299,7 @@ class Feed implements FeedInterface
      *
      * @param Application $app
      *
-     * @return type
+     * @return \collection
      */
     public function getCollection(Application $app)
     {
@@ -313,7 +313,7 @@ class Feed implements FeedInterface
      *
      * @param \collection $collection
      *
-     * @return type
+     * @return void
      */
     public function setCollection(\collection $collection = null)
     {

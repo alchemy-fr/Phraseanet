@@ -527,7 +527,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @return \PHPExiftool\Driver\Tag
+     * @return TagInterface
      */
     public function get_tag()
     {
