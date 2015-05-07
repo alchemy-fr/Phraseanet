@@ -2008,7 +2008,7 @@ class V1Controller extends Controller
         return $record->get_serialize_key();
     }
 
-    public function createRecordStoryAction(Request $request, $databox_id, $story_id)
+    public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
     {
         $content = $request->getContent();
 
@@ -2042,6 +2042,76 @@ class V1Controller extends Controller
 
         $result = Result::create($request, array('records' => $records));
         return $result->createResponse();
+    }
+
+    public function setStoryCoverAction(Request $request, $databox_id, $story_id)
+    {
+        $content = $request->getContent();
+
+        $data = @json_decode($content);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
+        }
+
+        $schemaStoryCover = $this->getJsonSchemaRetriever()
+            ->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_cover.json');
+
+        $validator = $this->getJsonSchemaValidator();
+        $validator->check($data, $schemaStoryCover);
+
+        if (false === $validator->isValid()) {
+            $this->app->abort(400, 'Request body contains not a valid "story cover" object');
+        }
+
+        $story = new \record_adapter($this->app, $databox_id, $story_id);
+
+        // we do NOT let "set_story_cover()" fail : pass false as last arg
+        $record_key = $this->setStoryCover($story, $data->{'record_id'}, false);
+
+        $result = Result::create($request, array($record_key));
+        return $result->createResponse();
+    }
+
+    protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false)
+    {
+        try {
+            $record = new \record_adapter($this->app, $story->get_sbas_id(), $record_id);
+        } catch (\Exception_Record_AdapterNotFound $e) {
+            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->get_sbas_id(), $record_id));
+        }
+
+        if (!$story->hasChild($record)) {
+            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->get_sbas_id(), $record_id));
+        }
+
+        if ($record->get_type() !== 'image') {
+            // this can fail so we can loop on many records during story creation...
+            if($can_fail) {
+                return false;
+            }
+            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image', $story->get_sbas_id(), $record_id));
+        }
+
+        foreach ($record->get_subdefs() as $name => $value) {
+            if (!in_array($name, array('thumbnail', 'preview'))) {
+                continue;
+            }
+            /** @var MediaVorus $mediavorus */
+            $mediavorus = $this->app['mediavorus'];
+            $media = $mediavorus->guess($value->get_pathfile());
+            $story->substitute_subdef($name, $media, $this->app);
+            $this->app['phraseanet.logger']($story->get_databox())->log(
+                $story,
+                \Session_Logger::EVENT_SUBSTITUTE,
+                $name == 'document' ? 'HD' : $name,
+                ''
+            );
+        }
+
+        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        return $record->get_serialize_key();
     }
 
     public function getCurrentUserAction(Request $request)
@@ -2131,6 +2201,14 @@ class V1Controller extends Controller
         }
 
         return null;
+    }
+
+
+    public function ensureJsonContentType(Request $request)
+    {
+        if ($request->getContentType() != 'json') {
+            $this->app->abort(406, 'Invalid Content Type given.');
+        }
     }
 
     /**
