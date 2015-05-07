@@ -869,10 +869,12 @@ class V1Controller extends Controller
                 'You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])
             ));
         }
-        $record->substitute_subdef($request->get('name'), $media, $this->app);
+        $adapt = $request->get('adapt')===null || !(\p4field::isno($request->get('adapt')));
+        $ret['adapt'] = $adapt;
+        $record->substitute_subdef($request->get('name'), $media, $this->app, $adapt);
         foreach ($record->get_embedable_medias() as $name => $media) {
             if ($name == $request->get('name') &&
-                null !== ($subdef = $this->listEmbeddableMedia($record, $media, $this->app['phraseanet.registry']))) {
+                null !== ($subdef = $this->listEmbeddableMedia($record, $media))) {
                 $ret[] = $subdef;
             }
         }
