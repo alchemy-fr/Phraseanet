@@ -13,8 +13,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Model\Entities\Token;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -23,24 +27,23 @@ class DoDownloadController extends Controller
     /**
      * Prepare a set of documents for download
      *
-     * @param Application $app
      * @param Request     $request
      * @param Token       $token
      *
      * @return Response
      */
-    public function prepareDownload(Application $app, Request $request, Token $token)
+    public function prepareDownload(Request $request, Token $token)
     {
         if (false === $list = @unserialize($token->getData())) {
-            $app->abort(500, 'Invalid datas');
+            $this->app->abort(500, 'Invalid datas');
         }
         if (!is_array($list)) {
-            $app->abort(500, 'Invalid datas');
+            $this->app->abort(500, 'Invalid datas');
         }
 
         foreach (['export_name', 'files'] as $key) {
             if (!isset($list[$key])) {
-                $app->abort(500, 'Invalid datas');
+                $this->app->abort(500, 'Invalid datas');
             }
         }
 
@@ -50,10 +53,10 @@ class DoDownloadController extends Controller
             if (!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
                 continue;
             }
-            $sbasId = \phrasea::sbasFromBas($app, $file['base_id']);
+            $sbasId = \phrasea::sbasFromBas($this->app, $file['base_id']);
 
             try {
-                $record = new \record_adapter($app, $sbasId, $file['record_id']);
+                $record = new \record_adapter($this->app, $sbasId, $file['record_id']);
             } catch (\Exception $e) {
                 continue;
             }
@@ -61,10 +64,10 @@ class DoDownloadController extends Controller
             $records[sprintf('%s_%s', $sbasId, $file['record_id'])] = $record;
         }
 
-        return new Response($app['twig']->render(
+        return new Response($this->render(
             '/prod/actions/Download/prepare.html.twig', [
-            'module_name'   => $app->trans('Export'),
-            'module'        => $app->trans('Export'),
+            'module_name'   => $this->app->trans('Export'),
+            'module'        => $this->app->trans('Export'),
             'list'          => $list,
             'records'       => $records,
             'token'         => $token,
@@ -76,24 +79,22 @@ class DoDownloadController extends Controller
     /**
      * Download a set of documents
      *
-     * @param Application $app
-     * @param Request     $request
      * @param Token       $token
      *
      * @return Response
      */
-    public function downloadDocuments(Application $app, Request $request, Token $token)
+    public function downloadDocuments(Token $token)
     {
         if (false === $list = @unserialize($token->getData())) {
-            $app->abort(500, 'Invalid datas');
+            $this->app->abort(500, 'Invalid datas');
         }
         if (!is_array($list)) {
-            $app->abort(500, 'Invalid datas');
+            $this->app->abort(500, 'Invalid datas');
         }
 
         foreach (['export_name', 'files'] as $key) {
             if (!isset($list[$key])) {
-                $app->abort(500, 'Invalid datas');
+                $this->app->abort(500, 'Invalid datas');
             }
         }
 
@@ -107,17 +108,17 @@ class DoDownloadController extends Controller
             $mime = $subdef['mime'];
             $list['complete'] = true;
         } else {
-            $exportFile = $app['tmp.download.path'].'/'.$token->getValue() . '.zip';
+            $exportFile = $this->app['tmp.download.path'].'/'.$token->getValue() . '.zip';
             $mime = 'application/zip';
         }
 
-        if (!$app['filesystem']->exists($exportFile)) {
-            $app->abort(404, 'Download file not found');
+        if (!$this->getFileSystem()->exists($exportFile)) {
+            $this->app->abort(404, 'Download file not found');
         }
 
-        $app['dispatcher']->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use ($list, $app) {
+        $this->getDispatcher()->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use ($list) {
             \set_export::log_download(
-                $app,
+                $this->app,
                 $list,
                 $event->getRequest()->get('type'),
                 !!$event->getRequest()->get('anonymous', false),
@@ -125,22 +126,21 @@ class DoDownloadController extends Controller
             );
         });
 
-        return $app['phraseanet.file-serve']->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
+        return $this->getDeliverer()
+            ->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
     }
 
     /**
      * Build a zip of downloaded documents
      *
-     * @param Application $app
-     * @param Request     $request
      * @param Token       $token
      *
      * @return Response
      */
-    public function downloadExecute(Application $app, Request $request, Token $token)
+    public function downloadExecute(Token $token)
     {
         if (false === $list = @unserialize($token->getData())) {
-            return $app->json([
+            return $this->app->json([
                 'success' => false,
                 'message' => 'Invalid datas'
             ]);
@@ -148,26 +148,54 @@ class DoDownloadController extends Controller
 
         set_time_limit(0);
         // Force the session to be saved and closed.
-        $app['session']->save();
+        /** @var Session $session */
+        $session = $this->app['session'];
+        $session->save();
         ignore_user_abort(true);
 
         if ($list['count'] > 1) {
             \set_export::build_zip(
-                $app,
+                $this->app,
                 $token,
                 $list,
-                sprintf($app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
+                sprintf($this->app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
             );
         } else {
             $list['complete'] = true;
             $token->setData(serialize($list));
-            $app['orm.em']->persist($token);
-            $app['orm.em']->flush();
+            /** @var EntityManagerInterface $manager */
+            $manager = $this->app['orm.em'];
+            $manager->persist($token);
+            $manager->flush();
         }
 
-        return $app->json([
+        return $this->app->json([
             'success' => true,
             'message' => ''
         ]);
+    }
+
+    /**
+     * @return Filesystem
+     */
+    private function getFileSystem()
+    {
+        return $this->app['filesystem'];
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getDispatcher()
+    {
+        return $this->app['dispatcher'];
+    }
+
+    /**
+     * @return DeliverDataInterface
+     */
+    private function getDeliverer()
+    {
+        return $this->app['phraseanet.file-serve'];
     }
 }
