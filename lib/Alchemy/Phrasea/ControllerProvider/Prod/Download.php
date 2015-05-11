@@ -11,64 +11,39 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Prod\DownloadController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
-use Alchemy\Phrasea\Core\Event\ExportEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Silex\ServiceProviderInterface;
 
-class Download implements ControllerProviderInterface
+class Download implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
+
+    public function register(Application $app)
+    {
+        $app['controller.prod.download'] = $app->share(function (PhraseaApplication $app) {
+            return new DownloadController($app);
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
 
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
-        $app['controller.prod.download'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->post('/', 'controller.prod.download:checkDownload')
             ->bind('check_download');
 
         return $controllers;
-    }
-
-    /**
-     * Download a set of documents
-     *
-     * @param  Application      $app
-     * @param  Request          $request
-     * @return RedirectResponse
-     */
-    public function checkDownload(Application $app, Request $request)
-    {
-        $lst = $request->request->get('lst');
-        $ssttid = $request->request->get('ssttid', '');
-        $subdefs = $request->request->get('obj', []);
-
-        $download = new \set_export($app, $lst, $ssttid);
-
-        if (0 === $download->get_total_download()) {
-            $app->abort(403);
-        }
-
-        $list = $download->prepare_export(
-            $app['authentication']->getUser(),
-            $app['filesystem'],
-            $subdefs,
-            $request->request->get('type') === 'title' ? true : false,
-            $request->request->get('businessfields')
-        );
-
-        $list['export_name'] = sprintf('%s.zip', $download->getExportName());
-        $token = $app['manipulator.token']->createDownloadToken($app['authentication']->getUser(), serialize($list));
-        $app['dispatcher']->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent($app['authentication']->getUser(), $ssttid, $lst, $subdefs, $download->getExportName()));
-
-        return $app->redirectPath('prepare_download', ['token' => $token->getValue()]);
     }
 }
