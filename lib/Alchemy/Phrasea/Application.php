@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
 use Alchemy\Phrasea\ControllerProvider\Prod\Download;
 use Alchemy\Phrasea\ControllerProvider\Prod\Edit;
 use Alchemy\Phrasea\ControllerProvider\Prod\Export;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Client\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Bridge' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -648,7 +648,6 @@ class Application extends SilexApplication
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
 
-        $this->mount('/download/', new DoDownload());
         $this->mount('/session/', new Session());
 
         $this->mount('/report/', new ReportRoot());
@@ -674,6 +673,7 @@ class Application extends SilexApplication
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/client/'               => 'Alchemy\Phrasea\ControllerProvider\Client\Root',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/download/'             => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink'             => 'Alchemy\Phrasea\ControllerProvider\Permalink',
