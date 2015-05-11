@@ -1,97 +1,26 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2015 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Alchemy\Phrasea\Controller\Prod;
 
-namespace Alchemy\Phrasea\ControllerProvider\Prod;
-
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Entities\Basket as BasketEntity;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Silex\Application;
-use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class BasketController implements ControllerProviderInterface
+class BasketController extends Controller
 {
-    use ControllerProviderTrait;
-
-    public function connect(Application $app)
-    {
-        $app['controller.prod.basket'] = $this;
-
-        $controllers = $this->createAuthenticatedCollection($app);
-
-        $controllers
-            // Silex\Route::convert is not used as this should be done prior the before middleware
-            ->before($app['middleware.basket.converter'])
-            ->before($app['middleware.basket.user-access']);
-
-        $controllers->get('/{basket}/', 'controller.prod.basket:displayBasket')
-            ->bind('prod_baskets_basket')
-            ->assert('basket', '\d+');
-
-        $controllers->post('/', 'controller.prod.basket:createBasket')
-            ->bind('prod_baskets');
-
-        $controllers->post('/{basket}/delete/', 'controller.prod.basket:deleteBasket')
-            ->assert('basket', '\d+')
-            ->bind('basket_delete')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->post('/{basket}/delete/{basket_element_id}/', 'controller.prod.basket:removeBasketElement')
-            ->bind('prod_baskets_basket_element_remove')
-            ->assert('basket', '\d+')
-            ->assert('basket_element_id', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->post('/{basket}/update/', 'controller.prod.basket:updateBasket')
-            ->bind('prod_baskets_basket_update')
-            ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->get('/{basket}/update/', 'controller.prod.basket:displayUpdateForm')
-            ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->get('/{basket}/reorder/', 'controller.prod.basket:displayReorderForm')
-            ->assert('basket', '\d+')
-            ->bind('prod_baskets_basket_reorder')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->post('/{basket}/reorder/', 'controller.prod.basket:reorder')
-            ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->post('/{basket}/archive/', 'controller.prod.basket:archiveBasket')
-            ->bind('prod_baskets_basket_archive')
-            ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->post('/{basket}/addElements/', 'controller.prod.basket:addElements')
-            ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->post('/{basket}/stealElements/', 'controller.prod.basket:stealElements')
-            ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
-
-        $controllers->get('/create/', 'controller.prod.basket:displayCreateForm')
-            ->bind('prod_baskets_create');
-
-        return $controllers;
-    }
-
     public function displayBasket(Application $app, Request $request, BasketEntity $basket)
     {
         if ($basket->getIsRead() === false) {
