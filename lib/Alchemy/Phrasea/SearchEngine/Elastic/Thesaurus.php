@@ -17,26 +17,49 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 use Elasticsearch\Client;
+use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class Thesaurus
 {
     private $client;
     private $index;
+    private $logger;
 
     const MIN_SCORE = 4;
 
-    public function __construct(Client $client, $index)
+    public function __construct(Client $client, $index, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->index = $index;
+        $this->logger = $logger;
     }
 
-    public function findConceptsBulk(array $terms, $lang = null, Filter $filter = null, $strict = false)
+    /**
+     * Find concepts linked to a bulk of Terms
+     *
+     * @param  Term[]|string[]      $terms  Term objects or strings
+     * @param  string|null          $lang   Input language
+     * @param  Filter[]|Filter|null $filter Single filter or a filter for each term
+     * @param  boolean              $strict Strict mode matching
+     * @return Concept[][]                  List of matching concepts for each term
+     */
+    public function findConceptsBulk(array $terms, $lang = null, $filter = null, $strict = false)
     {
+        $this->logger->debug(sprintf('Finding linked concepts in bulk for %d terms', count($terms)));
+
+        // We use the same filter for all terms when a single one is given
+        $filters = is_array($filter)
+            ? $filter
+            : array_fill_keys(array_keys($terms), $filter);
+        if (array_diff_key($terms, $filters)) {
+            throw new InvalidArgumentException('Filters list must contain a filter for each term');
+        }
+
         // TODO Use bulk queries for performance
         $concepts = array();
-        foreach ($terms as $term) {
-            $concepts[] = $this->findConcepts($term, $lang, $filter, $strict);
+        foreach ($terms as $index => $term) {
+            $concepts[] = $this->findConcepts($term, $lang, $filters[$index], $strict);
         }
 
         return $concepts;
@@ -59,6 +82,11 @@ class Thesaurus
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
         }
+
+        $this->logger->info(sprintf('Searching for term %s', $term), array(
+            'strict' => $strict,
+            'lang' => $lang
+        ));
 
         if ($strict) {
             $field_suffix = '.strict';
@@ -98,12 +126,13 @@ class Thesaurus
         }
 
         if ($filter) {
+            $this->logger->debug('Using filter', array('filter' => Filter::dumpPaths($filter)));
             $query = self::applyQueryFilter($query, $filter->getQueryFilter());
         }
 
         // Path deduplication
         $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path';
+        $aggs['dedup']['terms']['field'] = 'path.raw';
 
         // Search request
         $params = array();
@@ -119,16 +148,23 @@ class Thesaurus
         // No need to get any hits since we extract data from aggs
         $params['body']['size'] = 0;
 
+        $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
 
         // Extract concept paths from response
         $concepts = array();
         $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
+        $keys = array();
         foreach ($buckets as $bucket) {
             if (isset($bucket['key'])) {
+                $keys[] = $bucket['key'];
                 $concepts[] = new Concept($bucket['key']);
             }
         }
+
+        $this->logger->info(sprintf('Found %d matching concepts', count($concepts)),
+            array('concepts' => $keys)
+        );
 
         return $concepts;
     }

@@ -33,6 +33,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use databox;
 use Iterator;
 use media_subdef;
+use Psr\Log\LoggerInterface;
 
 class RecordIndexer
 {
@@ -52,19 +53,24 @@ class RecordIndexer
      */
     private $locales;
 
-    public function __construct(RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales)
+    private $logger;
+
+    public function __construct(RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales, LoggerInterface $logger)
     {
         $this->helper = $helper;
         $this->thesaurus = $thesaurus;
         $this->appbox = $appbox;
         $this->locales = $locales;
+        $this->logger = $logger;
     }
 
     public function populateIndex(BulkOperation $bulk, array $databoxes)
     {
         foreach ($databoxes as $databox) {
+            $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
             $fetcher = $this->createFetcherForDatabox($databox);
             $this->indexFromFetcher($bulk, $fetcher);
+            $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
         }
     }
 

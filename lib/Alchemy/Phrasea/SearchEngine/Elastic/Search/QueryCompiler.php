@@ -38,6 +38,8 @@ class QueryCompiler
 
     private function injectThesaurusConcepts(Query $query)
     {
+        // TODO We must restrict thesaurus matching for IN queries, and only
+        // search in each field's root concepts.
         $nodes = $query->getTermNodes();
         $concepts = $this->thesaurus->findConceptsBulk($nodes);
 
