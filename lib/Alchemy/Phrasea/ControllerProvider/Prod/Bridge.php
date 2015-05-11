@@ -36,8 +36,6 @@ class Bridge implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        $app['bridge.controller'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
 
         $firewall = $this->getFirewall($app);

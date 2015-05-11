@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
 use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
 use Alchemy\Phrasea\ControllerProvider\Prod\Download;
 use Alchemy\Phrasea\ControllerProvider\Prod\Edit;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Client\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Bridge' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -632,7 +632,6 @@ class Application extends SilexApplication
         $this->mount('/prod/records/edit', new Edit());
         $this->mount('/prod/records/property', new Property());
         $this->mount('/prod/records/movecollection', new MoveCollection());
-        $this->mount('/prod/bridge/', new Bridge());
         $this->mount('/prod/push/', new Push());
         $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
@@ -679,6 +678,7 @@ class Application extends SilexApplication
             '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink'             => 'Alchemy\Phrasea\ControllerProvider\Permalink',
             '/prod/baskets'          => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
+            '/prod/bridge/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
             '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {

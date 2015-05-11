@@ -20,7 +20,7 @@ class BridgeController extends Controller
 {
     private function requireConnection(\Bridge_Account $account)
     {
-        $app['bridge.account'] = $account;
+        $this->app['bridge.account'] = $account;
 
         if (!$account->get_api()->get_connector()->is_configured()) {
             throw new \Bridge_Exception_ApiConnectorNotConfigured("Bridge API Connector is not configured");
@@ -88,7 +88,7 @@ class BridgeController extends Controller
     public function doGetAccountLogout($account_id)
     {
         $account = \Bridge_Account::load_account($this->app, $account_id);
-        $this->requireConnection($this->app, $account);
+        $this->requireConnection($account);
         $account->get_api()->get_connector()->disconnect();
 
         return $this->app->redirectPath('bridge_load_elements', [
@@ -170,7 +170,7 @@ class BridgeController extends Controller
         $offset_start = max(($page - 1) * $quantity, 0);
         $account = \Bridge_Account::load_account($this->app, $account_id);
 
-        $this->requireConnection($this->app, $account);
+        $this->requireConnection($account);
         $elements = $account->get_api()->list_containers($type, $offset_start, $quantity);
 
         $params = [
