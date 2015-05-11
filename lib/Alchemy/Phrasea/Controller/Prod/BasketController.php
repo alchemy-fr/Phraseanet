@@ -12,53 +12,53 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Model\Entities\Basket as BasketEntity;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BasketController extends Controller
 {
-    public function displayBasket(Application $app, Request $request, BasketEntity $basket)
+    public function displayBasket(Request $request, Basket $basket)
     {
         if ($basket->getIsRead() === false) {
             $basket->setIsRead(true);
-            $app['orm.em']->flush();
+            $this->getEntityManager()->flush();
         }
 
         if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($app['authentication']->getUser())->setIsAware(true);
-                $app['orm.em']->flush();
+            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+                $this->getEntityManager()->flush();
             }
         }
 
-        $params = [
+        return $this->render('prod/WorkZone/Basket.html.twig', [
             'basket' => $basket,
-            'ordre'  => $request->query->get('order')
-        ];
-
-        return $app['twig']->render('prod/WorkZone/Basket.html.twig', $params);
+            'ordre'  => $request->query->get('order'),
+        ]);
     }
 
-    public function createBasket(Application $app, Request $request)
+    public function createBasket(Request $request)
     {
-        $Basket = new BasketEntity();
+        $Basket = new Basket();
 
         $Basket->setName($request->request->get('name', ''));
-        $Basket->setUser($app['authentication']->getUser());
+        $Basket->setUser($this->getAuthenticatedUser());
         $Basket->setDescription($request->request->get('desc'));
 
-        $app['orm.em']->persist($Basket);
+        $this->getEntityManager()->persist($Basket);
 
         $n = 0;
 
-        $records = RecordsRequest::fromRequest($app, $request, true);
+        $records = RecordsRequest::fromRequest($this->app, $request, true);
 
         foreach ($records as $record) {
-            if ($Basket->hasRecord($app, $record)) {
+            if ($Basket->hasRecord($this->app, $record)) {
                 continue;
             }
 
@@ -66,50 +66,51 @@ class BasketController extends Controller
             $basket_element->setRecord($record);
             $basket_element->setBasket($Basket);
 
-            $app['orm.em']->persist($basket_element);
+            $this->getEntityManager()->persist($basket_element);
 
             $Basket->addElement($basket_element);
 
             $n++;
         }
 
-        $app['orm.em']->flush();
+        $this->getEntityManager()->flush();
 
         if ($request->getRequestFormat() === 'json') {
             $data = [
-                'success' => true
-                , 'message' => $app->trans('Basket created')
-                , 'basket'  => [
-                    'id' => $Basket->getId()
+                'success' => true,
+                'message' => $this->app->trans('Basket created'),
+                'basket'  => [
+                    'id' => $Basket->getId(),
                 ]
             ];
 
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_baskets_basket', ['basket' => $Basket->getId()]);
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_baskets_basket', ['basket' => $Basket->getId()]);
     }
 
-    public function deleteBasket(Application $app, Request $request, BasketEntity $basket)
+    public function deleteBasket(Request $request, Basket $basket)
     {
-        $app['orm.em']->remove($basket);
-        $app['orm.em']->flush();
+        $this->getEntityManager()->remove($basket);
+        $this->getEntityManager()->flush();
 
         $data = [
             'success' => true
-            , 'message' => $app->trans('Basket has been deleted')
+            , 'message' => $this->app->trans('Basket has been deleted')
         ];
 
         if ($request->getRequestFormat() === 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_workzone_show');
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function removeBasketElement(Application $app, Request $request, BasketEntity $basket, $basket_element_id)
+    public function removeBasketElement(Request $request, Basket $basket, $basket_element_id)
     {
-        $basketElement = $app['orm.em']->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
+        /** @var BasketElement $basketElement */
+        $basketElement = $this->getEntityManager()->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
         $ord = $basketElement->getOrd();
 
         foreach ($basket->getElements() as $basket_element) {
@@ -118,23 +119,23 @@ class BasketController extends Controller
             }
             if ($basket_element->getId() === (int) $basket_element_id) {
                 $basket->removeElement($basket_element);
-                $app['orm.em']->remove($basket_element);
+                $this->getEntityManager()->remove($basket_element);
             }
         }
 
-        $app['orm.em']->persist($basket);
-        $app['orm.em']->flush();
+        $this->getEntityManager()->persist($basket);
+        $this->getEntityManager()->flush();
 
-        $data = ['success' => true, 'message' => $app->trans('Record removed from basket')];
+        $data = ['success' => true, 'message' => $this->app->trans('Record removed from basket')];
 
         if ($request->getRequestFormat() === 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_workzone_show');
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function updateBasket(Application $app, Request $request, BasketEntity $basket)
+    public function updateBasket(Request $request, Basket $basket)
     {
         $success = false;
 
@@ -142,109 +143,109 @@ class BasketController extends Controller
             $basket->setName($request->request->get('name', ''));
             $basket->setDescription($request->request->get('description'));
 
-            $app['orm.em']->merge($basket);
-            $app['orm.em']->flush();
+            $this->getEntityManager()->merge($basket);
+            $this->getEntityManager()->flush();
 
             $success = true;
-            $msg = $app->trans('Basket has been updated');
+            $msg = $this->app->trans('Basket has been updated');
         } catch (NotFoundHttpException $e) {
-            $msg = $app->trans('The requested basket does not exist');
+            $msg = $this->app->trans('The requested basket does not exist');
         } catch (AccessDeniedHttpException $e) {
-            $msg = $app->trans('You do not have access to this basket');
+            $msg = $this->app->trans('You do not have access to this basket');
         } catch (\Exception $e) {
-            $msg = $app->trans('An error occurred');
+            $msg = $this->app->trans('An error occurred');
         }
 
         $data = [
-            'success' => $success
-            , 'message' => $msg
-            , 'basket'  => ['id' => $basket->getId()]
+            'success' => $success,
+            'message' => $msg,
+            'basket'  => ['id' => $basket->getId()],
         ];
 
         if ($request->getRequestFormat() === 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_workzone_show');
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function displayUpdateForm(Application $app, BasketEntity $basket)
+    public function displayUpdateForm(Basket $basket)
     {
-        return $app['twig']->render('prod/Baskets/Update.html.twig', ['basket' => $basket]);
+        return $this->render('prod/Baskets/Update.html.twig', ['basket' => $basket]);
     }
 
-    public function displayReorderForm(Application $app, BasketEntity $basket)
+    public function displayReorderForm(Basket $basket)
     {
-        return $app['twig']->render('prod/Baskets/Reorder.html.twig', ['basket' => $basket]);
+        return $this->render('prod/Baskets/Reorder.html.twig', ['basket' => $basket]);
     }
 
-    public function reorder(Application $app, BasketEntity $basket)
+    public function reorder(Request $request, Basket $basket)
     {
-        $ret = ['success' => false, 'message' => $app->trans('An error occured')];
+        $ret = ['success' => false, 'message' => $this->app->trans('An error occured')];
         try {
-            $order = $app['request']->request->get('element');
+            $order = $request->request->get('element');
 
-            /* @var $basket BasketEntity */
             foreach ($basket->getElements() as $basketElement) {
                 if (isset($order[$basketElement->getId()])) {
                     $basketElement->setOrd($order[$basketElement->getId()]);
 
-                    $app['orm.em']->merge($basketElement);
+                    $this->getEntityManager()->merge($basketElement);
                 }
             }
 
-            $app['orm.em']->flush();
-            $ret = ['success' => true, 'message' => $app->trans('Basket updated')];
+            $this->getEntityManager()->flush();
+            $ret = ['success' => true, 'message' => $this->app->trans('Basket updated')];
         } catch (\Exception $e) {
 
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
-    public function archiveBasket(Application $app, Request $request, BasketEntity $basket)
+    public function archiveBasket(Request $request, Basket $basket)
     {
         $archive_status = (Boolean) $request->query->get('archive');
 
         $basket->setArchived($archive_status);
 
-        $app['orm.em']->merge($basket);
-        $app['orm.em']->flush();
+        $this->getEntityManager()->merge($basket);
+        $this->getEntityManager()->flush();
 
         if ($archive_status) {
-            $message = $app->trans('Basket has been archived');
+            $message = $this->app->trans('Basket has been archived');
         } else {
-            $message = $app->trans('Basket has been unarchived');
+            $message = $this->app->trans('Basket has been unarchived');
         }
 
         $data = [
-            'success' => true
-            , 'archive' => $archive_status
-            , 'message' => $message
+            'success' => true,
+            'archive' => $archive_status,
+            'message' => $message,
         ];
 
         if ($request->getRequestFormat() === 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_workzone_show');
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function addElements(Application $app, Request $request, BasketEntity $basket)
+    public function addElements(Request $request, Basket $basket)
     {
         $n = 0;
 
-        $records = RecordsRequest::fromRequest($app, $request, true);
+        $records = RecordsRequest::fromRequest($this->app, $request, true);
 
+        $em = $this->getEntityManager();
         foreach ($records as $record) {
-            if ($basket->hasRecord($app, $record))
+            if ($basket->hasRecord($this->app, $record))
                 continue;
 
             $basket_element = new BasketElement();
             $basket_element->setRecord($record);
             $basket_element->setBasket($basket);
 
-            $app['orm.em']->persist($basket_element);
+            $em->persist($basket_element);
 
             $basket->addElement($basket_element);
 
@@ -257,34 +258,37 @@ class BasketController extends Controller
                     $validationData->setParticipant($participant);
                     $validationData->setBasketElement($basket_element);
 
-                    $app['orm.em']->persist($validationData);
+                    $em->persist($validationData);
                 }
             }
 
             $n++;
         }
 
-        $app['orm.em']->flush();
+        $em->flush();
 
         $data = [
-            'success' => true
-            , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
+            'success' => true,
+            'message' => $this->app->trans('%quantity% records added', ['%quantity%' => $n]),
         ];
 
         if ($request->getRequestFormat() === 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_workzone_show');
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function stealElements(Application $app, Request $request, BasketEntity $basket)
+    public function stealElements(Request $request, Basket $basket)
     {
         $n = 0;
 
+        $user = $this->getAuthenticatedUser();
+        /** @var BasketElementRepository $repository */
+        $repository = $this->app['repo.basket-elements'];
         foreach ($request->request->get('elements') as $bask_element_id) {
             try {
-                $basket_element = $app['repo.basket-elements']->findUserElement($bask_element_id, $app['authentication']->getUser());
+                $basket_element = $repository->findUserElement($bask_element_id, $user);
             } catch (\Exception $e) {
                 continue;
             }
@@ -295,19 +299,27 @@ class BasketController extends Controller
             $n++;
         }
 
-        $app['orm.em']->flush();
+        $this->getEntityManager()->flush();
 
-        $data = ['success' => true, 'message' => $app->trans('%quantity% records moved', ['%quantity%' => $n])];
+        $data = ['success' => true, 'message' => $this->app->trans('%quantity% records moved', ['%quantity%' => $n])];
 
         if ($request->getRequestFormat() === 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_workzone_show');
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function displayCreateForm(Application $app)
+    public function displayCreateForm()
     {
-        return $app['twig']->render('prod/Baskets/Create.html.twig');
+        return $this->render('prod/Baskets/Create.html.twig');
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    private function getEntityManager()
+    {
+        return $this->app['orm.em'];
     }
 }
