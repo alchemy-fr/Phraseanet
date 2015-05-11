@@ -112,7 +112,7 @@ class Result
      *
      * @return Result
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public static function createError(Request $request, $code, $message)
     {
@@ -138,6 +138,10 @@ class Result
             case 405:
                 $errorType = self::ERROR_METHODNOTALLOWED;
                 $errorMessage = 'Attempting to use POST with a GET-only endpoint, or vice-versa';
+                break;
+            case 406:
+                $errorType = self::ERROR_UNACCEPTABLE;
+                $errorMessage = 'Request content type is not acceptable';
                 break;
             case 500:
                 $errorType = self::ERROR_INTERNALSERVERERROR;

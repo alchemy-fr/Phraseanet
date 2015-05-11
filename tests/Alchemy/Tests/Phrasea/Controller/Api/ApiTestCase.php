@@ -92,7 +92,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $route,
             $this->getParameters(),
             $this->getAddRecordFile(),
-            array('HTTP_Accept' => $this->getAcceptMimeType()),
+            [
+                'HTTP_ACCEPT' => $this->getAcceptMimeType(),
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode(array('stories' => array($story)))
         );
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -134,7 +137,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $route,
             $this->getParameters(),
             $this->getAddRecordFile(),
-            array('HTTP_Accept' => $this->getAcceptMimeType()),
+            [
+                'HTTP_ACCEPT' => $this->getAcceptMimeType(),
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode(array('story_records' => array($records)))
         );
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
