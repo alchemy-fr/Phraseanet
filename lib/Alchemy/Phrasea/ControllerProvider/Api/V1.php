@@ -225,9 +225,16 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('record_id', '\d+');
         $controllers->get('/stories/{any_id}/{anyother_id}/', 'controller.api.v1:getBadRequestAction');
 
-        $controllers->post('/stories', 'controller.api.v1:createStoriesAction');
+        $controllers->post('/stories', 'controller.api.v1:createStoriesAction')
+            ->before('controller.api.v1:ensureJsonContentType');
 
-        $controllers->post('/stories/{databox_id}/{story_id}/records', 'controller.api.v1:createRecordStoryAction')
+        $controllers->post('/stories/{databox_id}/{story_id}/addrecords', 'controller.api.v1:addRecordsToStoryAction')
+            ->before('controller.api.v1:ensureJsonContentType')
+            ->assert('databox_id', '\d+')
+            ->assert('story_id', '\d+');
+
+        $controllers->post('/stories/{databox_id}/{story_id}/setcover', 'controller.api.v1:setStoryCoverAction')
+            ->before('controller.api.v1:ensureJsonContentType')
             ->assert('databox_id', '\d+')
             ->assert('story_id', '\d+');
 

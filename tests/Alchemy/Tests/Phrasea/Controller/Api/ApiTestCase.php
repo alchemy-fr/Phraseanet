@@ -72,7 +72,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/stories';
 
-        $story['collection_id'] = self::$DI['collection']->get_base_id();
+        $story['base_id'] = self::$DI['collection']->get_base_id();
         $story['title'] = uniqid('story');
 
         $file = new File(
@@ -115,7 +115,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken($this->userAccessToken);
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $route = sprintf('/api/v1/stories/%s/%s/records', $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf('/api/v1/stories/%s/%s/addrecords', $story->get_sbas_id(), $story->get_record_id());
 
         $file = new File(
             self::$DI['app'],
