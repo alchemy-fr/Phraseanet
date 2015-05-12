@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Export;
 use Alchemy\Phrasea\ControllerProvider\Prod\Feed;
 use Alchemy\Phrasea\ControllerProvider\Prod\Language;
 use Alchemy\Phrasea\ControllerProvider\Prod\Lazaret;
@@ -313,6 +312,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Download' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Edit' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Export' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -594,7 +594,7 @@ class Application extends SilexApplication
     /**
      * Returns true if application has terms of use
      *
-     * @return noolean
+     * @return bool
      */
     public function hasTermsOfUse()
     {
@@ -633,7 +633,6 @@ class Application extends SilexApplication
         $this->mount('/prod/push/', new Push());
         $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
-        $this->mount('/prod/export/', new Export());
         $this->mount('/prod/TOU/', new TOU());
         $this->mount('/prod/feeds', new Feed());
         $this->mount('/prod/tooltip', new Tooltip());
@@ -678,6 +677,7 @@ class Application extends SilexApplication
             '/prod/baskets'          => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
             '/prod/bridge/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
             '/prod/download'         => 'Alchemy\Phrasea\ControllerProvider\Prod\Download',
+            '/prod/export/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Export',
             '/prod/records/edit'     => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
             '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
