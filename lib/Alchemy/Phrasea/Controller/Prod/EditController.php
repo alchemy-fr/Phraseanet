@@ -379,7 +379,7 @@ class EditController extends Controller
      */
     private function getDataboxLogger(\databox $databox)
     {
-        return $app['phraseanet.logger']($databox);
+        return $this->app['phraseanet.logger']($databox);
     }
 
     /**

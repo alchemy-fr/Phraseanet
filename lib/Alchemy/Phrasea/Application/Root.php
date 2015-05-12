@@ -22,10 +22,10 @@ use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Provider\WebProfilerServiceProvider;
 use Sorien\Provider\DoctrineProfilerServiceProvider;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
-
     $app = new PhraseaApplication($environment);
     $app->loadPlugins();
 
@@ -74,7 +74,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     }
 
     $app['dispatcher'] = $app->share(
-        $app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
+        $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, PhraseaApplication $app) {
             $dispatcher->addSubscriber(new BridgeExceptionSubscriber($app));
             $dispatcher->addSubscriber(new FirewallSubscriber());
             $dispatcher->addSubscriber(new JsonRequestSubscriber());
