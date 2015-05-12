@@ -8,6 +8,6 @@ class WebhookJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new WebhookJob(null, null, $this->createTranslatorMock());
+        return new WebhookJob($this->createTranslatorMock(), null, null);
     }
 }

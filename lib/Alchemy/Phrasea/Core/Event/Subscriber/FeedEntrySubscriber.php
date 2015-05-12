@@ -74,7 +74,7 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
                         $mail->setAuthor($entry->getAuthorName());
                         $mail->setTitle($entry->getTitle());
 
-                        $this->app['notification.deliverer']->deliver($mail);
+                        $this->deliver($mail);
                         $mailed = true;
                     }
                 }

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
@@ -52,6 +53,8 @@ use Symfony\Component\Form\FormInterface;
 
 class Login implements ControllerProviderInterface
 {
+    use NotifierAware;
+
     public static function getDefaultTemplateVariables(Application $app)
     {
         $items = [];
@@ -95,7 +98,10 @@ class Login implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $app['login.controller'] = $this;
+        $app['login.controller'] = $this
+            ->setDelivererLocator(function () use ($app) {
+                return $app['notification.deliverer'];
+            });
 
         $controllers->before(function (Request $request) use ($app) {
             if ($request->getPathInfo() == $app->path('homepage')) {
@@ -497,7 +503,7 @@ class Login implements ControllerProviderInterface
         $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token->getValue()]));
         $mail->setExpiration($token->getExpiration());
 
-        $app['notification.deliverer']->deliver($mail);
+        $this->deliver($mail);
     }
 
     /**
@@ -544,12 +550,12 @@ class Login implements ControllerProviderInterface
 
         if (count($app['acl']->get($user)->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
-            $app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
 
             $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
         } else {
             $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
-            $app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
 
             $app->addFlash('info', $app->trans('Account has been unlocked, you still have to wait for admin approval.'));
         }
@@ -626,7 +632,7 @@ class Login implements ControllerProviderInterface
                     $mail->setButtonUrl($url);
                     $mail->setExpiration($expirationDate);
 
-                    $app['notification.deliverer']->deliver($mail);
+                    $this->deliver($mail);
                     $app->addFlash('info', $app->trans('phraseanet:: Un email vient de vous etre envoye'));
 
                     return $app->redirectPath('login_forgot_password');

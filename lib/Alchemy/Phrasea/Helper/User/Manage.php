@@ -11,32 +11,37 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\HttpFoundation\Request;
 
 class Manage extends Helper
 {
-    /**
-     *
-     * @var array
-     */
+    use NotifierAware;
+
+    /** @var array */
     protected $results;
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     protected $query_parms;
 
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $usr_id;
+
+    public function __construct(Application $app, Request $Request)
+    {
+        parent::__construct($app, $Request);
+
+        $this->setDelivererLocator(function () use ($app) {
+            return $app['notification.deliverer'];
+        });
+    }
 
     /**
      * @return User[]
@@ -167,7 +172,7 @@ class Manage extends Helper
                 $url = $this->app->url('login_renew_password', ['token' => $urlToken->getValue()]);
                 $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
                 $mail->setLogin($createdUser->getLogin());
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
             }
 
             if ($validateMail && $receiver) {
@@ -177,7 +182,7 @@ class Manage extends Helper
                 $url = $this->app->url('login_register_confirm', ['code' => $token]);
 
                 $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $token->getExpiration());
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
             }
         }
 

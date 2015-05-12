@@ -10,7 +10,7 @@ class WriteMetadataJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new WriteMetadataJob(null, null, $this->createTranslatorMock());
+        return new WriteMetadataJob($this->createTranslatorMock());
     }
 
     public function doTestRun()

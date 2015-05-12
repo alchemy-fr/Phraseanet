@@ -74,14 +74,17 @@ class TasksServiceProvider implements ServiceProviderInterface
             $logger = isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog'];
 
             return [
-                new FtpJob($app['dispatcher'], $logger, $app['translator']),
-                new ArchiveJob($app['dispatcher'], $logger, $app['translator']),
-                new BridgeJob($app['dispatcher'], $logger, $app['translator']),
-                new FtpPullJob($app['dispatcher'], $logger, $app['translator']),
-                new RecordMoverJob($app['dispatcher'], $logger, $app['translator']),
-                new SubdefsJob($app['dispatcher'], $logger, $app['translator']),
-                new WriteMetadataJob($app['dispatcher'], $logger, $app['translator']),
-                new WebhookJob($app['dispatcher'], $logger, $app['translator']),
+                (new FtpJob($app['translator'], $app['dispatcher'], $logger))
+                    ->setDelivererLocator(function () use ($app) {
+                        return $app['notification.deliverer'];
+                    }),
+                new ArchiveJob($app['translator'], $app['dispatcher'], $logger),
+                new BridgeJob($app['translator'], $app['dispatcher'], $logger),
+                new FtpPullJob($app['translator'], $app['dispatcher'], $logger),
+                new RecordMoverJob($app['translator'], $app['dispatcher'], $logger),
+                new SubdefsJob($app['translator'], $app['dispatcher'], $logger),
+                new WriteMetadataJob($app['translator'], $app['dispatcher'], $logger),
+                new WebhookJob($app['translator'], $app['dispatcher'], $logger),
             ];
         });
     }

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
 use Alchemy\Phrasea\TaskManager\Editor\FtpEditor;
@@ -24,6 +25,8 @@ use Alchemy\Phrasea\Model\Entities\Task;
 
 class FtpJob extends AbstractJob
 {
+    use NotifierAware;
+
     /**
      * {@inheritdoc}
      */
@@ -385,7 +388,7 @@ class FtpJob extends AbstractJob
             $receiver = new Receiver(null, $sendermail);
             $mail = MailSuccessFTPSender::create($app, $receiver, null, $sender_message);
             $mail->setServer($ftp_server);
-            $app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
         } catch (InvalidArgumentException $e) {
         }
 
@@ -393,7 +396,7 @@ class FtpJob extends AbstractJob
             $receiver = new Receiver(null, $export->getMail());
             $mail = MailSuccessFTPReceiver::create($app, $receiver, null, $receiver_message);
             $mail->setServer($ftp_server);
-            $app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
         } catch (\Exception $e) {
             $this->log('debug', sprintf('Unable to deliver success message : %s', $e->getMessage()));
         }

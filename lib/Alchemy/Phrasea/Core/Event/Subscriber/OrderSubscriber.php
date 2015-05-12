@@ -60,7 +60,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
                 $mail = MailInfoNewOrder::create($this->app, $receiver);
                 $mail->setUser($orderInitiator);
 
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
                 $mailed = true;
             }
 
@@ -100,7 +100,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
             $mail->setBasket($basket);
             $mail->setDeliverer($user_from);
 
-            $this->app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
             $mailed = true;
         }
 
@@ -130,7 +130,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
             $mail->setQuantity($params['n']);
             $mail->setDeliverer($user_from);
 
-            $this->app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
 
             $mailed = true;
         }

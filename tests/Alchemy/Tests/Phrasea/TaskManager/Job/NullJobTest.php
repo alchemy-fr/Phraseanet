@@ -8,6 +8,6 @@ class NullJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new NullJob(null, null, $this->createTranslatorMock());
+        return new NullJob($this->createTranslatorMock());
     }
 }

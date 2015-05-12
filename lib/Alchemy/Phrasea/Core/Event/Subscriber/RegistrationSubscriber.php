@@ -57,7 +57,7 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
                 $mail = MailInfoUserRegistered::create($this->app, $receiver);
                 $mail->setRegisteredUser($registeredUser);
 
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
 
                 $mailed = true;
             }
@@ -122,7 +122,7 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
 
         if ($readyToSend) {
             $mail = MailInfoSomebodyAutoregistered::create($this->app, $receiver, null, $body);
-            $this->app['notification.deliverer']->deliver($mail);
+            $this->deliver($mail);
         }
 
         return true;
