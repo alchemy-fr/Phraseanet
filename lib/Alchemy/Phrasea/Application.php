@@ -109,6 +109,8 @@ use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Gedmo\DoctrineExtensions as GedmoExtension;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
+use MediaVorus\Media\MediaInterface;
+use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
@@ -704,6 +706,21 @@ class Application extends SilexApplication
     public static function getAvailableFlashTypes()
     {
         return static::$flashTypes;
+    }
+
+    /**
+     * Get Media instance given a file uri.
+     *
+     * @param string $uri
+     *
+     * @return MediaInterface
+     */
+    public function getMediaFromUri($uri)
+    {
+        /** @var MediaVorus $mediavorus */
+        $mediavorus = $this['mediavorus'];
+
+        return $mediavorus->guess($uri);
     }
 
     private function setupApplicationPaths()

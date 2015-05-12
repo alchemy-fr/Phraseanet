@@ -41,7 +41,7 @@ class File
 
     /**
      *
-     * @var \MediaVorus\Media\MediaInterface
+     * @var MediaInterface
      */
     protected $media;
     protected $uuid;
@@ -54,7 +54,7 @@ class File
     /**
      * Constructor
      *
-     * @param Applciation    $app          Application context
+     * @param Application    $app          Application context
      * @param MediaInterface $media        The media
      * @param \collection    $collection   The destination collection
      * @param string         $originalName The original name of the file
@@ -227,7 +227,7 @@ class File
     /**
      * Returns an instance of MediaVorus\Media\MediaInterface corresponding to the file
      *
-     * @return MediaVorus\Media\MediaInterface
+     * @return MediaInterface
      */
     public function getMedia()
     {
@@ -282,7 +282,7 @@ class File
     public static function buildFromPathfile($pathfile, \collection $collection, Application $app, $originalName = null)
     {
         try {
-            $media = $app['mediavorus']->guess($pathfile);
+            $media = $app->getMediaFromUri($pathfile);
         } catch (FileNotFoundException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to build media file from non existant %s', $pathfile));
         }

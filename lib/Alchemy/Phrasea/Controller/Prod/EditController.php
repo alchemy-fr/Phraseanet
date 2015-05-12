@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
-use MediaVorus\MediaVorus;
 use Symfony\Component\HttpFoundation\Request;
 
 class EditController extends Controller
@@ -290,7 +289,7 @@ class EditController extends Controller
                         continue;
                     }
 
-                    $media = $this->getMediaVorus()->guess($value->get_pathfile());
+                    $media = $this->app->getMediaFromUri($value->get_pathfile());
                     $this->getSubDefinitionSubstituer()->substitute($reg_record, $name, $media);
                     $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
                     $this->getDataboxLogger($reg_record->get_databox())->log(
@@ -380,14 +379,6 @@ class EditController extends Controller
     private function getDataboxLogger(\databox $databox)
     {
         return $this->app['phraseanet.logger']($databox);
-    }
-
-    /**
-     * @return MediaVorus
-     */
-    private function getMediaVorus()
-    {
-        return $this->app['mediavorus'];
     }
 
     /**

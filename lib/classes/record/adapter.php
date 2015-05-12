@@ -915,7 +915,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $app['filesystem']->chmod($subdefFile, 0760);
-        $media = $app['mediavorus']->guess($subdefFile);
+        $media = $app->getMediaFromUri($subdefFile);
         $subdef = media_subdef::create($app, $this, $name, $media);
         $subdef->set_substituted(true);
 
@@ -1274,7 +1274,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $app['filesystem']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
-        $media = $app['mediavorus']->guess($pathhd . $newname);
+        $media = $app->getMediaFromUri($pathhd . $newname);
         media_subdef::create($app, $record, 'document', $media);
 
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);

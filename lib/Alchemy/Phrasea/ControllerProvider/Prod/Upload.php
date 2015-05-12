@@ -172,7 +172,7 @@ class Upload implements ControllerProviderInterface
 
             $app['filesystem']->rename($uploadedFilename, $renamedFilename);
 
-            $media = $app['mediavorus']->guess($renamedFilename);
+            $media = $app->getMediaFromUri($renamedFilename);
             $collection = \collection::get_from_base_id($app, $base_id);
 
             $lazaretSession = new LazaretSession();
@@ -233,7 +233,7 @@ class Upload implements ControllerProviderInterface
 
                         $fileName = $app['temporary-filesystem']->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
-                        $media = $app['mediavorus']->guess($fileName);
+                        $media = $app->getMediaFromUri($fileName);
                         $app['subdef.substituer']->substitute($elementCreated, 'thumbnail', $media);
                         $app['phraseanet.logger']($elementCreated->get_databox())->log(
                             $elementCreated,

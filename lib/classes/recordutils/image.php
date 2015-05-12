@@ -61,7 +61,7 @@ class recordutils_image
 
         $rotation = null;
         try {
-            $image = $app['mediavorus']->guess($subdef->get_pathfile());
+            $image = $app->getMediaFromUri($subdef->get_pathfile());
             if (MediaInterface::TYPE_IMAGE === $image->getType()) {
                 $rotation = $image->getOrientation();
             }

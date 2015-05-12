@@ -771,9 +771,7 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        /** @var MediaVorus $mediavorus */
-        $mediavorus = $this->app['mediavorus'];
-        $media = $mediavorus->guess($file->getPathname());
+        $media = $this->app->getMediaFromUri($file->getPathname());
 
         $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
@@ -860,9 +858,7 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing name parameter');
         }
 
-        /** @var MediaVorus $mediavorus */
-        $mediavorus = $this->app['mediavorus'];
-        $media = $mediavorus->guess($file->getPathname());
+        $media = $this->app->getMediaFromUri($file->getPathname());
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
         $base_id = $record->get_base_id();
         $collection = \collection::get_from_base_id($this->app, $base_id);
@@ -2101,9 +2097,7 @@ class V1Controller extends Controller
             if (!in_array($name, array('thumbnail', 'preview'))) {
                 continue;
             }
-            /** @var MediaVorus $mediavorus */
-            $mediavorus = $this->app['mediavorus'];
-            $media = $mediavorus->guess($value->get_pathfile());
+            $media = $this->app->getMediaFromUri($value->get_pathfile());
             $story->substitute_subdef($name, $media, $this->app);
             $this->app['phraseanet.logger']($story->get_databox())->log(
                 $story,

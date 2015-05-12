@@ -9,7 +9,6 @@
  */
 namespace Alchemy\Phrasea\Application\Helper;
 
-use Alchemy\Phrasea\Application;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

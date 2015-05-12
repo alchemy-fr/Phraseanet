@@ -987,7 +987,7 @@ class ArchiveJob extends AbstractJob
     {
         $status = \databox_status::operation_or($stat0, $stat1);
 
-        $media = $app['mediavorus']->guess($pathfile);
+        $media = $app->getMediaFromUri($pathfile);
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
@@ -1035,7 +1035,7 @@ class ArchiveJob extends AbstractJob
     {
         $status = \databox_status::operation_or($stat0, $stat1);
 
-        $media = $app['mediavorus']->guess($pathfile);
+        $media = $app->getMediaFromUri($pathfile);
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
