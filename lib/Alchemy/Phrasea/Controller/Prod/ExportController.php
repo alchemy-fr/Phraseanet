@@ -11,10 +11,13 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\ExportFailureEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -25,92 +28,91 @@ use Symfony\Component\HttpFoundation\Response;
 class ExportController extends Controller
 {
     use DispatcherAware;
+    use FilesystemAware;
+    use NotifierAware;
 
     /**
      * Display form to export documents
      *
-     * @param  Application $app
      * @param  Request     $request
      * @return Response
      */
-    public function displayMultiExport(Application $app, Request $request)
+    public function displayMultiExport(Request $request)
     {
         $download = new \set_export(
-            $app,
+            $this->app,
             $request->request->get('lst', ''),
             $request->request->get('ssel', ''),
             $request->request->get('story')
         );
 
-        return new Response($app['twig']->render('common/dialog_export.html.twig', [
+        return new Response($this->render('common/dialog_export.html.twig', [
             'download'             => $download,
             'ssttid'               => $request->request->get('ssel'),
             'lst'                  => $download->serialize_list(),
-            'default_export_title' => $app['conf']->get(['registry', 'actions', 'default-export-title']),
-            'choose_export_title'  => $app['conf']->get(['registry', 'actions', 'export-title-choice'])
+            'default_export_title' => $this->getConf()->get(['registry', 'actions', 'default-export-title']),
+            'choose_export_title'  => $this->getConf()->get(['registry', 'actions', 'export-title-choice'])
         ]));
     }
 
     /**
      * Test a FTP connexion
      *
-     * @param  Application  $app
      * @param  Request      $request
      * @return JsonResponse
      */
-    public function testFtpConnexion(Application $app, Request $request)
+    public function testFtpConnexion(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         $success = false;
         $msg = _('Error while connecting to FTP');
 
         try {
-            $ftpClient = $app['phraseanet.ftp.client']($request->request->get('address', ''), 21, 90, !!$request->request->get('ssl'));
+            /** @var \ftpclient $ftpClient */
+            $ftpClient = $this->app['phraseanet.ftp.client']($request->request->get('address', ''), 21, 90, !!$request->request->get('ssl'));
             $ftpClient->login($request->request->get('login', 'anonymous'), $request->request->get('password', 'anonymous'));
             $ftpClient->close();
-            $msg = $app->trans('Connection to FTP succeed');
+            $msg = $this->app->trans('Connection to FTP succeed');
             $success = true;
         } catch (\Exception $e) {
         }
 
-        return $app->json([
+        return $this->app->json([
             'success' => $success,
             'message' => $msg
         ]);
     }
 
     /**
-     *
-     * @param  Application  $app
      * @param  Request      $request
      * @return JsonResponse
      */
-    public function exportFtp(Application $app, Request $request)
+    public function exportFtp(Request $request)
     {
-        $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
+        $download = new \set_exportftp($this->app, $request->request->get('lst'), $request->request->get('ssttid'));
 
         $mandatoryParameters = ['address', 'login', 'obj'];
 
         foreach ($mandatoryParameters as $parameter) {
             if (!$request->request->get($parameter)) {
-                $app->abort(400, sprintf('required parameter `%s` is missing', $parameter));
+                $this->app->abort(400, sprintf('required parameter `%s` is missing', $parameter));
             }
         }
 
         if (count($download->get_display_ftp()) == 0) {
-            return $app->json([
+            return $this->app->json([
                 'success' => false,
-                'message' => $app->trans("You do not have required rights to send these documents over FTP")
+                'message' => $this->app->trans("You do not have required rights to send these documents over FTP")
             ]);
         }
 
         try {
             $download->prepare_export(
-                $app['authentication']->getUser(),
-                $app['filesystem'],
+                $this->getAuthenticatedUser(),
+                $this->getFilesystem(),
                 $request->request->get('obj'),
                 false,
                 $request->request->get('businessfields')
@@ -129,14 +131,14 @@ class ExportController extends Controller
                 $request->request->get('logfile')
             );
 
-            return $app->json([
+            return $this->app->json([
                 'success' => true,
-                'message' => $app->trans('Export saved in the waiting queue')
+                'message' => $this->app->trans('Export saved in the waiting queue')
             ]);
         } catch (\Exception $e) {
-            return $app->json([
+            return $this->app->json([
                 'success' => false,
-                'message' => $app->trans('Something went wrong')
+                'message' => $this->app->trans('Something went wrong')
             ]);
         }
     }
@@ -144,11 +146,10 @@ class ExportController extends Controller
     /**
      * Export document by mail
      *
-     * @param  Application  $app
      * @param  Request      $request
      * @return JsonResponse
      */
-    public function exportMail(Application $app, Request $request)
+    public function exportMail(Request $request)
     {
         set_time_limit(0);
         session_write_close();
@@ -158,10 +159,10 @@ class ExportController extends Controller
         $ssttid = $request->request->get('ssttid', '');
 
         //prepare export
-        $download = new \set_export($app, $lst, $ssttid);
+        $download = new \set_export($this->app, $lst, $ssttid);
         $list = $download->prepare_export(
-            $app['authentication']->getUser(),
-            $app['filesystem'],
+            $this->getAuthenticatedUser(),
+            $this->getFilesystem(),
             (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields')
@@ -179,26 +180,33 @@ class ExportController extends Controller
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
-                $this->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($app['authentication']->getUser()->getId(), $ssttid, $lst, \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID, $mail));
+                $this->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent(
+                    $this->getAuthenticatedUser(),
+                    $ssttid,
+                    $lst,
+                    \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID,
+                    $mail
+                ));
             }
         }
 
-        $token = $app['manipulator.token']->createEmailExportToken(serialize($list));
+        $token = $this->getTokenManipulator()->createEmailExportToken(serialize($list));
 
         if (count($destMails) > 0) {
             //zip documents
             \set_export::build_zip(
-                $app,
+                $this->app,
                 $token,
                 $list,
-                $app['tmp.download.path'].'/'. $token->getValue() . '.zip'
+                $this->app['tmp.download.path'].'/'. $token->getValue() . '.zip'
             );
 
             $remaingEmails = $destMails;
 
-            $url = $app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
+            $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
 
-            $emitter = new Emitter($app['authentication']->getUser()->getDisplayName(), $app['authentication']->getUser()->getEmail());
+            $user = $this->getAuthenticatedUser();
+            $emitter = new Emitter($user->getDisplayName(), $user->getEmail());
 
             foreach ($destMails as $key => $mail) {
                 try {
@@ -207,25 +215,33 @@ class ExportController extends Controller
                     continue;
                 }
 
-                $mail = MailRecordsExport::create($app, $receiver, $emitter, $request->request->get('textmail'));
+                $mail = MailRecordsExport::create($this->app, $receiver, $emitter, $request->request->get('textmail'));
                 $mail->setButtonUrl($url);
                 $mail->setExpiration($token->getExpiration());
 
-                $app['notification.deliverer']->deliver($mail, !!$request->request->get('reading_confirm', false));
+                $this->deliver($mail, !!$request->request->get('reading_confirm', false));
                 unset($remaingEmails[$key]);
             }
 
             //some mails failed
             if (count($remaingEmails) > 0) {
                 foreach ($remaingEmails as $mail) {
-                    $this->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($app['authentication']->getUser()->getId(), $ssttid, $lst, \eventsmanager_notify_downloadmailfail::MAIL_FAIL, $mail));
+                    $this->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($this->getAuthenticatedUser(), $ssttid, $lst, \eventsmanager_notify_downloadmailfail::MAIL_FAIL, $mail));
                 }
             }
         }
 
-        return $app->json([
+        return $this->app->json([
             'success' => true,
             'message' => ''
         ]);
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
     }
 }

@@ -28,7 +28,14 @@ class Export implements ControllerProviderInterface, ServiceProviderInterface
             return (new ExportController($app))
                 ->setDispatcherLocator(function () use ($app) {
                     return $app['dispatcher'];
-                });
+                })
+                ->setFileSystemLocator(function () use ($app) {
+                    return $app['filesystem'];
+                })
+                ->setDelivererLocator(function () use ($app) {
+                    return $app['notification.deliverer'];
+                })
+            ;
         });
     }
 
