@@ -14,16 +14,18 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
+use MediaVorus\MediaVorus;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EditController extends Controller
 {
-
-    public function submitAction(Application $app, Request $request) {
-
+    public function submitAction(Request $request)
+    {
         $records = RecordsRequest::fromRequest(
-            $app,
+            $this->app,
             $request,
             RecordsRequest::FLATTEN_YES_PRESERVE_STORIES,
             ['canmodifrecord']
@@ -32,17 +34,17 @@ class EditController extends Controller
         $thesaurus = false;
         $status = $ids = $elements = $suggValues = $fields = $JSFields = [];
         $databox = null;
+        $databoxes = $records->databoxes();
 
-        $multipleDataboxes = count($records->databoxes()) > 1;
+        $multipleDataboxes = count($databoxes) > 1;
 
-        if (1 === count($records->databoxes())) {
-            $databoxes = $records->databoxes();
-            $databox = array_pop($databoxes);
+        if (1 === count($databoxes)) {
+            /** @var \databox $databox */
+            $databox = current($databoxes);
 
-            /**
-             * generate javascript fields
-             */
+            // generate javascript fields
             foreach ($databox->get_meta_structure() as $meta) {
+                /** @var \databox_field $meta */
                 $fields[] = $meta;
 
                 $separator = $meta->get_separator();
@@ -56,7 +58,7 @@ class EditController extends Controller
                     '_sgval'               => [],
                     'required'             => $meta->is_required(),
                     /** @Ignore */
-                    'label'                => $meta->get_label($app['locale']),
+                    'label'                => $meta->get_label($this->app['locale']),
                     'readonly'             => $meta->is_readonly(),
                     'type'                 => $meta->get_type(),
                     'format'               => '',
@@ -79,12 +81,8 @@ class EditController extends Controller
                 }
             }
 
-            /**
-             * generate javascript sugg values
-             */
+            // generate javascript sugg values
             foreach ($records->collections() as $collection) {
-                /* @var $record \record_adapter */
-
                 $suggValues['b' . $collection->get_base_id()] = [];
 
                 if ($sxe = simplexml_load_string($collection->get_prefs())) {
@@ -111,28 +109,23 @@ class EditController extends Controller
                 unset($collection);
             }
 
-            /**
-             * generate javascript status
-             */
-            if ($app['acl']->get($app['authentication']->getUser())
-                ->has_right('changestatus')
-            ) {
+            // generate javascript status
+            if ($this->getAclForUser()->has_right('changestatus')) {
                 $statusStructure = $databox->getStatusStructure();
                 foreach ($statusStructure as $statbit) {
                     $bit = $statbit['bit'];
 
                     $status[$bit] = [];
-                    $status[$bit]['label0'] = $statbit['labels_off_i18n'][$app['locale']];
-                    $status[$bit]['label1'] = $statbit['labels_on_i18n'][$app['locale']];
+                    $status[$bit]['label0'] = $statbit['labels_off_i18n'][$this->app['locale']];
+                    $status[$bit]['label1'] = $statbit['labels_on_i18n'][$this->app['locale']];
                     $status[$bit]['img_off'] = $statbit['img_off'];
                     $status[$bit]['img_on'] = $statbit['img_on'];
                     $status[$bit]['_value'] = 0;
                 }
             }
 
-            /**
-             * generate javascript elements
-             */
+            // generate javascript elements
+            $databox_fields = [];
             foreach ($databox->get_meta_structure() as $field) {
                 $databox_fields[$field->get_id()] = [
                     'dirty'          => false,
@@ -141,6 +134,7 @@ class EditController extends Controller
                 ];
             }
 
+            /** @var \record_adapter $record */
             foreach ($records as $record) {
                 $indice = $record->get_number();
                 $elements[$indice] = [
@@ -148,13 +142,11 @@ class EditController extends Controller
                     'rid'         => $record->get_record_id(),
                     'sselcont_id' => null,
                     '_selected'   => false,
-                    'fields'      => $databox_fields
+                    'fields'      => $databox_fields,
                 ];
 
                 $elements[$indice]['statbits'] = [];
-                if ($app['acl']->get($app['authentication']->getUser())
-                    ->has_right_on_base($record->get_base_id(), 'chgstatus')
-                ) {
+                if ($this->getAclForUser()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
                     foreach ($status as $n => $s) {
                         $tmp_val = substr(strrev($record->get_status()), $n, 1);
                         $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
@@ -164,10 +156,7 @@ class EditController extends Controller
 
                 $elements[$indice]['originalname'] = $record->get_original_name();
 
-                foreach (
-                    $record->get_caption()
-                        ->get_fields(null, true) as $field
-                ) {
+                foreach ($record->get_caption()->get_fields(null, true) as $field) {
                     $meta_struct_id = $field->get_meta_struct_id();
                     if (!isset($JSFields[$meta_struct_id])) {
                         continue;
@@ -178,8 +167,7 @@ class EditController extends Controller
                         $type = $id = null;
 
                         if ($value->getVocabularyType()) {
-                            $type = $value->getVocabularyType()
-                                ->getType();
+                            $type = $value->getVocabularyType()->getType();
                             $id = $value->getVocabularyId();
                         }
 
@@ -187,14 +175,14 @@ class EditController extends Controller
                             'meta_id'        => $value->getId(),
                             'value'          => $value->getValue(),
                             'vocabularyId'   => $id,
-                            'vocabularyType' => $type
+                            'vocabularyType' => $type,
                         ];
                     }
 
                     $elements[$indice]['fields'][$meta_struct_id] = [
                         'dirty'          => false,
                         'meta_struct_id' => $meta_struct_id,
-                        'values'         => $values
+                        'values'         => $values,
                     ];
                 }
 
@@ -205,10 +193,10 @@ class EditController extends Controller
                 $elements[$indice]['subdefs']['thumbnail'] = [
                     'url' => (string)$thumbnail->get_url(),
                     'w'   => $thumbnail->get_width(),
-                    'h'   => $thumbnail->get_height()
+                    'h'   => $thumbnail->get_height(),
                 ];
 
-                $elements[$indice]['preview'] = $app['twig']->render(
+                $elements[$indice]['preview'] = $this->render(
                     'common/preview.html.twig',
                     ['record' => $record]
                 );
@@ -231,10 +219,10 @@ class EditController extends Controller
             'thesaurus'         => $thesaurus,
         ];
 
-        return $app['twig']->render('prod/actions/edit_default.html.twig', $params);
+        return $this->render('prod/actions/edit_default.html.twig', $params);
     }
 
-    public function searchVocabularyAction(Application $app, Request $request, $vocabulary) {
+    public function searchVocabularyAction(Request $request, $vocabulary) {
         $datas = ['success' => false, 'message' => '', 'results' => []];
 
         $sbas_id = (int) $request->query->get('sbas_id');
@@ -244,22 +232,22 @@ class EditController extends Controller
                 throw new \Exception('Invalid sbas_id');
             }
 
-            $VC = VocabularyController::get($app, $vocabulary);
-            $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+            $VC = VocabularyController::get($this->app, $vocabulary);
+            $databox = $this->findDataboxById($sbas_id);
         } catch (\Exception $e) {
-            $datas['message'] = $app->trans('Vocabulary not found');
+            $datas['message'] = $this->app->trans('Vocabulary not found');
 
-            return $app->json($datas);
+            return $this->app->json($datas);
         }
 
         $query = $request->query->get('query');
 
-        $results = $VC->find($query, $app['authentication']->getUser(), $databox);
+        $results = $VC->find($query, $this->getAuthenticatedUser(), $databox);
 
         $list = [];
 
         foreach ($results as $Term) {
-            /* @var $Term \Alchemy\Phrasea\Vocabulary\Term */
+            /* @var \Alchemy\Phrasea\Vocabulary\Term $Term */
             $list[] = [
                 'id'      => $Term->getId(),
                 'context' => $Term->getContext(),
@@ -270,24 +258,28 @@ class EditController extends Controller
         $datas['success'] = true;
         $datas['results'] = $list;
 
-        return $app->json($datas);
+        return $this->app->json($datas);
     }
 
-    public function applyAction(Application $app, Request $request) {
+    public function applyAction(Request $request) {
 
-        $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, ['canmodifrecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, ['canmodifrecord']);
 
-        if (count($records->databoxes()) !== 1) {
+        $databoxes = $records->databoxes();
+        if (count($databoxes) !== 1) {
             throw new \Exception('Unable to edit on multiple databoxes');
         }
+        /** @var \databox $databox */
+        $databox = reset($databoxes);
 
         if ($request->request->get('act_option') == 'SAVEGRP'
             && $request->request->get('newrepresent')
-            && $records->isSingleStory()) {
+            && $records->isSingleStory()
+        ) {
             try {
                 $reg_record = $records->singleStory();
 
-                $newsubdef_reg = new \record_adapter($app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
+                $newsubdef_reg = new \record_adapter($this->app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
 
                 foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
                     if (!in_array($name, ['thumbnail', 'preview'])) {
@@ -297,10 +289,10 @@ class EditController extends Controller
                         continue;
                     }
 
-                    $media = $app['mediavorus']->guess($value->get_pathfile());
-                    $app['subdef.substituer']->substitute($reg_record, $name, $media);
-                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
-                    $app['phraseanet.logger']($reg_record->get_databox())->log(
+                    $media = $this->getMediaVorus()->guess($value->get_pathfile());
+                    $this->getSubDefinitionSubstituer()->substitute($reg_record, $name, $media);
+                    $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
+                    $this->getDataboxLogger($reg_record->get_databox())->log(
                         $reg_record,
                         \Session_Logger::EVENT_SUBSTITUTE,
                         $name == 'document' ? 'HD' : $name,
@@ -313,11 +305,8 @@ class EditController extends Controller
         }
 
         if (!is_array($request->request->get('mds'))) {
-            return $app->json(['message' => '', 'error'   => false]);
+            return $this->app->json(['message' => '', 'error'   => false]);
         }
-
-        $databoxes = $records->databoxes();
-        $databox = array_pop($databoxes);
 
         $elements = $records->toArray();
 
@@ -345,7 +334,7 @@ class EditController extends Controller
 
             if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                 $record->set_metadatas($rec['metadatas']);
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+                $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
             }
 
             $newstat = $record->get_status();
@@ -371,15 +360,48 @@ class EditController extends Controller
                 ->reset_stamp($record->get_record_id());
 
             if ($statbits != '') {
-                $app['phraseanet.logger']($record->get_databox())
+                $this->getDataboxLogger($databox)
                     ->log($record, \Session_Logger::EVENT_STATUS, '', '');
             }
             if ($editDirty) {
-                $app['phraseanet.logger']($record->get_databox())
+                $this->getDataboxLogger($databox)
                     ->log($record, \Session_Logger::EVENT_EDIT, '', '');
             }
         }
 
-        return $app->json(['success' => true]);
+        return $this->app->json(['success' => true]);
+    }
+
+    /**
+     * @param \databox $databox
+     * @return \Session_Logger
+     */
+    private function getDataboxLogger(\databox $databox)
+    {
+        return $app['phraseanet.logger']($databox);
+    }
+
+    /**
+     * @return MediaVorus
+     */
+    private function getMediaVorus()
+    {
+        return $this->app['mediavorus'];
+    }
+
+    /**
+     * @return SubdefSubstituer
+     */
+    private function getSubDefinitionSubstituer()
+    {
+        return $this->app['subdef.substituer'];
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }

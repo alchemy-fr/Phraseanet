@@ -93,7 +93,7 @@ class Push implements ControllerProviderInterface
                         if ($value->getVocabularyType()->getType() !== 'User')
                             continue;
 
-                        $user = $value->getRessource();
+                        $user = $value->getResource();
 
                         $Users->set($user->getId(), $user);
                     }

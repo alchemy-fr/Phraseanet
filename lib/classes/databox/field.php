@@ -80,9 +80,7 @@ class databox_field implements cache_cacheableInterface
     const TYPE_STRING = "string";
     const TYPE_NUMBER = "number";
 
-    /**
-     * http://dublincore.org/documents/dces/
-     */
+    // http://dublincore.org/documents/dces/
     const DCES_TITLE = 'Title';
     const DCES_CREATOR = 'Creator';
     const DCES_SUBJECT = 'Subject';
@@ -171,7 +169,7 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * @return type \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
+     * @return ControlProviderInterface
      */
     public function getVocabularyControl()
     {
@@ -908,8 +906,8 @@ class databox_field implements cache_cacheableInterface
      *
      * @param \Alchemy\Phrasea\Application $app
      * @param databox                      $databox
-     * @param type                         $name
-     * @param type                         $multi
+     * @param string                       $name
+     * @param bool                         $multi
      *
      * @return self
      *

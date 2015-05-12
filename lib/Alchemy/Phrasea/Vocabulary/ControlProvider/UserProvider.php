@@ -106,7 +106,7 @@ class UserProvider implements ControlProviderInterface
      * @param  mixed  $id
      * @return string
      */
-    public function getRessource($id)
+    public function getResource($id)
     {
         return $this->app['repo.users']->find($id);
     }

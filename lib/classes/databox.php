@@ -684,7 +684,7 @@ class databox extends base
 
     /**
      *
-     * @return databox_descriptionStructure
+     * @return databox_descriptionStructure|databox_field[]
      */
     public function get_meta_structure()
     {
