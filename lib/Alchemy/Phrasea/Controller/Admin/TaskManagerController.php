@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -21,8 +22,6 @@ use Alchemy\Phrasea\TaskManager\Job\Factory;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
-use Silex\Application;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -30,6 +29,8 @@ use Symfony\Component\Process\Process;
 
 class TaskManagerController extends Controller
 {
+    use DispatcherAware;
+
     public function startScheduler()
     {
         /** @var TaskManagerStatus $status */
@@ -43,9 +44,7 @@ class TaskManagerController extends Controller
             'task-manager:scheduler:run'
         );
 
-        /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = $this->app['dispatcher'];
-        $dispatcher->addListener(KernelEvents::TERMINATE, function () use ($cmdLine) {
+        $this->getDispatcher()->addListener(KernelEvents::TERMINATE, function () use ($cmdLine) {
             $process = new Process($cmdLine);
             $process->setTimeout(0);
             $process->disableOutput();

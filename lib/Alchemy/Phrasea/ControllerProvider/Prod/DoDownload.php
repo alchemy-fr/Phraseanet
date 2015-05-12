@@ -25,7 +25,10 @@ class DoDownload implements ControllerProviderInterface, ServiceProviderInterfac
     public function register(Application $app)
     {
         $app['controller.prod.do-download'] = $app->share(function (PhraseaApplication $app) {
-            return new DoDownloadController($app);
+            return (new DoDownloadController($app))
+                ->setDispatcherLocator(function () use ($app) {
+                    return $app['dispatcher'];
+                });
         });
     }
 

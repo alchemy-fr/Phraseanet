@@ -9,16 +9,18 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class DownloadController extends Controller
 {
+    use DispatcherAware;
+
     /**
      * Download a set of documents
      *
@@ -60,13 +62,5 @@ class DownloadController extends Controller
     private function getTokenManipulator()
     {
         return $this->app['manipulator.token'];
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getDispatcher()
-    {
-        return $this->app['dispatcher'];
     }
 }

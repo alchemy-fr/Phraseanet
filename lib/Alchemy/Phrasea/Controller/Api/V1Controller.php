@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Checker\Response as CheckerResponse;
@@ -58,7 +59,6 @@ use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use MediaVorus\MediaVorus;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,6 +68,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class V1Controller extends Controller
 {
+    use DispatcherAware;
+
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
@@ -2211,14 +2213,6 @@ class V1Controller extends Controller
         if ($request->getContentType() != 'json') {
             $this->app->abort(406, 'Invalid Content Type given.');
         }
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getDispatcher()
-    {
-        return $this->app['dispatcher'];
     }
 
     /**

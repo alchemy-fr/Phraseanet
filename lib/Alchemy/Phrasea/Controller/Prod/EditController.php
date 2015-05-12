@@ -9,7 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
@@ -17,11 +17,12 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use MediaVorus\MediaVorus;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EditController extends Controller
 {
+    use DispatcherAware;
+
     public function submitAction(Request $request)
     {
         $records = RecordsRequest::fromRequest(
@@ -395,13 +396,5 @@ class EditController extends Controller
     private function getSubDefinitionSubstituer()
     {
         return $this->app['subdef.substituer'];
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getDispatcher()
-    {
-        return $this->app['dispatcher'];
     }
 }

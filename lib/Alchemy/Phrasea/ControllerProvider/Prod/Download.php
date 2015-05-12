@@ -25,7 +25,10 @@ class Download implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.download'] = $app->share(function (PhraseaApplication $app) {
-            return new DownloadController($app);
+            return (new DownloadController($app))
+                ->setDispatcherLocator(function () use ($app) {
+                    return $app['dispatcher'];
+                });
         });
     }
 

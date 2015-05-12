@@ -10,11 +10,11 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +24,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownloadController extends Controller
 {
+    use DispatcherAware;
+
     /**
      * Prepare a set of documents for download
      *
@@ -181,14 +183,6 @@ class DoDownloadController extends Controller
     private function getFileSystem()
     {
         return $this->app['filesystem'];
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getDispatcher()
-    {
-        return $this->app['dispatcher'];
     }
 
     /**

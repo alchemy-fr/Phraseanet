@@ -10,8 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Core\Event\ValidationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
@@ -26,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LightboxController extends Controller
 {
+    use DispatcherAware;
+
     public function rootAction()
     {
         try {
@@ -436,8 +437,7 @@ class LightboxController extends Controller
             $token = $this->app['manipulator.token']->createBasketValidationToken($basket);
             $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
 
-            $this->app['dispatcher']
-                ->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($participant, $basket, $url));
+            $this->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($participant, $basket, $url));
 
             $participant->setIsConfirmed(true);
 
