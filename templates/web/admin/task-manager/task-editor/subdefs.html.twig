@@ -7,6 +7,7 @@
             {% for databox in app['phraseanet.appbox'].get_databoxes() %}
             <label class="checkbox inline">
                 <input type="checkbox" name="sbas[]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
+                ({{ databox.get_sbas_id() }})
             </label>
             {% endfor %}
         </div>
