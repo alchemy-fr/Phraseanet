@@ -4,11 +4,15 @@
     <div class="control-group">
         <label class="control-label"> {{ 'Databox' | trans }}</label>
         <div class="controls">
-            {% for databox in app['phraseanet.appbox'].get_databoxes() %}
-            <label class="checkbox inline">
-                <input type="checkbox" name="sbas[]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
-            </label>
-            {% endfor %}
+            <select name="sbas">
+                <option value="">{{ 'All' | trans }}</option>
+                {% for databox in app['phraseanet.appbox'].get_databoxes() %}
+                <option value="{{ databox.get_sbas_id() }}">
+                    {{ databox.get_viewname() }}
+                    ({{ databox.get_sbas_id() }})
+                </option>
+                {% endfor %}
+            </select>
         </div>
     </div>
     <div class="control-group">
@@ -83,31 +87,29 @@
             xml = $.parseXML(xml);
             xml = $(xml);
 
-            var gform = document.forms['graphicForm'];
-
-            gform.embedded.checked = !!parseInt(xml.find("embedded").text());
-            gform.type_image.checked = !!parseInt(xml.find("type_image").text());
-            gform.type_video.checked = !!parseInt(xml.find("type_video").text());
-            gform.type_audio.checked = !!parseInt(xml.find("type_audio").text());
-            gform.type_document.checked = !!parseInt(xml.find("type_document").text());
-            gform.type_flash.checked = !!parseInt(xml.find("type_flash").text());
-            gform.type_unknown.checked = !!parseInt(xml.find("type_unknown").text());
-            gform.flush.value = minmax(parseInt(xml.find("flush").text()), 1, 100);
-            gform.maxrecs.value = minmax(parseInt(xml.find("maxrecs").text()), 10, 100);
-            gform.maxmegs.value = minmax(parseInt(xml.find("maxmegs").text()), 64, 512);
-            for(i=0; i < gform['sbas[]'].length; i++)
+            with(document.forms['graphicForm'])
             {
-                var sbid = gform['sbas[]'][i].value;
-
-                if(xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0)
+                embedded.checked = !!parseInt(xml.find("embedded").text());
+                type_image.checked = !!parseInt(xml.find("type_image").text());
+                type_video.checked = !!parseInt(xml.find("type_video").text());
+                type_audio.checked = !!parseInt(xml.find("type_audio").text());
+                type_document.checked = !!parseInt(xml.find("type_document").text());
+                type_flash.checked = !!parseInt(xml.find("type_flash").text());
+                type_unknown.checked = !!parseInt(xml.find("type_unknown").text());
+                flush.value = minmax(parseInt(xml.find("flush").text()), 1, 100);
+                maxrecs.value = minmax(parseInt(xml.find("maxrecs").text()), 10, 100);
+                maxmegs.value = minmax(parseInt(xml.find("maxmegs").text()), 64, 512);
+                for(i in sbas.options)
                 {
-                    gform['sbas[]'][i].checked = true;
+                    if(sbas.options[i].value == parseInt(xml.find("sbas").text()) )
+                    {
+                        sbas.options[i].selected = true;
+                    }
+                    else
+                    {
+                        sbas.options[i].selected = false;
+                    }
                 }
-                else
-                {
-                    gform['sbas[]'][i].checked = false;
-                }
-
             }
         }
     }

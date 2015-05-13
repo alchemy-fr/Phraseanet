@@ -55,6 +55,16 @@
     </script>
 </div>
 <script type="text/javascript">
+    (function( $ ){
+        $.fn.serializeJSON=function() {
+            var json = {};
+            jQuery.map($(this).serializeArray(), function(n, i){
+                json[n['name']] = n['value'];
+            });
+
+            return json;
+        };
+    })( jQuery );
 
     $(document).ready(function(){
         $("#taskTabs").tabs({
@@ -116,10 +126,10 @@
         });
 
         function xmlFromForm(callback) {
-            var formData = $("#graphicForm").serializeArray();
-            formData.push({"name":"xml", "value":$("#txtareaxml").val()});
+            var data = $("#graphicForm").serializeJSON();
+            data["xml"] = $("#txtareaxml").val();
             $.ajax({ url: "{{ path('admin_tasks_xml_from_form', {'task' : task.getId()}) }}"
-                , data: formData
+                , data: data
                 , dataType:'text'
                 , type:"POST"
                 , success:function(data) {
