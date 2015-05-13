@@ -12,12 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\BasketController;
-use Alchemy\Phrasea\ControllerProvider\Prod\Bridge;
-use Alchemy\Phrasea\ControllerProvider\Prod\DoDownload;
-use Alchemy\Phrasea\ControllerProvider\Prod\Download;
-use Alchemy\Phrasea\ControllerProvider\Prod\Edit;
-use Alchemy\Phrasea\ControllerProvider\Prod\Export;
 use Alchemy\Phrasea\ControllerProvider\Prod\Feed;
 use Alchemy\Phrasea\ControllerProvider\Prod\Language;
 use Alchemy\Phrasea\ControllerProvider\Prod\Lazaret;
@@ -115,6 +109,8 @@ use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Gedmo\DoctrineExtensions as GedmoExtension;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
+use MediaVorus\Media\MediaInterface;
+use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
@@ -313,6 +309,12 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Client\Root' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Bridge' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Download' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Edit' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Export' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -594,7 +596,7 @@ class Application extends SilexApplication
     /**
      * Returns true if application has terms of use
      *
-     * @return noolean
+     * @return bool
      */
     public function hasTermsOfUse()
     {
@@ -624,20 +626,15 @@ class Application extends SilexApplication
 
         $this->mount('/prod/query/', new Query());
         $this->mount('/prod/order/', new Order());
-        $this->mount('/prod/baskets', new BasketController());
-        $this->mount('/prod/download', new Download());
         $this->mount('/prod/story', new Story());
         $this->mount('/prod/WorkZone', new WorkZone());
         $this->mount('/prod/lists', new UsrLists());
         $this->mount('/prod/records/', new Records());
-        $this->mount('/prod/records/edit', new Edit());
         $this->mount('/prod/records/property', new Property());
         $this->mount('/prod/records/movecollection', new MoveCollection());
-        $this->mount('/prod/bridge/', new Bridge());
         $this->mount('/prod/push/', new Push());
         $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
-        $this->mount('/prod/export/', new Export());
         $this->mount('/prod/TOU/', new TOU());
         $this->mount('/prod/feeds', new Feed());
         $this->mount('/prod/tooltip', new Tooltip());
@@ -650,7 +647,6 @@ class Application extends SilexApplication
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
 
-        $this->mount('/download/', new DoDownload());
         $this->mount('/session/', new Session());
 
         $this->mount('/report/', new ReportRoot());
@@ -676,9 +672,15 @@ class Application extends SilexApplication
             '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
             '/client/'               => 'Alchemy\Phrasea\ControllerProvider\Client\Root',
             '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/download/'             => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
             '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink'             => 'Alchemy\Phrasea\ControllerProvider\Permalink',
+            '/prod/baskets'          => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
+            '/prod/bridge/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
+            '/prod/download'         => 'Alchemy\Phrasea\ControllerProvider\Prod\Download',
+            '/prod/export/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Export',
+            '/prod/records/edit'     => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
             '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {
@@ -704,6 +706,21 @@ class Application extends SilexApplication
     public static function getAvailableFlashTypes()
     {
         return static::$flashTypes;
+    }
+
+    /**
+     * Get Media instance given a file uri.
+     *
+     * @param string $uri
+     *
+     * @return MediaInterface
+     */
+    public function getMediaFromUri($uri)
+    {
+        /** @var MediaVorus $mediavorus */
+        $mediavorus = $this['mediavorus'];
+
+        return $mediavorus->guess($uri);
     }
 
     private function setupApplicationPaths()

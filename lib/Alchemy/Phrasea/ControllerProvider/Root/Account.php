@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Root;
 
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -31,10 +32,14 @@ use Symfony\Component\HttpFoundation\Response;
 class Account implements ControllerProviderInterface
 {
     use ControllerProviderTrait;
+    use NotifierAware;
 
     public function connect(Application $app)
     {
-        $app['account.controller'] = $this;
+        $app['account.controller'] = $this
+            ->setDelivererLocator(function () use ($app) {
+                return $app['notification.deliverer'];
+            });
 
         $controllers = $this->createAuthenticatedCollection($app);
 
@@ -156,7 +161,7 @@ class Account implements ControllerProviderInterface
         $mail->setButtonUrl($url);
         $mail->setExpiration($token->getExpiration());
 
-        $app['notification.deliverer']->deliver($mail);
+        $this->deliver($mail);
 
         $app->addFlash('info', $app->trans('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
 

@@ -15,17 +15,16 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 interface ControlProviderInterface
 {
-
     /**
-     * @return the type of the ControlProvider
-     *
      * ControlProvider class should be named like {type}Provider
      * in the ControlProvider namespace
+     *
+     * @return string the type of the ControlProvider
      */
     public static function getType();
 
     /**
-     * @return stringa simple i18n word to reprsent this vocabullary
+     * @return string a simple i18n word representing this vocabulary
      */
     public function getName();
 
@@ -41,19 +40,19 @@ interface ControlProviderInterface
     public function getValue($id);
 
     /**
-     * @return mixed      returns the actual ressource corresponding to an id
+     * @return mixed      returns the actual resource corresponding to an id
      * @throws \Exception if the $id is invalid
      */
-    public function getRessource($id);
+    public function getResource($id);
 
     /**
      * Find matching Term in the vocabulary repository
      *
-     * @param string   $query      A scalar quaery
+     * @param string   $query      A scalar query
      * @param User     $for_user   The user doing the query
      * @param \databox $on_databox The databox where vocabulary should be requested
      *
-     * @return Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function find($query, User $for_user, \databox $on_databox);
 }

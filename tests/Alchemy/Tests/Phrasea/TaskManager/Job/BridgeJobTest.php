@@ -8,6 +8,6 @@ class BridgeJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new BridgeJob(null, null, $this->createTranslatorMock());
+        return new BridgeJob($this->createTranslatorMock());
     }
 }

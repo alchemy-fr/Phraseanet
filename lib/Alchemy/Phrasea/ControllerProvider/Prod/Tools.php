@@ -142,7 +142,7 @@ class Tools implements ControllerProviderInterface
                             $request->get('record_id')
                         );
 
-                        $media = $app['mediavorus']->guess($tempoFile);
+                        $media = $app->getMediaFromUri($tempoFile);
 
                         $app['subdef.substituer']->substitute($record, 'document', $media);
                         $record->insertTechnicalDatas($app['mediavorus']);
@@ -202,7 +202,7 @@ class Tools implements ControllerProviderInterface
                             $request->get('record_id')
                         );
 
-                        $media = $app['mediavorus']->guess($tempoFile);
+                        $media = $app->getMediaFromUri($tempoFile);
 
                         $app['subdef.substituer']->substitute($record, 'thumbnail', $media);
                         $app['phraseanet.logger']($record->get_databox())->log(
@@ -265,7 +265,7 @@ class Tools implements ControllerProviderInterface
 
                 file_put_contents($fileName, $dataUri->getData());
 
-                $media = $app['mediavorus']->guess($fileName);
+                $media = $app->getMediaFromUri($fileName);
 
                 $app['subdef.substituer']->substitute($record, 'thumbnail', $media);
                 $app['phraseanet.logger']($record->get_databox())->log(

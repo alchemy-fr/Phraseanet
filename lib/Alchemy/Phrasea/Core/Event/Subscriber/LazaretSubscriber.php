@@ -63,7 +63,7 @@ class LazaretSubscriber extends AbstractNotificationSubscriber
 
             if ($readyToSend) {
                 $mail = MailInfoRecordQuarantined::create($this->app, $receiver);
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
                 $mailed = true;
             }
         }

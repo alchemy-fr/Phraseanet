@@ -28,7 +28,10 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.lightbox'] = $app->share(function (PhraseaApplication $app) {
-            return new LightboxController($app);
+            return (new LightboxController($app))
+                ->setDispatcherLocator(function () use ($app) {
+                    return $app['dispatcher'];
+                });
         });
     }
 

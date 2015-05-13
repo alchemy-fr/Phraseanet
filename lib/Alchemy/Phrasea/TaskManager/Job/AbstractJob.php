@@ -24,7 +24,11 @@ abstract class AbstractJob extends AbstractTMJob implements JobInterface
     protected $period = 0.05;
     protected $translator;
 
-    public function __construct(EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null, TranslatorInterface $translator)
+    public function __construct(
+        TranslatorInterface $translator,
+        EventDispatcherInterface $dispatcher = null,
+        LoggerInterface $logger = null
+    )
     {
         parent::__construct($dispatcher, $logger);
         $this->translator = $translator;

@@ -16,16 +16,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Helper
 {
-    /**
-     *
-     * @var Application
-     */
+    /** @var Application */
     protected $app;
 
-    /**
-     *
-     * @var \Symfony\Component\HttpFoundation\Request
-     */
+    /** @var Request */
     protected $request;
 
     /**
@@ -43,10 +37,7 @@ class Helper
         return $this;
     }
 
-    /**
-     *
-     * @return \Symfony\Component\HttpFoundation\Request
-     */
+    /** @return Request */
     public function getRequest()
     {
         return $this->request;

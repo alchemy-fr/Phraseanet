@@ -425,7 +425,7 @@ class Lazaret implements ControllerProviderInterface
         $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
 
         try {
-            $media = $app['mediavorus']->guess($lazaretFileName);
+            $media = $app->getMediaFromUri($lazaretFileName);
 
             $record = $lazaretFile->getCollection($app)->get_databox()->get_record($recordId);
             $app['subdef.substituer']->substitute($record, 'document', $media);

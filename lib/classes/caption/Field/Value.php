@@ -14,40 +14,22 @@ use Alchemy\Phrasea\Vocabulary;
 
 class caption_Field_Value implements cache_cacheableInterface
 {
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $value;
 
-    /**
-     *
-     * @var type \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
-     */
+    /** @var \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface */
     protected $VocabularyType;
 
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $VocabularyId;
 
-    /**
-     *
-     * @var databox_field
-     */
+    /** @var databox_field */
     protected $databox_field;
 
-    /**
-     *
-     * @var record_adapter
-     */
+    /** @var record_adapter */
     protected $record;
     protected $app;
 
@@ -59,7 +41,7 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     protected $qjs;
 
-    /**
+    /*
      * Tells whether the value is matched against a thesaurus value.
      */
     protected $isThesaurusValue;
@@ -71,7 +53,7 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param  Application          $app
      * @param  databox_field        $databox_field
      * @param  record_adapter       $record
-     * @param  type                 $id
+     * @param  mixed                $id
      * @return \caption_Field_Value
      */
     public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id)
@@ -157,6 +139,9 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @return Vocabulary\ControlProvider\ControlProviderInterface
+     */
     public function getVocabularyType()
     {
         return $this->VocabularyType;
@@ -177,9 +162,9 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this->value;
     }
 
-    public function getRessource()
+    public function getResource()
     {
-        return $this->VocabularyType ? $this->VocabularyType->getRessource($this->VocabularyId) : null;
+        return $this->VocabularyType ? $this->VocabularyType->getResource($this->VocabularyId) : null;
     }
 
     public function getDatabox_field()

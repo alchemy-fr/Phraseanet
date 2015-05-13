@@ -8,6 +8,6 @@ class RecordMoverJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new RecordMoverJob(null, null, $this->createTranslatorMock());
+        return new RecordMoverJob($this->createTranslatorMock());
     }
 }

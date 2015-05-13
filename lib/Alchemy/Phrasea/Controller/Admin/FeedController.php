@@ -152,9 +152,7 @@ class FeedController extends Controller
                 throw new BadRequestHttpException('Uploaded file is invalid');
             }
 
-            /** @var MediaVorus $mediavorus */
-            $mediavorus = $this->app['mediavorus'];
-            $media = $mediavorus->guess($file->getPathname());
+            $media = $this->app->getMediaFromUri($file->getPathname());
 
             if ($media->getType() !== MediaInterface::TYPE_IMAGE) {
                 throw new BadRequestHttpException('Bad filetype');

@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
@@ -20,7 +21,6 @@ use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -29,16 +29,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OAuth2Controller extends Controller
 {
+    use DispatcherAware;
+
     /** @var \API_OAuth2_Adapter */
     private $oAuth2Adapter;
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
 
     public function __construct(Application $app)
     {
         parent::__construct($app);
         $this->oAuth2Adapter = $app['oauth2-server'];
-        $this->dispatcher = $app['dispatcher'];
     }
 
     /**
@@ -52,7 +51,7 @@ class OAuth2Controller extends Controller
     public function authorizeAction(Request $request)
     {
         $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
-        $this->dispatcher->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
         //Check for auth params, send error or redirect if not valid
         $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
@@ -106,7 +105,7 @@ class OAuth2Controller extends Controller
                 $user = $this->app['repo.users']->find($usrId);
                 $this->getAuthenticator()->openAccount($user);
                 $event = new PostAuthenticate($request, new Response(), $user, $context);
-                $this->dispatcher->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+                $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
             } else {
                 $r = new Response($this->render($template, array('error' => $error, "auth" => $this->oAuth2Adapter)));
                 $r->headers->set('Content-Type', 'text/html');

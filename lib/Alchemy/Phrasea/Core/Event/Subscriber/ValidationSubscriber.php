@@ -57,7 +57,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
                 $mail->setTitle($title);
                 $mail->setUser($user_from);
 
-                $this->app['notification.deliverer']->deliver($mail, $event->hasReceipt());
+                $this->deliver($mail, $event->hasReceipt());
                 $mailed = true;
             }
         }
@@ -100,7 +100,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
                 $mail->setTitle($title);
                 $mail->setUser($user_from);
 
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
                 $mailed = true;
             }
         }
@@ -143,7 +143,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
                 $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
 
-                $this->app['notification.deliverer']->deliver($mail);
+                $this->deliver($mail);
                 $mailed = true;
             }
         }

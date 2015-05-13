@@ -47,6 +47,6 @@ class Factory
             throw new InvalidArgumentException(sprintf('Class `%s` does not implement JobInterface.', $fqn));
         }
 
-        return new $fqn($this->dispatcher, $this->logger, $this->translator);
+        return new $fqn($this->translator, $this->dispatcher, $this->logger);
     }
 }

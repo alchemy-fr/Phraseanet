@@ -24,7 +24,10 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.admin.users'] = $app->share(function () use ($app) {
-            return new UserController($app);
+            return (new UserController($app))
+                ->setDelivererLocator(function () use ($app) {
+                    return $app['notification.deliverer'];
+                });
         });
     }
 

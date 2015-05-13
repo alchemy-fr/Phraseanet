@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
@@ -20,7 +21,6 @@ use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
 use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Goodby\CSV\Export\Protocol\ExporterInterface;
@@ -30,6 +30,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    use NotifierAware;
+
     public function editRightsAction(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
@@ -507,9 +509,7 @@ class UserController extends Controller
                     $receiver = new Receiver(null, $user->getEmail());
                     $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
 
-                    /** @var Deliverer $deliverer */
-                    $deliverer = $this->app['notification.deliverer'];
-                    $deliverer->deliver($mail);
+                    $this->deliver($mail);
                 }
             }
         }

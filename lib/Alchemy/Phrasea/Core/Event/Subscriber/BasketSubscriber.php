@@ -45,7 +45,7 @@ class BasketSubscriber extends AbstractNotificationSubscriber
             $mail->setBasket($basket);
             $mail->setPusher($user_from);
 
-            $this->app['notification.deliverer']->deliver($mail, $event->hasReceipt());
+            $this->deliver($mail, $event->hasReceipt());
 
             $mailed = true;
         }

@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Checker\Response as CheckerResponse;
@@ -58,7 +59,6 @@ use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use MediaVorus\MediaVorus;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,6 +68,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class V1Controller extends Controller
 {
+    use DispatcherAware;
+
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
@@ -769,9 +771,7 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        /** @var MediaVorus $mediavorus */
-        $mediavorus = $this->app['mediavorus'];
-        $media = $mediavorus->guess($file->getPathname());
+        $media = $this->app->getMediaFromUri($file->getPathname());
 
         $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
@@ -858,9 +858,7 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing name parameter');
         }
 
-        /** @var MediaVorus $mediavorus */
-        $mediavorus = $this->app['mediavorus'];
-        $media = $mediavorus->guess($file->getPathname());
+        $media = $this->app->getMediaFromUri($file->getPathname());
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
         $base_id = $record->get_base_id();
         $collection = \collection::get_from_base_id($this->app, $base_id);
@@ -2140,9 +2138,7 @@ class V1Controller extends Controller
             if (!in_array($name, array('thumbnail', 'preview'))) {
                 continue;
             }
-            /** @var MediaVorus $mediavorus */
-            $mediavorus = $this->app['mediavorus'];
-            $media = $mediavorus->guess($value->get_pathfile());
+            $media = $this->app->getMediaFromUri($value->get_pathfile());
             $story->substitute_subdef($name, $media, $this->app);
             $this->app['phraseanet.logger']($story->get_databox())->log(
                 $story,
@@ -2252,14 +2248,6 @@ class V1Controller extends Controller
         if ($request->getContentType() != 'json') {
             $this->app->abort(406, 'Invalid Content Type given.');
         }
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getDispatcher()
-    {
-        return $this->app['dispatcher'];
     }
 
     /**

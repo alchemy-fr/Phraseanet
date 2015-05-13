@@ -76,7 +76,7 @@ class TaskManipulator implements ManipulatorInterface
      */
     public function createEmptyCollectionJob(\collection $collection)
     {
-        $job = new EmptyCollectionJob(null, null, $this->translator);
+        $job = new EmptyCollectionJob($this->translator);
         $settings = simplexml_load_string($job->getEditor()->getDefaultSettings());
         $settings->bas_id = $collection->get_base_id();
 

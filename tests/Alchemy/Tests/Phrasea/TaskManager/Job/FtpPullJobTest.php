@@ -8,6 +8,6 @@ class FtpPullJobTest extends JobTestCase
 {
     protected function getJob()
     {
-        return new FtpPullJob(null, null, $this->createTranslatorMock());
+        return new FtpPullJob($this->createTranslatorMock());
     }
 }

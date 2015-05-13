@@ -108,7 +108,7 @@ class patch_370alpha7a extends patchAbstract
 
                 }
 
-                $media = $app['mediavorus']->guess($filePath);
+                $media = $app->getMediaFromUri($filePath);
 
                 $collection = \collection::get_from_base_id($app, $row['base_id']);
 

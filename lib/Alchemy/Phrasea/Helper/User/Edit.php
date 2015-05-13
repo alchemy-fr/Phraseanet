@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
@@ -23,27 +24,23 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Edit extends \Alchemy\Phrasea\Helper\Helper
 {
-    /**
-     *
-     * @var array
-     */
+    use NotifierAware;
+
+    /** @var array */
     protected $users = [];
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     protected $users_datas;
 
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $base_id;
 
     public function __construct(Application $app, Request $Request)
     {
         parent::__construct($app, $Request);
+        $this->setDelivererLocator(function () use ($app) {
+            return $app['notification.deliverer'];
+        });
 
         $this->users = explode(';', $Request->get('users'));
 
@@ -663,7 +660,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             if ($oldReceiver) {
                 $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', ['%new_email%' => $new_email]));
-                $this->app['notification.deliverer']->deliver($mailOldAddress);
+                $this->deliver($mailOldAddress);
             }
 
             try {
@@ -674,7 +671,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             if ($newReceiver) {
                 $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', ['%old_email%' => $old_email]));
-                $this->app['notification.deliverer']->deliver($mailNewAddress);
+                $this->deliver($mailNewAddress);
             }
         }
 

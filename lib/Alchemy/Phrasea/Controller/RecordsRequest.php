@@ -72,7 +72,7 @@ class RecordsRequest extends ArrayCollection
     /**
      * Return all distinct databoxes related to the contained records
      *
-     * @return array
+     * @return \databox[]
      */
     public function databoxes()
     {
@@ -94,13 +94,14 @@ class RecordsRequest extends ArrayCollection
     /**
      * Return all distinct collections related to the contained records
      *
-     * @return array
+     * @return \collection[]
      */
     public function collections()
     {
         if (!$this->collections) {
             $this->collections = [];
 
+            /** @var \record_adapter $record */
             foreach ($this as $record) {
                 if (false === array_key_exists($record->get_base_id(), $this->collections)) {
                     $this->collections[$record->get_base_id()] = $record->get_collection();
@@ -160,7 +161,7 @@ class RecordsRequest extends ArrayCollection
     /**
      * Return the first story if a single story is contained, null otherwise
      *
-     * @return record_adapter|null
+     * @return \record_adapter|null
      */
     public function singleStory()
     {

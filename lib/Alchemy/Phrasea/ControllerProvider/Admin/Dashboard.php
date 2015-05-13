@@ -23,7 +23,10 @@ class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.admin.dashboard'] = $app->share(function (PhraseaApplication $app) {
-            return new DashboardController($app);
+            return (new DashboardController($app))
+                ->setDelivererLocator(function () use ($app) {
+                    return $app['notification.deliverer'];
+                });
         });
     }
 

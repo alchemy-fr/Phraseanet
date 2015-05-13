@@ -66,7 +66,7 @@ class appbox extends base
                 //resize collection logo
                 $imageSpec = new ImageSpecification();
 
-                $media = $this->app['mediavorus']->guess($filename);
+                $media = $this->app->getMediaFromUri($filename);
 
                 if ($media->getWidth() > 120 || $media->getHeight() > 24) {
                     $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);

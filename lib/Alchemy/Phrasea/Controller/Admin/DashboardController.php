@@ -10,7 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Controller\Controller;
@@ -19,7 +19,6 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,6 +26,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DashboardController extends Controller
 {
+    use NotifierAware;
+
     /**
      * Display admin dashboard page
      *
@@ -89,9 +90,7 @@ class DashboardController extends Controller
 
         $mail = MailTest::create($this->app, $receiver);
 
-        /** @var Deliverer $deliverer */
-        $deliverer = $this->app['notification.deliverer'];
-        $deliverer->deliver($mail);
+        $this->deliver($mail);
 
         /** @var \Swift_SpoolTransport $spoolTransport */
         $spoolTransport = $this->app['swiftmailer.spooltransport'];
