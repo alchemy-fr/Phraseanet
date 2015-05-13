@@ -12,7 +12,17 @@ class SubdefsEditorTest extends EditorTestCase
             [
                 '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-<sbas></sbas><type_image>0</type_image><type_video>0</type_video><type_audio>0</type_audio><type_document>0</type_document><type_flash>0</type_flash><type_unknown>0</type_unknown><flush></flush><maxrecs></maxrecs><maxmegs></maxmegs><embedded>0</embedded></tasksettings>
+  <type_image>0</type_image>
+  <type_video>0</type_video>
+  <type_audio>0</type_audio>
+  <type_document>0</type_document>
+  <type_flash>0</type_flash>
+  <type_unknown>0</type_unknown>
+  <flush>0</flush>
+  <maxrecs>0</maxrecs>
+  <maxmegs>0</maxmegs>
+  <embedded>0</embedded>
+</tasksettings>
 ',
                 '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
@@ -29,7 +39,7 @@ class SubdefsEditorTest extends EditorTestCase
   <type_document>0</type_document>
   <type_flash>0</type_flash>
   <type_unknown>0</type_unknown>
-  <flush>0</flush>
+  <flush>1</flush>
   <maxrecs>12</maxrecs>
   <maxmegs>1</maxmegs>
   <embedded>1</embedded>
@@ -67,16 +77,15 @@ class SubdefsEditorTest extends EditorTestCase
                 '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <customtag>value</customtag>
-  <sbas></sbas>
   <type_image>0</type_image>
   <type_video>0</type_video>
   <type_audio>0</type_audio>
   <type_document>0</type_document>
   <type_flash>0</type_flash>
   <type_unknown>0</type_unknown>
-  <flush></flush>
-  <maxrecs></maxrecs>
-  <maxmegs></maxmegs>
+  <flush>0</flush>
+  <maxrecs>0</maxrecs>
+  <maxmegs>0</maxmegs>
   <embedded>0</embedded>
 </tasksettings>
 ',

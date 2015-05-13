@@ -73,6 +73,9 @@ class SubdefsJob extends AbstractJob
                 $sqlparms[] = $type;
             }
         }
+        if(count($sqlqmark) == 0) {
+            return;
+        }
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             if (!$this->isStarted()) {
@@ -86,11 +89,9 @@ class SubdefsJob extends AbstractJob
             $conn = $databox->get_connection();
 
             $sql = 'SELECT coll_id, record_id FROM record'
-                . ' WHERE jeton & ' . PhraseaTokens::MAKE_SUBDEF . ' > 0';
-            if(count($sqlqmark) > 0) {
-                $sql .= ' AND type IN(' . implode(',', $sqlqmark) . ')';
-            }
-            $sql .= ' ORDER BY record_id DESC LIMIT 0, 30';
+                . ' WHERE jeton & ' . PhraseaTokens::MAKE_SUBDEF . ' > 0'
+                . ' AND type IN(' . implode(',', $sqlqmark) . ')'
+                . ' ORDER BY record_id DESC LIMIT 0, 30';
             $stmt = $conn->prepare($sql);
             $stmt->execute($sqlparms);
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);

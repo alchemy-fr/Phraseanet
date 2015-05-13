@@ -64,7 +64,7 @@ EOF;
     protected function getFormProperties()
     {
         return [
-            'sbas' => static::FORM_TYPE_INTEGER,
+            'sbas[]' => static::FORM_TYPE_INTEGER,
             'type_image' => static::FORM_TYPE_BOOLEAN,
             'type_video' => static::FORM_TYPE_BOOLEAN,
             'type_audio' => static::FORM_TYPE_BOOLEAN,
@@ -84,33 +84,70 @@ EOF;
     public function updateXMLWithRequest(Request $request)
     {
         $dom = $this->createBlankDom();
+        $dom->formatOutput = true;
+        $dom->preserveWhiteSpace = false;
 
         if (false === @$dom->loadXML($request->request->get('xml'))) {
             throw new BadRequestHttpException('Invalid XML data.');
         }
+
+        // delete empty /text-nodes so the output can be better formatted
+        $nodesToDel = array();
+        for($node = $dom->documentElement->firstChild; $node; $node=$node->nextSibling) {
+            if($node->nodeType == XML_TEXT_NODE && trim($node->data)=="") {
+                $nodesToDel[] = $node;
+            }
+        }
+        foreach($nodesToDel as $node) {
+            $dom->documentElement->removeChild($node);
+        }
+
+        $dom->normalizeDocument();
         foreach ($this->getFormProperties() as $name => $type) {
 
+            $multi = false;
+            if(substr($name, -2)== "[]") {
+                $multi = true;
+                $name = substr($name, 0, strlen($name)-2);
+            }
+
             $values = $request->request->get($name);
-            if($values === null) {
-                $values = array();
-            } elseif(!is_array($values)) {
-                $values = array($values);
+            if($values === null && !$multi) {
+                switch($type) {
+                    case static::FORM_TYPE_INTEGER:
+                    case static::FORM_TYPE_BOOLEAN:
+                        $values = "0";
+                        break;
+                    case static::FORM_TYPE_STRING:
+                        $values = "";
+                        break;
+                }
             }
 
             // erase the former setting but keep the node in place.
             // in case on multi-valued, keep only the first node (except if no value at all: erase all)
+            $nodesToDel = array();
             foreach($dom->getElementsByTagName($name) as $i=>$node) {
-                if($i > 0 || count($values)==0) {
-                    $node->parentNode->removeChild($node);
-                } else {
-                    while ($child = $node->firstChild) {
-                        $node->removeChild($child);
-                    }
+                // empty
+                while ($child = $node->firstChild) {
+                    $node->removeChild($child);
+                }
+                // keep the first for multi, only if there is something to write
+                if($i > 0 || ($multi && $values===null) ) {
+                    $nodesToDel[] = $node;
                 }
             }
-            // if no setting to write, no reason to create a node
-            if(count($values) == 0) {
+            foreach($nodesToDel as $node) {
+                $dom->documentElement->removeChild($node);
+            }
+
+            // if no multiple-setting to write, no reason to create an empty node
+            if($values === null) {
                 continue;
+            }
+
+            if(!is_array($values)) {
+                $values = array($values);
             }
 
             // in case the node did not exist at all, create one
@@ -130,6 +167,7 @@ EOF;
                 $node->appendChild($dom->createTextNode($this->toXMLValue($type, $value)));
             }
         }
+        $dom->normalizeDocument();
 
         return new Response($dom->saveXML(), 200, ['Content-type' => 'text/xml']);
     }

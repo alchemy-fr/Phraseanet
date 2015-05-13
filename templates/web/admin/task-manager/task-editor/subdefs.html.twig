@@ -67,7 +67,7 @@
 {% block javascript %}
     function minmax(v, _min, _max)
     {
-        if(v == NaN || v < _min)
+        if(isNaN(v) || v < _min)
         {
             v = _min;
         }
