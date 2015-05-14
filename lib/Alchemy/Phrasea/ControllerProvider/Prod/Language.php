@@ -36,8 +36,6 @@ class Language implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        $app['controller.prod.language'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->get("/", 'controller.prod.language:getTranslationsAction');
