@@ -21,8 +21,12 @@ use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class FeedController extends Controller
@@ -30,36 +34,36 @@ class FeedController extends Controller
     use DispatcherAware;
     use FirewallAware;
 
-    public function publishRecordsAction(Application $app, Request $request)
+    public function publishRecordsAction(Request $request)
     {
-        $feeds = $app['repo.feeds']->getAllForUser(
-            $app['acl']->get($app['authentication']->getUser())
-        );
-        $publishing = RecordsRequest::fromRequest($app, $request, true, [], ['bas_chupub']);
+        $feeds = $this->getFeedRepository()->getAllForUser($this->getAclForUser());
+        $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], ['bas_chupub']);
 
-        return $app['twig']->render(
+        return $this->render(
             'prod/actions/publish/publish.html.twig',
             ['publishing' => $publishing, 'feeds' => $feeds]
         );
     }
 
-    public function createFeedEntryAction(Application $app, Request $request) {
-        $feed = $app['repo.feeds']->find($request->request->get('feed_id'));
+    public function createFeedEntryAction(Request $request) {
+        $feed = $this->getFeedRepository()->find($request->request->get('feed_id'));
 
         if (null === $feed) {
-            $app->abort(404, "Feed not found");
+            $this->app->abort(404, "Feed not found");
         }
 
-        $publisher = $app['repo.feed-publishers']->findOneBy(
-            ['feed' => $feed, 'user' => $app['authentication']->getUser()]
-        );
+        $user = $this->getAuthenticatedUser();
+        $publisher = $this->getFeedPublisherRepository()->findOneBy([
+            'feed' => $feed, 
+            'user' => $user,
+        ]);
 
         if ('' === $title = trim($request->request->get('title', ''))) {
-            $app->abort(400, "Bad request");
+            $this->app->abort(400, "Bad request");
         }
 
-        if (!$feed->isPublisher($app['authentication']->getUser())) {
-            $app->abort(403, 'Unathorized action');
+        if (!$feed->isPublisher($user)) {
+            $this->app->abort(403, 'Unauthorized action');
         }
 
         $entry = new FeedEntry();
@@ -72,228 +76,256 @@ class FeedController extends Controller
 
         $feed->addEntry($entry);
 
-        $publishing = RecordsRequest::fromRequest($app, $request, true, [], ['bas_chupub']);
+        $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], ['bas_chupub']);
+        $manager = $this->getEntityManager();
         foreach ($publishing as $record) {
             $item = new FeedItem();
             $item->setEntry($entry)
                 ->setRecordId($record->get_record_id())
                 ->setSbasId($record->get_sbas_id());
             $entry->addItem($item);
-            $app['orm.em']->persist($item);
+            $manager->persist($item);
         }
 
-        $app['orm.em']->persist($entry);
-        $app['orm.em']->persist($feed);
-        $app['orm.em']->flush();
+        $manager->persist($entry);
+        $manager->persist($feed);
+        $manager->flush();
 
-        $app['dispatcher']->dispatch(
-            PhraseaEvents::FEED_ENTRY_CREATE,
-            new FeedEntryEvent($entry, $request->request->get('notify'))
-        );
+        $this->dispatch(PhraseaEvents::FEED_ENTRY_CREATE, new FeedEntryEvent(
+            $entry, $request->request->get('notify')
+        ));
 
-        $datas = ['error' => false, 'message' => false];
-
-        return $app->json($datas);
+        return $this->app->json(['error' => false, 'message' => false]);
     }
 
-    public function editEntryAction(Application $app, Request $request, $id) {
-        $entry = $app['repo.feed-entries']->find($id);
+    public function editEntryAction($id) {
+        $entry = $this->getFeedEntryRepository()->find($id);
 
-        if (!$entry->isPublisher($app['authentication']->getUser())) {
+        if (!$entry->isPublisher($this->getAuthenticatedUser())) {
             throw new AccessDeniedHttpException();
         }
 
-        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+        $feeds = $this->getFeedRepository()->getAllForUser($this->getAclForUser());
 
-        $datas = $app['twig']->render(
+        return $this->renderResponse(
             'prod/actions/publish/publish_edit.html.twig',
             ['entry' => $entry, 'feeds' => $feeds]
         );
-
-        return new Response($datas);
     }
 
-    /**
-     * @param Application $app
-     * @param Request     $request
-     * @param int         $id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function updateEntryAction(Application $app, Request $request, $id) {
-        $datas = ['error' => true, 'message' => '', 'datas' => ''];
-        $entry = $app['repo.feed-entries']->find($id);
+    public function updateEntryAction(Request $request, $id) {
+        $entry = $this->getFeedEntryRepository()->find($id);
 
         if (null === $entry) {
-            $app->abort(404, 'Entry not found');
+            $this->app->abort(404, 'Entry not found');
         }
-        if (!$entry->isPublisher($app['authentication']->getUser())) {
-            $app->abort(403, 'Unathorized action');
+        if (!$entry->isPublisher($this->getAuthenticatedUser())) {
+            $this->app->abort(403, 'Unathorized action');
         }
         if ('' === $title = trim($request->request->get('title', ''))) {
-            $app->abort(400, "Bad request");
+            $this->app->abort(400, "Bad request");
         }
 
-        $entry->setAuthorEmail($request->request->get('author_mail'))
+        $entry
+            ->setAuthorEmail($request->request->get('author_mail'))
             ->setAuthorName($request->request->get('author_name'))
             ->setTitle($title)
-            ->setSubtitle($request->request->get('subtitle', ''));
+            ->setSubtitle($request->request->get('subtitle', ''))
+        ;
 
-        $currentFeedId = $entry->getFeed()
-            ->getId();
-        $new_feed_id = $request->request->get('feed_id', $currentFeedId);
-        if ($currentFeedId !== (int)$new_feed_id) {
-
-            $new_feed = $app['repo.feeds']->find($new_feed_id);
+        $current_feed_id = $entry->getFeed()->getId();
+        $new_feed_id = $request->request->get('feed_id', $current_feed_id);
+        if ($current_feed_id !== (int)$new_feed_id) {
+            $new_feed = $this->getFeedRepository()->find($new_feed_id);
 
             if ($new_feed === null) {
-                $app->abort(404, 'Feed not found');
+                $this->app->abort(404, 'Feed not found');
             }
 
-            if (!$new_feed->isPublisher($app['authentication']->getUser())) {
-                $app->abort(403, 'You are not publisher of this feed');
+            if (!$new_feed->isPublisher($this->getAuthenticatedUser())) {
+                $this->app->abort(403, 'You are not publisher of this feed');
             }
             $entry->setFeed($new_feed);
         }
 
         $items = explode(';', $request->request->get('sorted_lst'));
 
+        $item_repository = $this->getFeedItemRepository();
+        $manager = $this->getEntityManager();
         foreach ($items as $item_sort) {
-            $item_sort_datas = explode('_', $item_sort);
-            if (count($item_sort_datas) != 2) {
+            $item_sort_data = explode('_', $item_sort);
+            if (count($item_sort_data) != 2) {
                 continue;
             }
-            $item = $app['repo.feed-items']->find($item_sort_datas[0]);
-            $item->setOrd($item_sort_datas[1]);
-            $app['orm.em']->persist($item);
+            $item = $item_repository->find($item_sort_data[0]);
+            $item->setOrd($item_sort_data[1]);
+            $manager->persist($item);
         }
 
-        $app['orm.em']->persist($entry);
-        $app['orm.em']->flush();
+        $manager->persist($entry);
+        $manager->flush();
 
-        return $app->json(
-            [
-                'error'   => false,
-                'message' => 'succes',
-                'datas'   => $app['twig']->render(
-                    'prod/results/entry.html.twig',
-                    [
-                        'entry' => $entry
-                    ]
-                )
-            ]
-        );
+        return $this->app->json([
+            'error'   => false,
+            'message' => 'succes',
+            'datas'   => $this->render('prod/results/entry.html.twig', ['entry' => $entry]),
+        ]);
     }
 
-    public function deleteEntryAction(Application $app, Request $request, $id) {
-        $datas = ['error' => true, 'message' => ''];
-
-        $entry = $app['repo.feed-entries']->find($id);
+    public function deleteEntryAction($id) {
+        $entry = $this->getFeedEntryRepository()->find($id);
 
         if (null === $entry) {
-            $app->abort(404, 'Entry not found');
+            $this->app->abort(404, 'Entry not found');
         }
-        if (!$entry->isPublisher($app['authentication']->getUser()) && $entry->getFeed()
-                ->isOwner($app['authentication']->getUser()) === false
+        if (!$entry->isPublisher($this->getAuthenticatedUser()) && $entry->getFeed()
+                ->isOwner($this->getAuthenticatedUser()) === false
         ) {
-            $app->abort(403, $app->trans('Action Forbidden : You are not the publisher'));
+            $this->app->abort(403, $this->app->trans('Action Forbidden : You are not the publisher'));
         }
 
-        $app['orm.em']->remove($entry);
-        $app['orm.em']->flush();
+        $manager = $this->getEntityManager();
+        $manager->remove($entry);
+        $manager->flush();
 
-        return $app->json(['error' => false, 'message' => 'succes']);
+        return $this->app->json(['error' => false, 'message' => 'success']);
     }
 
-    public function indexAction(Application $app, Request $request) {
-        $request = $app['request'];
+    public function indexAction(Request $request) {
         $page = (int)$request->query->get('page');
         $page = $page > 0 ? $page : 1;
 
-        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+        $feeds = $this->getFeedRepository()->getAllForUser($this->getAclForUser());
 
-        $datas = $app['twig']->render(
-            'prod/results/feeds.html.twig',
-            [
-                'feeds' => $feeds,
-                'feed'  => new Aggregate($app['orm.em'], $feeds),
-                'page'  => $page
-            ]
-        );
-
-        return new Response($datas);
+        return $this->renderResponse('prod/results/feeds.html.twig', [
+            'feeds' => $feeds,
+            'feed'  => new Aggregate($this->getEntityManager(), $feeds),
+            'page'  => $page,
+        ]);
     }
 
-    public function showAction(Application $app, Request $request, $id) {
+    public function showAction(Request $request, $id) {
         $page = (int)$request->query->get('page');
         $page = $page > 0 ? $page : 1;
 
-        $feed = $app['repo.feeds']->find($id);
-        if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
-            $app->abort(404, 'Feed not found');
+        $feed = $this->getFeedRepository()->find($id);
+        if (!$feed->isAccessible($this->getAuthenticatedUser(), $this->app)) {
+            $this->app->abort(404, 'Feed not found');
         }
-        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+        $feeds = $this->getFeedRepository()->getAllForUser($this->getAclForUser());
 
-        $datas = $app['twig']->render(
-            'prod/results/feeds.html.twig',
-            ['feed' => $feed, 'feeds' => $feeds, 'page' => $page]
-        );
-
-        return new Response($datas);
+        return $this->renderResponse('prod/results/feeds.html.twig', [
+            'feed'  => $feed,
+            'feeds' => $feeds,
+            'page'  => $page,
+        ]);
     }
 
-    public function subscribeAggregatedFeedAction(Application $app, Request $request) {
+    public function subscribeAggregatedFeedAction(Request $request) {
         $renew = ($request->query->get('renew') === 'true');
 
-        $feeds = $app['repo.feeds']->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+        $feeds = $this->getFeedRepository()->getAllForUser($this->getAclForUser());
 
-        $link = $app['feed.aggregate-link-generator']->generate(
-            new Aggregate($app['orm.em'], $feeds),
-            $app['authentication']->getUser(),
+        $link = $this->getAggregateLinkGenerator()->generate(
+            new Aggregate($this->getEntityManager(), $feeds),
+            $this->getAuthenticatedUser(),
             AggregateLinkGenerator::FORMAT_RSS,
             null,
             $renew
         );
 
-        $output = [
-            'texte' => '<p>' . $app->trans(
+        return $this->app->json([
+            'texte' => '<p>' . $this->app->trans(
                     'publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.'
-                ) . '</p><p>' . $app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-            <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI()
+                ) . '</p><p>' . $this->app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+                <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI()
                 . '"/></div>',
-            'titre' => $app->trans('publications::votre rss personnel')
-        ];
-
-        return $app->json($output);
+            'titre' => $this->app->trans('publications::votre rss personnel'),
+        ]);
     }
 
-    public function subscribeFeedAction(Application $app, Request $request, $id) {
+    public function subscribeFeedAction(Request $request, $id) {
         $renew = ($request->query->get('renew') === 'true');
 
-        $feed = $app['repo.feeds']->find($id);
-        if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
-            $app->abort(404, 'Feed not found');
+        $feed = $this->getFeedRepository()->find($id);
+        if (!$feed->isAccessible($this->getAuthenticatedUser(), $this->app)) {
+            $this->app->abort(404, 'Feed not found');
         }
-        $link = $app['feed.user-link-generator']->generate(
+        $link = $this->getUserLinkGenerator()->generate(
             $feed,
-            $app['authentication']->getUser(),
+            $this->getAuthenticatedUser(),
             FeedLinkGenerator::FORMAT_RSS,
             null,
             $renew
         );
 
-        $output = [
-            'texte' => '<p>' . $app->trans(
+        return $this->app->json([
+            'texte' => '<p>' . $this->app->trans(
                     'publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.'
-                ) . '</p><p>' . $app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-            <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
-            'titre' => $app->trans('publications::votre rss personnel')
-        ];
-
-        return $app->json($output);
+                ) . '</p><p>' . $this->app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+                <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
+            'titre' => $this->app->trans('publications::votre rss personnel')
+        ]);
     }
 
     public function ensureUserHasPublishRight()
     {
         $this->requireRight('bas_chupub');
+    }
+
+    /**
+     * @return FeedRepository
+     */
+    private function getFeedRepository()
+    {
+        return $this->app['repo.feeds'];
+    }
+
+    /**
+     * @return FeedPublisherRepository
+     */
+    private function getFeedPublisherRepository()
+    {
+        return $this->app['repo.feed-publishers'];
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    private function getEntityManager()
+    {
+        return $this->app['orm.em'];
+    }
+
+    /**
+     * @return FeedEntryRepository
+     */
+    private function getFeedEntryRepository()
+    {
+        return $this->app['repo.feed-entries'];
+    }
+
+    /**
+     * @return FeedItemRepository
+     */
+    private function getFeedItemRepository()
+    {
+        return $this->app['repo.feed-items'];
+    }
+
+    /**
+     * @return AggregateLinkGenerator
+     */
+    private function getAggregateLinkGenerator()
+    {
+        return $this->app['feed.aggregate-link-generator'];
+    }
+
+    /**
+     * @return FeedLinkGenerator
+     */
+    private function getUserLinkGenerator()
+    {
+        return $this->app['feed.user-link-generator'];
     }
 }
