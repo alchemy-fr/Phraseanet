@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FirewallAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
@@ -26,6 +27,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class FeedController extends Controller
 {
+    use DispatcherAware;
     use FirewallAware;
 
     public function publishRecordsAction(Application $app, Request $request)

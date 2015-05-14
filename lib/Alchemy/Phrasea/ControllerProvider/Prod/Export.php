@@ -26,9 +26,7 @@ class Export implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.export'] = $app->share(function (PhraseaApplication $app) {
             return (new ExportController($app))
-                ->setDispatcherLocator(function () use ($app) {
-                    return $app['dispatcher'];
-                })
+                ->setDispatcher($app['dispatcher'])
                 ->setFileSystemLocator(function () use ($app) {
                     return $app['filesystem'];
                 })

@@ -17,14 +17,12 @@ trait DispatcherAware
     private $dispatcher;
 
     /**
-     * Set Locator to use to locate event dispatcher
-     *
-     * @param callable $locator
+     * @param EventDispatcherInterface $dispatcher
      * @return $this
      */
-    public function setDispatcherLocator(callable $locator)
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $locator;
+        $this->dispatcher = $dispatcher;
 
         return $this;
     }
@@ -34,23 +32,9 @@ trait DispatcherAware
      */
     public function getDispatcher()
     {
-        if ($this->dispatcher instanceof EventDispatcherInterface) {
-            return $this->dispatcher;
-        }
-
         if (null === $this->dispatcher) {
-            throw new \LogicException('Dispatcher locator was not set');
+            throw new \LogicException('Dispatcher was not set');
         }
-
-        $dispatcher = call_user_func($this->dispatcher);
-        if (!$dispatcher instanceof EventDispatcherInterface) {
-            throw new \LogicException(sprintf(
-                'Expects locator to return instance of "%s", got "%s"',
-                EventDispatcherInterface::class,
-                is_object($dispatcher) ? get_class($dispatcher) : gettype($dispatcher)
-            ));
-        }
-        $this->dispatcher = $dispatcher;
 
         return $this->dispatcher;
     }

@@ -26,6 +26,7 @@ class Feed implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.feed'] = $app->share(function (PhraseaApplication $app) {
             return (new FeedController($app))
+                ->setDispatcher($app['dispatcher'])
                 ->setFirewall($app['firewall']);
         });
     }

@@ -26,9 +26,7 @@ class Edit implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.edit'] = $app->share(function (PhraseaApplication $app) {
             return (new EditController($app))
-                ->setDispatcherLocator(function () use ($app) {
-                    return $app['dispatcher'];
-                });
+                ->setDispatcher($app['dispatcher']);
         });
     }
 
