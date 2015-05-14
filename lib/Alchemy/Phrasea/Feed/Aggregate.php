@@ -13,10 +13,11 @@ namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Doctrine\ORM\EntityManagerInterface;
 
 class Aggregate implements FeedInterface
 {
@@ -26,10 +27,10 @@ class Aggregate implements FeedInterface
     /** @var string */
     private $subtitle;
 
-    /** @var DateTime */
+    /** @var \DateTime */
     private $createdOn;
 
-    /** @var DateTime */
+    /** @var \DateTime */
     private $updatedOn;
 
     /** @var array */
@@ -38,17 +39,15 @@ class Aggregate implements FeedInterface
     /** @var AggregateToken */
     private $token;
 
-    /** @var EntityManager */
+    /** @var EntityManagerInterface */
     private $em;
 
     /**
-     * @param EntityManager  $em
-     * @param array          $feeds
-     * @param AggregateToken $token
-     *
-     * @return Aggregate
+     * @param EntityManagerInterface $em
+     * @param Feed[]                 $feeds
+     * @param AggregateToken         $token
      */
-    public function __construct(EntityManager $em, array $feeds, AggregateToken $token = null)
+    public function __construct(EntityManagerInterface $em, array $feeds, AggregateToken $token = null)
     {
         $this->title = 'AGGREGATE';
         $this->subtitle = 'AGGREGATE SUBTITLE';
@@ -64,16 +63,15 @@ class Aggregate implements FeedInterface
 
         $this->feeds = $tmp_feeds;
         $this->token = $token;
-
-        return $this;
     }
 
     /**
      * Creates an aggregate from all the feeds available to a given user.
      *
-     * @param EntityManager $em
-     * @param User          $user
+     * @param Application $app
+     * @param User        $user
      *
+     * @param array       $restrictions
      * @return Aggregate
      */
     public static function createFromUser(Application $app, User $user, array $restrictions = [])
@@ -87,9 +85,8 @@ class Aggregate implements FeedInterface
     /**
      * Creates an aggregate from given Feed id array.
      *
-     * @param EntityManager $em
-     * @param array         $feed_ids
-     *
+     * @param Application $app
+     * @param array       $feed_ids
      * @return Aggregate
      */
     public static function create(Application $app, array $feed_ids)
