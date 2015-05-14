@@ -23,7 +23,8 @@ class Permalink implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.permalink'] = $app->share(function (PhraseaApplication $app) {
-            return new PermalinkController($app, $app['phraseanet.appbox'], $app['acl'], $app['authentication']);
+            return (new PermalinkController($app, $app['phraseanet.appbox'], $app['acl'], $app['authentication']))
+                ->setDataboxLoggerLocator($app['phraseanet.logger']);
         });
     }
 

@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EditController extends Controller
 {
+    use DataboxLoggerAware;
     use DispatcherAware;
 
     public function submitAction(Request $request)
@@ -370,15 +372,6 @@ class EditController extends Controller
         }
 
         return $this->app->json(['success' => true]);
-    }
-
-    /**
-     * @param \databox $databox
-     * @return \Session_Logger
-     */
-    private function getDataboxLogger(\databox $databox)
-    {
-        return $this->app['phraseanet.logger']($databox);
     }
 
     /**

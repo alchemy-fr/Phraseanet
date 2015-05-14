@@ -12,13 +12,15 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
-use Session_Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractDelivery
 {
+    use DataboxLoggerAware;
+
     /** @var Application */
     protected $app;
 
@@ -65,8 +67,7 @@ abstract class AbstractDelivery
     private function logView(\record_adapter $record, Request $request)
     {
         try {
-            /** @var Session_Logger $logger */
-            $logger = $this->app['phraseanet.logger']($record->get_databox());
+            $logger = $this->getDataboxLogger($record->get_databox());
             $log_id = $logger->get_id();
             $record->log_view(
                 $log_id,

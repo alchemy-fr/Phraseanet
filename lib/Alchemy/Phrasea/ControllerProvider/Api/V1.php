@@ -32,6 +32,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.api.v1'] = $app->share(function (PhraseaApplication $app) {
             return (new V1Controller($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher']);
         });
     }
