@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection;
 use Alchemy\Phrasea\ControllerProvider\Prod\Order;
 use Alchemy\Phrasea\ControllerProvider\Prod\Printer;
 use Alchemy\Phrasea\ControllerProvider\Prod\Property;
@@ -315,6 +314,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Feed' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Language' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -631,7 +631,6 @@ class Application extends SilexApplication
         $this->mount('/prod/lists', new UsrLists());
         $this->mount('/prod/records/', new Records());
         $this->mount('/prod/records/property', new Property());
-        $this->mount('/prod/records/movecollection', new MoveCollection());
         $this->mount('/prod/push/', new Push());
         $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
@@ -681,6 +680,7 @@ class Application extends SilexApplication
             '/prod/language'         => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
             '/prod/lazaret/'         => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
             '/prod/records/edit'     => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
+            '/prod/records/movecollection' => 'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection',
             '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {
