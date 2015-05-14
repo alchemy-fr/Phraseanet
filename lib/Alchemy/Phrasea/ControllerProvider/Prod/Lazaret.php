@@ -25,7 +25,17 @@ class Lazaret implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.lazaret'] = $app->share(function (PhraseaApplication $app) {
-            return (new LazaretController($app));
+            return (new LazaretController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setDelivererLocator(function () use ($app) {
+                    return $app['phraseanet.file-serve'];
+                })
+                ->setEntityManagerLocator(function () use ($app) {
+                    return $app['orm.em'];
+                })
+                ->setFileSystemLocator(function () use ($app) {
+                    return $app['filesystem'];
+                });
         });
     }
 

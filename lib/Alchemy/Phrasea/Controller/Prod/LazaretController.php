@@ -10,28 +10,39 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DelivererAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
+use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
+use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class LazaretController extends Controller
 {
+    use DataboxLoggerAware;
+    use DelivererAware;
+    use EntityManagerAware;
+    use FilesystemAware;
+
     /**
      * List all elements in lazaret
      *
-     * @param Application $app     A Silex application
      * @param Request     $request The current request
      *
      * @return Response
      */
-    public function listElement(Application $app, Request $request)
+    public function listElement(Request $request)
     {
-        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canaddrecord']));
+        $baseIds = array_keys($this->getAclForUser()->get_granted_base(['canaddrecord']));
 
         $lazaretFiles = null;
         $perPage = 10;
@@ -39,11 +50,10 @@ class LazaretController extends Controller
         $offset = ($page - 1) * $perPage;
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['repo.lazaret-files'];
-            $lazaretFiles = $lazaretRepository->findPerPage($baseIds, $offset, $perPage);
+            $lazaretFiles = $this->getLazaretFileRepository()->findPerPage($baseIds, $offset, $perPage);
         }
 
-        return $app['twig']->render('prod/upload/lazaret.html.twig', [
+        return $this->render('prod/upload/lazaret.html.twig', [
             'lazaretFiles' => $lazaretFiles,
             'currentPage'  => $page,
             'perPage'      => $perPage,
@@ -53,45 +63,40 @@ class LazaretController extends Controller
     /**
      * Get one lazaret Element
      *
-     * @param Application $app     A Silex application
-     * @param Request     $request The current request
-     * @param int         $file_id A lazaret element id
+     * @param int $file_id A lazaret element id
      *
      * @return Response
      */
-    public function getElement(Application $app, Request $request, $file_id)
+    public function getElement($file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
-
-        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
-
+        
         /* @var LazaretFile $lazaretFile */
-        if (null === $lazaretFile) {
-            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
+        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
 
-            return $app->json($ret);
+        if (null === $lazaretFile) {
+            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
+
+            return $this->app->json($ret);
         }
 
-        $file = [
+        $ret['result'] = [
             'filename' => $lazaretFile->getOriginalName(),
             'base_id'  => $lazaretFile->getBaseId(),
             'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
             'updated'  => $lazaretFile->getUpdated()->format(\DateTime::ATOM),
-            'pathname' => $app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename(),
+            'pathname' => $this->app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename(),
             'sha256'   => $lazaretFile->getSha256(),
             'uuid'     => $lazaretFile->getUuid(),
         ];
-
-        $ret['result'] = $file;
         $ret['success'] = true;
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Add an element to phraseanet
      *
-     * @param Application $app     A Silex application
      * @param Request     $request The current request
      * @param int         $file_id A lazaret element id
      *
@@ -101,7 +106,7 @@ class LazaretController extends Controller
      *
      * @return Response
      */
-    public function addElement(Application $app, Request $request, $file_id)
+    public function addElement(Request $request, $file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
@@ -111,39 +116,46 @@ class LazaretController extends Controller
 
         //Mandatory parameter
         if (null === $request->request->get('bas_id')) {
-            $ret['message'] = $app->trans('You must give a destination collection');
+            $ret['message'] = $this->app->trans('You must give a destination collection');
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
-
-        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
 
         /* @var LazaretFile $lazaretFile */
-        if (null === $lazaretFile) {
-            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
+        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
 
-            return $app->json($ret);
+        if (null === $lazaretFile) {
+            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
+
+            return $this->app->json($ret);
         }
 
-        $lazaretFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
+        $path = $this->app['tmp.lazaret.path'];
+        $lazaretFileName = $path .'/'.$lazaretFile->getFilename();
+        $lazaretThumbFileName = $path .'/'.$lazaretFile->getThumbFilename();
 
         try {
             $borderFile = Border\File::buildFromPathfile(
-                $lazaretFileName, $lazaretFile->getCollection($app), $app, $lazaretFile->getOriginalName()
+                $lazaretFileName,
+                $lazaretFile->getCollection($this->app),
+                $this->app,
+                $lazaretFile->getOriginalName()
             );
 
-            $record = null;
-            /* @var \record_adapter $record */
 
             //Post record creation
-            $callBack = function ($element, $visa, $code) use (&$record) {
+            /** @var \record_adapter $record */
+            $record = null;
+            $callBack = function ($element) use (&$record) {
                 $record = $element;
             };
 
             //Force creation record
-            $app['border-manager']->process(
-                $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
+            $this->getBorderManager()->process(
+                $lazaretFile->getSession(),
+                $borderFile,
+                $callBack,
+                Border\Manager::FORCE_RECORD
             );
 
             if ($keepAttributes) {
@@ -161,96 +173,99 @@ class LazaretController extends Controller
                     }
 
                     try {
-                        $attribute = Border\Attribute\Factory::getFileAttribute($app, $attr->getName(), $attr->getValue());
+                        $attribute = Border\Attribute\Factory::getFileAttribute($this->app, $attr->getName(), $attr->getValue());
                     } catch (\InvalidArgumentException $e) {
                         continue;
                     }
 
-                    /* @var AttributeInterface $attribute */
-
                     switch ($attribute->getName()) {
                         case AttributeInterface::NAME_METADATA:
+                            /** @var Metadata $value */
                             $value = $attribute->getValue();
-                            $metadataBag->set($value->getTag()->getTagname(), new \PHPExiftool\Driver\Metadata\Metadata($value->getTag(), $value->getValue()));
+                            $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
                             break;
                         case AttributeInterface::NAME_STORY:
-                            $attribute->getValue()->appendChild($record);
+                            /** @var \record_adapter $value */
+                            $value = $attribute->getValue();
+                            $value->appendChild($record);
                             break;
                         case AttributeInterface::NAME_STATUS:
                             $record->set_binary_status($attribute->getValue());
                             break;
                         case AttributeInterface::NAME_METAFIELD:
+                            /** @var Border\Attribute\MetaField $attribute */
                             $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
                             break;
                     }
                 }
 
-                $datas = $metadataBag->toMetadataArray($record->get_databox()->get_meta_structure());
-                $record->set_metadatas($datas);
+                $data = $metadataBag->toMetadataArray($record->get_databox()->get_meta_structure());
+                $record->set_metadatas($data);
 
                 $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
                 $record->set_metadatas($fields);
             }
 
             //Delete lazaret file
-            $app['orm.em']->remove($lazaretFile);
-            $app['orm.em']->flush();
+            $manager = $this->getEntityManager();
+            $manager->remove($lazaretFile);
+            $manager->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $ret['message'] = $app->trans('An error occured');
+            $ret['message'] = $this->app->trans('An error occured');
         }
 
         try {
-            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
+            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Delete a lazaret element
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
      * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
-    public function denyElement(Application $app, Request $request, $file_id)
+    public function denyElement($file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
-        /* @var $lazaretFile LazaretFile */
+        /** @var LazaretFile $lazaretFile */
+        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
         if (null === $lazaretFile) {
-            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         try {
-            $this->denyLazaretFile($app, $lazaretFile);
+            $this->denyLazaretFile($lazaretFile);
             $ret['success'] = true;
         } catch (\Exception $e) {
-
+            // No-op
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
-    protected function denyLazaretFile(Application $app, LazaretFile $lazaretFile)
+    protected function denyLazaretFile(LazaretFile $lazaretFile)
     {
-        $lazaretFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
+        $path = $this->app['tmp.lazaret.path'];
+        $lazaretFileName = $path .'/'.$lazaretFile->getFilename();
+        $lazaretThumbFileName = $path .'/'.$lazaretFile->getThumbFilename();
 
-        $app['orm.em']->remove($lazaretFile);
-        $app['orm.em']->flush();
+        $manager = $this->getEntityManager();
+        $manager->remove($lazaretFile);
+        $manager->flush();
 
         try {
-            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
+            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
@@ -261,12 +276,11 @@ class LazaretController extends Controller
     /**
      * Empty lazaret
      *
-     * @param Application $app
      * @param Request     $request
      *
      * @return Response
      */
-    public function emptyLazaret(Application $app, Request $request)
+    public function emptyLazaret(Request $request)
     {
         $ret = array(
             'success' => false,
@@ -282,14 +296,13 @@ class LazaretController extends Controller
         $maxTodo = -1;  // all
         if($request->get('max') !== null) {
             $maxTodo = (int)($request->get('max'));
-            $ret['result']['max'] = $maxTodo;
-            if( $maxTodo <= 0) {
-                $maxTodo = -1;      // all
-            }
+        }
+        if( $maxTodo <= 0) {
+            $maxTodo = -1;      // all
         }
         $ret['result']['max'] = $maxTodo;
 
-        $repo = $app['repo.lazaret-files'];
+        $repo = $this->getLazaretFileRepository();
 
         $ret['result']['tobedone'] = $repo->createQueryBuilder('id')
             ->select('COUNT(id)')
@@ -299,64 +312,63 @@ class LazaretController extends Controller
         if($maxTodo == -1) {
             // all
             $lazaretFiles = $repo->findAll();
-        }
-        else {
+        } else {
             // limit maxTodo
             $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
         }
 
 
-        $app['orm.em']->beginTransaction();
+        $manager = $this->getEntityManager();
+        $manager->beginTransaction();
 
         try {
             foreach ($lazaretFiles as $lazaretFile) {
-                $this->denyLazaretFile($app, $lazaretFile);
+                $this->denyLazaretFile($lazaretFile);
                 $ret['result']['done']++;
             }
-            $app['orm.em']->commit();
+            $manager->commit();
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $app['orm.em']->rollback();
-            $ret['message'] = $app->trans('An error occured');
+            $manager->rollback();
+            $ret['message'] = $this->app->trans('An error occured');
         }
         $ret['result']['todo'] = $ret['result']['tobedone'] - $ret['result']['done'];
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Substitute a record element by a lazaret element
      *
-     * @param Application $app     A Silex application where the controller is mounted on
      * @param Request     $request The current request
      * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
-    public function acceptElement(Application $app, Request $request, $file_id)
+    public function acceptElement(Request $request, $file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         //Mandatory parameter
         if (null === $recordId = $request->request->get('record_id')) {
-            $ret['message'] = $app->trans('You must give a destination record');
+            $ret['message'] = $this->app->trans('You must give a destination record');
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
-        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
+        /** @var LazaretFile $lazaretFile */
+        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
 
-        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
-            $ret['message'] = $app->trans('File is not present in quarantine anymore, please refresh');
+            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         $found = false;
 
-        //Check if the choosen record is eligible to the substitution
-        foreach ($lazaretFile->getRecordsToSubstitute($app) as $record) {
+        //Check if the chosen record is eligible to the substitution
+        foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $record) {
             if ($record->get_record_id() !== (int) $recordId) {
                 continue;
             }
@@ -366,20 +378,22 @@ class LazaretController extends Controller
         }
 
         if (!$found) {
-            $ret['message'] = $app->trans('The destination record provided is not allowed');
+            $ret['message'] = $this->app->trans('The destination record provided is not allowed');
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
-        $lazaretFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
+        $path = $this->app['tmp.lazaret.path'] . '/';
+        $lazaretFileName = $path .$lazaretFile->getFilename();
+        $lazaretThumbFileName = $path .$lazaretFile->getThumbFilename();
 
         try {
-            $media = $app->getMediaFromUri($lazaretFileName);
+            $media = $this->app->getMediaFromUri($lazaretFileName);
 
-            $record = $lazaretFile->getCollection($app)->get_databox()->get_record($recordId);
-            $app['subdef.substituer']->substitute($record, 'document', $media);
-            $app['phraseanet.logger']($record->get_databox())->log(
+            $record = $lazaretFile->getCollection($this->app)->get_databox()->get_record($recordId);
+            $this->getSubDefinitionSubstituer()
+                ->substitute($record, 'document', $media);
+            $this->getDataboxLogger($record->get_databox())->log(
                 $record,
                 \Session_Logger::EVENT_SUBSTITUTE,
                 'HD',
@@ -387,43 +401,71 @@ class LazaretController extends Controller
             );
 
             //Delete lazaret file
-            $app['orm.em']->remove($lazaretFile);
-            $app['orm.em']->flush();
+            $manager = $this->getEntityManager();
+            $manager->remove($lazaretFile);
+            $manager->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $ret['message'] = $app->trans('An error occured');
+            $ret['message'] = $this->app->trans('An error occured');
         }
 
         try {
-            $app['filesystem']->remove([$lazaretFileName, $lazaretThumbFileName]);
+            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
 
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Get the associated lazaret element thumbnail
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @param int         $file_id A lazaret element id
+     * @param int $file_id A lazaret element id
      *
      * @return Response
      */
-    public function thumbnailElement(Application $app, Request $request, $file_id)
+    public function thumbnailElement($file_id)
     {
-        $lazaretFile = $app['repo.lazaret-files']->find($file_id);
+        /** @var LazaretFile $lazaretFile */
+        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
 
-        /* @var LazaretFile $lazaretFile */
         if (null === $lazaretFile) {
             return new Response(null, 404);
         }
 
-        $lazaretThumbFileName = $app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
+        $lazaretThumbFileName = $this->app['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
 
-        return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg');
+        return $this->deliverFile(
+            $lazaretThumbFileName,
+            $lazaretFile->getOriginalName(),
+            DeliverDataInterface::DISPOSITION_INLINE,
+            'image/jpeg'
+        );
+    }
+
+    /**
+     * @return LazaretFileRepository
+     */
+    private function getLazaretFileRepository()
+    {
+        return $this->app['repo.lazaret-files'];
+    }
+
+    /**
+     * @return Border\Manager
+     */
+    private function getBorderManager()
+    {
+        return $this->app['border-manager'];
+    }
+
+    /**
+     * @return SubdefSubstituer
+     */
+    private function getSubDefinitionSubstituer()
+    {
+        return $this->app['subdef.substituer'];
     }
 }
