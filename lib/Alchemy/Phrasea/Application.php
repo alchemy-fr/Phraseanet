@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Feed;
 use Alchemy\Phrasea\ControllerProvider\Prod\Language;
 use Alchemy\Phrasea\ControllerProvider\Prod\Lazaret;
 use Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection;
@@ -315,6 +314,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Download' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Edit' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Export' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Feed' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -636,7 +636,6 @@ class Application extends SilexApplication
         $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
         $this->mount('/prod/TOU/', new TOU());
-        $this->mount('/prod/feeds', new Feed());
         $this->mount('/prod/tooltip', new Tooltip());
         $this->mount('/prod/language', new Language());
         $this->mount('/prod/tools/', new Tools());
@@ -680,6 +679,7 @@ class Application extends SilexApplication
             '/prod/bridge/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
             '/prod/download'         => 'Alchemy\Phrasea\ControllerProvider\Prod\Download',
             '/prod/export/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Export',
+            '/prod/feeds'            => 'Alchemy\Phrasea\ControllerProvider\Prod\Feed',
             '/prod/records/edit'     => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
             '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
