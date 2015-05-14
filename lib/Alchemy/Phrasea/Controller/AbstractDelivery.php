@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractDelivery
 {
     use DataboxLoggerAware;
+    use DelivererAware;
 
     /** @var Application */
     protected $app;
@@ -43,7 +45,7 @@ abstract class AbstractDelivery
         $disposition = $request->query->get('download') ? DeliverDataInterface::DISPOSITION_ATTACHMENT : DeliverDataInterface::DISPOSITION_INLINE;
 
         /** @var Response $response */
-        $response = $this->app['phraseanet.file-serve']->deliverFile($pathOut, $file->get_file(), $disposition, $file->get_mime());
+        $response = $this->deliverFile($pathOut, $file->get_file(), $disposition, $file->get_mime());
 
         if (in_array($subdef, array('document', 'preview'))) {
             $response->setPrivate();

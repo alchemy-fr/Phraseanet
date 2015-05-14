@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Controller\Controller;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownloadController extends Controller
 {
+    use DelivererAware;
     use DispatcherAware;
     use FilesystemAware;
 
@@ -129,8 +131,7 @@ class DoDownloadController extends Controller
             );
         });
 
-        return $this->getDeliverer()
-            ->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
+        return $this->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
     }
 
     /**
@@ -176,13 +177,5 @@ class DoDownloadController extends Controller
             'success' => true,
             'message' => ''
         ]);
-    }
-
-    /**
-     * @return DeliverDataInterface
-     */
-    private function getDeliverer()
-    {
-        return $this->app['phraseanet.file-serve'];
     }
 }
