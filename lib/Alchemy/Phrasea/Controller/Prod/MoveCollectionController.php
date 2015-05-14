@@ -16,17 +16,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MoveCollectionController extends Controller
 {
-
-    public function displayForm(Application $app, Request $request)
+    public function displayForm(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, ['candeleterecord']);
 
         $sbas_ids = array_map(function (\databox $databox) {
             return $databox->get_sbas_id();
         }, $records->databoxes());
 
-        $collections = $app['acl']->get($app['authentication']->getUser())
-            ->get_granted_base(['canaddrecord'], $sbas_ids);
+        $collections = $this->getAclForUser()->get_granted_base(['canaddrecord'], $sbas_ids);
 
         $parameters = [
             'records'     => $records,
@@ -34,12 +32,13 @@ class MoveCollectionController extends Controller
             'collections' => $collections,
         ];
 
-        return $app['twig']->render('prod/actions/collection_default.html.twig', $parameters);
+        return $this->render('prod/actions/collection_default.html.twig', $parameters);
     }
 
-    public function apply(Application $app, Request $request)
+    public function apply(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
+        /** @var \record_adapter[] $records */
+        $records = RecordsRequest::fromRequest($this->app, $request, false, ['candeleterecord']);
 
         $datas = [
             'success' => false,
@@ -48,32 +47,33 @@ class MoveCollectionController extends Controller
 
         try {
             if (null === $request->request->get('base_id')) {
-                $datas['message'] = $app->trans('Missing target collection');
+                $datas['message'] = $this->app->trans('Missing target collection');
 
-                return $app->json($datas);
+                return $this->app->json($datas);
             }
 
-            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
-                $datas['message'] = $app->trans("You do not have the permission to move records to %collection%", ['%collection%', \phrasea::bas_labels($request->request->get('base_id'), $app)]);
+            if (!$this->getAclForUser()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
+                $datas['message'] = $this->app->trans("You do not have the permission to move records to %collection%", ['%collection%', \phrasea::bas_labels($request->request->get('base_id'), $this->app)]);
 
-                return $app->json($datas);
+                return $this->app->json($datas);
             }
 
             try {
-                $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
+                $collection = \collection::get_from_base_id($this->app, $request->request->get('base_id'));
             } catch (\Exception_Databox_CollectionNotFound $e) {
-                $datas['message'] = $app->trans('Invalid target collection');
+                $datas['message'] = $this->app->trans('Invalid target collection');
 
-                return $app->json($datas);
+                return $this->app->json($datas);
             }
 
             foreach ($records as $record) {
-                $record->move_to_collection($collection, $app['phraseanet.appbox']);
+                $record->move_to_collection($collection, $this->getApplicationBox());
 
                 if ($request->request->get("chg_coll_son") == "1") {
+                    /** @var \record_adapter $child */
                     foreach ($record->get_children() as $child) {
-                        if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
-                            $child->move_to_collection($collection, $app['phraseanet.appbox']);
+                        if ($this->getAclForUser()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
+                            $child->move_to_collection($collection, $this->getApplicationBox());
                         }
                     }
                 }
@@ -81,15 +81,15 @@ class MoveCollectionController extends Controller
 
             $ret = [
                 'success' => true,
-                'message' => $app->trans('Records have been successfuly moved'),
+                'message' => $this->app->trans('Records have been successfuly moved'),
             ];
         } catch (\Exception $e) {
             $ret = [
                 'success' => false,
-                'message' => $app->trans('An error occured'),
+                'message' => $this->app->trans('An error occured'),
             ];
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 }
