@@ -24,9 +24,7 @@ class OAuth2 implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.oauth2'] = $app->share(function (PhraseaApplication $app) {
             return (new OAuth2Controller($app))
-                ->setDispatcherLocator(function () use ($app) {
-                    return $app['dispatcher'];
-                });
+                ->setDispatcher($app['dispatcher']);
         });
     }
 

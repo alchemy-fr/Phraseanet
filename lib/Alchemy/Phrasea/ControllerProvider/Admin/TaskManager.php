@@ -26,9 +26,7 @@ class TaskManager implements ControllerProviderInterface, ServiceProviderInterfa
     {
         $app['controller.admin.task'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
             return (new TaskManagerController($app))
-                ->setDispatcherLocator(function () use ($app) {
-                    return $app['dispatcher'];
-                });
+                ->setDispatcher($app['dispatcher']);
         });
     }
 

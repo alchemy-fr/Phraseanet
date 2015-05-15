@@ -12,10 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Feed;
-use Alchemy\Phrasea\ControllerProvider\Prod\Language;
-use Alchemy\Phrasea\ControllerProvider\Prod\Lazaret;
-use Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection;
 use Alchemy\Phrasea\ControllerProvider\Prod\Order;
 use Alchemy\Phrasea\ControllerProvider\Prod\Printer;
 use Alchemy\Phrasea\ControllerProvider\Prod\Property;
@@ -315,6 +311,10 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Download' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Edit' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Export' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Feed' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Language' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
@@ -631,16 +631,12 @@ class Application extends SilexApplication
         $this->mount('/prod/lists', new UsrLists());
         $this->mount('/prod/records/', new Records());
         $this->mount('/prod/records/property', new Property());
-        $this->mount('/prod/records/movecollection', new MoveCollection());
         $this->mount('/prod/push/', new Push());
         $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
         $this->mount('/prod/TOU/', new TOU());
-        $this->mount('/prod/feeds', new Feed());
         $this->mount('/prod/tooltip', new Tooltip());
-        $this->mount('/prod/language', new Language());
         $this->mount('/prod/tools/', new Tools());
-        $this->mount('/prod/lazaret/', new Lazaret());
         $this->mount('/prod/upload/', new Upload());
         $this->mount('/prod/', new Prod());
 
@@ -657,31 +653,35 @@ class Application extends SilexApplication
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
         $providers = [
-            '/admin/'                => 'Alchemy\Phrasea\ControllerProvider\Admin\Root',
-            '/admin/collection'      => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
-            '/admin/connected-users' => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
-            '/admin/dashboard'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard',
-            '/admin/databox'         => 'Alchemy\Phrasea\ControllerProvider\Admin\Databox',
-            '/admin/databoxes'       => 'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes',
-            '/admin/fields'          => 'Alchemy\Phrasea\ControllerProvider\Admin\Fields',
-            '/admin/publications'    => 'Alchemy\Phrasea\ControllerProvider\Admin\Feeds',
-            '/admin/search-engine'   => 'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine',
-            '/admin/setup'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Setup',
-            '/admin/subdefs'         => 'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs',
-            '/admin/task-manager'    => 'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager',
-            '/admin/users'           => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
-            '/client/'               => 'Alchemy\Phrasea\ControllerProvider\Client\Root',
-            '/datafiles'             => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
-            '/download/'             => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
-            '/include/minify'        => 'Alchemy\Phrasea\ControllerProvider\Minifier',
-            '/lightbox'              => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
-            '/permalink'             => 'Alchemy\Phrasea\ControllerProvider\Permalink',
-            '/prod/baskets'          => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
-            '/prod/bridge/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
-            '/prod/download'         => 'Alchemy\Phrasea\ControllerProvider\Prod\Download',
-            '/prod/export/'          => 'Alchemy\Phrasea\ControllerProvider\Prod\Export',
-            '/prod/records/edit'     => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
-            '/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Setup',
+            '/admin/'                      => 'Alchemy\Phrasea\ControllerProvider\Admin\Root',
+            '/admin/collection'            => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
+            '/admin/connected-users'       => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
+            '/admin/dashboard'             => 'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard',
+            '/admin/databox'               => 'Alchemy\Phrasea\ControllerProvider\Admin\Databox',
+            '/admin/databoxes'             => 'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes',
+            '/admin/fields'                => 'Alchemy\Phrasea\ControllerProvider\Admin\Fields',
+            '/admin/publications'          => 'Alchemy\Phrasea\ControllerProvider\Admin\Feeds',
+            '/admin/search-engine'         => 'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine',
+            '/admin/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Admin\Setup',
+            '/admin/subdefs'               => 'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs',
+            '/admin/task-manager'          => 'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager',
+            '/admin/users'                 => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
+            '/client/'                     => 'Alchemy\Phrasea\ControllerProvider\Client\Root',
+            '/datafiles'                   => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
+            '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
+            '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
+            '/lightbox'                    => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
+            '/permalink'                   => 'Alchemy\Phrasea\ControllerProvider\Permalink',
+            '/prod/baskets'                => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
+            '/prod/bridge/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
+            '/prod/download'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Download',
+            '/prod/export/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Export',
+            '/prod/feeds'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Feed',
+            '/prod/language'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
+            '/prod/lazaret/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
+            '/prod/records/edit'           => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
+            '/prod/records/movecollection' => 'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection',
+            '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);

@@ -10,12 +10,13 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -24,7 +25,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownloadController extends Controller
 {
+    use DelivererAware;
     use DispatcherAware;
+    use FilesystemAware;
 
     /**
      * Prepare a set of documents for download
@@ -114,7 +117,7 @@ class DoDownloadController extends Controller
             $mime = 'application/zip';
         }
 
-        if (!$this->getFileSystem()->exists($exportFile)) {
+        if (!$this->getFilesystem()->exists($exportFile)) {
             $this->app->abort(404, 'Download file not found');
         }
 
@@ -128,8 +131,7 @@ class DoDownloadController extends Controller
             );
         });
 
-        return $this->getDeliverer()
-            ->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
+        return $this->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
     }
 
     /**
@@ -175,21 +177,5 @@ class DoDownloadController extends Controller
             'success' => true,
             'message' => ''
         ]);
-    }
-
-    /**
-     * @return Filesystem
-     */
-    private function getFileSystem()
-    {
-        return $this->app['filesystem'];
-    }
-
-    /**
-     * @return DeliverDataInterface
-     */
-    private function getDeliverer()
-    {
-        return $this->app['phraseanet.file-serve'];
     }
 }

@@ -421,7 +421,7 @@ class LazaretFile
     /**
      * Get an array of records that can be substitued by the Lazaret file
      *
-     * @return array
+     * @return \record_adapter[]
      */
     public function getRecordsToSubstitute(Application $app)
     {

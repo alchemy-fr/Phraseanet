@@ -11,24 +11,37 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
-use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Prod\MoveCollectionController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Silex\ServiceProviderInterface;
 
-class MoveCollection implements ControllerProviderInterface
+class MoveCollection implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
+    public function register(Application $app)
+    {
+        $app['controller.prod.move-collection'] = $app->share(function (PhraseaApplication $app) {
+            return (new MoveCollectionController($app));
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.prod.move-collection'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireRight('addrecord')
+        $controllers->before(function () use ($firewall) {
+            $firewall
+                ->requireRight('addrecord')
                 ->requireRight('deleterecord');
         });
 
@@ -39,81 +52,5 @@ class MoveCollection implements ControllerProviderInterface
             ->bind('prod_move_collection_apply');
 
         return $controllers;
-    }
-
-    public function displayForm(Application $app, Request $request)
-    {
-        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
-
-        $sbas_ids = array_map(function (\databox $databox) {
-                return $databox->get_sbas_id();
-            }, $records->databoxes());
-
-        $collections = $app['acl']->get($app['authentication']->getUser())
-            ->get_granted_base(['canaddrecord'], $sbas_ids);
-
-        $parameters = [
-            'records'     => $records,
-            'message'     => '',
-            'collections' => $collections,
-        ];
-
-        return $app['twig']->render('prod/actions/collection_default.html.twig', $parameters);
-    }
-
-    public function apply(Application $app, Request $request)
-    {
-        $records = RecordsRequest::fromRequest($app, $request, false, ['candeleterecord']);
-
-        $datas = [
-            'success' => false,
-            'message' => '',
-        ];
-
-        try {
-            if (null === $request->request->get('base_id')) {
-                $datas['message'] = $app->trans('Missing target collection');
-
-                return $app->json($datas);
-            }
-
-            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
-                $datas['message'] = $app->trans("You do not have the permission to move records to %collection%", ['%collection%', \phrasea::bas_labels($request->request->get('base_id'), $app)]);
-
-                return $app->json($datas);
-            }
-
-            try {
-                $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
-            } catch (\Exception_Databox_CollectionNotFound $e) {
-                $datas['message'] = $app->trans('Invalid target collection');
-
-                return $app->json($datas);
-            }
-
-            foreach ($records as $record) {
-                $record->move_to_collection($collection, $app['phraseanet.appbox']);
-
-                if ($request->request->get("chg_coll_son") == "1") {
-                    foreach ($record->get_children() as $child) {
-                        if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
-                            $child->move_to_collection($collection, $app['phraseanet.appbox']);
-                        }
-                    }
-                }
-            }
-
-            $ret = [
-                'success' => true,
-                'message' => $app->trans('Records have been successfuly moved'),
-            ];
-        } catch (\Exception $e) {
-            $ret = [
-                'success' => false,
-                'message' => $app->trans('An error occured'),
-            ];
-        }
-
-        return $app->json($ret);
     }
 }

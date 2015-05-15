@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -68,6 +69,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class V1Controller extends Controller
 {
+    use DataboxLoggerAware;
     use DispatcherAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
@@ -2140,7 +2142,7 @@ class V1Controller extends Controller
             }
             $media = $this->app->getMediaFromUri($value->get_pathfile());
             $story->substitute_subdef($name, $media, $this->app);
-            $this->app['phraseanet.logger']($story->get_databox())->log(
+            $this->getDataboxLogger($story->get_databox())->log(
                 $story,
                 \Session_Logger::EVENT_SUBSTITUTE,
                 $name == 'document' ? 'HD' : $name,
