@@ -39,7 +39,7 @@ class SubdefsEditorTest extends EditorTestCase
   <type_document>0</type_document>
   <type_flash>0</type_flash>
   <type_unknown>0</type_unknown>
-  <flush>1</flush>
+  <flush>0</flush>
   <maxrecs>12</maxrecs>
   <maxmegs>1</maxmegs>
   <embedded>1</embedded>
