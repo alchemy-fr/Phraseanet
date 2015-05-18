@@ -60,18 +60,40 @@ class SubdefsJob extends AbstractJob
 
         Image2Image::$lookForEmbeddedPreview = $thumbnailExtraction;
 
+        $sqlqmark = array();
+        $sqlparms = array();
+        foreach(array('image',
+                    'video',
+                    'audio',
+                    'document',
+                    'flash',
+                    'unknown') as $type) {
+            if (!isset($settings->{"type_" . $type}) || !\p4field::isno($settings->{"type_" . $type})) {
+                $sqlqmark[] = '?';
+                $sqlparms[] = $type;
+            }
+        }
+        if(count($sqlqmark) == 0) {
+            return;
+        }
+
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             if (!$this->isStarted()) {
                 break;
             }
+
+            if(count($settings->xpath("sbas[text()=".$databox->get_sbas_id() ."]")) == 0) {
+                continue;
+            }
+
             $conn = $databox->get_connection();
 
-            $sql = 'SELECT coll_id, record_id
-                    FROM record
-                    WHERE jeton & ' . PhraseaTokens::MAKE_SUBDEF . ' > 0
-                    ORDER BY record_id DESC LIMIT 0, 30';
+            $sql = 'SELECT coll_id, record_id FROM record'
+                . ' WHERE jeton & ' . PhraseaTokens::MAKE_SUBDEF . ' > 0'
+                . ' AND type IN(' . implode(',', $sqlqmark) . ')'
+                . ' ORDER BY record_id DESC LIMIT 0, 30';
             $stmt = $conn->prepare($sql);
-            $stmt->execute();
+            $stmt->execute($sqlparms);
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -89,19 +111,19 @@ class SubdefsJob extends AbstractJob
                     $this->log('warning', sprintf("Generate subdefs failed for : sbasid=%s / databox=%s / recordid=%s : %s", $databox->get_sbas_id(), $databox->get_dbname() , $row['record_id'], $e->getMessage()));
                 }
 
-                $sql = 'UPDATE record
-                      SET jeton=(jeton & ~' . PhraseaTokens::MAKE_SUBDEF . '), moddate=NOW()
-                      WHERE record_id=:record_id';
+                $sql = 'UPDATE record'
+                    . ' SET jeton=(jeton & ~' . PhraseaTokens::MAKE_SUBDEF . '), moddate=NOW()'
+                    . ' WHERE record_id=:record_id';
 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([':record_id' => $row['record_id']]);
                 $stmt->closeCursor();
 
                 // rewrite metadata
-                $sql = 'UPDATE record
-                    SET status=(status & ~0x03),
-                        jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF . ')
-                    WHERE record_id=:record_id';
+                $sql = 'UPDATE record'
+                    . ' SET status=(status & ~0x03),'
+                    . ' jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF . ')'
+                    . ' WHERE record_id=:record_id';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([':record_id' => $row['record_id']]);
                 $stmt->closeCursor();
@@ -117,4 +139,5 @@ class SubdefsJob extends AbstractJob
 
         $app['elasticsearch.indexer']->flushQueue();
     }
+
 }
