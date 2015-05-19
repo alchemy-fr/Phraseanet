@@ -45,6 +45,7 @@
         "doctrine/orm":                          "~2.4.0",
         "elasticsearch/elasticsearch":           "~1.0",
         "facebook/php-sdk":                      "~3.0",
+        "firebase/php-jwt":                      "~2.0",
         "gedmo/doctrine-extensions":             "~2.3.0",
         "goodby/csv":                            "dev-master",
         "guzzle/guzzle":                         "~3.0",
