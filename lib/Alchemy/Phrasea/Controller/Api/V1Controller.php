@@ -95,7 +95,7 @@ class V1Controller extends Controller
         $oAuth2Account = $token->getAccount();
         $oAuth2App = $oAuth2Account->getApplication();
 
-        $conf = $this->getConfiguration();
+        $conf = $this->getConf();
         if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID && !$conf->get(['registry', 'api-clients', 'navigator-enabled'])) {
             return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
         }
@@ -268,7 +268,7 @@ class V1Controller extends Controller
 
         $ret['phraseanet']['environment'] = $this->app->getEnvironment();
         $ret['phraseanet']['debug'] = $this->app['debug'];
-        $conf = $this->getConfiguration();
+        $conf = $this->getConf();
         $ret['phraseanet']['maintenance'] = $conf->get(['main', 'maintenance']);
         $ret['phraseanet']['errorsLog'] = $this->app['debug'];
         $ret['phraseanet']['serverName'] = $conf->get('servername');
@@ -286,7 +286,7 @@ class V1Controller extends Controller
             $SEStatus = ['error' => $e->getMessage()];
         }
 
-        $conf = $this->getConfiguration();
+        $conf = $this->getConf();
         $binaries = $conf->get(['main', 'binaries']);
 
         return [
@@ -908,6 +908,8 @@ class V1Controller extends Controller
         } else {
             $permalink = null;
         }
+
+        $key = $this->getConf()->get(['main', 'key']);
 
         return [
             'name' => $media->get_name(),
@@ -2274,14 +2276,6 @@ class V1Controller extends Controller
     private function getSession()
     {
         return $this->app['session'];
-    }
-
-    /**
-     * @return PropertyAccess
-     */
-    private function getConfiguration()
-    {
-        return $this->app['conf'];
     }
 
     /**
