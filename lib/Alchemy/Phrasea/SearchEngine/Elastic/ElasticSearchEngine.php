@@ -17,6 +17,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -34,17 +35,18 @@ class ElasticSearchEngine implements SearchEngineInterface
     const FLAG_UNSET_ONLY = 'unset_only';
 
     private $app;
+    private $structure;
     /** @var Client */
     private $client;
-    private $dateFields;
     private $indexName;
     private $configurationPanel;
     private $locales;
     private $recordHelper;
 
-    public function __construct(Application $app, Client $client, $indexName, array $locales, RecordHelper $recordHelper, Closure $facetsResponseFactory)
+    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, RecordHelper $recordHelper, Closure $facetsResponseFactory)
     {
         $this->app = $app;
+        $this->structure = $structure;
         $this->client = $client;
         $this->locales = array_keys($locales);
         $this->recordHelper = $recordHelper;
@@ -117,11 +119,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getAvailableDateFields()
     {
-        if ($this->dateFields === null) {
-            $this->dateFields = $this->recordHelper->getDateFields();
-        }
-
-        return $this->dateFields;
+        return array_keys($this->structure->getDateFields());
     }
 
     /**
