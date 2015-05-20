@@ -22,7 +22,6 @@ class SetupController extends Controller
         $manipulator = $this->app['registry.manipulator'];
         $form = $manipulator->createForm($this->app['conf']);
 
-        $status = 200;
         if ('POST' === $request->getMethod()) {
             $form->submit($request->request->all());
             if ($form->isValid()) {
@@ -31,11 +30,11 @@ class SetupController extends Controller
                 return $this->app->redirectPath('setup_display_globals');
             }
 
-            $status = 400;
+            // Do not return a 400 status code as not very well handled in calling JS.
         }
 
         return $this->renderResponse('admin/setup.html.twig', [
             'form' => $form->createView(),
-        ], $status);
+        ]);
     }
 }
