@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Form\Configuration;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class GeneralFormType extends AbstractType
 {
@@ -49,6 +50,11 @@ class GeneralFormType extends AbstractType
                 'CAROUSEL'  => 'Carousel',
                 'GALLERIA'  => 'Gallery',
             ],
+        ]);
+        $builder->add('default-subdef-url-ttl', 'integer', [
+            'label'       => 'Default TTL in seconds of sub-definition url',
+            'attr'        => ['min' => -1],
+            'constraints' => new GreaterThanOrEqual(['value' => -1]),
         ]);
     }
 
