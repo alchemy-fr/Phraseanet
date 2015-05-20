@@ -63,30 +63,32 @@
 
 
 {% block javascript %}
+<script type="text/javascript">
+
     function taskFillGraphic(xml)
     {
         if (xml) {
             xml = $.parseXML(xml);
             xml = $(xml);
 
-            with(document.forms['graphicForm'])
-            {
-                var i;
-                var opts;
-                var found;
-                opts = base_id.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == xml.find("base_id").text())
+            var gform = document.forms['graphicForm'];
+            var i;
+            var opts;
+            var found;
+            opts = gform.base_id.options;
+            for (found=0, i=1; found==0 && i<opts.length; i++) {
+                if(opts[i].value == xml.find("base_id").text()) {
                     found = i;
                 }
-                opts[found].selected = true;
-                hotfolder.value       = xml.find("hotfolder").text();
-                cold.value            = xml.find("cold").text();
-                move_archived.checked = Number(xml.find("move_archived").text()) > 0;
-                move_error.checked    = Number(xml.find("move_error").text()) > 0;
-                delfolder.checked     = Number(xml.find("delfolder").text()) > 0;
-                copy_spe.checked      = Number(xml.find("copy_spe").text()) > 0;
             }
+            opts[found].selected = true;
+            gform.hotfolder.value       = xml.find("hotfolder").text();
+            gform.cold.value            = xml.find("cold").text();
+            gform.move_archived.checked = Number(xml.find("move_archived").text()) > 0;
+            gform.move_error.checked    = Number(xml.find("move_error").text()) > 0;
+            gform.delfolder.checked     = Number(xml.find("delfolder").text()) > 0;
+            gform.copy_spe.checked      = Number(xml.find("copy_spe").text()) > 0;
         }
     }
+</script>
 {% endblock %}

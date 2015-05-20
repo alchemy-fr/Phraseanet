@@ -21,17 +21,17 @@
 
 
 {% block javascript %}
+<script type="text/javascript">
     function taskFillGraphic(xml)
     {
         if (xml) {
             xml = $.parseXML(xml);
             xml = $(xml);
 
-            with(document.forms['graphicForm'])
-            {
-                cleardoc.checked = Number(xml.find("cleardoc").text()) > 0;
-                mwg.checked = Number(xml.find("mwg").text()) > 0;
-            }
+            var gform = document.forms['graphicForm'];
+            gform.cleardoc.checked = Number(xml.find("cleardoc").text()) > 0;
+            gform.mwg.checked = Number(xml.find("mwg").text()) > 0;
         }
     }
+</script>
 {% endblock %}

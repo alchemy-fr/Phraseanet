@@ -88,8 +88,9 @@ class RecordMoverEditor extends AbstractEditor
     <!-- ********* un-comment to see the tasks **********
 
     <tasks>
-        // keep offline (sb4 = 1) all docs before their "go online" date
-        //
+
+        <comment> keep offline (sb4 = 1) all docs before their "go online" date </comment>
+
         <task active="1" name="stay offline" action="update" sbas_id="1">
             <from>
                 <date direction="before" field="GO_ONLINE"/>
@@ -99,11 +100,12 @@ class RecordMoverEditor extends AbstractEditor
             </to>
         </task>
 
-        // Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving
-        //
+
+        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
+
         <task active="1" name="go online" action="update" sbas_id="1">
             <from>
-                // 5, 6, 7 are "public" collections
+                <comment> 5, 6, 7 are "public" collections </comment>
                 <coll compare="=" id="5,6,7"/>
                 <date direction="after" field="GO_ONLINE"/>
                 <date direction="before" field="TO_ARCHIVE"/>
@@ -113,8 +115,9 @@ class RecordMoverEditor extends AbstractEditor
             </to>
         </task>
 
-        // Warn 10 days before archiving (raise sb5)
-        //
+
+        <comment> Warn 10 days before archiving (raise sb5) </comment>
+
         <task active="1" name="almost the end" action="update" sbas_id="1">
             <from>
                 <coll compare="=" id="5,6,7"/>
@@ -125,23 +128,25 @@ class RecordMoverEditor extends AbstractEditor
             </to>
         </task>
 
-        // Move to 'archive' collection
-        //
+
+        <comment> Move to 'archive' collection </comment>
+
         <task active="1" name="archivage" action="update" sbas_id="1">
             <from>
                 <coll compare="=" id="5,6,7"/>
                 <date direction="after" field="TO_ARCHIVE" />
             </from>
             <to>
-                // reset status of archived documents
+                <comment> reset status of archived documents </comment>
                 <status mask="00xxxx"/>
-                // 666 is the "archive" collection
+                <comment> 666 is the "archive" collection </comment>
                 <coll id="666" />
             </to>
         </task>
 
-        // Delete the archived documents that are in the 'archive' collection from one year
-        //
+
+        <comment> Delete the archived documents that are in the 'archive' collection from one year </comment>
+
         <task active="1" name="trash" action="delete" sbas_id="1">
             <from>
                 <coll compare="=" id="666"/>
