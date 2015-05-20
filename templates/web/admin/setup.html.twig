@@ -32,11 +32,13 @@
 
 
 {{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}
+{{ form_errors(form) }}
 {% for daform in form %}
     <fieldset>
         <legend>{{ daform.vars['label'] }}</legend>
         {%  for formdata in daform %}
             <div class="control-group">
+                {{ form_errors(formdata) }}
                 {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
                 <div class="controls">
                     {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
