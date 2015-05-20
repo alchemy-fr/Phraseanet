@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
+use databox;
 
 class RecordMoverJob extends AbstractJob
 {
@@ -54,11 +55,13 @@ class RecordMoverJob extends AbstractJob
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
-        $task = $data->getTask();
 
-        $settings = $task->getSettings();
+        $settings = simplexml_load_string($data->getTask()->getSettings());
         $logsql = (Boolean) $settings->logsql;
-        $tasks = (array) $settings->tasks;
+        $tasks = array();
+        foreach($settings->tasks->task as $task) {
+            $tasks[] = $task;
+        }
 
         $data = $this->getData($app, $tasks, $logsql);
 
@@ -91,7 +94,8 @@ class RecordMoverJob extends AbstractJob
                             $status[31 - $bit] = $val;
                         }
                     }
-                    $rec->set_binary_status(implode('', $status));
+                    $status = implode('', $status);
+                    $rec->set_binary_status($status);
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }
@@ -120,7 +124,6 @@ class RecordMoverJob extends AbstractJob
     private function getData(Application $app, array $tasks, $logsql)
     {
         $ret = [];
-
         foreach ($tasks as $sxtask) {
             if (!$this->isStarted()) {
                 break;
@@ -128,7 +131,7 @@ class RecordMoverJob extends AbstractJob
 
             $task = $this->calcSQL($app, $sxtask);
 
-            if (!$task['active']) {
+            if (!$task['active'] || !$task['sql']) {
                 continue;
             }
 
@@ -202,18 +205,23 @@ class RecordMoverJob extends AbstractJob
 
             $ret['basename'] = $dbox->get_label($app['locale']);
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
-            switch ($ret['action']) {
-                case 'UPDATE':
-                    $ret['sql'] = $this->calcUPDATE($app, $sbas_id, $sxtask, $playTest);
-                    break;
-                case 'DELETE':
-                    $ret['sql'] = $this->calcDELETE($app, $sbas_id, $sxtask, $playTest);
-                    $ret['deletechildren'] = (int) ($sxtask['deletechildren']);
-                    break;
-                default:
-                    $ret['err'] = "bad action '" . $ret['action'] . "'";
-                    $ret['err_htmlencoded'] = htmlentities($ret['err']);
-                    break;
+            try {
+                switch ($ret['action']) {
+                    case 'UPDATE':
+                        $ret['sql'] = $this->calcUPDATE($app, $sbas_id, $sxtask, $playTest);
+                        break;
+                    case 'DELETE':
+                        $ret['sql'] = $this->calcDELETE($app, $sbas_id, $sxtask, $playTest);
+                        $ret['deletechildren'] = (int)($sxtask['deletechildren']);
+                        break;
+                    default:
+                        $ret['err'] = "bad action '" . $ret['action'] . "'";
+                        $ret['err_htmlencoded'] = htmlentities($ret['err']);
+                        break;
+                }
+            } catch (\Exception $e) {
+                $ret['err'] = $e->getMessage();
+                $ret['err_htmlencoded'] = htmlentities($e->getMessage());
             }
         } catch (\Exception $e) {
             $ret['err'] = "bad sbas '" . $sbas_id . "'";
@@ -252,42 +260,46 @@ class RecordMoverJob extends AbstractJob
         }
 
         // compute the 'where' clause
-        list($tw, $join) = $this->calcWhere($app, $sbas_id, $sxtask);
+        list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
 
-        // ... complete the where to buid the TEST
-        if (count($tws) == 1) {
-            $tw[] = $tws[0];
-        } elseif (count($tws) > 1) {
-            $tw[] = '(' . implode(') OR (', $tws) . ')';
-        }
+        if($err == "") {
+            // ... complete the where to build the TEST
+            if (count($tws) == 1) {
+                $tw[] = $tws[0];
+            } elseif (count($tws) > 1) {
+                $tw[] = '(' . implode(') OR (', $tws) . ')';
+            }
 
-        // build the TEST sql (select)
-        $sql_test = 'SELECT record_id FROM record' . $join;
-        if (count($tw) > 0) {
-            $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-        }
+            // build the TEST sql (select)
+            $sql_test = 'SELECT record_id FROM record' . $join;
+            if (count($tw) > 0) {
+                $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+            }
 
-        // build the real sql (select)
-        $sql = 'SELECT record_id FROM record' . $join;
-        if (count($tw) > 0) {
-            $sql .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-        }
+            // build the real sql (select)
+            $sql_real = 'SELECT record_id FROM record' . $join;
+            if (count($tw) > 0) {
+                $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+            }
 
-        $ret = array(
-            'real' => array(
-                'sql'             => $sql,
-                'sql_htmlencoded' => htmlentities($sql),
-            ),
-            'test'            => array(
-                'sql'             => $sql_test,
-                'sql_htmlencoded' => htmlentities($sql_test),
-                'result'          => NULL,
-                'err'             => NULL
-            )
-        );
+            $ret = array(
+                'real' => array(
+                    'sql' => $sql_real,
+                    'sql_htmlencoded' => htmlentities($sql_real),
+                ),
+                'test' => array(
+                    'sql' => $sql_test,
+                    'sql_htmlencoded' => htmlentities($sql_test),
+                    'result' => NULL,
+                    'err' => NULL
+                )
+            );
 
-        if ($playTest) {
-            $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
+            if ($playTest) {
+                $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
+            }
+        } else {
+            throw(new \Exception($err));
         }
 
         return $ret;
@@ -296,34 +308,38 @@ class RecordMoverJob extends AbstractJob
     private function calcDELETE(Application $app, $sbas_id, &$sxtask, $playTest)
     {
         // compute the 'where' clause
-        list($tw, $join) = $this->calcWhere($app, $sbas_id, $sxtask);
+        list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
 
-        // build the TEST sql (select)
-        $sql_test = 'SELECT SQL_CALC_FOUND_ROWS record_id FROM record' . $join;
-        if (count($tw) > 0)
-            $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-        $sql_test .= ' LIMIT 10';
+        if($err == "") {
+            // build the TEST sql (select)
+            $sql_test = 'SELECT SQL_CALC_FOUND_ROWS record_id FROM record' . $join;
+            if (count($tw) > 0)
+                $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+            $sql_test .= ' LIMIT 10';
 
-        // build the real sql (select)
-        $sql = 'SELECT record_id FROM record' . $join;
-        if (count($tw) > 0)
-            $sql .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+            // build the real sql (select)
+            $sql_real = 'SELECT record_id FROM record' . $join;
+            if (count($tw) > 0)
+                $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
 
-        $ret = [
-            'real' => [
-                'sql'             => $sql,
-                'sql_htmlencoded' => htmlentities($sql),
-            ],
-            'test'            => [
-                'sql'             => $sql_test,
-                'sql_htmlencoded' => htmlentities($sql_test),
-                'result'          => NULL,
-                'err'             => NULL
-            ]
-        ];
+            $ret = [
+                'real' => [
+                    'sql' => $sql_real,
+                    'sql_htmlencoded' => htmlentities($sql_real),
+                ],
+                'test' => [
+                    'sql' => $sql_test,
+                    'sql_htmlencoded' => htmlentities($sql_test),
+                    'result' => NULL,
+                    'err' => NULL
+                ]
+            ];
 
-        if ($playTest) {
-            $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
+            if ($playTest) {
+                $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
+            }
+        } else {
+            throw(new \Exception($err));
         }
 
         return $ret;
@@ -352,8 +368,11 @@ class RecordMoverJob extends AbstractJob
 
     private function calcWhere(Application $app, $sbas_id, &$sxtask)
     {
+        $err = "";
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $connbas = $databox->get_connection();
+
+        $struct = $databox->get_meta_structure();
 
         $tw = array();
         $join = '';
@@ -374,44 +393,65 @@ class RecordMoverJob extends AbstractJob
 
         // criteria <text field="XXX" compare="OP" value="ZZZ" />
         foreach ($sxtask->from->text as $x) {
-            $ijoin++;
-            $comp = strtoupper($x['compare']);
-            if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
-                $s = 'p' . $ijoin . '.name=' . $connbas->quote($x['field']) . ' AND p' . $ijoin . '.value' . $comp
-                    . '' . $connbas->quote($x['value']) . '';
+            $field = $struct->get_element_by_name($x['field']);
+            if($field != null) {
+                $ijoin++;
+                $comp = trim($x['compare']);
+                if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
+                    $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND p' . $ijoin . '.value' . $comp
+                        . '' . $connbas->quote($x['value']) . '';
 
-                $tw[] = $s;
-                $join .= ' INNER JOIN prop AS p' . $ijoin . ' USING(record_id)';
+                    $tw[] = $s;
+                    $join .= ' INNER JOIN metadatas AS p' . $ijoin . ' USING(record_id)';
+                } else {
+                    // bad comparison operator
+                    $err .= sprintf("bad comparison operator (%s)\n", $comp);
+                }
             } else {
-                // bad comparison operator
+                // unknown field ?
+                $err .= sprintf("unknown field (%s)\n", $x['field']);
             }
         }
 
         // criteria <date direction ="XXX" field="YYY" delta="Z" />
         foreach ($sxtask->from->date as $x) {
-            $ijoin++;
-            $s = 'p' . $ijoin . '.name=\'' . $x['field'] . '\' AND NOW()';
-            $s .= strtoupper($x['direction']) == 'BEFORE' ? '<' : '>=';
-            $delta = (int) ($x['delta']);
-            if ($delta > 0) {
-                $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' DAY)';
-            }
-            elseif ($delta < 0) {
-                $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' DAY)';
+            $field = $struct->get_element_by_name($x['field']);
+            if($field != null) {
+                $ijoin++;
+                $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND NOW()';
+                $dir = strtoupper($x['direction']);
+                if (in_array($dir, array('BEFORE', 'AFTER'))) {
+                    // prevent malformed dates to act
+                    $tw[] = '!ISNULL(CAST(p' . $ijoin . '.value AS DATETIME))';
+                    $s .= $dir == 'BEFORE' ? '<' : '>=';
+                    $delta = (int)($x['delta']);
+                    if ($delta > 0) {
+                        $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' DAY)';
+                    } elseif ($delta < 0) {
+                        $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' DAY)';
+                    } else {
+                        $s .= 'CAST(p' . $ijoin . '.value AS DATETIME)';
+                    }
+
+                    $tw[] = $s;
+                    $join .= ' INNER JOIN metadatas AS p' . $ijoin . ' USING(record_id)';
+                } else {
+                    // bad direction
+                    $err .= sprintf("bad direction (%s)\n", $x['direction']);
+                }
             }
             else {
-                $s .= 'p' . $ijoin . '.value';
+                // unknown field ?
+                $err .= sprintf("unknown field (%s)\n", $x['field']);
             }
-
-            $tw[] = $s;
-            $join .= ' INNER JOIN prop AS p' . $ijoin . ' USING(record_id)';
         }
 
         // criteria <coll compare="OP" id="X,Y,Z" />
-        if (($x = $sxtask->from->coll) !== NULL) {
+        if (($x = $sxtask->from->coll) ) {
             $tcoll = explode(',', $x['id']);
-            foreach ($tcoll as $i => $c)
-                $tcoll[$i] = (int) $c;
+            foreach ($tcoll as $i => $c) {
+                $tcoll[$i] = (int)$c;
+            }
             if ($x['compare'] == '=') {
                 if (count($tcoll) == 1) {
                     $tw[] = 'coll_id = ' . $tcoll[0];
@@ -426,6 +466,7 @@ class RecordMoverJob extends AbstractJob
                 }
             } else {
                 // bad operator
+                $err .= sprintf("bad comparison operator (%s)\n", $x['compare']);
             }
         }
 
@@ -443,6 +484,6 @@ class RecordMoverJob extends AbstractJob
             $tw[] = '(status & 0b' . $ma . ")=0";
         }
 
-        return array($tw, $join);
+        return array($tw, $join, $err);
     }
 }
