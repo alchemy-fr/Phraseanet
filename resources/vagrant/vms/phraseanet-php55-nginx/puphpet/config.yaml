@@ -316,4 +316,6 @@ elastic_search:
     settings:
         java_install: true
         autoupgrade: true
+        init_defaults:
+            marvel.agent.enabled: false
 
