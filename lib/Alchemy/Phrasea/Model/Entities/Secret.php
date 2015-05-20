@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="Secrets")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SecretRepository")
  */
 class Secret
 {
