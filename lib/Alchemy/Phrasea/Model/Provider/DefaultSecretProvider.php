@@ -14,7 +14,10 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\SecretRepository;
 use RandomLib\Generator;
 
-class DefaultSecretProvider implements SecretProvider
+/**
+ * This provider implements ArrayAccess to be used with php-jwt library
+ */
+class DefaultSecretProvider implements SecretProvider, \ArrayAccess
 {
     /** @var SecretRepository */
     private $repository;
@@ -40,5 +43,30 @@ class DefaultSecretProvider implements SecretProvider
         $this->repository->save($secret);
 
         return $secret;
+    }
+
+    public function offsetExists($offset)
+    {
+        return null !== $this->repository->find($offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        $secret = $this->repository->find($offset);
+        if (!$secret instanceof Secret) {
+            throw new \RuntimeException('Undefined index: ' . $offset);
+        }
+
+        return $secret->getToken();
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        throw new \LogicException('This ArrayAccess is non mutable.');
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new \LogicException('This ArrayAccess is non mutable.');
     }
 }

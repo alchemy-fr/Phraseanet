@@ -959,7 +959,7 @@ class V1Controller extends Controller
         $provider = $this->app['provider.secrets'];
         $secret = $provider->getSecretForUser($issuer);
 
-        return sprintf('media_accessor', [
+        return $this->app->url('media_accessor', [
             'token' => \JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
         ]);
     }

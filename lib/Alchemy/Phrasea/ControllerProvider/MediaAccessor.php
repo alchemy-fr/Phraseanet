@@ -36,7 +36,7 @@ class MediaAccessor implements ServiceProviderInterface, ControllerProviderInter
         $app['controller.media_accessor'] = $app->share(function (Application $app) {
             return (new MediaAccessorController($app))
                 ->setAllowedAlgorithms(['HS256'])
-                ->setKeyStorage($app['repo.secrets']);
+                ->setKeyStorage($app['provider.secrets']);
         });
 
         $app['controller.media_accessor.route_prefix'] = '/medias';
