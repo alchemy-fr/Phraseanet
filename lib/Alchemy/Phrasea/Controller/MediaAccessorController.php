@@ -51,7 +51,11 @@ class MediaAccessorController extends Controller
 
     public function showAction(Request $request, $token)
     {
-        $token = \JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
+        try {
+            $token = \JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
+        } catch (\Exception $exception) {
+            throw new BadRequestHttpException('Invalid token', $exception);
+        }
 
         if (! isset($token->sdef) || !is_array($token->sdef) || count($token->sdef) !== 3) {
             throw new BadRequestHttpException('sdef should be a sub-definition identifier.');
@@ -76,8 +80,8 @@ class MediaAccessorController extends Controller
             $request->server->all()
         );
 
-        if ($request->request->has('download')) {
-            $subRequest->request->set('download', $request->request-get('download'));
+        if ($request->query->has('download')) {
+            $subRequest->query->set('download', $request->query->get('download'));
         }
 
         $response = $this->app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
