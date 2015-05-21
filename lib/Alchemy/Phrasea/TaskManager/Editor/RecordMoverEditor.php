@@ -81,57 +81,81 @@ class RecordMoverEditor extends AbstractEditor
 <tasksettings>
     <logsql>0</logsql>
     <!--
+        THIS IS AN EXAMPLE OF A SIMPLE WORKFLOW
+        Fix with your settings (fields names, base/collections id's, status-bits) before try
+    -->
+
+    <!-- ********* un-comment to see the tasks **********
+
     <tasks>
-        //Maintain offline (sb4 = 1) all docs under copyright
-        <task active="1" name="confidentiel" action="update" sbas_id="1">
+
+        <comment> keep offline (sb4 = 1) all docs before their "go online" date </comment>
+
+        <task active="1" name="stay offline" action="update" sbas_id="1">
             <from>
-                <date direction="before" field="FIN_COPYRIGHT"/>
+                <date direction="before" field="GO_ONLINE"/>
             </from>
             <to>
                 <status mask="x1xxxx"/>
             </to>
         </task>
-        //Put online (sb4 = 0) all docs from 'public' collection and between the copyright date and the date of filing
-        <task active="1" name="visible" action="update" sbas_id="1">
+
+
+        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
+
+        <task active="1" name="go online" action="update" sbas_id="1">
             <from>
-                <coll compare="=" id="5"/>
-                <date direction="after" field="FIN_COPYRIGHT"/>
-                <date direction="before" field="ARCHIVAGE"/>
+                <comment> 5, 6, 7 are "public" collections </comment>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="GO_ONLINE"/>
+                <date direction="before" field="TO_ARCHIVE"/>
             </from>
             <to>
                 <status mask="x0xxxx"/>
             </to>
         </task>
-        // Warn 10 days before archiving (raise sb5)
-        <task active="1" name="bientôt la fin" action="update" sbas_id="1">
+
+
+        <comment> Warn 10 days before archiving (raise sb5) </comment>
+
+        <task active="1" name="almost the end" action="update" sbas_id="1">
             <from>
-                <coll compare="=" id="5"/>
-                <date direction="after" field="ARCHIVAGE" delta="-10"/>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="TO_ARCHIVE" delta="-10"/>
             </from>
             <to>
                 <status mask="1xxxxx"/>
             </to>
         </task>
-        //Move to 'archive' collection
+
+
+        <comment> Move to 'archive' collection </comment>
+
         <task active="1" name="archivage" action="update" sbas_id="1">
             <from>
-                <coll compare="=" id="5"/>
-                <date direction="after" field="ARCHIVAGE" />
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="TO_ARCHIVE" />
             </from>
             <to>
-                <status mask="00xxxx"/>   on nettoie les status pour la forme
+                <comment> reset status of archived documents </comment>
+                <status mask="00xxxx"/>
+                <comment> 666 is the "archive" collection </comment>
                 <coll id="666" />
             </to>
         </task>
-        //Purge the archived documents from one year that are in the 'archive' collection
-        <task active="1" name="archivage" action="delete" sbas_id="1">
+
+
+        <comment> Delete the archived documents that are in the 'archive' collection from one year </comment>
+
+        <task active="1" name="trash" action="delete" sbas_id="1">
             <from>
                 <coll compare="=" id="666"/>
-                <date direction="after" field="ARCHIVAGE" delta="+365" />
+                <date direction="after" field="TO_ARCHIVE" delta="+365" />
             </from>
         </task>
     </tasks>
-    -->
+
+    ****************************************** -->
 </tasksettings>
 EOF;
     }

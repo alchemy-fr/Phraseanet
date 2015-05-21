@@ -17,17 +17,17 @@
 
 
 {% block javascript %}
+<script type="text/javascript">
     function taskFillGraphic(xml)
     {
         if (xml) {
             xml = $.parseXML(xml);
             xml = $(xml);
 
-            with(document.forms['graphicForm'])
-            {
-                proxy.value     = xml.find("proxy").text();
-                proxyport.value = xml.find("proxyport").text();
-            }
+            var gform = document.forms['graphicForm'];
+            gform.proxy.value     = xml.find("proxy").text();
+            gform.proxyport.value = xml.find("proxyport").text();
         }
     }
+</script>
 {% endblock %}

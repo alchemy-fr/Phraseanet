@@ -67,25 +67,25 @@
 
 
 {% block javascript %}
+<script type="text/javascript">
     function taskFillGraphic(xml)
     {
         if (xml) {
             xml = $.parseXML(xml);
             xml = $(xml);
 
-            with(document.forms['graphicForm'])
-            {
-                proxy.value     = xml.find("proxy").text();
-                proxyport.value = xml.find("proxyport").text();
-                localpath.value = xml.find("localpath").text();
-                ftppath.value   = xml.find("ftppath").text();
-                host.value      = xml.find("host").text();
-                port.value      = xml.find("port").text();
-                user.value      = xml.find("user").text();
-                password.value  = xml.find("password").text();
-                ssl.checked     = Number(xml.find("ssl").text()) > 0;
-                passive.checked = Number(xml.find("passive").text()) > 0;
-            }
+            var gform = document.forms['graphicForm'];
+            gform.proxy.value     = xml.find("proxy").text();
+            gform.proxyport.value = xml.find("proxyport").text();
+            gform.localpath.value = xml.find("localpath").text();
+            gform.ftppath.value   = xml.find("ftppath").text();
+            gform.host.value      = xml.find("host").text();
+            gform.port.value      = xml.find("port").text();
+            gform.user.value      = xml.find("user").text();
+            gform.password.value  = xml.find("password").text();
+            gform.ssl.checked     = Number(xml.find("ssl").text()) > 0;
+            gform.passive.checked = Number(xml.find("passive").text()) > 0;
         }
     }
+</script>
 {% endblock %}
