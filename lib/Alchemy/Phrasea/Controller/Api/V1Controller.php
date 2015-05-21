@@ -37,12 +37,14 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\Secret;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Provider\SecretProvider;
 use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
@@ -56,6 +58,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use MediaVorus\MediaVorus;
@@ -95,7 +98,7 @@ class V1Controller extends Controller
         $oAuth2Account = $token->getAccount();
         $oAuth2App = $oAuth2Account->getApplication();
 
-        $conf = $this->getConfiguration();
+        $conf = $this->getConf();
         if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID && !$conf->get(['registry', 'api-clients', 'navigator-enabled'])) {
             return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
         }
@@ -268,7 +271,7 @@ class V1Controller extends Controller
 
         $ret['phraseanet']['environment'] = $this->app->getEnvironment();
         $ret['phraseanet']['debug'] = $this->app['debug'];
-        $conf = $this->getConfiguration();
+        $conf = $this->getConf();
         $ret['phraseanet']['maintenance'] = $conf->get(['main', 'maintenance']);
         $ret['phraseanet']['errorsLog'] = $this->app['debug'];
         $ret['phraseanet']['serverName'] = $conf->get('servername');
@@ -286,7 +289,7 @@ class V1Controller extends Controller
             $SEStatus = ['error' => $e->getMessage()];
         }
 
-        $conf = $this->getConfiguration();
+        $conf = $this->getConf();
         $binaries = $conf->get(['main', 'binaries']);
 
         return [
@@ -874,7 +877,7 @@ class V1Controller extends Controller
         $record->substitute_subdef($request->get('name'), $media, $this->app, $adapt);
         foreach ($record->get_embedable_medias() as $name => $media) {
             if ($name == $request->get('name') &&
-                null !== ($subdef = $this->listEmbeddableMedia($record, $media))) {
+                null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
                 $ret[] = $subdef;
             }
         }
@@ -882,7 +885,7 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
-    private function listEmbeddableMedia(\record_adapter $record, \media_subdef $media)
+    private function listEmbeddableMedia(Request $request, \record_adapter $record, \media_subdef $media)
     {
         if (!$media->is_physically_present()) {
             return null;
@@ -909,6 +912,15 @@ class V1Controller extends Controller
             $permalink = null;
         }
 
+        $urlTTL = (int) $request->get(
+            'subdef_url_ttl',
+            $this->getConf()->get(['registry', 'general', 'default-subdef-url-ttl'])
+        );
+        if ($urlTTL < 0) {
+            $urlTTL = -1;
+        }
+        $issuer = $this->getAuthenticatedUser();
+
         return [
             'name' => $media->get_name(),
             'permalink' => $permalink,
@@ -921,7 +933,35 @@ class V1Controller extends Controller
             'substituted' => $media->is_substituted(),
             'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
             'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
+            'url' => $this->generateSubDefinitionUrl($issuer, $media, $urlTTL),
+            'url_ttl' => $urlTTL,
         ];
+    }
+
+    /**
+     * @param User          $issuer
+     * @param \media_subdef $subdef
+     * @param int           $url_ttl
+     * @return string
+     */
+    private function generateSubDefinitionUrl(User $issuer, \media_subdef $subdef, $url_ttl)
+    {
+        $payload = [
+            'iat'  => time(),
+            'iss'  => $issuer->getId(),
+            'sdef' => [$subdef->get_sbas_id(), $subdef->get_record_id(), $subdef->get_name()],
+        ];
+        if ($url_ttl >= 0) {
+            $payload['exp'] = $payload['iat'] + $url_ttl;
+        }
+
+        /** @var SecretProvider $provider */
+        $provider = $this->app['provider.secrets'];
+        $secret = $provider->getSecretForUser($issuer);
+
+        return $this->app->url('media_accessor', [
+            'token' => \JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
+        ]);
     }
 
     private function listPermalink(\media_Permalink_Adapter $permalink)
@@ -967,7 +1007,7 @@ class V1Controller extends Controller
             if ($record->is_grouping()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {
-                $ret['results']['records'][] = $this->listRecord($record);
+                $ret['results']['records'][] = $this->listRecord($request, $record);
             }
         }
 
@@ -995,7 +1035,7 @@ class V1Controller extends Controller
                 continue;
             }
 
-            $ret['results'][] = $this->listRecord($record);
+            $ret['results'][] = $this->listRecord($request, $record);
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -1051,11 +1091,11 @@ class V1Controller extends Controller
     /**
      * Retrieve detailed information about one record
      *
-     * @param  \record_adapter $record
-     *
+     * @param Request          $request
+     * @param \record_adapter $record
      * @return array
      */
-    public function listRecord(\record_adapter $record)
+    public function listRecord(Request $request, \record_adapter $record)
     {
         $technicalInformation = [];
         foreach ($record->get_technical_infos() as $name => $value) {
@@ -1072,7 +1112,7 @@ class V1Controller extends Controller
             'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
             'collection_id'          => \phrasea::collFromBas($this->app, $record->get_base_id()),
             'sha256'                 => $record->get_sha256(),
-            'thumbnail'              => $this->listEmbeddableMedia($record, $record->get_thumbnail()),
+            'thumbnail'              => $this->listEmbeddableMedia($request, $record, $record->get_thumbnail()),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
@@ -1093,8 +1133,8 @@ class V1Controller extends Controller
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
-        $records = array_map(function (\record_adapter $record) {
-            return $this->listRecord($record);
+        $records = array_map(function (\record_adapter $record) use ($request) {
+            return $this->listRecord($request, $record);
         }, array_values($story->get_children()->get_elements()));
 
         $caption = $story->get_caption();
@@ -1117,7 +1157,7 @@ class V1Controller extends Controller
             'updated_on'    => $story->get_modification_date()->format(DATE_ATOM),
             'created_on'    => $story->get_creation_date()->format(DATE_ATOM),
             'collection_id' => \phrasea::collFromBas($this->app, $story->get_base_id()),
-            'thumbnail'     => $this->listEmbeddableMedia($story, $story->get_thumbnail()),
+            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
             'uuid'          => $story->get_uuid(),
             'metadatas'     => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
@@ -1362,8 +1402,8 @@ class V1Controller extends Controller
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        $ret = array_filter(array_map(function ($media) use ($record) {
-            return $this->listEmbeddableMedia($record, $media);
+        $ret = array_filter(array_map(function ($media) use ($request, $record) {
+            return $this->listEmbeddableMedia($request, $record, $media);
         }, $record->get_embedable_medias($devices, $mimes)));
 
         return Result::create($request, ["embed" => $ret])->createResponse();
@@ -1448,7 +1488,7 @@ class V1Controller extends Controller
         try {
             $record = $this->findDataboxById($databox_id)->get_record($record_id);
 
-            return Result::create($request, ['record' => $this->listRecord($record)])->createResponse();
+            return Result::create($request, ['record' => $this->listRecord($request, $record)])->createResponse();
         } catch (NotFoundHttpException $e) {
             return Result::createError($request, 404, $this->app->trans('Record Not Found'))->createResponse();
         } catch (\Exception $e) {
@@ -1474,7 +1514,7 @@ class V1Controller extends Controller
             $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
             $record->move_to_collection($collection, $this->getApplicationBox());
 
-            return Result::create($request, ["record" => $this->listRecord($record)])->createResponse();
+            return Result::create($request, ["record" => $this->listRecord($request, $record)])->createResponse();
         } catch (\Exception $e) {
             return $this->getBadRequestAction($this->app, $request, $e->getMessage());
         }
@@ -1546,7 +1586,7 @@ class V1Controller extends Controller
     {
         $ret = [
             "basket"          => $this->listBasket($basket),
-            "basket_elements" => $this->listBasketContent($basket)
+            "basket_elements" => $this->listBasketContent($request, $basket)
         ];
 
         return Result::create($request, $ret)->createResponse();
@@ -1563,30 +1603,30 @@ class V1Controller extends Controller
     /**
      * Retrieve elements of one basket
      *
-     * @param  Basket $Basket
-     *
+     * @param Request $request
+     * @param Basket $basket
      * @return array
      */
-    private function listBasketContent(Basket $Basket)
+    private function listBasketContent(Request $request, Basket $basket)
     {
-        return array_map(function (BasketElement $element) {
-            return $this->listBasketElement($element);
-        }, iterator_to_array($Basket->getElements()));
+        return array_map(function (BasketElement $element) use ($request) {
+            return $this->listBasketElement($request, $element);
+        }, iterator_to_array($basket->getElements()));
     }
 
     /**
      * Retrieve detailed information about a basket element
      *
-     * @param  BasketElement $basket_element
-     *
+     * @param Request        $request
+     * @param BasketElement $basket_element
      * @return array
      */
-    private function listBasketElement(BasketElement $basket_element)
+    private function listBasketElement(Request $request, BasketElement $basket_element)
     {
         $ret = [
             'basket_element_id' => $basket_element->getId(),
             'order'             => $basket_element->getOrd(),
-            'record'            => $this->listRecord($basket_element->getRecord($this->app)),
+            'record'            => $this->listRecord($request, $basket_element->getRecord($this->app)),
             'validation_item'   => null != $basket_element->getBasket()->getValidation(),
         ];
 
@@ -1748,7 +1788,7 @@ class V1Controller extends Controller
             'total_entries' => $feed->getCountTotalEntries(),
             'offset_start'  => $offset_start,
             'per_page'      => $per_page,
-            'entries'       => $this->listPublicationsEntries($feed, $offset_start, $per_page),
+            'entries'       => $this->listPublicationsEntries($request, $feed, $offset_start, $per_page),
         ];
 
         return Result::create($request, $data)->createResponse();
@@ -1757,30 +1797,30 @@ class V1Controller extends Controller
     /**
      * Retrieve all entries of one feed
      *
-     * @param  FeedInterface $feed
-     * @param  int           $offset_start
-     * @param  int           $how_many
-     *
+     * @param Request        $request
+     * @param FeedInterface $feed
+     * @param int           $offset_start
+     * @param int           $how_many
      * @return array
      */
-    private function listPublicationsEntries(FeedInterface $feed, $offset_start = 0, $how_many = 5)
+    private function listPublicationsEntries(Request $request, FeedInterface $feed, $offset_start = 0, $how_many = 5)
     {
-        return array_map(function ($entry) {
-            return $this->listPublicationEntry($entry);
+        return array_map(function ($entry) use ($request) {
+            return $this->listPublicationEntry($request, $entry);
         }, $feed->getEntries($offset_start, $how_many));
     }
 
     /**
      * Retrieve detailed information about one feed entry
      *
-     * @param  FeedEntry $entry
-     *
+     * @param Request    $request
+     * @param FeedEntry $entry
      * @return array
      */
-    private function listPublicationEntry(FeedEntry $entry)
+    private function listPublicationEntry(Request $request, FeedEntry $entry)
     {
-        $items = array_map(function ($item) {
-            return $this->listPublicationEntryItem($item);
+        $items = array_map(function ($item) use ($request) {
+            return $this->listPublicationEntryItem($request, $item);
         }, iterator_to_array($entry->getItems()));
 
         return [
@@ -1802,15 +1842,15 @@ class V1Controller extends Controller
     /**
      * Retrieve detailed information about one feed  entry item
      *
-     * @param  FeedItem $item
-     *
+     * @param Request   $request
+     * @param FeedItem $item
      * @return array
      */
-    private function listPublicationEntryItem(FeedItem $item)
+    private function listPublicationEntryItem(Request $request, FeedItem $item)
     {
         return [
             'item_id' => $item->getId(),
-            'record'  => $this->listRecord($item->getRecord($this->app)),
+            'record'  => $this->listRecord($request, $item->getRecord($this->app)),
         ];
     }
 
@@ -1827,7 +1867,7 @@ class V1Controller extends Controller
             return Result::createError($request, 403, 'You have not access to the parent feed')->createResponse();
         }
 
-        return Result::create($request, ['entry' => $this->listPublicationEntry($entry)])->createResponse();
+        return Result::create($request, ['entry' => $this->listPublicationEntry($request, $entry)])->createResponse();
     }
 
     /**
@@ -1859,7 +1899,7 @@ class V1Controller extends Controller
             'feed'         => $this->listPublication($feed, $user),
             'offset_start' => $offset_start,
             'per_page'     => $per_page,
-            'entries'      => $this->listPublicationsEntries($feed, $offset_start, $per_page),
+            'entries'      => $this->listPublicationsEntries($request, $feed, $offset_start, $per_page),
         ];
 
         return Result::create($request, $data)->createResponse();
@@ -1881,8 +1921,8 @@ class V1Controller extends Controller
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        $ret = array_filter(array_map(function ($media) use ($record) {
-            return $this->listEmbeddableMedia($record, $media);
+        $ret = array_filter(array_map(function ($media) use ($request, $record) {
+            return $this->listEmbeddableMedia($request, $record, $media);
         }, $record->get_embedable_medias($devices, $mimes)));
 
         return Result::create($request, ["embed" => $ret])->createResponse();
@@ -2274,14 +2314,6 @@ class V1Controller extends Controller
     private function getSession()
     {
         return $this->app['session'];
-    }
-
-    /**
-     * @return PropertyAccess
-     */
-    private function getConfiguration()
-    {
-        return $this->app['conf'];
     }
 
     /**

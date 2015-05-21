@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core;
 
 class Version
 {
-    private $number = '4.0.0-alpha.1';
+    private $number = '4.0.0-alpha.2';
     private $name = 'Herrerasaurus';
 
     public function getNumber()

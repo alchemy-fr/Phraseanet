@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\ControllerProvider\Api\OAuth2;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Datafiles;
+use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Permalink;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
@@ -121,6 +122,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
     $app->mount('/permalink/', new Permalink());
+    $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
     $app->mount('/include/minify/', new Minifier());
 
     $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {

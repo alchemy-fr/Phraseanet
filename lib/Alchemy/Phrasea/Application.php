@@ -317,6 +317,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
+            'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
             'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
             'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
             'Alchemy\Phrasea\ControllerProvider\Setup' => [],
@@ -683,6 +684,9 @@ class Application extends SilexApplication
             '/prod/records/movecollection' => 'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
+
+        // controllers with routes referenced by api
+        $providers[$this['controller.media_accessor.route_prefix']] = 'Alchemy\Phrasea\ControllerProvider\MediaAccessor';
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);
         }

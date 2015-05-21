@@ -93,6 +93,7 @@ class RegistryManipulator
                 'analytics' => null,
                 'allow-indexation' => true,
                 'home-presentation-mode' => 'GALLERIA',
+                'default-subdef-url-ttl' => 7200,
             ],
             'modules' => [
                 'thesaurus' => true,
@@ -112,7 +113,7 @@ class RegistryManipulator
                 'social-tools' => 'none',
                 'enable-push-authentication' => false,
                 'force-push-authentication' => false,
-                'enable-feed-notification' => true
+                'enable-feed-notification' => true,
             ],
             'ftp' => [
                 'ftp-enabled' => false,

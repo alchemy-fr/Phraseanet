@@ -185,46 +185,47 @@ abstract class base implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $ORMTables = [
-            'AuthFailures',
-            'ApiApplications',
+            'AggregateTokens',
             'ApiAccounts',
+            'ApiApplications',
             'ApiLogs',
             'ApiOauthCodes',
             'ApiOauthRefreshTokens',
             'ApiOauthTokens',
-            'AggregateTokens',
+            'AuthFailures',
             'BasketElements',
             'Baskets',
             'FeedEntries',
             'FeedItems',
             'FeedPublishers',
-            'FeedTokens',
             'Feeds',
+            'FeedTokens',
             'FtpCredential',
             'FtpExportElements',
             'FtpExports',
+            'LazaretAttributes',
+            'LazaretChecks',
+            'LazaretFiles',
+            'LazaretSessions',
             'OrderElements',
             'Orders',
             'Registrations',
+            'Secrets',
+            'SessionModules',
+            'Sessions',
             'StoryWZ',
+            'Tasks',
+            'UserNotificationSettings',
+            'UserQueries',
+            'Users',
+            'UserSettings',
+            'UsrAuthProviders',
             'UsrListOwners',
             'UsrLists',
             'UsrListsContent',
             'ValidationDatas',
             'ValidationParticipants',
             'ValidationSessions',
-            'LazaretAttributes',
-            'LazaretChecks',
-            'LazaretFiles',
-            'LazaretSessions',
-            'SessionModules',
-            'Sessions',
-            'Tasks',
-            'UsrAuthProviders',
-            'UserQueries',
-            'UserSettings',
-            'Users',
-            'UserNotificationSettings',
         ];
 
         foreach ($rs as $row) {
@@ -742,6 +743,7 @@ abstract class base implements cache_cacheableInterface
         foreach ($list_patches as $patch) {
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
+                /** @var \Doctrine\DBAL\Migrations\Version $version */
                 $version = $app['doctrine-migration.configuration']->getVersion($doctrineVersion);
                 // Skip if already migrated
                 if ($version->isMigrated()) {
@@ -750,17 +752,22 @@ abstract class base implements cache_cacheableInterface
 
                 $migration = $version->getMigration();
 
-                // Inject entity manager
-                $migration->setEntityManager($app['orm.em']);
+                // Handle legacy migrations
+                if ($migration instanceof \Alchemy\Phrasea\Setup\DoctrineMigrations\AbstractMigration) {
+                    // Inject entity manager
+                    $migration->setEntityManager($app['orm.em']);
 
-                // Execute migration if not marked as migrated and not already applied by an older patch
-                if (!$migration->isAlreadyApplied()) {
+                    // Execute migration if not marked as migrated and not already applied by an older patch
+                    if (!$migration->isAlreadyApplied()) {
+                        $version->execute('up');
+                        continue;
+                    }
+
+                    // Or mark it as migrated
+                    $version->markMigrated();
+                } else {
                     $version->execute('up');
-                    continue;
                 }
-
-                // Or mark it as migrated
-                $version->markMigrated();
             }
 
             if (false === $patch->apply($this, $app)) {

@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a9853a0b6c89b6ad2eb6a161eb2490e1",
+    "hash": "0cc03f42a7df15fa96138931fa1a454d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1351,6 +1351,50 @@
             "time": "2013-11-19 23:11:14"
         },
         {
+            "name": "firebase/php-jwt",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "fb219727e199dd80a72d5274ebb5c8b24d58dd9b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/fb219727e199dd80a72d5274ebb5c8b24d58dd9b",
+                "reference": "fb219727e199dd80a72d5274ebb5c8b24d58dd9b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Authentication/",
+                    "Exceptions/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "time": "2015-05-20 19:16:04"
+        },
+        {
             "name": "gedmo/doctrine-extensions",
             "version": "v2.3.12",
             "source": {
@@ -1438,7 +1482,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goodby/csv/zipball/b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
+                "url": "https://api.github.com/repos/goodby/csv/zipball/6760826116c9a9552a6481839c8c40ad134aab98",
                 "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
                 "shasum": ""
             },
@@ -3932,7 +3976,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/acc05c93841b23f1d30637093d7f26b9910db10c",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/fef0e8976bb32ee354c92fc75559581db559148d",
                 "reference": "acc05c93841b23f1d30637093d7f26b9910db10c",
                 "shasum": ""
             },
