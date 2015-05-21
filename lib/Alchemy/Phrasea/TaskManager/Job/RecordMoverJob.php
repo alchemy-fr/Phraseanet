@@ -13,7 +13,9 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
-use databox;
+use \databox;
+use Doctrine\DBAL\Connection;
+use record_adapter;
 
 class RecordMoverJob extends AbstractJob
 {
@@ -72,6 +74,7 @@ class RecordMoverJob extends AbstractJob
 
     private function processData(Application $app, $row, $logsql)
     {
+        /** @var databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox($row['sbas_id']);
         $rec = $databox->get_record($row['record_id']);
 
@@ -104,6 +107,7 @@ class RecordMoverJob extends AbstractJob
 
             case 'DELETE':
                 if ($row['deletechildren'] && $rec->is_grouping()) {
+                    /** @var record_adapter $child */
                     foreach ($rec->get_children() as $child) {
                         $child->delete();
                         if ($logsql) {
@@ -140,6 +144,7 @@ class RecordMoverJob extends AbstractJob
             }
 
             try {
+                /** @var databox $databox */
                 $databox = $app['phraseanet.appbox']->get_databox($task['sbas_id']);
             } catch (\Exception $e) {
                 $this->log('error', sprintf("can't connect sbas %s", $task['sbas_id']));
@@ -201,6 +206,7 @@ class RecordMoverJob extends AbstractJob
         ];
 
         try {
+            /** @var databox $dbox */
             $dbox = $app['phraseanet.appbox']->get_databox($sbas_id);
 
             $ret['basename'] = $dbox->get_label($app['locale']);
@@ -233,11 +239,8 @@ class RecordMoverJob extends AbstractJob
 
     private function calcUPDATE(Application $app, $sbas_id, &$sxtask, $playTest)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
-        $connbas = $databox->get_connection();
-
         $tws = array(); // NEGATION of updates, used to build the 'test' sql
-        //
+
         // set coll_id ?
         if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
             $tws[] = 'coll_id!=' . $x;
@@ -262,44 +265,44 @@ class RecordMoverJob extends AbstractJob
         // compute the 'where' clause
         list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
 
-        if($err == "") {
-            // ... complete the where to build the TEST
-            if (count($tws) == 1) {
-                $tw[] = $tws[0];
-            } elseif (count($tws) > 1) {
-                $tw[] = '(' . implode(') OR (', $tws) . ')';
-            }
-
-            // build the TEST sql (select)
-            $sql_test = 'SELECT record_id FROM record' . $join;
-            if (count($tw) > 0) {
-                $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-            }
-
-            // build the real sql (select)
-            $sql_real = 'SELECT record_id FROM record' . $join;
-            if (count($tw) > 0) {
-                $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-            }
-
-            $ret = array(
-                'real' => array(
-                    'sql' => $sql_real,
-                    'sql_htmlencoded' => htmlentities($sql_real),
-                ),
-                'test' => array(
-                    'sql' => $sql_test,
-                    'sql_htmlencoded' => htmlentities($sql_test),
-                    'result' => NULL,
-                    'err' => NULL
-                )
-            );
-
-            if ($playTest) {
-                $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
-            }
-        } else {
+        if(!empty($err)) {
             throw(new \Exception($err));
+        }
+
+        // ... complete the where to build the TEST
+        if (count($tws) == 1) {
+            $tw[] = $tws[0];
+        } elseif (count($tws) > 1) {
+            $tw[] = '(' . implode(') OR (', $tws) . ')';
+        }
+
+        // build the TEST sql (select)
+        $sql_test = 'SELECT record_id FROM record' . $join;
+        if (count($tw) > 0) {
+            $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        }
+
+        // build the real sql (select)
+        $sql_real = 'SELECT record_id FROM record' . $join;
+        if (count($tw) > 0) {
+            $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        }
+
+        $ret = array(
+            'real' => array(
+                'sql' => $sql_real,
+                'sql_htmlencoded' => htmlentities($sql_real),
+            ),
+            'test' => array(
+                'sql' => $sql_test,
+                'sql_htmlencoded' => htmlentities($sql_test),
+                'result' => null,
+                'err' => null
+            )
+        );
+
+        if ($playTest) {
+            $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
         }
 
         return $ret;
@@ -310,36 +313,36 @@ class RecordMoverJob extends AbstractJob
         // compute the 'where' clause
         list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
 
-        if($err == "") {
-            // build the TEST sql (select)
-            $sql_test = 'SELECT SQL_CALC_FOUND_ROWS record_id FROM record' . $join;
-            if (count($tw) > 0)
-                $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-            $sql_test .= ' LIMIT 10';
-
-            // build the real sql (select)
-            $sql_real = 'SELECT record_id FROM record' . $join;
-            if (count($tw) > 0)
-                $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-
-            $ret = [
-                'real' => [
-                    'sql' => $sql_real,
-                    'sql_htmlencoded' => htmlentities($sql_real),
-                ],
-                'test' => [
-                    'sql' => $sql_test,
-                    'sql_htmlencoded' => htmlentities($sql_test),
-                    'result' => NULL,
-                    'err' => NULL
-                ]
-            ];
-
-            if ($playTest) {
-                $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
-            }
-        } else {
+        if(!empty($err)) {
             throw(new \Exception($err));
+        }
+
+        // build the TEST sql (select)
+        $sql_test = 'SELECT SQL_CALC_FOUND_ROWS record_id FROM record' . $join;
+        if (count($tw) > 0)
+            $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        $sql_test .= ' LIMIT 10';
+
+        // build the real sql (select)
+        $sql_real = 'SELECT record_id FROM record' . $join;
+        if (count($tw) > 0)
+            $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+
+        $ret = [
+            'real' => [
+                'sql' => $sql_real,
+                'sql_htmlencoded' => htmlentities($sql_real),
+            ],
+            'test' => [
+                'sql' => $sql_test,
+                'sql_htmlencoded' => htmlentities($sql_test),
+                'result' => null,
+                'err' => null
+            ]
+        ];
+
+        if ($playTest) {
+            $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
         }
 
         return $ret;
@@ -347,6 +350,7 @@ class RecordMoverJob extends AbstractJob
 
     private function playTest(Application $app, $sbas_id, $sql)
     {
+        /** @var databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
@@ -360,7 +364,7 @@ class RecordMoverJob extends AbstractJob
             }
             $stmt->closeCursor();
         } else {
-            $result['err'] = $connbas->last_error();
+            $result['err'] = $connbas->errorInfo();
         }
 
         return $result;
@@ -369,7 +373,9 @@ class RecordMoverJob extends AbstractJob
     private function calcWhere(Application $app, $sbas_id, &$sxtask)
     {
         $err = "";
+        /** @var databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        /** @var Connection $connbas */
         $connbas = $databox->get_connection();
 
         $struct = $databox->get_meta_structure();
@@ -380,7 +386,7 @@ class RecordMoverJob extends AbstractJob
         $ijoin = 0;
 
         // criteria <type type="XXX" />
-        if (($x = $sxtask->from->type['type']) !== NULL) {
+        if (($x = $sxtask->from->type['type']) !== null) {
             switch (strtoupper($x)) {
                 case 'RECORD':
                     $tw[] = 'parent_record_id!=record_id';
