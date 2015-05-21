@@ -64,7 +64,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['search_engine.structure'] = $app->share(function ($app) {
             $databoxes = $app['phraseanet.appbox']->get_databoxes();
-            return Structure::fromDataboxes($databoxes);
+            return Structure::createFromDataboxes($databoxes);
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {

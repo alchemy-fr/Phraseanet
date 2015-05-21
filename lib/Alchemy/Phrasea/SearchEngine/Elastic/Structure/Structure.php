@@ -13,7 +13,7 @@ class Structure
     private $facets = array();
     private $aliases = array();
 
-    public static function fromDataboxes(array $databoxes)
+    public static function createFromDataboxes(array $databoxes)
     {
         $structure = new self();
         foreach ($databoxes as $databox) {
