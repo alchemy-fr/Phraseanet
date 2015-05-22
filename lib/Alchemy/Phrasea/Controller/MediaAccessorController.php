@@ -53,6 +53,8 @@ class MediaAccessorController extends Controller
     {
         try {
             $token = \JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
+        } catch (\UnexpectedValueException $exception) {
+            throw new NotFoundHttpException('Resource not found', $exception);
         } catch (\Exception $exception) {
             throw new BadRequestHttpException('Invalid token', $exception);
         }
