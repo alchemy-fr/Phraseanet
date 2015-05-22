@@ -1102,7 +1102,7 @@ class V1Controller extends Controller
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
-        return [
+        $data = [
             'databox_id'             => $record->get_sbas_id(),
             'record_id'              => $record->get_record_id(),
             'mime_type'              => $record->get_mime(),
@@ -1117,6 +1117,35 @@ class V1Controller extends Controller
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
         ];
+
+        if ($request->attributes->get('_extended', false)) {
+            $subdefs = $caption = [];
+
+            foreach ($record->get_embedable_medias([], []) as $name => $media) {
+                if (null !== $subdef = $this->listEmbeddableMedia($request, $record, $media)) {
+                    $subdefs[] = $subdef;
+                }
+            }
+
+            foreach ($record->get_caption()->get_fields() as $field) {
+                $caption[] = [
+                    'meta_structure_id' => $field->get_meta_struct_id(),
+                    'name'              => $field->get_name(),
+                    'value'             => $field->get_serialized_values(';'),
+                ];
+            }
+
+            $extendedData = [
+                'subdefs'  => $subdefs,
+                'metadata' => $this->listRecordCaption($record->get_caption()),
+                'status'   => $this->listRecordStatus($record),
+                'caption'  => $caption
+            ];
+
+            $data = array_merge($data, $extendedData);
+        }
+
+        return $data;
     }
 
     /**
