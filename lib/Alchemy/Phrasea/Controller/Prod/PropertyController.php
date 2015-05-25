@@ -9,7 +9,6 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,21 +19,20 @@ class PropertyController extends Controller
     /**
      *  Display Status property
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param  Request $request
      * @return Response
      */
-    public function displayStatusProperty(Application $app, Request $request)
+    public function displayStatusProperty(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($app, $request, false, ['chgstatus']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, ['chgstatus']);
 
         if (count($records->databoxes()) > 1) {
-            return new Response($app['twig']->render('prod/actions/Property/index.html.twig', [
-                'records'   => $records
+            return new Response($this->render('prod/actions/Property/index.html.twig', [
+                'records'   => $records,
             ]));
         }
 
@@ -64,26 +62,25 @@ class PropertyController extends Controller
             }
         }
 
-        return new Response($app['twig']->render('prod/actions/Property/index.html.twig', [
+        return new Response($this->render('prod/actions/Property/index.html.twig', [
             'records'   => $records,
-            'status'    => $recordsStatuses
+            'status'    => $recordsStatuses,
         ]));
     }
 
     /**
      * Display type property
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param  Request $request
      * @return Response
      */
-    public function displayTypeProperty(Application $app, Request $request)
+    public function displayTypeProperty(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($app, $request, false, ['canmodifrecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, ['canmodifrecord']);
 
         $recordsType = [];
 
@@ -102,7 +99,7 @@ class PropertyController extends Controller
             $recordsType[$sbasId][$record->get_type()][] = $record;
         }
 
-        return new Response($app['twig']->render('prod/actions/Property/type.html.twig', [
+        return new Response($this->render('prod/actions/Property/type.html.twig', [
             'records'     => $records,
             'recordsType' => $recordsType,
         ]));
@@ -111,14 +108,13 @@ class PropertyController extends Controller
     /**
      * Change record status
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return Response
      */
-    public function changeStatus(Application $app, Request $request)
+    public function changeStatus(Request $request)
     {
         $applyStatusToChildren = $request->request->get('apply_to_children', []);
-        $records = RecordsRequest::fromRequest($app, $request, false, ['chgstatus']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, ['chgstatus']);
         $updated = [];
         $postStatus = (array) $request->request->get('status');
 
@@ -140,20 +136,19 @@ class PropertyController extends Controller
             }
         }
 
-        return $app->json(['success' => true, 'updated' => $updated], 201);
+        return $this->app->json(['success' => true, 'updated' => $updated], 201);
     }
 
     /**
      * Change record type
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param  Request $request
      * @return Response
      */
-    public function changeType(Application $app, Request $request)
+    public function changeType(Request $request)
     {
         $typeLst = $request->request->get('types', []);
-        $records = RecordsRequest::fromRequest($app, $request, false, ['canmodifrecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, ['canmodifrecord']);
         $mimeLst = $request->request->get('mimes', []);
         $forceType = $request->request->get('force_types', '');
         $updated = [];
@@ -177,7 +172,7 @@ class PropertyController extends Controller
             }
         }
 
-        return $app->json(['success' => true, 'updated' => $updated], 201);
+        return $this->app->json(['success' => true, 'updated' => $updated], 201);
     }
 
     /**
@@ -187,7 +182,7 @@ class PropertyController extends Controller
      * @param  array           $postStatus
      * @return array|null
      */
-    private function updateRecordStatus(\record_adapter $record, Array $postStatus)
+    private function updateRecordStatus(\record_adapter $record, array $postStatus)
     {
         $sbasId = $record->get_databox()->get_sbas_id();
 
@@ -204,7 +199,7 @@ class PropertyController extends Controller
 
             return [
                 'current_status' => $currentStatus,
-                'new_status'     => $newStatus
+                'new_status'     => $newStatus,
             ];
         }
 

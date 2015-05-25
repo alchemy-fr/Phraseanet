@@ -117,7 +117,7 @@ class RecordsRequest extends ArrayCollection
     /**
      * Return all received records
      *
-     * @return ArrayCollection
+     * @return \record_adapter[]|ArrayCollection
      */
     public function received()
     {
@@ -199,7 +199,7 @@ class RecordsRequest extends ArrayCollection
      * @param  boolean        $flattenStories
      * @param  array          $rightsColl
      * @param  array          $rightsDatabox
-     * @return RecordsRequest
+     * @return RecordsRequest|\record_adapter[]
      */
     public static function fromRequest(Application $app, Request $request, $flattenStories = self::FLATTEN_NO, array $rightsColl = [], array $rightsDatabox = [])
     {
