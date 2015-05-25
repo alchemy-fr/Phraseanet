@@ -11,43 +11,36 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Prod\PrinterController;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Alchemy\Phrasea\Helper\Record as RecordHelper;
-use Alchemy\Phrasea\Out\Module\PDF as PDFExport;
-use Symfony\Component\HttpFoundation\Response;
+use Silex\ServiceProviderInterface;
 
-class Printer implements ControllerProviderInterface
+class Printer implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
+    public function register(Application $app)
+    {
+        $app['controller.prod.printer'] = $app->share(function (PhraseaApplication $app) {
+            return (new PrinterController($app));
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.prod.printer'] = $this;
+        $controllers = $this->createCollection($app);
+        $controllers->post('/', 'controller.prod.printer:postPrinterAction');
 
-        $controllers = $app['controllers_factory'];
-
-        $controllers->post('/', function (Application $app) {
-                $printer = new RecordHelper\Printer($app, $app['request']);
-
-                return $app['twig']->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '']);
-            }
-        );
-
-        $controllers->post('/print.pdf', function (Application $app) {
-            $printer = new RecordHelper\Printer($app, $app['request']);
-
-            $layout = $app['request']->request->get('lay');
-
-            foreach ($printer->get_elements() as $record) {
-                $app['phraseanet.logger']($record->get_databox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
-            }
-            $PDF = new PDFExport($app, $printer->get_elements(), $layout);
-
-            $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
-            $response->headers->set('Pragma', 'public', true);
-            $response->setMaxAge(0);
-
-            return $response;
-        })->bind('prod_printer_print');
+        $controllers->post('/print.pdf', 'controller.prod.printer:printAction')
+            ->bind('prod_printer_print');
 
         return $controllers;
     }

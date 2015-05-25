@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Printer;
 use Alchemy\Phrasea\ControllerProvider\Prod\Property;
 use Alchemy\Phrasea\ControllerProvider\Prod\Push;
 use Alchemy\Phrasea\ControllerProvider\Prod\Query;
@@ -315,6 +314,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Order' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Printer' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -632,7 +632,6 @@ class Application extends SilexApplication
         $this->mount('/prod/records/', new Records());
         $this->mount('/prod/records/property', new Property());
         $this->mount('/prod/push/', new Push());
-        $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
         $this->mount('/prod/TOU/', new TOU());
         $this->mount('/prod/tooltip', new Tooltip());
@@ -680,6 +679,7 @@ class Application extends SilexApplication
             '/prod/language'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
             '/prod/lazaret/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
             '/prod/order/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Order',
+            '/prod/printer/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Printer',
             '/prod/records/edit'           => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
             '/prod/records/movecollection' => 'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
