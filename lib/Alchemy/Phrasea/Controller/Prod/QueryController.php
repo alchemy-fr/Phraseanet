@@ -11,6 +11,9 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,47 +24,49 @@ class QueryController extends Controller
     /**
      * Query Phraseanet to fetch records
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return Response
      */
-    public function query(Application $app, Request $request)
+    public function query(Request $request)
     {
         $query = (string) $request->request->get('qry');
 
         $json = [];
 
-        $options = SearchEngineOptions::fromRequest($app, $request);
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
 
         $form = $options->serialize();
 
-        $perPage = (int) $app['settings']->getUserSetting($app['authentication']->getUser(), 'images_per_page');
+        $perPage = (int) $this->getSettings()->getUserSetting($this->getAuthenticatedUser(), 'images_per_page');
 
         $page = (int) $request->request->get('pag');
         $firstPage = $page < 1;
 
+        $engine = $this->getSearchEngine();
         if ($page < 1) {
-            $app['phraseanet.SE']->resetCache();
+            $engine->resetCache();
             $page = 1;
         }
 
         /** @var SearchEngineResult $result */
-        $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage, $options);
+        $result = $engine->query($query, (($page - 1) * $perPage), $perPage, $options);
 
-        $app['manipulator.user']->logQuery($app['authentication']->getUser(), $result->getQuery());
+        $user = $this->getAuthenticatedUser();
+        $userManipulator = $this->getUserManipulator();
+        $userManipulator->logQuery($user, $result->getQuery());
 
-        if ($app['settings']->getUserSetting($app['authentication']->getUser(), 'start_page') === 'LAST_QUERY') {
-            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), 'start_page_query', $query);
+        if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
+            $userManipulator->setUserSetting($user, 'start_page_query', $query);
         }
 
         foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function (\collection $collection) {
+            $collections = array_map(function (\collection $collection) {
                 return $collection->get_coll_id();
             }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
             }));
 
-            $app['phraseanet.SE.logger']->log($databox, $result->getQuery(), $result->getTotal(), $colls);
+            $this->getSearchEngineLogger()->log($databox, $result->getQuery(), $result->getTotal(), $collections);
         }
 
         $proposals = $firstPage ? $result->getProposals() : false;
@@ -73,7 +78,6 @@ class QueryController extends Controller
         $string = '';
 
         if ($npages > 1) {
-
             $d2top = ($npages - $page);
             $d2bottom = $page;
 
@@ -128,16 +132,19 @@ class QueryController extends Controller
         $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
         if ($result->getTotal() != $result->getAvailable()) {
-            $explain .= $app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);
+            $explain .= $this->app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);
         } else {
-            $explain .= $app->trans('reponses:: %total% Resultats', ['%total%' => $result->getTotal()]);
+            $explain .= $this->app->trans('reponses:: %total% Resultats', ['%total%' => $result->getTotal()]);
         }
 
         $explain .= " </b></span>";
         $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<div id="docInfo">' . $app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>']).'</div><a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' .$app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
+        $infoResult = '<div id="docInfo">'
+            . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
+            . '</div><a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">'
+            . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;
@@ -162,7 +169,7 @@ class QueryController extends Controller
             $template = 'prod/results/records.html.twig';
         }
 
-        $json['results'] = $app['twig']->render($template, ['results'=> $result]);
+        $json['results'] = $this->render($template, ['results'=> $result]);
 
         $json['query'] = $query;
 
@@ -177,40 +184,71 @@ class QueryController extends Controller
         $json['prev_page'] = ($page > 1 && $result->getAvailable() > 0) ? ($page - 1) : false;
         $json['form'] = $form;
 
-        return $app->json($json);
+        return $this->app->json($json);
     }
 
     /**
      * Get a preview answer train
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return Response
      */
-    public function queryAnswerTrain(Application $app, Request $request)
+    public function queryAnswerTrain(Request $request)
     {
         if (null === $optionsSerial = $request->get('options_serial')) {
-            $app->abort(400, 'Search engine options are missing');
+            $this->app->abort(400, 'Search engine options are missing');
         }
 
         try {
-            $options = SearchEngineOptions::hydrate($app, $optionsSerial);
+            $options = SearchEngineOptions::hydrate($this->app, $optionsSerial);
         } catch (\Exception $e) {
-            $app->abort(400, 'Provided search engine options are not valid');
+            $this->app->abort(400, 'Provided search engine options are not valid');
         }
 
         $pos = (int) $request->request->get('pos', 0);
         $query = $request->request->get('query', '');
 
-        $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query, $options);
+        $record = new \record_preview($this->app, 'RESULT', $pos, '', $this->getSearchEngine(), $query, $options);
 
         $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-        return $app->json([
-            'current' => $app['twig']->render('prod/preview/result_train.html.twig', [
+        return $this->app->json([
+            'current' => $this->render('prod/preview/result_train.html.twig', [
                 'records'  => $record->get_train(),
                 'index' => $index,
-                'selected' => $pos
+                'selected' => $pos,
             ])
         ]);
+    }
+
+    /**
+     * @return DisplaySettingService
+     */
+    private function getSettings()
+    {
+        return $this->app['settings'];
+    }
+
+    /**
+     * @return SearchEngineInterface
+     */
+    private function getSearchEngine()
+    {
+        return $this->app['phraseanet.SE'];
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
+    }
+
+    /**
+     * @return SearchEngineLogger
+     */
+    private function getSearchEngineLogger()
+    {
+        return $this->app['phraseanet.SE.logger'];
     }
 }

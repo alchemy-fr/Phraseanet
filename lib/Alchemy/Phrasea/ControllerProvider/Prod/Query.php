@@ -25,16 +25,7 @@ class Query implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.query'] = $app->share(function (PhraseaApplication $app) {
-            return (new QueryController($app))
-                ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                ->setDispatcher($app['dispatcher'])
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
-                ->setUserQueryFactory(function () use ($app) {
-                    return $app['phraseanet.user-query'];
-                })
-                ;
+            return (new QueryController($app));
         });
     }
 
