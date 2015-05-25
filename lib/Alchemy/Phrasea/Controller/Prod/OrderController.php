@@ -9,6 +9,9 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
+use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
@@ -17,7 +20,9 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
+use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Model\Repositories\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,26 +33,29 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderController extends Controller
 {
+    use DispatcherAware;
+    use EntityManagerAware;
+    use UserQueryAware;
+
     /**
      * Create a new order
      *
-     * @param Application $app
      * @param Request     $request
      *
      * @return RedirectResponse|JsonResponse
      */
-    public function createOrder(Application $app, Request $request)
+    public function createOrder(Request $request)
     {
         $success = false;
         $collectionHasOrderAdmins = new ArrayCollection();
         $toRemove = [];
 
-        $records = RecordsRequest::fromRequest($app, $request, true, ['cancmd']);
+        $records = RecordsRequest::fromRequest($this->app, $request, true, ['cancmd']);
         $hasOneAdmin = [];
 
         if (!$records->isEmpty()) {
             $order = new OrderEntity();
-            $order->setUser($app['authentication']->getUser());
+            $order->setUser($this->getAuthenticatedUser());
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));
             foreach ($records as $key => $record) {
@@ -58,7 +66,7 @@ class OrderController extends Controller
                 }
 
                 if (!isset($hasOneAdmin[$record->get_base_id()])) {
-                    $query = $app['phraseanet.user-query'];
+                    $query = $this->createUserQuery();
                     $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids([$record->get_base_id()])
                         ->who_have_right(['order_master'])
                         ->execute()->get_results());
@@ -74,7 +82,7 @@ class OrderController extends Controller
                     $orderElement->setOrder($order);
                     $orderElement->setBaseId($record->get_base_id());
                     $orderElement->setRecordId($record->get_record_id());
-                    $app['orm.em']->persist($orderElement);
+                    $this->getEntityManager()->persist($orderElement);
                 }
             }
 
@@ -89,188 +97,191 @@ class OrderController extends Controller
             });
 
             if ($noAdmins) {
-                $msg = $app->trans('There is no one to validate orders, please contact an administrator');
+                $msg = $this->app->trans('There is no one to validate orders, please contact an administrator');
             } else {
                 $order->setTodo($order->getElements()->count());
 
                 try {
-                    $app['dispatcher']->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
-                    $app['orm.em']->persist($order);
-                    $app['orm.em']->flush();
-                    $msg = $app->trans('The records have been properly ordered');
+                    $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+                    $this->getEntityManager()->persist($order);
+                    $this->getEntityManager()->flush();
+                    $msg = $this->app->trans('The records have been properly ordered');
                     $success = true;
                 } catch (\Exception $e) {
-                    $msg = $app->trans('An error occured');
+                    $msg = $this->app->trans('An error occured');
                 }
             }
         } else {
-            $msg = $app->trans('There is no record eligible for an order');
+            $msg = $this->app->trans('There is no record eligible for an order');
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success' => $success,
                 'msg'     => $msg,
             ]);
         }
 
-        return $app->redirectPath('prod_orders', [
+        return $this->app->redirectPath('prod_orders', [
             'success' => (int) $success,
-            'action'  => 'send'
+            'action'  => 'send',
         ]);
     }
 
     /**
      * Display list of orders
      *
-     * @param Application $app
      * @param Request     $request
      *
      * @return Response
      */
-    public function displayOrders(Application $app, Request $request)
+    public function displayOrders(Request $request)
     {
         $page = (int) $request->query->get('page', 1);
         $offsetStart = $page - 1;
         $perPage = (int) $request->query->get('per-page', 10);
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['order_master']));
+        $baseIds = array_keys($this->getAclForUser()->get_granted_base(['order_master']));
 
-        $ordersList = $app['repo.orders']->listOrders($baseIds, $offsetStart, $perPage, $sort);
-        $total = $app['repo.orders']->countTotalOrders($baseIds);
+        $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort);
+        $total = $this->getOrderRepository()->countTotalOrders($baseIds);
 
-        return $app['twig']->render('prod/orders/order_box.html.twig', [
+        return $this->render('prod/orders/order_box.html.twig', [
             'page'         => $page,
             'perPage'      => $perPage,
             'total'        => $total,
             'previousPage' => $page < 2 ? false : ($page - 1),
             'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
-            'orders'       => new ArrayCollection($ordersList)
+            'orders'       => new ArrayCollection($ordersList),
         ]);
     }
 
     /**
      * Display a single order identified by its id
      *
-     * @param  Application $app
-     * @param  Request     $request
      * @param  integer     $order_id
      * @return Response
      */
-    public function displayOneOrder(Application $app, Request $request, $order_id)
+    public function displayOneOrder($order_id)
     {
-        $order = $app['repo.orders']->find($order_id);
+        $order = $this->getOrderRepository()->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
 
-        return $app['twig']->render('prod/orders/order_item.html.twig', [
-            'order' => $order
+        return $this->render('prod/orders/order_item.html.twig', [
+            'order' => $order,
         ]);
     }
 
     /**
      * Send an order
      *
-     * @param  Application                   $app
-     * @param  Request                       $request
-     * @param  integer                       $order_id
+     * @param  Request $request
+     * @param  integer $order_id
      * @return RedirectResponse|JsonResponse
      */
-    public function sendOrder(Application $app, Request $request, $order_id)
+    public function sendOrder(Request $request, $order_id)
     {
         $success = false;
-        if (null === $order = $app['repo.orders']->find($order_id)) {
+        /** @var Order $order */
+        if (null === $order = $this->getOrderRepository()->find($order_id)) {
             throw new NotFoundHttpException('Order not found');
         }
-        $basket = $order->getBasket();
 
+        $manager = $this->getEntityManager();
+        $basket = $order->getBasket();
         if (null === $basket) {
             $basket = new Basket();
-            $basket->setName($app->trans('Commande du %date%', ['%date%' => $order->getCreatedOn()->format('Y-m-d')]));
+            $basket->setName($this->app->trans('Commande du %date%', [
+                '%date%' => $order->getCreatedOn()->format('Y-m-d'),
+            ]));
             $basket->setUser($order->getUser());
-            $basket->setPusher($app['authentication']->getUser());
+            $basket->setPusher($this->getAuthenticatedUser());
 
-            $app['orm.em']->persist($basket);
-            $app['orm.em']->flush();
+            $manager->persist($basket);
+            $manager->flush();
         }
 
         $n = 0;
         $elements = $request->request->get('elements', []);
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(), $elements)) {
-                $sbas_id = \phrasea::sbasFromBas($app, $orderElement->getBaseId());
-                $record = new \record_adapter($app, $sbas_id, $orderElement->getRecordId());
+                $sbas_id = \phrasea::sbasFromBas($this->app, $orderElement->getBaseId());
+                $record = new \record_adapter($this->app, $sbas_id, $orderElement->getRecordId());
 
                 $basketElement = new BasketElement();
                 $basketElement->setRecord($record);
                 $basketElement->setBasket($basket);
 
-                $orderElement->setOrderMaster($app['authentication']->getUser());
+                $orderElement->setOrderMaster($this->getAuthenticatedUser());
                 $orderElement->setDeny(false);
                 $orderElement->getOrder()->setBasket($basket);
 
                 $basket->addElement($basketElement);
 
                 $n++;
-                $app['acl']->get($basket->getUser())->grant_hd_on($record, $app['authentication']->getUser(), 'order');
+                $this->getAclForUser($basket->getUser())->grant_hd_on($record, $this->getAuthenticatedUser(), 'order');
             }
         }
 
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-                $app['dispatcher']->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $app['authentication']->getUser(), $n));
+                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $this->getAuthenticatedUser(), $n));
             }
             $success = true;
 
-            $app['orm.em']->persist($basket);
-            $app['orm.em']->persist($orderElement);
-            $app['orm.em']->persist($order);
-            $app['orm.em']->flush();
+            // There was a basketElement persist here. Seems useless as all entities are managed.
+            $manager->persist($basket);
+            $manager->persist($order);
+            $manager->flush();
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success'  => $success,
-                'msg'      => $success ? $app->trans('Order has been sent') : $app->trans('An error occured while sending, please retry  or contact an admin if problem persists'),
-                'order_id' => $order_id
+                'msg'      => $success
+                    ? $this->app->trans('Order has been sent')
+                    : $this->app->trans('An error occured while sending, please retry  or contact an admin if problem persists'),
+                'order_id' => $order_id,
             ]);
         }
 
-        return $app->redirectPath('prod_orders', [
+        return $this->app->redirectPath('prod_orders', [
             'success' => (int) $success,
-            'action'  => 'send'
+            'action'  => 'send',
         ]);
     }
 
     /**
      * Deny an order
      *
-     * @param  Application                   $app
      * @param  Request                       $request
      * @param  integer                       $order_id
      * @return RedirectResponse|JsonResponse
      */
-    public function denyOrder(Application $app, Request $request, $order_id)
+    public function denyOrder(Request $request, $order_id)
     {
         $success = false;
-        $order = $app['repo.orders']->find($order_id);
+        /** @var Order $order */
+        $order = $this->getOrderRepository()->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
 
         $n = 0;
         $elements = $request->request->get('elements', []);
+        $manager = $this->getEntityManager();
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(),$elements)) {
-                $orderElement->setOrderMaster($app['authentication']->getUser());
+                $orderElement->setOrderMaster($this->getAuthenticatedUser());
                 $orderElement->setDeny(true);
 
-                $app['orm.em']->persist($orderElement);
+                $manager->persist($orderElement);
                 $n++;
             }
         }
@@ -278,27 +289,37 @@ class OrderController extends Controller
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-                $app['dispatcher']->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($order, $app['authentication']->getUser(), $n));
+                $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($order, $this->getAuthenticatedUser(), $n));
             }
             $success = true;
 
-            $app['orm.em']->persist($order);
-            $app['orm.em']->flush();
+            $manager->persist($order);
+            $manager->flush();
         } catch (\Exception $e) {
 
         }
 
-        if ('json' === $app['request']->getRequestFormat()) {
-            return $app->json([
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
                 'success'  => $success,
-                'msg'      => $success ? $app->trans('Order has been denied') : $app->trans('An error occured while denying, please retry  or contact an admin if problem persists'),
-                'order_id' => $order_id
+                'msg'      => $success
+                    ? $this->app->trans('Order has been denied')
+                    : $this->app->trans('An error occured while denying, please retry  or contact an admin if problem persists'),
+                'order_id' => $order_id,
             ]);
         }
 
-        return $app->redirectPath('prod_orders', [
+        return $this->app->redirectPath('prod_orders', [
             'success' => (int) $success,
-            'action'  => 'send'
+            'action'  => 'send',
         ]);
+    }
+
+    /**
+     * @return OrderRepository
+     */
+    private function getOrderRepository()
+    {
+        return $this->app['repo.orders'];
     }
 }
