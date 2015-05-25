@@ -25,7 +25,16 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.push'] = $app->share(function (PhraseaApplication $app) {
-            return (new PushController($app));
+            return (new PushController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setDispatcher($app['dispatcher'])
+                ->setEntityManagerLocator(function () use ($app) {
+                    return $app['orm.em'];
+                })
+                ->setUserQueryFactory(function () use ($app) {
+                    return $app['phraseanet.user-query'];
+                })
+            ;
         });
     }
 

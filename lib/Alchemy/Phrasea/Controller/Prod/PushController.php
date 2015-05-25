@@ -9,7 +9,10 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
+use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Core\Event\PushEvent;
@@ -20,93 +23,72 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
-use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Entities\ValidationSession;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrListRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use RandomLib\Generator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PushController extends Controller
 {
-    public function postFormAction(Application $app)
+    use DataboxLoggerAware;
+    use DispatcherAware;
+    use EntityManagerAware;
+    use UserQueryAware;
+
+    public function postFormAction(Request $request)
     {
-        $push = new RecordHelper\Push($app, $app['request']);
-
-        $repository = $app['repo.usr-lists'];
-
-        $RecommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
-
-        $params = [
-            'push'             => $push,
-            'message'          => '',
-            'lists'            => $repository->findUserLists($app['authentication']->getUser()),
-            'context'          => 'Push',
-            'RecommendedUsers' => $RecommendedUsers
-        ];
-
-        return $app['twig']->render('prod/actions/Push.html.twig', $params);
+        return $this->renderPushTemplate($request, 'Push');
     }
 
-    public function validateFormAction(Application $app)
+    public function validateFormAction(Request $request)
     {
-        $push = new RecordHelper\Push($app, $app['request']);
-
-        $repository = $app['repo.usr-lists'];
-
-        $RecommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
-
-        $params = [
-            'push'             => $push,
-            'message'          => '',
-            'lists'            => $repository->findUserLists($app['authentication']->getUser()),
-            'context'          => 'Feedback',
-            'RecommendedUsers' => $RecommendedUsers
-        ];
-
-        return $app['twig']->render('prod/actions/Push.html.twig', $params);
+        return $this->renderPushTemplate($request, 'Feedback');
     }
 
-    public function sendAction(Application $app)
+    public function sendAction(Request $request)
     {
-        $request = $app['request'];
-
         $ret = [
             'success' => false,
-            'message' => $app->trans('Unable to send the documents')
+            'message' => $this->app->trans('Unable to send the documents')
         ];
 
         try {
-            $pusher = new RecordHelper\Push($app, $app['request']);
+            $pusher = new RecordHelper\Push($this->app, $request);
 
             $push_name = $request->request->get(
                 'name',
-                $app->trans(
-                    'Push from %user%',
-                    [
-                        '%user%' => $app['authentication']->getUser()
-                            ->getDisplayName()
-                    ]
-                )
+                $this->app->trans('Push from %user%', [
+                    '%user%' => $this->getAuthenticatedUser()->getDisplayName(),
+                ])
             );
             $push_description = $request->request->get('push_description');
 
             $receivers = $request->request->get('participants');
 
-            if (!is_array($receivers) || count($receivers) === 0) {
-                throw new ControllerException($app->trans('No receivers specified'));
+            if (!is_array($receivers) || empty($receivers)) {
+                throw new ControllerException($this->app->trans('No receivers specified'));
             }
 
-            if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
-                throw new ControllerException($app->trans('No elements to push'));
+            if (!is_array($pusher->get_elements()) || empty($pusher->get_elements())) {
+                throw new ControllerException($this->app->trans('No elements to push'));
             }
 
+            $manager = $this->getEntityManager();
             foreach ($receivers as $receiver) {
                 try {
-                    $user_receiver = $app['repo.users']->find($receiver['usr_id']);
+                    /** @var User $user_receiver */
+                    $user_receiver = $this->getUserRepository()->find($receiver['usr_id']);
                 } catch (\Exception $e) {
                     throw new ControllerException(
-                        $app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']])
+                        $this->app->trans('Unknown user %user_id%', ['%user_id%' => $receiver['usr_id']])
                     );
                 }
 
@@ -114,70 +96,68 @@ class PushController extends Controller
                 $Basket->setName($push_name);
                 $Basket->setDescription($push_description);
                 $Basket->setUser($user_receiver);
-                $Basket->setPusher($app['authentication']->getUser());
+                $Basket->setPusher($this->getAuthenticatedUser());
                 $Basket->setIsRead(false);
-
-                $app['orm.em']->persist($Basket);
+                
+                $manager->persist($Basket);
 
                 foreach ($pusher->get_elements() as $element) {
-                    $BasketElement = new BasketElement();
-                    $BasketElement->setRecord($element);
-                    $BasketElement->setBasket($Basket);
+                    $basketElement = new BasketElement();
+                    $basketElement->setRecord($element);
+                    $basketElement->setBasket($Basket);
 
-                    $app['orm.em']->persist($BasketElement);
+                    $manager->persist($basketElement);
 
-                    $Basket->addElement($BasketElement);
+                    $Basket->addElement($basketElement);
 
                     if ($receiver['HD']) {
-                        $app['acl']->get($user_receiver)
-                            ->grant_hd_on(
-                                $BasketElement->getRecord($app),
-                                $app['authentication']->getUser(),
-                                \ACL::GRANT_ACTION_PUSH
-                            );
+                        $this->getAclForUser($user_receiver)->grant_hd_on(
+                            $basketElement->getRecord($this->app),
+                            $this->getAuthenticatedUser(),
+                            \ACL::GRANT_ACTION_PUSH
+                        );
                     } else {
-                        $app['acl']->get($user_receiver)
-                            ->grant_preview_on(
-                                $BasketElement->getRecord($app),
-                                $app['authentication']->getUser(),
-                                \ACL::GRANT_ACTION_PUSH
-                            );
+                        $this->getAclForUser($user_receiver)->grant_preview_on(
+                            $basketElement->getRecord($this->app),
+                            $this->getAuthenticatedUser(),
+                            \ACL::GRANT_ACTION_PUSH
+                        );
                     }
+
+                    $this->getDataboxLogger($element->get_databox())->log(
+                        $element,
+                        \Session_Logger::EVENT_VALIDATE,
+                        $user_receiver->getId(),
+                        ''
+                    );
                 }
 
-                $app['orm.em']->flush();
+                $manager->flush();
 
                 $arguments = [
                     'basket' => $Basket->getId(),
                 ];
 
-                if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication'])
-                    || !$request->get(
-                        'force_authentication'
-                    )
+                if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication'])
+                    || !$request->get('force_authentication')
                 ) {
-                    $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $user_receiver);
+                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketAccessToken($Basket, $user_receiver);
                 }
 
-                $url = $app->url('lightbox_compare', $arguments);
+                $url = $this->app->url('lightbox_compare', $arguments);
 
 
-                $receipt = $request->get('recept') ? $app['authentication']->getUser()
-                    ->getEmail() : '';
-                $app['dispatcher']->dispatch(
+                $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
+                $this->dispatch(
                     PhraseaEvents::BASKET_PUSH,
                     new PushEvent($Basket, $request->request->get('message'), $url, $receipt)
                 );
             }
 
-            $app['phraseanet.logger'](
-                $BasketElement->getRecord($app)
-                    ->get_databox()
-            )->log($BasketElement->getRecord($app), \Session_Logger::EVENT_VALIDATE, $user_receiver->getId(), '');
 
-            $app['orm.em']->flush();
+            $manager->flush();
 
-            $message = $app->trans(
+            $message = $this->app->trans(
                 '%quantity_records% records have been sent to %quantity_users% users',
                 [
                     '%quantity_records%' => count($pusher->get_elements()),
@@ -193,74 +173,67 @@ class PushController extends Controller
             $ret['message'] = $e->getMessage() . $e->getFile() . $e->getLine();
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
-    public function validateAction(Application $app)
+    public function validateAction(Request $request)
     {
-        $request = $app['request'];
-
         $ret = [
             'success' => false,
-            'message' => $app->trans('Unable to send the documents')
+            'message' => $this->app->trans('Unable to send the documents')
         ];
 
-        $app['orm.em']->beginTransaction();
+        $manager = $this->getEntityManager();
+        $manager->beginTransaction();
 
         try {
-            $pusher = new RecordHelper\Push($app, $app['request']);
+            $pusher = $this->getPushFromRequest($request);
 
-            $validation_name = $request->request->get(
-                'name',
-                $app->trans(
-                    'Validation from %user%',
-                    [
-                        '%user%' => $app['authentication']->getUser()
-                            ->getDisplayName()
-                    ]
-                )
-            );
+            $validation_name = $request->request->get('name', $this->app->trans(
+                'Validation from %user%', [
+                '%user%' => $this->getAuthenticatedUser()->getDisplayName(),
+            ]));
             $validation_description = $request->request->get('validation_description');
 
             $participants = $request->request->get('participants');
 
-            if (!is_array($participants) || count($participants) === 0) {
-                throw new ControllerException($app->trans('No participants specified'));
+            if (!is_array($participants) || empty($participants)) {
+                throw new ControllerException($this->app->trans('No participants specified'));
             }
 
-            if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
-                throw new ControllerException($app->trans('No elements to validate'));
+            if (!is_array($pusher->get_elements()) || empty($pusher->get_elements())) {
+                throw new ControllerException($this->app->trans('No elements to validate'));
             }
 
             if ($pusher->is_basket()) {
-                $Basket = $pusher->get_original_basket();
+                $basket = $pusher->get_original_basket();
             } else {
-                $Basket = new Basket();
-                $Basket->setName($validation_name);
-                $Basket->setDescription($validation_description);
-                $Basket->setUser($app['authentication']->getUser());
-                $Basket->setIsRead(false);
+                $basket = new Basket();
+                $basket->setName($validation_name);
+                $basket->setDescription($validation_description);
+                $basket->setUser($this->getAuthenticatedUser());
+                $basket->setIsRead(false);
 
-                $app['orm.em']->persist($Basket);
+                $manager->persist($basket);
 
                 foreach ($pusher->get_elements() as $element) {
-                    $BasketElement = new BasketElement();
-                    $BasketElement->setRecord($element);
-                    $BasketElement->setBasket($Basket);
+                    $basketElement = new BasketElement();
+                    $basketElement->setRecord($element);
+                    $basketElement->setBasket($basket);
 
-                    $app['orm.em']->persist($BasketElement);
+                    $manager->persist($basketElement);
 
-                    $Basket->addElement($BasketElement);
+                    $basket->addElement($basketElement);
                 }
-                $app['orm.em']->flush();
+                $manager->flush();
             }
 
-            $app['orm.em']->refresh($Basket);
+            $manager->refresh($basket);
 
-            if (!$Basket->getValidation()) {
+            if (!$basket->getValidation()) {
                 $Validation = new ValidationSession();
-                $Validation->setInitiator($app['authentication']->getUser());
-                $Validation->setBasket($Basket);
+                $Validation->setInitiator($this->getAuthenticatedUser());
+                $Validation->setBasket($basket);
 
                 $duration = (int)$request->request->get('duration');
 
@@ -269,17 +242,15 @@ class PushController extends Controller
                     $Validation->setExpires($date);
                 }
 
-                $Basket->setValidation($Validation);
-                $app['orm.em']->persist($Validation);
+                $basket->setValidation($Validation);
+                $manager->persist($Validation);
             } else {
-                $Validation = $Basket->getValidation();
+                $Validation = $basket->getValidation();
             }
 
             $found = false;
             foreach ($participants as $participant) {
-                if ($participant['usr_id'] === $app['authentication']->getUser()
-                        ->getId()
-                ) {
+                if ($participant['usr_id'] === $this->getAuthenticatedUser()->getId()) {
                     $found = true;
                     break;
                 }
@@ -288,10 +259,9 @@ class PushController extends Controller
             if (!$found) {
                 $participants[] = [
                     'see_others' => 1,
-                    'usr_id'     => $app['authentication']->getUser()
-                        ->getId(),
+                    'usr_id'     => $this->getAuthenticatedUser()->getId(),
                     'agree'      => 0,
-                    'HD'         => 0
+                    'HD'         => 0,
                 ];
             }
 
@@ -299,16 +269,17 @@ class PushController extends Controller
                 foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryParam) {
                     if (!array_key_exists($mandatoryParam, $participant)) {
                         throw new ControllerException(
-                            $app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryParam])
+                            $this->app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryParam])
                         );
                     }
                 }
 
                 try {
-                    $participantUser = $app['repo.users']->find($participant['usr_id']);
+                    /** @var User $participantUser */
+                    $participantUser = $this->getUserRepository()->find($participant['usr_id']);
                 } catch (\Exception $e) {
                     throw new ControllerException(
-                        $app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']])
+                        $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']])
                     );
                 }
 
@@ -326,68 +297,65 @@ class PushController extends Controller
                 $validationParticipant->setCanAgree($participant['agree']);
                 $validationParticipant->setCanSeeOthers($participant['see_others']);
 
-                $app['orm.em']->persist($validationParticipant);
+                $manager->persist($validationParticipant);
 
-                foreach ($Basket->getElements() as $BasketElement) {
-                    $ValidationData = new ValidationData();
-                    $ValidationData->setParticipant($validationParticipant);
-                    $ValidationData->setBasketElement($BasketElement);
-                    $BasketElement->addValidationData($ValidationData);
+                foreach ($basket->getElements() as $basketElement) {
+                    $validationData = new ValidationData();
+                    $validationData->setParticipant($validationParticipant);
+                    $validationData->setBasketElement($basketElement);
+                    $basketElement->addValidationData($validationData);
 
                     if ($participant['HD']) {
-                        $app['acl']->get($participantUser)
-                            ->grant_hd_on(
-                                $BasketElement->getRecord($app),
-                                $app['authentication']->getUser(),
-                                \ACL::GRANT_ACTION_VALIDATE
-                            );
+                        $this->getAclForUser($participantUser)->grant_hd_on(
+                            $basketElement->getRecord($this->app),
+                            $this->getAuthenticatedUser(),
+                            \ACL::GRANT_ACTION_VALIDATE
+                        );
                     } else {
-                        $app['acl']->get($participantUser)
-                            ->grant_preview_on(
-                                $BasketElement->getRecord($app),
-                                $app['authentication']->getUser(),
-                                \ACL::GRANT_ACTION_VALIDATE
-                            );
+                        $this->getAclForUser($participantUser)->grant_preview_on(
+                            $basketElement->getRecord($this->app),
+                            $this->getAuthenticatedUser(),
+                            \ACL::GRANT_ACTION_VALIDATE
+                        );
                     }
 
-                    $app['orm.em']->merge($BasketElement);
-                    $app['orm.em']->persist($ValidationData);
+                    $manager->merge($basketElement);
+                    $manager->persist($validationData);
 
-                    $app['phraseanet.logger'](
-                        $BasketElement->getRecord($app)
-                            ->get_databox()
-                    )->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participantUser->getId(), '');
+                    $this->getDataboxLogger($basketElement->getRecord($this->app)->get_databox())->log(
+                        $basketElement->getRecord($this->app),
+                        \Session_Logger::EVENT_PUSH,
+                        $participantUser->getId(),
+                        ''
+                    );
 
-                    $validationParticipant->addData($ValidationData);
+                    $validationParticipant->addData($validationData);
                 }
 
-                $validationParticipant = $app['orm.em']->merge($validationParticipant);
+                $validationParticipant = $manager->merge($validationParticipant);
 
-                $app['orm.em']->flush();
+                $manager->flush();
 
                 $arguments = [
-                    'basket' => $Basket->getId(),
+                    'basket' => $basket->getId(),
                 ];
 
-                if (!$app['conf']->get(['registry', 'actions', 'enable-push-authentication'])
-                    || !$request->get(
-                        'force_authentication'
-                    )
+                if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication'])
+                    || !$request->get('force_authentication')
                 ) {
-                    $arguments['LOG'] = $app['manipulator.token']->createBasketAccessToken($Basket, $participantUser);
+                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketAccessToken($basket, $participantUser);
                 }
 
-                $url = $app->url('lightbox_validation', $arguments);
+                $url = $this->app->url('lightbox_validation', $arguments);
 
 
-                $receipt = $request->get('recept') ? $app['authentication']->getUser()
-                    ->getEmail() : '';
+                $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
 
-                $app['dispatcher']->dispatch(
+                $this->dispatch(
                     PhraseaEvents::VALIDATION_CREATE,
                     new ValidationEvent(
                         $validationParticipant,
-                        $Basket,
+                        $basket,
                         $url,
                         $request->request->get('message'),
                         $receipt,
@@ -396,11 +364,11 @@ class PushController extends Controller
                 );
             }
 
-            $app['orm.em']->merge($Basket);
-            $app['orm.em']->merge($Validation);
-            $app['orm.em']->flush();
+            $manager->merge($basket);
+            $manager->merge($Validation);
+            $manager->flush();
 
-            $message = $app->trans(
+            $message = $this->app->trans(
                 '%quantity_records% records have been sent for validation to %quantity_users% users',
                 [
                     '%quantity_records%' => count($pusher->get_elements()),
@@ -410,29 +378,24 @@ class PushController extends Controller
 
             $ret = [
                 'success' => true,
-                'message' => $message
+                'message' => $message,
             ];
 
-            $app['orm.em']->commit();
+            $manager->commit();
         } catch (ControllerException $e) {
             $ret['message'] = $e->getMessage();
-            $app['orm.em']->rollback();
+            $manager->rollback();
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
-    public function getUserAction(Application $app, $usr_id)
+    public function getUserAction($usr_id)
     {
-        $userFormatter = $this->getUserFormatter($app);
+        $data = null;
 
-        $datas = null;
-
-        $request = $app['request'];
-
-        $query = new $app['phraseanet.user-query'];
-
-        $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
+        $query = $this->createUserQuery();
+        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), ['canpush']);
 
         $query->in([$usr_id]);
 
@@ -442,75 +405,72 @@ class PushController extends Controller
 
         if ($result) {
             foreach ($result as $user) {
-                $datas = $userFormatter($user);
+                $data = $this->formatUser($user);
             }
         }
 
-        return $app->json($datas);
+        return $this->app->json($data);
     }
 
-    public function getListAction(Application $app, $list_id)
+    public function getListAction($list_id)
     {
-        $listFormatter = $this->getListFormatter($app);
+        $data = null;
 
-        $datas = null;
-
-        $repository = $app['repo.usr-lists'];
-
-        $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
+        $repository = $this->getUserListRepository();
+        $list = $repository->findUserListByUserAndId($this->getAuthenticatedUser(), $list_id);
 
         if ($list) {
-            $datas = $listFormatter($list);
+            $data = $this->formatUserList($list);
         }
 
-        return $app->json($datas);
+        return $this->app->json($data);
     }
 
-    public function addUserAction(Application $app, Request $request)
+    public function addUserAction(Request $request)
     {
-        $userFormatter = $this->getUserFormatter($app);
-
         $result = ['success' => false, 'message' => '', 'user'    => null];
 
         try {
-            if (!$app['acl']->get($app['authentication']->getUser())->has_right('manageusers'))
-                throw new ControllerException($app->trans('You are not allowed to add users'));
+            if (!$this->getAclForUser($this->getAuthenticatedUser())->has_right('manageusers'))
+                throw new ControllerException($this->app->trans('You are not allowed to add users'));
 
             if (!$request->request->get('firstname'))
-                throw new ControllerException($app->trans('First name is required'));
+                throw new ControllerException($this->app->trans('First name is required'));
 
             if (!$request->request->get('lastname'))
-                throw new ControllerException($app->trans('Last name is required'));
+                throw new ControllerException($this->app->trans('Last name is required'));
 
             if (!$request->request->get('email'))
-                throw new ControllerException($app->trans('Email is required'));
+                throw new ControllerException($this->app->trans('Email is required'));
 
             if (!\Swift_Validate::email($request->request->get('email')))
-                throw new ControllerException($app->trans('Email is invalid'));
+                throw new ControllerException($this->app->trans('Email is invalid'));
         } catch (ControllerException $e) {
             $result['message'] = $e->getMessage();
 
-            return $app->json($result);
+            return $this->app->json($result);
         }
 
         $user = null;
         $email = $request->request->get('email');
 
-        if (null !== $user = $app['repo.users']->findByEmail($email)) {
-            $result['message'] = $app->trans('User already exists');
+        if (null !== $user = $this->getUserRepository()->findByEmail($email)) {
+            $result['message'] = $this->app->trans('User already exists');
             $result['success'] = true;
-            $result['user'] = $userFormatter($user);
+            $result['user'] = $this->formatUser($user);
 
-            return $app->json($result);
+            return $this->app->json($result);
         }
 
         try {
-            $password = $app['random.medium']->generateString(128);
+            $password = $this->getRandomGenerator()->generateString(128);
 
-            $user = $app['manipulator.user']->createUser($email, $password, $email);
+            $user = $this->getUserManipulator()->createUser($email, $password, $email);
 
-            $user->setFirstName($request->request->get('firstname'))
-                ->setLastName($request->request->get('lastname'));
+            $user
+                ->setFirstName($request->request->get('firstname'))
+                ->setLastName($request->request->get('lastname'))
+            ;
 
             if ($request->request->get('company')) {
                 $user->setCompany($request->request->get('company'));
@@ -519,79 +479,72 @@ class PushController extends Controller
                 $user->setCompany($request->request->get('job'));
             }
             if ($request->request->get('form_geonameid')) {
-                $app['manipulator.user']->setGeonameId($user, $request->request->get('form_geonameid'));
+                $this->getUserManipulator()->setGeonameId($user, $request->request->get('form_geonameid'));
             }
 
-            $result['message'] = $app->trans('User successfully created');
+            $result['message'] = $this->app->trans('User successfully created');
             $result['success'] = true;
-            $result['user'] = $userFormatter($user);
+            $result['user'] = $this->formatUser($user);
         } catch (\Exception $e) {
-            $result['message'] = $app->trans('Error while creating user');
+            $result['message'] = $this->app->trans('Error while creating user');
         }
 
-        return $app->json($result);
+        return $this->app->json($result);
     }
 
-    public function getAddUserFormAction(Application $app, Request $request)
+    public function getAddUserFormAction(Request $request)
     {
         $params = ['callback' => $request->query->get('callback')];
 
-        return $app['twig']->render('prod/User/Add.html.twig', $params);
+        return $this->render('prod/User/Add.html.twig', $params);
     }
 
-    public function searchUserAction(Application $app)
+    public function searchUserAction(Request $request)
     {
-        $listFormatter = $this->getListFormatter($app);
-        $userFormatter = $this->getUserFormatter($app);
-
-        $request = $app['request'];
-
-        $query = $app['phraseanet.user-query'];
-
-        $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
-
-        $query->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
+        $query = $this->createUserQuery();
+        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), ['canpush']);
+        $query
+            ->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
             ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
             ->like(\User_Query::LIKE_LOGIN, $request->query->get('query'))
             ->like_match(\User_Query::LIKE_MATCH_OR);
 
-        $result = $query->include_phantoms()
+        $result = $query
+            ->include_phantoms()
             ->limit(0, 50)
             ->execute()->get_results();
 
-        $repository = $app['repo.usr-lists'];
+        $repository = $this->getUserListRepository();
+        $lists = $repository->findUserListLike($this->getAuthenticatedUser(), $request->query->get('query'));
 
-        $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
-
-        $datas = [];
+        $data = [];
 
         if ($lists) {
             foreach ($lists as $list) {
-                $datas[] = $listFormatter($list);
+                $data[] = $this->formatUserList($list);
             }
         }
 
         if ($result) {
             foreach ($result as $user) {
-                $datas[] = $userFormatter($user);
+                $data[] = $this->formatUser($user);
             }
         }
 
-        return $app->json($datas);
+        return $this->app->json($data);
     }
 
-    public function editListAction(Application $app, Request $request, $list_id)
+    public function editListAction(Request $request, $list_id)
     {
-        $repository = $app['repo.usr-lists'];
+        $repository = $this->getUserListRepository();
+        $list = $repository->findUserListByUserAndId($this->getAuthenticatedUser(), $list_id);
 
-        $list = $repository->findUserListByUserAndId($app['authentication']->getUser(), $list_id);
-
-        $query = $app['phraseanet.user-query'];
-
-        $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), ['canpush']);
+        $query = $this->createUserQuery();
+        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), ['canpush']);
 
         if ($request->get('query')) {
-            $query->like($request->get('like_field'), $request->get('query'))
+            $query
+                ->like($request->get('like_field'), $request->get('query'))
                 ->like_match(\User_Query::LIKE_MATCH_OR);
         }
         if (is_array($request->get('Activity'))) {
@@ -618,94 +571,162 @@ class PushController extends Controller
 
         $query->sort_by($sort, $ord);
 
-        $results = $query->include_phantoms()
+        $results = $query
+            ->include_phantoms()
             ->limit($offset_start, $perPage)
             ->execute()->get_results();
 
         $params = [
-            'query'   => $query
-            , 'results' => $results
-            , 'list'    => $list
-            , 'sort'    => $sort
-            , 'ord'     => $ord
+            'query'   => $query,
+            'results' => $results,
+            'list'    => $list,
+            'sort'    => $sort,
+            'ord'     => $ord,
         ];
 
         if ($request->get('type') === 'fragment') {
             return new Response(
-                $app['twig']->render('prod/actions/Feedback/ResultTable.html.twig', $params)
-            );
-        } else {
-            return new Response(
-                $app['twig']->render('prod/actions/Feedback/list.html.twig', $params)
+                $this->render('prod/actions/Feedback/ResultTable.html.twig', $params)
             );
         }
+
+        return new Response(
+            $this->render('prod/actions/Feedback/list.html.twig', $params)
+        );
     }
 
-    protected function getUserFormatter(Application $app)
+    private function formatUser(User $user)
     {
-        return function (User $user) use ($app) {
-            $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
+        $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
 
-            return [
-                'type'         => 'USER',
-                'usr_id'       => $user->getId(),
-                'firstname'    => $user->getFirstName(),
-                'lastname'     => $user->getLastName(),
-                'email'        => $user->getEmail(),
-                'display_name' => $user->getDisplayName(),
-                'subtitle'     => implode(', ', $subtitle),
+        return [
+            'type'         => 'USER',
+            'usr_id'       => $user->getId(),
+            'firstname'    => $user->getFirstName(),
+            'lastname'     => $user->getLastName(),
+            'email'        => $user->getEmail(),
+            'display_name' => $user->getDisplayName(),
+            'subtitle'     => implode(', ', $subtitle),
+        ];
+    }
+
+    private function formatUserList(UsrList $list)
+    {
+        $entries = [];
+
+        foreach ($list->getEntries() as $entry) {
+            $entries[] = [
+                'Id'   => $entry->getId(),
+                'User' => $this->formatUser($entry->getUser()),
             ];
-        };
+        }
+
+        return [
+            'type'    => 'LIST',
+            'list_id' => $list->getId(),
+            'name'    => $list->getName(),
+            'length'  => count($entries),
+            'entries' => $entries,
+        ];
     }
 
-    protected function getListFormatter($app)
+    /**
+     * @param array|\record_adapter[] $selection
+     * @return User[]
+     */
+    private function getUsersInSelectionExtractor($selection)
     {
-        $userFormatter = $this->getUserFormatter($app);
+        $users = new ArrayCollection();
 
-        return function (UsrList $List) use ($userFormatter, $app) {
-            $entries = [];
+        foreach ($selection as $record) {
+            foreach ($record->get_caption()->get_fields() as $caption_field) {
+                foreach ($caption_field->get_values() as $value) {
+                    if (!$value->getVocabularyType())
+                        continue;
 
-            foreach ($List->getEntries() as $entry) {
-                /* @var $entry UsrListEntry */
-                $entries[] = [
-                    'Id'   => $entry->getId(),
-                    'User' => $userFormatter($entry->getUser())
-                ];
-            }
+                    if ($value->getVocabularyType()->getType() !== 'User')
+                        continue;
 
-            return [
-                'type'    => 'LIST',
-                'list_id' => $List->getId(),
-                'name'    => $List->getName(),
-                'length'  => count($entries),
-                'entries' => $entries,
-            ];
-        };
-    }
+                    $user = $value->getResource();
 
-    protected function getUsersInSelectionExtractor()
-    {
-        return function (array $selection) {
-            $Users = new \Doctrine\Common\Collections\ArrayCollection();
-
-            foreach ($selection as $record) {
-                /* @var $record \record_adapter */
-                foreach ($record->get_caption()->get_fields() as $caption_field) {
-                    foreach ($caption_field->get_values() as $value) {
-                        if (!$value->getVocabularyType())
-                            continue;
-
-                        if ($value->getVocabularyType()->getType() !== 'User')
-                            continue;
-
-                        $user = $value->getResource();
-
-                        $Users->set($user->getId(), $user);
-                    }
+                    $users->set($user->getId(), $user);
                 }
             }
+        }
 
-            return $Users;
-        };
+        return $users;
+    }
+
+    /**
+     * @return UsrListRepository
+     */
+    private function getUserListRepository()
+    {
+        return $this->app['repo.usr-lists'];
+    }
+
+    /**
+     * @param Request $request
+     * @param         $context
+     * @return string
+     */
+    public function renderPushTemplate(Request $request, $context)
+    {
+        $push = $this->getPushFromRequest($request);
+
+        $repository = $this->getUserListRepository();
+        $recommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
+
+        return $this->render(
+            'prod/actions/Push.html.twig',
+            [
+                'push'             => $push,
+                'message'          => '',
+                'lists'            => $repository->findUserLists($this->getAuthenticatedUser()),
+                'context'          => $context,
+                'RecommendedUsers' => $recommendedUsers,
+            ]
+        );
+    }
+
+    /**
+     * @return UserRepository
+     */
+    private function getUserRepository()
+    {
+        return $this->app['repo.users'];
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
+    }
+
+    /**
+     * @param Request $request
+     * @return RecordHelper\Push
+     */
+    private function getPushFromRequest(Request $request)
+    {
+        return new RecordHelper\Push($this->app, $request);
+    }
+
+    /**
+     * @return UserManipulator
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
+    }
+
+    /**
+     * @return Generator
+     */
+    private function getRandomGenerator()
+    {
+        return $this->app['random.medium'];
     }
 }

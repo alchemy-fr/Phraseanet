@@ -201,7 +201,7 @@ class UsrList
     /**
      * Get entries
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return UsrListEntry[]|\Doctrine\Common\Collections\Collection
      */
     public function getEntries()
     {
