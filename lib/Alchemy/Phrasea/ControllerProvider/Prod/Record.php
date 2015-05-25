@@ -25,7 +25,14 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.records'] = $app->share(function (PhraseaApplication $app) {
-            return (new RecordController($app));
+            return (new RecordController($app))
+                ->setEntityManagerLocator(function () use ($app) {
+                    return $app['orm.em'];
+                })
+                ->setSearchEngineLocator(function () use ($app) {
+                    return $app['phraseanet.SE'];
+                })
+            ;
         });
     }
 

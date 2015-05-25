@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -115,6 +116,11 @@ class StoryWZRepository extends EntityRepository
         return $story;
     }
 
+    /**
+     * @param Application     $app
+     * @param \record_adapter $Story
+     * @return StoryWZ[]
+     */
     public function findByRecord(Application $app, \record_adapter $Story)
     {
         $dql = 'SELECT s FROM Phraseanet:StoryWZ s
@@ -127,6 +133,7 @@ class StoryWZRepository extends EntityRepository
             'record_id' => $Story->get_record_id(),
         ]);
 
+        /** @var StoryWZ[] $stories */
         $stories = $query->getResult();
 
         foreach ($stories as $key => $story) {

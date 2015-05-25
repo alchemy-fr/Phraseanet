@@ -55,6 +55,10 @@ class BasketElementRepository extends EntityRepository
         return $element;
     }
 
+    /**
+     * @param \record_adapter $record
+     * @return BasketElement[]
+     */
     public function findElementsByRecord(\record_adapter $record)
     {
         $dql = 'SELECT e

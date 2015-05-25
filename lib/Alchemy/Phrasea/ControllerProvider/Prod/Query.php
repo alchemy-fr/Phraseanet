@@ -25,7 +25,14 @@ class Query implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.query'] = $app->share(function (PhraseaApplication $app) {
-            return (new QueryController($app));
+            return (new QueryController($app))
+                ->setSearchEngineLocator(function () use ($app) {
+                    return $app['phraseanet.SE'];
+                })
+                ->setSearchEngineLoggerLocator(function () use ($app) {
+                    return $app['phraseanet.SE.logger'];
+                })
+            ;
         });
     }
 

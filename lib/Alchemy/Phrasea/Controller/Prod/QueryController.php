@@ -10,10 +10,9 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
-use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
-use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QueryController extends Controller
 {
+    use SearchEngineAware;
+
     /**
      * Query Phraseanet to fetch records
      *
@@ -229,26 +230,10 @@ class QueryController extends Controller
     }
 
     /**
-     * @return SearchEngineInterface
-     */
-    private function getSearchEngine()
-    {
-        return $this->app['phraseanet.SE'];
-    }
-
-    /**
      * @return mixed
      */
     private function getUserManipulator()
     {
         return $this->app['manipulator.user'];
-    }
-
-    /**
-     * @return SearchEngineLogger
-     */
-    private function getSearchEngineLogger()
-    {
-        return $this->app['phraseanet.SE.logger'];
     }
 }

@@ -10,42 +10,47 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
+use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RecordController extends Controller
 {
+    use EntityManagerAware;
+    use SearchEngineAware;
     /**
      * Get record detailed view
      *
-     * @param Application $app
-     * @param Request     $request
+     * @param Request $request
      *
      * @return Response
      */
-    public function getRecord(Application $app, Request $request)
+    public function getRecord(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         $searchEngine = $options = null;
         $train = '';
 
         if ('' === $env = strtoupper($request->get('env', ''))) {
-            $app->abort(400, '`env` parameter is missing');
+            $this->app->abort(400, '`env` parameter is missing');
         }
 
         // Use $request->get as HTTP method can be POST or GET
         if ('RESULT' == $env = strtoupper($request->get('env', ''))) {
             try {
-                $options = SearchEngineOptions::hydrate($app, $request->get('options_serial'));
-                $searchEngine = $app['phraseanet.SE'];
+                $options = SearchEngineOptions::hydrate($this->app, $request->get('options_serial'));
+                $searchEngine = $this->getSearchEngine();
             } catch (\Exception $e) {
-                $app->abort(400, 'Search-engine options are not valid or missing');
+                $this->app->abort(400, 'Search-engine options are not valid or missing');
             }
         }
 
@@ -54,7 +59,7 @@ class RecordController extends Controller
         $reloadTrain = !! $request->get('roll', false);
 
         $record = new \record_preview(
-            $app,
+            $this->app,
             $env,
             $pos < 0 ? 0 : $pos,
             $request->get('cont', ''),
@@ -64,85 +69,79 @@ class RecordController extends Controller
         );
 
         if ($record->is_from_reg()) {
-            $train = $app['twig']->render('prod/preview/reg_train.html.twig',
-                ['record' => $record]
-            );
+            $train = $this->render('prod/preview/reg_train.html.twig', ['record' => $record]);
         }
 
         if ($record->is_from_basket() && $reloadTrain) {
-            $train = $app['twig']->render('prod/preview/basket_train.html.twig',
-                ['record' => $record]
-            );
+            $train = $this->render('prod/preview/basket_train.html.twig', ['record' => $record]);
         }
 
         if ($record->is_from_feed()) {
-            $train = $app['twig']->render('prod/preview/feed_train.html.twig',
-                ['record' => $record]
-            );
+            $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
         }
 
-        return $app->json([
-            "desc"          => $app['twig']->render('prod/preview/caption.html.twig', [
+        return $this->app->json([
+            "desc"          => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
                 'highlight'     => $query,
                 'searchEngine'  => $searchEngine,
                 'searchOptions' => $options,
             ]),
-            "html_preview"  => $app['twig']->render('common/preview.html.twig', [
+            "html_preview"  => $this->render('common/preview.html.twig', [
                 'record'        => $record
             ]),
-            "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', [
+            "others"        => $this->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
-                'baskets'       => $record->get_container_baskets($app['orm.em'], $app['authentication']->getUser())
+                'baskets'       => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
             ]),
             "current"       => $train,
-            "history"       => $app['twig']->render('prod/preview/short_history.html.twig', [
-                'record'        => $record
+            "history"       => $this->render('prod/preview/short_history.html.twig', [
+                'record'        => $record,
             ]),
-            "popularity"    => $app['twig']->render('prod/preview/popularity.html.twig', [
-                'record'        => $record
+            "popularity"    => $this->render('prod/preview/popularity.html.twig', [
+                'record'        => $record,
             ]),
-            "tools"         => $app['twig']->render('prod/preview/tools.html.twig', [
-                'record'        => $record
+            "tools"         => $this->render('prod/preview/tools.html.twig', [
+                'record'        => $record,
             ]),
             "pos"           => $record->get_number(),
             "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
             "collection_name" => $record->get_collection()->get_name(),
-            "collection_logo" => $record->get_collection()->getLogo($record->get_base_id(), $app)
+            "collection_logo" => $record->get_collection()->getLogo($record->get_base_id(), $this->app),
         ]);
     }
 
     /**
      *  Delete a record or a list of records
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return Response
      */
-    public function doDeleteRecords(Application $app, Request $request)
+    public function doDeleteRecords(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), [
+        $records = RecordsRequest::fromRequest($this->app, $request, !!$request->request->get('del_children'), [
             'candeleterecord'
         ]);
 
-        $basketElementsRepository = $app['repo.basket-elements'];
-        $StoryWZRepository = $app['repo.story-wz'];
+        $basketElementsRepository = $this->getBasketElementRepository();
+        $StoryWZRepository = $this->getStoryWorkZoneRepository();
 
         $deleted = [];
 
+        $manager = $this->getEntityManager();
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
 
                 foreach ($basketElements as $element) {
-                    $app['orm.em']->remove($element);
-                    $deleted[] = $element->getRecord($app)->get_serialize_key();
+                    $manager->remove($element);
+                    $deleted[] = $element->getRecord($this->app)->get_serialize_key();
                 }
 
-                $attachedStories = $StoryWZRepository->findByRecord($app, $record);
+                $attachedStories = $StoryWZRepository->findByRecord($this->app, $record);
 
                 foreach ($attachedStories as $attachedStory) {
-                    $app['orm.em']->remove($attachedStory);
+                    $manager->remove($attachedStory);
                 }
 
                 $deleted[] = $record->get_serialize_key();
@@ -152,46 +151,60 @@ class RecordController extends Controller
             }
         }
 
-        $app['orm.em']->flush();
+        $manager->flush();
 
-        return $app->json($deleted);
+        return $this->app->json($deleted);
     }
 
     /**
      *  Delete a record or a list of records
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return Response
      */
-    public function whatCanIDelete(Application $app, Request $request)
+    public function whatCanIDelete(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), [
-            'candeleterecord'
+        $records = RecordsRequest::fromRequest($this->app, $request, !!$request->request->get('del_children'), [
+            'candeleterecord',
         ]);
 
-        return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', [
-            'records'   => $records
+        return $this->render('prod/actions/delete_records_confirm.html.twig', [
+            'records'   => $records,
         ]);
     }
 
     /**
      *  Renew url list of records
      *
-     * @param Application $app
-     * @param Request     $request
+     * @param Request $request
      *
      * @return Response
      */
-    public function renewUrl(Application $app, Request $request)
+    public function renewUrl(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('renew_children_url'));
+        $records = RecordsRequest::fromRequest($this->app, $request, !!$request->request->get('renew_children_url'));
 
         $renewed = [];
         foreach ($records as $record) {
             $renewed[$record->get_serialize_key()] = (string) $record->get_preview()->renew_url();
         };
 
-        return $app->json($renewed);
+        return $this->app->json($renewed);
+    }
+
+    /**
+     * @return BasketElementRepository
+     */
+    private function getBasketElementRepository()
+    {
+        return $this->app['repo.basket-elements'];
+    }
+
+    /**
+     * @return StoryWZRepository
+     */
+    private function getStoryWorkZoneRepository()
+    {
+        return $this->app['repo.story-wz'];
     }
 }
