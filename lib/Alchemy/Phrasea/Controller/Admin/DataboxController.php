@@ -10,7 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Controller\Controller;
@@ -22,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DataboxController extends Controller
 {
+    use UserQueryAware;
+
     /**
      * @param Request $request
      * @param integer $databox_id
@@ -280,8 +282,7 @@ class DataboxController extends Controller
             $othCollSel = (int) $request->request->get("othcollsel") ?: null;
 
             if (null !== $othCollSel) {
-                /** @var \User_Query $query */
-                $query = $this->app['phraseanet.user-query'];
+                $query = $this->createUserQuery();
                 $n = 0;
 
                 /** @var ACLProvider $aclProvider */
@@ -697,8 +698,7 @@ class DataboxController extends Controller
 
             if (($request->request->get('ccusrothercoll') === "on")
                 && (null !== $othcollsel = $request->request->get('othcollsel'))) {
-                /** @var \User_Query $query */
-                $query = $this->app['phraseanet.user-query'];
+                $query = $this->createUserQuery();
                 $total = $query->on_base_ids([$othcollsel])->get_total();
                 $n = 0;
                 while ($n < $total) {

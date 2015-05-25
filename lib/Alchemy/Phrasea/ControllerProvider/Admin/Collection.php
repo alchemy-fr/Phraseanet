@@ -25,7 +25,11 @@ class Collection implements ControllerProviderInterface, ServiceProviderInterfac
     public function register(Application $app)
     {
         $app['controller.admin.collection'] = $app->share(function (PhraseaApplication $app) {
-            return new CollectionController($app);
+            return (new CollectionController($app))
+                ->setUserQueryFactory(function () use ($app) {
+                    return $app['phraseanet.user-query'];
+                })
+            ;
         });
     }
 

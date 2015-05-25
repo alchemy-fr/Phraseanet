@@ -10,9 +10,8 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
-use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -23,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CollectionController extends Controller
 {
+    use UserQueryAware;
+
     /**
      * Display collection information page
      *
@@ -37,8 +38,7 @@ class CollectionController extends Controller
         $admins = [];
 
         if ($this->getAclForUser()->has_right_on_base($bas_id, 'manage')) {
-            /** @var \User_Query $query */
-            $query = $this->app['phraseanet.user-query'];
+            $query = $this->createUserQuery();
             $admins = $query->on_base_ids([$bas_id])
                 ->who_have_right(['order_master'])
                 ->execute()
@@ -105,8 +105,7 @@ class CollectionController extends Controller
         $conn->beginTransaction();
 
         try {
-            /** @var \User_Query $userQuery */
-            $userQuery = $this->app['phraseanet.user-query'];
+            $userQuery = $this->createUserQuery();
 
             $result = $userQuery->on_base_ids([$bas_id])
                 ->who_have_right(['order_master'])

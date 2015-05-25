@@ -27,7 +27,11 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.admin.databox'] = $app->share(function (PhraseaApplication $app) {
-            return new DataboxController($app);
+            return (new DataboxController($app))
+                ->setUserQueryFactory(function () use ($app) {
+                    return $app['phraseanet.user-query'];
+                })
+            ;
         });
     }
 

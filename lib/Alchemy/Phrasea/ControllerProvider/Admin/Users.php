@@ -27,7 +27,11 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
             return (new UserController($app))
                 ->setDelivererLocator(function () use ($app) {
                     return $app['notification.deliverer'];
-                });
+                })
+                ->setUserQueryFactory(function () use ($app) {
+                    return $app['phraseanet.user-query'];
+                })
+            ;
         });
     }
 
