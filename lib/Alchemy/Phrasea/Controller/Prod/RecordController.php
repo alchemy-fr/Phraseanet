@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -8,53 +7,24 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Alchemy\Phrasea\Controller\Prod;
 
-namespace Alchemy\Phrasea\ControllerProvider\Prod;
-
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Silex\Application;
-use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-class Records implements ControllerProviderInterface
+class RecordController extends Controller
 {
-    use ControllerProviderTrait;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function connect(Application $app)
-    {
-        $app['controller.prod.records'] = $this;
-
-        $controllers = $this->createAuthenticatedCollection($app);
-
-        $controllers->match('/', 'controller.prod.records:getRecord')
-            ->bind('record_details')
-            ->method('GET|POST');
-
-        $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
-            ->bind('record_delete');
-
-        $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
-            ->bind('record_what_can_i_delete');
-
-        $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
-            ->bind('record_renew_url');
-
-        return $controllers;
-    }
-
     /**
      * Get record detailed view
      *
      * @param Application $app
      * @param Request     $request
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function getRecord(Application $app, Request $request)
     {
@@ -147,7 +117,7 @@ class Records implements ControllerProviderInterface
      *
      * @param  Application  $app
      * @param  Request      $request
-     * @return JsonResponse
+     * @return Response
      */
     public function doDeleteRecords(Application $app, Request $request)
     {
@@ -192,7 +162,7 @@ class Records implements ControllerProviderInterface
      *
      * @param  Application  $app
      * @param  Request      $request
-     * @return JsonResponse
+     * @return Response
      */
     public function whatCanIDelete(Application $app, Request $request)
     {
@@ -211,7 +181,7 @@ class Records implements ControllerProviderInterface
      * @param Application $app
      * @param Request     $request
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function renewUrl(Application $app, Request $request)
     {
