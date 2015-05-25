@@ -42,6 +42,7 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
     {
         // no-op
     }
+
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
