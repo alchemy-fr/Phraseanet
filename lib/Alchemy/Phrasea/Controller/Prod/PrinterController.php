@@ -9,31 +9,34 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Out\Module\PDF as PDFExport;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PrinterController extends Controller
 {
-    public function postPrinterAction(Application $app)
-    {
-        $printer = new RecordHelper\Printer($app, $app['request']);
+    use DataboxLoggerAware;
 
-        return $app['twig']->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '']);
+    public function postPrinterAction(Request $request)
+    {
+        $printer = new RecordHelper\Printer($this->app, $request);
+
+        return $this->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '']);
     }
 
-    public function printAction(Application $app)
+    public function printAction(Request $request)
     {
-        $printer = new RecordHelper\Printer($app, $app['request']);
+        $printer = new RecordHelper\Printer($this->app, $request);
 
-        $layout = $app['request']->request->get('lay');
+        $layout = $request->request->get('lay');
 
         foreach ($printer->get_elements() as $record) {
-            $app['phraseanet.logger']($record->get_databox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
+            $this->getDataboxLogger($record->get_databox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
-        $PDF = new PDFExport($app, $printer->get_elements(), $layout);
+        $PDF = new PDFExport($this->app, $printer->get_elements(), $layout);
 
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);

@@ -25,7 +25,9 @@ class Printer implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.printer'] = $app->share(function (PhraseaApplication $app) {
-            return (new PrinterController($app));
+            return (new PrinterController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+            ;
         });
     }
 
