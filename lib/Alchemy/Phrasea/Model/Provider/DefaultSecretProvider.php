@@ -23,6 +23,8 @@ class DefaultSecretProvider implements SecretProvider, \ArrayAccess
     private $repository;
     /** @var Generator */
     private $generator;
+    /** @var Secret[] */
+    private $secrets = [];
 
     public function __construct(SecretRepository $repository, Generator $generator)
     {
@@ -32,15 +34,20 @@ class DefaultSecretProvider implements SecretProvider, \ArrayAccess
 
     public function getSecretForUser(User $user)
     {
-        $secret = $this->repository->findOneBy(['creator' => $user], ['created' => 'DESC']);
-        if ($secret) {
-            return $secret;
+        $userKey = '_' . (string) $user->getId();
+
+        if (isset($this->secrets[$userKey])) {
+            return $this->secrets[$userKey];
         }
 
-        $token = $this->generator->generateString(64, Generator::CHAR_ALNUM | Generator::CHAR_SYMBOLS);
+        if (null === $secret = $this->repository->findOneBy(['creator' => $user], ['created' => 'DESC'])) {
+            $token = $this->generator->generateString(64, Generator::CHAR_ALNUM | Generator::CHAR_SYMBOLS);
 
-        $secret = new Secret($user, $token);
-        $this->repository->save($secret);
+            $secret = new Secret($user, $token);
+            $this->repository->save($secret);
+        }
+
+        $this->secrets[$userKey] = $secret;
 
         return $secret;
     }
