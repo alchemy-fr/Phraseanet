@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use DomainException;
 
 class Structure
 {
@@ -93,7 +94,12 @@ class Structure
 
     public function isPrivate($name)
     {
-        return isset($this->private[$name]) ? true :
-               isset($this->fields[$name])  ? false : null;
+        if (isset($this->private[$name])) {
+            return true;
+        } elseif (isset($this->fields[$name])) {
+            return false;
+        } else {
+            throw new DomainException(sprintf('Unknown field "%s".', $name));
+        }
     }
 }

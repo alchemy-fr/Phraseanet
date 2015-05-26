@@ -41,6 +41,8 @@ class RecordIndexer
 {
     const TYPE_NAME = 'record';
 
+    private $structure;
+
     private $helper;
 
     private $thesaurus;
