@@ -409,7 +409,7 @@ class appbox extends base
     {
         $databoxes = $this->get_databoxes();
 
-        if (!array_key_exists($sbas_id, $databoxes)) {
+        if (!isset($databoxes[$sbas_id]) && !array_key_exists($sbas_id, $databoxes)) {
             throw new NotFoundHttpException('Databox `' . $sbas_id . '` not found');
         }
 

@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Authentication\Authenticator;
 use Symfony\Component\HttpFoundation\Request;
 
 class SearchEngineOptions
@@ -547,31 +549,48 @@ class SearchEngineOptions
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
 
+        /** @var Authenticator $authenticator */
+        $authenticator = $app['authentication'];
+        $isAuthenticated = $authenticator->isAuthenticated();
+        /** @var ACLProvider $aclProvider */
+        $aclProvider = $app['acl'];
+        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
+
         $selected_bases = $request->get('bases');
         if (is_array($selected_bases)) {
             $bas = [];
             foreach ($selected_bases as $bas_id) {
                 try {
                     $bas[$bas_id] = \collection::get_from_base_id($app, $bas_id);
-                } catch (\Exception_Databox_CollectionNotFound $e) {}
-            }
-        } elseif (!$app['authentication']->isAuthenticated()) {
-            $bas = $app->getOpenCollections();
-        } else {
-            $bas = $app['acl']->get($app['authentication']->getUser())->get_granted_base();
-        }
-
-        $bas = array_filter($bas, function ($collection) use ($app) {
-            if($collection !== null) {
-                if ($app['authentication']->isAuthenticated()) {
-                    return $app['acl']->get($app['authentication']->getUser())->has_access_to_base($collection->get_base_id());
-                } else {
-                    return in_array($collection, $app->getOpenCollections());
+                } catch (\Exception_Databox_CollectionNotFound $e) {
+                    // Ignore
                 }
             }
-            return false; // CollectionNotFound
-        });
+        } elseif (!$isAuthenticated) {
+            $bas = $app->getOpenCollections();
+        } else {
+            $bas = $acl->get_granted_base();
+        }
 
+        // Filter out not found collections
+        $bas = array_filter($bas);
+
+        if ($acl) {
+            $filter = function (\collection $collection) use ($acl) {
+                return $acl->has_access_to_base($collection->get_base_id());
+            };
+        } else {
+            $openCollections = $app->getOpenCollections();
+
+            $filter = function (\collection $collection) use ($openCollections) {
+                return in_array($collection, $openCollections);
+            };
+        }
+
+        /** @var \collection[] $bas */
+        $bas = array_filter($bas, $filter);
+
+        /** @var \databox[] $databoxes */
         $databoxes = [];
 
         foreach ($bas as $collection) {
@@ -580,12 +599,12 @@ class SearchEngineOptions
             }
         }
 
-        if ($app['authentication']->isAuthenticated() && $app['acl']->get($app['authentication']->getUser())->has_right('modifyrecord')) {
-            $BF = array_filter($bas, function ($collection) use ($app) {
-                return $app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+        if ($isAuthenticated && $acl->has_right('modifyrecord')) {
+            $bf = array_filter($bas, function (\collection $collection) use ($app, $acl) {
+                return $acl->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             });
 
-            $options->allowBusinessFieldsOn($BF);
+            $options->allowBusinessFieldsOn($bf);
         }
 
         $status = is_array($request->get('status')) ? $request->get('status') : [];
@@ -594,9 +613,10 @@ class SearchEngineOptions
         $databoxFields = [];
 
         foreach ($databoxes as $databox) {
+            $metaStructure = $databox->get_meta_structure();
             foreach ($fields as $field) {
                 try {
-                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                    $databoxField = $metaStructure->get_element_by_name($field);
                 } catch (\Exception $e) {
                     continue;
                 }
@@ -628,9 +648,10 @@ class SearchEngineOptions
         $databoxDateFields = [];
 
         foreach ($databoxes as $databox) {
+            $metaStructure = $databox->get_meta_structure();
             foreach (explode('|', $request->get('date_field')) as $field) {
                 try {
-                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                    $databoxField = $metaStructure->get_element_by_name($field);
                 } catch (\Exception $e) {
                     continue;
                 }
