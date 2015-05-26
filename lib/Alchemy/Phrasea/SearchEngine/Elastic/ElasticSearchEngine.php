@@ -369,51 +369,19 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     private function getAggregationQueryParams(SearchEngineOptions $options)
     {
-        // get business field access rights for current user
-        $allowed_databoxes = [];
-        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
-        foreach ($options->getDataboxes() as $databox) {
-            $id = $databox->get_sbas_id();
-            if ($acl->can_see_business_fields($databox)) {
-                $allowed_databoxes[] = $id;
-            }
-        }
-
         $aggs = [];
 
-        // We always a collection facet right now
+        // We always want a collection facet right now
         $collection_facet_agg = array();
         $collection_facet_agg['terms']['field'] = 'collection_name';
         $aggs['Collection'] = $collection_facet_agg;
 
-        foreach ($this->recordHelper->getFieldsStructure() as $field_name => $params) {
-            // skip if field is not searchable or not aggregated
-            if (!$params['searchable'] || !$params['to_aggregate']) {
-                continue;
-            }
-
-            if ($params['private']) {
-                // restrict access to authorized databoxes
-                $databoxes = array_intersect($params['databox_ids'], $allowed_databoxes);
-                $prefix = 'private_caption';
-            } else {
-                $databoxes = $params['databox_ids'];
-                $prefix = 'caption';
-            }
-
-            // filter aggregation to allowed databoxes
-            // declare aggregation on current field
-            $agg = array();
-            // TODO (mdarse) Remove databox filtering. It's already done by the
-            // ACL filter in the query scope, so no document that shouldn't be
-            // displayed can go this far.
-            // // array_values is needed to ensure array serialization
-            // $agg['filter']['terms']['databox_id'] = array_values($databoxes);
-            // $agg['aggs']['distinct_occurrence']['terms']['field'] =
-            $agg['terms']['field'] =
-                sprintf('%s.%s.raw', $prefix, $field_name);
-
-            $aggs[$field_name] = $agg;
+        foreach ($this->structure->getFacetFields() as $name => $field) {
+            $prefix = $field->isPrivate() ? 'private_caption' : 'caption';
+            // 2015-05-26 (mdarse) Removed databox filtering.
+            // It was already done by the ACL filter in the query scope, so no
+            // document that shouldn't be displayed can go this far.
+            $aggs[$name]['terms']['field'] = sprintf('%s.%s.raw', $prefix, $name);
         }
 
         return $aggs;
