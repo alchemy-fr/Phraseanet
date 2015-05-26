@@ -28,6 +28,8 @@ use Alchemy\Phrasea\Core\Provider\JsonSchemaServiceProvider;
 use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Application as SilexApplication;
+use Silex\Provider\WebProfilerServiceProvider;
+use Sorien\Provider\DoctrineProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -124,6 +126,20 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/permalink/', new Permalink());
     $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
     $app->mount('/include/minify/', new Minifier());
+
+    if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
+        $app->register($p = new WebProfilerServiceProvider(), [
+            'profiler.cache_dir' => $app['cache.path'].'/profiler',
+        ]);
+        $app->mount('/_profiler', $p);
+
+        if ($app['phraseanet.configuration-tester']->isInstalled()) {
+            $app->register(new DoctrineProfilerServiceProvider());
+            $app['db'] = $app->share(function (PhraseaApplication $app) {
+                return $app['orm.em']->getConnection();
+            });
+        }
+    }
 
     $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
         $dispatcher->addSubscriber(new ApiOauth2ErrorsSubscriber($app['phraseanet.exception_handler'], $app['translator']));

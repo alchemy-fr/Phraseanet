@@ -18,7 +18,7 @@ error_reporting(0);
 
 ErrorHandler::register();
 
-$environment = Application::ENV_PROD;
+$environment = getenv('APP_ENV') ?: Application::ENV_PROD;
 $app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Api.php';
 
 $app->run();
