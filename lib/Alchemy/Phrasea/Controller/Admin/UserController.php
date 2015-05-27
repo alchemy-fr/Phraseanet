@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
+use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
@@ -31,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     use NotifierAware;
+    use UserQueryAware;
 
     public function editRightsAction(Request $request)
     {
@@ -940,14 +942,6 @@ class UserController extends Controller
     {
         return $this->getAclForUser($this->getAuthenticatedUser());
 
-    }
-
-    /**
-     * @return \User_Query
-     */
-    private function createUserQuery()
-    {
-        return $this->app['phraseanet.user-query'];
     }
 
     /**

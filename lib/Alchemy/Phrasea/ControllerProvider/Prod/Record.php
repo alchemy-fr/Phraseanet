@@ -12,25 +12,25 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\Prod\QueryController;
+use Alchemy\Phrasea\Controller\Prod\RecordController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class Query implements ControllerProviderInterface, ServiceProviderInterface
+class Record implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
     public function register(Application $app)
     {
-        $app['controller.prod.query'] = $app->share(function (PhraseaApplication $app) {
-            return (new QueryController($app))
+        $app['controller.prod.records'] = $app->share(function (PhraseaApplication $app) {
+            return (new RecordController($app))
+                ->setEntityManagerLocator(function () use ($app) {
+                    return $app['orm.em'];
+                })
                 ->setSearchEngineLocator(function () use ($app) {
                     return $app['phraseanet.SE'];
-                })
-                ->setSearchEngineLoggerLocator(function () use ($app) {
-                    return $app['phraseanet.SE.logger'];
                 })
             ;
         });
@@ -41,18 +41,25 @@ class Query implements ControllerProviderInterface, ServiceProviderInterface
         // no-op
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
-        $controllers->post('/', 'controller.prod.query:query')
-            ->bind('prod_query');
+        $controllers->match('/', 'controller.prod.records:getRecord')
+            ->bind('record_details')
+            ->method('GET|POST');
 
-        $controllers->post('/answer-train/', 'controller.prod.query:queryAnswerTrain')
-            ->bind('preview_answer_train');
+        $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
+            ->bind('record_delete');
 
-        $controllers->post('/reg-train/', 'controller.prod.query:queryRegTrain')
-            ->bind('preview_reg_train');
+        $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
+            ->bind('record_what_can_i_delete');
+
+        $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
+            ->bind('record_renew_url');
 
         return $controllers;
     }

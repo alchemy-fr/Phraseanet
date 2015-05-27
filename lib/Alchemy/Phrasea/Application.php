@@ -12,12 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Order;
-use Alchemy\Phrasea\ControllerProvider\Prod\Printer;
-use Alchemy\Phrasea\ControllerProvider\Prod\Property;
-use Alchemy\Phrasea\ControllerProvider\Prod\Push;
-use Alchemy\Phrasea\ControllerProvider\Prod\Query;
-use Alchemy\Phrasea\ControllerProvider\Prod\Records;
 use Alchemy\Phrasea\ControllerProvider\Prod\Root as Prod;
 use Alchemy\Phrasea\ControllerProvider\Prod\Share;
 use Alchemy\Phrasea\ControllerProvider\Prod\Story;
@@ -315,6 +309,12 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Language' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Order' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Printer' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Property' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Push' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Query' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Record' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -625,15 +625,9 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/prod/query/', new Query());
-        $this->mount('/prod/order/', new Order());
         $this->mount('/prod/story', new Story());
         $this->mount('/prod/WorkZone', new WorkZone());
         $this->mount('/prod/lists', new UsrLists());
-        $this->mount('/prod/records/', new Records());
-        $this->mount('/prod/records/property', new Property());
-        $this->mount('/prod/push/', new Push());
-        $this->mount('/prod/printer/', new Printer());
         $this->mount('/prod/share/', new Share());
         $this->mount('/prod/TOU/', new TOU());
         $this->mount('/prod/tooltip', new Tooltip());
@@ -680,8 +674,14 @@ class Application extends SilexApplication
             '/prod/feeds'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Feed',
             '/prod/language'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
             '/prod/lazaret/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
+            '/prod/order/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Order',
+            '/prod/printer/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Printer',
+            '/prod/push/'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Push',
+            '/prod/query/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Query',
+            '/prod/records/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Record',
             '/prod/records/edit'           => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
             '/prod/records/movecollection' => 'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection',
+            '/prod/records/property'       => 'Alchemy\Phrasea\ControllerProvider\Prod\Property',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
 

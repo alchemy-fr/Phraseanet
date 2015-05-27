@@ -184,7 +184,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     /**
      * When action on a single grouping, returns the image of himself
      *
-     * @return record_adapter
+     * @return \record_adapter
      */
     public function get_grouping_head()
     {
@@ -198,7 +198,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     /**
      * Get elements for the action
      *
-     * @return Array
+     * @return \record_adapter[]
      */
     public function get_elements()
     {

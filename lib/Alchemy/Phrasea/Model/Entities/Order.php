@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -71,7 +72,7 @@ class Order
      */
     public function __construct()
     {
-        $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elements = new ArrayCollection();
     }
 
     /**
@@ -176,7 +177,7 @@ class Order
     /**
      * Get elements
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return OrderElement[]|\Doctrine\Common\Collections\Collection
      */
     public function getElements()
     {
