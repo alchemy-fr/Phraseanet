@@ -272,14 +272,16 @@ class RSSFeedTest extends \PhraseanetWebTestCase
         $count = 0;
         $offset_start = 0;
         $n_entries = 20;
-        $entries = $feed->getEntries($offset_start, $n_entries);
+        $entries = $feed->getEntries()->slice($offset_start, $n_entries);
 
         foreach ($list_entries as $node) {
             if (sizeof($entries) == 0) {
-                $offset_start = ($offset_start++) * $n_entries;
-                $entries = $feed->getEntries($offset_start, $n_entries);
-                if (sizeof($entries) == 0) //no more
+                $offset_start += $n_entries;
+                $entries = $feed->getEntries()->slice($offset_start, $n_entries);
+                if (sizeof($entries) == 0) {
+                    //no more
                     break;
+                }
             }
             $feed_entry = array_shift($entries);
             switch ($node->nodeName) {
@@ -567,12 +569,12 @@ class RSSFeedTest extends \PhraseanetWebTestCase
         $count = 0;
         $offset_start = 0;
         $n_entries = 20;
-        $entries = $feed->getEntries($offset_start, $n_entries);
+        $entries = $feed->getEntries()->slice($offset_start, $n_entries);
 
         foreach ($entries_item as $entry) {
             if (sizeof($entries) == 0) {
-                $offset_start = ($offset_start++) * $n_entries;
-                $entries = $feed->getEntries($offset_start, $n_entries);
+                $offset_start += $n_entries;
+                $entries = $feed->getEntries()->slice($offset_start, $n_entries);
                 if (sizeof($entries) == 0) //no more
                     break;
             }

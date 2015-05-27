@@ -109,17 +109,11 @@ class Aggregate implements FeedInterface
     /**
      * {@inheritdoc}
      */
-    public function getEntries($offset_start = null, $how_many = null)
+    public function getEntries()
     {
-        if ($this->feeds->isEmpty()) {
-            return new ArrayCollection();
-        }
-
-        $feedIds = $this->feeds->getKeys();
-
         /** @var FeedEntryRepository $feedEntryRepository */
         $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
-        return new ArrayCollection($feedEntryRepository->findByFeeds($feedIds, $offset_start, $how_many));
+        return new AggregateEntryCollection($feedEntryRepository, $this->feeds);
     }
 
     /**

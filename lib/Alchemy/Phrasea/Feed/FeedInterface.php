@@ -33,12 +33,9 @@ interface FeedInterface
     /**
      * Returns a collection of FeedEntry.
      *
-     * @param integer $offset_start
-     * @param integer $how_many
-     *
      * @return FeedEntry[]|Collection
      */
-    public function getEntries($offset_start = 0, $how_many = null);
+    public function getEntries();
 
     /**
      * Returns an UTF-8 subtitle for the feed.

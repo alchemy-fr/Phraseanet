@@ -58,7 +58,7 @@
             {% set doctype_display = user_setting('doctype_display') %}
 
             {% set offset_start = ((page - 1) * 5 )%}
-            {% set entries = feed.getEntries(offset_start,5) %}
+            {% set entries = feed.entries.slice(offset_start,5) %}
 
             {% for entry in entries %}
                 {% block content_item %}

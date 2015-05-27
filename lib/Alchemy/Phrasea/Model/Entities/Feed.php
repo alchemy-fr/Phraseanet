@@ -254,17 +254,11 @@ class Feed implements FeedInterface
     /**
      * Get entries
      *
-     * @param int $offset_start
-     * @param int $how_many
      * @return FeedEntry[]|Collection
      */
-    public function getEntries($offset_start = 0, $how_many = null)
+    public function getEntries()
     {
-        if (null === $how_many) {
-            return $this->entries;
-        }
-
-        return $this->entries->slice($offset_start, $how_many);
+        return $this->entries;
     }
 
     /**
