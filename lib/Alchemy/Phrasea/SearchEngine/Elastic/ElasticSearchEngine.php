@@ -260,7 +260,11 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $queryContext = new QueryContext($this->locales, $this->app['locale']);
+        $queryContext = new QueryContext(
+            $this->structure,
+            $this->locales,
+            $this->app['locale']
+        );
         $recordQuery = $this->app['query_compiler']->compile($string, $queryContext);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
@@ -377,11 +381,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         $aggs['Collection'] = $collection_facet_agg;
 
         foreach ($this->structure->getFacetFields() as $name => $field) {
-            $prefix = $field->isPrivate() ? 'private_caption' : 'caption';
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $aggs[$name]['terms']['field'] = sprintf('%s.%s.raw', $prefix, $name);
+            $field_name = RecordHelper::getIndexFieldName($field);
+            $aggs[$name]['terms']['field'] = sprintf('%s.raw', $field_name);
         }
 
         return $aggs;

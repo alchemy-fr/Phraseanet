@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use appbox;
 use igorw;
 
@@ -83,5 +84,14 @@ class RecordHelper
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public static function getIndexFieldName(Field $field)
+    {
+        return sprintf(
+            '%scaption.%s',
+            $field->isPrivate() ? 'private_' : '',
+            $field->getName()
+        );
     }
 }
