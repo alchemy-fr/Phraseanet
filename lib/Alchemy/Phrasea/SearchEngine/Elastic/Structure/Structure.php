@@ -41,7 +41,7 @@ class Structure
         if ($field->isPrivate()) {
             $this->private[$name] = $field;
         }
-        if ($field->isFacet()) {
+        if ($field->isFacet() && $field->isSearchable()) {
             $this->facets[$name] = $field;
         }
         if ($field->hasConceptInference()) {
@@ -66,7 +66,6 @@ class Structure
 
     public function getFacetFields()
     {
-        // TODO should we only return searchable fields?
         return $this->facets;
     }
 
