@@ -16,7 +16,9 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Aggregate implements FeedInterface
@@ -33,7 +35,7 @@ class Aggregate implements FeedInterface
     /** @var \DateTime */
     private $updatedOn;
 
-    /** @var array */
+    /** @var Feed[]|Collection */
     private $feeds;
 
     /** @var AggregateToken */
@@ -61,7 +63,7 @@ class Aggregate implements FeedInterface
             $tmp_feeds[$feed->getId()] = $feed;
         }
 
-        $this->feeds = $tmp_feeds;
+        $this->feeds = new ArrayCollection($tmp_feeds);
         $this->token = $token;
     }
 
@@ -109,16 +111,15 @@ class Aggregate implements FeedInterface
      */
     public function getEntries($offset_start = null, $how_many = null)
     {
-        if (0 === count($this->feeds)) {
+        if ($this->feeds->isEmpty()) {
             return new ArrayCollection();
         }
 
-        $feedIds = [];
-        foreach ($this->feeds as $feed) {
-            $feedIds[] = $feed->getId();
-        }
+        $feedIds = $this->feeds->getKeys();
 
-        return $this->em->getRepository('Phraseanet:FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
+        /** @var FeedEntryRepository $feedEntryRepository */
+        $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
+        return new ArrayCollection($feedEntryRepository->findByFeeds($feedIds, $offset_start, $how_many));
     }
 
     /**
@@ -198,16 +199,14 @@ class Aggregate implements FeedInterface
      */
     public function getCountTotalEntries()
     {
-        if (count($this->feeds) > 0) {
-            $feedIds = [];
-            foreach ($this->feeds as $feed) {
-                $feedIds[] = $feed->getId();
-            }
-
-            return count($this->em->getRepository('Phraseanet:FeedEntry')->findByFeeds($feedIds));
+        if ($this->feeds->isEmpty()) {
+            return 0;
         }
 
-        return 0;
+        /** @var FeedEntryRepository $feedEntryRepository */
+        $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
+
+        return $feedEntryRepository->countByFeeds($this->feeds->getKeys());
     }
 
     /**

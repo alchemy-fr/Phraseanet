@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Doctrine\Common\Collections\Collection;
 
 interface FeedInterface
 {
@@ -35,7 +36,7 @@ interface FeedInterface
      * @param integer $offset_start
      * @param integer $how_many
      *
-     * @return FeedEntry[]
+     * @return FeedEntry[]|Collection
      */
     public function getEntries($offset_start = 0, $how_many = null);
 
@@ -73,7 +74,7 @@ interface FeedInterface
      * @param integer $pageNumber
      * @param integer $nbEntriesByPage
      *
-     * @return \DateTime
+     * @return bool
      */
     public function hasPage($pageNumber, $nbEntriesByPage);
 }

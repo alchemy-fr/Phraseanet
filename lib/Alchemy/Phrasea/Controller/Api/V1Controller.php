@@ -1836,7 +1836,7 @@ class V1Controller extends Controller
     {
         return array_map(function ($entry) use ($request) {
             return $this->listPublicationEntry($request, $entry);
-        }, $feed->getEntries($offset_start, $how_many));
+        }, iterator_to_array($feed->getEntries($offset_start, $how_many)));
     }
 
     /**

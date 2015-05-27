@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -87,8 +89,8 @@ class Feed implements FeedInterface
      */
     public function __construct()
     {
-        $this->publishers = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->entries = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->publishers = new ArrayCollection();
+        $this->entries = new ArrayCollection();
     }
 
     /**
@@ -219,7 +221,7 @@ class Feed implements FeedInterface
     /**
      * Get publishers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getPublishers()
     {
@@ -252,7 +254,9 @@ class Feed implements FeedInterface
     /**
      * Get entries
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @param int $offset_start
+     * @param int $how_many
+     * @return FeedEntry[]|Collection
      */
     public function getEntries($offset_start = 0, $how_many = null)
     {
@@ -493,7 +497,7 @@ class Feed implements FeedInterface
     /**
      * Get tokens
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getTokens()
     {

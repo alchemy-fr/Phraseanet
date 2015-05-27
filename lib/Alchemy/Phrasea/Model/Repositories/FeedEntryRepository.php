@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -28,7 +30,7 @@ class FeedEntryRepository extends EntityRepository
      * @param integer $offset_start
      * @param integer $how_many
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return FeedEntry[]
      */
     public function findByFeeds($feeds, $offset_start = null, $how_many = null)
     {
@@ -46,5 +48,20 @@ class FeedEntryRepository extends EntityRepository
         }
 
         return $query->getResult();
+    }
+
+    /**
+     * @param Feed[]|array $feeds List of feeds instance or feed ids to
+     * @return int
+     */
+    public function countByFeeds($feeds)
+    {
+        $builder = $this->createQueryBuilder('fe');
+        $builder
+            ->select($builder->expr()->count('fe'))
+            ->where($builder->expr()->in('fe.feed', ':feeds'))
+            ->setParameter('feeds', $feeds);
+
+        return $builder->getQuery()->getSingleScalarResult();
     }
 }
