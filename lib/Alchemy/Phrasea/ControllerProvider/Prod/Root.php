@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Helper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\Finder\Finder;
 
 class Root implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -28,6 +27,7 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod'] = $app->share(function (PhraseaApplication $app) {
             return (new RootController($app))
+                ->setFirewall($app['firewall'])
             ;
         });
     }
@@ -39,7 +39,6 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        $app['controller.prod'] = $this;
         $controllers = $this->createCollection($app);
 
         $controllers->before('controller.prod:assertAuthenticated');
