@@ -26,7 +26,6 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Collections\ArrayCollection;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
@@ -678,12 +677,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return new caption_record($this->app, $this, $this->get_databox());
     }
 
-    public function getCaption()
+    public function getCaption(array $fields = null)
+    {
+        return $this->getCaptionFieldsMap($this->get_caption()->get_fields($fields, true));
+    }
+
+    /**
+     * @param caption_field[] $fields
+     * @return array
+     */
+    private function getCaptionFieldsMap(array $fields)
     {
         $collection = [];
 
-        /** @var caption_field $field */
-        foreach ($this->get_caption()->get_fields() as $field) {
+        foreach ($fields as $field) {
             $values = array_map(function(caption_Field_Value $fieldValue) {
                 return $fieldValue->getValue();
             }, $field->get_values());

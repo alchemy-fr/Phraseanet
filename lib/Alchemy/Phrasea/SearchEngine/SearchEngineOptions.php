@@ -609,6 +609,15 @@ class SearchEngineOptions
 
         $status = is_array($request->get('status')) ? $request->get('status') : [];
         $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
+        if (empty($fields)) {
+            // Select all fields (business included)
+            foreach ($databoxes as $databox) {
+                foreach ($databox->get_meta_structure() as $field) {
+                    $fields[] = $field->get_name();
+                }
+            }
+            $fields = array_unique($fields);
+        }
 
         $databoxFields = [];
 

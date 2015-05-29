@@ -117,8 +117,7 @@
 {% endmacro %}
 
 {% macro caption(record, can_see_business, display_exif) %}
-    {# @todo handle business fields #}
-    {% for name, value in record.caption %}
+    {% for name, value in record.getCaption(caption_field_order(record, can_see_business)) %}
         <div class="desc">
             <b>{{ name }}</b> :
             {{ caption_field(record, name, value)|e|highlight }}
