@@ -100,12 +100,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     /**
-     * @param array   $grep_fields
-     * @param Boolean $IncludeBusiness
+     * @param array $grep_fields
+     * @param bool  $includeBusiness
      *
      * @return \caption_field[]
      */
-    public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
+    public function get_fields(array $grep_fields = null, $includeBusiness = false)
     {
         $fields = [];
 
@@ -114,7 +114,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 continue;
             }
 
-            if ($field->get_databox_field()->isBusiness() === true && ! $IncludeBusiness) {
+            if ((!$includeBusiness) && $field->get_databox_field()->isBusiness() === true) {
                 continue;
             }
 
