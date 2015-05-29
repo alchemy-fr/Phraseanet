@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
-use Doctrine\Common\Collections\ArrayCollection;
 use igorw;
 
 class ElasticsearchRecordHydrator

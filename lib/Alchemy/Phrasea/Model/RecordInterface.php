@@ -63,7 +63,4 @@ interface RecordInterface
 
     /** @return array */
     public function getCaption();
-
-    /** @return array */
-    public function getPrivateCaption();
 }

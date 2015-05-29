@@ -237,10 +237,22 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         $this->uuid = $uuid;
     }
 
-    /** @return array */
-    public function getCaption()
+    public function getCaption(array $fields = null)
     {
-        return $this->caption;
+        if (null === $fields) {
+            return $this->caption;
+        }
+
+        $known = array_merge($this->caption, $this->privateCaption);
+
+        $caption = [];
+        foreach ($fields as $field) {
+            if (isset($known[$field]) || array_key_exists($field, $known)) {
+                $caption[$field] = $known[$field];
+            }
+        }
+
+        return $caption;
     }
 
     public function setCaption(array $caption)

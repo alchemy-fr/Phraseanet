@@ -677,18 +677,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return new caption_record($this->app, $this, $this->get_databox());
     }
 
-    public function getCaption()
+    public function getCaption(array $fields = null)
     {
-        return $this->getCaptionFieldsMap($this->get_caption()->get_fields());
-    }
-
-    public function getPrivateCaption()
-    {
-        $businessFields = array_filter($this->get_caption()->get_fields(null, true), function (caption_field $field) {
-            return $field->get_databox_field()->isBusiness();
-        });
-
-        return $this->getCaptionFieldsMap($businessFields);
+        return $this->getCaptionFieldsMap($this->get_caption()->get_fields($fields, true));
     }
 
     /**

@@ -41,6 +41,7 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
             new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
             new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
+            new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
         );
     }
 
@@ -67,6 +68,29 @@ class PhraseanetExtension extends \Twig_Extension
         }
 
         return implode('; ', (array) $value);
+    }
+
+    /**
+     * @param RecordInterface $record
+     * @param bool            $businessFields
+     * @return array
+     */
+    public function getCaptionFieldOrder(RecordInterface $record, $businessFields)
+    {
+        static $orders = [];
+
+        $databoxId = $record->getDataboxId();
+        $orderKey = (bool) $businessFields ? 'business' : 'public';
+
+        if (!isset($orders[$databoxId][$orderKey])) {
+            /** @var \appbox $appbox */
+            $appbox = $this->app['phraseanet.appbox'];
+            $databox = $appbox->get_databox($databoxId);
+
+            $orders[$databoxId] = $this->retrieveDataboxFieldOrderings($databox);
+        }
+
+        return $orders[$databoxId][$orderKey];
     }
 
     public function getRecordFlags(RecordInterface $record)
@@ -252,5 +276,30 @@ class PhraseanetExtension extends \Twig_Extension
     public function getName()
     {
         return 'phraseanet';
+    }
+
+    /**
+     * @param \databox $databox
+     * @return array
+     */
+    private function retrieveDataboxFieldOrderings(\databox $databox)
+    {
+        $publicOrder = [];
+        $businessOrder = [];
+
+        foreach ($databox->get_meta_structure() as $field) {
+            $fieldName = $field->get_name();
+
+            if (!$field->isBusiness()) {
+                $publicOrder[] = $fieldName;
+            }
+
+            $businessOrder[] = $fieldName;
+        };
+
+        return [
+            'public'   => $publicOrder,
+            'business' => $businessOrder,
+        ];
     }
 }
