@@ -36,6 +36,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $status;
     private $isStory;
     private $caption = [];
+    private $privateCaption = [];
     private $exif = [];
     private $subdefs = [];
     private $flags = [];
@@ -245,6 +246,20 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setCaption(array $caption)
     {
         $this->caption = $caption;
+    }
+
+    /** @return array */
+    public function getPrivateCaption()
+    {
+        return $this->privateCaption;
+    }
+
+    /**
+     * @param array $privateCaption
+     */
+    public function setPrivateCaption(array $privateCaption)
+    {
+        $this->privateCaption = $privateCaption;
     }
 
     /** @return array */

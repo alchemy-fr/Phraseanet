@@ -43,6 +43,7 @@ class ElasticsearchRecordHydrator
         $record->setStatusBitField(igorw\get_in($data, ['flags_bitfield'], 0));
         $record->setTitles((array) igorw\get_in($data, ['title'], []));
         $record->setCaption((array) igorw\get_in($data, ['caption'], []));
+        $record->setPrivateCaption((array) igorw\get_in($data, ['private_caption'], []));
         $record->setExif((array) igorw\get_in($data, ['exif'], []));
         $record->setSubdefs((array) igorw\get_in($data, ['subdefs'], []));
         $record->setFlags((array) igorw\get_in($data, ['flags'], []));
