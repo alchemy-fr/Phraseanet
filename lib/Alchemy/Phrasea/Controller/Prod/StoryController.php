@@ -9,7 +9,8 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
@@ -22,30 +23,31 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class StoryController extends Controller
 {
-    public function displayCreateFormAction(Application $app)
+    use DispatcherAware;
+    use EntityManagerAware;
+
+    public function displayCreateFormAction()
     {
-        return $app['twig']->render('prod/Story/Create.html.twig', []);
+        return $this->render('prod/Story/Create.html.twig', []);
     }
 
-    public function postCreateFormAction(Application $app, Request $request)
+    public function postCreateFormAction(Request $request)
     {
-        /* @var $request \Symfony\Component\HttpFoundation\Request */
-        $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
+        $collection = \collection::get_from_base_id($this->app, $request->request->get('base_id'));
 
-        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
             throw new AccessDeniedHttpException('You can not create a story on this collection');
         }
 
-        $Story = \record_adapter::createStory($app, $collection);
-
-        $records = RecordsRequest::fromRequest($app, $request, true);
+        $story = \record_adapter::createStory($this->app, $collection);
+        $records = RecordsRequest::fromRequest($this->app, $request, true);
 
         foreach ($records as $record) {
-            if ($Story->hasChild($record)) {
+            if ($story->hasChild($record)) {
                 continue;
             }
 
-            $Story->appendChild($record);
+            $story->appendChild($record);
         }
 
         $metadatas = [];
@@ -58,63 +60,62 @@ class StoryController extends Controller
             }
 
             $metadatas[] = [
-                'meta_struct_id' => $meta->get_id()
-                , 'meta_id'        => null
-                , 'value'          => $value
+                'meta_struct_id' => $meta->get_id(),
+                'meta_id'        => null,
+                'value'          => $value,
             ];
 
             break;
         }
 
-        $Story->set_metadatas($metadatas)->rebuild_subdefs();
+        $story->set_metadatas($metadatas)->rebuild_subdefs();
 
-        $StoryWZ = new StoryWZ();
-        $StoryWZ->setUser($app['authentication']->getUser());
-        $StoryWZ->setRecord($Story);
+        $storyWZ = new StoryWZ();
+        $storyWZ->setUser($this->getAuthenticatedUser());
+        $storyWZ->setRecord($story);
 
-        $app['orm.em']->persist($StoryWZ);
-
-        $app['orm.em']->flush();
+        $manager = $this->getEntityManager();
+        $manager->persist($storyWZ);
+        $manager->flush();
 
         if ($request->getRequestFormat() == 'json') {
             $data = [
-                'success'  => true
-                , 'message'  => $app->trans('Story created')
-                , 'WorkZone' => $StoryWZ->getId()
-                , 'story'    => [
-                    'sbas_id'   => $Story->get_sbas_id(),
-                    'record_id' => $Story->get_record_id(),
-                ]
+                'success'  => true,
+                'message'  => $this->app->trans('Story created'),
+                'WorkZone' => $storyWZ->getId(),
+                'story'    => [
+                    'sbas_id'   => $story->get_sbas_id(),
+                    'record_id' => $story->get_record_id(),
+                ],
             ];
 
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_stories_story', [
-                'sbas_id' => $StoryWZ->getSbasId(),
-                'record_id' => $StoryWZ->getRecordId(),
-            ]);
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_stories_story', [
+            'sbas_id' => $storyWZ->getSbasId(),
+            'record_id' => $storyWZ->getRecordId(),
+        ]);
     }
 
-    public function showAction(Application $app, $sbas_id, $record_id)
+    public function showAction($sbas_id, $record_id)
     {
-        $Story = new \record_adapter($app, $sbas_id, $record_id);
+        $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        $html = $app['twig']->render('prod/WorkZone/Story.html.twig', ['Story' => $Story]);
-
-        return new Response($html);
+        return $this->renderResponse('prod/WorkZone/Story.html.twig', ['Story' => $story]);
     }
 
-    public function addElementsAction(Application $app, Request $request, $sbas_id, $record_id)
+    public function addElementsAction(Request $request, $sbas_id, $record_id)
     {
-        $Story = new \record_adapter($app, $sbas_id, $record_id);
+        $Story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+        if (!$this->getAclForUser()->has_right_on_base($Story->get_base_id(), 'canmodifrecord')) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
+        }
 
         $n = 0;
 
-        $records = RecordsRequest::fromRequest($app, $request, true);
+        $records = RecordsRequest::fromRequest($this->app, $request, true);
 
         foreach ($records as $record) {
             if ($Story->hasChild($record)) {
@@ -125,81 +126,76 @@ class StoryController extends Controller
             $n++;
         }
 
-        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
 
         $data = [
-            'success' => true
-            , 'message' => $app->trans('%quantity% records added', ['%quantity%' => $n])
+            'success' => true,
+            'message' => $this->app->trans('%quantity% records added', ['%quantity%' => $n]),
         ];
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_stories_story', ['sbas_id' => $sbas_id,'record_id' => $record_id]);
+            return $this->app->json($data);
         }
+
+        return $this->app->redirectPath('prod_stories_story', ['sbas_id' => $sbas_id, 'record_id' => $record_id]);
     }
 
-    public function removeElementAction(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id) {
-        $Story = new \record_adapter($app, $sbas_id, $record_id);
-
-        $record = new \record_adapter($app, $child_sbas_id, $child_record_id);
-
-        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
-            throw new AccessDeniedHttpException('You can not add document to this Story');
-
-        $Story->removeChild($record);
-
-        $data = [
-            'success' => true
-            , 'message' => $app->trans('Record removed from story')
-        ];
-
-
-        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
-
-        if ($request->getRequestFormat() == 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_stories_story', ['sbas_id' => $sbas_id,'record_id' => $record_id]);
-        }
-    }
-
-    public function displayReorderFormAction(Application $app, $sbas_id, $record_id)
+    public function removeElementAction(Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id)
     {
-        $story = new \record_adapter($app, $sbas_id, $record_id);
+        $story = new \record_adapter($this->app, $sbas_id, $record_id);
+        $record = new \record_adapter($this->app, $child_sbas_id, $child_record_id);
+
+        if (!$this->getAclForUser()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+            throw new AccessDeniedHttpException('You can not add document to this Story');
+        }
+
+        $story->removeChild($record);
+
+        $data = [
+            'success' => true,
+            'message' => $this->app->trans('Record removed from story'),
+        ];
+
+
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        if ($request->getRequestFormat() == 'json') {
+            return $this->app->json($data);
+        }
+
+        return $this->app->redirectPath('prod_stories_story', ['sbas_id' => $sbas_id, 'record_id' => $record_id]);
+    }
+
+    public function displayReorderFormAction($sbas_id, $record_id)
+    {
+        $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
         if (!$story->is_grouping()) {
             throw new \Exception('This is not a story');
         }
 
-        return new Response(
-            $app['twig']->render(
-                'prod/Story/Reorder.html.twig'
-                , ['story' => $story]
-            )
-        );
+        return $this->renderResponse('prod/Story/Reorder.html.twig', [
+            'story' => $story,
+        ]);
     }
 
-    public function reorderAction(Application $app, $sbas_id, $record_id)
+    public function reorderAction(Request $request, $sbas_id, $record_id)
     {
-        $ret = ['success' => false, 'message' => $app->trans('An error occured')];
         try {
-
-            $story = new \record_adapter($app, $sbas_id, $record_id);
+            $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
             if (!$story->is_grouping()) {
                 throw new \Exception('This is not a story');
             }
 
-            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
-                throw new ControllerException($app->trans('You can not edit this story'));
+            if (!$this->getAclForUser()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+                throw new ControllerException($this->app->trans('You can not edit this story'));
             }
 
-            $sql = 'UPDATE regroup SET ord = :ord
-              WHERE rid_parent = :parent_id AND rid_child = :children_id';
+            $sql = 'UPDATE regroup SET ord = :ord WHERE rid_parent = :parent_id AND rid_child = :children_id';
             $stmt = $story->get_databox()->get_connection()->prepare($sql);
 
-            foreach ($app['request']->request->get('element') as $record_id => $ord) {
+            foreach ($request->request->get('element') as $record_id => $ord) {
                 $params = [
                     ':ord'         => $ord,
                     ':parent_id'   => $story->get_record_id(),
@@ -210,15 +206,14 @@ class StoryController extends Controller
 
             $stmt->closeCursor();
 
-            $ret = ['success' => true, 'message' => $app->trans('Story updated')];
-
-            $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+            $ret = ['success' => true, 'message' => $this->app->trans('Story updated')];
         } catch (ControllerException $e) {
             $ret = ['success' => false, 'message' => $e->getMessage()];
         } catch (\Exception $e) {
-
+            $ret = ['success' => false, 'message' => $this->app->trans('An error occured')];
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 }

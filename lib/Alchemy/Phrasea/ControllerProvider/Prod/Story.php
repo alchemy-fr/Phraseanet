@@ -26,7 +26,11 @@ class Story implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.story'] = $app->share(function (PhraseaApplication $app) {
             return (new StoryController($app))
-                ;
+                ->setDispatcher($app['dispatcher'])
+                ->setEntityManagerLocator(function () use ($app) {
+                    return $app['orm.em'];
+                })
+            ;
         });
     }
 
