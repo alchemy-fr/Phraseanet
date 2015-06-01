@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\Tools;
 use Alchemy\Phrasea\ControllerProvider\Prod\Tooltip;
 use Alchemy\Phrasea\ControllerProvider\Prod\Upload;
 use Alchemy\Phrasea\ControllerProvider\Prod\UsrLists;
@@ -314,6 +313,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Share' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Story' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\Tools' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\TOU' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -628,7 +628,6 @@ class Application extends SilexApplication
         $this->mount('/prod/WorkZone', new WorkZone());
         $this->mount('/prod/lists', new UsrLists());
         $this->mount('/prod/tooltip', new Tooltip());
-        $this->mount('/prod/tools/', new Tools());
         $this->mount('/prod/upload/', new Upload());
 
         $this->mount('/user/preferences/', new Preferences());
@@ -680,6 +679,7 @@ class Application extends SilexApplication
             '/prod/records/property'       => 'Alchemy\Phrasea\ControllerProvider\Prod\Property',
             '/prod/share/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Share',
             '/prod/story'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Story',
+            '/prod/tools/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Tools',
             '/prod/TOU/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\TOU',
             '/prod/'                       => 'Alchemy\Phrasea\ControllerProvider\Prod\Root',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
