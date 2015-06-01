@@ -19,62 +19,57 @@ class TOUController extends Controller
     /**
      * Deny database terms of use
      *
-     * @param  Application  $app
-     * @param  Request      $request
      * @param  integer      $sbas_id
      * @return Response
      */
-    public function denyTermsOfUse(Application $app, Request $request, $sbas_id)
+    public function denyTermsOfUse($sbas_id)
     {
-        $ret = ['success' => false, 'message' => ''];
-
         try {
-            $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+            $databox = $this->findDataboxById((int) $sbas_id);
 
-            $app['acl']->get($app['authentication']->getUser())->revoke_access_from_bases(
-                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]))
+            $this->getAclForUser()->revoke_access_from_bases(
+                array_keys($this->getAclForUser()->get_granted_base([], [$databox->get_sbas_id()]))
             );
-            $app['acl']->get($app['authentication']->getUser())->revoke_unused_sbas_rights();
+            $this->getAclForUser()->revoke_unused_sbas_rights();
 
-            $app['authentication']->closeAccount();
+            $this->getAuthenticator()->closeAccount();
 
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-
+            $ret = ['success' => true, 'message' => ''];
+        } catch (\Exception $exception) {
+            $ret = ['success' => false, 'message' => $exception->getMessage()];
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Display database terms of use
      *
-     * @param  Application $app
      * @param  Request     $request
      * @return Response
      */
-    public function displayTermsOfUse(Application $app, Request $request)
+    public function displayTermsOfUse(Request $request)
     {
         $toDisplay = $request->query->get('to_display', []);
         $data = [];
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
             if (count($toDisplay) > 0 && !in_array($databox->get_sbas_id(), $toDisplay)) {
                 continue;
             }
 
             $cgus = $databox->get_cgus();
 
-            if (!isset($cgus[$app['locale']])) {
+            if (!isset($cgus[$this->app['locale']])) {
                 continue;
             }
 
-            $data[$databox->get_label($app['locale'])] = $cgus[$app['locale']]['value'];
+            $data[$databox->get_label($this->app['locale'])] = $cgus[$this->app['locale']]['value'];
         }
 
-        return new Response($app['twig']->render('/prod/TOU.html.twig', [
+        return $this->renderResponse('/prod/TOU.html.twig', [
             'TOUs'        => $data,
-            'local_title' => $app->trans('Terms of use')
-        ]));
+            'local_title' => $this->app->trans('Terms of use'),
+        ]);
     }
 }
