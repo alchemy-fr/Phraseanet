@@ -11,89 +11,41 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Prod\TOUController;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Silex\ServiceProviderInterface;
 
-class TOU implements ControllerProviderInterface
+class TOU implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
+    public function register(Application $app)
+    {
+        $app['controller.prod.tou'] = $app->share(function (PhraseaApplication $app) {
+            return (new TOUController($app));
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.prod.tou'] = $this;
-
-        $controllers = $app['controllers_factory'];
+        $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
         $controller = $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
             ->bind('deny_tou');
-        $app['firewall']->addMandatoryAuthentication($controller);
+        $firewall->addMandatoryAuthentication($controller);
 
         $controllers->get('/', 'controller.prod.tou:displayTermsOfUse')
             ->bind('get_tou');
 
         return $controllers;
-    }
-
-    /**
-     * Deny database terms of use
-     *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @param  integer      $sbas_id
-     * @return JsonResponse
-     */
-    public function denyTermsOfUse(Application $app, Request $request, $sbas_id)
-    {
-        $ret = ['success' => false, 'message' => ''];
-
-        try {
-            $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-
-            $app['acl']->get($app['authentication']->getUser())->revoke_access_from_bases(
-                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]))
-            );
-            $app['acl']->get($app['authentication']->getUser())->revoke_unused_sbas_rights();
-
-            $app['authentication']->closeAccount();
-
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-
-        }
-
-        return $app->json($ret);
-    }
-
-    /**
-     * Display database terms of use
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @return Response
-     */
-    public function displayTermsOfUse(Application $app, Request $request)
-    {
-        $toDisplay = $request->query->get('to_display', []);
-        $data = [];
-
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-            if (count($toDisplay) > 0 && !in_array($databox->get_sbas_id(), $toDisplay)) {
-                continue;
-            }
-
-            $cgus = $databox->get_cgus();
-
-            if (!isset($cgus[$app['locale']])) {
-                continue;
-            }
-
-            $data[$databox->get_label($app['locale'])] = $cgus[$app['locale']]['value'];
-        }
-
-        return new Response($app['twig']->render('/prod/TOU.html.twig', [
-            'TOUs'        => $data,
-            'local_title' => $app->trans('Terms of use')
-        ]));
     }
 }
