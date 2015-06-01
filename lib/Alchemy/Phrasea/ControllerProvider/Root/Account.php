@@ -338,7 +338,7 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $registrations = $request->request->get('registrations');
+        $registrations = $request->request->get('registrations', []);
         if (false === is_array($registrations)) {
             $app->abort(400, '"registrations" parameter must be an array of base ids.');
         }
