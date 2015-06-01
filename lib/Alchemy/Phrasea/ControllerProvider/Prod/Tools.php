@@ -15,15 +15,21 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Silex\ServiceProviderInterface;
 
-class Tools implements ControllerProviderInterface
+class Tools implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
     public function register(Application $app)
     {
         $app['controller.prod.tools'] = $app->share(function (PhraseaApplication $app) {
-            return (new ToolsController($app));
+            return (new ToolsController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setFileSystemLocator(function () use ($app) {
+                    return $app['filesystem'];
+                })
+            ;
         });
     }
 

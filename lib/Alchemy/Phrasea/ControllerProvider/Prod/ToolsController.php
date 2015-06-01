@@ -9,51 +9,62 @@
  */
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Media\SubdefSubstituer;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
+use DataURI\Parser;
+use MediaAlchemyst\Alchemyst;
+use MediaVorus\MediaVorus;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
+use PHPExiftool\Reader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller
 {
+    use DataboxLoggerAware;
+    use FilesystemAware;
 
-    public function indexAction(Application $app, Request $request)
+    public function indexAction(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false);
+        $records = RecordsRequest::fromRequest($this->app, $request, false);
 
-        $metadatas = false;
+        $metadata = false;
         $record = null;
 
         if (count($records) == 1) {
             $record = $records->first();
             if (!$record->is_grouping()) {
                 try {
-                    $metadatas = $app['exiftool.reader']
+                    $metadata = $this->getExifToolReader()
                         ->files($record->get_subdef('document')->get_pathfile())
                         ->first()->getMetadatas();
                 } catch (PHPExiftoolException $e) {
-
+                    // ignore
                 } catch (\Exception_Media_SubdefNotFound $e) {
-
+                    // ignore
                 }
             }
         }
 
-        $var = [
+        return $this->render('prod/actions/Tools/index.html.twig', [
             'records'   => $records,
             'record'    => $record,
-            'metadatas' => $metadatas,
-        ];
-
-        return $app['twig']->render('prod/actions/Tools/index.html.twig', $var);
+            'metadatas' => $metadata,
+        ]);
     }
 
-    public function rotateAction(Application $app, Request $request)
+    public function rotateAction(Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, false);
-        $rotation = in_array($request->request->get('rotation'), array('-90', '90', '180')) ? $request->request->get('rotation', 90) : 90;
+        $records = RecordsRequest::fromRequest($this->app, $request, false);
+        $rotation = (int)$request->request->get('rotation', 90);
+        if (!in_array($rotation, [-90, 90, 180], true)) {
+            $rotation = 90;
+        }
 
         foreach ($records as $record) {
             foreach ($record->get_subdefs() as $subdef) {
@@ -62,22 +73,22 @@ class ToolsController extends Controller
                 }
 
                 try {
-                    $subdef->rotate($rotation, $app['media-alchemyst'], $app['mediavorus']);
+                    $subdef->rotate($rotation, $this->getMediaAlchemyst(), $this->getMediaVorus());
                 } catch (\Exception $e) {
                 }
             }
         }
 
-        return $app->json(array('success' => true, 'errorMessage' => ''));
+        return $this->app->json(['success' => true, 'errorMessage' => '']);
     }
 
-    public function imageAction(Application $app, Request $request)
+    public function imageAction(Request $request)
     {
         $return = ['success' => true];
 
         $force = $request->request->get('force_substitution') == '1';
 
-        $selection = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
+        $selection = RecordsRequest::fromRequest($this->app, $request, false, array('canmodifrecord'));
 
         foreach ($selection as $record) {
             $substituted = false;
@@ -99,13 +110,13 @@ class ToolsController extends Controller
         }
 
 
-        return $app->json($return);
+        return $this->app->json($return);
     }
 
-    public function hddocAction(Application $app, Request $request)
+    public function hddocAction(Request $request)
     {
         $success = false;
-        $message = $app->trans('An error occured');
+        $message = $this->app->trans('An error occured');
 
         if ($file = $request->files->get('newHD')) {
 
@@ -124,24 +135,16 @@ class ToolsController extends Controller
                         throw new RuntimeException('Error while renaming file');
                     }
 
-                    $record = new \record_adapter(
-                        $app,
-                        $request->get('sbas_id'),
-                        $request->get('record_id')
-                    );
+                    $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
-                    $media = $app->getMediaFromUri($tempoFile);
+                    $media = $this->app->getMediaFromUri($tempoFile);
 
-                    $app['subdef.substituer']->substitute($record, 'document', $media);
-                    $record->insertTechnicalDatas($app['mediavorus']);
-                    $app['phraseanet.metadata-setter']->replaceMetadata($app['phraseanet.metadata-reader']->read($media), $record);
+                    $this->getSubDefinitionSubstituer()->substitute($record, 'document', $media);
+                    $record->insertTechnicalDatas($this->getMediaVorus());
+                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
 
-                    $app['phraseanet.logger']($record->get_databox())->log(
-                        $record,
-                        \Session_Logger::EVENT_SUBSTITUTE,
-                        'HD',
-                        ''
-                    );
+                    $this->getDataboxLogger($record->get_databox())
+                        ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '' );
 
                     if ((int) $request->request->get('ccfilename') === 1) {
                         $record->set_original_name($fileName);
@@ -149,131 +152,172 @@ class ToolsController extends Controller
                     unlink($tempoFile);
                     rmdir($tempoDir);
                     $success = true;
-                    $message = $app->trans('Document has been successfully substitued');
+                    $message = $this->app->trans('Document has been successfully substitued');
                 } catch (\Exception $e) {
-                    $message = $app->trans('file is not valid');
+                    $message = $this->app->trans('file is not valid');
                 }
             } else {
-                $message = $app->trans('file is not valid');
+                $message = $this->app->trans('file is not valid');
             }
         } else {
-            $app->abort(400, 'Missing file parameter');
+            $this->app->abort(400, 'Missing file parameter');
         }
 
-        return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', [
+        return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
             'success'   => $success,
             'message'   => $message,
         ]);
     }
 
-    public function changeThumbnailAction(Application $app, Request $request)
+    public function changeThumbnailAction(Request $request)
     {
-        $success = false;
-        $message = $app->trans('An error occured');
+        $file = $request->files->get('newThumb');
 
-        if ($file = $request->files->get('newThumb')) {
-
-            if ($file->isValid()) {
-                try {
-                    $fileName = $file->getClientOriginalName();
-                    $tempoDir = tempnam(sys_get_temp_dir(), 'substit');
-                    unlink($tempoDir);
-                    mkdir($tempoDir);
-                    $tempoFile = $tempoDir . DIRECTORY_SEPARATOR . $fileName;
-
-                    if (false === rename($file->getPathname(), $tempoFile)) {
-                        throw new RuntimeException('Error while renaming file');
-                    }
-
-                    $record = new \record_adapter(
-                        $app,
-                        $request->get('sbas_id'),
-                        $request->get('record_id')
-                    );
-
-                    $media = $app->getMediaFromUri($tempoFile);
-
-                    $app['subdef.substituer']->substitute($record, 'thumbnail', $media);
-                    $app['phraseanet.logger']($record->get_databox())->log(
-                        $record,
-                        \Session_Logger::EVENT_SUBSTITUTE,
-                        'thumbnail',
-                        ''
-                    );
-
-                    unlink($tempoFile);
-                    rmdir($tempoDir);
-                    $success = true;
-                    $message = $app->trans('Thumbnail has been successfully substitued');
-                } catch (\Exception $e) {
-                    $message = $app->trans('file is not valid');
-                }
-            } else {
-                $message = $app->trans('file is not valid');
-            }
-        } else {
-            $app->abort(400, 'Missing file parameter');
+        if (empty($file)) {
+            $this->app->abort(400, 'Missing file parameter');
         }
 
-        return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', [
+        if (! $file->isValid()) {
+            return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
+                'success'   => false,
+                'message'   => $this->app->trans('file is not valid'),
+            ]);
+        }
+
+        try {
+            $fileName = $file->getClientOriginalName();
+            $tempoDir = tempnam(sys_get_temp_dir(), 'substit');
+            unlink($tempoDir);
+            mkdir($tempoDir);
+            $tempoFile = $tempoDir . DIRECTORY_SEPARATOR . $fileName;
+
+            if (false === rename($file->getPathname(), $tempoFile)) {
+                throw new RuntimeException('Error while renaming file');
+            }
+
+            $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+
+            $media = $this->app->getMediaFromUri($tempoFile);
+
+            $this->getSubDefinitionSubstituer()->substitute($record, 'thumbnail', $media);
+            $this->getDataboxLogger($record->get_databox())
+                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
+
+            unlink($tempoFile);
+            rmdir($tempoDir);
+            $success = true;
+            $message = $this->app->trans('Thumbnail has been successfully substitued');
+        } catch (\Exception $e) {
+            $success = false;
+            $message = $this->app->trans('file is not valid');
+        }
+
+        return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
             'success'   => $success,
             'message'   => $message,
         ]);
     }
 
-    public function submitConfirmBoxAction(Application $app, Request $request)
+    public function submitConfirmBoxAction(Request $request)
     {
-        $return = ['error'   => false, 'datas'   => ''];
         $template = 'prod/actions/Tools/confirm.html.twig';
 
         try {
-            $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
             $var = [
-                'video_title'    => $record->get_title()
-                , 'image'          => $request->request->get('image', '')
+                'video_title' => $record->get_title(),
+                'image'       => $request->request->get('image', ''),
             ];
-            $return['datas'] = $app['twig']->render($template, $var);
+            $return = [
+                'error' => false,
+                'datas' => $this->render($template, $var),
+            ];
         } catch (\Exception $e) {
-            $return['datas'] = $app->trans('an error occured');
-            $return['error'] = true;
+            $return = [
+                'error' => true,
+                'datas' => $this->app->trans('an error occured'),
+            ];
         }
 
-        return $app->json($return);
+        return $this->app->json($return);
     }
 
-    public function applyThumbnailExtractionAction(Application $app, Request $request)
+    public function applyThumbnailExtractionAction(Request $request)
     {
         $return = ['success' => false, 'message' => ''];
 
         try {
-            $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
-            $dataUri = \DataURI\Parser::parse($request->request->get('image', ''));
+            $dataUri = Parser::parse($request->request->get('image', ''));
 
             $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
-
             $fileName = sprintf('%s/%s.png',  sys_get_temp_dir(), $name);
 
             file_put_contents($fileName, $dataUri->getData());
 
-            $media = $app->getMediaFromUri($fileName);
+            $media = $this->app->getMediaFromUri($fileName);
 
-            $app['subdef.substituer']->substitute($record, 'thumbnail', $media);
-            $app['phraseanet.logger']($record->get_databox())->log(
-                $record,
-                \Session_Logger::EVENT_SUBSTITUTE,
-                'thumbnail',
-                ''
-            );
+            $this->getSubDefinitionSubstituer()->substitute($record, 'thumbnail', $media);
+            $this->getDataboxLogger($record->get_databox())
+                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
             unset($media);
-            $app['filesystem']->remove($fileName);
+            $this->getFilesystem()->remove($fileName);
 
             $return['success'] = true;
         } catch (\Exception $e) {
             $return['message'] = $e->getMessage();
         }
 
-        return $app->json($return);
+        return $this->app->json($return);
+    }
+
+    /**
+     * @return Reader
+     */
+    private function getExifToolReader()
+    {
+        return $this->app['exiftool.reader'];
+    }
+
+    /**
+     * @return Alchemyst
+     */
+    private function getMediaAlchemyst()
+    {
+        return $this->app['media-alchemyst'];
+    }
+
+    /**
+     * @return MediaVorus
+     */
+    private function getMediaVorus()
+    {
+        return $this->app['mediavorus'];
+    }
+
+    /**
+     * @return SubdefSubstituer
+     */
+    private function getSubDefinitionSubstituer()
+    {
+        return $this->app['subdef.substituer'];
+    }
+
+    /**
+     * @return PhraseanetMetadataSetter
+     */
+    private function getMetadataSetter()
+    {
+        return $this->app['phraseanet.metadata-setter'];
+    }
+
+    /**
+     * @return PhraseanetMetadataReader
+     */
+    private function getMetadataReader()
+    {
+        return $this->app['phraseanet.metadata-reader'];
     }
 }
