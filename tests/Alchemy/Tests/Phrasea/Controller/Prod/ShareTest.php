@@ -2,7 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Controller\Prod\ShareController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Share;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ShareTest extends \PhraseanetAuthenticatedWebTestCase
 {
@@ -59,18 +61,18 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testShareRecord()
     {
-        $share = new Share();
-        $response = $share->shareRecord(self::$DI['app'], $this->getMock('Symfony\Component\HttpFoundation\Request'), self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+        $share = new ShareController(self::$DI['app']);
+
+        $response = $share->shareRecord(self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
         $this->assertTrue($response->isOk());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Share::shareRecord
      */
     public function testShareRecordBadAccess()
     {
-        $share = new Share();
+        $share = new ShareController(self::$DI['app']);
 
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
@@ -90,10 +92,14 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['acl'] = $aclProvider;
 
-        $share->shareRecord(
-            self::$DI['app'],
-            $this->getMock('Symfony\Component\HttpFoundation\Request'),
-            self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id()
-        );
+        try {
+            $share->shareRecord(self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+        } catch (HttpException $exception) {
+            $this->assertEquals(403, $exception->getStatusCode());
+
+            return;
+        }
+
+        $this->fail('An access denied exception should have been thrown.');
     }
 }
