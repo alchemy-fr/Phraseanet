@@ -11,57 +11,49 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Prod\ShareController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-class Share implements ControllerProviderInterface
+class Share implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    /**
-     * {@inheritDoc}
-     */
+    public function register(Application $app)
+    {
+        $app['controller.prod.share'] = $app->share(function (PhraseaApplication $app) {
+            return (new ShareController($app))
+                ;
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.prod.share'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireNotGuest();
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireNotGuest();
         });
 
         $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
-            ->before(function (Request $request) use ($app) {
-                $app['firewall']->requireRightOnSbas(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')), 'bas_chupub');
+            ->before(function (Request $request) use ($app, $firewall) {
+                $firewall->requireRightOnSbas(
+                    \phrasea::sbasFromBas($app, $request->attributes->get('base_id')),
+                    'bas_chupub'
+                );
             })
             ->bind('share_record');
 
         return $controllers;
-    }
-
-    /**
-     *  Share a record
-     *
-     * @param  Application $app
-     * @param  Request     $request
-     * @param  integer     $base_id
-     * @param  integer     $record_id
-     * @return Response
-     */
-    public function shareRecord(Application $app, Request $request, $base_id, $record_id)
-    {
-        $record = new \record_adapter($app, \phrasea::sbasFromBas($app, $base_id), $record_id);
-
-        if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_subdef($record, 'preview')) {
-            $app->abort(403);
-        }
-
-        return new Response($app['twig']->render('prod/Share/record.html.twig', [
-            'record' => $record,
-        ]));
     }
 }
