@@ -9,11 +9,14 @@
  */
 namespace Alchemy\Phrasea\Application\Helper;
 
+use Neutron\TemporaryFilesystem\Manager;
+use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 trait FilesystemAware
 {
     private $filesystem;
+    private $temporaryFilesystem;
 
     /**
      * Set Locator to use to locate FileSystem
@@ -52,5 +55,44 @@ trait FilesystemAware
         $this->filesystem = $instance;
 
         return $this->filesystem;
+    }
+
+    /**
+     * Set Locator to use to locate Temporary FileSystem
+     *
+     * @param callable $locator
+     * @return $this
+     */
+    public function setTemporaryFileSystemLocator(callable $locator)
+    {
+        $this->temporaryFilesystem = $locator;
+
+        return $this;
+    }
+
+    /**
+     * @return Manager
+     */
+    public function getTemporaryFilesystem()
+    {
+        if ($this->temporaryFilesystem instanceof Manager) {
+            return $this->temporaryFilesystem;
+        }
+
+        if (null === $this->temporaryFilesystem) {
+            throw new \LogicException('Filesystem locator was not set');
+        }
+
+        $instance = call_user_func($this->temporaryFilesystem);
+        if (!$instance instanceof Manager) {
+            throw new \LogicException(sprintf(
+                'Expects locator to return instance of "%s", got "%s"',
+                Manager::class,
+                is_object($instance) ? get_class($instance) : gettype($instance)
+            ));
+        }
+        $this->temporaryFilesystem = $instance;
+
+        return $this->temporaryFilesystem;
     }
 }

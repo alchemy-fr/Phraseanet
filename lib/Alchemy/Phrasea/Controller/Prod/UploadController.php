@@ -9,13 +9,20 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\BorderManagerAware;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
+use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\LazaretEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use DataURI\Exception\Exception as DataUriException;
 use DataURI\Parser;
@@ -27,55 +34,43 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class UploadController extends Controller
 {
-    /**
-     * Render the flash upload form
-     *
-     * @param Application $app     A Silex application
-     * @param Request     $request The current request
-     *
-     * @return Response
-     */
-    public function getFlashUploadForm(Application $app, Request $request)
+    use BorderManagerAware;
+    use DataboxLoggerAware;
+    use DispatcherAware;
+    use EntityManagerAware;
+    use FilesystemAware;
+    use SubDefinitionSubstituerAware;
+
+    public function getFlashUploadForm()
     {
         $maxFileSize = $this->getUploadMaxFileSize();
 
-        return $app['twig']->render(
-            'prod/upload/upload-flash.html.twig', array(
+        return $this->render('prod/upload/upload-flash.html.twig', [
             'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
+            'collections'         => $this->getGrantedCollections($this->getAclForUser()),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+        ]);
     }
 
-    public function getHtml5UploadForm(Application $app, Request $request)
+    public function getHtml5UploadForm()
     {
         $maxFileSize = $this->getUploadMaxFileSize();
 
-        return $app['twig']->render(
-            'prod/upload/upload.html.twig', array(
+        return $this->render('prod/upload/upload.html.twig', [
             'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
+            'collections'         => $this->getGrantedCollections($this->getAclForUser()),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ));
+        ]);
     }
 
-    /**
-     * Render the html upload form
-     *
-     * @param Application $app     A Silex application
-     * @param Request     $request The current request
-     *
-     * @return Response
-     */
-    public function getUploadForm(Application $app, Request $request)
+    public function getUploadForm()
     {
         $maxFileSize = $this->getUploadMaxFileSize();
 
-        return $app['twig']->render(
-            'prod/upload/upload.html.twig', [
-            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
+        return $this->render('prod/upload/upload.html.twig', [
+            'collections'         => $this->getGrantedCollections($this->getAclForUser()),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
         ]);
@@ -84,7 +79,6 @@ class UploadController extends Controller
     /**
      * Upload processus
      *
-     * @param Application $app     The Silex application
      * @param Request     $request The current request
      *
      * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
@@ -96,9 +90,9 @@ class UploadController extends Controller
      *
      * @return Response
      */
-    public function upload(Application $app, Request $request)
+    public function upload(Request $request)
     {
-        $datas = [
+        $data = [
             'success' => false,
             'code'    => null,
             'message' => '',
@@ -121,7 +115,7 @@ class UploadController extends Controller
             throw new BadRequestHttpException('Missing base_id parameter');
         }
 
-        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($base_id, 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
             throw new AccessDeniedHttpException('User is not allowed to add record on this collection');
         }
 
@@ -136,17 +130,17 @@ class UploadController extends Controller
             $uploadedFilename = $file->getRealPath();
             $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
 
-            $app['filesystem']->rename($uploadedFilename, $renamedFilename);
+            $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
 
-            $media = $app->getMediaFromUri($renamedFilename);
-            $collection = \collection::get_from_base_id($app, $base_id);
+            $media = $this->app->getMediaFromUri($renamedFilename);
+            $collection = \collection::get_from_base_id($this->app, $base_id);
 
             $lazaretSession = new LazaretSession();
-            $lazaretSession->setUser($app['authentication']->getUser());
+            $lazaretSession->setUser($this->getAuthenticatedUser());
 
-            $app['orm.em']->persist($lazaretSession);
+            $this->getEntityManager()->persist($lazaretSession);
 
-            $packageFile = new File($app, $media, $collection, $file->getClientOriginalName());
+            $packageFile = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
             $postStatus = $request->request->get('status');
 
@@ -157,7 +151,7 @@ class UploadController extends Controller
                 foreach (range(0, 31) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
-                $packageFile->addAttribute(new Status($app, strrev($status)));
+                $packageFile->addAttribute(new Status($this->app, strrev($status)));
             }
 
             $forceBehavior = $request->request->get('forceAction');
@@ -165,21 +159,19 @@ class UploadController extends Controller
             $reasons = [];
             $elementCreated = null;
 
-            $callback = function ($element, $visa, $code) use ($app, &$reasons, &$elementCreated) {
+            $callback = function ($element, Visa $visa) use (&$reasons, &$elementCreated) {
                 foreach ($visa->getResponses() as $response) {
                     if (!$response->isOk()) {
-                        $reasons[] = $response->getMessage($app['translator']);
+                        $reasons[] = $response->getMessage($this->app['translator']);
                     }
                 }
 
                 $elementCreated = $element;
             };
 
-            $code = $app['border-manager']->process(
-                $lazaretSession, $packageFile, $callback, $forceBehavior
-            );
+            $code = $this->getBorderManager()->process( $lazaretSession, $packageFile, $callback, $forceBehavior);
 
-            $app['filesystem']->rename($renamedFilename, $uploadedFilename);
+            $this->getFilesystem()->rename($renamedFilename, $uploadedFilename);
 
             if (!!$forceBehavior) {
                 $reasons = [];
@@ -188,41 +180,39 @@ class UploadController extends Controller
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
-                $message = $app->trans('The record was successfully created');
+                $message = $this->app->trans('The record was successfully created');
 
-                $app['dispatcher']->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
+                $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {
                     try {
                         $dataUri = Parser::parse($b64Image);
 
-                        $fileName = $app['temporary-filesystem']->createTemporaryFile('base_64_thumb', null, "png");
+                        $fileName = $this->getTemporaryFilesystem()->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
-                        $media = $app->getMediaFromUri($fileName);
-                        $app['subdef.substituer']->substitute($elementCreated, 'thumbnail', $media);
-                        $app['phraseanet.logger']($elementCreated->get_databox())->log(
-                            $elementCreated,
-                            \Session_Logger::EVENT_SUBSTITUTE,
-                            'thumbnail',
-                            ''
-                        );
+                        $media = $this->app->getMediaFromUri($fileName);
+
+                        $this->getSubDefinitionSubstituer()->substitute($elementCreated, 'thumbnail', $media);
+                        $this->getDataboxLogger($elementCreated->get_databox())
+                            ->log($elementCreated, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
                         unset($media);
-                        $app['temporary-filesystem']->clean('base_64_thumb');
+                        $this->getTemporaryFilesystem()->clean('base_64_thumb');
                     } catch (DataUriException $e) {
 
                     }
                 }
             } else {
-                $app['dispatcher']->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
+                /** @var LazaretFile $elementCreated */
+                $this->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';
-                $message = $app->trans('The file was moved to the quarantine');
+                $message = $this->app->trans('The file was moved to the quarantine');
             }
 
-            $datas = [
+            $data = [
                 'success' => true,
                 'code'    => $code,
                 'message' => $message,
@@ -231,10 +221,10 @@ class UploadController extends Controller
                 'id'      => $id,
             ];
         } catch (\Exception $e) {
-            $datas['message'] = $app->trans('Unable to add file to Phraseanet');
+            $data['message'] = $this->app->trans('Unable to add file to Phraseanet');
         }
 
-        $response = $app->json($datas);
+        $response = $this->app->json($data);
         // IE 7 and 8 does not correctly handle json response in file API
         // lets send them an html content-type header
         $response->headers->set('Content-type', 'text/html');
@@ -283,8 +273,10 @@ class UploadController extends Controller
         }
 
         switch (strtolower(substr($postMaxSize, -1))) {
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'g':
                 $postMaxSize *= 1024;
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'm':
                 $postMaxSize *= 1024;
             case 'k':

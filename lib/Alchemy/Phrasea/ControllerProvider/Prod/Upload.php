@@ -26,6 +26,23 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.upload'] = $app->share(function (PhraseaApplication $app) {
             return (new UploadController($app))
+                ->setBorderManagerLocator(function () use ($app) {
+                    return $app['border-manager'];
+                })
+                ->setDispatcher($app['dispatcher'])
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setEntityManagerLocator(function () use ($app) {
+                    return $app['orm.em'];
+                })
+                ->setFileSystemLocator(function () use ($app) {
+                    return $app['filesystem'];
+                })
+                ->setTemporaryFileSystemLocator(function () use ($app) {
+                    return $app['temporary-filesystem'];
+                })
+                ->setSubDefinitionSubstituerLocator(function () use ($app) {
+                    return $app['subdef.substituer'];
+                })
             ;
         });
     }
