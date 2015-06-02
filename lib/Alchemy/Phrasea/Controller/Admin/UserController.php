@@ -356,14 +356,19 @@ class UserController extends Controller
         $userRegistrations = [];
         /** @var RegistrationRepository $registrationRepository */
         $registrationRepository = $this->app['repo.registrations'];
-        foreach (
-            $registrationRepository->getUserRegistrations(
-            $authenticatedUser,
-            $this->getAclForConnectedUser()->get_granted_base(['canadmin'])
-        ) as $registration) {
+        $collections = $this->getAclForConnectedUser()->get_granted_base(['canadmin']);
+        $authenticatedUserId = $authenticatedUser->getId();
+        foreach ($registrationRepository->getPendingRegistrations($collections) as $registration) {
             $user = $registration->getUser();
-            $userRegistrations[$user->getId()]['user'] = $user;
-            $userRegistrations[$user->getId()]['registrations'][$registration->getBaseid()] = $registration;
+            $userId = $user->getId();
+            // Can not handle self registration.
+            if ($authenticatedUserId == $userId) {
+                continue;
+            }
+            if (!isset($userRegistrations[$userId])) {
+                $userRegistrations[$userId] = ['user' => $user, 'registrations' => []];
+            }
+            $userRegistrations[$userId]['registrations'][$registration->getBaseid()] = $registration;
         }
 
         return $this->render('admin/user/registrations.html.twig', [

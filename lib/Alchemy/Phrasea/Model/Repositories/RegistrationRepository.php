@@ -50,6 +50,29 @@ class RegistrationRepository extends EntityRepository
     }
 
     /**
+     * Get Current pending registrations.
+     *
+     * @param \collection[] $collections
+     * @return Registration[]
+     */
+    public function getPendingRegistrations(array $collections)
+    {
+        $builder = $this->createQueryBuilder('r');
+        $builder->where('r.pending = 1');
+
+        if (!empty($collections)) {
+            $builder->andWhere('r.baseId IN (:bases)');
+            $builder->setParameter('bases', array_map(function (\collection $collection) {
+                return $collection->get_base_id();
+            }, $collections));
+        }
+
+        $builder->orderBy('r.created', 'DESC');
+
+        return $builder->getQuery()->getResult();
+    }
+
+    /**
      * Gets registration registrations for a user.
      *
      * @param User $user
