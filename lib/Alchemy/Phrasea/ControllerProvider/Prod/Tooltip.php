@@ -26,6 +26,9 @@ class Tooltip implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.tooltip'] = $app->share(function (PhraseaApplication $app) {
             return (new TooltipController($app))
+                ->setSearchEngineLocator(function () use ($app) {
+                    return $app['phraseanet.SE'];
+                })
             ;
         });
     }
