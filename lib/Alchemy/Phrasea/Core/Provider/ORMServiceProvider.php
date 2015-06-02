@@ -644,7 +644,7 @@ SQL;
          * Return an instance of native cache query for default ORM
          * @todo return an instance of NativeQueryProvider for given orm;
          */
-        $app['orm.orm.em.native-query'] = $app->share(function ($app) {
+        $app['orm.em.native-query'] = $app->share(function ($app) {
             return new NativeQueryProvider($app['orm.em']);
         });
 
