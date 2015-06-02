@@ -30,6 +30,9 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
                 ->setFileSystemLocator(function () use ($app) {
                     return $app['filesystem'];
                 })
+                ->setSubDefinitionSubstituerLocator(function () use ($app) {
+                    return $app['subdef.substituer'];
+                })
             ;
         });
     }

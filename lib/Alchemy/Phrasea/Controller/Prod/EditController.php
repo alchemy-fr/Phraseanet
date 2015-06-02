@@ -11,6 +11,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
@@ -23,6 +24,7 @@ class EditController extends Controller
 {
     use DataboxLoggerAware;
     use DispatcherAware;
+    use SubDefinitionSubstituerAware;
 
     public function submitAction(Request $request)
     {
@@ -372,13 +374,5 @@ class EditController extends Controller
         }
 
         return $this->app->json(['success' => true]);
-    }
-
-    /**
-     * @return SubdefSubstituer
-     */
-    private function getSubDefinitionSubstituer()
-    {
-        return $this->app['subdef.substituer'];
     }
 }
