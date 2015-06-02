@@ -7,10 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Alchemy\Phrasea\ControllerProvider\Prod;
+namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
+use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -28,6 +29,7 @@ class ToolsController extends Controller
 {
     use DataboxLoggerAware;
     use FilesystemAware;
+    use SubDefinitionSubstituerAware;
 
     public function indexAction(Request $request)
     {
@@ -295,14 +297,6 @@ class ToolsController extends Controller
     private function getMediaVorus()
     {
         return $this->app['mediavorus'];
-    }
-
-    /**
-     * @return SubdefSubstituer
-     */
-    private function getSubDefinitionSubstituer()
-    {
-        return $this->app['subdef.substituer'];
     }
 
     /**

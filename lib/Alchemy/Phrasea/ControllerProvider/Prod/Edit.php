@@ -27,7 +27,11 @@ class Edit implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.edit'] = $app->share(function (PhraseaApplication $app) {
             return (new EditController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                ->setDispatcher($app['dispatcher']);
+                ->setDispatcher($app['dispatcher'])
+                ->setSubDefinitionSubstituerLocator(function () use ($app) {
+                    return $app['subdef.substituer'];
+                })
+            ;
         });
     }
 

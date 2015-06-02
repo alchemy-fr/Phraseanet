@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
+use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Controller\Controller;
@@ -32,6 +33,7 @@ class LazaretController extends Controller
     use DelivererAware;
     use EntityManagerAware;
     use FilesystemAware;
+    use SubDefinitionSubstituerAware;
 
     /**
      * List all elements in lazaret
@@ -459,13 +461,5 @@ class LazaretController extends Controller
     private function getBorderManager()
     {
         return $this->app['border-manager'];
-    }
-
-    /**
-     * @return SubdefSubstituer
-     */
-    private function getSubDefinitionSubstituer()
-    {
-        return $this->app['subdef.substituer'];
     }
 }
