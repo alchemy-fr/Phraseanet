@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -38,9 +39,7 @@ class Manage extends Helper
     {
         parent::__construct($app, $Request);
 
-        $this->setDelivererLocator(function () use ($app) {
-            return $app['notification.deliverer'];
-        });
+        $this->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
     }
 
     /**

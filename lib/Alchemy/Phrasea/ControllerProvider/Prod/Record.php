@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\RecordController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,12 +27,8 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.records'] = $app->share(function (PhraseaApplication $app) {
             return (new RecordController($app))
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
-                ->setSearchEngineLocator(function () use ($app) {
-                    return $app['phraseanet.SE'];
-                })
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setSearchEngineLocator(new LazyLocator($app, 'phraseanet.SE'))
             ;
         });
     }

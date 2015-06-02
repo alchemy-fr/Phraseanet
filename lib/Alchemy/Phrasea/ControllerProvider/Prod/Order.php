@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\OrderController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -27,12 +28,8 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.order'] = $app->share(function (PhraseaApplication $app) {
             return (new OrderController($app))
                 ->setDispatcher($app['dispatcher'])
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
-                ->setUserQueryFactory(function () use ($app) {
-                    return $app['phraseanet.user-query'];
-                })
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
             ;
         });
     }

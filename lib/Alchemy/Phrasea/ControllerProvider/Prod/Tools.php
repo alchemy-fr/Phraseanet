@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\ToolsController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -27,12 +28,8 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.tools'] = $app->share(function (PhraseaApplication $app) {
             return (new ToolsController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                ->setFileSystemLocator(function () use ($app) {
-                    return $app['filesystem'];
-                })
-                ->setSubDefinitionSubstituerLocator(function () use ($app) {
-                    return $app['subdef.substituer'];
-                })
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setSubDefinitionSubstituerLocator(new LazyLocator($app, 'subdef.substituer'))
             ;
         });
     }

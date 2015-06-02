@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\EditController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -28,9 +29,7 @@ class Edit implements ControllerProviderInterface, ServiceProviderInterface
             return (new EditController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
-                ->setSubDefinitionSubstituerLocator(function () use ($app) {
-                    return $app['subdef.substituer'];
-                })
+                ->setSubDefinitionSubstituerLocator(new LazyLocator($app, 'subdef.substituer'))
             ;
         });
     }

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\QueryController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,12 +27,8 @@ class Query implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.query'] = $app->share(function (PhraseaApplication $app) {
             return (new QueryController($app))
-                ->setSearchEngineLocator(function () use ($app) {
-                    return $app['phraseanet.SE'];
-                })
-                ->setSearchEngineLoggerLocator(function () use ($app) {
-                    return $app['phraseanet.SE.logger'];
-                })
+                ->setSearchEngineLocator(new LazyLocator($app, 'phraseanet.SE'))
+                ->setSearchEngineLoggerLocator(new LazyLocator($app, 'phraseanet.SE.logger'))
             ;
         });
     }

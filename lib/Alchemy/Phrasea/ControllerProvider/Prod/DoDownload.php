@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\DoDownloadController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,13 +27,10 @@ class DoDownload implements ControllerProviderInterface, ServiceProviderInterfac
     {
         $app['controller.prod.do-download'] = $app->share(function (PhraseaApplication $app) {
             return (new DoDownloadController($app))
-                ->setDelivererLocator(function () use ($app) {
-                    return $app['phraseanet.file-serve'];
-                })
+                ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
                 ->setDispatcher($app['dispatcher'])
-                ->setFileSystemLocator(function () use ($app) {
-                    return $app['filesystem'];
-                });
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+            ;
         });
     }
 

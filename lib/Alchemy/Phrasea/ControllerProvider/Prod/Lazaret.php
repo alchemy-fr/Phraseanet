@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\LazaretController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -27,18 +28,10 @@ class Lazaret implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.lazaret'] = $app->share(function (PhraseaApplication $app) {
             return (new LazaretController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                ->setDelivererLocator(function () use ($app) {
-                    return $app['phraseanet.file-serve'];
-                })
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
-                ->setFileSystemLocator(function () use ($app) {
-                    return $app['filesystem'];
-                })
-                ->setSubDefinitionSubstituerLocator(function () use ($app) {
-                    return $app['subdef.substituer'];
-                })
+                ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setSubDefinitionSubstituerLocator(new LazyLocator($app, 'subdef.substituer'))
             ;
         });
     }

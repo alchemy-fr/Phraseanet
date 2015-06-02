@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Root;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -37,9 +38,7 @@ class Account implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $app['account.controller'] = $this
-            ->setDelivererLocator(function () use ($app) {
-                return $app['notification.deliverer'];
-            });
+            ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
 
         $controllers = $this->createAuthenticatedCollection($app);
 

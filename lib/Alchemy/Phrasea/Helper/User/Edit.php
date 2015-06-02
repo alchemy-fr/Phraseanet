@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
@@ -38,9 +39,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function __construct(Application $app, Request $Request)
     {
         parent::__construct($app, $Request);
-        $this->setDelivererLocator(function () use ($app) {
-            return $app['notification.deliverer'];
-        });
+        $this->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
 
         $this->users = explode(';', $Request->get('users'));
 
