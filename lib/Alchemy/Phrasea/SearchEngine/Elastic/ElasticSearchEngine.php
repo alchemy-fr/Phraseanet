@@ -378,6 +378,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         $collection_facet_agg['terms']['field'] = 'collection_name';
         $aggs['Collection'] = $collection_facet_agg;
 
+        // We always want a base facet right now
+        $base_facet_agg = array();
+        $base_facet_agg['terms']['field'] = 'databox_name';
+        $aggs['Base'] = $base_facet_agg;
+
         foreach ($this->structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
