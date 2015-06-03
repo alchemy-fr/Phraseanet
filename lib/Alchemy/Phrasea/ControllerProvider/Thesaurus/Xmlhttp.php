@@ -66,6 +66,7 @@ class Xmlhttp implements ControllerProviderInterface
         $sbas_id = $request->get('sbid');
 
         try {
+            /** @var \databox $databox */
             $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
             $connbas = $databox->get_connection();
 
@@ -125,22 +126,6 @@ class Xmlhttp implements ControllerProviderInterface
                         printf("newid=%s<br/>\n", $te->getAttribute("id"));
                     }
 
-                    $soldid = str_replace(".", "d", $oldid) . "d";
-                    $snewid = str_replace(".", "d", $pid) . "d";
-                    $l = strlen($soldid) + 1;
-
-                    $sql = "UPDATE thit
-                            SET value=CONCAT('$snewid', SUBSTRING(value FROM $l))
-                            WHERE value LIKE :like";
-
-                    if ($request->get("debug")) {
-                        printf("soldid=%s ; snewid=%s<br/>\nsql=%s<br/>\n", $soldid, $snewid, $sql);
-                    } else {
-                        $stmt = $connbas->prepare($sql);
-                        $stmt->execute([':like' => $soldid . '%']);
-                        $stmt->closeCursor();
-                    }
-
                     $refreshid = $parentnode->getAttribute('id');
                     $refresh['T' . $refreshid] = [
                         'type' => 'T',
@@ -185,22 +170,6 @@ class Xmlhttp implements ControllerProviderInterface
                             printf("newid=%s<br/>\n", $te->getAttribute("id"));
                         }
 
-                        $soldid = str_replace(".", "d", $oldid) . "d";
-                        $snewid = str_replace(".", "d", $pid) . "d";
-                        $l = strlen($soldid) + 1;
-
-                        $sql = "UPDATE thit
-                                SET value = CONCAT('$snewid', SUBSTRING(value FROM $l))
-                                WHERE value LIKE :like";
-
-                        if ($request->get("debug")) {
-                            printf("soldid=%s ; snewid=%s<br/>\nsql=%s<br/>\n", $soldid, $snewid, $sql);
-                        } else {
-                            $stmt = $connbas->prepare($sql);
-                            $stmt->execute([':like' => $soldid . '%']);
-                            $stmt->closeCursor();
-                        }
-
                         $thchanged = true;
                     }
 
@@ -237,7 +206,7 @@ class Xmlhttp implements ControllerProviderInterface
         return $app->json($ret);
     }
 
-    private function renumerate($lang, $node, $id, &$chgids, $depth = 0)
+    private function renumerate($lang, \DOMElement $node, $id, &$chgids, $depth = 0)
     {
         $node->setAttribute("id", $id);
 
@@ -265,6 +234,7 @@ class Xmlhttp implements ControllerProviderInterface
             return $app->json($json);
         }
 
+        /** @var \databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
         $dom_thesau = $databox->get_dom_thesaurus();
@@ -442,7 +412,7 @@ class Xmlhttp implements ControllerProviderInterface
         ], true)));
 
         if (null !== $request->get('bid')) {
-
+            /** @var \databox $databox */
             $databox = $app['phraseanet.appbox']->get_databox((int) $request->get('bid'));
             $dom = $databox->get_dom_thesaurus();
 
@@ -468,7 +438,7 @@ class Xmlhttp implements ControllerProviderInterface
         if (null === $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
         }
-
+        /** @var \databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox((int) $request->get("bid"));
         $dom = $databox->get_dom_thesaurus();
 
@@ -614,6 +584,7 @@ class Xmlhttp implements ControllerProviderInterface
             return new Response('Missing bid parameter', 400);
         }
 
+        /** @var \databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox((int) $request->get('bid'));
         $dom = $databox->get_dom_thesaurus();
         if (!$dom) {
@@ -770,6 +741,7 @@ class Xmlhttp implements ControllerProviderInterface
         $thid = implode('.', $tids);
 
         try {
+            /** @var \databox $databox */
             $databox = $app['phraseanet.appbox']->get_databox($sbid);
             $connbas = $databox->get_connection();
             $dbname = \phrasea::sbas_labels($sbid, $app);
@@ -872,6 +844,7 @@ class Xmlhttp implements ControllerProviderInterface
                             $tts = array_reverse($tts);
                         }
 
+                        /** @var \DOMElement[] $ts */
                         foreach ($tts as $ts) {
                             $class = '';
                             if ($ts['nts'] > 0) {
@@ -926,7 +899,7 @@ class Xmlhttp implements ControllerProviderInterface
         ], 'html' => $html]);
     }
 
-    private function buildBranchLabel($dbname, $language, $n, &$key0, &$nts0)
+    private function buildBranchLabel($dbname, $language, \DOMElement $n, &$key0, &$nts0)
     {
         $key0 = null;  // key of the sy in the current language
         // (or key of the first sy if we can't find good lng)
@@ -987,6 +960,7 @@ class Xmlhttp implements ControllerProviderInterface
 
         $html = '';
 
+        /** @var \databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
         $dom = $databox->get_dom_thesaurus();
 
@@ -1055,7 +1029,7 @@ class Xmlhttp implements ControllerProviderInterface
         return [$term, $context];
     }
 
-    private function getBranchesHTML($bid, $srcnode, &$html, $depth)
+    private function getBranchesHTML($bid, \DOMElement $srcnode, &$html, $depth)
     {
         $tid = $srcnode->getAttribute('id');
         $class = 'h';
@@ -1138,8 +1112,8 @@ class Xmlhttp implements ControllerProviderInterface
             return json_encode($ret);
         }
 
-
- $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+        /** @var \databox $databox */
+        $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
         $dom = $databox->get_dom_thesaurus();
 
         if (!$dom) {
@@ -1216,6 +1190,7 @@ class Xmlhttp implements ControllerProviderInterface
             return new Response('Missing bid parameter', 400);
         }
 
+        /** @var \databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
         $dom = $databox->get_dom_thesaurus();
 
@@ -1226,6 +1201,7 @@ class Xmlhttp implements ControllerProviderInterface
         $xpath = $databox->get_xpath_thesaurus();
         $q = '/thesaurus';
 
+        $zhtml = '';
         if (($znode = $xpath->query($q)->item(0))) {
             $q2 = '//sy';
             if ($request->get('t')) {
@@ -1244,10 +1220,8 @@ class Xmlhttp implements ControllerProviderInterface
                     }
                 }
 
-                $zhtml = '';
                 $this->getBrancheXML($bid, $znode, $zhtml, 0);
             } else {
-                $zhtml = '';
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
                     $t = $n->getAttribute('v');
@@ -1264,7 +1238,7 @@ class Xmlhttp implements ControllerProviderInterface
         return new Response($zhtml, 200, array('Content-Type' => 'text/xml'));
     }
 
-    private function getBrancheJson($bid, $srcnode, &$ret, $depth)
+    private function getBrancheJson($bid, \DOMElement $srcnode, &$ret, $depth)
     {
         $tid = $srcnode->getAttribute('id');
         $nts = 0;
@@ -1301,7 +1275,7 @@ class Xmlhttp implements ControllerProviderInterface
         return $nret;
     }
 
-    private function getBrancheXML($bid, $srcnode, &$html, $depth)
+    private function getBrancheXML($bid, \DOMElement $srcnode, &$html, $depth)
     {
         $tid = $srcnode->getAttribute('id');
         $class = 'h';
@@ -1424,9 +1398,9 @@ class Xmlhttp implements ControllerProviderInterface
             $tsbas[$ksbas]['lid'] = "'" . implode("','", $lids) . "'";
 
             // count records
-            $sql = 'SELECT DISTINCT record_id AS r
-                    FROM thit WHERE value IN (:lids)
-                    ORDER BY record_id';
+            $sql = 'SELECT DISTINCT record_id AS r'
+                 . ' FROM thit WHERE value IN (:lids)'
+                 . ' ORDER BY record_id';
             $stmt = $connbas->prepare($sql);
             $stmt->execute(['lids' => $lids]);
             $tsbas[$ksbas]['trids'] = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
@@ -1441,7 +1415,6 @@ class Xmlhttp implements ControllerProviderInterface
                 /* @var $databox databox */
                 try {
                     $databox = $appbox->get_databox($sbas['sbas_id']);
-                    $connbas = $databox->get_connection();
                 } catch (\Exception $e) {
                     continue;
                 }
@@ -1471,6 +1444,7 @@ class Xmlhttp implements ControllerProviderInterface
                                 foreach ($field->get_values() as $v) {
                                     $keep = true;
                                     $vtxt = $app['unicode']->remove_indexer_chars($v->getValue());
+                                    /** @var \DOMElement $sy */
                                     foreach ($sbas['tvals'][$fname] as $sy) {
                                         if ($sy->getAttribute('w') == $vtxt) {
                                             $keep = false;
@@ -1539,6 +1513,7 @@ class Xmlhttp implements ControllerProviderInterface
         $sbid = (int) $request->get('sbid');
 
         try {
+            /** @var \databox $databox */
             $databox = $app['phraseanet.appbox']->get_databox($sbid);
 
             $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";
@@ -1546,6 +1521,7 @@ class Xmlhttp implements ControllerProviderInterface
             $html .= "\t" . '<span>' . \phrasea::sbas_labels($sbid, $app) . '</span>' . "\n";
 
             if ($request->get('t')) {
+                $dom_struct = null;
                 if ($request->get('field') != '') {
                     $domth = $databox->get_dom_thesaurus();
                     $dom_struct = $databox->get_dom_structure();
@@ -1607,7 +1583,7 @@ class Xmlhttp implements ControllerProviderInterface
         ], 'html' => $html]);
     }
 
-    private function buildTermLabel($language, $n, &$key0, &$nts0)
+    private function buildTermLabel($language, \DOMElement $n, &$key0, &$nts0)
     {
         $lngfound = false; // true when wet met a first synonym in the current language
         $key0 = null;  // key of the sy in the current language (or key of the first sy if we can't find good lng)
@@ -1649,7 +1625,7 @@ class Xmlhttp implements ControllerProviderInterface
         return $label;
     }
 
-    private function getHTMLTerm($sbid, $lng, $srcnode, &$html, $depth = 0)
+    private function getHTMLTerm($sbid, $lng, \DOMElement $srcnode, &$html, $depth = 0)
     {
         $tid = $srcnode->getAttribute('id');
 
@@ -1691,6 +1667,7 @@ class Xmlhttp implements ControllerProviderInterface
             } else {
                 $html .= $tab . '<UL>' . "\n";
                 // dump every ts
+                /** @var \DOMElement[] $ts */
                 foreach ($tts as $ts) {
                     $class = '';
                     if ($ts['nts'] > 0) {
