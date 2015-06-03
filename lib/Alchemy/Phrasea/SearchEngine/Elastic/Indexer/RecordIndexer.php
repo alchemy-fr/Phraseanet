@@ -28,6 +28,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use databox;
@@ -38,6 +40,8 @@ use Psr\Log\LoggerInterface;
 class RecordIndexer
 {
     const TYPE_NAME = 'record';
+
+    private $structure;
 
     private $helper;
 
@@ -55,8 +59,9 @@ class RecordIndexer
 
     private $logger;
 
-    public function __construct(RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales, LoggerInterface $logger)
+    public function __construct(Structure $structure, RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales, LoggerInterface $logger)
     {
+        $this->structure = $structure;
         $this->helper = $helper;
         $this->thesaurus = $thesaurus;
         $this->appbox = $appbox;
@@ -137,8 +142,8 @@ class RecordIndexer
         $fetcher = new Fetcher($connection, array(
             new CoreHydrator($databox->get_sbas_id(), $this->helper),
             new TitleHydrator($connection),
-            new MetadataHydrator($connection, $this->helper),
-            new ThesaurusHydrator($this->thesaurus, $candidateTerms, $this->helper),
+            new MetadataHydrator($connection, $this->structure, $this->helper),
+            new ThesaurusHydrator($this->structure, $this->thesaurus, $candidateTerms),
             new SubDefinitionHydrator($connection)
         ), $delegate);
         $fetcher->setBatchSize(200);
@@ -167,6 +172,7 @@ class RecordIndexer
         while ($record = $fetcher->fetch()) {
             $params = array();
             $params['id'] = $record['id'];
+            unset($record['id']);
             $params['type'] = self::TYPE_NAME;
             $params['body'] = $this->transform($record);
             $bulk->index($params);
@@ -193,66 +199,77 @@ class RecordIndexer
             // Dates
             ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
             ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
+            // Thesaurus
+            ->add('concept_path', $this->getThesaurusPathMapping())
             // EXIF
             ->add('exif', $this->getExifMapping())
             // Status
             ->add('flags', $this->getFlagsMapping())
+            ->add('flags_bitfield', 'integer')->notIndexed()
             // Keep some fields arround for display purpose
             ->add('subdefs', Mapping::disabledMapping())
             ->add('title', Mapping::disabledMapping())
         ;
 
         // Caption mapping
-        $captionMapping = new Mapping();
-        $mapping->add('caption', $captionMapping);
-        $mapping
-            ->add('caption_all', 'string')
-            ->addLocalizedSubfields($this->locales)
-            ->addRawVersion()
-        ;
-        $privateCaptionMapping = new Mapping();
-        $mapping->add('private_caption', $privateCaptionMapping);
-        $mapping
-            ->add('private_caption_all', 'string')
-            ->addLocalizedSubfields($this->locales)
-            ->addRawVersion()
-        ;
-        // Inferred thesaurus concepts
-        $conceptPathMapping = new Mapping();
-        $mapping->add('concept_path', $conceptPathMapping);
-
-        foreach ($this->helper->getFieldsStructure() as $name => $params) {
-            $m = $params['private'] ? $privateCaptionMapping : $captionMapping;
-            $m->add($name, $params['type']);
-
-            if ($params['type'] === Mapping::TYPE_DATE) {
-                $m->format(Mapping::DATE_FORMAT_CAPTION);
-            }
-
-            if ($params['type'] === Mapping::TYPE_STRING) {
-                if (!$params['searchable'] && !$params['to_aggregate']) {
-                    $m->notIndexed();
-                } elseif (!$params['searchable'] && $params['to_aggregate']) {
-                    $m->notAnalyzed();
-                    $m->addRawVersion();
-                } else {
-                    $m->addRawVersion();
-                    $m->addAnalyzedVersion($this->locales);
-                    $m->highlight();
-                }
-            }
-
-            if ($params['thesaurus_concept_inference']) {
-                $conceptPathMapping
-                    ->add($name, 'string')
-                    ->analyzer('thesaurus_path', 'indexing')
-                    ->analyzer('keyword', 'searching')
-                    ->addRawVersion()
-                ;
-            }
-        }
+        $this->buildCaptionMapping($this->structure->getUnrestrictedFields(), $mapping, 'caption');
+        $this->buildCaptionMapping($this->structure->getPrivateFields(), $mapping, 'private_caption');
 
         return $mapping->export();
+    }
+
+    private function buildCaptionMapping(array $fields, Mapping $root, $section)
+    {
+        $mapping = new Mapping();
+        foreach ($fields as $field) {
+            $this->addFieldToMapping($field, $mapping);
+        }
+        $root->add($section, $mapping);
+        $root
+            ->add(sprintf('%s_all', $section), 'string')
+            ->addLocalizedSubfields($this->locales)
+            ->addRawVersion()
+        ;
+    }
+
+    private function addFieldToMapping(Field $field, Mapping $mapping)
+    {
+        $type = $field->getType();
+        $mapping->add($field->getName(), $type);
+
+        if ($type === Mapping::TYPE_DATE) {
+            $mapping->format(Mapping::DATE_FORMAT_CAPTION);
+        }
+
+        if ($type === Mapping::TYPE_STRING) {
+            $searchable = $field->isSearchable();
+            $facet = $field->isFacet();
+            if (!$searchable && !$facet) {
+                $mapping->notIndexed();
+            } elseif (!$searchable && $facet) {
+                $mapping->notAnalyzed();
+                $mapping->addRawVersion();
+            } else {
+                $mapping->addRawVersion();
+                $mapping->addAnalyzedVersion($this->locales);
+                $mapping->highlight();
+            }
+        }
+    }
+
+    private function getThesaurusPathMapping()
+    {
+        $mapping = new Mapping();
+        foreach ($this->structure->getThesaurusEnabledFields() as $name => $_) {
+            $mapping
+                ->add($name, 'string')
+                ->analyzer('thesaurus_path', 'indexing')
+                ->analyzer('keyword', 'searching')
+                ->addRawVersion()
+            ;
+        }
+
+        return $mapping;
     }
 
     // @todo Add call to addAnalyzedVersion ?

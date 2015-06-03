@@ -122,15 +122,13 @@ $cli->command(new H264MappingGenerator());
 $cli->command(new XSendFileConfigurationDumper());
 $cli->command(new XSendFileMappingGenerator());
 
-if ($cli['search_engine.type'] === SearchEngineInterface::TYPE_ELASTICSEARCH) {
-    $cli->command(new IndexCreateCommand());
-    $cli->command(new IndexDropCommand());
-    $cli->command(new MappingUpdateCommand());
-    $cli->command(new IndexPopulateCommand());
-    $cli->command(new QueryParseCommand());
-    $cli->command(new QuerySampleCommand());
-    $cli->command(new FindConceptsCommand());
-}
+$cli->command(new IndexCreateCommand());
+$cli->command(new IndexDropCommand());
+$cli->command(new MappingUpdateCommand());
+$cli->command(new IndexPopulateCommand());
+$cli->command(new QueryParseCommand());
+$cli->command(new QuerySampleCommand());
+$cli->command(new FindConceptsCommand());
 
 $cli->loadPlugins();
 

@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use DomainException;
@@ -21,12 +22,13 @@ use DomainException;
 class MetadataHydrator implements HydratorInterface
 {
     private $connection;
+    private $structure;
     private $helper;
-    private $fields;
 
-    public function __construct(DriverConnection $connection, RecordHelper $helper)
+    public function __construct(DriverConnection $connection, Structure $structure, RecordHelper $helper)
     {
         $this->connection = $connection;
+        $this->structure = $structure;
         $this->helper = $helper;
     }
 
@@ -72,7 +74,7 @@ SQL;
             switch ($metadata['type']) {
                 case 'caption':
                     // Sanitize fields
-                    switch ($this->getFieldType($key)) {
+                    switch ($this->structure->typeOf($key)) {
                         case Mapping::TYPE_DATE:
                             $value = $this->helper->sanitizeDate($value);
                             break;
@@ -114,17 +116,5 @@ SQL;
                     break;
             }
         }
-    }
-
-    private function getFieldType($key)
-    {
-        if ($this->fields === null) {
-            $this->fields = $this->helper->getFieldsStructure();
-        }
-        if (!isset($this->fields[$key]['type'])) {
-            throw new DomainException(sprintf('Unknown field "%s".', $key));
-        }
-
-        return $this->fields[$key]['type'];
     }
 }
