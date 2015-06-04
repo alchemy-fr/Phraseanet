@@ -79,6 +79,7 @@ class TasksServiceProvider implements ServiceProviderInterface
                         return $app['notification.deliverer'];
                     }),
                 new ArchiveJob($app['translator'], $app['dispatcher'], $logger),
+                new IndexerJob($app['translator'], $app['dispatcher'], $logger),
                 new BridgeJob($app['translator'], $app['dispatcher'], $logger),
                 new FtpPullJob($app['translator'], $app['dispatcher'], $logger),
                 new RecordMoverJob($app['translator'], $app['dispatcher'], $logger),
