@@ -17,6 +17,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
@@ -34,17 +35,18 @@ class ElasticSearchEngine implements SearchEngineInterface
     const FLAG_UNSET_ONLY = 'unset_only';
 
     private $app;
+    private $structure;
     /** @var Client */
     private $client;
-    private $dateFields;
     private $indexName;
     private $configurationPanel;
     private $locales;
     private $recordHelper;
 
-    public function __construct(Application $app, Client $client, $indexName, array $locales, RecordHelper $recordHelper, Closure $facetsResponseFactory)
+    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, RecordHelper $recordHelper, Closure $facetsResponseFactory)
     {
         $this->app = $app;
+        $this->structure = $structure;
         $this->client = $client;
         $this->locales = array_keys($locales);
         $this->recordHelper = $recordHelper;
@@ -117,11 +119,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getAvailableDateFields()
     {
-        if ($this->dateFields === null) {
-            $this->dateFields = $this->recordHelper->getDateFields();
-        }
-
-        return $this->dateFields;
+        return array_keys($this->structure->getDateFields());
     }
 
     /**
@@ -262,7 +260,11 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $queryContext = new QueryContext($this->locales, $this->app['locale']);
+        $queryContext = new QueryContext(
+            $this->structure,
+            $this->locales,
+            $this->app['locale']
+        );
         $recordQuery = $this->app['query_compiler']->compile($string, $queryContext);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
@@ -371,51 +373,19 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     private function getAggregationQueryParams(SearchEngineOptions $options)
     {
-        // get business field access rights for current user
-        $allowed_databoxes = [];
-        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
-        foreach ($options->getDataboxes() as $databox) {
-            $id = $databox->get_sbas_id();
-            if ($acl->can_see_business_fields($databox)) {
-                $allowed_databoxes[] = $id;
-            }
-        }
-
         $aggs = [];
 
-        // We always a collection facet right now
+        // We always want a collection facet right now
         $collection_facet_agg = array();
         $collection_facet_agg['terms']['field'] = 'collection_name';
         $aggs['Collection'] = $collection_facet_agg;
 
-        foreach ($this->recordHelper->getFieldsStructure() as $field_name => $params) {
-            // skip if field is not searchable or not aggregated
-            if (!$params['searchable'] || !$params['to_aggregate']) {
-                continue;
-            }
-
-            if ($params['private']) {
-                // restrict access to authorized databoxes
-                $databoxes = array_intersect($params['databox_ids'], $allowed_databoxes);
-                $prefix = 'private_caption';
-            } else {
-                $databoxes = $params['databox_ids'];
-                $prefix = 'caption';
-            }
-
-            // filter aggregation to allowed databoxes
-            // declare aggregation on current field
-            $agg = array();
-            // TODO (mdarse) Remove databox filtering. It's already done by the
-            // ACL filter in the query scope, so no document that shouldn't be
-            // displayed can go this far.
-            // // array_values is needed to ensure array serialization
-            // $agg['filter']['terms']['databox_id'] = array_values($databoxes);
-            // $agg['aggs']['distinct_occurrence']['terms']['field'] =
-            $agg['terms']['field'] =
-                sprintf('%s.%s.raw', $prefix, $field_name);
-
-            $aggs[$field_name] = $agg;
+        foreach ($this->structure->getFacetFields() as $name => $field) {
+            // 2015-05-26 (mdarse) Removed databox filtering.
+            // It was already done by the ACL filter in the query scope, so no
+            // document that shouldn't be displayed can go this far.
+            $field_name = RecordHelper::getIndexFieldName($field);
+            $aggs[$name]['terms']['field'] = sprintf('%s.raw', $field_name);
         }
 
         return $aggs;

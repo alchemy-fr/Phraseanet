@@ -431,32 +431,26 @@ class ApplicationTest extends \PhraseanetTestCase
             ->getmock();
         $app['conf']->expects($this->any())
             ->method('get')
-            ->will($this->returnCallback(function ($param) use ($locale, $database) {
+            ->will($this->returnCallback(function ($param, $default) use ($locale, $database) {
 
                 switch ($param) {
                     case ['languages', 'default']:
                         return $locale;
-                        break;
                     case ['languages', 'available']:
                         return [];
-                        break;
                     case ['border-manager', 'extension-mapping']:
                         return [];
-                        break;
                     case ['main', 'maintenance']:
                         return false;
-                        break;
                     case ['main', 'search-engine', 'type']:
                         return 'elasticsearch';
-                        break;
                     case ['main', 'search-engine', 'options']:
                         return [];
-                        break;
                     case ['main', 'database']:
                         return $database;
-                        break;
-
                 }
+
+                return $default;
             }));
     }
 

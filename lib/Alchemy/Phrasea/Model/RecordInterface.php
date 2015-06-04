@@ -61,6 +61,10 @@ interface RecordInterface
     /** @return array */
     public function getExif();
 
-    /** @return array */
-    public function getCaption();
+    /**
+     * Get Caption with requested fields if exists.
+     * @param array $fields Returns only public fields when null
+     * @return array
+     */
+    public function getCaption(array $fields = null);
 }

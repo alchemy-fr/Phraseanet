@@ -23,6 +23,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
@@ -41,33 +42,29 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return $app['search_engine'];
         };
 
-        $app['search_engine'] = $app->share(function ($app) {
-            $type = $app['search_engine.type'];
-            switch ($type) {
-                case SearchEngineInterface::TYPE_ELASTICSEARCH:
-                    return $app['elasticsearch.engine'];
-                default:
-                    throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
-            }
-        });
-
-        $app['search_engine.type'] = function ($app) {
-            return $app['conf']->get(['main', 'search-engine', 'type']);
-        };
-
         $app['phraseanet.SE.logger'] = $app->share(function (Application $app) {
             return new SearchEngineLogger($app);
         });
 
-        $app['elasticsearch.engine'] = $app->share(function ($app) {
+        $app['search_engine'] = $app->share(function ($app) {
+            $type = $app['conf']->get(['main', 'search-engine', 'type']);
+            if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
+                    throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
+            }
             return new ElasticSearchEngine(
                 $app,
+                $app['search_engine.structure'],
                 $app['elasticsearch.client'],
                 $app['elasticsearch.options']['index'],
                 $app['locales.available'],
                 $app['elasticsearch.record_helper'],
                 $app['elasticsearch.facets_response.factory']
             );
+        });
+
+        $app['search_engine.structure'] = $app->share(function ($app) {
+            $databoxes = $app['phraseanet.appbox']->get_databoxes();
+            return Structure::createFromDataboxes($databoxes);
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
@@ -96,6 +93,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             $logger = new \Monolog\Logger('indexer');
             $logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
             return new RecordIndexer(
+                $app['search_engine.structure'],
                 $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
                 $app['phraseanet.appbox'],
@@ -193,12 +191,5 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        if ($app['search_engine.type'] === SearchEngineInterface::TYPE_PHRASEA) {
-            $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addSubscriber($app['phraseanet.SE.subscriber']);
-
-                return $dispatcher;
-            }));
-        }
     }
 }

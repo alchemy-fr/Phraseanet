@@ -18,29 +18,28 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 class ThesaurusHydrator implements HydratorInterface
 {
+    private $structure;
     private $thesaurus;
     private $candidate_terms;
-    private $helper;
 
-    public function __construct(Thesaurus $thesaurus, CandidateTerms $candidate_terms, RecordHelper $helper)
+    public function __construct(Structure $structure, Thesaurus $thesaurus, CandidateTerms $candidate_terms)
     {
+        $this->structure = $structure;
         $this->thesaurus = $thesaurus;
         $this->candidate_terms = $candidate_terms;
-        $this->helper = $helper;
     }
 
     public function hydrateRecords(array &$records)
     {
         // Fields with concept inference enabled
-        $structure = $this->helper->getFieldsStructure();
+        $structure = $this->structure->getThesaurusEnabledFields();
         $fields = array();
-        foreach ($structure as $name => $options) {
-            if ($options['thesaurus_concept_inference']) {
-                $fields[$name] = $options['thesaurus_root_concepts'];
-            }
+        foreach ($structure as $name => $field) {
+            $fields[$name] = $field->getThesaurusRoots();
         }
         // Hydrate records with concepts
         foreach ($records as &$record) {

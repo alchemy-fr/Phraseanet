@@ -3,15 +3,22 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
+/**
+ * @todo Check for private fields and only search on them if allowed
+ */
 class QueryContext
 {
+    private $structure;
     private $locales;
     private $queryLocale;
     private $fields;
 
-    public function __construct(array $locales, $queryLocale, array $fields = null)
+    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
+        $this->structure = $structure;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
@@ -32,14 +39,18 @@ class QueryContext
 
     public function getRawFields()
     {
-        // TODO Private fields handling
         if ($this->fields === null) {
-            return array('caption_all.raw');
+            return array(
+                'caption_all.raw',
+                'private_caption_all.raw'
+            );
         }
 
         $fields = array();
-        foreach ($this->fields as $field) {
-            $fields[] = sprintf('caption.%s.raw', $field);
+        foreach ($this->fields as $name) {
+            if ($field = $this->normalizeField($name)) {
+                $fields[] = sprintf('%s.raw', $field);
+            }
         }
 
         return $fields;
@@ -47,14 +58,17 @@ class QueryContext
 
     public function getLocalizedFields()
     {
-        // TODO Private fields handling
         if ($this->fields === null) {
-            return $this->localizeField('caption_all');
+            return array_merge(
+                $this->localizeField('caption_all'),
+                $this->localizeField('private_caption_all')
+            );
         }
 
         $fields = array();
         foreach ($this->fields as $field) {
-            foreach ($this->localizeField(sprintf('caption.%s', $field)) as $fields[]);
+            $normalized = $this->normalizeField($field);
+            foreach ($this->localizeField($normalized) as $fields[]);
         }
 
         return $fields;
@@ -73,11 +87,14 @@ class QueryContext
         return $fields;
     }
 
-    public function normalizeField($field)
+    public function normalizeField($name)
     {
-        // TODO Private fields handling
+        $field = $this->structure->get($name);
+        if (!$field) {
+            return;
+        }
         // TODO Field label dereferencing (we only want names)
-        return sprintf('caption.%s', $field);
+        return RecordIndexer::getIndexFieldName($field);
     }
 
     public function getFields()
