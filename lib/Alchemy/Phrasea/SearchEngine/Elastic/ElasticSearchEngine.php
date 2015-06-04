@@ -246,12 +246,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $queryContext = new QueryContext(
-            $this->structure,
-            $this->locales,
-            $this->app['locale']
-        );
-        $recordQuery = $this->app['query_compiler']->compile($string, $queryContext);
+        $context = $this->createQueryContext($options);
+        $recordQuery = $this->app['query_compiler']->compile($string, $context);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
 
@@ -299,6 +295,31 @@ class ElasticSearchEngine implements SearchEngineInterface
             $this->indexName,
             $facets
         );
+    }
+
+    private function createQueryContext(SearchEngineOptions $options)
+    {
+        // TODO handle $user when null
+        $queryContext = new QueryContext(
+            $this->structure,
+            $this->getAllowedPrivateFields($options),
+            $this->locales,
+            $this->app['locale']
+        );
+    }
+
+    private function getAllowedPrivateFields(SearchEngineOptions $options)
+    {
+        $collections = $options->getBusinessFieldsOn();
+        $private_fields = $this->structure->getPrivateFields();
+        $allowed = array();
+        // TODO Build a map with the collections allowed for each private field
+        // [
+        //     "FieldName" => [1, 4, 5],
+        //     "OtherFieldName" => [4],
+        // ]
+
+        return $allowed;
     }
 
     /**
