@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\TaskManager\Job\FtpJob;
 use Alchemy\Phrasea\TaskManager\Job\ArchiveJob;
 use Alchemy\Phrasea\TaskManager\Job\BridgeJob;
@@ -75,9 +76,8 @@ class TasksServiceProvider implements ServiceProviderInterface
 
             return [
                 (new FtpJob($app['translator'], $app['dispatcher'], $logger))
-                    ->setDelivererLocator(function () use ($app) {
-                        return $app['notification.deliverer'];
-                    }),
+                    ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
+                ,
                 new ArchiveJob($app['translator'], $app['dispatcher'], $logger),
                 new IndexerJob($app['translator'], $app['dispatcher'], $logger),
                 new BridgeJob($app['translator'], $app['dispatcher'], $logger),

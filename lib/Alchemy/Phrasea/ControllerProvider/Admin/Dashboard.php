@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\DashboardController;
+use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -20,13 +22,14 @@ use Silex\ServiceProviderInterface;
 
 class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
     public function register(Application $app)
     {
         $app['controller.admin.dashboard'] = $app->share(function (PhraseaApplication $app) {
             return (new DashboardController($app))
-                ->setDelivererLocator(function () use ($app) {
-                    return $app['notification.deliverer'];
-                });
+                ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
+            ;
         });
     }
 
@@ -36,11 +39,11 @@ class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        /** @var ControllerCollection $controllers */
-        $controllers = $app['controllers_factory'];
+        $controllers = $this->createCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAdmin();
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireAdmin();
         });
 
         $controllers->get('/', 'controller.admin.dashboard:slash')

@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -99,9 +100,8 @@ class Login implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $app['login.controller'] = $this
-            ->setDelivererLocator(function () use ($app) {
-                return $app['notification.deliverer'];
-            });
+            ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
+        ;
 
         $controllers->before(function (Request $request) use ($app) {
             if ($request->getPathInfo() == $app->path('homepage')) {

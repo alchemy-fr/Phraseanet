@@ -46,9 +46,10 @@ class ConnectedUsers implements ControllerProviderInterface, ServiceProviderInte
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAccessToModule('Admin');
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireAccessToModule('Admin');
         });
 
         $controllers->get('/', 'controller.admin.connected-users:listConnectedUsers')

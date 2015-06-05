@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\StoryController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -27,9 +28,7 @@ class Story implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.story'] = $app->share(function (PhraseaApplication $app) {
             return (new StoryController($app))
                 ->setDispatcher($app['dispatcher'])
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
             ;
         });
     }

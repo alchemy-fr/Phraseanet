@@ -13,10 +13,12 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\CollectionController;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class Collection implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -26,9 +28,7 @@ class Collection implements ControllerProviderInterface, ServiceProviderInterfac
     {
         $app['controller.admin.collection'] = $app->share(function (PhraseaApplication $app) {
             return (new CollectionController($app))
-                ->setUserQueryFactory(function () use ($app) {
-                    return $app['phraseanet.user-query'];
-                })
+                ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
             ;
         });
     }
@@ -40,10 +40,12 @@ class Collection implements ControllerProviderInterface, ServiceProviderInterfac
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAccessToModule('admin')
-                ->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
+        $controllers->before(function (Request $request) use ($firewall) {
+            $firewall
+                ->requireAccessToModule('admin')
+                ->requireRightOnBase($request->attributes->get('bas_id'), 'canadmin');
         });
 
         $controllers->get('/{bas_id}/', 'controller.admin.collection:getCollection')

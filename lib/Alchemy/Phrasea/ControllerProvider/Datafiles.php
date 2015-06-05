@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\DatafileController;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -25,9 +26,8 @@ class Datafiles implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.datafiles'] = $app->share(function (PhraseaApplication $app) {
             return (new DatafileController($app, $app['phraseanet.appbox'], $app['acl'], $app['authentication']))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                ->setDelivererLocator(function () use ($app) {
-                    return $app['phraseanet.file-serve'];
-                });
+                ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
+            ;
         });
     }
 

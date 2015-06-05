@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\UploadController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,23 +27,13 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.upload'] = $app->share(function (PhraseaApplication $app) {
             return (new UploadController($app))
-                ->setBorderManagerLocator(function () use ($app) {
-                    return $app['border-manager'];
-                })
+                ->setBorderManagerLocator(new LazyLocator($app, 'border-manager'))
                 ->setDispatcher($app['dispatcher'])
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
-                ->setFileSystemLocator(function () use ($app) {
-                    return $app['filesystem'];
-                })
-                ->setTemporaryFileSystemLocator(function () use ($app) {
-                    return $app['temporary-filesystem'];
-                })
-                ->setSubDefinitionSubstituerLocator(function () use ($app) {
-                    return $app['subdef.substituer'];
-                })
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setTemporaryFileSystemLocator(new LazyLocator($app, 'temporary-filesystem'))
+                ->setSubDefinitionSubstituerLocator(new LazyLocator($app, 'subdef.substituer'))
             ;
         });
     }

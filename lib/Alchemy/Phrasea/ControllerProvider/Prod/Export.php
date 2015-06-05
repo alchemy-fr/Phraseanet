@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\ExportController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -27,12 +28,8 @@ class Export implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.export'] = $app->share(function (PhraseaApplication $app) {
             return (new ExportController($app))
                 ->setDispatcher($app['dispatcher'])
-                ->setFileSystemLocator(function () use ($app) {
-                    return $app['filesystem'];
-                })
-                ->setDelivererLocator(function () use ($app) {
-                    return $app['notification.deliverer'];
-                })
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
             ;
         });
     }

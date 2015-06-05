@@ -128,7 +128,7 @@ sudo service php5-fpm restart
 sudo service nginx restart
 
 # stoping iptable
-sudo service iptables-persistent stop
+sudo service iptables-persistent flush
 
 # reload bash
 source ~/.bashrc

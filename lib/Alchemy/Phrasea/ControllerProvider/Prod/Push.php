@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\PushController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -28,12 +29,8 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
             return (new PushController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
-                ->setEntityManagerLocator(function () use ($app) {
-                    return $app['orm.em'];
-                })
-                ->setUserQueryFactory(function () use ($app) {
-                    return $app['phraseanet.user-query'];
-                })
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
             ;
         });
     }

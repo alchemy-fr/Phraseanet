@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -25,7 +26,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
-use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineSubscriber;
 use Elasticsearch\Client;
 use Hoa\Compiler;
 use Hoa\File;
@@ -33,6 +33,8 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class SearchEngineServiceProvider implements ServiceProviderInterface
 {
@@ -106,16 +108,27 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new RecordHelper($app['phraseanet.appbox']);
         });
 
-        $app['elasticsearch.indexer_subscriber'] = $app->share(function ($app) {
-            return new IndexerSubscriber($app['elasticsearch.indexer']);
-        });
+        $app['dispatcher'] = $app
+            ->share($app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, $app) {
+                $subscriber = new IndexerSubscriber(new LazyLocator($app, 'elasticsearch.indexer'));
 
+                $dispatcher->addSubscriber($subscriber);
 
-        $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, $app) {
-            $dispatcher->addSubscriber($app['elasticsearch.indexer_subscriber']);
+                $listener = array($subscriber, 'flushQueue');
 
-            return $dispatcher;
-        }));
+                // Add synchronous flush when used in CLI.
+                if (isset($app['console'])) {
+                    foreach (array_keys($subscriber->getSubscribedEvents()) as $eventName) {
+                        $dispatcher->addListener($eventName, $listener, -10);
+                    }
+
+                    return $dispatcher;
+                }
+
+                $dispatcher->addListener(KernelEvents::TERMINATE, $listener);
+
+                return $dispatcher;
+            }));
 
         /* Low-level elasticsearch services */
 

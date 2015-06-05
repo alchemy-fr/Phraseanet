@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\TooltipController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,9 +27,7 @@ class Tooltip implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.tooltip'] = $app->share(function (PhraseaApplication $app) {
             return (new TooltipController($app))
-                ->setSearchEngineLocator(function () use ($app) {
-                    return $app['phraseanet.SE'];
-                })
+                ->setSearchEngineLocator(new LazyLocator($app, 'phraseanet.SE'))
             ;
         });
     }

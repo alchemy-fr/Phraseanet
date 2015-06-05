@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\DataboxController;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application;
@@ -28,9 +29,7 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.admin.databox'] = $app->share(function (PhraseaApplication $app) {
             return (new DataboxController($app))
-                ->setUserQueryFactory(function () use ($app) {
-                    return $app['phraseanet.user-query'];
-                })
+                ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
             ;
         });
     }
