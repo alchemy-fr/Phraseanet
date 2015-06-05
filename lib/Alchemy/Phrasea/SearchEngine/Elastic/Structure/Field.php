@@ -20,6 +20,7 @@ class Field
     private $is_private;
     private $is_facet;
     private $thesaurus_roots;
+    private $used_by_collections;
 
     public static function createFromLegacyField(databox_field $field)
     {
@@ -54,9 +55,9 @@ class Field
             case databox_field::TYPE_STRING:
             case databox_field::TYPE_TEXT:
                 return Mapping::TYPE_STRING;
-            default:
-                throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
         }
+
+        throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
     }
 
     public function __construct($name, $type, array $options = [])
@@ -95,6 +96,11 @@ class Field
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getCollections()
+    {
+        return $this->collections;
     }
 
     public function isSearchable()

@@ -34,22 +34,21 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isPrivate()->willReturn(false);
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
+        $field->getCollections()->willReturn(['1']);
 
         $structure->add($field->reveal());
         $this->assertCount(1, $structure->getAllFields());
 
-        $conflicting_field = $this->prophesize(Field::class);
-        $conflicting_field->getName()->willReturn('foo');
-        $conflicting_field->getType()->willReturn(Mapping::TYPE_STRING);
-        $conflicting_field->isPrivate()->willReturn(false);
-        $conflicting_field->isFacet()->willReturn(false);
-        $conflicting_field->hasConceptInference()->willReturn(false);
-        $dummy = $conflicting_field->reveal();
+        $conflicting_field = new Field('foo', Mapping::TYPE_STRING, ['2']);
 
-        $field->mergeWith($dummy)->willReturn($dummy);
+        $merged = new Field('foo', Mapping::TYPE_STRING, ['1', '2']);
+
+        $field->mergeWith($conflicting_field)->willReturn($merged);
         // Should still have only one (both have the same name)
-        $structure->add($dummy);
-        $this->assertCount(1, $structure->getAllFields());
+        $structure->add($conflicting_field);
+        $this->assertCount(1, $fields = $structure->getAllFields());
+        $this->assertInternalType('array', $fields);
+        $this->assertSame($merged, reset($fields));
     }
 
     public function testFieldMerge()
@@ -166,7 +165,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException DomainException
+     * @expectedException \DomainException
      * @expectedExceptionMessageRegExp #field#u
      */
     public function testPrivateCheckWithInvalidField()

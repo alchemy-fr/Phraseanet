@@ -208,6 +208,9 @@ class databox extends base
         return $this->ord;
     }
 
+    /**
+     * @return appbox
+     */
     public function get_appbox()
     {
         return $this->app['phraseanet.appbox'];
@@ -235,10 +238,8 @@ class databox extends base
             return $base_ids;
         }
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-        $sql = "SELECT b.base_id FROM bas b
-            WHERE b.sbas_id = :sbas_id AND b.active = '1'
-            ORDER BY b.ord ASC";
+        $conn = $this->get_appbox()->get_connection();
+        $sql = "SELECT b.base_id FROM bas b WHERE b.sbas_id = :sbas_id AND b.active = '1' ORDER BY b.ord ASC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([':sbas_id' => $this->id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

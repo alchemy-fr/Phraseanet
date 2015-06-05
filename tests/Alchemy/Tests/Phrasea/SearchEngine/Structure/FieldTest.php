@@ -14,8 +14,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasicMerge()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING);
-        $other = new Field('foo', Mapping::TYPE_STRING);
+        $field = new Field('foo', Mapping::TYPE_STRING, ['used_by_collections' => ['1', '2']]);
+        $other = new Field('foo', Mapping::TYPE_STRING, ['used_by_collections' => ['3', '4']]);
         $merged = $field->mergeWith($other);
         $this->assertInstanceOf(Field::class, $merged);
         $this->assertNotSame($field, $merged);
@@ -26,6 +26,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($merged->isPrivate());
         $this->assertFalse($merged->isFacet());
         $this->assertNull($merged->getThesaurusRoots());
+        $this->assertEquals(['1', '2', '3', '4'], $merged->getCollections());
     }
 
     /**
