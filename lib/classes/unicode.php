@@ -1655,8 +1655,8 @@ class unicode
      * Removes all digits a the begining of a string
      * @Example : returns 'soleil' for '123soleil' and 'bb2' for '1bb2'
      *
-     * @param  type $string
-     * @return type
+     * @param  string $string
+     * @return string
      */
     public function remove_first_digits($string)
     {

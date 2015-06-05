@@ -99,8 +99,8 @@ class Structure
             return true;
         } elseif (isset($this->fields[$name])) {
             return false;
-        } else {
-            throw new DomainException(sprintf('Unknown field "%s".', $name));
         }
+
+        throw new DomainException(sprintf('Unknown field "%s".', $name));
     }
 }

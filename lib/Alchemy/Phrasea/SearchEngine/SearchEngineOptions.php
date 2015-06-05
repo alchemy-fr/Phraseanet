@@ -36,33 +36,21 @@ class SearchEngineOptions
     /** @var string */
     protected $record_type;
 
-    /** @var string */
     protected $search_type = 0;
-
-    /** @var array */
+    /** @var \collection[] */
     protected $collections = [];
-
-    /** @var array */
+    /** @var \databox_field[] */
     protected $fields = [];
-
-    /** @var array */
     protected $status = [];
-
     /** @var \DateTime */
     protected $date_min;
-
     /** @var \DateTime */
     protected $date_max;
-
-    /** @var array */
     protected $date_fields = [];
-
     /** @var string */
     protected $i18n;
-
-    /** @var boolean */
+    /** @var bool */
     protected $stemming = true;
-
     /** @var string */
     protected $sort_by;
 
@@ -100,7 +88,7 @@ class SearchEngineOptions
     /**
      * @param  string $sort_by
      * @param  string $sort_ord
-     * @return SearchEngineOptions
+     * @return $this
      */
     public function setSort($sort_by, $sort_ord = self::SORT_MODE_DESC)
     {
@@ -113,10 +101,10 @@ class SearchEngineOptions
     /**
      * Allows business fields query on the given collections
      *
-     * @param  array               $collection An array of collection
-     * @return SearchEngineOptions
+     * @param \collection[] $collection An array of collection
+     * @return $this
      */
-    public function allowBusinessFieldsOn(Array $collection)
+    public function allowBusinessFieldsOn(array $collection)
     {
         $this->business_fields = $collection;
 
@@ -126,7 +114,7 @@ class SearchEngineOptions
     /**
      * Reset business fields settings
      *
-     * @return SearchEngineOptions
+     * @return $this
      */
     public function disallowBusinessFields()
     {
@@ -139,7 +127,7 @@ class SearchEngineOptions
      * Returns an array of collection on which business fields are allowed to
      * search on
      *
-     * @return array An array of collection
+     * @return \collection[] An array of collection
      */
     public function getBusinessFieldsOn()
     {
@@ -170,7 +158,7 @@ class SearchEngineOptions
      * Tells whether to use stemming or not
      *
      * @param  boolean             $boolean
-     * @return SearchEngineOptions
+     * @return $this
      */
     public function setStemming($boolean)
     {
@@ -193,7 +181,7 @@ class SearchEngineOptions
      * Set document type to search for
      *
      * @param  int                 $search_type
-     * @return SearchEngineOptions
+     * @return $this
      */
     public function setSearchType($search_type)
     {
@@ -223,10 +211,10 @@ class SearchEngineOptions
     /**
      * Set the collections where to search for
      *
-     * @param  array               $collections An array of collection
-     * @return SearchEngineOptions
+     * @param  \collection[] $collections An array of collection
+     * @return $this
      */
-    public function onCollections(Array $collections)
+    public function onCollections(array $collections)
     {
         $this->collections = $collections;
 
@@ -236,7 +224,7 @@ class SearchEngineOptions
     /**
      * Returns the collections on which the search occurs
      *
-     * @return array An array of collection
+     * @return \collection[] An array of collection
      */
     public function getCollections()
     {
@@ -251,35 +239,37 @@ class SearchEngineOptions
      */
     public function getDataboxes()
     {
-        $databoxes = [];
+        if (null === $this->databoxes) {
+            $databoxes = [];
+            foreach ($this->collections as $collection) {
+                $databoxes[$collection->get_databox()->get_sbas_id()] = $collection->get_databox();
+            }
 
-        foreach ($this->collections as $collection) {
-            $databoxes[$collection->get_databox()->get_sbas_id()] = $collection->get_databox();
+            $this->databoxes = array_values($databoxes);
         }
 
-        return array_values($databoxes);
+        return $this->databoxes;
     }
 
     /**
-     * @param array $fields An array of Databox fields
+     * @param \databox_field[] $fields An array of Databox fields
      * @return $this
      */
-    public function setFields(Array $fields)
+    public function setFields(array $fields)
     {
         $this->fields = $fields;
 
         return $this;
     }
 
-    /** @return array */
     public function getFields()
     {
         return $this->fields;
     }
 
     /**
-     * @param  array               $status
-     * @return SearchEngineOptions
+     * @param  array $status
+     * @return $this
      */
     public function setStatus(array $status)
     {
@@ -297,8 +287,8 @@ class SearchEngineOptions
     }
 
     /**
-     * @param  string              $record_type
-     * @return SearchEngineOptions
+     * @param  string $record_type
+     * @return $this
      */
     public function setRecordType($record_type)
     {
@@ -337,7 +327,7 @@ class SearchEngineOptions
     }
 
     /**
-     * @return SearchEngineOptions
+     * @return $this
      */
     public function setMinDate(\DateTime $min_date = null)
     {
@@ -359,7 +349,7 @@ class SearchEngineOptions
 
     /**
      * @param \DateTime|string $max_date
-     * @return SearchEngineOptions
+     * @return $this
      */
     public function setMaxDate(\DateTime $max_date = null)
     {
@@ -379,17 +369,17 @@ class SearchEngineOptions
     }
 
     /**
-     * @param  array               $fields
-     * @return SearchEngineOptions
+     * @param \databox_field[] $fields
+     * @return $this
      */
-    public function setDateFields(Array $fields)
+    public function setDateFields(array $fields)
     {
         $this->date_fields = $fields;
 
         return $this;
     }
 
-    /** @return array */
+    /** @return \databox_field[] */
     public function getDateFields()
     {
         return $this->date_fields;
@@ -409,8 +399,8 @@ class SearchEngineOptions
             }
             if (in_array($key, ['collections', 'business_fields'])) {
                 $value = array_map(function (\collection $collection) {
-                            return $collection->get_base_id();
-                        }, $value);
+                    return $collection->get_base_id();
+                }, $value);
             }
 
             $ret[$key] = $value;
@@ -424,7 +414,7 @@ class SearchEngineOptions
      * @param Application $app
      * @param string      $serialized
      *
-     * @return SearchEngineOptions
+     * @return $this
      *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -540,7 +530,7 @@ class SearchEngineOptions
      * @param Application $app
      * @param Request     $request
      *
-     * @return SearchEngineOptions
+     * @return static
      */
     public static function fromRequest(Application $app, Request $request)
     {
