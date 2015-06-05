@@ -229,6 +229,12 @@ class databox extends base
 
     public function get_collection_unique_ids()
     {
+        static $base_ids;
+
+        if (isset($base_ids)) {
+            return $base_ids;
+        }
+
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = "SELECT b.base_id FROM bas b
             WHERE b.sbas_id = :sbas_id AND b.active = '1'

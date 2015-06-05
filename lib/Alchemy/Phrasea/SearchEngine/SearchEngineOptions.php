@@ -39,6 +39,8 @@ class SearchEngineOptions
     protected $search_type = 0;
     /** @var \collection[] */
     protected $collections = [];
+    /** @var null|\databox[] */
+    private $databoxes;
     /** @var \databox_field[] */
     protected $fields = [];
     protected $status = [];
@@ -217,6 +219,8 @@ class SearchEngineOptions
     public function onCollections(array $collections)
     {
         $this->collections = $collections;
+        // Defer databox retrieval
+        $this->databoxes = null;
 
         return $this;
     }
@@ -580,17 +584,10 @@ class SearchEngineOptions
         /** @var \collection[] $bas */
         $bas = array_filter($bas, $filter);
 
-        /** @var \databox[] $databoxes */
-        $databoxes = [];
-
-        foreach ($bas as $collection) {
-            if (!isset($databoxes[$collection->get_sbas_id()])) {
-                $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
-            }
-        }
+        $options->onCollections($bas);
 
         if ($isAuthenticated && $acl->has_right('modifyrecord')) {
-            $bf = array_filter($bas, function (\collection $collection) use ($app, $acl) {
+            $bf = array_filter($bas, function (\collection $collection) use ($acl) {
                 return $acl->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             });
 
@@ -601,7 +598,7 @@ class SearchEngineOptions
         $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
         if (empty($fields)) {
             // Select all fields (business included)
-            foreach ($databoxes as $databox) {
+            foreach ($options->getDataboxes() as $databox) {
                 foreach ($databox->get_meta_structure() as $field) {
                     $fields[] = $field->get_name();
                 }
@@ -610,7 +607,7 @@ class SearchEngineOptions
         }
 
         $databoxFields = [];
-
+        $databoxes = $options->getDataboxes();
         foreach ($databoxes as $databox) {
             $metaStructure = $databox->get_meta_structure();
             foreach ($fields as $field) {
@@ -627,8 +624,6 @@ class SearchEngineOptions
 
         $options->setFields($databoxFields);
         $options->setStatus($status);
-
-        $options->onCollections($bas);
 
         $options->setSearchType($request->get('search_type'));
         $options->setRecordType($request->get('record_type'));
