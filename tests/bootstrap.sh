@@ -25,6 +25,7 @@ mysql -uroot -ptoor -e '
 SET @@global.sql_mode= STRICT_ALL_TABLES;
 SET @@global.max_allowed_packet= 33554432;
 SET @@global.wait_timeout= 999999;
+DROP SCHEMA IF EXISTS ab_test;DROP SCHEMA IF EXISTS db_test;
 CREATE SCHEMA IF NOT EXISTS ab_test;CREATE SCHEMA IF NOT EXISTS db_test;
 '
 if ! ./bin/developer system:uninstall > /dev/null 2>&1
