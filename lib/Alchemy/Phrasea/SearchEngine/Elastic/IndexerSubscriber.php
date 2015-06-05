@@ -19,19 +19,53 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\RecordSubDefinitionCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
-use Elasticsearch\Client;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Subscribe to events changing index.
+ * Be careful, this does not flush queue on its own, and flushQueue should be added as listener separately.
+ */
 class IndexerSubscriber implements EventSubscriberInterface
 {
+    /** @var callable|Indexer */
     private $indexer;
 
-    public function __construct(Indexer $indexer)
+    /**
+     * @param callable|Indexer $indexer The indexer locator
+     */
+    public function __construct($indexer)
     {
+        if (!$indexer instanceof Indexer && !is_callable($indexer)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Expects $indexer to be a callable or %s, got %s.',
+                Indexer::class,
+                is_object($indexer) ? get_class($indexer) : gettype($indexer)
+            ));
+        }
+
         $this->indexer = $indexer;
+    }
+
+    /** @return Indexer */
+    public function getIndexer()
+    {
+        if ($this->indexer instanceof Indexer) {
+            return $this->indexer;
+        }
+
+        $indexer = call_user_func($this->indexer);
+
+        if (!$indexer instanceof Indexer) {
+            throw new \LogicException(sprintf(
+                'Expects locator to return instance of %s, got %s.',
+                Indexer::class,
+                is_object($indexer) ? get_class($indexer) : gettype($indexer)
+            ));
+        }
+
+        $this->indexer = $indexer;
+
+        return $this->indexer;
     }
 
     public static function getSubscribedEvents()
@@ -50,20 +84,19 @@ class IndexerSubscriber implements EventSubscriberInterface
             RecordEvents::STATUS_CHANGED => 'onRecordChange',
             RecordEvents::SUB_DEFINITION_CREATED => 'onRecordChange',
             RecordEvents::MEDIA_SUBSTITUTED => 'onRecordChange',
-            KernelEvents::TERMINATE => 'onKernelTerminate',
         ];
     }
 
     public function onStructureChange(RecordStructureEvent $event)
     {
         $databox = $event->getDatabox();
-        $this->indexer->migrateMappingForDatabox($databox);
+        $this->getIndexer()->migrateMappingForDatabox($databox);
     }
 
     public function onCollectionChange(CollectionEvent $event)
     {
         $collection = $event->getCollection();
-        $this->indexer->scheduleRecordsFromCollectionForIndexing($collection);
+        $this->getIndexer()->scheduleRecordsFromCollectionForIndexing($collection);
     }
 
     public function onRecordChange(RecordEvent $event)
@@ -72,18 +105,17 @@ class IndexerSubscriber implements EventSubscriberInterface
             return;
         }
         $record = $event->getRecord();
-        $this->indexer->indexRecord($record);
+        $this->getIndexer()->indexRecord($record);
     }
 
     public function onRecordDelete(RecordDeletedEvent $event)
     {
         $record = $event->getRecord();
-        $this->indexer->deleteRecord($record);
+        $this->getIndexer()->deleteRecord($record);
     }
 
-    public function onKernelTerminate(PostResponseEvent $event)
+    public function flushQueue()
     {
-        // TODO flush queue synchronously in CLI (think task manager)
-        $this->indexer->flushQueue();
+        $this->getIndexer()->flushQueue();
     }
 }
