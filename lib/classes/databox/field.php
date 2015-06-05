@@ -28,6 +28,9 @@ class databox_field implements cache_cacheableInterface
 {
     protected $id;
 
+    /** @var Application  */
+    protected $app;
+
     /**
      * @var databox
      */
@@ -208,17 +211,22 @@ class databox_field implements cache_cacheableInterface
     {
         $cache_key = 'field_' . $id;
         $instance_id = $databox->get_sbas_id() . '_' . $id;
-        if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
+        if (! isset(self::$_instance[$instance_id])) {
             try {
-                self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
+                $field = $databox->get_data_from_cache($cache_key);
+                if (!$field instanceof self) {
+                    trigger_error('Cache type returned mismatch', E_WARNING);
+                    throw new \Exception('Retrieved $field value is invalid');
+                }
             } catch (\Exception $e) {
-                self::$_instance[$instance_id] = new self($app, $databox, $id);
-                $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
+                $field = new self($app, $databox, $id);
+                $databox->set_data_to_cache($field, $cache_key);
             }
+            self::$_instance[$instance_id] = $field;
         }
-        self::$_instance[$instance_id]->app = $app;
-
-        return self::$_instance[$instance_id];
+        $field =& self::$_instance[$instance_id];
+        $field->app = $app;
+        return $field;
     }
 
     public function hydrate(Application $app)
