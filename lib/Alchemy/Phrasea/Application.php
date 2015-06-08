@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\WorkZone;
 use Alchemy\Phrasea\ControllerProvider\Report\Activity as ReportActivity;
 use Alchemy\Phrasea\ControllerProvider\Report\Informations as ReportInformations;
 use Alchemy\Phrasea\ControllerProvider\Report\Root as ReportRoot;
@@ -315,6 +314,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\TOU' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Upload' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\WorkZone' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -625,8 +625,6 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/prod/WorkZone', new WorkZone());
-
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
 
@@ -681,6 +679,7 @@ class Application extends SilexApplication
             '/prod/tooltip'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Tooltip',
             '/prod/TOU/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\TOU',
             '/prod/upload/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Upload',
+            '/prod/WorkZone'               => 'Alchemy\Phrasea\ControllerProvider\Prod\WorkZone',
             '/prod/'                       => 'Alchemy\Phrasea\ControllerProvider\Prod\Root',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
