@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\WorkzoneController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,7 +27,8 @@ class WorkZone implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.workzone'] = $app->share(function (PhraseaApplication $app) {
             return (new WorkzoneController($app))
-                ;
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+            ;
         });
     }
 

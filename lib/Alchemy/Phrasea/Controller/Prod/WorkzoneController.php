@@ -9,11 +9,13 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -21,150 +23,165 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WorkzoneController extends Controller
 {
+    use EntityManagerAware;
 
-    public function displayWorkzone(Application $app)
+    public function displayWorkzone(Request $request)
     {
-        $params = [
-            'WorkZone'      => new WorkzoneHelper($app, $app['request'])
-            , 'selected_type' => $app['request']->query->get('type')
-            , 'selected_id'   => $app['request']->query->get('id')
-            , 'srt'           => $app['request']->query->get('sort')
-        ];
-
-        return $app['twig']->render('prod/WorkZone/WorkZone.html.twig', $params);
+        return $this->render('prod/WorkZone/WorkZone.html.twig', [
+            'WorkZone'      => new WorkzoneHelper($this->app, $request),
+            'selected_type' => $request->query->get('type'),
+            'selected_id'   => $request->query->get('id'),
+            'srt'           => $request->query->get('sort'),
+        ]);
     }
 
-    public function browse(Application $app)
+    public function browse()
     {
-        return $app['twig']->render('prod/WorkZone/Browser/Browser.html.twig');
+        return $this->render('prod/WorkZone/Browser/Browser.html.twig');
     }
 
-    public function browserSearch(Application $app)
+    public function browserSearch(Request $request)
     {
-        $request = $app['request'];
+        $basketRepo = $this->getBasketRepository();
 
-        $BasketRepo = $app['repo.baskets'];
+        $page = (int) $request->query->get('Page', 0);
 
-        $Page = (int) $request->query->get('Page', 0);
+        $perPage = 10;
+        $offsetStart = max(($page - 1) * $perPage, 0);
 
-        $PerPage = 10;
-        $offsetStart = max(($Page - 1) * $PerPage, 0);
-
-        $Baskets = $BasketRepo->findWorkzoneBasket(
-            $app['authentication']->getUser()
-            , $request->query->get('Query')
-            , $request->query->get('Year')
-            , $request->query->get('Type')
-            , $offsetStart
-            , $PerPage
+        $baskets = $basketRepo->findWorkzoneBasket(
+            $this->getAuthenticatedUser(),
+            $request->query->get('Query'),
+            $request->query->get('Year'),
+            $request->query->get('Type'),
+            $offsetStart,
+            $perPage
         );
 
-        $page = floor($offsetStart / $PerPage) + 1;
-        $maxPage = floor(count($Baskets) / $PerPage) + 1;
+        $page = floor($offsetStart / $perPage) + 1;
+        $maxPage = floor(count($baskets) / $perPage) + 1;
 
-        $params = [
-            'Baskets' => $Baskets
-            , 'Page'    => $page
-            , 'MaxPage' => $maxPage
-            , 'Total'   => count($Baskets)
-            , 'Query'   => $request->query->get('Query')
-            , 'Year'    => $request->query->get('Year')
-            , 'Type'    => $request->query->get('Type')
-        ];
-
-        return $app['twig']->render('prod/WorkZone/Browser/Results.html.twig', $params);
+        return $this->render('prod/WorkZone/Browser/Results.html.twig', [
+            'Baskets' => $baskets,
+            'Page'    => $page,
+            'MaxPage' => $maxPage,
+            'Total'   => count($baskets),
+            'Query'   => $request->query->get('Query'),
+            'Year'    => $request->query->get('Year'),
+            'Type'    => $request->query->get('Type'),
+        ]);
     }
 
-    public function browseBasket(Application $app, Request $request, Basket $basket)
+    public function browseBasket(Basket $basket)
     {
-        return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', ['Basket' => $basket]);
+        return $this->render('prod/WorkZone/Browser/Basket.html.twig', ['Basket' => $basket]);
     }
 
-    public function attachStories(Application $app, Request $request)
+    public function attachStories(Request $request)
     {
         if (!$request->request->get('stories')) {
             throw new BadRequestHttpException('Missing parameters stories');
         }
 
-        $StoryWZRepo = $app['repo.story-wz'];
+        $storyWZRepo = $this->getStoryWZRepository();
 
         $alreadyFixed = $done = 0;
 
         $stories = $request->request->get('stories', []);
 
+        $user = $this->getAuthenticatedUser();
+        $acl = $this->getAclForUser($user);
+        $manager = $this->getEntityManager();
         foreach ($stories as $element) {
             $element = explode('_', $element);
-            $Story = new \record_adapter($app, $element[0], $element[1]);
+            $story = new \record_adapter($this->app, $element[0], $element[1]);
 
-            if (!$Story->is_grouping()) {
+            if (!$story->is_grouping()) {
                 throw new \Exception('You can only attach stories');
             }
 
-            if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_base($Story->get_base_id())) {
+            if (!$acl->has_access_to_base($story->get_base_id())) {
                 throw new AccessDeniedHttpException('You do not have access to this Story');
             }
 
-            if ($StoryWZRepo->findUserStory($app, $app['authentication']->getUser(), $Story)) {
+            if ($storyWZRepo->findUserStory($this->app, $user, $story)) {
                 $alreadyFixed++;
                 continue;
             }
 
-            $StoryWZ = new StoryWZ();
-            $StoryWZ->setUser($app['authentication']->getUser());
-            $StoryWZ->setRecord($Story);
+            $storyWZ = new StoryWZ();
+            $storyWZ->setUser($user);
+            $storyWZ->setRecord($story);
 
-            $app['orm.em']->persist($StoryWZ);
+            $manager->persist($storyWZ);
             $done++;
         }
 
-        $app['orm.em']->flush();
+        $manager->flush();
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
-                $message = $app->trans('%quantity% Story attached to the WorkZone', ['%quantity%' => $done]);
+                $message = $this->app->trans('%quantity% Story attached to the WorkZone', ['%quantity%' => $done]);
             } else {
-                $message = $app->trans('%quantity% Stories attached to the WorkZone', ['%quantity%' => $done]);
+                $message = $this->app->trans('%quantity% Stories attached to the WorkZone', ['%quantity%' => $done]);
             }
         } else {
             if ($done <= 1) {
-                $message = $app->trans('%quantity% Story attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
+                $message = $this->app->trans('%quantity% Story attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             } else {
-                $message = $app->trans('%quantity% Stories attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
+                $message = $this->app->trans('%quantity% Stories attached to the WorkZone, %quantity_already% already attached', ['%quantity%' => $done, '%quantity_already%' => $alreadyFixed]);
             }
         }
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json([
-                'success' => true
-                , 'message' => $message
+            return $this->app->json([
+                'success' => true,
+                'message' => $message,
             ]);
         }
 
-        return $app->redirectPath('prod_workzone_show');
+        return $this->app->redirectPath('prod_workzone_show');
     }
 
-    public function detachStory(Application $app, Request $request, $sbas_id, $record_id)
+    public function detachStory(Request $request, $sbas_id, $record_id)
     {
-        $Story = new \record_adapter($app, $sbas_id, $record_id);
+        $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        $repository = $app['repo.story-wz'];
+        $repository = $this->getStoryWZRepository();
 
-        $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
+        $storyWZ = $repository->findUserStory($this->app, $this->getAuthenticatedUser(), $story);
 
-        if (!$StoryWZ) {
+        if (!$storyWZ) {
             throw new NotFoundHttpException('Story not found');
         }
 
-        $app['orm.em']->remove($StoryWZ);
-        $app['orm.em']->flush();
+        $manager = $this->getEntityManager();
+        $manager->remove($storyWZ);
+        $manager->flush();
 
         if ($request->getRequestFormat() == 'json') {
-            return $app->json([
-                'success' => true
-                , 'message' => $app->trans('Story detached from the WorkZone')
+            return $this->app->json([
+                'success' => true,
+                'message' => $this->app->trans('Story detached from the WorkZone'),
             ]);
         }
 
-        return $app->redirectPath('prod_workzone_show');
+        return $this->app->redirectPath('prod_workzone_show');
+    }
+
+    /**
+     * @return BasketRepository
+     */
+    private function getBasketRepository()
+    {
+        return $this->app['repo.baskets'];
+    }
+
+    /**
+     * @return StoryWZRepository
+     */
+    private function getStoryWZRepository()
+    {
+        return $this->app['repo.story-wz'];
     }
 }
