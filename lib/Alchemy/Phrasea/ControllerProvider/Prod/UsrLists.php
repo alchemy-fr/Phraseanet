@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\UsrListController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -26,6 +27,7 @@ class UsrLists implements ControllerProviderInterface, ServiceProviderInterface
     {
         $app['controller.prod.usr-lists'] = $app->share(function (PhraseaApplication $app) {
             return (new UsrListController($app))
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
             ;
         });
     }

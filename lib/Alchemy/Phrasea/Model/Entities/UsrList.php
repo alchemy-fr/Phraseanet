@@ -168,7 +168,7 @@ class UsrList
     /**
      * Get owners
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return UsrListOwner[]
      */
     public function getOwners()
     {
