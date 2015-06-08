@@ -57,11 +57,7 @@
         {% else %}
                 {% if nb_candidates_bad > 0 %}
                     // present dans les candidats, mais aucun champ acceptable : on informe
-                    {% if nb_candidates_bad == 1 %}
-                        {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
-                    {% else %}
-                        {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
-                    {% endif %}
+                    {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
                 {% else %}
                     // pas present dans les candidats
                     {% set prop_label = 'thesaurus:: n\'est pas present dans les candidats' | trans %}

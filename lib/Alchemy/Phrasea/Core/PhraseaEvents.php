@@ -50,4 +50,16 @@ final class PhraseaEvents
 
     const RECORD_EDIT = 'record.edit';
     const RECORD_UPLOAD = 'record.upload';
+
+    const THESAURUS_IMPORTED = 'thesaurus.imported';
+    const THESAURUS_FIELD_LINKED = 'thesaurus.field-linked';
+    const THESAURUS_CANDIDATE_ACCEPTED_AS_CONCEPT = 'thesaurus.candidate-accepted-as-concept';
+    const THESAURUS_CANDIDATE_ACCEPTED_AS_SYNONYM = 'thesaurus.candidate-accepted-as-synonym';
+    const THESAURUS_SYNONYM_LNG_CHANGED = 'thesaurus.synonym-lng-changed';
+    const THESAURUS_SYNONYM_POSITION_CHANGED = 'thesaurus.synonym-position-changed';
+    const THESAURUS_SYNONYM_TRASHED = 'thesaurus.synonym-trashed';
+    const THESAURUS_CONCEPT_TRASHED = 'thesaurus.concept-trashed';
+    const THESAURUS_CONCEPT_DELETED = 'thesaurus.concept-deleted';
+    const THESAURUS_SYNONYM_ADDED = 'thesaurus.synonym-added';
+    const THESAURUS_CONCEPT_ADDED = 'thesaurus.concept-added';
 }
