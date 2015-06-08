@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\UsrLists;
 use Alchemy\Phrasea\ControllerProvider\Prod\WorkZone;
 use Alchemy\Phrasea\ControllerProvider\Report\Activity as ReportActivity;
 use Alchemy\Phrasea\ControllerProvider\Report\Informations as ReportInformations;
@@ -315,6 +314,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Tooltip' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\TOU' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Upload' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -626,7 +626,6 @@ class Application extends SilexApplication
         $this->mount('/developers/', new Developers());
 
         $this->mount('/prod/WorkZone', new WorkZone());
-        $this->mount('/prod/lists', new UsrLists());
 
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
@@ -667,6 +666,7 @@ class Application extends SilexApplication
             '/prod/feeds'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Feed',
             '/prod/language'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
             '/prod/lazaret/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
+            '/prod/lists'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists',
             '/prod/order/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Order',
             '/prod/printer/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Printer',
             '/prod/push/'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Push',
