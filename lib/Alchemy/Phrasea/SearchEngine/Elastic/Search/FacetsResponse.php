@@ -31,6 +31,11 @@ class FacetsResponse implements JsonSerializable
         }
     }
 
+    public function getFacets()
+    {
+        return $this->facets;
+    }
+
     private function buildBucketsValues($name, $buckets)
     {
         $values = array();

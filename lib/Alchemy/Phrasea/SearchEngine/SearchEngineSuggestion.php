@@ -74,7 +74,8 @@ class SearchEngineSuggestion
     public function toArray()
     {
         return [
-            'query' => $this->getSuggestion(),
+            'suggestion' => $this->getSuggestion(),
+            'query' => $this->getQuery(),
             'hits'  => $this->getHits(),
         ];
     }

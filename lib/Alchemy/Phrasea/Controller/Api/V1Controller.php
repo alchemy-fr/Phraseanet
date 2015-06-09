@@ -1111,6 +1111,7 @@ class V1Controller extends Controller
                 function (SearchEngineSuggestion $suggestion) {
                     return $suggestion->toArray();
                 }, $search_result->getSuggestions()->toArray()),
+            'facets'            => $search_result->getFacets(),
             'results' => [],
             'query' => $search_result->getQuery(),
         ];
