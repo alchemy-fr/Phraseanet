@@ -16,7 +16,6 @@ use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Thesaurus as ThesaurusEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Doctrine\DBAL\Driver\Connection;
-// use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
