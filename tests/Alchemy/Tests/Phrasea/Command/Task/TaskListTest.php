@@ -25,6 +25,6 @@ class TaskListTest extends \PhraseanetTestCase
         $application->add($command);
 
         $setupCommand = $application->find('task-manager:task:list');
-        $setupCommand->execute($input, $output);
+        $setupCommand->run($input, $output);
     }
 }
