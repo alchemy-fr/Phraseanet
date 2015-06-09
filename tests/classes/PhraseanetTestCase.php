@@ -380,6 +380,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         // close all connection
         self::$DI['app']['connection.pool.manager']->closeAll();
+        self::$DI['app']['phraseanet.cache-service']->flushAll();
 
         /**
          * Kris Wallsmith pro-tip
