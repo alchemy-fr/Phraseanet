@@ -16,6 +16,17 @@ use Alchemy\Phrasea\Model\RecordInterface;
 
 class ACL implements cache_cacheableInterface
 {
+
+    protected static $bas_rights = [
+        'canputinalbum', 'candwnldhd',
+        'candwnldpreview', 'cancmd',
+        'canadmin', 'actif', 'canreport', 'canpush',
+        'canaddrecord', 'canmodifrecord', 'candeleterecord',
+        'chgstatus', 'imgtools',
+        'manage', 'modify_struct',
+        'nowatermark', 'order_master',
+    ];
+
     /**
      *
      * @var user
@@ -114,6 +125,16 @@ class ACL implements cache_cacheableInterface
         $this->app = $app;
 
         return $this;
+    }
+
+    /**
+     * Returns the list of available rights for collections
+     *
+     * @return string[]
+     */
+    public function get_bas_rights()
+    {
+        return self::$bas_rights;
     }
 
     /**
@@ -302,14 +323,7 @@ class ACL implements cache_cacheableInterface
             $this->update_rights_to_sbas($sbas_id, $rights);
         }
 
-        $bas_rights = ['canputinalbum', 'candwnldhd'
-            , 'candwnldpreview', 'cancmd'
-            , 'canadmin', 'actif', 'canreport', 'canpush'
-            , 'canaddrecord', 'canmodifrecord', 'candeleterecord'
-            , 'chgstatus', 'imgtools'
-            , 'manage', 'modify_struct'
-            , 'nowatermark', 'order_master'
-        ];
+        $bas_rights = self::$bas_rights;
 
         $bas_to_acces = $masks_to_give = $rights_to_give = [];
 
