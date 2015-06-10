@@ -18,13 +18,23 @@ class ACL implements cache_cacheableInterface
 {
 
     protected static $bas_rights = [
-        'canputinalbum', 'candwnldhd',
-        'candwnldpreview', 'cancmd',
-        'canadmin', 'actif', 'canreport', 'canpush',
-        'canaddrecord', 'canmodifrecord', 'candeleterecord',
-        'chgstatus', 'imgtools',
-        'manage', 'modify_struct',
-        'nowatermark', 'order_master',
+        'actif',
+        'canaddrecord',
+        'canadmin',
+        'cancmd',
+        'candeleterecord',
+        'candwnldhd',
+        'candwnldpreview',
+        'canmodifrecord',
+        'canpush',
+        'canputinalbum',
+        'canreport',
+        'chgstatus',
+        'imgtools',
+        'manage',
+        'modify_struct',
+        'nowatermark',
+        'order_master',
     ];
 
     /**
@@ -74,26 +84,26 @@ class ACL implements cache_cacheableInterface
      * @var Array
      */
     protected $_global_rights = [
-        'taskmanager'        => false,
-        'manageusers'        => false,
-        'order'              => false,
-        'report'             => false,
-        'push'               => false,
         'addrecord'          => false,
-        'modifyrecord'       => false,
-        'changestatus'       => false,
-        'doctools'           => false,
-        'deleterecord'       => false,
         'addtoalbum'         => false,
-        'coll_modify_struct' => false,
-        'coll_manage'        => false,
-        'order_master'       => false,
+        'bas_chupub'         => false,
+        'bas_manage'         => false,
         'bas_modif_th'       => false,
         'bas_modify_struct'  => false,
-        'bas_manage'         => false,
-        'bas_chupub'         => false,
+        'candwnldhd'         => true,
         'candwnldpreview'    => true,
-        'candwnldhd'         => true
+        'changestatus'       => false,
+        'coll_manage'        => false,
+        'coll_modify_struct' => false,
+        'deleterecord'       => false,
+        'doctools'           => false,
+        'manageusers'        => false,
+        'modifyrecord'       => false,
+        'order'              => false,
+        'order_master'       => false,
+        'push'               => false,
+        'report'             => false,
+        'taskmanager'        => false,
     ];
 
     /**
@@ -323,7 +333,7 @@ class ACL implements cache_cacheableInterface
             $this->update_rights_to_sbas($sbas_id, $rights);
         }
 
-        $bas_rights = self::$bas_rights;
+        $bas_rights = $this->get_bas_rights();
 
         $bas_to_acces = $masks_to_give = $rights_to_give = [];
 

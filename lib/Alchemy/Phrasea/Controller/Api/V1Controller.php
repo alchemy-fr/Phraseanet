@@ -753,13 +753,12 @@ class V1Controller extends Controller
     {
         $acl = $this->getAclForUser($user);
         $rights = $acl->get_bas_rights();
-        /** @var \collection[] $bases */
         $bases = $acl->get_granted_base();
 
-        $grants = array();
+        $grants = [];
 
         foreach ($bases as $base) {
-            $baseGrants = array();
+            $baseGrants = [];
 
             foreach ($rights as $right) {
                 if (! $acl->has_right_on_base($base->get_coll_id(), $right)) {
@@ -769,12 +768,12 @@ class V1Controller extends Controller
                 $baseGrants[] = $right;
             }
 
-            $grants[] = array(
+            $grants[] = [
                 'databox_id' => $base->get_sbas_id(),
                 'base_id' => $base->get_base_id(),
                 'collection_id' => $base->get_coll_id(),
                 'rights' => $baseGrants
-            );
+            ];
         }
 
         return $grants;
