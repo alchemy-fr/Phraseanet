@@ -749,6 +749,36 @@ class V1Controller extends Controller
         ];
     }
 
+    private function listUserCollections(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rights = $acl->get_bas_rights();
+        $bases = $acl->get_granted_base();
+
+        $grants = [];
+
+        foreach ($bases as $base) {
+            $baseGrants = [];
+
+            foreach ($rights as $right) {
+                if (! $acl->has_right_on_base($base->get_coll_id(), $right)) {
+                    continue;
+                }
+
+                $baseGrants[] = $right;
+            }
+
+            $grants[] = [
+                'databox_id' => $base->get_sbas_id(),
+                'base_id' => $base->get_base_id(),
+                'collection_id' => $base->get_coll_id(),
+                'rights' => $baseGrants
+            ];
+        }
+
+        return $grants;
+    }
+
     public function addRecordAction(Request $request)
     {
         if (count($request->files->get('file')) == 0) {
@@ -2226,7 +2256,10 @@ class V1Controller extends Controller
 
     public function getCurrentUserAction(Request $request)
     {
-        $ret = ["user" => $this->listUser($this->getAuthenticatedUser())];
+        $ret = [
+            "user" => $this->listUser($this->getAuthenticatedUser()),
+            "collections" => $this->listUserCollections($this->getAuthenticatedUser())
+        ];
 
         return Result::create($request, $ret)->createResponse();
     }
