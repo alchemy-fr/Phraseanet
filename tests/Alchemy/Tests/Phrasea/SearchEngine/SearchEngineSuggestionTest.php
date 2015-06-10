@@ -54,6 +54,6 @@ class SearchEngineSuggestionTest extends \PhraseanetTestCase
         $hits = null;
 
         $suggestion = new SearchEngineSuggestion($query, $words, $hits);
-        $this->assertEquals(['query' => $words, 'hits' => null, 'suggestion' => $words], $suggestion->toArray());
+        $this->assertEquals(['query' => $query, 'hits' => null, 'suggestion' => $words], $suggestion->toArray());
     }
 }
