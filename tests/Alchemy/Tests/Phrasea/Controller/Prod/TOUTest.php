@@ -6,10 +6,10 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    public static function tearDownAfterClass()
+    public function setUp()
     {
+        parent::setUp();
         self::resetUsersRights(self::$DI['app'], self::$DI['user_alt2']);
-        parent::tearDownAfterClass();
     }
 
     /**

@@ -21,6 +21,8 @@ class media_subdefTest extends \PhraseanetTestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         if (null === self::$recordonbleu) {
             $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
 

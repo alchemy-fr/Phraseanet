@@ -76,19 +76,15 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
     public function testFailureManagerAttemptsConfiguration()
     {
         $app = $this->loadApp();
-        $app['root.path'] = __DIR__ . '/../../../../../../';
-        $app->register(new TokensServiceProvider());
-        $app->register(new AuthenticationManagerServiceProvider());
-        $app->register(new ConfigurationServiceProvider());
 
         $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
 
-        $app['orm.em'] = $this->createEntityManagerMock();
-        self::$DI['app']['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+        //$app['orm.em'] = $this->createEntityManagerMock();
+        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $manager = self::$DI['app']['auth.native.failure-manager'];
+        $manager = $app['auth.native.failure-manager'];
         $this->assertEquals(42, $manager->getTrials());
     }
 

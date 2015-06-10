@@ -8,6 +8,7 @@ use Alchemy\Phrasea\Controller\Api\V1Controller;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -245,7 +246,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $account = self::$DI['app']['manipulator.api-account']->create($nativeApp, self::$DI['user']);
             $token = self::$DI['app']['manipulator.api-oauth-token']->create($account);
 
-            $this->setToken($token->getOauthToken());
+            $this->setToken($token);
             self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -2533,9 +2534,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $record->set_metadatas($toupdate);
     }
 
-    protected function setToken($token)
+    protected function setToken(ApiOauthToken $token)
     {
-        $_GET['oauth_token'] = $token;
+        self::resetUsersRights(self::$DI['app'], $token->getAccount()->getUser());
+        $_GET['oauth_token'] = $token->getOauthToken();
     }
 
     protected function unsetToken()

@@ -14,11 +14,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-    }
-
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Records::whatCanIDelete
      */

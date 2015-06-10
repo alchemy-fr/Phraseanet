@@ -5,17 +5,11 @@ class ACLTest extends \PhraseanetTestCase
     /** @var ACL */
     private $object;
 
-    public static function tearDownAfterClass()
-    {
-        self::resetUsersRights(self::$DI['app'], self::$DI['user']);
-
-        parent::tearDownAfterClass();
-    }
-
     public function setup()
     {
         parent::setUp();
 
+        self::resetUsersRights(self::$DI['app'], self::$DI['user']);
         $this->object = self::$DI['app']['acl']->get(self::$DI['user']);
     }
 

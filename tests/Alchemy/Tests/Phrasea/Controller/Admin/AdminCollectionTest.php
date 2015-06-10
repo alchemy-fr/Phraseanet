@@ -12,6 +12,12 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
     protected $client;
     public static $createdCollections = [];
 
+    public function setUp()
+    {
+        parent::setUp();
+        self::resetUsersRights(self::$DI['app'], self::$DI['user']);
+    }
+
     public function tearDown()
     {
         self::$DI['app']['acl'] = new ACLProvider(self::$DI['app']);
@@ -34,12 +40,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['collection']->enable(self::$DI['app']['phraseanet.appbox']);
 
         parent::tearDown();
-    }
-
-    public static function tearDownAfterClass()
-    {
-        self::resetUsersRights(self::$DI['app'], self::$DI['user']);
-        parent::tearDownAfterClass();
     }
 
     public function getJson($response)
