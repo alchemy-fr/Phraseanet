@@ -46,9 +46,12 @@ class phrasea
         }
 
         try {
-            self::$_sbas_params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
+            $params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
+            if (is_array($params)) {
+                self::$_sbas_params = $params;
 
-            return self::$_sbas_params;
+                return $params;
+            }
         } catch (\Exception $e) {
 
         }

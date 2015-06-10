@@ -93,6 +93,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         try {
             $datas = $this->get_data_from_cache();
 
+            if (!is_array($datas)) {
+                throw new Exception('Could not retrieve record data');
+            }
+
             $this->mime = $datas['mime'];
             $this->sha256 = $datas['sha256'];
             $this->original_name = $datas['original_name'];
@@ -105,7 +109,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             return $this;
         } catch (\Exception $e) {
-
         }
 
         $connbas = $this->databox->get_connection();
@@ -586,7 +589,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     protected function get_available_subdefs()
     {
         try {
-            return $this->get_data_from_cache(self::CACHE_SUBDEFS);
+            $data = $this->get_data_from_cache(self::CACHE_SUBDEFS);
+            if (is_array($data)) {
+                return $data;
+            }
         } catch (\Exception $e) {
 
         }

@@ -64,6 +64,9 @@ class collection implements cache_cacheableInterface
     {
         try {
             $datas = $this->get_data_from_cache();
+            if (!is_array($datas)) {
+                throw new \Exception('Collection could not be retrieved from cache');
+            }
             $this->is_active = $datas['is_active'];
             $this->base_id = $datas['base_id'];
             $this->available = $datas['available'];

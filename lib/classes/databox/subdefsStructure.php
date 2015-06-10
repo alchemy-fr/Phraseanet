@@ -79,7 +79,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     {
         $sx_struct = $this->databox->get_sxml_structure();
 
-        $this->AvSubdefs = [
+        $avSubdefs = [
             'image' => [],
             'video' => [],
             'audio' => [],
@@ -96,13 +96,14 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         foreach ($subdefgroup as $k => $subdefs) {
             $subdefgroup_name = strtolower($subdefs->attributes()->name);
 
-            if ( ! isset($AvSubdefs[$subdefgroup_name])) {
-                $AvSubdefs[$subdefgroup_name] = [];
+            if ( ! isset($avSubdefs[$subdefgroup_name])) {
+                $avSubdefs[$subdefgroup_name] = [];
             }
 
             foreach ($subdefs as $sd) {
                 $subdef_name = strtolower($sd->attributes()->name);
 
+                $type = null;
                 switch ($subdefgroup_name) {
                     case 'audio':
                         $type = new \Alchemy\Phrasea\Media\Type\Audio();
@@ -121,13 +122,12 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
                         break;
                     default:
                         continue;
-                        break;
                 }
 
-                $AvSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd, $this->translator);
+                $avSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd, $this->translator);
             }
         }
-        $this->AvSubdefs = $AvSubdefs;
+        $this->AvSubdefs = $avSubdefs;
 
         return $this;
     }

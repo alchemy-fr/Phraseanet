@@ -371,7 +371,7 @@ class appbox extends base
                 }
                 $ret[$sbas_id] = $databox;
             } catch (NotFoundHttpException $e) {
-                $this->app['monolog']->error(sprintf('Databox %s is not reliable.', $databox->get_sbas_id()));
+                $this->app['monolog']->error(sprintf('Databox %s is not reliable.', $sbas_id));
             }
         }
 
@@ -383,7 +383,10 @@ class appbox extends base
     protected function retrieve_sbas_ids()
     {
         try {
-            return $this->get_data_from_cache(self::CACHE_SBAS_IDS);
+            $data = $this->get_data_from_cache(self::CACHE_SBAS_IDS);
+            if (is_array($data)) {
+                return $data;
+            }
         } catch (\Exception $e) {
 
         }
