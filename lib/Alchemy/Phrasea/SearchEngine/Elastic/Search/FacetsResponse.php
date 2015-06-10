@@ -31,6 +31,11 @@ class FacetsResponse implements JsonSerializable
         }
     }
 
+    /**
+     * Term aggregates
+     *
+     * @return array
+     */
     public function getFacets()
     {
         return $this->facets;

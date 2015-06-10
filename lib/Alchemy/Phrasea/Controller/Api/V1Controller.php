@@ -1099,19 +1099,19 @@ class V1Controller extends Controller
         $this->getSearchEngine()->clearCache();
 
         $ret = [
-            'offset_start'      => $offsetStart,
-            'per_page'          => $perPage,
+            'offset_start' => $offsetStart,
+            'per_page' => $perPage,
             'available_results' => $search_result->getAvailable(),
-            'total_results'     => $search_result->getTotal(),
-            'error'             => (string)$search_result->getError(),
-            'warning'           => (string)$search_result->getWarning(),
-            'query_time'        => $search_result->getDuration(),
-            'search_indexes'    => $search_result->getIndexes(),
-            'suggestions'       => array_map(
+            'total_results' => $search_result->getTotal(),
+            'error' => (string)$search_result->getError(),
+            'warning' => (string)$search_result->getWarning(),
+            'query_time' => $search_result->getDuration(),
+            'search_indexes' => $search_result->getIndexes(),
+            'suggestions' => array_map(
                 function (SearchEngineSuggestion $suggestion) {
                     return $suggestion->toArray();
                 }, $search_result->getSuggestions()->toArray()),
-            'facets'            => $search_result->getFacets(),
+            'facets' => $search_result->getFacets(),
             'results' => [],
             'query' => $search_result->getQuery(),
         ];
