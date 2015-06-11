@@ -138,9 +138,6 @@
             </div>
 
             <div class="PNB frame_canva">
-              {#<div id="thumb_reset_button">
-                <img src="/skins/prod/ThumbExtractor/reset.png" />
-              </div>#}
               <div id="thumb_delete_button">
                 <img src="/skins/prod/ThumbExtractor/delete.png" />
               </div>
@@ -153,75 +150,10 @@
                 </div>
 
             </div>
-            {# disabled editing actions
-            <div class="PNB action_bar_right">
-              <div class="action_icon">
-                <img id="flipH" src="/skins/prod/ThumbExtractor/flip_horizontal.png"/>
-              </div>
-              <div class="action_icon">
-                <img id="flipV" src="/skins/prod/ThumbExtractor/flip_vertical.png"/>
-              </div>
-              <div class="action_icon">
-                <img id="brightness" src="/skins/prod/ThumbExtractor/luminosity.png" />
-              </div>
-              <div class="action_icon">
-                <img id="contrast" src="/skins/prod/ThumbExtractor/contrast.png" />
-              </div>
-            </div>
-            #}
-
             <div id="thumb_slider" class="PNB">
               <div id="thumb_wrapper">
               </div>
             </div>
-
-            <div id="action_frame_brightness" class="PNB action_frame" style='background-color:#3B3D3B;z-index: 5;top:295px;left:380px;width:325px;height:125px;display: none;'>
-              <div class='close_action_frame PNB' style='background: url("/skins/prod/Push/close_badge.png") #141616 no-repeat center center; top:5px;left:310px;width:10px;height:10px;'></div>
-              <div>
-                {{ 'brightness settings' | trans }}
-                <hr style='color:#141616' />
-              </div>
-              <table style="table-layout:fixed; width:100%">
-                <tbody>
-                  <tr>
-                    <td style='width:45px; text-align:center'>
-                        <input id="value-brightness" type="text" style="width:45px;border:none;color:white;background-color:#3B3D3B" readonly="readonly" value="0">
-                    </td>
-                    <td style='padding:5px;text-align:center'>
-                      <div id="slider-brightness" ></div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
-                <button class="apply-brightness btn btn-inverse">{{ 'validate' | trans }}</button>
-              </div>
-            </div>
-
-            <div id="action_frame_contrast" class="PNB action_frame" style='background-color:#3B3D3B;z-index: 5;top:295px;left:380px;width:325px;height:125px;display: none;'>
-              <div class='close_action_frame PNB' style='background: url("/skins/prod/Push/close_badge.png") #141616 no-repeat center center; top:5px;left:310px;width:10px;height:10px;'>
-              </div>
-              <div>
-                {{ 'contrast settings' | trans }}
-                <hr style='color:#141616' />
-              </div>
-              <table style="table-layout:fixed;width:100%">
-                <tbody>
-                  <tr>
-                    <td style='width:45px; text-align:center'>
-                        <input id="value-contrast" type="text" style="width:45px;border:none;color:white;background-color:#3B3D3B" readonly="readonly" value="0.3">
-                    </td>
-                    <td style='padding:5px;text-align:center'>
-                      <div id="slider-contrast" ></div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
-                <button class="apply-contrast btn btn-inverse">{{ 'validate' | trans }}</button>
-              </div>
-            </div>
-
             <div id="thumb_validate_button" class="PNB">
               <input type="hidden" value='{{record.get_sbas_id()}}' name='sbas_id'>
               <input type="hidden" value='{{record.get_record_id()}}' name='record_id'>
@@ -440,38 +372,8 @@ $(document).ready(function(){
     });
 
     if(ThumbEditor.isSupported()) {
-        $("#slider-brightness", scope).slider({
-            slide: function() {
-                $("#value-brightness").val(Math.round($("#slider-brightness").slider("value") / 100 * 300) - 150);
-            }
-        }).slider( "option", "value", 50);
-
-        $("#slider-contrast").slider({
-            slide: function() {
-                $("#value-contrast").val(
-                (
-                (
-                $("#slider-contrast").slider("value") / 100 * 4
-            )
-                    -1
-            ).toFixed(1));
-            }
-        }).slider( "option", "value", 1/3*100);
 
         var sliderWrapper = $("#thumb_wrapper", scope);
-        /*$("#thumb_reset_button",scope).bind("click", function(){
-            var curImg = sliderWrapper.find(".selected");
-            var id = curImg.attr("id").split("_").pop();
-            var originalScreenShot = ThumbEditor.store.get(id);
-            var newImg = $("<img />");
-
-            curImg.after(newImg).remove();
-
-            newImg
-            .attr("id", "#working_"+ id)
-            .attr("src", originalScreenShot.getDataURI())
-            .trigger("click");
-        });*/
 
         $("#thumb_delete_button", scope).bind("click", function(){
             var img = sliderWrapper.find(".selected");
@@ -503,46 +405,6 @@ $(document).ready(function(){
             $(this).closest(".action_frame").hide();
         });
 
-        $("#flipV", scope).bind("click", function(){
-            Pixastic.process($("#thumb_canvas").get(0),
-            "flipv",
-            null,
-            function(canvas){$("#thumb_canvas").trigger("tool_event");}
-        );
-        });
-
-        $("#flipH", scope).bind("click", function(){
-            Pixastic.process($("#thumb_canvas").get(0),
-            "fliph",
-            null, function(canvas){$("#thumb_canvas").trigger("tool_event");}
-        );
-        });
-
-        $("#brightness", scope).bind("click", function(){
-            $("#action_frame_brightness", scope).show();
-            $("#action_frame_contrast", scope).hide();
-        });
-
-        $("#contrast", scope).bind("click", function(){
-            $("#action_frame_brightness", scope).hide();
-            $("#action_frame_contrast", scope).show();
-        });
-
-        $(".apply-brightness", scope).bind("click", function(){
-            Pixastic.process($("#thumb_canvas").get(0), "brightness", {
-                brightness: $("#value-brightness").val(),
-                contrast: $("#value-contrast").val(),
-                legacy: false
-            }, null, function(canvas){$("#thumb_canvas").trigger("tool_event");});
-        });
-
-        $(".apply-contrast").bind("click", function(){
-            Pixastic.process($("#thumb_canvas").get(0), "brightness", {
-                brightness: $("#value-brightness").val(),
-                contrast: $("#value-contrast").val(),
-                legacy: false
-            }, null, function(canvas){$("#thumb_canvas").trigger("tool_event");});
-        });
 
         $("img", sliderWrapper).live("click", function(){
             $('.selected', sliderWrapper).removeClass('selected');
