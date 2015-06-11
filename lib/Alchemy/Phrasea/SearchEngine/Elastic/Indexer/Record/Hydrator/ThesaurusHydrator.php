@@ -53,6 +53,7 @@ class ThesaurusHydrator implements HydratorInterface
             throw new Exception('Expected a record with the "databox_id" key set.');
         }
 
+        $values = array();
         $terms = array();
         $filters = array();
         $field_names = array();
@@ -65,6 +66,7 @@ class ThesaurusHydrator implements HydratorInterface
             // Loop through all values to prepare bulk query
             if (isset($record['caption'][$name])) {
                 foreach ($record['caption'][$name] as $value) {
+                    $values[] = $value;
                     $terms[] = Term::parse($value);
                     $filters[] = $filter;
                     $field_names[] = $name;
@@ -75,13 +77,13 @@ class ThesaurusHydrator implements HydratorInterface
         $bulk = $this->thesaurus->findConceptsBulk($terms, null, $filters, true);
 
         foreach ($bulk as $offset => $item_concepts) {
-            if ($item_concepts) {
+            if ($item_concepts && is_array($item_concepts) && count($item_concepts)>0) {
                 $name = $field_names[$offset];
                 foreach ($item_concepts as $concept) {
                     $record['concept_path'][$name][] = $concept->getPath();
                 }
             } else {
-                $this->candidate_terms->insert($name, $value);
+                $this->candidate_terms->insert($field_names[$offset], $values[$offset]);
             }
         }
     }
