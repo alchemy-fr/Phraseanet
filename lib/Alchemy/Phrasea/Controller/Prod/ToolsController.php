@@ -251,6 +251,35 @@ class ToolsController extends Controller
         try {
             $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
+            $subDef = $request->request->get('sub_def');
+
+            if( is_array($subDef)) {
+                foreach($subDef as $def) {
+                    $subDefName = $def['name'];
+                    $subDefDataUri = $def['src'];
+
+                    $dataUri = Parser::parse($subDefDataUri);
+
+                    $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
+                    $fileName = sprintf('%s/%s.png',  sys_get_temp_dir(), $name);
+
+                    file_put_contents($fileName, $dataUri->getData());
+
+                    $media = $this->app->getMediaFromUri($fileName);
+
+                    $this->getSubDefinitionSubstituer()->substitute($record, $subDefName, $media);
+                    $this->getDataboxLogger($record->get_databox())
+                      ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
+
+                    unset($media);
+                    $this->getFilesystem()->remove($fileName);
+                }
+
+                $return['success'] = true;
+            }
+
+            // legacy usage:
+
             $dataUri = Parser::parse($request->request->get('image', ''));
 
             $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());

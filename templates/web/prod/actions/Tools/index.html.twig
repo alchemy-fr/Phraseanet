@@ -105,7 +105,7 @@
             <div class="PNB part_title_left"></div>
 
             <div class="PNB frame_video">
-
+              {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
               {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
               {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
               {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
@@ -138,16 +138,22 @@
             </div>
 
             <div class="PNB frame_canva">
-              <div id="thumb_reset_button">
+              {#<div id="thumb_reset_button">
                 <img src="/skins/prod/ThumbExtractor/reset.png" />
-              </div>
+              </div>#}
               <div id="thumb_delete_button">
                 <img src="/skins/prod/ThumbExtractor/delete.png" />
               </div>
               <p id='thumb_info'>{{ 'To take a screenshot click on camera' | trans }}</p>
-              <canvas id="thumb_canvas">
-              </canvas>
+                <canvas id="thumb_canvas"></canvas>
+                <div id="alt_canvas_container" style="position:absolute;overflow:hidden;top:-1200px;visibility: hidden; width:0!important;height:0!important">
+                    {% for subdef in outputFormats %}
+                        <canvas data-width="{{ subdef.get_width() }}" data-name="{{ subdef.get_name() }}" class="alt_canvas" id="{{ subdef.get_name() }}"></canvas>
+                    {% endfor %}
+                </div>
+
             </div>
+            {# disabled editing actions
             <div class="PNB action_bar_right">
               <div class="action_icon">
                 <img id="flipH" src="/skins/prod/ThumbExtractor/flip_horizontal.png"/>
@@ -162,6 +168,7 @@
                 <img id="contrast" src="/skins/prod/ThumbExtractor/contrast.png" />
               </div>
             </div>
+            #}
 
             <div id="thumb_slider" class="PNB">
               <div id="thumb_wrapper">
@@ -428,7 +435,9 @@ $(document).ready(function(){
 
     //thumbExtractor
 
-    var ThumbEditor = new this.THUMB_EDITOR("thumb_video", "thumb_canvas");
+    var ThumbEditor = new this.THUMB_EDITOR("thumb_video", "thumb_canvas", {
+        altCanvas: $('#alt_canvas_container .alt_canvas')
+    });
 
     if(ThumbEditor.isSupported()) {
         $("#slider-brightness", scope).slider({
@@ -450,8 +459,7 @@ $(document).ready(function(){
         }).slider( "option", "value", 1/3*100);
 
         var sliderWrapper = $("#thumb_wrapper", scope);
-
-        $("#thumb_reset_button",scope).bind("click", function(){
+        /*$("#thumb_reset_button",scope).bind("click", function(){
             var curImg = sliderWrapper.find(".selected");
             var id = curImg.attr("id").split("_").pop();
             var originalScreenShot = ThumbEditor.store.get(id);
@@ -463,7 +471,7 @@ $(document).ready(function(){
             .attr("id", "#working_"+ id)
             .attr("src", originalScreenShot.getDataURI())
             .trigger("click");
-        });
+        });*/
 
         $("#thumb_delete_button", scope).bind("click", function(){
             var img = sliderWrapper.find(".selected");
@@ -482,7 +490,7 @@ $(document).ready(function(){
             else
             {
                 $(this).hide();
-                $("#thumb_reset_button",scope).hide();
+                //$("#thumb_reset_button",scope).hide();
                 $("#thumb_info", scope).show();
                 ThumbEditor.resetCanva();
             }
@@ -540,13 +548,17 @@ $(document).ready(function(){
             $('.selected', sliderWrapper).removeClass('selected');
             $(this).addClass('selected');
 
-            ThumbEditor.copy($(this).get(0));
+            var $self = this;
+            var selectedScreenId = $self.getAttribute("id").split("_").pop();
+            var screenshots = ThumbEditor.store.get(selectedScreenId);
+
+            ThumbEditor.copy(screenshots.getDataURI(), screenshots.getAltScreenShots());
         });
 
         $("#thumb_camera_button", scope).bind("click", function(){
             $("#thumb_info", scope).hide();
             $("#thumb_delete_button", scope).show();
-            $("#thumb_reset_button",scope).show();
+            //$("#thumb_reset_button",scope).show();
 
             var screenshot = ThumbEditor.screenshot();
             var img = $("<img />");
@@ -573,7 +585,6 @@ $(document).ready(function(){
         });
 
         $("#thumb_validate_button", scope).bind("click", function(){
-
             var thumbnail = $('.selected', sliderWrapper);
 
             if(thumbnail.length === 0)
@@ -598,6 +609,21 @@ $(document).ready(function(){
 
             var record_id = $("input[name=record_id]").val();
             var sbas_id = $("input[name=sbas_id]").val();
+
+            var selectedScreenId = thumbnail.attr('id').split("_").pop();
+            var screenshots = ThumbEditor.store.get(selectedScreenId);
+
+
+            var screenData = screenshots.getAltScreenShots(),
+                subDefs = [];
+
+            for(var i = 0; i < screenData.length; i++ ) {
+                subDefs.push({
+                    name: screenData[i].name,
+                    src: screenData[i].dataURI
+
+                });
+            }
 
 
             function disableConfirmButton(dialog){
@@ -635,7 +661,7 @@ $(document).ready(function(){
                     type: "POST",
                     url: "/prod/tools/thumb-extractor/apply/",
                     data: {
-                        image: $("#thumb_confirm img.selected").attr('src'),
+                        sub_def: subDefs,
                         record_id : record_id,
                         sbas_id: sbas_id
                     },
