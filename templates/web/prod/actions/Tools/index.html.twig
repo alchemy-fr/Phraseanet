@@ -392,7 +392,6 @@ $(document).ready(function(){
             else
             {
                 $(this).hide();
-                //$("#thumb_reset_button",scope).hide();
                 $("#thumb_info", scope).show();
                 ThumbEditor.resetCanva();
             }
@@ -420,7 +419,6 @@ $(document).ready(function(){
         $("#thumb_camera_button", scope).bind("click", function(){
             $("#thumb_info", scope).hide();
             $("#thumb_delete_button", scope).show();
-            //$("#thumb_reset_button",scope).show();
 
             var screenshot = ThumbEditor.screenshot();
             var img = $("<img />");
