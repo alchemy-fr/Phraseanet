@@ -1,50 +1,57 @@
 language: php
 env:
-- SETUP_MODE=update
-- SETUP_MODE=install
+  - SETUP_MODE=update TEST_SUITE=1
+  - SETUP_MODE=update TEST_SUITE=2
+  - SETUP_MODE=install TEST_SUITE=1
+  - SETUP_MODE=install TEST_SUITE=2
 php:
-- 5.5
-- 5.6
+  - 5.5
+  - 5.6
 matrix:
   fast_finish: true
 services:
-- mysql
-- memcached
-- redis
+  - mysql
+  - memcached
+  - redis
 before_install:
-- composer self-update --no-progress --no-interaction
-- sudo apt-get purge elasticsearch
-- wget --no-check-certificate https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.2.deb
-- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.3.0
-- sudo service elasticsearch start
-- echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-- echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
-- echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
-- echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-- echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
-- yes | pecl install imagick
+  - composer self-update --no-progress --no-interaction
+  - sudo apt-get purge elasticsearch
+  - wget --no-check-certificate https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.2.deb
+  - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.3.0
+  - sudo service elasticsearch start
+  - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
+  - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
+  - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
+  - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
+  - yes | pecl install imagick
 install:
-- travis_retry npm install
-- travis_retry composer install --optimize-autoloader --dev --prefer-source
-- travis_retry ./node_modules/.bin/grunt install-assets
-- "./bin/developer assets:compile-less"
+  - travis_retry npm install
+  - travis_retry composer install --optimize-autoloader --dev --prefer-source
+  - travis_retry ./node_modules/.bin/grunt install-assets
+  - "./bin/developer assets:compile-less"
 before_script:
-- mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
-- "./bin/developer system:uninstall"
-- "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
-- |
-  if [ "$SETUP_MODE" = "update" ]; then
-    ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
-    php resources/hudson/cleanupSubdefs.php;
-  fi
-- mysql -e 'SELECT ab.version AS applibox_version, db.value AS databox_version FROM ab_test.sitepreff ab, db_test.pref db WHERE db.prop = "version"'
-- "./bin/developer ini:setup-tests-dbs"
-- "./bin/console searchengine:index:create"
-- "./bin/developer phraseanet:regenerate-sqlite"
-- "./bin/developer phraseanet:generate-js-fixtures"
+  - mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
+  - "./bin/developer system:uninstall"
+  - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
+  - |
+    if [ "$SETUP_MODE" = "update" ]; then
+      ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
+      php resources/hudson/cleanupSubdefs.php;
+    fi
+  - mysql -e 'SELECT ab.version AS applibox_version, db.value AS databox_version FROM ab_test.sitepreff ab, db_test.pref db WHERE db.prop = "version"'
+  - "./bin/developer ini:setup-tests-dbs"
+  - "./bin/console searchengine:index:create"
+  - "./bin/developer phraseanet:regenerate-sqlite"
+  - "./bin/developer phraseanet:generate-js-fixtures"
 script:
-- "./node_modules/.bin/grunt test"
-- "./bin/phpunit"
+  - "./node_modules/.bin/grunt test"
+  - |
+    if [ "$TEST_SUITE" = "1" ]; then
+      "./bin/phpunit" "tests/classes/";
+    else
+      "./bin/phpunit" "tests/Alchemy/";
+    fi
 notifications:
   hipchat:
     rooms:
