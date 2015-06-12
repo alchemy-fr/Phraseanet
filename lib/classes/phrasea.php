@@ -100,7 +100,11 @@ class phrasea
     {
         if (!self::$_bas2sbas) {
             try {
-                self::$_bas2sbas = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
+                $data = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
+                if (!$data) {
+                    throw new \Exception('Could not get sbas from cache');
+                }
+                self::$_bas2sbas = $data;
             } catch (\Exception $e) {
                 $sql = 'SELECT base_id, sbas_id FROM bas';
                 $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);

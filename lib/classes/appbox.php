@@ -420,8 +420,7 @@ class appbox extends base
     }
 
     /**
-     *
-     * @param  <type> $option
+     * @param string $option
      * @return string
      */
     public function get_cache_key($option = null)
