@@ -10,8 +10,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: .\n"
-"Last-Translator: Phraseanet TEAM <info@phraseanet.com>\n"
+"Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
+"Language: ar_SA\n"
+"X-Generator: Poedit 1.8.1\n"
 
 msgid "test::test"
 msgstr "test"
-
