@@ -9,35 +9,33 @@
  */
 namespace Alchemy\Phrasea\Controller\Report;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
+use Goodby\CSV\Export\Standard\Exporter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RootController extends Controller
 {
-
-    public function indexAction(Application $app)
+    public function indexAction()
     {
-        return $app->redirectPath('report_dashboard');
+        return $this->app->redirectPath('report_dashboard');
     }
 
     /**
      * Display dashboard information
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function getDashboard(Application $app, Request $request)
+    public function getDashboard(Request $request)
     {
         if ('json' === $request->getRequestFormat()) {
-            \Session_Logger::updateClientInfos($app, 4);
+            \Session_Logger::updateClientInfos($this->app, 4);
 
-            $dashboard = new \module_report_dashboard($app, $app['authentication']->getUser());
+            $dashboard = new \module_report_dashboard($this->app, $this->getAuthenticatedUser());
 
             $dmin = $request->query->get('dmin');
             $dmax = $request->query->get('dmax');
@@ -48,14 +46,14 @@ class RootController extends Controller
 
             $dashboard->execute();
 
-            return $app->json(['html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', [
+            return $this->app->json(['html' => $this->render('report/ajax_dashboard_content_child.html.twig', [
                 'dashboard' => $dashboard
             ])]);
         }
 
         $granted = [];
 
-        foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_base(['canreport']) as $collection) {
+        foreach ($this->getAclForUser()->get_granted_base(['canreport']) as $collection) {
             if (!isset($granted[$collection->get_sbas_id()])) {
                 $granted[$collection->get_sbas_id()] = [
                     'id' => $collection->get_sbas_id(),
@@ -70,15 +68,16 @@ class RootController extends Controller
             ];
         }
 
-        return $app['twig']->render('report/report_layout_child.html.twig', [
+        $conf = $this->getConf();
+        return $this->render('report/report_layout_child.html.twig', [
             'ajax_dash'     => true,
             'dashboard'     => null,
             'granted_bases' => $granted,
-            'home_title'    => $app['conf']->get(['registry', 'general', 'title']),
+            'home_title'    => $conf->get(['registry', 'general', 'title']),
             'module'        => 'report',
             'module_name'   => 'Report',
-            'anonymous'     => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
-            'g_anal'        => $app['conf']->get(['registry', 'general', 'analytics']),
+            'anonymous'     => $conf->get(['registry', 'modules', 'anonymous-report']),
+            'g_anal'        => $conf->get(['registry', 'general', 'analytics']),
             'ajax'          => false,
             'ajax_chart'    => false
         ]);
@@ -88,11 +87,10 @@ class RootController extends Controller
      * Gets available collections where current user can see report and
      * format date
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function initReport(Application $app, Request $request)
+    public function initReport(Request $request)
     {
         $popbases = $request->request->get('popbases', []);
 
@@ -125,9 +123,9 @@ class RootController extends Controller
         //fill the last entry
         $selection[$id_sbas]['liste'] = $liste;
 
-        return $app['twig']->render('report/ajax_report_content.html.twig', [
+        return $this->render('report/ajax_report_content.html.twig', [
             'selection' => $selection,
-            'anonymous' => $app['conf']->get(['registry', 'modules', 'anonymous-report']),
+            'anonymous' => $this->getConf()->get(['registry', 'modules', 'anonymous-report']),
             'ajax'      => true,
             'dmin'      => $dmin->format('Y-m-d H:i:s'),
             'dmax'      => $dmax->format('Y-m-d H:i:s'),
@@ -137,14 +135,13 @@ class RootController extends Controller
     /**
      * Display instance connexion report
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportConnexions(Application $app, Request $request)
+    public function doReportConnexions(Request $request)
     {
         $cnx = new \module_report_connexion(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -152,33 +149,33 @@ class RootController extends Controller
         );
 
         $conf = [
-            'user'      => [$app->trans('phraseanet::utilisateurs'), 1, 1, 1, 1],
-            'ddate'     => [$app->trans('report:: date'), 1, 0, 1, 1],
-            'ip'        => [$app->trans('report:: IP'), 1, 0, 0, 0],
-            'appli'     => [$app->trans('report:: modules'), 1, 0, 0, 0],
-            'fonction'  => [$app->trans('report::fonction'), 1, 1, 1, 1],
-            'activite'  => [$app->trans('report::activite'), 1, 1, 1, 1],
-            'pays'      => [$app->trans('report::pays'), 1, 1, 1, 1],
-            'societe'   => [$app->trans('report::societe'), 1, 1, 1, 1]
+            'user'      => [$this->app->trans('phraseanet::utilisateurs'), 1, 1, 1, 1],
+            'ddate'     => [$this->app->trans('report:: date'), 1, 0, 1, 1],
+            'ip'        => [$this->app->trans('report:: IP'), 1, 0, 0, 0],
+            'appli'     => [$this->app->trans('report:: modules'), 1, 0, 0, 0],
+            'fonction'  => [$this->app->trans('report::fonction'), 1, 1, 1, 1],
+            'activite'  => [$this->app->trans('report::activite'), 1, 1, 1, 1],
+            'pays'      => [$this->app->trans('report::pays'), 1, 1, 1, 1],
+            'societe'   => [$this->app->trans('report::societe'), 1, 1, 1, 1]
         ];
 
         if ($request->request->get('printcsv') == 'on') {
             $cnx->setHasLimit(false);
             $cnx->setPrettyString(false);
 
-            $this->doReport($app, $request, $cnx, $conf);
+            $this->doReport($request, $cnx, $conf);
 
-            return $this->getCSVResponse($app, $cnx, 'connections');
+            return $this->getCSVResponse($cnx, 'connections');
         }
 
-        $report = $this->doReport($app, $request, $cnx, $conf);
+        $report = $this->doReport($request, $cnx, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -199,14 +196,13 @@ class RootController extends Controller
     /**
      * Display instance questions report
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportQuestions(Application $app, Request $request)
+    public function doReportQuestions(Request $request)
     {
         $questions = new \module_report_question(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -214,32 +210,32 @@ class RootController extends Controller
         );
 
         $conf = [
-            'user'      => [$app->trans('report:: utilisateur'), 1, 1, 1, 1],
-            'search'    => [$app->trans('report:: question'), 1, 0, 1, 1],
-            'ddate'     => [$app->trans('report:: date'), 1, 0, 1, 1],
-            'fonction'  => [$app->trans('report:: fonction'), 1, 1, 1, 1],
-            'activite'  => [$app->trans('report:: activite'), 1, 1, 1, 1],
-            'pays'      => [$app->trans('report:: pays'), 1, 1, 1, 1],
-            'societe'   => [$app->trans('report:: societe'), 1, 1, 1, 1]
+            'user'      => [$this->app->trans('report:: utilisateur'), 1, 1, 1, 1],
+            'search'    => [$this->app->trans('report:: question'), 1, 0, 1, 1],
+            'ddate'     => [$this->app->trans('report:: date'), 1, 0, 1, 1],
+            'fonction'  => [$this->app->trans('report:: fonction'), 1, 1, 1, 1],
+            'activite'  => [$this->app->trans('report:: activite'), 1, 1, 1, 1],
+            'pays'      => [$this->app->trans('report:: pays'), 1, 1, 1, 1],
+            'societe'   => [$this->app->trans('report:: societe'), 1, 1, 1, 1]
         ];
 
         if ($request->request->get('printcsv') == 'on') {
             $questions->setHasLimit(false);
             $questions->setPrettyString(false);
 
-            $this->doReport($app, $request, $questions, $conf);
+            $this->doReport($request, $questions, $conf);
 
-            return $this->getCSVResponse($app, $questions, 'questions');
+            return $this->getCSVResponse($questions, 'questions');
         }
 
-        $report = $this->doReport($app, $request, $questions, $conf);
+        $report = $this->doReport($request, $questions, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -260,18 +256,13 @@ class RootController extends Controller
     /**
      * Display instance download report
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportDownloads(Application $app, Request $request)
+    public function doReportDownloads(Request $request)
     {
-
-        // no_// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
-
         $download = new \module_report_download(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -280,51 +271,42 @@ class RootController extends Controller
 
         $conf_pref = [];
 
-        foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
+        foreach (\module_report::getPreff($this->app, $request->request->get('sbasid')) as $field) {
             $conf_pref[strtolower($field)] = [$field, 0, 0, 0, 0];
         }
 
         $conf = array_merge([
-            'user'      => [$app->trans('report:: utilisateurs'), 1, 1, 1, 1],
-            'ddate'     => [$app->trans('report:: date'), 1, 0, 1, 1],
-            'record_id' => [$app->trans('report:: record id'), 1, 1, 1, 1],
-            'final'     => [$app->trans('phrseanet:: sous definition'), 1, 0, 1, 1],
-            'coll_id'   => [$app->trans('report:: collections'), 1, 0, 1, 1],
-            'comment'   => [$app->trans('report:: commentaire'), 1, 0, 0, 0],
-            'fonction'  => [$app->trans('report:: fonction'), 1, 1, 1, 1],
-            'activite'  => [$app->trans('report:: activite'), 1, 1, 1, 1],
-            'pays'      => [$app->trans('report:: pays'), 1, 1, 1, 1],
-            'societe'   => [$app->trans('report:: societe'), 1, 1, 1, 1]
+            'user'      => [$this->app->trans('report:: utilisateurs'), 1, 1, 1, 1],
+            'ddate'     => [$this->app->trans('report:: date'), 1, 0, 1, 1],
+            'record_id' => [$this->app->trans('report:: record id'), 1, 1, 1, 1],
+            'final'     => [$this->app->trans('phrseanet:: sous definition'), 1, 0, 1, 1],
+            'coll_id'   => [$this->app->trans('report:: collections'), 1, 0, 1, 1],
+            'comment'   => [$this->app->trans('report:: commentaire'), 1, 0, 0, 0],
+            'fonction'  => [$this->app->trans('report:: fonction'), 1, 1, 1, 1],
+            'activite'  => [$this->app->trans('report:: activite'), 1, 1, 1, 1],
+            'pays'      => [$this->app->trans('report:: pays'), 1, 1, 1, 1],
+            'societe'   => [$this->app->trans('report:: societe'), 1, 1, 1, 1]
         ], $conf_pref);
 
         if ($request->request->get('printcsv') == 'on') {
             $download->setHasLimit(false);
             $download->setPrettyString(false);
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+            $this->doReport($request, $download, $conf);
 
-            $this->doReport($app, $request, $download, $conf);
-
-            $r = $this->getCSVResponse($app, $download, 'download');
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($r, true)), FILE_APPEND);
+            $r = $this->getCSVResponse($download, 'download');
 
             return $r;
         }
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
-        $report = $this->doReport($app, $request, $download, $conf);
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
+        $report = $this->doReport($request, $download, $conf);
 
         if ($report instanceof Response) {
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -345,14 +327,13 @@ class RootController extends Controller
     /**
      * Display instance document report
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportDocuments(Application $app, Request $request)
+    public function doReportDocuments(Request $request)
     {
         $document = new \module_report_download(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -361,40 +342,38 @@ class RootController extends Controller
 
         $conf_pref = [];
 
-        foreach (\module_report::getPreff($app, $request->request->get('sbasid')) as $field) {
+        foreach (\module_report::getPreff($this->app, $request->request->get('sbasid')) as $field) {
             $conf_pref[$field] = array($field, 0, 0, 0, 0);
         }
 
         $conf = array_merge([
-            'telechargement'    => [$app->trans('report:: telechargements'), 1, 0, 0, 0],
-            'record_id'         => [$app->trans('report:: record id'), 1, 1, 1, 0],
-            'final'             => [$app->trans('phraseanet:: sous definition'), 1, 0, 1, 1],
-            'file'              => [$app->trans('report:: fichier'), 1, 0, 0, 1],
-            'mime'              => [$app->trans('report:: type'), 1, 0, 1, 1],
-            'size'              => [$app->trans('report:: taille'), 1, 0, 1, 1]
+            'telechargement'    => [$this->app->trans('report:: telechargements'), 1, 0, 0, 0],
+            'record_id'         => [$this->app->trans('report:: record id'), 1, 1, 1, 0],
+            'final'             => [$this->app->trans('phraseanet:: sous definition'), 1, 0, 1, 1],
+            'file'              => [$this->app->trans('report:: fichier'), 1, 0, 0, 1],
+            'mime'              => [$this->app->trans('report:: type'), 1, 0, 1, 1],
+            'size'              => [$this->app->trans('report:: taille'), 1, 0, 1, 1]
         ], $conf_pref);
 
         if ($request->request->get('printcsv') == 'on') {
             $document->setHasLimit(false);
             $document->setPrettyString(false);
 
-            $this->doReport($app, $request, $document, $conf, 'record_id');
+            $this->doReport($request, $document, $conf, 'record_id');
 
-            $r = $this->getCSVResponse($app, $document, 'documents');
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($r, true)), FILE_APPEND);
+            $r = $this->getCSVResponse($document, 'documents');
 
             return $r;
         }
 
-        $report = $this->doReport($app, $request, $document, $conf, 'record_id');
+        $report = $this->doReport($request, $document, $conf, 'record_id');
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -413,16 +392,15 @@ class RootController extends Controller
     }
 
     /**
-     * Display informations about client (browser, resolution etc ...)
+     * Display information about client (browser, resolution etc ...)
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportClients(Application $app, Request $request)
+    public function doReportClients(Request $request)
     {
         $nav = new \module_report_nav(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -430,30 +408,30 @@ class RootController extends Controller
         );
 
         $conf_nav = [
-            'nav'       => [$app->trans('report:: navigateur'), 0, 1, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
+            'nav'       => [$this->app->trans('report:: navigateur'), 0, 1, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$this->app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
 
         $conf_combo = [
-            'combo'     => [$app->trans('report:: navigateurs et plateforme'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
+            'combo'     => [$this->app->trans('report:: navigateurs et plateforme'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$this->app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
         $conf_os = [
-            'os'        => [$app->trans('report:: plateforme'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
+            'os'        => [$this->app->trans('report:: plateforme'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$this->app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
         $conf_res = [
-            'res'       => [$app->trans('report:: resolution'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
+            'res'       => [$this->app->trans('report:: resolution'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$this->app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
         $conf_mod = [
-            'appli'     => [$app->trans('report:: module'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'pourcent'  => [$app->trans('report:: pourcentage'), 0, 0, 0, 0]
+            'appli'     => [$this->app->trans('report:: module'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'pourcent'  => [$this->app->trans('report:: pourcentage'), 0, 0, 0, 0]
         ];
 
         $report = [
@@ -488,17 +466,18 @@ class RootController extends Controller
                 $result[] =  array_values($row);
             };
 
+            /** @var Exporter $exporter */
+            $exporter = $this->app['csv.exporter'];
             $filename = sprintf('report_export_info_%s.csv', date('Ymd'));
-            $response = new CSVFileResponse($filename, function () use ($app, $result) {
-                $app['csv.exporter']->export('php://output', $result);
+            $response = new CSVFileResponse($filename, function () use ($exporter, $result) {
+                $exporter->export('php://output', $result);
             });
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
             return $response;
         }
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => true,
@@ -514,16 +493,15 @@ class RootController extends Controller
     /**
      * Set Report configuration according to request parameters
      *
-     * @param  Application    $app     An application instance
      * @param  Request        $request A request instance
      * @param  \module_report $report  A report instance
      * @param  Array          $conf    A report column configuration
      * @param  Boolean        $what    Whether to group on a particular field or not
      * @return Array
      */
-    private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
+    private function doReport(Request $request, \module_report $report, $conf, $what = false)
     {
-        if ($app['conf']->get(['registry', 'modules', 'anonymous-report']) == true) {
+        if ($this->getConf()->get(['registry', 'modules', 'anonymous-report']) == true) {
             if (isset($conf['user'])) {
                 unset($conf['user']);
             }
@@ -551,9 +529,9 @@ class RootController extends Controller
 
         //display content of a table column when user click on it
         if ($request->request->get('conf') == 'on') {
-            return $app->json(['liste' => $app['twig']->render('report/listColumn.html.twig', [
+            return $this->app->json(['liste' => $this->render('report/listColumn.html.twig', [
                 'conf'  => $base_conf
-            ]), 'title' => $app->trans('configuration')]);
+            ]), 'title' => $this->app->trans('configuration')]);
         }
 
         //set order
@@ -570,17 +548,17 @@ class RootController extends Controller
             $currentfilter = @unserialize(urldecode($serializedFilter));
         }
 
-        $filter = new \module_report_filter($app, $currentfilter, $mapColumnTitleToSqlField);
+        $filter = new \module_report_filter($this->app, $currentfilter, $mapColumnTitleToSqlField);
 
         if ('' !== $filterColumn = $request->request->get('filter_column', '')) {
             $field = current(explode(' ', $filterColumn));
             $value = $request->request->get('filter_value', '');
 
             if ($request->request->get('liste') == 'on') {
-                return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
+                return $this->app->json(['diag'  => $this->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
+                ]), 'title'  => $this->app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
             }
 
             if ($field === $value) {
@@ -597,19 +575,13 @@ class RootController extends Controller
             $filter->addFilter('record_id', '=', $request->request->get('word', ''));
         }
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
         //set filters to current report
         $report->setFilter($filter->getTabFilter());
         $report->setActiveColumn($filter->getActiveColumn());
         $report->setPostingFilter($filter->getPostingFilter());
 
         // display a new arraywhere results are group
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
         if ('' !== $groupby = $request->request->get('groupby', '')) {
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
             $report->setConfig(false);
             $groupby = current(explode(' ', $groupby));
@@ -622,8 +594,8 @@ class RootController extends Controller
                 $groupField = isset($conf[strtolower($groupby)]['title']) ? $conf[strtolower($groupby)]['title'] : '';
             }
 
-            return $app->json([
-                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', [
+            return $this->app->json([
+                'rs' => $this->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -632,11 +604,9 @@ class RootController extends Controller
                     'is_doc'      => false
                 ]),
                 'display_nav' => false,
-                'title'       => $app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField])
+                'title'       => $this->app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField])
             ]);
         }
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
         //set Limit
         if ($report->getEnableLimit()
@@ -647,16 +617,12 @@ class RootController extends Controller
             $report->setLimit(false, false);
         }
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
         //time to build our report
         if (false === $what) {
             $reportArray = $report->buildReport($conf);
         } else {
             $reportArray = $report->buildReport($conf, $what, $request->request->get('tbl', false));
         }
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
         return $reportArray;
     }
@@ -672,19 +638,15 @@ class RootController extends Controller
         return sprintf('%s::%s', __CLASS__, $method);
     }
 
-    private function getCSVResponse(Application $app, \module_report $report, $type)
+    private function getCSVResponse(\module_report $report, $type)
     {
         // set headers
         $headers = [];
         foreach (array_keys($report->getDisplay()) as $k) {
             $headers[$k] = $k;
         }
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s \n\n", __FILE__, __LINE__, var_export($headers, true)), FILE_APPEND);
-
         // set headers as first row
         $result = $report->getResult();
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s \n\n", __FILE__, __LINE__, var_export($result[0], true)), FILE_APPEND);
 
         array_unshift($result, $headers);
 
@@ -700,9 +662,10 @@ class RootController extends Controller
 
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
 
-        $cb = function () use ($app, $collection) {
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($collection, true)), FILE_APPEND);
-            $app['csv.exporter']->export('php://output', $collection);
+        /** @var Exporter $exporter */
+        $exporter = $this->app['csv.exporter'];
+        $cb = function () use ($exporter, $collection) {
+            $exporter->export('php://output', $collection);
         };
 
         $response = new CSVFileResponse($filename, $cb);

@@ -14,14 +14,9 @@ namespace Alchemy\Phrasea\ControllerProvider\Report;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Report\RootController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
-use Alchemy\Phrasea\Core\Response\CSVFileResponse;
-use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Root implements ControllerProviderInterface, ServiceProviderInterface
 {
