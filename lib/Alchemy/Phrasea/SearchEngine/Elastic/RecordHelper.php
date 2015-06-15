@@ -85,13 +85,4 @@ class RecordHelper
             return null;
         }
     }
-
-    public static function getIndexFieldName(Field $field)
-    {
-        return sprintf(
-            '%scaption.%s',
-            $field->isPrivate() ? 'private_' : '',
-            $field->getName()
-        );
-    }
 }

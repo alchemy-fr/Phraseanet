@@ -94,7 +94,7 @@ class QueryContext
             return;
         }
         // TODO Field label dereferencing (we only want names)
-        return RecordIndexer::getIndexFieldName($field);
+        return $field->getIndexFieldName();
     }
 
     public function getFields()
