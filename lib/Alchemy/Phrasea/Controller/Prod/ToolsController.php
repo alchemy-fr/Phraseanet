@@ -246,30 +246,23 @@ class ToolsController extends Controller
 
     public function applyThumbnailExtractionAction(Request $request)
     {
-        $return = ['success' => false, 'message' => ''];
-
         try {
             $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
-            $dataUri = Parser::parse($request->request->get('image', ''));
+            $subDef = $request->request->get('sub_def');
 
-            $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
-            $fileName = sprintf('%s/%s.png',  sys_get_temp_dir(), $name);
+            // legacy handling
+            if (!is_array($subDef)) {
+                $subDef = ['name' => 'thumbnail', 'src' => $request->request->get('image', '')];
+            }
 
-            file_put_contents($fileName, $dataUri->getData());
+            foreach ($subDef as $def) {
+                $this->substituteMedia($record, $def['name'], $def['src']);
+            }
 
-            $media = $this->app->getMediaFromUri($fileName);
-
-            $this->getSubDefinitionSubstituer()->substitute($record, 'thumbnail', $media);
-            $this->getDataboxLogger($record->get_databox())
-                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
-
-            unset($media);
-            $this->getFilesystem()->remove($fileName);
-
-            $return['success'] = true;
+            $return = ['success' => true, 'message' => ''];
         } catch (\Exception $e) {
-            $return['message'] = $e->getMessage();
+            $return = ['success' => false, 'message' => $e->getMessage()];
         }
 
         return $this->app->json($return);
@@ -313,5 +306,30 @@ class ToolsController extends Controller
     private function getMetadataReader()
     {
         return $this->app['phraseanet.metadata-reader'];
+    }
+
+    /**
+     * @param $record
+     * @param $subDefName
+     * @param $subDefDataUri
+     * @throws \DataURI\Exception\InvalidDataException
+     */
+    private function substituteMedia($record, $subDefName, $subDefDataUri)
+    {
+        $dataUri = Parser::parse($subDefDataUri);
+
+        $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
+        $fileName = sprintf('%s/%s.png', sys_get_temp_dir(), $name);
+
+        file_put_contents($fileName, $dataUri->getData());
+
+        $media = $this->app->getMediaFromUri($fileName);
+
+        $this->getSubDefinitionSubstituer()->substitute($record, $subDefName, $media);
+        $this->getDataboxLogger($record->get_databox())
+          ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
+
+        unset($media);
+        $this->getFilesystem()->remove($fileName);
     }
 }
