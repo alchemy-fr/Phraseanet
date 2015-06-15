@@ -9,10 +9,10 @@
  */
 namespace Alchemy\Phrasea\Controller\Report;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
+use Goodby\CSV\Export\Standard\Exporter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,14 +22,13 @@ class ActivityController extends Controller
     /**
      * Display connexions report group by user
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportConnexionsByUsers(Application $app, Request $request)
+    public function doReportConnexionsByUsers(Request $request)
     {
         $activity = new \module_report_activity(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -52,42 +51,41 @@ class ActivityController extends Controller
             $activity->setHasLimit(false);
             $activity->getConnexionBase(false, $request->request->get('on', 'user'));
 
-            return $this->getCSVResponse($app, $activity, 'activity_connection_base');
+            return $this->getCSVResponse($activity, 'activity_connection_base');
         }
 
         $report = $activity->getConnexionBase(false, $request->request->get('on', 'user'));
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => false,
-            'title'       => false
+            'title'       => false,
         ]);
     }
 
     /**
      * Display download report group by user
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportDownloadsByUsers(Application $app, Request $request)
+    public function doReportDownloadsByUsers(Request $request)
     {
         $conf = [
-            'user'      => [$app->trans('report:: utilisateur'), 0, 1, 0, 0],
-            'nbdoc'     => [$app->trans('report:: nombre de documents'), 0, 0, 0, 0],
-            'nbprev'    => [$app->trans('report:: nombre de preview'), 0, 0, 0, 0],
+            'user'      => [$this->app->trans('report:: utilisateur'), 0, 1, 0, 0],
+            'nbdoc'     => [$this->app->trans('report:: nombre de documents'), 0, 0, 0, 0],
+            'nbprev'    => [$this->app->trans('report:: nombre de preview'), 0, 0, 0, 0],
         ];
 
         $activity = new \module_report_activity(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -110,40 +108,39 @@ class ActivityController extends Controller
         if ($request->request->get('printcsv') == 'on') {
             $activity->setHasLimit(false);
 
-            return $this->getCSVResponse($app, $activity, 'activity_detail_download');
+            return $this->getCSVResponse($activity, 'activity_detail_download');
         }
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => false,
-            'title'       => false
+            'title'       => false,
         ]);
     }
 
     /**
      * Display the most asked question
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportBestOfQuestions(Application $app, Request $request)
+    public function doReportBestOfQuestions(Request $request)
     {
         $conf = [
-            'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'nb_rep'    => [$app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
+            'search'    => [$this->app->trans('report:: question'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'nb_rep'    => [$this->app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -160,13 +157,13 @@ class ActivityController extends Controller
 
             $activity->getTopQuestion($conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_questions_best_of');
+            return $this->getCSVResponse($activity, 'activity_questions_best_of');
         }
 
         $report = $activity->getTopQuestion($conf);
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -182,20 +179,19 @@ class ActivityController extends Controller
     /**
      * Display report about questions that return no result
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportNoBestOfQuestions(Application $app, Request $request)
+    public function doReportNoBestOfQuestions(Request $request)
     {
         $conf = [
-            'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0],
-            'nb_rep'    => [$app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
+            'search'    => [$this->app->trans('report:: question'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0],
+            'nb_rep'    => [$this->app->trans('report:: nombre de reponses'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -219,13 +215,13 @@ class ActivityController extends Controller
 
             $activity->getTopQuestion($conf, true);
 
-            return $this->getCSVResponse($app, $activity, 'activity_top_ten_questions');
+            return $this->getCSVResponse($activity, 'activity_top_ten_questions');
         }
 
         $report = $activity->getTopQuestion($conf, true);
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -241,14 +237,13 @@ class ActivityController extends Controller
     /**
      * Display an overview of connexion among hours of the da
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportSiteActiviyPerHours(Application $app, Request $request)
+    public function doReportSiteActiviyPerHours(Request $request)
     {
         $activity = new \module_report_activity(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -263,13 +258,13 @@ class ActivityController extends Controller
 
             $activity->getActivityPerHours();
 
-            return $this->getCSVResponse($app, $activity, 'activity_per_hours');
+            return $this->getCSVResponse($activity, 'activity_per_hours');
         }
 
         $report = $activity->getActivityPerHours();
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -285,21 +280,20 @@ class ActivityController extends Controller
     /**
      * Display an overview of downloaded document grouped by day
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportSiteActiviyPerDays(Application $app, Request $request)
+    public function doReportSiteActivityPerDays(Request $request)
     {
         $conf = [
-            'ddate'     => [$app->trans('report:: jour'), 0, 0, 0, 0],
-            'total'     => [$app->trans('report:: total des telechargements'), 0, 0, 0, 0],
-            'preview'   => [$app->trans('report:: preview'), 0, 0, 0, 0],
-            'document'  => [$app->trans('report:: document'), 0, 0, 0, 0]
+            'ddate'     => [$this->app->trans('report:: jour'), 0, 0, 0, 0],
+            'total'     => [$this->app->trans('report:: total des telechargements'), 0, 0, 0, 0],
+            'preview'   => [$this->app->trans('report:: preview'), 0, 0, 0, 0],
+            'document'  => [$this->app->trans('report:: document'), 0, 0, 0, 0]
         ];
 
         $activity = new \module_report_activity(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -323,33 +317,32 @@ class ActivityController extends Controller
 
             $activity->getDownloadByBaseByDay($conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_db_by_base_by_day');
+            return $this->getCSVResponse($activity, 'activity_db_by_base_by_day');
         }
 
         $report = $activity->getDownloadByBaseByDay($conf);
 
-        return $app->json([
-            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs' =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => false,
-            'title'       => false
+            'title'       => false,
         ]);
     }
 
     /**
      * Display report about pushed documents
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportPushedDocuments(Application $app, Request $request)
+    public function doReportPushedDocuments(Request $request)
     {
         $conf = [
             'user'      => ['', 1, 0, 1, 1],
@@ -361,7 +354,7 @@ class ActivityController extends Controller
         ];
 
         $activity = new \module_report_push(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -374,25 +367,25 @@ class ActivityController extends Controller
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            $this->doReport($app, $request, $activity, $conf);
+            $this->doReport($request, $activity, $conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_pushed_documents');
+            return $this->getCSVResponse($activity, 'activity_pushed_documents');
         }
 
-        $report = $this->doReport($app, $request, $activity, $conf);
+        $report = $this->doReport($request, $activity, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -400,18 +393,17 @@ class ActivityController extends Controller
             'page'        => $report['page'], //The current page
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
-            'limit'       => $report['nb_record']
+            'limit'       => $report['nb_record'],
         ]);
     }
 
     /**
      * Display report about added documents
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportAddedDocuments(Application $app, Request $request)
+    public function doReportAddedDocuments(Request $request)
     {
         $conf = [
             'user'      => ['', 1, 0, 1, 1],
@@ -422,7 +414,7 @@ class ActivityController extends Controller
         ];
 
         $activity = new \module_report_add(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -435,25 +427,25 @@ class ActivityController extends Controller
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            $this->doReport($app, $request, $activity, $conf);
+            $this->doReport($request, $activity, $conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_added_documents');
+            return $this->getCSVResponse($activity, 'activity_added_documents');
         }
 
-        $report = $this->doReport($app, $request, $activity, $conf);
+        $report = $this->doReport($request, $activity, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -461,18 +453,17 @@ class ActivityController extends Controller
             'page'        => $report['page'], //The current page
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
-            'limit'       => $report['nb_record']
+            'limit'       => $report['nb_record'],
         ]);
     }
 
     /**
      * Display report about edited documents
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportEditedDocuments(Application $app, Request $request)
+    public function doReportEditedDocuments(Request $request)
     {
         $conf = [
             'user'      => ['', 1, 0, 1, 1],
@@ -483,7 +474,7 @@ class ActivityController extends Controller
         ];
 
         $activity = new \module_report_edit(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -496,25 +487,25 @@ class ActivityController extends Controller
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            $this->doReport($app, $request, $activity, $conf);
+            $this->doReport($request, $activity, $conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_edited_documents');
+            return $this->getCSVResponse($activity, 'activity_edited_documents');
         }
 
-        $report = $this->doReport($app, $request, $activity, $conf);
+        $report = $this->doReport($request, $activity, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -522,18 +513,17 @@ class ActivityController extends Controller
             'page'        => $report['page'], //The current page
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
-            'limit'       => $report['nb_record']
+            'limit'       => $report['nb_record'],
         ]);
     }
 
     /**
      * Display report about validated documents
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportValidatedDocuments(Application $app, Request $request)
+    public function doReportValidatedDocuments(Request $request)
     {
         $conf = [
             'user'      => ['', 1, 0, 1, 1],
@@ -545,7 +535,7 @@ class ActivityController extends Controller
         ];
 
         $activity = new \module_report_validate(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -558,25 +548,25 @@ class ActivityController extends Controller
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            $this->doReport($app, $request, $activity, $conf);
+            $this->doReport($request, $activity, $conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_validated_documents');
+            return $this->getCSVResponse($activity, 'activity_validated_documents');
         }
 
-        $report = $this->doReport($app, $request, $activity, $conf);
+        $report = $this->doReport($request, $activity, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -584,18 +574,17 @@ class ActivityController extends Controller
             'page'        => $report['page'], //The current page
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
-            'limit'       => $report['nb_record']
+            'limit'       => $report['nb_record'],
         ]);
     }
 
     /**
      * Display report about documents sent by mail
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportSentDocuments(Application $app, Request $request)
+    public function doReportSentDocuments(Request $request)
     {
         $conf = [
             'user'      => ['', 1, 0, 1, 1],
@@ -603,11 +592,11 @@ class ActivityController extends Controller
             'record_id' => ['', 1, 1, 1, 1],
             'file'      => ['', 1, 0, 1, 1],
             'mime'      => ['', 1, 0, 1, 1],
-            'comment'   => [$app->trans('Receiver'), 1, 0, 1, 1],
+            'comment'   => [$this->app->trans('Receiver'), 1, 0, 1, 1],
         ];
 
         $activity = new \module_report_sent(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -620,25 +609,25 @@ class ActivityController extends Controller
             $activity->setHasLimit(false);
             $activity->setPrettyString(false);
 
-            $this->doReport($app, $request, $activity, $conf);
+            $this->doReport($request, $activity, $conf);
 
-            return $this->getCSVResponse($app, $activity, 'activity_send_documents');
+            return $this->getCSVResponse($activity, 'activity_send_documents');
         }
 
-        $report = $this->doReport($app, $request, $activity, $conf);
+        $report = $this->doReport($request, $activity, $conf);
 
         if ($report instanceof Response) {
             return $report;
         }
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => false,
                 'is_groupby'  => false,
                 'is_plot'     => false,
-                'is_doc'      => false
+                'is_doc'      => false,
             ]),
             'display_nav' => $report['display_nav'], // do we display the prev and next button ?
             'next'        => $report['next_page'], //Number of the next page
@@ -646,23 +635,22 @@ class ActivityController extends Controller
             'page'        => $report['page'], //The current page
             'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
             'col'         => $report['active_column'], //all the columns where a filter is applied
-            'limit'       => $report['nb_record']
+            'limit'       => $report['nb_record'],
         ]);
     }
 
     /**
      * Set Report configuration according to request parameters
      *
-     * @param  Application    $app     An application instance
      * @param  Request        $request A request instance
      * @param  \module_report $report  A report instance
      * @param  Array          $conf    A report column configuration
      * @param  Boolean        $what    Whether to group on a particular field or not
      * @return Array
      */
-    private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
+    private function doReport(Request $request, \module_report $report, $conf, $what = false)
     {
-        if ($app['conf']->get(['registry', 'modules', 'anonymous-report'])) {
+        if ($this->getConf()->get(['registry', 'modules', 'anonymous-report'])) {
             if (isset($conf['user'])) {
                 unset($conf['user']);
             }
@@ -689,9 +677,9 @@ class ActivityController extends Controller
 
         //display content of a table column when user click on it
         if ($request->request->get('conf') == 'on') {
-            return $app->json(['liste' => $app['twig']->render('report/listColumn.html.twig', [
+            return $this->app->json(['liste' => $this->render('report/listColumn.html.twig', [
                 'conf'  => $base_conf
-            ]), "title" => $app->trans("configuration")]);
+            ]), "title" => $this->app->trans("configuration")]);
         }
 
         //set order
@@ -708,17 +696,17 @@ class ActivityController extends Controller
             $currentfilter = @unserialize(urldecode($serializedFilter));
         }
 
-        $filter = new \module_report_filter($app, $currentfilter, $mapColumnTitleToSqlField);
+        $filter = new \module_report_filter($this->app, $currentfilter, $mapColumnTitleToSqlField);
 
         if ('' !== $filterColumn = $request->request->get('filter_column', '')) {
             $field = current(explode(' ', $filterColumn));
             $value = $request->request->get('filter_value', '');
 
             if ($request->request->get('liste') == 'on') {
-                return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
+                return $this->app->json(['diag'  => $this->render('report/colFilter.html.twig', [
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                ]), "title"  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
+                ]), "title"  => $this->app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
             }
 
             if ($field === $value) {
@@ -753,17 +741,17 @@ class ActivityController extends Controller
                 $groupField = isset($conf[strtolower($groupby)]['title']) ? $conf[strtolower($groupby)]['title'] : '';
             }
 
-            return $app->json([
-                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', [
+            return $this->app->json([
+                'rs' => $this->render('report/ajax_data_content.html.twig', [
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
                     'is_groupby'  => true,
                     'is_plot'     => false,
-                    'is_doc'      => false
+                    'is_doc'      => false,
                 ]),
                 'display_nav' => false,
-                'title'       => $app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField])
+                'title'       => $this->app->trans('Groupement des resultats sur le champ %name%', ['%name%' => $groupField]),
             ]);
         }
 
@@ -786,18 +774,7 @@ class ActivityController extends Controller
         return $reportArray;
     }
 
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
-    }
-
-    private function getCSVResponse(Application $app, \module_report $report, $type)
+    private function getCSVResponse(\module_report $report, $type)
     {
         // set headers
         $headers = [];
@@ -814,8 +791,10 @@ class ActivityController extends Controller
         });
 
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
-        $response = new CSVFileResponse($filename, function () use ($app, $collection) {
-            $app['csv.exporter']->export('php://output', $collection);
+        /** @var Exporter $exporter */
+        $exporter = $this->app['csv.exporter'];
+        $response = new CSVFileResponse($filename, function () use ($exporter, $collection) {
+            $exporter->export('php://output', $collection);
         });
 
         return $response;

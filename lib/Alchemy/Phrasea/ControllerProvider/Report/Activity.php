@@ -58,7 +58,7 @@ class Activity implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/instance/hours', 'controller.report.activity:doReportSiteActiviyPerHours')
             ->bind('report_activity_instance_hours');
 
-        $controllers->post('/instance/days', 'controller.report.activity:doReportSiteActiviyPerDays')
+        $controllers->post('/instance/days', 'controller.report.activity:doReportSiteActivityPerDays')
             ->bind('report_activity_instance_days');
 
         $controllers->post('/documents/pushed', 'controller.report.activity:doReportPushedDocuments')

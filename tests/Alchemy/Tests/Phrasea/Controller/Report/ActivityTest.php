@@ -170,7 +170,7 @@ class ActivityTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    public function testDoReportSiteActiviyPerDays()
+    public function testDoReportSiteActivityPerDays()
     {
         self::$DI['client']->request('POST', '/report/activity/instance/days', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
@@ -184,7 +184,7 @@ class ActivityTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    public function testDoReportSiteActiviyPerDaysCSV()
+    public function testDoReportSiteActivityPerDaysCSV()
     {
         self::$DI['client']->request('POST', '/report/activity/instance/days', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
