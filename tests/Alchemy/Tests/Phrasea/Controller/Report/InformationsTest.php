@@ -192,7 +192,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    public function testDoReportInformationsBrowserBadRequest()
+    public function testDoReportInformationBrowserBadRequest()
     {
         self::$DI['client']->request('POST', '/report/informations/browser', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),

@@ -43,13 +43,13 @@ class Information implements ControllerProviderInterface, ServiceProviderInterfa
             $firewall->requireAccessToModule('report');
         });
 
-        $controllers->post('/user', 'controller.report.information:doReportInformationsUser')
+        $controllers->post('/user', 'controller.report.information:doReportInformationUser')
             ->bind('report_infomations_user');
 
-        $controllers->post('/browser', 'controller.report.information:doReportInformationsBrowser')
+        $controllers->post('/browser', 'controller.report.information:doReportInformationBrowser')
             ->bind('report_infomations_browser');
 
-        $controllers->post('/document', 'controller.report.information:doReportInformationsDocument')
+        $controllers->post('/document', 'controller.report.information:doReportInformationDocument')
             ->bind('report_infomations_document');
 
         return $controllers;

@@ -9,54 +9,53 @@
  */
 namespace Alchemy\Phrasea\Controller\Report;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
+use Goodby\CSV\Export\Standard\Exporter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class InformationController extends Controller
 {
     /**
-     * Display informations about a user
+     * Display information about a user
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportInformationsUser(Application $app, Request $request)
+    public function doReportInformationUser(Request $request)
     {
         $conf = [
             'config'    => [
-                'photo'     => [$app->trans('report:: document'), 0, 0, 0, 0],
-                'record_id' => [$app->trans('report:: record id'), 0, 0, 0, 0],
-                'date'      => [$app->trans('report:: date'), 0, 0, 0, 0],
-                'type'      => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
-                'titre'     => [$app->trans('report:: titre'), 0, 0, 0, 0],
-                'taille'    => [$app->trans('report:: poids'), 0, 0, 0, 0]
+                'photo'     => [$this->app->trans('report:: document'), 0, 0, 0, 0],
+                'record_id' => [$this->app->trans('report:: record id'), 0, 0, 0, 0],
+                'date'      => [$this->app->trans('report:: date'), 0, 0, 0, 0],
+                'type'      => [$this->app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+                'titre'     => [$this->app->trans('report:: titre'), 0, 0, 0, 0],
+                'taille'    => [$this->app->trans('report:: poids'), 0, 0, 0, 0]
             ],
             'conf'  => [
-                'identifiant'   => [$app->trans('report:: identifiant'), 0, 0, 0, 0],
-                'nom'           => [$app->trans('report:: nom'), 0, 0, 0, 0],
-                'mail'          => [$app->trans('report:: email'), 0, 0, 0, 0],
-                'adresse'       => [$app->trans('report:: adresse'), 0, 0, 0, 0],
-                'tel'           => [$app->trans('report:: telephone'), 0, 0, 0, 0]
+                'identifiant'   => [$this->app->trans('report:: identifiant'), 0, 0, 0, 0],
+                'nom'           => [$this->app->trans('report:: nom'), 0, 0, 0, 0],
+                'mail'          => [$this->app->trans('report:: email'), 0, 0, 0, 0],
+                'adresse'       => [$this->app->trans('report:: adresse'), 0, 0, 0, 0],
+                'tel'           => [$this->app->trans('report:: telephone'), 0, 0, 0, 0]
             ],
             'config_cnx'    => [
-                'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0],
-                'appli'     => [$app->trans('report:: modules'), 0, 0, 0, 0],
+                'ddate'     => [$this->app->trans('report:: date'), 0, 0, 0, 0],
+                'appli'     => [$this->app->trans('report:: modules'), 0, 0, 0, 0],
             ],
             'config_dl' => [
-                'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0],
-                'record_id' => [$app->trans('report:: record id'), 0, 1, 0, 0],
-                'final'     => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
-                'coll_id'   => [$app->trans('report:: collections'), 0, 0, 0, 0],
-                'comment'   => [$app->trans('report:: commentaire'), 0, 0, 0, 0],
+                'ddate'     => [$this->app->trans('report:: date'), 0, 0, 0, 0],
+                'record_id' => [$this->app->trans('report:: record id'), 0, 1, 0, 0],
+                'final'     => [$this->app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+                'coll_id'   => [$this->app->trans('report:: collections'), 0, 0, 0, 0],
+                'comment'   => [$this->app->trans('report:: commentaire'), 0, 0, 0, 0],
             ],
             'config_ask' => [
-                'search'    => [$app->trans('report:: question'), 0, 0, 0, 0],
-                'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0]
+                'search'    => [$this->app->trans('report:: question'), 0, 0, 0, 0],
+                'ddate'     => [$this->app->trans('report:: date'), 0, 0, 0, 0]
             ]
         ];
 
@@ -67,46 +66,46 @@ class InformationController extends Controller
         $selectValue = $request->request->get('user', '');
 
         if ('' === $selectValue) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
-        if ('' !== $on && $app['conf']->get(['registry', 'modules', 'anonymous-report']) == true) {
+        if ('' !== $on && $this->getConf()->get(['registry', 'modules', 'anonymous-report']) == true) {
             $conf['conf'] = [
                 $on   => [$on, 0, 0, 0, 0],
-                'nb'   => [$app->trans('report:: nombre'), 0, 0, 0, 0]
+                'nb'   => [$this->app->trans('report:: nombre'), 0, 0, 0, 0]
             ];
         }
 
         if ($from == 'CNXU' || $from == 'CNX') {
             $report = new \module_report_connexion(
-                $app,
+                $this->app,
                 $request->request->get('dmin'),
                 $request->request->get('dmax'),
                 $request->request->get('sbasid'),
-                $request->request->get('collection'
-                ));
+                $request->request->get('collection')
+            );
             $conf_array = $conf['config_cnx'];
-            $title = $app->trans('report:: historique des connexions');
+            $title = $this->app->trans('report:: historique des connexions');
         } elseif ($from == 'USR' || $from == 'GEN') {
             $report = new \module_report_download(
-                $app,
+                $this->app,
                 $request->request->get('dmin'),
                 $request->request->get('dmax'),
                 $request->request->get('sbasid'),
                 $request->request->get('collection')
             );
             $conf_array = $conf['config_dl'];
-            $title = $app->trans('report:: historique des telechargements');
+            $title = $this->app->trans('report:: historique des telechargements');
         } elseif ($from == 'ASK') {
             $report = new \module_report_question(
-                $app,
+                $this->app,
                 $request->request->get('dmin'),
                 $request->request->get('dmax'),
                 $request->request->get('sbasid'),
                 $request->request->get('collection')
             );
             $conf_array = $conf['config_ask'];
-            $title = $app->trans('report:: historique des questions');
+            $title = $this->app->trans('report:: historique des questions');
         }
 
         if ($report) {
@@ -118,17 +117,19 @@ class InformationController extends Controller
                 $currentfilter = @unserialize(urldecode($serializedFilter));
             }
 
-            $filter = new \module_report_filter($app, $currentfilter, $mapColumnTitleToSqlField);
+            $filter = new \module_report_filter($this->app, $currentfilter, $mapColumnTitleToSqlField);
 
             if ('' !== $filterColumn = $request->request->get('filter_column', '')) {
                 $field = current(explode(' ', $filterColumn));
                 $value = $request->request->get('filter_value', '');
 
                 if ($request->request->get('liste') == 'on') {
-                    return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
-                        'result' => $report->colFilter($field),
-                        'field'  => $field
-                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
+                    return $this->app->json([
+                        'diag'  => $this->render('report/colFilter.html.twig', [
+                            'result' => $report->colFilter($field),
+                            'field'  => $field
+                        ]),
+                        'title'  => $this->app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
                 }
 
                 if ($field === $value) {
@@ -159,10 +160,10 @@ class InformationController extends Controller
             if ($request->request->get('printcsv') == 'on') {
                 $report->setPrettyString(false);
 
-                return $this->getCSVResponse($app, $report, 'info_user');
+                return $this->getCSVResponse($report, 'info_user');
             }
 
-            $html = $app['twig']->render('report/ajax_data_content.html.twig', [
+            $html = $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => $report instanceof \module_report_download,
                 'is_nav'      => false,
@@ -173,7 +174,7 @@ class InformationController extends Controller
         }
 
         $info = new \module_report_nav(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -191,8 +192,8 @@ class InformationController extends Controller
             $on
         );
 
-        if (false == $app['conf']->get(['registry', 'modules', 'anonymous-report'])) {
-            $html_info = $app['twig']->render('report/ajax_data_content.html.twig', [
+        if (false == $this->app['conf']->get(['registry', 'modules', 'anonymous-report'])) {
+            $html_info = $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($infoArray['report']) ? $infoArray['report'] : $infoArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -206,7 +207,7 @@ class InformationController extends Controller
             $title = $selectValue;
         }
 
-        return $app->json([
+        return $this->app->json([
             'rs'          => sprintf('%s%s', $html_info, $html),
             'display_nav' => false,
             'title'       => $title
@@ -216,19 +217,18 @@ class InformationController extends Controller
     /**
      * Display a browser version
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function doReportinformationsBrowser(Application $app, Request $request)
+    public function doReportInformationBrowser(Request $request)
     {
         $conf = [
-            'version'   => [$app->trans('report::version'), 0, 0, 0, 0],
-            'nb'        => [$app->trans('report:: nombre'), 0, 0, 0, 0]
+            'version'   => [$this->app->trans('report::version'), 0, 0, 0, 0],
+            'nb'        => [$this->app->trans('report:: nombre'), 0, 0, 0, 0]
         ];
 
         $info = new \module_report_nav(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -239,13 +239,13 @@ class InformationController extends Controller
         $info->setConfig(false);
 
         if ('' === $browser = $request->request->get('user', '')) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         $reportArray = $info->buildTabInfoNav($conf, $browser);
 
-        return $app->json([
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+        return $this->app->json([
+            'rs'          =>  $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -259,33 +259,32 @@ class InformationController extends Controller
     }
 
     /**
-     * Display informations about a document
+     * Display information about a document
      *
-     * @param  Application  $app
      * @param  Request      $request
      * @return JsonResponse
      */
-    public function doReportInformationsDocument(Application $app, Request $request)
+    public function doReportInformationDocument(Request $request)
     {
         $config = [
-            'photo'     => [$app->trans('report:: document'), 0, 0, 0, 0],
-            'record_id' => [$app->trans('report:: record id'), 0, 0, 0, 0],
-            'date'      => [$app->trans('report:: date'), 0, 0, 0, 0],
-            'type'      => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
-            'titre'     => [$app->trans('report:: titre'), 0, 0, 0, 0],
-            'taille'    => [$app->trans('report:: poids'), 0, 0, 0, 0]
+            'photo'     => [$this->app->trans('report:: document'), 0, 0, 0, 0],
+            'record_id' => [$this->app->trans('report:: record id'), 0, 0, 0, 0],
+            'date'      => [$this->app->trans('report:: date'), 0, 0, 0, 0],
+            'type'      => [$this->app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+            'titre'     => [$this->app->trans('report:: titre'), 0, 0, 0, 0],
+            'taille'    => [$this->app->trans('report:: poids'), 0, 0, 0, 0]
         ];
 
         $config_dl = [
-            'ddate'     => [$app->trans('report:: date'), 0, 0, 0, 0],
-            'user'      => [$app->trans('report:: utilisateurs'), 0, 0, 0, 0],
-            'final'     => [$app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
-            'coll_id'   => [$app->trans('report:: collections'), 0, 0, 0, 0],
-            'comment'   => [$app->trans('report:: commentaire'), 0, 0, 0, 0],
-            'fonction'  => [$app->trans('report:: fonction'), 0, 0, 0, 0],
-            'activite'  => [$app->trans('report:: activite'), 0, 0, 0, 0],
-            'pays'      => [$app->trans('report:: pays'), 0, 0, 0, 0],
-            'societe'   => [$app->trans('report:: societe'), 0, 0, 0, 0]
+            'ddate'     => [$this->app->trans('report:: date'), 0, 0, 0, 0],
+            'user'      => [$this->app->trans('report:: utilisateurs'), 0, 0, 0, 0],
+            'final'     => [$this->app->trans('phrseanet:: sous definition'), 0, 0, 0, 0],
+            'coll_id'   => [$this->app->trans('report:: collections'), 0, 0, 0, 0],
+            'comment'   => [$this->app->trans('report:: commentaire'), 0, 0, 0, 0],
+            'fonction'  => [$this->app->trans('report:: fonction'), 0, 0, 0, 0],
+            'activite'  => [$this->app->trans('report:: activite'), 0, 0, 0, 0],
+            'pays'      => [$this->app->trans('report:: pays'), 0, 0, 0, 0],
+            'societe'   => [$this->app->trans('report:: societe'), 0, 0, 0, 0]
         ];
 
         //format conf according user preferences
@@ -304,16 +303,16 @@ class InformationController extends Controller
 
         try {
             $record = new \record_adapter(
-                $app,
+                $this->app,
                 $request->request->get('sbasid'),
                 $request->request->get('rid')
             );
         } catch (\Exception $e) {
-            $app->abort(404);
+            $this->app->abort(404);
         }
 
         $what = new \module_report_nav(
-            $app,
+            $this->app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),
             $request->request->get('sbasid'),
@@ -324,6 +323,7 @@ class InformationController extends Controller
         $what->setCsv(false);
         $what->setPrint(false);
 
+        /** @var \record_adapter $record */
         $reportArray = $what->buildTabUserWhat(
             $record->get_base_id(),
             $record->get_record_id(),
@@ -332,7 +332,7 @@ class InformationController extends Controller
 
         $title = $what->getTitle();
 
-        $html = $app['twig']->render('report/ajax_data_content.html.twig', [
+        $html = $this->render('report/ajax_data_content.html.twig', [
             'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
             'is_infouser' => false,
             'is_nav'      => false,
@@ -346,7 +346,7 @@ class InformationController extends Controller
         if ('TOOL' === $from) {
             $what->setTitle('');
 
-            return $app->json([
+            return $this->app->json([
                 'rs'          => $html,
                 'display_nav' => false,
                 'title'       => $title
@@ -355,7 +355,7 @@ class InformationController extends Controller
 
         if ('DASH' !== $from && 'PUSHDOC' !== $from) {
             $download = new \module_report_download(
-                $app,
+                $this->app,
                 $request->request->get('dmin'),
                 $request->request->get('dmax'),
                 $request->request->get('sbasid'),
@@ -370,17 +370,20 @@ class InformationController extends Controller
                 $currentfilter = @unserialize(urldecode($serializedFilter));
             }
 
-            $filter = new \module_report_filter($app, $currentfilter, $mapColumnTitleToSqlField);
+            $filter = new \module_report_filter($this->app, $currentfilter, $mapColumnTitleToSqlField);
 
             if ('' !== $filterColumn = $request->request->get('filter_column', '')) {
                 $field = current(explode(' ', $filterColumn));
                 $value = $request->request->get('filter_value', '');
 
                 if ($request->request->get('liste') == 'on') {
-                    return $app->json(['diag'  => $app['twig']->render('report/colFilter.html.twig', [
-                        'result' => $download->colFilter($field),
-                        'field'  => $field
-                    ]), 'title'  => $app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])]);
+                    return $this->app->json([
+                        'diag'  => $this->render('report/colFilter.html.twig', [
+                            'result' => $download->colFilter($field),
+                            'field'  => $field
+                        ]),
+                        'title'  => $this->app->trans('filtrer les resultats sur la colonne %colonne%', ['%colonne%' => $field])
+                    ]);
                 }
 
                 if ($field === $value) {
@@ -394,7 +397,7 @@ class InformationController extends Controller
 
             $download->setFilter($filter->getTabFilter());
             $download->setOrder('ddate', 'DESC');
-            $download->setTitle($app->trans('report:: historique des telechargements'));
+            $download->setTitle($this->app->trans('report:: historique des telechargements'));
             $download->setConfig(false);
 
             $reportArray = $download->buildReport($config_dl);
@@ -402,10 +405,10 @@ class InformationController extends Controller
             if ($request->request->get('printcsv') == 'on') {
                 $download->setPrettyString(false);
 
-                return $this->getCSVResponse($app, $download, 'info_document');
+                return $this->getCSVResponse($download, 'info_document');
             }
 
-            $html .= $app['twig']->render('report/ajax_data_content.html.twig', [
+            $html .= $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -414,24 +417,24 @@ class InformationController extends Controller
                 'is_doc'      => false
             ]);
 
-            return $app->json([
+            return $this->app->json([
                 'rs'          => $html,
                 'display_nav' => false,
                 'title'       => $title
             ]);
         }
 
-        if ($app['conf']->get(['registry', 'modules', 'anonymous-report']) == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
+        if ($this->getConf()->get(['registry', 'modules', 'anonymous-report']) == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
             $conf = [
-                'identifiant'   => [$app->trans('report:: identifiant'), 0, 0, 0, 0],
-                'nom'           => [$app->trans('report:: nom'), 0, 0, 0, 0],
-                'mail'          => [$app->trans('report:: email'), 0, 0, 0, 0],
-                'adresse'       => [$app->trans('report:: adresse'), 0, 0, 0, 0],
-                'tel'           => [$app->trans('report:: telephone'), 0, 0, 0, 0]
+                'identifiant'   => [$this->app->trans('report:: identifiant'), 0, 0, 0, 0],
+                'nom'           => [$this->app->trans('report:: nom'), 0, 0, 0, 0],
+                'mail'          => [$this->app->trans('report:: email'), 0, 0, 0, 0],
+                'adresse'       => [$this->app->trans('report:: adresse'), 0, 0, 0, 0],
+                'tel'           => [$this->app->trans('report:: telephone'), 0, 0, 0, 0]
             ];
 
             $info = new \module_report_nav(
-                $app,
+                $this->app,
                 $request->request->get('dmin'),
                 $request->request->get('dmax'),
                 $request->request->get('sbasid'),
@@ -440,15 +443,15 @@ class InformationController extends Controller
 
             $info->setPeriode('');
             $info->setConfig(false);
-            $info->setTitle($app->trans('report:: utilisateur'));
+            $info->setTitle($this->app->trans('report:: utilisateur'));
 
             $reportArray = $info->buildTabGrpInfo(false, [],  $request->request->get('user'), $conf, false);
 
             if ($request->request->get('printcsv') == 'on' && isset($download)) {
-                return $this->getCSVResponse($app, $info, 'info_user');
+                return $this->getCSVResponse($this->app, $info, 'info_user');
             }
 
-            $html .= $app['twig']->render('report/ajax_data_content.html.twig', [
+            $html .= $this->render('report/ajax_data_content.html.twig', [
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -457,21 +460,21 @@ class InformationController extends Controller
                 'is_doc'      => false
             ]);
 
-            return $app->json([
+            return $this->app->json([
                 'rs'          => $html,
                 'display_nav' => false,
                 'title'       => $title
             ]);
         }
 
-        return $app->json([
+        return $this->app->json([
             'rs'          => $html,
             'display_nav' => false,
             'title'       => $title
         ]);
     }
 
-    private function getCSVResponse(Application $app, \module_report $report, $type)
+    private function getCSVResponse(\module_report $report, $type)
     {
         // set headers
         $headers = [];
@@ -487,9 +490,11 @@ class InformationController extends Controller
             return array_map('strip_tags', array_intersect_key($row, $report->getDisplay()));
         });
 
+        /** @var Exporter $exporter */
+        $exporter = $this->app['csv.exporter'];
         $filename = sprintf('report_export_%s_%s.csv', $type, date('Ymd'));
-        $response = new CSVFileResponse($filename, function () use ($app, $collection) {
-            $app['csv.exporter']->export('php://output', $collection);
+        $response = new CSVFileResponse($filename, function () use ($exporter, $collection) {
+            $exporter->export('php://output', $collection);
         });
 
         return $response;
