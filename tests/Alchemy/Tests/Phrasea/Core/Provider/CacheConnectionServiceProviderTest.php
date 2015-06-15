@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CacheConnectionServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()

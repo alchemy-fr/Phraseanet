@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Symfony\Component\Process\Process;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ConsoleAPITest extends \PhraseanetTestCase
 {
     /**

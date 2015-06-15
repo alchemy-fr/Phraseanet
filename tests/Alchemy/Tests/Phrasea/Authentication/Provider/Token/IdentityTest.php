@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider\Token;
 
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class IdentityTest extends \PhraseanetTestCase
 {
     public function testThatOffsetAreSetOnConstruct()

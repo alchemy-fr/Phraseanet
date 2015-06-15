@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Model\Entities\User;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class NativeAuthenticationTest extends \PhraseanetTestCase
 {
     public function testAuthenticationSpecialUser()

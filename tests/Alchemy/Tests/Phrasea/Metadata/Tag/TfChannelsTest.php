@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfChannels;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfChannelsTest extends \PhraseanetTestCase
 {
 

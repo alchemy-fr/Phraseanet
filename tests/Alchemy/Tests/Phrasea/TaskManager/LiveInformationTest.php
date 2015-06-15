@@ -7,6 +7,10 @@ use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\Model\Entities\Task;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class LiveInformationTest extends \PhraseanetTestCase
 {
     public function testItReturnsWorkingManagerStatus()

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ProvidersCollectionTest extends \PhraseanetTestCase
 {
     /**

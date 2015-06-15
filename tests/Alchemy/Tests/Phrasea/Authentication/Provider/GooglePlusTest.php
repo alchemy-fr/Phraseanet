@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Provider\GooglePlus;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GooglePlusTest extends ProviderTestCase
 {
     public function testGetSetGoogleClient()

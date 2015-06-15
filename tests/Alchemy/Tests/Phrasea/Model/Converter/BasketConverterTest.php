@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\BasketConverter;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class BasketConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()

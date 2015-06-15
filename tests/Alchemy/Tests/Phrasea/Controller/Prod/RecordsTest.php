@@ -8,6 +8,10 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 
 /**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
 class RecordsTest extends \PhraseanetAuthenticatedWebTestCase

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 use Alchemy\Phrasea\Command\Setup\Install;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class InstallTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()

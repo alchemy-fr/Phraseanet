@@ -4,6 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpKernel\Client;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRootPost()

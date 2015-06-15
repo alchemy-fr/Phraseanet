@@ -4,6 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

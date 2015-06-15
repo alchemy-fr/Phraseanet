@@ -6,6 +6,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\CssSelector\CssSelector;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRequestAvailable()

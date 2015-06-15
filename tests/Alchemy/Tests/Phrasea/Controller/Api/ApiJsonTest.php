@@ -2,6 +2,11 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group web
+ */
 class ApiJsonTest extends ApiTestCase
 {
     protected function getParameters(array $parameters = [])

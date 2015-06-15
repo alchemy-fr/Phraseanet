@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Utilities\Less;
 
 use Alchemy\Phrasea\Utilities\Less\Builder;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class BuilderTest extends \PhraseanetTestCase
 {
     public function testBuildSuccess()

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CheckEnvironmentTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()

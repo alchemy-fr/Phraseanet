@@ -9,6 +9,10 @@ use PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FactoryTest extends \PhraseanetTestCase
 {
 

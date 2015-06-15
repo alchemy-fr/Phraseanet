@@ -2,6 +2,11 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ */
 class LanguageTest extends \PhraseanetAuthenticatedTestCase
 {
     protected $client;

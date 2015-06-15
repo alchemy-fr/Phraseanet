@@ -5,6 +5,8 @@ namespace Alchemy\Tests\Phrasea\Notification\Mail;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate
  */
 class MailRequestEmailUpdateTest extends MailWithLinkTestCase

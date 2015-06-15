@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewLoginValidator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class NewLoginValidatorTest extends \PhraseanetTestCase
 {
     /**

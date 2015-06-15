@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Application;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class RootApplicationTest extends \PhraseanetTestCase
 {
     /**

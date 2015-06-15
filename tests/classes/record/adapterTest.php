@@ -5,6 +5,11 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ */
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     private static $thumbtitled = false;

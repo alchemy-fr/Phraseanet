@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender
  */
 class MailSuccessFTPSenderTest extends MailTestCase

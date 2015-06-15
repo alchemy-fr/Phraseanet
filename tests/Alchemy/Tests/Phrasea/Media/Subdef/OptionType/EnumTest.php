@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\OptionType;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Enum;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class EnumTest extends \PhraseanetTestCase
 {
     /**

@@ -6,6 +6,12 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class QueryTest extends \PhraseanetAuthenticatedWebTestCase
 {
 

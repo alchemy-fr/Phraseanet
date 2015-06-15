@@ -3,6 +3,10 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class collectionTest extends \PhraseanetTestCase
 {
     /**

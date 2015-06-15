@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 use Alchemy\Phrasea\Command\Task\TaskRun;
 use Alchemy\Phrasea\Model\Entities\Task;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TaskRunTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()

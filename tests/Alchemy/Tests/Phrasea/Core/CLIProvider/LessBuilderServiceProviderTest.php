@@ -3,6 +3,8 @@
 namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider
  */
 class LessBuilderServiceProviderTest extends ServiceProviderTestCase

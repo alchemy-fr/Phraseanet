@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewLogin;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class NewLoginTest extends \PhraseanetTestCase
 {
     public function testAnUnknownLoginIsNotAlreadyRegistered()

@@ -2,6 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

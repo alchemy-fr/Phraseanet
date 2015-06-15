@@ -7,6 +7,10 @@ use Alchemy\Geonames\Geoname as GeonameResult;
 use Alchemy\Geonames\Exception\NotFoundException;
 use Alchemy\Geonames\Exception\TransportException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GeonameTest extends \PhraseanetTestCase
 {
     public function testAValidGeonameIsValid()

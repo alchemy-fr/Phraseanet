@@ -8,6 +8,12 @@ use Symfony\Component\EventDispatcher\Event;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**

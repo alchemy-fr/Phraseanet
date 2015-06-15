@@ -8,6 +8,8 @@ use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
  */
 class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase

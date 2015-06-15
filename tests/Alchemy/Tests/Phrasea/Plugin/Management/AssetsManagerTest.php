@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Plugin\Management;
 use Alchemy\Phrasea\Plugin\Management\AssetsManager;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AssetsManagerTest extends \PhraseanetTestCase
 {
     public function testUpdate()

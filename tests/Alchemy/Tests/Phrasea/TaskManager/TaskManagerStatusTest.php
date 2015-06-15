@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TaskManagerStatusTest extends \PhraseanetTestCase
 {
     /**

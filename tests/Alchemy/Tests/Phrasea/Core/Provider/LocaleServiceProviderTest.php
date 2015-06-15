@@ -7,6 +7,8 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\LocaleServiceProvider
  */
 class LocaleServiceProviderTest extends \PhraseanetTestCase

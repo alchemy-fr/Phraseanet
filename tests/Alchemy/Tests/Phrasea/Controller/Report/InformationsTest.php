@@ -2,6 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     private $dmin;

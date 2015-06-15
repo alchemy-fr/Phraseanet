@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class XSendFileFactoryTest extends \PhraseanetTestCase
 {
     public function testFactoryCreation()

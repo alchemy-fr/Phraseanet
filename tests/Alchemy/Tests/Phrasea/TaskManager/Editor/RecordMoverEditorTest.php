@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Editor;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class RecordMoverEditorTest extends EditorTestCase
 {
     public function provideDataForXMLUpdatesFromForm()

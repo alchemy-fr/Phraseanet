@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Utilities\String;
 
 use Alchemy\Phrasea\Utilities\String\Camelizer;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CamelizerTest extends \PhraseanetTestCase
 {
     /**

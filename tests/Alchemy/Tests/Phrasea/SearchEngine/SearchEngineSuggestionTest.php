@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SearchEngineSuggestionTest extends \PhraseanetTestCase
 {
     /**

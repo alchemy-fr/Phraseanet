@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Log;
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Alchemy\Phrasea\Model\Entities\Task;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class LogFileFactoryTest extends \PhraseanetTestCase
 {
     public function testForTask()

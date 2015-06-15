@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed;
 use Alchemy\Phrasea\Exception\LogicException;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed
  */
 class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase

@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 use Alchemy\Phrasea\Utilities\String\Camelizer;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PhraseaRegisterFormTest extends FormTestCase
 {
     protected function getForm()

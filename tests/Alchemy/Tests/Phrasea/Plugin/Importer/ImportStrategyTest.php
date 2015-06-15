@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Plugin\Importer;
 use Alchemy\Phrasea\Plugin\Importer\ImportStrategy;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ImportStrategyTest extends PluginTestCase
 {
     /**

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Setup;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\ConfigurationTester;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ConfigurationTesterTest extends AbstractSetupTester
 {
 

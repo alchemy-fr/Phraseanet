@@ -7,6 +7,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpKernel\Client;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testEndSession()

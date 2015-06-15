@@ -7,6 +7,10 @@ use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FailureManagerTest extends \PhraseanetTestCase
 {
     /**

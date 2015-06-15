@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\UUID;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class UUIDTest extends \PhraseanetTestCase
 {
     /**

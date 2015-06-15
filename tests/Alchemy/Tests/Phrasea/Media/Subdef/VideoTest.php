@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class VideoTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

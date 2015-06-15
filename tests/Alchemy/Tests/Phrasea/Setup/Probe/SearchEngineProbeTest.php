@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Probe;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SearchEngineProbeTest extends ProbeTestCase
 {
     public function setUp()

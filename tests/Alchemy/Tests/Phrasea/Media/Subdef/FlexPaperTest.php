@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FlexPaperTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

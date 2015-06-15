@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Webhook;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class EventProcessorFactoryTest extends \PhraseanetTestCase
 {
     /**

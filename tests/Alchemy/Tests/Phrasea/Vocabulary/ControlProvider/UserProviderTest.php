@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Vocabulary\ControlProvider;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class UserProviderTest extends \PhraseanetTestCase
 {
     /**

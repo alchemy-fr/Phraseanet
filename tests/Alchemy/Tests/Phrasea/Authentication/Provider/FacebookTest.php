@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Provider\Facebook;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FacebookTest extends ProviderTestCase
 {
     public function testGetSetSession()

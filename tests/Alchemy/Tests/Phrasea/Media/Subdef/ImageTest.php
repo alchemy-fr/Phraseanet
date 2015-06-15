@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ImageTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

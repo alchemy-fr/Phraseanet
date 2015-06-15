@@ -7,6 +7,10 @@ use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AbstractCheckerTest extends \PhraseanetTestCase
 {
     /**

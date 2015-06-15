@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\JobData;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class JobDataTest extends \PhraseanetTestCase
 {
     public function testGetters()

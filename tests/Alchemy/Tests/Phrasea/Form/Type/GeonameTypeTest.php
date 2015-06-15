@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Form\Type;
 
 use Alchemy\Phrasea\Form\Type\GeonameType;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GeonameTypeTest extends \PhraseanetTestCase
 {
     public function testGetParent()

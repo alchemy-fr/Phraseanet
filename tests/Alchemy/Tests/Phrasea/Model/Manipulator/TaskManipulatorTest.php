@@ -7,6 +7,10 @@ use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TaskManipulatorTest extends \PhraseanetTestCase
 {
     /** @var NotifierInterface|\PHPUnit_Framework_MockObject_MockObject */

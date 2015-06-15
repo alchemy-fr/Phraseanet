@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Media\Subdef\Gif;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GifTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

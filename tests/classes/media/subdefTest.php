@@ -2,6 +2,10 @@
 
 use Alchemy\Phrasea\Border\File;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class media_subdefTest extends \PhraseanetTestCase
 {
     /**

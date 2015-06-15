@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Editor;
 
 use Alchemy\Phrasea\TaskManager\Editor\FtpPullEditor;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FtpPullEditorTest extends EditorTestCase
 {
     public function provideDataForXMLUpdatesFromForm()

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfArchivedateTest extends \PhraseanetTestCase
 {
 

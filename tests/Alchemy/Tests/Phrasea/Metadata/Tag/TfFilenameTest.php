@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfFilenameTest extends \PhraseanetTestCase
 {
 

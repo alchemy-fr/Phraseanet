@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PresetManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()

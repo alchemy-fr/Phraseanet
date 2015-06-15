@@ -7,6 +7,12 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**

@@ -7,6 +7,12 @@ use Alchemy\Phrasea\Border\File;
 use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

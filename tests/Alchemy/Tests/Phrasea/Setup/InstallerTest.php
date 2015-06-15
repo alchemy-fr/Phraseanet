@@ -10,6 +10,10 @@ use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class InstallerTest extends \PhraseanetTestCase
 {
     public function tearDown()

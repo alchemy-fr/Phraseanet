@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider
  */
 class ConfigurationServiceProviderTest extends ServiceProviderTestCase

@@ -2,6 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $account = null;

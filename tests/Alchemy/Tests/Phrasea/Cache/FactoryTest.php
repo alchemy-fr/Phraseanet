@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Cache;
 use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Cache\Factory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FactoryTest extends \PhraseanetTestCase
 {
     /**

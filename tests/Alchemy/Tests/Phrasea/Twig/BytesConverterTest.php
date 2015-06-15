@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Twig;
 
 use Alchemy\Phrasea\Twig\BytesConverter;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class BytesConverterTest extends \PhraseanetTestCase
 {
     /**

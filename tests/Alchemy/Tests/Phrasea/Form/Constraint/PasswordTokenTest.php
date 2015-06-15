@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PasswordTokenTest extends \PhraseanetTestCase
 {
     public function testInvalidTokenIsNotValid()

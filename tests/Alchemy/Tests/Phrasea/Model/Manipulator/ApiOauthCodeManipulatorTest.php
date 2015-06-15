@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()

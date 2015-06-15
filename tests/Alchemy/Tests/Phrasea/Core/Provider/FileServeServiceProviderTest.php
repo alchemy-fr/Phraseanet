@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\FileServeServiceProvider
  */
 class FileServeServiceProviderTest extends ServiceProviderTestCase

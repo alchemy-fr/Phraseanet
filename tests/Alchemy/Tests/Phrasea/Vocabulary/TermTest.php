@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\Term;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TermTest extends \PhraseanetTestCase
 {
     /**

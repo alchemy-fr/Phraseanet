@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewEmail;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class NewEmailTest extends \PhraseanetTestCase
 {
     public function testAnUnknownAddressIsNotAlreadyRegistered()

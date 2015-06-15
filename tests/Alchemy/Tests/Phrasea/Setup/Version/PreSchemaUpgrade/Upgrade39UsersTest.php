@@ -11,6 +11,10 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Types\Type;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class Upgrade39UsersTest extends \PhraseanetTestCase
 {
     const DB_NAME = 'update39_test';

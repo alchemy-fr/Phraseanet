@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 
 use Alchemy\Phrasea\Authentication\Provider\Factory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FactoryTest extends \PhraseanetTestCase
 {
     /**

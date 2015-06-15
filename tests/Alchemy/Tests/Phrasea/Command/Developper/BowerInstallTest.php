@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Developper;
 
 use Alchemy\Phrasea\Command\Developer\BowerInstall;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class BowerInstallTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()

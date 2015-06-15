@@ -5,6 +5,8 @@ namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 use Alchemy\Phrasea\CLI;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider
  */
 class CLISDriversServiceProviderTest extends ServiceProviderTestCase

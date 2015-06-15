@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TasksServiceProviderTest extends ServiceProviderTestCase
 {
     use TranslatorMockTrait;

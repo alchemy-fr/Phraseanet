@@ -10,6 +10,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $tmpFile;

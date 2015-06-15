@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class databox_subdefTest extends \PhraseanetTestCase
 {
 

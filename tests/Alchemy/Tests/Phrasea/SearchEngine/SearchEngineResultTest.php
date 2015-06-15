@@ -6,6 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SearchEngineResultTest extends \PhraseanetTestCase
 {
     /**

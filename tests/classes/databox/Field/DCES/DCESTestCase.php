@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class databox_Field_DCES_DCESTestCase extends \PhraseanetTestCase
 {
     public function testGet_label()

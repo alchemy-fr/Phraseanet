@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class StatusTest extends \PhraseanetTestCase
 {
     /**

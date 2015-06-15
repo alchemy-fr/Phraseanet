@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class report_sqlTest extends \report_abstractReportTestCase
 {
 

@@ -7,6 +7,12 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 use Rhumsaa\Uuid\Uuid;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

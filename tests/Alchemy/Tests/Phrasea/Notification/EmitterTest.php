@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Notification;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class EmitterTest extends \PhraseanetTestCase
 {
     /**

@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CommandTest extends \PhraseanetTestCase
 {
     /**

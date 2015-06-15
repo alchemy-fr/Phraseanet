@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Symfony\Component\Process\PhpExecutableFinder;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class UglifyJsDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()

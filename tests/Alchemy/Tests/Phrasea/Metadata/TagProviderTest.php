@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata;
 
 use Alchemy\Phrasea\Metadata\TagProvider;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TagProviderTest extends \PhraseanetTestCase
 {
     private $object;

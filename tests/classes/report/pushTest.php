@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class report_pushTest extends \report_abstractReportTestCase
 {
     protected $ret;

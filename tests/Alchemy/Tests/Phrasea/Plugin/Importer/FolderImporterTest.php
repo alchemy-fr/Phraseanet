@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Plugin\Importer\FolderImporter;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FolderImporterTest extends PluginTestCase
 {
     public function testImport()

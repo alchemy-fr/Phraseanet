@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\Context;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ContextTest extends \PhraseanetTestCase
 {
     public function testWithValidCOntext()

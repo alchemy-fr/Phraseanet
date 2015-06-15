@@ -9,6 +9,10 @@ use Alchemy\Phrasea\Setup\Version\Migration\Migration35;
 use Alchemy\Tests\Phrasea\Setup\AbstractSetupTester;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class Migration35Test extends AbstractSetupTester
 {
     private $specifications;

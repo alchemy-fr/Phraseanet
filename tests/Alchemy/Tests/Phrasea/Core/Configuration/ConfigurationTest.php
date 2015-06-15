@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ConfigurationTest extends ConfigurationTestCase
 {
     protected function provideConfiguration($confFile, $compiledFile = null, Compiler $compiler = null, Yaml $yaml = null, $autoreload = false)

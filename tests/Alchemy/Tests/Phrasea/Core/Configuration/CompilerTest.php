@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CompilerTest extends \PhraseanetTestCase
 {
     /**

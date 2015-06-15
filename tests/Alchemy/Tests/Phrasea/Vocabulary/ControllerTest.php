@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Vocabulary;
 
 use Alchemy\Phrasea\Vocabulary\Controller;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ControllerTest extends \PhraseanetTestCase
 {
 

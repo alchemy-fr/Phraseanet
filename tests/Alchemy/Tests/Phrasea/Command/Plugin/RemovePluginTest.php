@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class RemovePluginTest extends PluginCommandTestCase
 {
     public function testExecute()

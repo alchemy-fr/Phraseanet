@@ -14,6 +14,12 @@ use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\Story;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**

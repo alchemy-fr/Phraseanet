@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AudioTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

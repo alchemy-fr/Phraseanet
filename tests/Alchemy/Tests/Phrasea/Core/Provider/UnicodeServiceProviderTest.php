@@ -3,6 +3,8 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider
  */
 class UnicodeServiceProviderTest extends ServiceProviderTestCase

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfCtime;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfCtimeTest extends \PhraseanetTestCase
 {
 

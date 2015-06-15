@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CookiesDisablerSubscriberTest extends \PhraseanetTestCase
 {
     /**

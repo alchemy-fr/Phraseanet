@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Plugin\Schema;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PluginValidatorTest extends PluginTestCase
 {
     /**

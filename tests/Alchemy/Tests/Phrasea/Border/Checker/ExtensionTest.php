@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Extension;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ExtensionTest extends \PhraseanetTestCase
 {
     /**

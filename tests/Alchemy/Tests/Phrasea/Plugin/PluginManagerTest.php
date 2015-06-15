@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 use Alchemy\Phrasea\Plugin\PluginManager;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PluginManagerTest extends PluginTestCase
 {
     public function testListGoodPlugins()

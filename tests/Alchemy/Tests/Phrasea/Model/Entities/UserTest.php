@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Model\Entities;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class UserTest extends \PhraseanetTestCase
 {
     /** @var User */

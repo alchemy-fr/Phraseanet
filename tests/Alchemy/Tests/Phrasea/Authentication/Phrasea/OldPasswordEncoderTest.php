@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class OldPasswordEncoderTest extends \PhraseanetTestCase
 {
     /**

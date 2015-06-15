@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Http\H264PseudoStream;
 
 use Alchemy\Phrasea\Http\H264PseudoStreaming\Apache;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApacheTest extends \PhraseanetTestCase
 {
     /**

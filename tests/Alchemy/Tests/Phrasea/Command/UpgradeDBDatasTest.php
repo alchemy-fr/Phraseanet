@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Upgrade\Step31;
 use Alchemy\Phrasea\Command\Upgrade\Step35;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class UpgradeDBDatasTest extends \PhraseanetTestCase
 {
     /**

@@ -4,6 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

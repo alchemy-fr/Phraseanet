@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 use JsonSchema\Validator as JsonSchemaValidator;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ManifestValidatorTest extends PluginTestCase
 {
     /**

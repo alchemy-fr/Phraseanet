@@ -17,6 +17,10 @@ use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
 use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Rhumsaa\Uuid\Uuid;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FileTest extends \PhraseanetTestCase
 {
     /**

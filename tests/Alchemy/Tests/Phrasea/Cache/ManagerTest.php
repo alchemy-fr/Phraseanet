@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ManagerTest extends \PhraseanetTestCase
 {
     private $file;

@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived
  */
 class MailInfoPushReceivedTest extends MailWithLinkTestCase

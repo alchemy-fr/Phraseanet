@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SearchEngineLoggerTest extends \PhraseanetTestCase
 {
     /**

@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Client;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class BridgeExceptionSubscriberTest extends \PhraseanetTestCase
 {
     public function testErrorOnBridgeExceptions()

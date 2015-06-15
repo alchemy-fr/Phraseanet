@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\MemcacheCache;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MemcacheCacheTest extends \PhraseanetTestCase
 {
     /**

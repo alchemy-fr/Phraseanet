@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
 use Symfony\Component\HttpKernel\Client;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class JsonRequestSubscriberTest extends \PhraseanetTestCase
 {
     /**

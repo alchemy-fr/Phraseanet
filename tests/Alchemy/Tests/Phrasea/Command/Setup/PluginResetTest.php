@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\PluginsReset;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PluginResetTest extends \PhraseanetTestCase
 {
     public function testRun()

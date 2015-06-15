@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Tests\Phrasea\Setup\AbstractSetupTester;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe31;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class Probe31Test extends AbstractSetupTester
 {
     public function testNoMigration()

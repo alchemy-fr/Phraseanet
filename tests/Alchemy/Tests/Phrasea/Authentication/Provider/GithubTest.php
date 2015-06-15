@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Provider\Github;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GithubTest extends ProviderTestCase
 {
     public function provideDataForFailingCallback()

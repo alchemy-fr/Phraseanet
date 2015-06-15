@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class p4stringTest extends \PhraseanetTestCase
 {
     public function testAddEndSlash()

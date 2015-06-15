@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ConvertersServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()

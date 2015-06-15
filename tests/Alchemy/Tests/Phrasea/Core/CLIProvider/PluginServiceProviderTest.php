@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Symfony\Component\Process\ExecutableFinder;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider
  */
 class PluginServiceProviderTest extends ServiceProviderTestCase

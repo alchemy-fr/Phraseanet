@@ -17,6 +17,12 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $registrationCollections;

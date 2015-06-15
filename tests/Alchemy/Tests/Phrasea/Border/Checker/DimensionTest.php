@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Dimension;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class DimensionTest extends \PhraseanetTestCase
 {
     /**

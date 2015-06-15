@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Registration;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class RegistrationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateRegistration()
