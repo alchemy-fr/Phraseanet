@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -8,43 +7,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Alchemy\Phrasea\Controller\Report;
 
-namespace Alchemy\Phrasea\ControllerProvider\Report;
-
-use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Goodby\CSV\Export\Standard\Collection\CallbackCollection;
-use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
-class Informations implements ControllerProviderInterface
+class InformationController extends Controller
 {
-    use ControllerProviderTrait;
-
-    public function connect(Application $app)
-    {
-        $app['controller.report.informations'] = $this;
-
-        $controllers = $this->createAuthenticatedCollection($app);
-
-        $controllers->before(function () use ($app) {
-            $app['firewall']->requireAccessToModule('report');
-        });
-
-        $controllers->post('/user', 'controller.report.informations:doReportInformationsUser')
-            ->bind('report_infomations_user');
-
-        $controllers->post('/browser', 'controller.report.informations:doReportInformationsBrowser')
-            ->bind('report_infomations_browser');
-
-        $controllers->post('/document', 'controller.report.informations:doReportInformationsDocument')
-            ->bind('report_infomations_document');
-
-        return $controllers;
-    }
-
     /**
      * Display informations about a user
      *
@@ -99,7 +72,7 @@ class Informations implements ControllerProviderInterface
 
         if ('' !== $on && $app['conf']->get(['registry', 'modules', 'anonymous-report']) == true) {
             $conf['conf'] = [
-                 $on   => [$on, 0, 0, 0, 0],
+                $on   => [$on, 0, 0, 0, 0],
                 'nb'   => [$app->trans('report:: nombre'), 0, 0, 0, 0]
             ];
         }
@@ -111,7 +84,7 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('dmax'),
                 $request->request->get('sbasid'),
                 $request->request->get('collection'
-            ));
+                ));
             $conf_array = $conf['config_cnx'];
             $title = $app->trans('report:: historique des connexions');
         } elseif ($from == 'USR' || $from == 'GEN') {
@@ -272,17 +245,17 @@ class Informations implements ControllerProviderInterface
         $reportArray = $info->buildTabInfoNav($conf, $browser);
 
         return $app->json([
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
-                    'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
-                    'is_infouser' => false,
-                    'is_nav'      => false,
-                    'is_groupby'  => false,
-                    'is_plot'     => false,
-                    'is_doc'      => false
-                ]),
-                'display_nav' => false,
-                'title'       => $browser
-            ]);
+            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', [
+                'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
+                'is_infouser' => false,
+                'is_nav'      => false,
+                'is_groupby'  => false,
+                'is_plot'     => false,
+                'is_doc'      => false
+            ]),
+            'display_nav' => false,
+            'title'       => $browser
+        ]);
     }
 
     /**
@@ -496,17 +469,6 @@ class Informations implements ControllerProviderInterface
             'display_nav' => false,
             'title'       => $title
         ]);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 
     private function getCSVResponse(Application $app, \module_report $report, $type)
