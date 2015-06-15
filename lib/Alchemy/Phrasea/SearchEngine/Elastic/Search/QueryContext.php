@@ -34,7 +34,7 @@ class QueryContext
             }
         }
 
-        return new static($this->locales, $this->queryLocale, $fields);
+        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
     public function getRawFields()
