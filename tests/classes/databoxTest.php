@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class databoxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**

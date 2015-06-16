@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Notification;
 use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\Exception\LogicException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class DelivererTest extends \PhraseanetTestCase
 {
     /**

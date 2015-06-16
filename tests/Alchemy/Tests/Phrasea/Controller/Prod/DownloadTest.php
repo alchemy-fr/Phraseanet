@@ -6,6 +6,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\EventDispatcher\Event;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

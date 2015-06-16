@@ -30,7 +30,7 @@ class UsrListRepository extends EntityRepository
      * Get all lists readable for a given User
      *
      * @param  User                                         $user
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return UsrList[]
      */
     public function findUserLists(User $user)
     {
@@ -51,7 +51,7 @@ class UsrListRepository extends EntityRepository
     /**
      *
      * @param  User    $user
-     * @param  type    $list_id
+     * @param  int     $list_id
      * @return UsrList
      */
     public function findUserListByUserAndId(User $user, $list_id)

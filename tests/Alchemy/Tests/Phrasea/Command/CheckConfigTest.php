@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\CheckConfig;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CheckConfigTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Media\Type;
 use Alchemy\Phrasea\Media\Type\Audio;
 use Alchemy\Phrasea\Media\Type\Type;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AudioTest extends \PhraseanetTestCase
 {
 

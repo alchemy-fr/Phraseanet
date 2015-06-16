@@ -14,6 +14,10 @@ class Structure
     private $facets = array();
     private $aliases = array();
 
+    /**
+     * @param \databox[] $databoxes
+     * @return self
+     */
     public static function createFromDataboxes(array $databoxes)
     {
         $structure = new self();

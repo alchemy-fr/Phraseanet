@@ -5,6 +5,8 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider
  */
 class RegistrationServiceProviderTest extends ServiceProviderTestCase

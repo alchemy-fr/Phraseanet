@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ */
 class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
 {
     /**

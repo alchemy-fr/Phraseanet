@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Authentication;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ACLProviderTest extends \PhraseanetTestCase
 {
     public function testGetACL()

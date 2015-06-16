@@ -4,6 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Model\Entities\User;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

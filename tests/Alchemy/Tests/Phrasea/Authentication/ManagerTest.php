@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\Manager;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ManagerTest extends \PhraseanetTestCase
 {
     /**

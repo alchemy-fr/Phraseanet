@@ -5,6 +5,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $queryParameters;

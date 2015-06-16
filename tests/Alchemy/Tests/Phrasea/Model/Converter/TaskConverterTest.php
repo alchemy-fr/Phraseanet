@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TaskConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()

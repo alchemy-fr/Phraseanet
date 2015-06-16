@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\Factory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FactoryTest extends \PhraseanetTestCase
 {
     /**

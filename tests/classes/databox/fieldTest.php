@@ -2,6 +2,10 @@
 
 use Alchemy\Phrasea\Application;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class databox_fieldTest extends \PhraseanetTestCase
 {
     /**

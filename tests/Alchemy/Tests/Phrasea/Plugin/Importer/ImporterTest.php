@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Plugin\Importer;
 use Alchemy\Phrasea\Plugin\Importer\Importer;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ImporterTest extends PluginTestCase
 {
     public function testImport()

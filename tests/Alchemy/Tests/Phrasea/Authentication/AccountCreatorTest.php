@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\AccountCreator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AccountCreatorTest extends \PhraseanetTestCase
 {
     /**

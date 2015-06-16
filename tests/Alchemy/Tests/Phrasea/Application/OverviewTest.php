@@ -8,6 +8,12 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testDatafilesRouteAuthenticated()

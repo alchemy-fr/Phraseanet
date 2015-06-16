@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Core\Middleware;
 use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TokenMiddlewareProviderTest extends MiddlewareProviderTestCase
 {
     public function provideDescription()

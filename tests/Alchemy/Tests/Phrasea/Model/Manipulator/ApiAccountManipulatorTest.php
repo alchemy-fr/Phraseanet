@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiAccountManipulatorTest extends \PhraseanetTestCase
 {
     /** @var  ApiAccountManipulator */

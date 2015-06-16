@@ -160,6 +160,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     {
         try {
             $datas = $this->get_data_from_cache();
+            if (!is_array($datas)) {
+                throw new \Exception('Could not retrieve data');
+            }
             $this->mime = $datas['mime'];
             $this->width = $datas['width'];
             $this->height = $datas['height'];

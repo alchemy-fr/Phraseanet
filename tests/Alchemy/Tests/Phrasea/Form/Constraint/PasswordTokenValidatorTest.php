@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 use Alchemy\Phrasea\Form\Constraint\PasswordTokenValidator;
 use RandomLib\Factory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PasswordTokenValidatorTest extends \PhraseanetTestCase
 {
     /**

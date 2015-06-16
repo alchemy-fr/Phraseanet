@@ -4,6 +4,11 @@ use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../Bridge_datas.inc';
 
+/**
+ * @group functional
+ * @group legacy
+ * @group web
+ */
 class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
 {
     public static $account = null;

@@ -56,6 +56,7 @@ class Notifier implements NotifierInterface
             $command = $this->createCommand($message);
             $this->socket->send($command);
 
+            $result = false;
             $limit = microtime(true) + $this->timeout;
 
             while (microtime(true) < $limit && false === $result = $this->socket->recv(\ZMQ::MODE_NOBLOCK)) {

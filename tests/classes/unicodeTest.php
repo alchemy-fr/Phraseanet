@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class unicodeTest extends \PhraseanetTestCase
 {
     /**

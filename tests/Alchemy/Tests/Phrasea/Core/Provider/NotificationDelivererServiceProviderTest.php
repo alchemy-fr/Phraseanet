@@ -5,6 +5,8 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider
  */
 class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfSize;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfSizeTest extends \PhraseanetTestCase
 {
 

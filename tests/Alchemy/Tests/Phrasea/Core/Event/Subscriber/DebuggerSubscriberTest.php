@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class DebuggerSubscriberTest extends \PhraseanetTestCase
 {
     public function tearDown()

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfRecordidTest extends \PhraseanetTestCase
 {
 

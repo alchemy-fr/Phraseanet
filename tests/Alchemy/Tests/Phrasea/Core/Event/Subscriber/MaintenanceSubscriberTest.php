@@ -10,6 +10,10 @@ use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MaintenanceSubscriberTest extends \PhraseanetTestCase
 {
     public function tearDown()

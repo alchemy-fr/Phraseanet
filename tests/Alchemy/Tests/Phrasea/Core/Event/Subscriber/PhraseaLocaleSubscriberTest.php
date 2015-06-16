@@ -10,6 +10,10 @@ use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 {
     public function testBasic()

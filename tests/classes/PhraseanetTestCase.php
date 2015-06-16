@@ -3,6 +3,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -33,7 +34,6 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected static $DI;
 
     private static $recordsInitialized = false;
-    private static $booted;
     private static $fixtureIds = [];
 
     public function createApplication()
@@ -127,41 +127,36 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_validation']);
         });
 
-        self::$DI['user'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit']);
-        });
+        $users = [
+            'user' => 'test_phpunit',
+            'user_1' => 'user_1',
+            'user_2' => 'user_2',
+            'user_3' => 'user_3',
+            'user_guest' => 'user_guest',
+            'user_notAdmin' => 'test_phpunit_not_admin',
+            'user_alt1' => 'test_phpunit_alt1',
+            'user_alt2' => 'test_phpunit_alt2',
+            'user_template' => 'user_template',
+        ];
 
-        self::$DI['user_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_1']);
-        });
+        $userFactory = function ($fixtureName) {
+            if ('user_guest' === $fixtureName) {
+                return function ($DI) use ($fixtureName) {
+                    return $DI['app']['repo.users']->find(self::$fixtureIds['user'][$fixtureName]);
+                };
+            }
 
-        self::$DI['user_2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_2']);
-        });
+            return function ($DI) use ($fixtureName) {
+                $user = $DI['app']['repo.users']->find(self::$fixtureIds['user'][$fixtureName]);
+                self::resetUsersRights($DI['app'], $user);
 
-        self::$DI['user_3'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_3']);
-        });
+                return $user;
+            };
+        };
 
-        self::$DI['user_guest'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_guest']);
-        });
-
-        self::$DI['user_notAdmin'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit_not_admin']);
-        });
-
-        self::$DI['user_alt1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit_alt1']);
-        });
-
-        self::$DI['user_alt2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['test_phpunit_alt2']);
-        });
-
-        self::$DI['user_template'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.users']->find(self::$fixtureIds['user']['user_template']);
-        });
+        foreach ($users as $name => $fixtureName) {
+            self::$DI[$name] = self::$DI->share($userFactory($fixtureName));
+        }
 
         self::$DI['registration_1'] = self::$DI->share(function ($DI) {
             return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_1']);
@@ -211,20 +206,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) {
             return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll_no_status']);
         });
-
-        if (!self::$booted) {
-            if (!self::$DI['app']['phraseanet.configuration-tester']->isInstalled()) {
-                echo "\033[0;31mPhraseanet is not set up\033[0;37m\n";
-                exit(1);
-            }
-
-            self::$fixtureIds = array_merge(self::$fixtureIds, json_decode(file_get_contents(sys_get_temp_dir().'/fixtures.json'), true));
-
-            self::resetUsersRights(self::$DI['app'], self::$DI['user']);
-            self::resetUsersRights(self::$DI['app'], self::$DI['user_notAdmin']);
-
-            self::$booted = true;
-        }
 
         self::$DI['lazaret_1'] = self::$DI->share(function ($DI) {
             return $DI['app']['orm.em']->find('Phraseanet:LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
@@ -281,6 +262,13 @@ abstract class PhraseanetTestCase extends WebTestCase
         self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
             return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_by_status_resolver']());
         });
+
+        static $decodedFixtureIds;
+
+        if (is_null($decodedFixtureIds)) {
+            $decodedFixtureIds = json_decode(file_get_contents(sys_get_temp_dir().'/fixtures.json'), true);
+        }
+        self::$fixtureIds = $decodedFixtureIds;
     }
 
     public static function tearDownAfterClass()
@@ -293,6 +281,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     {
         $cli = new CLI('cli test', null, $environment);
         $this->addMocks($cli);
+        $this->addAppCacheFlush($cli);
 
         return $cli;
     }
@@ -304,11 +293,21 @@ abstract class PhraseanetTestCase extends WebTestCase
         } else {
             $app = new Application($environment);
         }
+        $this->addAppCacheFlush($app);
 
         $this->loadDb($app);
         $this->addMocks($app);
 
         return $app;
+    }
+
+    protected function addAppCacheFlush(Application $app)
+    {
+        $app['phraseanet.cache-service'] = $app->share($app->extend('phraseanet.cache-service', function (CacheManager $cache) {
+            $cache->flushAll();
+
+            return $cache;
+        }));
     }
 
     protected function loadDb($app)
@@ -459,8 +458,8 @@ abstract class PhraseanetTestCase extends WebTestCase
             case self::$fixtureIds['user']['test_phpunit']:
                 self::giveRightsToUser($app, $user);
                 $app['acl']->get($user)->set_admin(true);
-                $app['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
-                $app['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
+                $app['acl']->get($user)->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+                $app['acl']->get($user)->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
                 break;
             case self::$fixtureIds['user']['user_1']:
             case self::$fixtureIds['user']['user_2']:
@@ -471,8 +470,8 @@ abstract class PhraseanetTestCase extends WebTestCase
             case self::$fixtureIds['user']['user_template']:
                 self::giveRightsToUser($app, $user);
                 $app['acl']->get($user)->set_admin(false);
-                $app['acl']->get(self::$DI['user'])->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
-                $app['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
+                $app['acl']->get($user)->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+                $app['acl']->get($user)->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf('User %s not found', $user->getLogin()));
@@ -536,7 +535,6 @@ abstract class PhraseanetTestCase extends WebTestCase
                     , 'imgtools'          => '1'
                     , 'manage'            => '1'
                     , 'modify_struct'     => '1'
-                    , 'manage'            => '1'
                     , 'bas_modify_struct' => '1'
                 ];
 
@@ -558,6 +556,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
             self::$recordsInitialized = [];
         }
+        // Clear fixtures
+        self::$fixtureIds = [];
     }
 
     /**

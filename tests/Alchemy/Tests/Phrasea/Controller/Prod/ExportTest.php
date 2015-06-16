@@ -3,6 +3,10 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 /**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
 class ExportTest extends \PhraseanetAuthenticatedWebTestCase

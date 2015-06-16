@@ -6,8 +6,6 @@
 use Alchemy\Phrasea\CLI;
 
 return call_user_func(function (CLI $cli) {
-    $app = $cli;    if ($app['plugins.manager']->isEnabled('web-gallery-plugin')) {
-    $cli->command(Alchemy\WebGallery\Command\InstallCommand::create());    $cli->command(Alchemy\WebGallery\Command\UninstallCommand::create());    $cli->command(Alchemy\WebGallery\Command\UpdateCommand::create());    }
-
+    $app = $cli;
     return $cli;
 }, $cli);

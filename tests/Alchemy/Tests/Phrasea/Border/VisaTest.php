@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Border\Checker\Filename;
 use Alchemy\Phrasea\Border\Checker\Response;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class VisaTest extends \PhraseanetTestCase
 {
 

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class WebhookEventManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class caption_fieldTest extends \PhraseanetTestCase
 {
     /**

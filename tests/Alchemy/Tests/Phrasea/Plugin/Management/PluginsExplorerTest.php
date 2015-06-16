@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Plugin\Management;
 use Alchemy\Phrasea\Plugin\Management\PluginsExplorer;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PluginsExplorerTest extends PluginTestCase
 {
     public function testCount()

@@ -5,6 +5,11 @@ namespace Alchemy\Tests\Phrasea\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ */
 class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
 {
     public function testSimple()

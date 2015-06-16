@@ -116,6 +116,9 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function flushQueue()
     {
-        $this->getIndexer()->flushQueue();
+        // Only flush queue if indexer is initialized.
+        if ($this->indexer instanceof Indexer) {
+            $this->getIndexer()->flushQueue();
+        }
     }
 }

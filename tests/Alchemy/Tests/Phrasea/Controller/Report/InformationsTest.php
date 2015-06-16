@@ -2,6 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     private $dmin;
@@ -192,7 +198,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    public function testDoReportInformationsBrowserBadRequest()
+    public function testDoReportInformationBrowserBadRequest()
     {
         self::$DI['client']->request('POST', '/report/informations/browser', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),

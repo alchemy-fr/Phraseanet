@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\GeonameValidator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GeonameValidatorTest extends \PhraseanetTestCase
 {
     /**

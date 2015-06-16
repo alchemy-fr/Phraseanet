@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Command\Developer\Utils\GruntDriver;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Symfony\Component\Process\PhpExecutableFinder;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class GruntDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()

@@ -7,6 +7,10 @@ use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AccessRestrictionTest extends \PhraseanetTestCase
 {
     /**

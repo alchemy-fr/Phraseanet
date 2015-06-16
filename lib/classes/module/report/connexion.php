@@ -60,9 +60,10 @@ class module_report_connexion extends module_report
     /**
      * @desc build the list with all distinct result
      * @param  string $field the field from the request displayed in a array
+     * @param bool    $on
      * @return string $liste
      */
-    public function colFilter($field)
+    public function colFilter($field, $on = false)
     {
         $ret = [];
         $sqlBuilder = $this->sqlBuilder('connexion');

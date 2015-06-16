@@ -5,6 +5,8 @@ namespace Alchemy\Tests\Phrasea\Notification\Mail;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered
  */
 class MailSuccessEmailConfirmationRegisteredTest extends MailWithLinkTestCase

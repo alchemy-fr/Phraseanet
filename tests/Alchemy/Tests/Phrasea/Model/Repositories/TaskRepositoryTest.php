@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TaskRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindActiveTask()

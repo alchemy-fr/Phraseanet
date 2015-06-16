@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Provider\Viadeo;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ViadeoTest extends ProviderTestCase
 {
     public function provideDataForFailingCallback()

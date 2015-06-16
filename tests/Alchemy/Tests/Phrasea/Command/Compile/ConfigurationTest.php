@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Compile;
 
 use Alchemy\Phrasea\Command\Compile\Configuration;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ConfigurationTest extends \PhraseanetTestCase
 {
     public function testExecute()

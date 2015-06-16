@@ -56,7 +56,7 @@ class module_report_question extends module_report
         $this->total = $sql->getTotalRows();
     }
 
-    public function colFilter($field)
+    public function colFilter($field, $on = false)
     {
         $ret = [];
         $sqlBuilder = $this->sqlBuilder('question');

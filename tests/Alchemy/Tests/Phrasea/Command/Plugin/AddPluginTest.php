@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AddPluginTest extends PluginCommandTestCase
 {
     public function testExecute()

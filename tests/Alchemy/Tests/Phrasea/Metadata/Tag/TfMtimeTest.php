@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfMtime;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfMtimeTest extends \PhraseanetTestCase
 {
 

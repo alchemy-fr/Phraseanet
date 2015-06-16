@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateDesktopApplication()

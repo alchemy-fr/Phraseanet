@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Provider\Twitter;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TwitterTest extends ProviderTestCase
 {
     public function testGetSetGuzzleClient()

@@ -4,6 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

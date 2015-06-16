@@ -2,6 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Security;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class FirewallTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

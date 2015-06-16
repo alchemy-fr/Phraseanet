@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\TokenConverter;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TokenConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Plugin\Plugin;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PluginTest extends PluginTestCase
 {
     public function testGetters()

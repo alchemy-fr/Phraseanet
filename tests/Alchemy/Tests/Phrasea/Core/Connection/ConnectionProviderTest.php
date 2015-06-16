@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Core\Connection;
 
 use Alchemy\Phrasea\Core\Connection\ConnectionProvider;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ConnectionPoolManager extends \PhraseanetTestCase
 {
     public function testMysqlTimeoutIsHandled()

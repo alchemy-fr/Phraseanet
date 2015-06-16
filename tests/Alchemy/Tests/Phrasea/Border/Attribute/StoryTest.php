@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Story;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class StoryTest extends \PhraseanetTestCase
 {
     /**

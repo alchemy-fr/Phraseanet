@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SearchEngineOptionsTest extends \PhraseanetTestCase
 {
     /**

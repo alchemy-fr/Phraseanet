@@ -7,6 +7,12 @@ use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use RandomLib\Factory;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**

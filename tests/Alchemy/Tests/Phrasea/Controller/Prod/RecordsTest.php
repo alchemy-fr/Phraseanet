@@ -8,16 +8,15 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 
 /**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
 class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-    }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Records::whatCanIDelete

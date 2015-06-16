@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class WebhookEventRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindUnprocessedEvents()

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PropertyAccessTest extends \PhraseanetTestCase
 {
     /**

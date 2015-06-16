@@ -846,8 +846,17 @@ class ACL implements cache_cacheableInterface
         }
 
         try {
-            $this->_global_rights = $this->get_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
-            $this->_rights_sbas = $this->get_data_from_cache(self::CACHE_RIGHTS_SBAS);
+            $global_rights = $this->get_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
+            if (!is_array($global_rights)) {
+                throw new Exception('global rights were not properly retrieved');
+            }
+            $sbas_rights = $this->get_data_from_cache(self::CACHE_RIGHTS_SBAS);
+            if (!is_array($sbas_rights)) {
+                throw new Exception('sbas rights were not properly retrieved');
+            }
+
+            $this->_global_rights = $global_rights;
+            $this->_rights_sbas = $sbas_rights;
 
             return $this;
         } catch (\Exception $e) {
@@ -904,9 +913,21 @@ class ACL implements cache_cacheableInterface
         }
 
         try {
-            $this->_global_rights = $this->get_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
-            $this->_rights_bas = $this->get_data_from_cache(self::CACHE_RIGHTS_BAS);
-            $this->_limited = $this->get_data_from_cache(self::CACHE_LIMITS_BAS);
+            $data = $this->get_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
+            if (!is_array($data)) {
+                throw new Exception('Unable to retrieve global rights');
+            }
+            $this->_global_rights = $data;
+            $data = $this->get_data_from_cache(self::CACHE_RIGHTS_BAS);
+            if (!is_array($data)) {
+                throw new Exception('Unable to retrieve base rights');
+            }
+            $this->_rights_bas = $data;
+            $data = $this->get_data_from_cache(self::CACHE_LIMITS_BAS);
+            if (!is_array($data)) {
+                throw new Exception('Unable to retrieve limits rights');
+            }
+            $this->_limited = $data;
 
             return $this;
         } catch (\Exception $e) {

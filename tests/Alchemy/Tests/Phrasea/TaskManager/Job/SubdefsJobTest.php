@@ -6,6 +6,10 @@ use Alchemy\Phrasea\TaskManager\Job\SubdefsJob;
 use Alchemy\Phrasea\TaskManager\Job\JobData;
 use Alchemy\Phrasea\Model\Entities\Task;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SubdefsJobTest extends JobTestCase
 {
     protected function getJob()

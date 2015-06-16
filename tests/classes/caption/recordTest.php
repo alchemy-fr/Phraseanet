@@ -3,6 +3,10 @@
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class caption_recordTest extends \PhraseanetTestCase
 {
     /**

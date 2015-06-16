@@ -7,6 +7,10 @@ use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Parser;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ResultTest extends \PhraseanetTestCase
 {
     public function testFormatJson()

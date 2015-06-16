@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewEmailValidator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class NewEmailValidatorTest extends \PhraseanetTestCase
 {
     /**

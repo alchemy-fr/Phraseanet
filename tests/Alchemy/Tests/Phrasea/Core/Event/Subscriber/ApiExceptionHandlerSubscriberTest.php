@@ -11,6 +11,10 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 {
     /**

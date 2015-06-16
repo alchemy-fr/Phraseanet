@@ -3,6 +3,8 @@
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers recordutils_image
  */
 class recordutils_imageTest extends \PhraseanetTestCase

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FailureHandledNativeAuthenticationTest extends \PhraseanetTestCase
 {
     public function testGetUsrIdWhenSuccessful()

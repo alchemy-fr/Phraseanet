@@ -908,4 +908,16 @@ class module_report
 
         return trim($result);
     }
+
+    /**
+     * Return filtered data
+     *
+     * @param string $field
+     * @param bool $on
+     * @return array
+     */
+    public function colFilter($field, $on = false)
+    {
+        throw new RuntimeException('colFilter was called on a module not handling the called');
+    }
 }

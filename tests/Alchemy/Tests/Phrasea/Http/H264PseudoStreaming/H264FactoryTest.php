@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Http\H264PseudoStreaming;
 
 use Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class H264FactoryTest extends \PhraseanetTestCase
 {
     public function testFactoryCreation()

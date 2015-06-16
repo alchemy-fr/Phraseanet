@@ -8,6 +8,10 @@ use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ComposerInstallerTest extends \PhraseanetTestCase
 {
     public function testInstall()

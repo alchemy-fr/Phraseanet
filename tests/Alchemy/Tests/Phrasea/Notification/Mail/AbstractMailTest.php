@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Notification\Mail\AbstractMail;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail
  */
 class AbstractMailTest extends \PhraseanetTestCase

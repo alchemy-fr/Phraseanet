@@ -5,6 +5,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 use PHPExiftool\Driver\Tag\IPTC\ObjectName;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRoot()

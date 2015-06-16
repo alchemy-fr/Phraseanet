@@ -7,6 +7,10 @@ use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MetadataBagTest extends \PhraseanetTestCase
 {
     /**

@@ -230,7 +230,10 @@ class databox extends base
     protected function get_available_collections()
     {
         try {
-            return $this->get_data_from_cache(self::CACHE_COLLECTIONS);
+            $data = $this->get_data_from_cache(self::CACHE_COLLECTIONS);
+            if (is_array($data)) {
+                return $data;
+            }
         } catch (\Exception $e) {
 
         }
@@ -551,13 +554,15 @@ class databox extends base
             , ':password' => $password
         ];
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        /** @var appbox $appbox */
+        $appbox = $app['phraseanet.appbox'];
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row) {
-            return $app['phraseanet.appbox']->get_databox((int) $row['sbas_id']);
+            return $appbox->get_databox((int) $row['sbas_id']);
         }
 
         try {
@@ -576,7 +581,7 @@ class databox extends base
         $stmt->closeCursor();
 
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -588,10 +593,10 @@ class databox extends base
 
         $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
-        $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
+        $sbas_id = (int) $appbox->get_connection()->lastInsertId();
 
         $app['orm.add']([
             'host'     => $host,
@@ -601,9 +606,9 @@ class databox extends base
             'password' => $password
         ]);
 
-        $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $databox->insert_datas();
 
         $databox->setNewStructure(
@@ -688,15 +693,18 @@ class databox extends base
      */
     public function get_meta_structure()
     {
-        $metaStructData = array();
-
         if ($this->meta_struct) {
             return $this->meta_struct;
         }
 
         try {
             $metaStructData = $this->get_data_from_cache(self::CACHE_META_STRUCT);
+            if (!is_array($metaStructData)) {
+                throw new Exception('Invalid metaStructData');
+            }
         } catch (\Exception $e) {
+            $metaStructData = array();
+
             $sql = 'SELECT id, `name` FROM metadatas_structure ORDER BY sorter ASC';
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
@@ -711,7 +719,7 @@ class databox extends base
 
         $this->meta_struct = new databox_descriptionStructure();
 
-        foreach ((array) $metaStructData as $row) {
+        foreach ($metaStructData as $row) {
             $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
         }
 
@@ -1219,7 +1227,10 @@ class databox extends base
     protected function retrieve_structure()
     {
         try {
-            return $this->get_data_from_cache(self::CACHE_STRUCTURE);
+            $data = $this->get_data_from_cache(self::CACHE_STRUCTURE);
+            if (is_array($data)) {
+                return $data;
+            }
         } catch (\Exception $e) {
 
         }

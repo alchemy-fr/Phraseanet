@@ -7,6 +7,10 @@ use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class RegistrationManagerTest extends \PhraseanetTestCase
 {
     /**

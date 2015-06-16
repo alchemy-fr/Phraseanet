@@ -3,6 +3,10 @@
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class userTest extends \PhraseanetTestCase
 {
     public function testMail()

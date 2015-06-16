@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PluginTestCase extends \PhraseanetTestCase
 {
     protected function createManifestValidator()

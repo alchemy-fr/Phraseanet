@@ -7,6 +7,10 @@ use Silex\Application as SilexApp;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TrustedProxySubscriberTest extends \PhraseanetTestCase
 {
     private function getConfigurationMock()

@@ -7,6 +7,10 @@ use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiLogManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()

@@ -2,6 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Client;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

@@ -12,11 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Prod\UsrLists;
-use Alchemy\Phrasea\ControllerProvider\Prod\WorkZone;
-use Alchemy\Phrasea\ControllerProvider\Report\Activity as ReportActivity;
-use Alchemy\Phrasea\ControllerProvider\Report\Informations as ReportInformations;
-use Alchemy\Phrasea\ControllerProvider\Report\Root as ReportRoot;
 use Alchemy\Phrasea\ControllerProvider\Root\Account;
 use Alchemy\Phrasea\ControllerProvider\Root\Developers;
 use Alchemy\Phrasea\ControllerProvider\Root\Login;
@@ -315,6 +310,11 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Prod\Tooltip' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\TOU' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Upload' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists' => [],
+            'Alchemy\Phrasea\ControllerProvider\Prod\WorkZone' => [],
+            'Alchemy\Phrasea\ControllerProvider\Report\Activity' => [],
+            'Alchemy\Phrasea\ControllerProvider\Report\Information' => [],
+            'Alchemy\Phrasea\ControllerProvider\Report\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -625,17 +625,10 @@ class Application extends SilexApplication
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
 
-        $this->mount('/prod/WorkZone', new WorkZone());
-        $this->mount('/prod/lists', new UsrLists());
-
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
 
         $this->mount('/session/', new Session());
-
-        $this->mount('/report/', new ReportRoot());
-        $this->mount('/report/activity', new ReportActivity());
-        $this->mount('/report/informations', new ReportInformations());
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
@@ -667,6 +660,7 @@ class Application extends SilexApplication
             '/prod/feeds'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Feed',
             '/prod/language'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
             '/prod/lazaret/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
+            '/prod/lists'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists',
             '/prod/order/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Order',
             '/prod/printer/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Printer',
             '/prod/push/'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Push',
@@ -681,7 +675,11 @@ class Application extends SilexApplication
             '/prod/tooltip'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Tooltip',
             '/prod/TOU/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\TOU',
             '/prod/upload/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Upload',
+            '/prod/WorkZone'               => 'Alchemy\Phrasea\ControllerProvider\Prod\WorkZone',
             '/prod/'                       => 'Alchemy\Phrasea\ControllerProvider\Prod\Root',
+            '/report/activity'             => 'Alchemy\Phrasea\ControllerProvider\Report\Activity',
+            '/report/informations'         => 'Alchemy\Phrasea\ControllerProvider\Report\Information',
+            '/report/'                     => 'Alchemy\Phrasea\ControllerProvider\Report\Root',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
         ];
 

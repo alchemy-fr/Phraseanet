@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Session;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class AuthenticatorTest extends \PhraseanetTestCase
 {
     /**

@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SuggestionFinderTest extends \PhraseanetTestCase
 {
     public function testSuggestionIsFound()

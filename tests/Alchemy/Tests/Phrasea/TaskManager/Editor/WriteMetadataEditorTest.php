@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Editor;
 
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class WriteMetadataEditorTest extends EditorTestCase
 {
     public function provideDataForXMLUpdatesFromForm()

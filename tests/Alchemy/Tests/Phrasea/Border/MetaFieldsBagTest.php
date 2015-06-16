@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MetaFieldsBagTest extends \PhraseanetTestCase
 {
     /**

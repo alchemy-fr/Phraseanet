@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class media_Permalink_AdapterTest extends \PhraseanetTestCase
 {
     /**

@@ -8,6 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\BrowserKit\CookieJar;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRouteSetLocale()

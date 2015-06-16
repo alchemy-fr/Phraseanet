@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Model\Manipulator\WebhookEventDeliveryManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class WebhookEventDeliveryManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()

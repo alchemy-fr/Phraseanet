@@ -18,6 +18,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApplicationTest extends \PhraseanetTestCase
 {
     /**

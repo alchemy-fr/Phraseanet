@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\OptionType;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Multi;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MultiTest extends \PhraseanetTestCase
 {
     /**

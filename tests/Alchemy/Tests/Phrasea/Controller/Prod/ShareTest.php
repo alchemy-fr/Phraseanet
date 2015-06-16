@@ -6,6 +6,12 @@ use Alchemy\Phrasea\Controller\Prod\ShareController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Share;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class ShareTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

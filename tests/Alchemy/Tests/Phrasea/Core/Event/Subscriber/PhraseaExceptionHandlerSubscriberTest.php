@@ -8,6 +8,10 @@ use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 {
     public function testAResponseIsReturned()

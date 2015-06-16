@@ -9,6 +9,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

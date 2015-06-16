@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone;
 use Alchemy\Phrasea\Exception\LogicException;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone
  */
 class MailInfoValidationDoneTest extends MailWithLinkTestCase

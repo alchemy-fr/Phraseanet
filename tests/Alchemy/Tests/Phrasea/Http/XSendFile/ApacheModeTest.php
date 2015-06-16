@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\ApacheMode;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApacheModeTest extends \PhraseanetTestCase
 {
     public function testGetVirtualHost()

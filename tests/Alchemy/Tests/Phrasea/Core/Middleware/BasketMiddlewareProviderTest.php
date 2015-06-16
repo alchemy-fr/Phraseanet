@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Core\Middleware;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class BasketMiddlewareProviderTest extends MiddlewareProviderTestCase
 {
     public function provideDescription()

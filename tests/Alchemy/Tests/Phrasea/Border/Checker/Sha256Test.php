@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Sha256;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class Sha256Test extends \PhraseanetTestCase
 {
     /**

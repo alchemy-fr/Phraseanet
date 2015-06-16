@@ -46,9 +46,12 @@ class phrasea
         }
 
         try {
-            self::$_sbas_params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
+            $params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
+            if (is_array($params)) {
+                self::$_sbas_params = $params;
 
-            return self::$_sbas_params;
+                return $params;
+            }
         } catch (\Exception $e) {
 
         }
@@ -97,7 +100,11 @@ class phrasea
     {
         if (!self::$_bas2sbas) {
             try {
-                self::$_bas2sbas = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
+                $data = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
+                if (!$data) {
+                    throw new \Exception('Could not get sbas from cache');
+                }
+                self::$_bas2sbas = $data;
             } catch (\Exception $e) {
                 $sql = 'SELECT base_id, sbas_id FROM bas';
                 $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);

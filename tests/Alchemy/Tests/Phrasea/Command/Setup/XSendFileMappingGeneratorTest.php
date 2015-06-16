@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
 {
     /**

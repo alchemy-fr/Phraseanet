@@ -6,6 +6,10 @@ use Alchemy\Phrasea\TaskManager\Event\FinishedJobRemoverSubscriber;
 use Alchemy\Phrasea\TaskManager\Event\JobFinishedEvent;
 use Alchemy\Phrasea\Model\Entities\Task;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FinishedJobRemoverSubscriberTest extends \PhraseanetTestCase
 {
     public function testOnJobFinish()

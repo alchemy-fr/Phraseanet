@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TokenManipulatorTest extends \PhraseanetTestCase
 {
     /**

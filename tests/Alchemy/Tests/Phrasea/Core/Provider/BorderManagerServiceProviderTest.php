@@ -9,6 +9,8 @@ use Symfony\Component\Process\ExecutableFinder;
 use XPDF\XPDFServiceProvider;
 
 /**
+ * @group functional
+ * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider
  */
 class BorderManagerServiceProviderTest extends ServiceProviderTestCase

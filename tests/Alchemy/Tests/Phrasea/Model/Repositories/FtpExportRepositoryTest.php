@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Model\Entities\FtpExport;
 use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Gedmo\Timestampable\TimestampableListener;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FtpExportRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindCrashedExportsWithoutDate()

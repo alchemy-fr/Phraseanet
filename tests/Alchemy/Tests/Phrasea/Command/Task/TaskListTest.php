@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\TaskList;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TaskListTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
@@ -25,6 +29,6 @@ class TaskListTest extends \PhraseanetTestCase
         $application->add($command);
 
         $setupCommand = $application->find('task-manager:task:list');
-        $setupCommand->execute($input, $output);
+        $setupCommand->run($input, $output);
     }
 }

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class DisablePluginTest extends PluginCommandTestCase
 {
     /**

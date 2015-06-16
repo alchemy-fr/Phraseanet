@@ -7,6 +7,10 @@ use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\ProcessBuilder;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ComposerSetupTest extends \PhraseanetTestCase
 {
     public function testSetup()

@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ACLManipulatorTest extends \PhraseanetTestCase
 {
     public function testResetAdminRights()

@@ -3,6 +3,10 @@
 use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class module_console_aboutAuthorsTest extends \PhraseanetTestCase
 {
     /**

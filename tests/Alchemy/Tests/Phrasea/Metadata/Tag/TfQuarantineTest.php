@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfQuarantineTest extends \PhraseanetTestCase
 {
 

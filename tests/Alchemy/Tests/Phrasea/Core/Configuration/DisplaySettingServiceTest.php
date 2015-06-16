@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class DisplaySettingServiceTest extends \PhraseanetTestCase
 {
     private static $userSettings;

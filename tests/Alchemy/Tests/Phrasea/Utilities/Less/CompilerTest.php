@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Utilities\Less;
 use Alchemy\Phrasea\Utilities\Less\Compiler;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class CompilerTest extends \PhraseanetTestCase
 {
     public function testCompileSuccess()

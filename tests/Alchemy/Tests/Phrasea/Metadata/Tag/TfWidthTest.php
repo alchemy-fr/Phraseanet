@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfWidth;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfWidthTest extends \PhraseanetTestCase
 {
 

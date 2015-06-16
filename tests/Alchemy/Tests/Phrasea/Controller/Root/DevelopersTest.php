@@ -4,6 +4,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group authenticated
+ * @group web
+ */
 class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
 {
 

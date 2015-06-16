@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Controller;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MinifierTest extends \PhraseanetTestCase
 {
     public function setUp()

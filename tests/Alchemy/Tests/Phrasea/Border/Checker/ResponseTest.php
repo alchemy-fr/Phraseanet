@@ -6,6 +6,10 @@ use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Checker\Response;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ResponseTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;

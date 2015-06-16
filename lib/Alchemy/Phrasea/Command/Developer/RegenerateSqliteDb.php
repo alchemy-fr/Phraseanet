@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
@@ -280,7 +281,9 @@ class RegenerateSqliteDb extends Command
             $DI['lazaret_1'] = $element;
         };
 
-        $this->container['border-manager']->process($session, $file, $callback, Manager::FORCE_LAZARET);
+        /** @var Manager $borderManager */
+        $borderManager = $this->container['border-manager'];
+        $borderManager->process($session, $file, $callback, Manager::FORCE_LAZARET);
     }
 
     private function generateUsers(EntityManager $em, \Pimple $DI)
@@ -368,7 +371,8 @@ class RegenerateSqliteDb extends Command
 
     private function generateCollection(\Pimple $DI)
     {
-        $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
+        $coll = $collection_no_acces = $collection_no_acces_by_status = null;
+        /** @var \databox[] $databoxes */
         $databoxes = $this->container['phraseanet.appbox']->get_databoxes();
 
         foreach ($databoxes as $databox) {
@@ -390,16 +394,15 @@ class RegenerateSqliteDb extends Command
             }
         }
 
-        $DI['databox'] = $coll->get_databox();
+        $DI['databox'] = $databox = $coll->get_databox();
         $DI['coll'] = $coll;
-
-        if (!$collection_no_acces instanceof collection) {
+        if (!$collection_no_acces instanceof \collection) {
             $collection_no_acces = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'COLL_TEST_NO_ACCESS', $DI['user']);
         }
 
         $DI['coll_no_access'] = $collection_no_acces;
 
-        if (!$collection_no_acces_by_status instanceof collection) {
+        if (!$collection_no_acces_by_status instanceof \collection) {
             $collection_no_acces_by_status = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'COLL_TEST_NO_ACCESS_BY_STATUS', $DI['user']);
         }
 
@@ -420,8 +423,10 @@ class RegenerateSqliteDb extends Command
         foreach (range(1, 3) as $i) {
             $story = \record_adapter::createStory($this->container, $DI['coll']);
             if ($i < 3) {
-                $this->container['subdef.substituer']->substitute($story, 'preview', $media);
-                $this->container['subdef.substituer']->substitute($story, 'thumbnail', $media);
+                /** @var SubdefSubstituer $substituer */
+                $substituer = $this->container['subdef.substituer'];
+                $substituer->substitute($story, 'preview', $media);
+                $substituer->substitute($story, 'thumbnail', $media);
             }
             $DI['record_story_' . $i] = $story;
         }

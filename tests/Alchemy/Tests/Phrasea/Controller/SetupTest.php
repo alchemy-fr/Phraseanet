@@ -4,6 +4,11 @@ namespace Alchemy\Tests\Phrasea\Controller;
 
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group functional
+ * @group legacy
+ * @group web
+ */
 class SetupTest extends \PhraseanetWebTestCase
 {
     public function setUp()

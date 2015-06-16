@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\PersistentCookie;
 use Alchemy\Phrasea\Authentication\PersistentCookie\Manager;
 use Alchemy\Phrasea\Model\Entities\Session;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ManagerTest extends \PhraseanetTestCase
 {
     /**

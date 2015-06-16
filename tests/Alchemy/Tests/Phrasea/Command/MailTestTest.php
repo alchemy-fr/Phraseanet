@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\MailTest;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class MailTestTest extends \PhraseanetTestCase
 {
     public function testMailIsSent()

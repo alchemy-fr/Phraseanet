@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
 use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class RegistryManipulatorTest extends \PhraseanetTestCase
 {
     /** @var RegistryManipulator */

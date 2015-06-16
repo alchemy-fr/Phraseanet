@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\TfHeight;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class TfHeightTest extends \PhraseanetTestCase
 {
 

@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\SchedulerPauseTasks;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class SchedulerPauseTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()

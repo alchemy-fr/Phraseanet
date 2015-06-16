@@ -5,6 +5,10 @@ namespace Alchemy\Tests\Phrasea\Webhook;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class FeedEntryProcessorTest extends \PhraseanetTestCase
 {
 

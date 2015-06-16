@@ -2,6 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
+/**
+ * @group functional
+ * @group legacy
+ */
 class ApiOauthCodeRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindByAccount()
