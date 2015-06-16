@@ -13,6 +13,7 @@
 >
     <php>
       <ini name="display_errors" value="on"/>
+      <ini name="memory_limit" value="2G"/>
     </php>
 
     <testsuites>
