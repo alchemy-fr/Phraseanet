@@ -9,196 +9,214 @@
  */
 namespace Alchemy\Phrasea\Controller\Root;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
+use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
+use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
+use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeveloperController extends Controller
 {
     /**
      * Delete application.
      *
-     * @param Application    $app
      * @param Request        $request
      * @param ApiApplication $application
      *
      * @return JsonResponse
      */
-    public function deleteApp(Application $app, Request $request, ApiApplication $application)
+    public function deleteApp(Request $request, ApiApplication $application)
     {
-        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, 'Bad request format, only JSON is allowed');
+        $this->assertJsonRequestFormat($request);
+
+        $this->getApiApplicationManipulator()->delete($application);
+
+        return $this->app->json(['success' => true]);
+    }
+
+    /**
+     * @param Request $request
+     * @throws HttpException
+     */
+    private function assertJsonRequestFormat(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()
+            || !array_key_exists(
+                $request->getMimeType('json'),
+                array_flip($request->getAcceptableContentTypes())
+            )
+        ) {
+            $this->app->abort(400, 'Bad request format, only JSON is allowed');
         }
+    }
 
-        $app['manipulator.api-application']->delete($application);
-
-        return $app->json(['success' => true]);
+    /**
+     * @return ApiApplicationManipulator
+     */
+    private function getApiApplicationManipulator()
+    {
+        return $this->app['manipulator.api-application'];
     }
 
     /**
      * Change application callback.
      *
-     * @param Application    $app
      * @param Request        $request
      * @param ApiApplication $application
      *
      * @return JsonResponse
      */
-    public function renewAppCallback(Application $app, Request $request, ApiApplication $application)
+    public function renewAppCallback(Request $request, ApiApplication $application)
     {
-        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, 'Bad request format, only JSON is allowed');
-        }
+        $this->assertJsonRequestFormat($request);
 
         try {
-            $app['manipulator.api-application']->setRedirectUri($application, $request->request->get("callback"));
+            $this->getApiApplicationManipulator()
+                ->setRedirectUri($application, $request->request->get("callback"));
         } catch (InvalidArgumentException $e) {
-            return $app->json(['success' => false]);
+            return $this->app->json(['success' => false]);
         }
 
-        return $app->json(['success' => true]);
+        return $this->app->json(['success' => true]);
     }
 
     /**
      * Change application webhook
      *
-     * @param  Application  $app     A Silex application where the controller is mounted on
-     * @param  Request      $request The current request
-     * @param  integer      $id      The application id
+     * @param Request        $request The current request
+     * @param ApiApplication $application
      * @return JsonResponse
      */
-    public function renewAppWebhook(Application $app, Request $request, ApiApplication $application)
+    public function renewAppWebhook(Request $request, ApiApplication $application)
     {
-        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
+        $this->assertJsonRequestFormat($request);
 
         if (null !== $request->request->get("webhook")) {
-            $app['manipulator.api-application']->setWebhookUrl($application, $request->request->get("webhook"));
+            $this->getApiApplicationManipulator()
+                ->setWebhookUrl($application, $request->request->get("webhook"));
         } else {
-            return $app->json(['success' => false]);
+            return $this->app->json(['success' => false]);
         }
 
-        return $app->json(['success' => true]);
+        return $this->app->json(['success' => true]);
     }
 
     /**
      * Authorize application to use a grant password type.
      *
-     * @param Application    $app
      * @param Request        $request
      * @param ApiApplication $application
      *
      * @return JsonResponse
      */
-    public function renewAccessToken(Application $app, Request $request, ApiApplication $application)
+    public function renewAccessToken(Request $request, ApiApplication $application)
     {
-        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, 'Bad request format, only JSON is allowed');
+        $this->assertJsonRequestFormat($request);
+
+        $account = $this->getApiAccountRepository()
+            ->findByUserAndApplication($this->getAuthenticatedUser(), $application);
+        if (null === $account) {
+            $this->app->abort(404, sprintf('Account not found for application %s', $application->getName()));
         }
 
-        if (null === $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
-            $app->abort(404, sprintf('Account not found for application %s', $application->getName()));
-        }
-
-        if (null !== $devToken = $app['repo.api-oauth-tokens']->findDeveloperToken($account)) {
-            $app['manipulator.api-oauth-token']->renew($devToken);
+        if (null !== $devToken = $this->getApiOAuthTokenRepository()->findDeveloperToken($account)) {
+            $this->getApiOAuthTokenManipulator()->renew($devToken);
         } else {
             // dev tokens do not expires
-            $devToken = $app['manipulator.api-oauth-token']->create($account);
+            $devToken = $this->getApiOAuthTokenManipulator()->create($account);
         }
 
-        return $app->json(['success' => true, 'token' => $devToken->getOauthToken()]);
+        return $this->app->json(['success' => true, 'token' => $devToken->getOauthToken()]);
     }
 
     /**
      * Authorize application to use a grant password type.
      *
-     * @param Application    $app
      * @param Request        $request
      * @param ApiApplication $application
      *
      * @return JsonResponse
      */
-    public function authorizeGrantPassword(Application $app, Request $request, ApiApplication $application)
+    public function authorizeGrantPassword(Request $request, ApiApplication $application)
     {
-        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, 'Bad request format, only JSON is allowed');
-        }
+        $this->assertJsonRequestFormat($request);
 
-        $application->setGrantPassword((Boolean) $request->request->get('grant'));
-        $app['manipulator.api-application']->update($application);
+        $application->setGrantPassword((bool)$request->request->get('grant'));
+        $this->getApiApplicationManipulator()->update($application);
 
-        return $app->json(['success' => true]);
+        return $this->app->json(['success' => true]);
     }
 
     /**
      * Create a new developer applications
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
+     * @param  Request $request The current request
      * @return Response
      */
-    public function newApp(Application $app, Request $request)
+    public function newApp(Request $request)
     {
         if ($request->request->get('type') === ApiApplication::DESKTOP_TYPE) {
-            $form = new \API_OAuth2_Form_DevAppDesktop($app['request']);
+            $form = new \API_OAuth2_Form_DevAppDesktop($request);
         } else {
-            $form = new \API_OAuth2_Form_DevAppInternet($app['request']);
+            $form = new \API_OAuth2_Form_DevAppInternet($request);
         }
 
-        $violations = $app['validator']->validate($form);
+        $violations = $this->getValidator()->validate($form);
 
         if ($violations->count() === 0) {
-            $application = $app['manipulator.api-application']->create(
-                $form->getName(),
-                $form->getType(),
-                $form->getDescription(),
-                sprintf('%s%s', $form->getSchemeWebsite(), $form->getWebsite()),
-                $app['authentication']->getUser(),
-                sprintf('%s%s', $form->getSchemeCallback(), $form->getCallback())
-            );
+            $user = $this->getAuthenticatedUser();
+            $application = $this->getApiApplicationManipulator()
+                ->create(
+                    $form->getName(),
+                    $form->getType(),
+                    $form->getDescription(),
+                    sprintf('%s%s', $form->getSchemeWebsite(), $form->getWebsite()),
+                    $user,
+                    sprintf('%s%s', $form->getSchemeCallback(), $form->getCallback())
+                );
 
             // create an account as well
-            $app['manipulator.api-account']->create($application, $app['authentication']->getUser());
+            $this->getApiAccountManipulator()->create($application, $user);
 
-            return $app->redirectPath('developers_application', ['application' => $application->getId()]);
+            return $this->app->redirectPath('developers_application', ['application' => $application->getId()]);
         }
 
-        return $app['twig']->render('/developers/application_form.html.twig', [
+        return $this->render('/developers/application_form.html.twig', [
             "violations" => $violations,
-            "form"       => $form
+            "form"       => $form,
         ]);
     }
 
     /**
      * List of apps created by the user
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
      * @return Response
      */
-    public function listApps(Application $app, Request $request)
+    public function listApps()
     {
-        return $app['twig']->render('developers/applications.html.twig', [
-            "applications" => $app['repo.api-applications']->findByCreator($app['authentication']->getUser())
+        return $this->render('developers/applications.html.twig', [
+            "applications" => $this->getApiApplicationRepository()->findByCreator($this->getAuthenticatedUser())
         ]);
     }
 
     /**
      * Display form application
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
+     * @param  Request $request The current request
      * @return Response
      */
-    public function displayFormApp(Application $app, Request $request)
+    public function displayFormApp(Request $request)
     {
-        return $app['twig']->render('developers/application_form.html.twig', [
+        return $this->render('developers/application_form.html.twig', [
             "violations" => null,
             'form'       => null,
             'request'    => $request
@@ -208,24 +226,70 @@ class DeveloperController extends Controller
     /**
      * Gets application information.
      *
-     * @param Application    $app
-     * @param Request        $request
      * @param ApiApplication $application
      *
      * @return mixed
      */
-    public function getApp(Application $app, Request $request, ApiApplication $application)
+    public function getApp(ApiApplication $application)
     {
-        $token = null;
+        $user = $this->getAuthenticatedUser();
+        $account = $this->getApiAccountRepository()->findByUserAndApplication($user, $application);
+        $token = $account
+            ? $this->getApiOAuthTokenRepository()->findDeveloperToken($account)
+            : null;
 
-        if (null !== $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
-            $token = $app['repo.api-oauth-tokens']->findDeveloperToken($account);
-        }
-
-        return $app['twig']->render('developers/application.html.twig', [
+        return $this->render('developers/application.html.twig', [
             "application" => $application,
-            "user"        => $app['authentication']->getUser(),
-            "token"       => $token
+            "user"        => $user,
+            "token"       => $token,
         ]);
+    }
+
+    /**
+     * @return ApiAccountRepository
+     */
+    private function getApiAccountRepository()
+    {
+        return $this->app['repo.api-accounts'];
+    }
+
+    /**
+     * @return ApiOauthTokenRepository
+     */
+    private function getApiOAuthTokenRepository()
+    {
+        return $this->app['repo.api-oauth-tokens'];
+    }
+
+    /**
+     * @return ApiOauthTokenManipulator
+     */
+    private function getApiOAuthTokenManipulator()
+    {
+        return $this->app['manipulator.api-oauth-token'];
+    }
+
+    /**
+     * @return ValidatorInterface
+     */
+    private function getValidator()
+    {
+        return $this->app['validator'];
+    }
+
+    /**
+     * @return ApiAccountManipulator
+     */
+    private function getApiAccountManipulator()
+    {
+        return $this->app['manipulator.api-account'];
+    }
+
+    /**
+     * @return ApiApplicationRepository
+     */
+    private function getApiApplicationRepository()
+    {
+        return $this->app['repo.api-applications'];
     }
 }
