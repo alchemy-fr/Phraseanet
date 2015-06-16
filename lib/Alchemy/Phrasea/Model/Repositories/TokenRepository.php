@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityRepository;
@@ -15,6 +16,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class TokenRepository extends EntityRepository
 {
+    /**
+     * @param Basket $basket
+     * @param User   $user
+     * @return Token|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findValidationToken(Basket $basket, User $user)
     {
         $dql = 'SELECT t FROM Phraseanet:Token t
@@ -33,6 +40,11 @@ class TokenRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param string $value
+     * @return Token|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findValidToken($value)
     {
         $dql = 'SELECT t FROM Phraseanet:Token t
@@ -45,6 +57,9 @@ class TokenRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @return Token[]
+     */
     public function findExpiredTokens()
     {
         $dql = 'SELECT t FROM Phraseanet:Token t

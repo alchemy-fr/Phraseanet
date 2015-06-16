@@ -28,6 +28,7 @@ class Account implements ControllerProviderInterface, ServiceProviderInterface
         $app['account.controller'] = $app->share(function (PhraseaApplication $app) {
             return (new AccountController($app))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
             ;
         });
     }

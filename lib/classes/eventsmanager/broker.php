@@ -289,7 +289,7 @@ class eventsmanager_broker
 
     public function list_notifications_available(User $user)
     {
-        $personnal_notifications = [];
+        $personal_notifications = [];
 
         foreach ($this->notifications as $notification) {
             if (!$this->pool_classes[$notification]->is_available($user)) {
@@ -298,14 +298,14 @@ class eventsmanager_broker
             $group = $this->pool_classes[$notification]->get_group();
             $group = $group === null ? $this->app->trans('Notifications globales') : $group;
 
-            $personnal_notifications[$group][] = [
-                'name'             => $this->pool_classes[$notification]->get_name()
-                , 'id'               => $notification
-                , 'description'      => $this->pool_classes[$notification]->get_description()
-                , 'subscribe_emails' => true
+            $personal_notifications[$group][] = [
+                'name'             => $this->pool_classes[$notification]->get_name(),
+                'id'               => $notification,
+                'description'      => $this->pool_classes[$notification]->get_description(),
+                'subscribe_emails' => true,
             ];
         }
 
-        return $personnal_notifications;
+        return $personal_notifications;
     }
 }

@@ -9,50 +9,63 @@
  */
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Geonames\Connector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
+use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\ControllerProvider\Root\Login;
+use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
+use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
+use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AccountController extends Controller
 {
+    use EntityManagerAware;
     use NotifierAware;
 
-    public function resetPassword(Application $app, Request $request)
+    public function resetPassword(Request $request)
     {
-        $form = $app->form(new PhraseaRenewPasswordForm());
+        $form = $this->app->form(new PhraseaRenewPasswordForm());
 
         if ('POST' === $request->getMethod()) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $user = $app['authentication']->getUser();
+                $user = $this->getAuthenticatedUser();
 
-                if ($app['auth.password-encoder']->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
-                    $app['manipulator.user']->setPassword($user, $data['password']);
-                    $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
+                if ($this->getPasswordEncoder()->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
+                    $this->getUserManipulator()->setPassword($user, $data['password']);
+                    $this->app->addFlash('success', $this->app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
-                    return $app->redirectPath('account');
+                    return $this->app->redirectPath('account');
                 } else {
-                    $app->addFlash('error', $app->trans('Invalid password provided'));
+                    $this->app->addFlash('error', $this->app->trans('Invalid password provided'));
                 }
             }
         }
 
-        return $app['twig']->render('account/change-password.html.twig', array_merge(
-            Login::getDefaultTemplateVariables($app),
+        return $this->render('account/change-password.html.twig', array_merge(
+            Login::getDefaultTemplateVariables($this->app),
             ['form' => $form->createView()]
         ));
     }
@@ -60,175 +73,172 @@ class AccountController extends Controller
     /**
      * Reset Email
      *
-     * @param  Application      $app
-     * @param  Request          $request
+     * @param  Request $request
      * @return RedirectResponse
      */
-    public function resetEmail(Application $app, Request $request)
+    public function resetEmail(Request $request)
     {
-        if (null === ($password = $request->request->get('form_password')) || null === ($email = $request->request->get('form_email')) || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
-
-            $app->abort(400, $app->trans('Could not perform request, please contact an administrator.'));
+        if (null === ($password = $request->request->get('form_password'))
+            || null === ($email = $request->request->get('form_email'))
+            || null === ($emailConfirm = $request->request->get('form_email_confirm'))
+        ) {
+            throw new BadRequestHttpException($this->app->trans('Could not perform request, please contact an administrator.'));
         }
 
-        $user = $app['authentication']->getUser();
+        $user = $this->getAuthenticatedUser();
 
-        if (!$app['auth.password-encoder']->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
-            $app->addFlash('error', $app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
+        if (!$this->getPasswordEncoder()->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
+            $this->app->addFlash('error', $this->app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
-            return $app->redirectPath('account_reset_email');
+            return $this->app->redirectPath('account_reset_email');
         }
 
         if (!\Swift_Validate::email($email)) {
-            $app->addFlash('error', $app->trans('forms::l\'email semble invalide'));
+            $this->app->addFlash('error', $this->app->trans('forms::l\'email semble invalide'));
 
-            return $app->redirectPath('account_reset_email');
+            return $this->app->redirectPath('account_reset_email');
         }
 
         if ($email !== $emailConfirm) {
-            $app->addFlash('error', $app->trans('forms::les emails ne correspondent pas'));
+            $this->app->addFlash('error', $this->app->trans('forms::les emails ne correspondent pas'));
 
-            return $app->redirectPath('account_reset_email');
+            return $this->app->redirectPath('account_reset_email');
         }
 
-        $token = $app['manipulator.token']->createResetEmailToken($app['authentication']->getUser(), $email);
-        $url = $app->url('account_reset_email', ['token' => $token->getValue()]);
+        $token = $this->getTokenManipulator()->createResetEmailToken($user, $email);
+        $url = $this->app->url('account_reset_email', ['token' => $token->getValue()]);
 
         try {
-            $receiver = Receiver::fromUser($app['authentication']->getUser());
+            $receiver = Receiver::fromUser($user);
         } catch (InvalidArgumentException $e) {
-            $app->addFlash('error', $app->trans('phraseanet::erreur: echec du serveur de mail'));
+            $this->app->addFlash('error', $this->app->trans('phraseanet::erreur: echec du serveur de mail'));
 
-            return $app->redirectPath('account_reset_email');
+            return $this->app->redirectPath('account_reset_email');
         }
 
-        $mail = MailRequestEmailUpdate::create($app, $receiver, null);
+        $mail = MailRequestEmailUpdate::create($this->app, $receiver, null);
         $mail->setButtonUrl($url);
         $mail->setExpiration($token->getExpiration());
 
         $this->deliver($mail);
 
-        $app->addFlash('info', $app->trans('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
+        $this->app->addFlash('info', $this->app->trans('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
 
-        return $app->redirectPath('account');
+        return $this->app->redirectPath('account');
     }
 
     /**
      * Display reset email form
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param  Request $request
      * @return Response
      */
-    public function displayResetEmailForm(Application $app, Request $request)
+    public function displayResetEmailForm(Request $request)
     {
         if (null !== $tokenValue = $request->query->get('token')) {
-            if (null === $token = $app['repo.tokens']->findValidToken($tokenValue)) {
-                $app->addFlash('error', $app->trans('admin::compte-utilisateur: erreur lors de la mise a jour'));
+            if (null === $token = $this->getTokenRepository()->findValidToken($tokenValue)) {
+                $this->app->addFlash('error', $this->app->trans('admin::compte-utilisateur: erreur lors de la mise a jour'));
 
-                return $app->redirectPath('account');
+                return $this->app->redirectPath('account');
             }
 
             $user = $token->getUser();
             $user->setEmail($token->getData());
-            $app['manipulator.token']->delete($token);
+            $this->getTokenManipulator()->delete($token);
 
-            $app->addFlash('success', $app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
+            $this->app->addFlash('success', $this->app->trans('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
 
-            return $app->redirectPath('account');
+            return $this->app->redirectPath('account');
         }
 
-        return $app['twig']->render('account/reset-email.html.twig', Login::getDefaultTemplateVariables($app));
+        return $this->render('account/reset-email.html.twig', Login::getDefaultTemplateVariables($this->app));
     }
 
     /**
-     * Display authorized applications that can access user informations
+     * Display authorized applications that can access user information
      *
-     * @param Application    $app
      * @param Request        $request
      * @param ApiApplication $application
      *
      * @return JsonResponse
      */
-    public function grantAccess(Application $app, Request $request, ApiApplication $application)
+    public function grantAccess(Request $request, ApiApplication $application)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, $app->trans('Bad request format, only JSON is allowed'));
+            $this->app->abort(400, $this->app->trans('Bad request format, only JSON is allowed'));
         }
 
-        if (null === $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application)) {
-            return $app->json(['success' => false]);
+        if (null === $account = $this->getApiAccountRepository()->findByUserAndApplication($this->getAuthenticatedUser(), $application)) {
+            return $this->app->json(['success' => false]);
         }
 
+        $manipulator = $this->getApiAccountManipulator();
         if (false === (Boolean) $request->query->get('revoke')) {
-            $app['manipulator.api-account']->authorizeAccess($account);
+            $manipulator->authorizeAccess($account);
         } else {
-            $app['manipulator.api-account']->revokeAccess($account);
+            $manipulator->revokeAccess($account);
         }
 
-        return $app->json(['success' => true]);
+        return $this->app->json(['success' => true]);
     }
 
     /**
      * Display account base access
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
      * @return Response
      */
-    public function accountAccess(Application $app, Request $request)
+    public function accountAccess()
     {
-        return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => $app['registration.manager']->getRegistrationSummary($app['authentication']->getUser())
+        return $this->render('account/access.html.twig', [
+            'inscriptions' => $this->getRegistrationManager()->getRegistrationSummary($this->getAuthenticatedUser())
         ]);
     }
 
     /**
-     * Display authorized applications that can access user informations
+     * Display authorized applications that can access user information
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
      * @return Response
      */
-    public function accountAuthorizedApps(Application $app, Request $request)
+    public function accountAuthorizedApps()
     {
         $data = [];
 
-        foreach ($app['repo.api-applications']->findByUser($app['authentication']->getUser()) as $application) {
-            $account = $app['repo.api-accounts']->findByUserAndApplication($app['authentication']->getUser(), $application);
+        $user = $this->getAuthenticatedUser();
+        foreach (
+            $this->getApiApplicationRepository()->findByUser($user) as $application) {
+            $account = $this->getApiAccountRepository()->findByUserAndApplication($user, $application);
 
-            $data[$application->getId()]['application'] = $application;
-            $data[$application->getId()]['user-account'] =  $account;
+            $data[$application->getId()] = [
+                'application' => $application,
+                'user-account' => $account,
+            ];
         }
 
-        return $app['twig']->render('account/authorized_apps.html.twig', [
+        return $this->render('account/authorized_apps.html.twig', [
             "applications" => $data,
         ]);
     }
 
     /**
-     * Display account session accesss
+     * Display account session accesses
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
      * @return Response
      */
-    public function accountSessionsAccess(Application $app, Request $request)
+    public function accountSessionsAccess()
     {
-        $dql = 'SELECT s FROM Phraseanet:Session s
-            WHERE s.user = :usr_id
-            ORDER BY s.created DESC';
+        $dql = 'SELECT s FROM Phraseanet:Session s WHERE s.user = :usr_id ORDER BY s.created DESC';
 
-        $query = $app['orm.em']->createQuery($dql);
+        $query = $this->getEntityManager()->createQuery($dql);
         $query->setMaxResults(100);
-        $query->setParameters(['usr_id' => $app['session']->get('usr_id')]);
+        $query->setParameters(['usr_id' => $this->getSession()->get('usr_id')]);
+        /** @var Session[] $sessions */
         $sessions = $query->getResult();
 
         $result = [];
         foreach ($sessions as $session) {
             $info = '';
             try {
-                $geoname = $app['geonames.connector']->ip($session->getIpAddress());
+                $geoname = $this->getGeonameConnector()->ip($session->getIpAddress());
                 $country = $geoname->get('country');
                 $city = $geoname->get('city');
                 $region = $geoname->get('region');
@@ -255,43 +265,46 @@ class AccountController extends Controller
             ];
         }
 
-        return $app['twig']->render('account/sessions.html.twig', ['sessions' => $result]);
+        return $this->render('account/sessions.html.twig', ['sessions' => $result]);
     }
 
     /**
      * Display account form
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
      * @return Response
      */
-    public function displayAccount(Application $app, Request $request)
+    public function displayAccount()
     {
-        return $app['twig']->render('account/account.html.twig', [
-            'user'          => $app['authentication']->getUser(),
-            'evt_mngr'      => $app['events-manager'],
-            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()),
+        $manager = $this->getEventManager();
+        $user = $this->getAuthenticatedUser();
+
+        return $this->render('account/account.html.twig', [
+            'user'          => $user,
+            'evt_mngr'      => $manager,
+            'notifications' => $manager->list_notifications_available($user),
         ]);
     }
 
     /**
-     * Update account informations
+     * Update account information
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
+     * @param  Request $request The current request
      * @return Response
      */
-    public function updateAccount(Application $app, Request $request)
+    public function updateAccount(Request $request)
     {
         $registrations = $request->request->get('registrations', []);
         if (false === is_array($registrations)) {
-            $app->abort(400, '"registrations" parameter must be an array of base ids.');
+            $this->app->abort(400, '"registrations" parameter must be an array of base ids.');
         }
+        $user = $this->getAuthenticatedUser();
+
         if (0 !== count($registrations)) {
             foreach ($registrations as $baseId) {
-                $app['manipulator.registration']->createRegistration($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
+                $this->getRegistrationManipulator()
+                    ->createRegistration($user, \collection::get_from_base_id($this->app, $baseId));
             }
-            $app->addFlash('success', $app->trans('Your registration requests have been taken into account.'));
+            $this->app->addFlash('success', $this->app->trans('Your registration requests have been taken into account.'));
         }
 
         $accountFields = [
@@ -315,7 +328,7 @@ class AccountController extends Controller
         ];
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
-            $app['authentication']->getUser()
+            $user
                 ->setGender((int) $request->request->get("form_gender"))
                 ->setFirstName($request->request->get("form_firstname"))
                 ->setLastName($request->request->get("form_lastname"))
@@ -328,13 +341,13 @@ class AccountController extends Controller
                 ->setActivity($request->request->get("form_function"))
                 ->setMailNotificationsActivated((Boolean) $request->request->get("mail_notifications"));
 
-            $app['manipulator.user']->setGeonameId($app['authentication']->getUser(), $request->request->get("form_geonameid"));
+            $this->getUserManipulator()->setGeonameId($user, $request->request->get("form_geonameid"));
 
-            $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
+            $ftpCredential = $user->getFtpCredential();
 
             if (null === $ftpCredential) {
                 $ftpCredential = new FtpCredential();
-                $ftpCredential->setUser($app['authentication']->getUser());
+                $ftpCredential->setUser($user);
             }
 
             $ftpCredential->setActive($request->request->get("form_activeFTP"));
@@ -345,21 +358,119 @@ class AccountController extends Controller
             $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
             $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
 
-            $app['orm.em']->persist($ftpCredential);
-            $app['orm.em']->persist($app['authentication']->getUser());
+            $manager = $this->getEntityManager();
+            $manager->persist($ftpCredential);
+            $manager->persist($user);
 
-            $app['orm.em']->flush();
-            $app->addFlash('success', $app->trans('login::notification: Changements enregistres'));
+            $manager->flush();
+            $this->app->addFlash('success', $this->app->trans('login::notification: Changements enregistres'));
         }
 
         $requestedNotifications = (array) $request->request->get('notifications', []);
 
-        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()) as $notifications) {
+        $manipulator = $this->getUserManipulator();
+        foreach ($this->getEventManager()->list_notifications_available($user) as $notifications) {
             foreach ($notifications as $notification) {
-                $app['manipulator.user']->setNotificationSetting($app['authentication']->getUser(), $notification['id'], isset($requestedNotifications[$notification['id']]));
+                $manipulator->setNotificationSetting($user, $notification['id'], isset($requestedNotifications[$notification['id']]));
             }
         }
 
-        return $app->redirectPath('account');
+        return $this->app->redirectPath('account');
+    }
+
+    /**
+     * @return PasswordEncoder
+     */
+    private function getPasswordEncoder()
+    {
+        return $this->app['auth.password-encoder'];
+    }
+
+    /**
+     * @return UserManipulator
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
+    }
+
+    /**
+     * @return TokenRepository
+     */
+    private function getTokenRepository()
+    {
+        return $this->app['repo.tokens'];
+    }
+
+    /**
+     * @return ApiAccountRepository
+     */
+    private function getApiAccountRepository()
+    {
+        return $this->app['repo.api-accounts'];
+    }
+
+    /**
+     * @return ApiAccountManipulator
+     */
+    private function getApiAccountManipulator()
+    {
+        return $this->app['manipulator.api-account'];
+    }
+
+    /**
+     * @return RegistrationManager
+     */
+    private function getRegistrationManager()
+    {
+        return $this->app['registration.manager'];
+    }
+
+    /**
+     * @return ApiApplicationRepository
+     */
+    private function getApiApplicationRepository()
+    {
+        return $this->app['repo.api-applications'];
+    }
+
+    /**
+     * @return SymfonySession
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
+    }
+
+    /**
+     * @return Connector
+     */
+    private function getGeonameConnector()
+    {
+        return $this->app['geonames.connector'];
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getRegistrationManipulator()
+    {
+        return $this->app['manipulator.registration'];
+    }
+
+    /**
+     * @return \eventsmanager_broker
+     */
+    private function getEventManager()
+    {
+        return $this->app['events-manager'];
     }
 }
