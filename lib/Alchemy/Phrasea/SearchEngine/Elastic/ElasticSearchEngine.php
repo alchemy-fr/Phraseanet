@@ -41,15 +41,13 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $indexName;
     private $configurationPanel;
     private $locales;
-    private $recordHelper;
 
-    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, RecordHelper $recordHelper, Closure $facetsResponseFactory)
+    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, Closure $facetsResponseFactory)
     {
         $this->app = $app;
         $this->structure = $structure;
         $this->client = $client;
         $this->locales = array_keys($locales);
-        $this->recordHelper = $recordHelper;
         $this->facetsResponseFactory = $facetsResponseFactory;
 
         if ('' === trim($indexName)) {
@@ -384,7 +382,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $field_name = RecordHelper::getIndexFieldName($field);
+            $field_name = $field->getIndexFieldName();
             $aggs[$name]['terms']['field'] = sprintf('%s.raw', $field_name);
         }
 

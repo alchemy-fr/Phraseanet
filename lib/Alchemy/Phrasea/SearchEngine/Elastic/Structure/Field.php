@@ -73,6 +73,15 @@ class Field
         return $this->name;
     }
 
+    public function getIndexFieldName()
+    {
+        return sprintf(
+            '%scaption.%s',
+            $this->is_private ? 'private_' : '',
+            $this->name
+        );
+    }
+
     public function getType()
     {
         return $this->type;
