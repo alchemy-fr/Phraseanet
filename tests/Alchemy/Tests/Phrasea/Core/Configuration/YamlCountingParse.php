@@ -34,14 +34,14 @@ class YamlCountingParse extends Yaml
         self::$parseCallable = $callable;
     }
 
-    public static function parse($input, $exceptionOnInvalidType = false, $objectSupport = false)
+    public static function parse($input, $exceptionOnInvalidType = false, $objectSupport = false, $objectForMap = false)
     {
         self::$parseCount++;
 
         if (null === self::$parseCallable) {
-            return parent::parse($input, $exceptionOnInvalidType, $objectSupport);
+            return parent::parse($input, $exceptionOnInvalidType, $objectSupport, $objectForMap);
         }
 
-        return call_user_func(self::$parseCallable, $input, $exceptionOnInvalidType, $objectSupport);
+        return call_user_func(self::$parseCallable, $input, $exceptionOnInvalidType, $objectSupport, $objectForMap);
     }
 }
