@@ -103,6 +103,7 @@ use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
+use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
@@ -233,6 +234,7 @@ class Application extends SilexApplication
         $this->register(new TasksServiceProvider());
         $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
+        $this->register(new HttpFragmentServiceProvider());
         $this->register(new TwigServiceProvider(), [
             'twig.options' => [
                 'cache' => $this->share(function($app) {return $app['cache.path'].'/twig';}),
