@@ -160,7 +160,6 @@
             <a href="javascript:void(0)" class="disabled" id="kcterm_accept">{{ 'thesaurus::menu: accepter' | trans }}</a>
             <div class="line"></div>
             <a href="javascript:void(0)" class=""         id="kcterm_delete">{{ 'thesaurus::menu: supprimer' | trans }}</a>
-            <a href="javascript:void(0)" class=""         id="kcterm_delete0hits">{{ 'thesaurus::menu: supprimer les candidats a 0 hits' | trans }}</a>
             <div class="line"></div>
             <a href="javascript:void(0)" class=""         id="kcterm_search">{{ 'thesaurus::menu: chercher' | trans }}</a>
             <a href="javascript:void(0)" class=""         id="kcterm_export">{{ 'thesaurus::menu: exporter' | trans }}</a>
@@ -375,18 +374,6 @@
                     {
                         case "TCE_":    // racine (STOCK) ou premier niveau (champ ou [trash])
                             //       alert(o.id);
-                            if(o.id == "TCE_C")
-                            {
-                                // racine
-                                if(om=document.getElementById("kcterm_delete0hits"))
-                                    om.className = "disabled";
-                            }
-                            else
-                            {
-                                // premier niveau
-                                if(om=document.getElementById("kcterm_delete0hits"))
-                                    om.className = "";
-                            }
                             if(om=document.getElementById("kcterm_reject"))
                                 om.className = "disabled";
                             if(om=document.getElementById("kcterm_accept"))
@@ -402,8 +389,6 @@
                             break;
                         case "THE_":    // terme candidat
                             //          alert("id: "+o.id+" ; p: "+o.parentNode.id);
-                            if(om=document.getElementById("kcterm_delete0hits"))
-                                om.className = "disabled";
                             if(o.id.substr(4, 1)=="R")
                             {
                                 if(om=document.getElementById("kcterm_reject"))
@@ -508,37 +493,6 @@
                                             reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
                                             break;
                                     }
-                                }
-                            }
-                            break;
-                        case "kcterm_delete0hits":
-                            url  = "xmlhttp/searchnohits.x.php";
-                            url += "?bid={{ bid }}";
-                            url += "&id=" + o.id.substr(4);
-                            url += "&typ=CT";
-
-                            ret = loadXMLDoc(url, null, true);
-                            // alert(ret);
-                            n_nohits = ret.documentElement.getAttribute("n_nohits");
-
-                            if(n_nohits==0)
-                            {
-                                alert("{{ 'thesaurus:: Tous les termes ont des hits' | trans | e('js') }}");
-
-                                return;
-                            }
-                            else
-                            {
-                                if(confirm("{{ 'thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les supprimer ?' | trans | e('js') }}"));
-                                {
-                                    url  = "xmlhttp/deletenohits.x.php";
-                                    url += "?bid={{ bid }}";
-                                    url += "&id=" + o.id.substr(4);
-                                    url += "&typ=CT";
-
-                                    ret = loadXMLDoc(url, null, true);
-
-                                    reloadCtermsBranch(o.id.substr(4));
                                 }
                             }
                             break;
@@ -1431,52 +1385,6 @@
                                                     // alert(src.nodeValue);
                                                     nn = dst.appendChild(document.createTextNode(src.nodeValue))
                                                     break;
-                                            }
-                                        }
-
-
-                                        function reloadbranch2(thb, thid, typ)
-                                        {
-                                            new_thb = null;
-                                            url = "xmlhttp/gethtmlbranch.x.php";
-                                            parms  = "bid={{ bid }}";
-                                            parms += "&id=" + thid;
-                                            parms += "&typ=" + typ;
-
-                                            alert(url + "?" + parms);
-
-                                            ret = loadXMLDoc(url, parms, true);
-
-                                            alert(ret);
-
-                                            ts = ret.getElementsByTagName("html");
-                                            if(ts.length==1)
-                                            {
-                                                /*
-    thb.innerHTML = ts.item(0).firstChild.nodeValue;
-                                                 */
-                                                if(document.importNode)    // safari ?
-                                                {
-                                                    thb.innerHTML = "";
-                                                    for(n=ts.item(0).firstChild; n; n=n.nextSibling)
-                                                        docImport(n, thb);
-
-                                                }
-                                                else
-                                                {
-                                                    t = "";
-                                                    for(n=ts.item(0).firstChild; n; n=n.nextSibling)
-                                                        t += n.xml;    // marche pas sous safari...
-                                                    // IE fails to recognize <tag/> as a closed tag when using innerHTML, so replace it with <tag></tag>
-                                                    // except for br, img, and hr elements.
-                                                    var expr = new RegExp("<(?:(?!br|img|hr)([a-zA-Z]+))([^>]*)/>", "ig");
-                                                    t = t.replace(expr, "<$1$2></$1>");
-
-                                                    // alert(t);
-
-                                                    thb.innerHTML = t;
-
-                                                }
                                             }
                                         }
 
