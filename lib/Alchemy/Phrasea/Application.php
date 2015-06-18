@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\ControllerProvider\Root\Root;
-use Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds;
 use Alchemy\Phrasea\ControllerProvider\Root\Session;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
@@ -317,6 +316,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Root\Account' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Developers' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Login' => [],
+            'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -622,7 +622,6 @@ class Application extends SilexApplication
     public function bindRoutes()
     {
         $this->mount('/', new Root());
-        $this->mount('/feeds/', new RSSFeeds());
 
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
@@ -651,6 +650,7 @@ class Application extends SilexApplication
             '/datafiles'                   => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/developers/'                 => 'Alchemy\Phrasea\ControllerProvider\Root\Developers',
             '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
+            '/feeds/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds',
             '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/login/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\Login',
             '/lightbox'                    => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
