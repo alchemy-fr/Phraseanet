@@ -37,6 +37,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 {
     protected $xml;
     protected $base_id;
+    protected $collection_id;
     protected $record_id;
     protected $mime;
     protected $number;
@@ -106,6 +107,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->modification_date = $datas['modification_date'];
             $this->creation_date = $datas['creation_date'];
             $this->base_id = $datas['base_id'];
+            $this->collection_id = $datas['collection_id'];
 
             return $this;
         } catch (\Exception $e) {
@@ -124,7 +126,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
         }
 
-        $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $row['coll_id'], $this->app);
+        $this->collection_id = (int) $row['coll_id'];
+        $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $this->collection_id, $this->app);
         $this->creation_date = new DateTime($row['credate']);
         $this->modification_date = new DateTime($row['moddate']);
         $this->uuid = $row['uuid'];
@@ -136,15 +139,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->mime = $row['mime'];
 
         $datas = [
-            'mime'              => $this->mime
-            , 'sha256'            => $this->sha256
-            , 'original_name'     => $this->original_name
-            , 'type'              => $this->type
-            , 'grouping'          => $this->grouping
-            , 'uuid'              => $this->uuid
-            , 'modification_date' => $this->modification_date
-            , 'creation_date'     => $this->creation_date
-            , 'base_id'           => $this->base_id
+            'mime' => $this->mime,
+            'sha256' => $this->sha256,
+            'original_name' => $this->original_name,
+            'type' => $this->type,
+            'grouping' => $this->grouping,
+            'uuid' => $this->uuid,
+            'modification_date' => $this->modification_date,
+            'creation_date' => $this->creation_date,
+            'base_id' => $this->base_id,
+            'collection_id' => $this->collection_id,
         ];
 
         $this->set_data_to_cache($datas);
@@ -280,13 +284,23 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * Return collection_id of the record
+     *
+     * @return int
+     */
+    public function get_collection_id()
+    {
+        return $this->collection_id;
+    }
+
+    /**
      * Return record collection
      *
      * @return \collection
      */
     public function get_collection()
     {
-        return \collection::get_from_base_id($this->app, $this->base_id);
+        return \collection::get_from_coll_id($this->app, $this->databox, $this->collection_id);
     }
 
     /**
@@ -1468,7 +1482,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $ftodel[] = $stamp;
         }
 
-        $origcoll = phrasea::collFromBas($this->app, $this->get_base_id());
+        $origcoll = $this->collection_id;
 
         $xml = $this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML);
 
