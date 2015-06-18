@@ -1299,7 +1299,8 @@ class V1Controller extends Controller
             'story_id'      => $story->getRecordId(),
             'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
             'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => \phrasea::collFromBas($this->app, $story->getBaseId()),
+            'collection_id' => $story->getCollectionId(),
+            'base_id'       => $story->getBaseId(),
             'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
             'uuid'          => $story->getUuid(),
             'metadatas'     => [
