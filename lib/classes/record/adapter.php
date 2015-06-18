@@ -126,7 +126,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
         }
 
-        $this->collection_id = $row['coll_id'];
+        $this->collection_id = (int) $row['coll_id'];
         $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $this->collection_id, $this->app);
         $this->creation_date = new DateTime($row['credate']);
         $this->modification_date = new DateTime($row['moddate']);
