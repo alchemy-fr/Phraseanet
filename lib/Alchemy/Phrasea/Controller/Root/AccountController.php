@@ -65,7 +65,7 @@ class AccountController extends Controller
         }
 
         return $this->render('account/change-password.html.twig', array_merge(
-            $this->getLoginController()->getDefaultTemplateVariables($this->app),
+            $this->getLoginController()->getDefaultTemplateVariables($request),
             ['form' => $form->createView()]
         ));
     }
@@ -151,7 +151,7 @@ class AccountController extends Controller
             return $this->app->redirectPath('account');
         }
 
-        $context = $this->getLoginController()->getDefaultTemplateVariables($this->app);
+        $context = $this->getLoginController()->getDefaultTemplateVariables($request);
 
         return $this->render('account/reset-email.html.twig', $context);
     }

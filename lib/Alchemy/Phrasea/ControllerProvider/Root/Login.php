@@ -28,6 +28,8 @@ class Login implements ControllerProviderInterface, ServiceProviderInterface
         $app['login.controller'] = $app->share(function (PhraseaApplication $app) {
             return (new LoginController($app))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
+                ->setDispatcher($app['dispatcher'])
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
             ;
         });
     }

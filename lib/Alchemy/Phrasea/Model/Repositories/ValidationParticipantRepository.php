@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
 
@@ -21,7 +22,7 @@ class ValidationParticipantRepository extends EntityRepository
      * Retrieve all not reminded participants where the validation has not expired
      *
      * @param $expireDate The expiration Date
-     * @return array
+     * @return ValidationParticipant[]
      */
     public function findNotConfirmedAndNotRemindedParticipantsByExpireDate(\DateTime $expireDate)
     {

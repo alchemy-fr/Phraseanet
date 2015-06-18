@@ -9,13 +9,21 @@
  */
 namespace Alchemy\Phrasea\Controller\Root;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
+use Alchemy\Phrasea\Authentication\AccountCreator;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
+use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
+use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
+use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -26,8 +34,16 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
+use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
+use Alchemy\Phrasea\Model\Repositories\TokenRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
+use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
@@ -39,25 +55,34 @@ use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
 use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use igorw;
+use Neutron\ReCaptcha\ReCaptcha;
+use RandomLib\Generator;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\FormInterface;
 
 class LoginController extends Controller
 {
+    use DispatcherAware;
+    use EntityManagerAware;
     use NotifierAware;
 
-    public function getDefaultTemplateVariables(Application $app)
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function getDefaultTemplateVariables(Request $request)
     {
         $items = [];
 
-        foreach ($app['repo.feed-items']->loadLatest($app, 20) as $item) {
-            $record = $item->getRecord($app);
+        foreach ($this->getFeedItemRepository()->loadLatest($this->app, 20) as $item) {
+            $record = $item->getRecord($this->app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
 
@@ -68,62 +93,65 @@ class LoginController extends Controller
             ];
         }
 
+        $conf = $this->getConf();
+        $browser = $this->getBrowser();
+        
         return [
             'last_publication_items' => $items,
-            'instance_title' => $app['conf']->get(['registry', 'general', 'title']),
-            'has_terms_of_use' => $app->hasTermsOfUse(),
-            'meta_description' =>  $app['conf']->get(['registry', 'general', 'description']),
-            'meta_keywords' => $app['conf']->get(['registry', 'general', 'keywords']),
-            'browser_name' => $app['browser']->getBrowser(),
-            'browser_version' => $app['browser']->getVersion(),
-            'available_language' => $app['locales.available'],
-            'locale' => $app['locale'],
-            'current_url' => $app['request']->getUri(),
-            'flash_types' => $app->getAvailableFlashTypes(),
-            'recaptcha_display' => $app->isCaptchaRequired(),
-            'unlock_usr_id' => $app->getUnlockAccountData(),
-            'guest_allowed' => $app->isGuestAllowed(),
-            'register_enable' => $app['registration.manager']->isRegistrationEnabled(),
-            'display_layout' => $app['conf']->get(['registry', 'general', 'home-presentation-mode']),
-            'authentication_providers' => $app['authentication.providers'],
-            'registration_fields' => $app['registration.fields'],
-            'registration_optional_fields' => $app['registration.optional-fields']
+            'instance_title' => $conf->get(['registry', 'general', 'title']),
+            'has_terms_of_use' => $this->app->hasTermsOfUse(),
+            'meta_description' =>  $conf->get(['registry', 'general', 'description']),
+            'meta_keywords' => $conf->get(['registry', 'general', 'keywords']),
+            'browser_name' => $browser->getBrowser(),
+            'browser_version' => $browser->getVersion(),
+            'available_language' => $this->app['locales.available'],
+            'locale' => $this->app['locale'],
+            'current_url' => $request->getUri(),
+            'flash_types' => $this->app->getAvailableFlashTypes(),
+            'recaptcha_display' => $this->app->isCaptchaRequired(),
+            'unlock_usr_id' => $this->app->getUnlockAccountData(),
+            'guest_allowed' => $this->app->isGuestAllowed(),
+            'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),
+            'display_layout' => $conf->get(['registry', 'general', 'home-presentation-mode']),
+            'authentication_providers' => $this->app['authentication.providers'],
+            'registration_fields' => $this->getRegistrationFields(),
+            'registration_optional_fields' => $this->getOptionalRegistrationFields(),
         ];
     }
 
-    public function getRegistrationFieldsAction(Application $app)
+    public function getRegistrationFieldsAction()
     {
-        return $app->json($app['registration.fields']);
+        return $this->app->json($this->getRegistrationFields());
     }
 
-    public function getCgusAction(Application $app)
+    public function getCgusAction(Request $request)
     {
-        return $app['twig']->render('login/cgus.html.twig', array_merge(
-            ['cgus' => \databox_cgu::getHome($app)],
-            self::getDefaultTemplateVariables($app)
+        return $this->render('login/cgus.html.twig', array_merge(
+            ['cgus' => \databox_cgu::getHome($this->app)],
+            $this->getDefaultTemplateVariables($request)
         ));
     }
 
-    public function getLanguage(Application $app)
+    public function getLanguage()
     {
-        $response =  $app->json([
-            'validation_blank'          => $app->trans('Please provide a value.'),
-            'validation_choice_min'     => $app->trans('Please select at least %s choice.'),
-            'validation_email'          => $app->trans('Please provide a valid email address.'),
-            'validation_ip'             => $app->trans('Please provide a valid IP address.'),
-            'validation_length_min'     => $app->trans('Please provide a longer value. It should have %s character or more.'),
-            'password_match'            => $app->trans('Please provide the same passwords.'),
-            'email_match'               => $app->trans('Please provide the same emails.'),
-            'accept_tou'                => $app->trans('Please accept the terms of use to register.'),
-            'no_collection_selected'    => $app->trans('No collection selected'),
-            'one_collection_selected'   => $app->trans('%d collection selected'),
-            'collections_selected'      => $app->trans('%d collections selected'),
-            'all_collections'           => $app->trans('Select all collections'),
+        $response =  $this->app->json([
+            'validation_blank'          => $this->app->trans('Please provide a value.'),
+            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.'),
+            'validation_email'          => $this->app->trans('Please provide a valid email address.'),
+            'validation_ip'             => $this->app->trans('Please provide a valid IP address.'),
+            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.'),
+            'password_match'            => $this->app->trans('Please provide the same passwords.'),
+            'email_match'               => $this->app->trans('Please provide the same emails.'),
+            'accept_tou'                => $this->app->trans('Please accept the terms of use to register.'),
+            'no_collection_selected'    => $this->app->trans('No collection selected'),
+            'one_collection_selected'   => $this->app->trans('%d collection selected'),
+            'collections_selected'      => $this->app->trans('%d collections selected'),
+            'all_collections'           => $this->app->trans('Select all collections'),
             // password strength
-            'weak'                      => $app->trans('Weak'),
-            'ordinary'                  => $app->trans('Ordinary'),
-            'good'                      => $app->trans('Good'),
-            'great'                     => $app->trans('Great'),
+            'weak'                      => $this->app->trans('Weak'),
+            'ordinary'                  => $this->app->trans('Ordinary'),
+            'good'                      => $this->app->trans('Good'),
+            'great'                     => $this->app->trans('Great'),
         ]);
 
         $response->setExpires(new \DateTime('+1 day'));
@@ -131,14 +159,14 @@ class LoginController extends Controller
         return $response;
     }
 
-    public function doRegistration(Application $app, Request $request)
+    public function doRegistration(Request $request)
     {
-        if (!$app['registration.manager']->isRegistrationEnabled()) {
-            $app->abort(404, 'Registration is disabled');
+        if (!$this->getRegistrationManager()->isRegistrationEnabled()) {
+            $this->app->abort(404, 'Registration is disabled');
         }
 
-        $form = $app->form(new PhraseaRegisterForm(
-            $app, $app['registration.optional-fields'], $app['registration.fields']
+        $form = $this->app->form(new PhraseaRegisterForm(
+            $this->app, $this->getOptionalRegistrationFields(), $this->getRegistrationFields()
         ));
 
         if ('POST' === $request->getMethod()) {
@@ -156,60 +184,61 @@ class LoginController extends Controller
                 unset($requestData['multiselect']);
             }
 
-            $form->bind($requestData);
+            $form->submit($requestData);
             $data = $form->getData();
 
             $provider = null;
             if ($data['provider-id']) {
                 try {
-                    $provider = $this->findProvider($app, $data['provider-id']);
+                    $provider = $this->findProvider($data['provider-id']);
                 } catch (NotFoundHttpException $e) {
-                    $app->addFlash('error', $app->trans('You tried to register with an unknown provider'));
+                    $this->app->addFlash('error', $this->app->trans('You tried to register with an unknown provider'));
 
-                    return $app->redirectPath('login_register');
+                    return $this->app->redirectPath('login_register');
                 }
 
                 try {
                     $token = $provider->getToken();
                 } catch (NotAuthenticatedException $e) {
-                    $app->addFlash('error', $app->trans('You tried to register with an unknown provider'));
+                    $this->app->addFlash('error', $this->app->trans('You tried to register with an unknown provider'));
 
-                    return $app->redirectPath('login_register');
+                    return $this->app->redirectPath('login_register');
                 }
 
-                $userAuthProvider = $app['repo.usr-auth-providers']
+                $userAuthProvider = $this->getUserAuthProviderRepository()
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
-                    $this->postAuthProcess($app, $userAuthProvider->getUser());
+                    $this->postAuthProcess($request, $userAuthProvider->getUser());
 
                     if (null !== $redirect = $request->query->get('redirect')) {
                         $redirection = '../' . $redirect;
                     } else {
-                        $redirection = $app->path('prod');
+                        $redirection = $this->app->path('prod');
                     }
 
-                    return $app->redirect($redirection);
+                    return $this->app->redirect($redirection);
                 }
             }
 
             try {
                 if ($form->isValid()) {
-                    $captcha = $app['recaptcha']->bind($request);
+                    $captcha = $this->getRecaptcha()->bind($request);
 
-                    if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled']) && !$captcha->isValid()) {
-                        throw new FormProcessingException($app->trans('Invalid captcha answer.'));
+                    $conf = $this->getConf();
+                    if ($conf->get(['registry', 'webservices', 'captcha-enabled']) && !$captcha->isValid()) {
+                        throw new FormProcessingException($this->app->trans('Invalid captcha answer.'));
                     }
 
-                    if ($app['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
+                    if ($conf->get(['registry', 'registration', 'auto-select-collections'])) {
                         $selected = null;
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
-                    $inscriptions = $app['registration.manager']->getRegistrationSummary();
+                    $inscriptions = $this->getRegistrationManager()->getRegistrationSummary();
                     $inscOK = [];
 
-                    foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                    foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
                         foreach ($databox->get_collections() as $collection) {
                             if (null !== $selected && !in_array($collection->get_base_id(), $selected)) {
                                 continue;
@@ -225,10 +254,11 @@ class LoginController extends Controller
                         $data['login'] = $data['email'];
                     }
 
-                    $user = $app['manipulator.user']->createUser($data['login'], $data['password'], $data['email'], false);
+                    $userManipulator = $this->getUserManipulator();
+                    $user = $userManipulator->createUser($data['login'], $data['password'], $data['email'], false);
 
                     if (isset($data['geonameid'])) {
-                        $app['manipulator.user']->setGeonameId($user, $data['geonameid']);
+                        $userManipulator->setGeonameId($user, $data['geonameid']);
                     }
 
                     foreach ([
@@ -248,52 +278,55 @@ class LoginController extends Controller
                         }
                     }
 
-                    $app['orm.em']->persist($user);
-                    $app['orm.em']->flush();
+                    $manager = $this->getEntityManager();
+                    $manager->persist($user);
+                    $manager->flush();
 
                     if (null !== $provider) {
-                        $this->attachProviderToUser($app['orm.em'], $provider, $user);
-                        $app['orm.em']->flush();
+                        $this->attachProviderToUser($manager, $provider, $user);
+                        $manager->flush();
                     }
 
                     $registrationsOK = [];
-                    if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
-                        $template_user = $app['repo.users']->findByLogin(User::USER_AUTOREGISTER);
-                        $app['acl']->get($user)->apply_model($template_user, array_keys($inscOK));
+                    $acl = $this->getAclForUser($user);
+                    if ($conf->get(['registry', 'registration', 'auto-register-enabled'])) {
+                        $template_user = $this->getUserRepository()->findByLogin(User::USER_AUTOREGISTER);
+                        $acl->apply_model($template_user, array_keys($inscOK));
                     }
 
-                    $autoReg = $app['acl']->get($user)->get_granted_base();
+                    $autoReg = $acl->get_granted_base();
 
-                    array_walk($inscOK, function ($authorization, $baseId) use ($app, $user, &$registrationsOK) {
-                        if (false === $authorization || $app['acl']->get($user)->has_access_to_base($baseId)) {
+                    $registrationManipulator = $this->getRegistrationManipulator();
+                    array_walk($inscOK, function ($authorization, $baseId) use ($registrationManipulator, $user, &$registrationsOK) {
+                        if (false === $authorization || $this->getAclForUser($user)->has_access_to_base($baseId)) {
                             return;
                         }
 
-                        $collection = \collection::get_from_base_id($app, $baseId);
-                        $app['manipulator.registration']->createRegistration($user, $collection);
+                        $collection = \collection::get_from_base_id($this->app, $baseId);
+                        $registrationManipulator->createRegistration($user, $collection);
                         $registrationsOK[$baseId] = $collection;
                     });
 
-                    $app['dispatcher']->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
-                    $app['dispatcher']->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $registrationsOK));
+                    $this->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
+                    $this->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $registrationsOK));
 
                     $user->setMailLocked(true);
 
                     try {
-                        $this->sendAccountUnlockEmail($app, $user);
-                        $app->addFlash('info', $app->trans('login::notification: demande de confirmation par mail envoyee'));
+                        $this->sendAccountUnlockEmail($user);
+                        $this->app->addFlash('info', $this->app->trans('login::notification: demande de confirmation par mail envoyee'));
                     } catch (InvalidArgumentException $e) {
                         // todo, log this failure
-                        $app->addFlash('error', $app->trans('Unable to send your account unlock email.'));
+                        $this->app->addFlash('error', $this->app->trans('Unable to send your account unlock email.'));
                     }
 
-                    return $app->redirectPath('homepage');
+                    return $this->app->redirectPath('homepage');
                 }
             } catch (FormProcessingException $e) {
-                $app->addFlash('error', $e->getMessage());
+                $this->app->addFlash('error', $e->getMessage());
             }
         } elseif (null !== $request->query->get('providerId')) {
-            $provider = $this->findProvider($app, $request->query->get('providerId'));
+            $provider = $this->findProvider($request->query->get('providerId'));
             $identity = $provider->getIdentity();
 
             $form->setData(array_filter([
@@ -305,15 +338,16 @@ class LoginController extends Controller
             ]));
         }
 
-        return $app['twig']->render('login/register-classic.html.twig', array_merge(
-            self::getDefaultTemplateVariables($app),
+        $url = $this->app['geonames.server-uri'];
+        return $this->render('login/register-classic.html.twig', array_merge(
+            $this->getDefaultTemplateVariables($request),
             [
-                'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($app['geonames.server-uri'], PHP_URL_SCHEME)), '', $app['geonames.server-uri']),
+                'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($url, PHP_URL_SCHEME)), '', $url),
                 'form' => $form->createView()
             ]));
     }
 
-    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, User $user)
+    private function attachProviderToUser(EntityManagerInterface $em, ProviderInterface $provider, User $user)
     {
         $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
@@ -332,139 +366,135 @@ class LoginController extends Controller
     /**
      * Send a confirmation mail after register
      *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
+     * @param  Request $request The current request
      * @return RedirectResponse
      */
-    public function sendConfirmMail(Application $app, Request $request)
+    public function sendConfirmMail(Request $request)
     {
         if (null === $usrId = $request->query->get('usr_id')) {
-            $app->abort(400, 'Missing usr_id parameter.');
+            $this->app->abort(400, 'Missing usr_id parameter.');
         }
 
-        if (null === $user = $app['repo.users']->find((int) $usrId)) {
-            $app->addFlash('error', $app->trans('Invalid link.'));
+        $user = $this->getUserRepository()->find((int) $usrId);
+        if (!$user instanceof User) {
+            $this->app->addFlash('error', $this->app->trans('Invalid link.'));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
         try {
-            $this->sendAccountUnlockEmail($app, $user);
-            $app->addFlash('success', $app->trans('login::notification: demande de confirmation par mail envoyee'));
+            $this->sendAccountUnlockEmail($user);
+            $this->app->addFlash('success', $this->app->trans('login::notification: demande de confirmation par mail envoyee'));
         } catch (InvalidArgumentException $e) {
             // todo, log this failure
-            $app->addFlash('error', $app->trans('Unable to send your account unlock email.'));
+            $this->app->addFlash('error', $this->app->trans('Unable to send your account unlock email.'));
         }
 
-        return $app->redirectPath('homepage');
+        return $this->app->redirectPath('homepage');
     }
 
     /**
      * Sends an account unlock email.
      *
-     * @param Application $app
-     * @param User               $user
-     *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @param User $user
      */
-    private function sendAccountUnlockEmail(Application $app, User $user)
+    private function sendAccountUnlockEmail(User $user)
     {
         $receiver = Receiver::fromUser($user);
 
-        $token = $app['manipulator.token']->createAccountUnlockToken($user);
+        $token = $this->getTokenManipulator()->createAccountUnlockToken($user);
 
-        $mail = MailRequestEmailConfirmation::create($app, $receiver);
-        $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token->getValue()]));
+        $mail = MailRequestEmailConfirmation::create($this->app, $receiver);
+        $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue()]));
         $mail->setExpiration($token->getExpiration());
 
         $this->deliver($mail);
     }
 
     /**
-     * Validation of email adress
+     * Validation of email address
      *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
+     * @param  Request $request The current request
      * @return RedirectResponse
      */
-    public function registerConfirm(Application $app, Request $request)
+    public function registerConfirm(Request $request)
     {
         if (null === $code = $request->query->get('code')) {
-            $app->addFlash('error', $app->trans('Invalid unlock link.'));
+            $this->app->addFlash('error', $this->app->trans('Invalid unlock link.'));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
-        if (null === $token = $app['repo.tokens']->findValidToken($code)) {
-            $app->addFlash('error', $app->trans('Invalid unlock link.'));
+        if (null === $token = $this->getTokenRepository()->findValidToken($code)) {
+            $this->app->addFlash('error', $this->app->trans('Invalid unlock link.'));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
         $user = $token->getUser();
 
         if (!$user->isMailLocked()) {
-            $app->addFlash('info', $app->trans('Account is already unlocked, you can login.'));
+            $this->app->addFlash('info', $this->app->trans('Account is already unlocked, you can login.'));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
-        $app['manipulator.token']->delete($token);
+        $tokenManipulator = $this->getTokenManipulator();
+        $tokenManipulator->delete($token);
         $user->setMailLocked(false);
 
         try {
             $receiver = Receiver::fromUser($user);
         } catch (InvalidArgumentException $e) {
-            $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
+            $this->app->addFlash('success', $this->app->trans('Account has been unlocked, you can now login.'));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
-        $app['manipulator.token']->delete($token);
+        $tokenManipulator->delete($token);
 
-        if (count($app['acl']->get($user)->get_granted_base()) > 0) {
-            $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
+        if (count($this->getAclForUser($user)->get_granted_base()) > 0) {
+            $mail = MailSuccessEmailConfirmationRegistered::create($this->app, $receiver);
             $this->deliver($mail);
 
-            $app->addFlash('success', $app->trans('Account has been unlocked, you can now login.'));
+            $this->app->addFlash('success', $this->app->trans('Account has been unlocked, you can now login.'));
         } else {
-            $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
+            $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);
             $this->deliver($mail);
 
-            $app->addFlash('info', $app->trans('Account has been unlocked, you still have to wait for admin approval.'));
+            $this->app->addFlash('info', $this->app->trans('Account has been unlocked, you still have to wait for admin approval.'));
         }
 
-        return $app->redirectPath('homepage');
+        return $this->app->redirectPath('homepage');
     }
 
-    public function renewPassword(Application $app, Request $request)
+    public function renewPassword(Request $request)
     {
         if (null === $tokenValue = $request->get('token')) {
-            $app->abort(401, 'A token is required');
+            $this->app->abort(401, 'A token is required');
         }
 
-        if (null === $token = $app['repo.tokens']->findValidToken($tokenValue)) {
-            $app->abort(401, 'A token is required');
+        if (null === $token = $this->getTokenRepository()->findValidToken($tokenValue)) {
+            $this->app->abort(401, 'A token is required');
         }
 
-        $form = $app->form(new PhraseaRecoverPasswordForm($app['repo.tokens']));
+        $form = $this->app->form(new PhraseaRecoverPasswordForm($this->getTokenRepository()));
         $form->setData(['token' => $token->getValue()]);
 
         if ('POST' === $request->getMethod()) {
-            $form->bind($request);
+            $form->handleRequest($request);
             if ($form->isValid()) {
                 $data = $form->getData();
-                $app['manipulator.user']->setPassword($token->getUser(), $data['password']);
-                $app['manipulator.token']->delete($token);
-                $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
+                $this->getUserManipulator()->setPassword($token->getUser(), $data['password']);
+                $this->getTokenManipulator()->delete($token);
+                $this->app->addFlash('success', $this->app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
-                return $app->redirectPath('homepage');
+                return $this->app->redirectPath('homepage');
             }
         }
 
-        return $app['twig']->render('login/renew-password.html.twig', array_merge(
-            self::getDefaultTemplateVariables($app),
+        return $this->render('login/renew-password.html.twig', array_merge(
+            $this->getDefaultTemplateVariables($request),
             ['form' => $form->createView()]
         ));
     }
@@ -472,53 +502,52 @@ class LoginController extends Controller
     /**
      * Submit the new password
      *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
+     * @param  Request $request The current request
      * @return RedirectResponse
      */
-    public function forgotPassword(Application $app, Request $request)
+    public function forgotPassword(Request $request)
     {
-        $form = $app->form(new PhraseaForgotPasswordForm());
+        $form = $this->app->form(new PhraseaForgotPasswordForm());
 
         try {
             if ('POST' === $request->getMethod()) {
-                $form->bind($request);
+                $form->handleRequest($request);
 
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    if (null === $user = $app['repo.users']->findByEmail($data['email'])) {
+                    if (null === $user = $this->getUserRepository()->findByEmail($data['email'])) {
                         throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
 
                     try {
                         $receiver = Receiver::fromUser($user);
                     } catch (InvalidArgumentException $e) {
-                        throw new FormProcessingException($app->trans('Invalid email address'));
+                        throw new FormProcessingException($this->app->trans('Invalid email address'));
                     }
 
-                    $token = $app['manipulator.token']->createResetPasswordToken($user);
+                    $token = $this->getTokenManipulator()->createResetPasswordToken($user);
 
-                    $url = $app->url('login_renew_password', ['token' => $token->getValue()], true);
+                    $url = $this->app->url('login_renew_password', ['token' => $token->getValue()], true);
 
                     $expirationDate = new \DateTime('+1 day');
-                    $mail = MailRequestPasswordUpdate::create($app, $receiver);
+                    $mail = MailRequestPasswordUpdate::create($this->app, $receiver);
                     $mail->setLogin($user->getLogin());
                     $mail->setButtonUrl($url);
                     $mail->setExpiration($expirationDate);
 
                     $this->deliver($mail);
-                    $app->addFlash('info', $app->trans('phraseanet:: Un email vient de vous etre envoye'));
+                    $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));
 
-                    return $app->redirectPath('login_forgot_password');
+                    return $this->app->redirectPath('login_forgot_password');
                 }
             }
         } catch (FormProcessingException $e) {
-            $app->addFlash('error', $e->getMessage());
+            $this->app->addFlash('error', $e->getMessage());
         }
 
-        return $app['twig']->render('login/forgot-password.html.twig', array_merge(
-            self::getDefaultTemplateVariables($app),
+        return $this->render('login/forgot-password.html.twig', array_merge(
+            $this->getDefaultTemplateVariables($request),
             [
                 'form'  => $form->createView(),
             ]));
@@ -527,38 +556,36 @@ class LoginController extends Controller
     /**
      * Get the register form
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
+     * @param  Request $request The current request
      * @return Response
      */
-    public function displayRegisterForm(Application $app, Request $request)
+    public function displayRegisterForm(Request $request)
     {
-        if (!$app['registration.manager']->isRegistrationEnabled()) {
-            $app->abort(404, 'Registration is disabled');
+        if (!$this->getRegistrationManager()->isRegistrationEnabled()) {
+            $this->app->abort(404, 'Registration is disabled');
         }
 
-        if (0 < count($app['authentication.providers'])) {
-            return $app['twig']->render('login/register.html.twig', self::getDefaultTemplateVariables($app));
+        if (0 < count($this->getAuthenticationProviders())) {
+            return $this->render('login/register.html.twig', $this->getDefaultTemplateVariables($request));
         } else {
-            return $app->redirectPath('login_register_classic');
+            return $this->app->redirectPath('login_register_classic');
         }
     }
 
     /**
      * Logout from Phraseanet
      *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
+     * @param  Request $request The current request
      * @return RedirectResponse
      */
-    public function logout(Application $app, Request $request)
+    public function logout(Request $request)
     {
-        $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
-        $app['authentication']->closeAccount();
+        $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+        $this->getAuthenticator()->closeAccount();
 
-        $app->addFlash('info', $app->trans('Vous etes maintenant deconnecte. A bientot.'));
+        $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
 
-        $response = $app->redirectPath('homepage', [
+        $response = $this->app->redirectPath('homepage', [
             'redirect' => $request->query->get("redirect")
         ]);
 
@@ -571,97 +598,95 @@ class LoginController extends Controller
     /**
      * Login into Phraseanet
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
+     * @param  Request $request The current request
      * @return Response
      */
-    public function login(Application $app, Request $request)
+    public function login(Request $request)
     {
         try {
-            $app['phraseanet.appbox']->get_connection();
+            $this->getApplicationBox()->get_connection();
         } catch (\Exception $e) {
-            $app->addFlash('error', $app->trans('login::erreur: No available connection - Please contact sys-admin'));
+            $this->app->addFlash('error', $this->app->trans('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        $feeds = $app['repo.feeds']->findBy(['public' => true], ['updatedOn' => 'DESC']);
+        $feeds = $this->getFeedRepository()->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
-        $form = $app->form(new PhraseaAuthenticationForm($app));
+        $form = $this->app->form(new PhraseaAuthenticationForm($this->app));
         $form->setData([
             'redirect' => $request->query->get('redirect')
         ]);
 
-        return $app['twig']->render('login/index.html.twig', array_merge(
-            self::getDefaultTemplateVariables($app),
+        return $this->render('login/index.html.twig', array_merge(
+            $this->getDefaultTemplateVariables($request),
             [
-                'feeds'             => $feeds,
-                'form'              => $form->createView(),
+                'feeds' => $feeds,
+                'form'  => $form->createView(),
             ]));
     }
 
     /**
      * Authenticate to phraseanet
      *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
+     * @param  Request $request The current request
      * @return RedirectResponse
      */
-    public function authenticate(Application $app, Request $request)
+    public function authenticate(Request $request)
     {
-        $form = $app->form(new PhraseaAuthenticationForm($app));
-        $redirector = function (array $params = []) use ($app) {
-            return $app->redirectPath('homepage', $params);
+        $form = $this->app->form(new PhraseaAuthenticationForm($this->app));
+        $redirector = function (array $params = []) {
+            return $this->app->redirectPath('homepage', $params);
         };
 
         try {
-            return $this->doAuthentication($app, $request, $form, $redirector);
+            return $this->doAuthentication($request, $form, $redirector);
         } catch (AuthenticationException $e) {
             return $e->getResponse();
         }
     }
 
-    public function authenticateAsGuest(Application $app, Request $request)
+    public function authenticateAsGuest(Request $request)
     {
-        if (!$app->isGuestAllowed()) {
-            $app->abort(403, $app->trans('Phraseanet guest-access is disabled'));
+        if (!$this->app->isGuestAllowed()) {
+            $this->app->abort(403, $this->app->trans('Phraseanet guest-access is disabled'));
         }
 
         $context = new Context(Context::CONTEXT_GUEST);
-        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
         do {
             $login = uniqid('guest');
-        } while (null !== $app['repo.users']->findOneBy(['login' => $login]));
+        } while (null !== $this->getUserRepository()->findOneBy(['login' => $login]));
 
-        $user = $app['manipulator.user']->createUser($login, $app['random.medium']->generateString(128));
-        $invite_user = $app['repo.users']->findByLogin(User::USER_GUEST);
+        $user = $this->getUserManipulator()->createUser($login, $this->getStringGenerator()->generateString(128));
+        $invite_user = $this->getUserRepository()->findByLogin(User::USER_GUEST);
 
-        $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
-        $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
+        $usr_base_ids = array_keys($this->getAclForUser($user)->get_granted_base());
+        $this->getAclForUser($user)->revoke_access_from_bases($usr_base_ids);
 
-        $invite_base_ids = array_keys($app['acl']->get($invite_user)->get_granted_base());
-        $app['acl']->get($user)->apply_model($invite_user, $invite_base_ids);
+        $invite_base_ids = array_keys($this->getAclForUser($invite_user)->get_granted_base());
+        $this->getAclForUser($user)->apply_model($invite_user, $invite_base_ids);
 
-        $this->postAuthProcess($app, $user);
+        $this->postAuthProcess($request, $user);
 
-        $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
+        $response = $this->generateAuthResponse($this->getBrowser(), $request->request->get('redirect'));
         $response->headers->setCookie(new Cookie('invite-usr-id', $user->getId()));
 
         $event = new PostAuthenticate($request, $response, $user, $context);
-        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
 
         return $response;
     }
 
-    public function generateAuthResponse(Application $app, \Browser $browser, $redirect)
+    public function generateAuthResponse(\Browser $browser, $redirect)
     {
         if ($browser->isMobile()) {
-            $response = $app->redirectPath('lightbox');
+            $response = $this->app->redirectPath('lightbox');
         } elseif ($redirect) {
             $response = new RedirectResponse('../' . ltrim($redirect,'/'));
         } elseif (true !== $browser->isNewGeneration()) {
-            $response = $app->redirectPath('get_client');
+            $response = $this->app->redirectPath('get_client');
         } else {
-            $response = $app->redirectPath('prod');
+            $response = $this->app->redirectPath('prod');
         }
 
         $response->headers->clearCookie('last_act');
@@ -670,166 +695,162 @@ class LoginController extends Controller
     }
 
     // move this in an event
-    public function postAuthProcess(Application $app, User $user)
+    public function postAuthProcess(Request $request, User $user)
     {
-        $date = new \DateTime('+' . (int) $app['conf']->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
+        $date = new \DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
 
-        foreach ($app['repo.validation-participants']
-                     ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
-
-            /* @var $participant ValidationParticipant */
-
+        $manager = $this->getEntityManager();
+        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
 
-            if (null === $token = $app['repo.tokens']->findValidationToken($basket, $participant->getUser())) {
+            if (null === $token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser())) {
                 continue;
             }
 
-            $url = $app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]);
-            $app['dispatcher']->dispatch(PhraseaEvents::VALIDATION_REMINDER, new ValidationEvent($participant, $basket, $url));
+            $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]);
+            $this->dispatch(PhraseaEvents::VALIDATION_REMINDER, new ValidationEvent($participant, $basket, $url));
 
             $participant->setReminded(new \DateTime('now'));
-            $app['orm.em']->persist($participant);
+            $manager->persist($participant);
         }
 
-        $app['orm.em']->flush();
+        $manager->flush();
 
-        $session = $app['authentication']->openAccount($user);
+        $session = $this->getAuthenticator()->openAccount($user);
 
-        if ($user->getLocale() != $app['locale']) {
-            $user->setLocale($app['locale']);
+        if ($user->getLocale() != $this->app['locale']) {
+            $user->setLocale($this->app['locale']);
         }
 
         $width = $height = null;
-        if ($app['request']->cookies->has('screen')) {
-            $data = array_filter((explode('x', $app['request']->cookies->get('screen', ''))));
+        if ($request->cookies->has('screen')) {
+            $data = array_filter((explode('x', $request->cookies->get('screen', ''))));
             if (count($data) === 2) {
                 $width = $data[0];
                 $height = $data[1];
             }
         }
-        $session->setIpAddress($app['request']->getClientIp())
+        $session->setIpAddress($request->getClientIp())
             ->setScreenHeight($height)
             ->setScreenWidth($width);
 
-        $app['orm.em']->persist($session);
-        $app['orm.em']->flush();
+        $manager->persist($session);
+        $manager->flush();
 
         return $session;
     }
 
-    public function authenticateWithProvider(Application $app, Request $request, $providerId)
+    public function authenticateWithProvider(Request $request, $providerId)
     {
-        $provider = $this->findProvider($app, $providerId);
+        $provider = $this->findProvider($providerId);
 
         return $provider->authenticate($request->query->all());
     }
 
-    public function authenticationCallback(Application $app, Request $request, $providerId)
+    public function authenticationCallback(Request $request, $providerId)
     {
-        $provider = $this->findProvider($app, $providerId);
+        $provider = $this->findProvider($providerId);
 
         // triggers what's necessary
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
         } catch (NotAuthenticatedException $e) {
-            $app['session']->getFlashBag()->add('error', $app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
+            $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
-        $userAuthProvider = $app['repo.usr-auth-providers']
+        $userAuthProvider = $this->getUserAuthProviderRepository()
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {
-            $this->postAuthProcess($app, $userAuthProvider->getUser());
+            $this->postAuthProcess($request, $userAuthProvider->getUser());
 
             if (null !== $redirect = $request->query->get('redirect')) {
                 $redirection = '../' . $redirect;
             } else {
-                $redirection = $app->path('prod');
+                $redirection = $this->app->path('prod');
             }
 
-            return $app->redirect($redirection);
+            return $this->app->redirect($redirection);
         }
 
         try {
-            $user = $app['authentication.suggestion-finder']->find($token);
+            $user = $this->getAuthenticationSuggestionFinder()->find($token);
         } catch (NotAuthenticatedException $e) {
-            $app->addFlash('error', $app->trans('Unable to retrieve provider identity'));
+            $this->app->addFlash('error', $this->app->trans('Unable to retrieve provider identity'));
 
-            return $app->redirectPath('homepage');
+            return $this->app->redirectPath('homepage');
         }
 
+        $manager = $this->getEntityManager();
         if (null !== $user) {
-            $this->attachProviderToUser($app['orm.em'], $provider, $user);
-            $app['orm.em']->flush();
+            $this->attachProviderToUser($manager, $provider, $user);
+            $manager->flush();
 
-            $this->postAuthProcess($app, $user);
-
-            if (null !== $redirect = $request->query->get('redirect')) {
-                $redirection = '../' . $redirect;
-            } else {
-                $redirection = $app->path('prod');
-            }
-
-            return $app->redirect($redirection);
-        }
-
-        if ($app['authentication.providers.account-creator']->isEnabled()) {
-            $user = $app['authentication.providers.account-creator']->create($app, $token->getId(), $token->getIdentity()->getEmail(), $token->getTemplates());
-
-            $this->attachProviderToUser($app['orm.em'], $provider, $user);
-            $app['orm.em']->flush();
-
-            $this->postAuthProcess($app, $user);
+            $this->postAuthProcess($request, $user);
 
             if (null !== $redirect = $request->query->get('redirect')) {
                 $redirection = '../' . $redirect;
             } else {
-                $redirection = $app->path('prod');
+                $redirection = $this->app->path('prod');
             }
 
-            return $app->redirect($redirection);
-        } elseif ($app['registration.manager']->isRegistrationEnabled()) {
-            return $app->redirectPath('login_register_classic', ['providerId' => $providerId]);
+            return $this->app->redirect($redirection);
         }
 
-        $app->addFlash('error', $app->trans('Your identity is not recognized.'));
+        $accountCreatorProvider = $this->getAuthenticationAccountCreatorProvider();
+        if ($accountCreatorProvider->isEnabled()) {
+            $user = $accountCreatorProvider->create($this->app, $token->getId(), $token->getIdentity()->getEmail(), $token->getTemplates());
 
-        return $app->redirectPath('homepage');
+            $this->attachProviderToUser($manager, $provider, $user);
+            $manager->flush();
+
+            $this->postAuthProcess($request, $user);
+
+            if (null !== $redirect = $request->query->get('redirect')) {
+                $redirection = '../' . $redirect;
+            } else {
+                $redirection = $this->app->path('prod');
+            }
+
+            return $this->app->redirect($redirection);
+        } elseif ($this->getRegistrationManager()->isRegistrationEnabled()) {
+            return $this->app->redirectPath('login_register_classic', ['providerId' => $providerId]);
+        }
+
+        $this->app->addFlash('error', $this->app->trans('Your identity is not recognized.'));
+
+        return $this->app->redirectPath('homepage');
     }
 
     /**
-     *
-     * @param  Application    $app
-     * @param  string                $providerId
+     * @param  string $providerId
      * @return ProviderInterface
-     * @throws NotFoundHttpException
      */
-    private function findProvider(Application $app, $providerId)
+    private function findProvider($providerId)
     {
         try {
-            return $app['authentication.providers']->get($providerId);
+            return $this->getAuthenticationProviders()->get($providerId);
         } catch (InvalidArgumentException $e) {
             throw new NotFoundHttpException('The requested provider does not exist');
         }
     }
 
-    private function doAuthentication(Application $app, Request $request, FormInterface $form, $redirector)
+    private function doAuthentication(Request $request, FormInterface $form, $redirector)
     {
         if (!is_callable($redirector)) {
             throw new InvalidArgumentException('Redirector should be callable');
         }
 
         $context = new Context(Context::CONTEXT_NATIVE);
-        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-        $form->bind($request);
+        $form->handleRequest($request);
         if (!$form->isValid()) {
-            $app->addFlash('error', $app->trans('An unexpected error occured during authentication process, please contact an admin'));
+            $this->app->addFlash('error', $this->app->trans('An unexpected error occurred during authentication process, please contact an admin'));
 
             throw new AuthenticationException(call_user_func($redirector));
         }
@@ -841,49 +862,228 @@ class LoginController extends Controller
         }
 
         try {
-            $usr_id = $app['auth.native']->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
+            $usr_id = $this->getNativeAuthentication()
+                ->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
         } catch (RequireCaptchaException $e) {
-            $app->requireCaptcha();
-            $app->addFlash('warning', $app->trans('Please fill the captcha'));
+            $this->app->requireCaptcha();
+            $this->app->addFlash('warning', $this->app->trans('Please fill the captcha'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {
-            $app->addFlash('warning', $app->trans('login::erreur: Vous n\'avez pas confirme votre email'));
-            $app->addUnlockAccountData($e->getUsrId());
+            $this->app->addFlash('warning', $this->app->trans('login::erreur: Vous n\'avez pas confirme votre email'));
+            $this->app->addUnlockAccountData($e->getUsrId());
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
         if (null === $usr_id) {
-            $app['session']->getFlashBag()->set('error', $app->trans('login::erreur: Erreur d\'authentification'));
+            $this->getSession()->getFlashBag()->set('error', $this->app->trans('login::erreur: Erreur d\'authentification'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
-        $user = $app['repo.users']->find($usr_id);
+        $user = $this->getUserRepository()->find($usr_id);
 
-        $session = $this->postAuthProcess($app, $user);
+        $session = $this->postAuthProcess($request, $user);
 
-        $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
+        $response = $this->generateAuthResponse($this->getBrowser(), $request->request->get('redirect'));
         $response->headers->clearCookie('invite-usr-id');
 
         if ($request->request->get('remember-me') == '1') {
-            $nonce = $app['random.medium']->generateString(64);
-            $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
+            $nonce = $this->getStringGenerator()->generateString(64);
+            $string = $this->getBrowser()->getBrowser() . '_' . $this->getBrowser()->getPlatform();
 
-            $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
+            $token = $this->getPasswordEncoder()
+                ->encodePassword($string, $nonce);
 
             $session->setToken($token)->setNonce($nonce);
 
-            $response->headers->setCookie(new Cookie('persistent', $token, time() + $app['phraseanet.configuration']['session']['lifetime']));
+            $response->headers->setCookie(new Cookie('persistent', $token, time() + $this->getConfigurationStore()->offsetGet('session')['lifetime']));
 
-            $app['orm.em']->persist($session);
-            $app['orm.em']->flush();
+            $manager = $this->getEntityManager();
+            $manager->persist($session);
+            $manager->flush();
         }
 
         $event = new PostAuthenticate($request, $response, $user, $context);
-        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
 
         return $event->getResponse();
+    }
+
+    /**
+     * @return FeedItemRepository
+     */
+    private function getFeedItemRepository()
+    {
+        return $this->app['repo.feed-items'];
+    }
+
+    /**
+     * @return \Browser
+     */
+    private function getBrowser()
+    {
+        return $this->app['browser'];
+    }
+
+    /**
+     * @return RegistrationManager
+     */
+    private function getRegistrationManager()
+    {
+        return $this->app['registration.manager'];
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getRegistrationFields()
+    {
+        return $this->app['registration.fields'];
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getOptionalRegistrationFields()
+    {
+        return $this->app['registration.optional-fields'];
+    }
+
+    /**
+     * @return UsrAuthProviderRepository
+     */
+    private function getUserAuthProviderRepository()
+    {
+        return $this->app['repo.usr-auth-providers'];
+    }
+
+    /**
+     * @return ReCaptcha
+     */
+    private function getRecaptcha()
+    {
+        return $this->app['recaptcha'];
+    }
+
+    /**
+     * @return UserManipulator
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
+    }
+
+    /**
+     * @return UserRepository
+     */
+    private function getUserRepository()
+    {
+        return $this->app['repo.users'];
+    }
+
+    /**
+     * @return RegistrationManipulator
+     */
+    private function getRegistrationManipulator()
+    {
+        return $this->app['manipulator.registration'];
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
+    }
+
+    /**
+     * @return TokenRepository
+     */
+    private function getTokenRepository()
+    {
+        return $this->app['repo.tokens'];
+    }
+
+    /**
+     * @return ProvidersCollection
+     */
+    private function getAuthenticationProviders()
+    {
+        return $this->app['authentication.providers'];
+    }
+
+    /**
+     * @return FeedRepository
+     */
+    private function getFeedRepository()
+    {
+        return $this->app['repo.feeds'];
+    }
+
+    /**
+     * @return Generator
+     */
+    private function getStringGenerator()
+    {
+        return $this->app['random.medium'];
+    }
+
+    /**
+     * @return ValidationParticipantRepository
+     */
+    private function getValidationParticipantRepository()
+    {
+        return $this->app['repo.validation-participants'];
+    }
+
+    /**
+     * @return Session
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
+    }
+
+    /**
+     * @return SuggestionFinder
+     */
+    private function getAuthenticationSuggestionFinder()
+    {
+        return $this->app['authentication.suggestion-finder'];
+    }
+
+    /**
+     * @return AccountCreator
+     */
+    private function getAuthenticationAccountCreatorProvider()
+    {
+        return $this->app['authentication.providers.account-creator'];
+    }
+
+    /**
+     * @return NativeAuthentication
+     */
+    private function getNativeAuthentication()
+    {
+        return $this->app['auth.native'];
+    }
+
+    /**
+     * @return PasswordEncoder
+     */
+    private function getPasswordEncoder()
+    {
+        return $this->app['auth.password-encoder'];
+    }
+
+    /**
+     * @return ConfigurationInterface
+     */
+    private function getConfigurationStore()
+    {
+        return $this->app['configuration.store'];
     }
 }
