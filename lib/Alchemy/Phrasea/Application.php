@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\ControllerProvider\Root\Root;
 use Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds;
 use Alchemy\Phrasea\ControllerProvider\Root\Session;
@@ -317,6 +316,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Report\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Account' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Developers' => [],
+            'Alchemy\Phrasea\ControllerProvider\Root\Login' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -623,7 +623,6 @@ class Application extends SilexApplication
     {
         $this->mount('/', new Root());
         $this->mount('/feeds/', new RSSFeeds());
-        $this->mount('/login/', new Login());
 
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
@@ -653,6 +652,7 @@ class Application extends SilexApplication
             '/developers/'                 => 'Alchemy\Phrasea\ControllerProvider\Root\Developers',
             '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
             '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
+            '/login/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\Login',
             '/lightbox'                    => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
             '/permalink'                   => 'Alchemy\Phrasea\ControllerProvider\Permalink',
             '/prod/baskets'                => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
