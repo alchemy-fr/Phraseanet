@@ -105,6 +105,7 @@ server:
         - openjdk-7-jre
         - pkg-config
         - python-setuptools
+        - python-meld3
         - re2c
         - scons
         - swftools
