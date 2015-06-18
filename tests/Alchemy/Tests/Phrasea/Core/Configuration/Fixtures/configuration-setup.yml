@@ -18,10 +18,8 @@ main:
         path: '/tmp/db.sqlite'
         charset: UTF8
     cache:
-        type: RedisCache
-        options:
-            host: localhost
-            port: 6379
+        type: ArrayCache
+        options: {}
     search-engine:
         type: elasticsearch
         # type: phrasea
