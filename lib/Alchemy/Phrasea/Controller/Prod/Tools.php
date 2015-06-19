@@ -255,37 +255,47 @@ class Tools implements ControllerProviderInterface
         });
 
         $controllers->post('/thumb-extractor/apply/', function (Application $app, Request $request) {
-            $return = array('success' => false, 'message' => '');
-
             try {
                 $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
-                $dataUri = DataURI\Parser::parse($request->request->get('image', ''));
+                $subDef = $request->request->get('sub_def');
 
-                $path = $app['root.path'] . '/tmp';
+                // legacy handling
+                if (!is_array($subDef)) {
+                    $subDef = ['name' => 'thumbnail', 'src' => $request->request->get('image', '')];
+                }
 
-                $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
+                foreach ($subDef as $def) {
 
-                $fileName = sprintf('%s/%s.png', $path, $name);
+                    $dataUri = DataURI\Parser::parse($def['src']);
 
-                file_put_contents($fileName, $dataUri->getData());
+                    $path = $app['root.path'] . '/tmp';
 
-                $media = $app['mediavorus']->guess($fileName);
+                    $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
 
-                $record->substitute_subdef('thumbnail', $media, $app);
-                $app['phraseanet.logger']($record->get_databox())->log(
-                    $record,
-                    \Session_Logger::EVENT_SUBSTITUTE,
-                    'thumbnail',
-                    ''
-                );
+                    $fileName = sprintf('%s/%s.png', $path, $name);
 
-                unset($media);
-                $app['filesystem']->remove($fileName);
+                    file_put_contents($fileName, $dataUri->getData());
 
-                $return['success'] = true;
+                    $media = $app['mediavorus']->guess($fileName);
+
+                    $record->substitute_subdef($def['name'], $media, $app);
+
+                    $app['phraseanet.logger']($record->get_databox())->log(
+                      $record,
+                      \Session_Logger::EVENT_SUBSTITUTE,
+                      $def['name'],
+                      ''
+                    );
+
+                    unset($media);
+
+                    $app['filesystem']->remove($fileName);
+                }
+
+                $return = ['success' => true, 'message' => ''];
             } catch (\Exception $e) {
-                $return['message'] = $e->getMessage();
+                $return = ['success' => false, 'message' => $e->getMessage()];
             }
 
             return $app->json($return);
