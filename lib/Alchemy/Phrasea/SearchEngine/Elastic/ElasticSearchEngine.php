@@ -436,8 +436,8 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
         }
 
-        if ($options->getRecordType()) {
-            $filters[]['term']['phrasea_type'] = $options->getRecordType();
+        if ($type = $options->getRecordType()) {
+            $filters[]['term']['type'] = $type;
         }
 
         $collections = $options->getCollections();
