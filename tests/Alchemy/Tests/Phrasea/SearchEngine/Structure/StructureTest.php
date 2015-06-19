@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\SearchEngine;
+namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
