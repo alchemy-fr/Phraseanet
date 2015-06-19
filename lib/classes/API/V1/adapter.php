@@ -1832,7 +1832,10 @@ class API_V1_adapter extends API_V1_Abstract
     public function get_current_user(Application $app, Request $request)
     {
         $result = new API_V1_result($app, $request, $this);
-        $result->set_datas(array('user' => $this->list_user($app['authentication']->getUser())));
+        $result->set_datas(array(
+            'user' => $this->list_user($app['authentication']->getUser()),
+            'collections' => $this->list_user_collections($app['authentication']->getUser()),
+        ));
 
         return $result;
     }
@@ -1875,6 +1878,36 @@ class API_V1_adapter extends API_V1_Abstract
             'updated_on'      => $user->get_modification_date() ? $user->get_modification_date()->format(DATE_ATOM) : null,
             'locale'          => $user->get_locale() ?: null,
         );
+    }
+
+    private function list_user_collections(\User_Adapter $user)
+    {
+        $acl = $user->ACL();
+        $rights = $acl->get_bas_rights();
+        $bases = $acl->get_granted_base();
+
+        $grants = array();
+
+        foreach ($bases as $base) {
+            $baseGrants = array();
+
+            foreach ($rights as $right) {
+                if (! $acl->has_right_on_base($base->get_coll_id(), $right)) {
+                    continue;
+                }
+
+                $baseGrants[] = $right;
+            }
+
+            $grants[] = array(
+                'databox_id' => $base->get_sbas_id(),
+                'base_id' => $base->get_base_id(),
+                'collection_id' => $base->get_coll_id(),
+                'rights' => $baseGrants
+            );
+        }
+
+        return $grants;
     }
 
     /**
