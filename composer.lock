@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0cc03f42a7df15fa96138931fa1a454d",
+    "hash": "8be397f1ceeee3b9dba740812467849d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -417,6 +417,55 @@
                 "zip"
             ],
             "time": "2014-12-10 15:03:17"
+        },
+        {
+            "name": "beberlei/assert",
+            "version": "v2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/assert.git",
+                "reference": "160eba4d1fbe692e42b3cf8a20b92ab23e3a8759"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/160eba4d1fbe692e42b3cf8a20b92ab23e3a8759",
+                "reference": "160eba4d1fbe692e42b3cf8a20b92ab23e3a8759",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Assert": "lib/"
+                },
+                "files": [
+                    "lib/Assert/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [
+                "assert",
+                "assertion",
+                "validation"
+            ],
+            "time": "2014-12-18 19:12:40"
         },
         {
             "name": "behat/transliterator",
@@ -1070,7 +1119,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/migrations/zipball/67f02686c6c779ae50489728b91026bc8199720c",
-                "reference": "67f02686c6c779ae50489728b91026bc8199720c",
+                "reference": "a4f14d3a3d397104e557ec65d1a4e43bb86e4ddf",
                 "shasum": ""
             },
             "require": {
@@ -3965,7 +4014,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/99371b09caff9ba2afd5453f0ba2b5b5ddd95b57",
-                "reference": "99371b09caff9ba2afd5453f0ba2b5b5ddd95b57",
+                "reference": "8428cb8041648066a7a2f37adeab2f89ba938358",
                 "shasum": ""
             },
             "conflict": {
