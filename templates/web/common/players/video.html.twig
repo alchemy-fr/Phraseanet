@@ -1,5 +1,5 @@
 {% macro video_player(thumbnail, url, original_w, original_h, fit) %}
-    {% set random = thumbnail.get_random %}
+    {% set random = random(100000) %}
     <div class="record record_video imgTips" style="position:relative;width:{{fit.width}}px;height:{{fit.height}}px;top:{{fit.top}}px;">
         <div id="preview{{random}}" class="PNB"></div>
         <input type="hidden" name="width" value="{{original_w}}"/>
