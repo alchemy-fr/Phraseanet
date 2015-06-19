@@ -4366,7 +4366,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     height: 20px;
     width: 320px;
     top: 30px;
-    left: 380px;
+    left: 364px;
 }
 
 #thumbExtractor #thumb_info {
@@ -4394,7 +4394,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     line-height:210px;
     width: 320px;
     top: 50px;
-    left: 380px;
+    left: 364px;
     z-index: 2;
     text-align: center;
 }
@@ -4465,7 +4465,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     height: 95px;
     width: 320px;
     top: 285px;
-    left: 380px;
+    left: 364px;
     padding: 0;
     overflow: auto;
 }
@@ -4500,8 +4500,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
     cursor: pointer;
     height: 30px;
     width: 80px;
-    top: 385px;
-    left: 620px;
+    top: 379px;
+    left: 608px;
     padding: 0;
 }
 
