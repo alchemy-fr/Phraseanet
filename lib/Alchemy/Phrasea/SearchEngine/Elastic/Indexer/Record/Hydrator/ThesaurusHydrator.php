@@ -58,13 +58,13 @@ class ThesaurusHydrator implements HydratorInterface
         $filters = array();
         $field_names = array();
         foreach ($fields as $name => $root_concepts) {
-            // Concepts are databox's specific, but when no root concepts are
-            // given we need to make sure we only match in the right databox.
-            $filter = $root_concepts
-                ? Filter::childOfConcepts($root_concepts)
-                : Filter::byDatabox($record['databox_id']);
             // Loop through all values to prepare bulk query
             if (isset($record['caption'][$name])) {
+                // Concepts are databox's specific, but when no root concepts are
+                // given we need to make sure we only match in the right databox.
+                $filter = $root_concepts
+                    ? Filter::childOfConcepts($root_concepts)
+                    : Filter::byDatabox($record['databox_id']);
                 foreach ($record['caption'][$name] as $value) {
                     $values[] = $value;
                     $terms[] = Term::parse($value);
