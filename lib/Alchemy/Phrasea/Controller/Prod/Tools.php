@@ -262,7 +262,7 @@ class Tools implements ControllerProviderInterface
 
                 // legacy handling
                 if (!is_array($subDef)) {
-                    $subDef = ['name' => 'thumbnail', 'src' => $request->request->get('image', '')];
+                    $subDef = array('name' => 'thumbnail', 'src' => $request->request->get('image', ''));
                 }
 
                 foreach ($subDef as $def) {
