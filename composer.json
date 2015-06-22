@@ -37,6 +37,7 @@
         "alchemy/phlickr":                       "0.2.9",
         "alchemy/task-manager":                  "2.0.x-dev@dev",
         "alchemy/zippy":                         "0.2.x-dev@dev",
+        "beberlei/assert":                       "^2.3",
         "dailymotion/sdk":                       "~1.5",
         "data-uri/data-uri":                     "~0.1.0",
         "dflydev/doctrine-orm-service-provider": "~1.0",
@@ -83,8 +84,7 @@
         "twig/twig":                             "~1.14, >=1.14.2",
         "vierbergenlars/php-semver":             "~2.1",
         "willdurand/negotiation":                "~1.3",
-        "zend/gdata":                            "~1.12.1",
-        "beberlei/assert": "2.3"
+        "zend/gdata":                            "~1.12.1"
     },
     "require-dev":  {
         "phpunit/phpunit": "~4.5",
