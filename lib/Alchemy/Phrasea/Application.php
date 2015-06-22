@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Root\Session;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\ControllerProvider\User\Notifications;
@@ -317,6 +316,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Root\Login' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds' => [],
+            'Alchemy\Phrasea\ControllerProvider\Root\Session' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
             'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
@@ -624,7 +624,6 @@ class Application extends SilexApplication
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
 
-        $this->mount('/session/', new Session());
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
@@ -680,6 +679,7 @@ class Application extends SilexApplication
             '/report/activity'             => 'Alchemy\Phrasea\ControllerProvider\Report\Activity',
             '/report/informations'         => 'Alchemy\Phrasea\ControllerProvider\Report\Information',
             '/report/'                     => 'Alchemy\Phrasea\ControllerProvider\Report\Root',
+            '/session/'                    => 'Alchemy\Phrasea\ControllerProvider\Root\Session',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
             '/'                            => 'Alchemy\Phrasea\ControllerProvider\Root\Root',
         ];
