@@ -124,7 +124,7 @@ class Fetcher
                     FROM record r
                     INNER JOIN coll c ON (c.coll_id = r.coll_id)
                     -- WHERE
-                    ORDER BY r.record_id ASC
+                    ORDER BY r.record_id DESC
                     LIMIT :offset, :limit
 SQL;
 
