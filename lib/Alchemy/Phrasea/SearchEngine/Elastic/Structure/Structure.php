@@ -12,7 +12,6 @@ class Structure
     private $thesaurus_fields = array();
     private $private = array();
     private $facets = array();
-    private $aliases = array();
 
     /**
      * @param \databox[] $databoxes
@@ -34,10 +33,9 @@ class Structure
     {
         $name = $field->getName();
         if (isset($this->fields[$name])) {
-            $this->fields[$name]->mergeWith($field);
-        } else {
-            $this->fields[$name] = $field;
+            $field = $this->fields[$name]->mergeWith($field);
         }
+        $this->fields[$name] = $field;
 
         if ($field->getType() === Mapping::TYPE_DATE) {
             $this->date_fields[$name] = $field;

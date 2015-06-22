@@ -7,6 +7,10 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
+/**
+ * @group unit
+ * @group searchengine
+ */
 class QueryContextTest extends \PHPUnit_Framework_TestCase
 {
     public function testFieldNarrowing()
@@ -20,8 +24,8 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
 
     public function testFieldNormalization()
     {
-        $public_field = new Field('foo', Mapping::TYPE_STRING, true, false);
-        $restricted_field = new Field('bar', Mapping::TYPE_STRING, true, true);
+        $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $restricted_field = new Field('bar', Mapping::TYPE_STRING, ['private' => true]);
         $structure = $this->prophesize(Structure::class);
         $structure->get('foo')->willReturn($public_field);
         $structure->get('bar')->willReturn($restricted_field);
