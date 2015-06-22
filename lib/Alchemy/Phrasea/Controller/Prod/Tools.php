@@ -293,9 +293,9 @@ class Tools implements ControllerProviderInterface
                     $app['filesystem']->remove($fileName);
                 }
 
-                $return = ['success' => true, 'message' => ''];
+                $return = array('success' => true, 'message' => '');
             } catch (\Exception $e) {
-                $return = ['success' => false, 'message' => $e->getMessage()];
+                $return = array('success' => false, 'message' => $e->getMessage());
             }
 
             return $app->json($return);
