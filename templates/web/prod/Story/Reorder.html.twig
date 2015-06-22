@@ -37,15 +37,16 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        var container = $('#reorder_box');//p4.Dialog.get(1).getDomElement();
+        var optionsContainer = $('#reorder_options');
+        var container = $('#reorder_box');
 
-        $('button.autoorder', container).bind('click', function(){
+        $('button.autoorder', optionsContainer).bind('click', function(){
             autoorder();
 
             return false;
         });
 
-        $('button.reverseorder', container).bind('click', function(){
+        $('button.reverseorder', optionsContainer).bind('click', function(){
             reverse_order();
 
             return false;
