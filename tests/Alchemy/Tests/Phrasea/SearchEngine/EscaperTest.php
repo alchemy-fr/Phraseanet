@@ -4,6 +4,10 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 
+/**
+ * @group unit
+ * @group searchengine
+ */
 class EscaperTest extends \PHPUnit_Framework_TestCase
 {
     /**

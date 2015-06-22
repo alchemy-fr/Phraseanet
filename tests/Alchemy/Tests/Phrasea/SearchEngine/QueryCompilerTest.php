@@ -8,6 +8,10 @@ use Alchemy\Tests\Tools\CsvFileIterator;
 use Hoa\Compiler;
 use Hoa\File;
 
+/**
+ * @group unit
+ * @group searchengine
+ */
 class QueryCompilerTest extends \PHPUnit_Framework_TestCase
 {
     private $compiler;
