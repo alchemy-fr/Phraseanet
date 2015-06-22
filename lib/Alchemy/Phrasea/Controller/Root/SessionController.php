@@ -9,13 +9,15 @@
  */
 namespace Alchemy\Phrasea\Controller\Root;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class SessionController extends Controller
 {
@@ -24,14 +26,13 @@ class SessionController extends Controller
     /**
      * Check things to notify
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function getNotifications(Application $app, Request $request)
+    public function getNotifications(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         $ret = [
@@ -41,67 +42,67 @@ class SessionController extends Controller
             'changed' => []
         ];
 
-        if ($app['authentication']->isAuthenticated()) {
-            $usr_id = $app['authentication']->getUser()->getId();
+        $authenticator = $this->getAuthenticator();
+        if ($authenticator->isAuthenticated()) {
+            $usr_id = $authenticator->getUser()->getId();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
 
-                return $app->json($ret);
+                return $this->app->json($ret);
             }
         } else {
             $ret['status'] = 'disconnected';
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         try {
-            $app['phraseanet.appbox']->get_connection();
+            $this->getApplicationBox()->get_connection();
         } catch (\Exception $e) {
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         if (1 > $moduleId = (int) $request->request->get('module')) {
             $ret['message'] = 'Missing or Invalid `module` parameter';
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         $ret['status'] = 'ok';
 
-        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', [
-            'notifications' => $app['events-manager']->get_notifications()
+        $ret['notifications'] = $this->render('prod/notifications.html.twig', [
+            'notifications' => $this->getEventsManager()->get_notifications()
         ]);
 
-        $baskets = $app['orm.em']->getRepository('Phraseanet:Basket')->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $this->getBasketRepository()->findUnreadActiveByUser($authenticator->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
         }
 
-        if (in_array($app['session']->get('phraseanet.message'), ['1', null])) {
-            if ($app['phraseanet.configuration']['main']['maintenance']) {
+        if (in_array($this->getSession()->get('phraseanet.message'), ['1', null])) {
+            if ($this->app['phraseanet.configuration']['main']['maintenance']) {
                 $ret['message'] .= _('The application is going down for maintenance, please logout.');
             }
 
-            if ($app['conf']->get(['registry', 'maintenance', 'enabled'], false)) {
-                $ret['message'] .= strip_tags($app['conf']->get(['registry', 'maintenance', 'enabled']));
+            if ($this->getConf()->get(['registry', 'maintenance', 'enabled'], false)) {
+                $ret['message'] .= strip_tags($this->getConf()->get(['registry', 'maintenance', 'enabled']));
             }
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Check session state
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function updateSession(Application $app, Request $request)
+    public function updateSession(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         $ret = [
@@ -111,106 +112,141 @@ class SessionController extends Controller
             'changed' => []
         ];
 
-        if ($app['authentication']->isAuthenticated()) {
-            $usr_id = $app['authentication']->getUser()->getId();
+        $authenticator = $this->getAuthenticator();
+        if ($authenticator->isAuthenticated()) {
+            $usr_id = $authenticator->getUser()->getId();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
 
-                return $app->json($ret);
+                return $this->app->json($ret);
             }
         } else {
             $ret['status'] = 'disconnected';
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         try {
-            $app['phraseanet.appbox']->get_connection();
+            $this->getApplicationBox()->get_connection();
         } catch (\Exception $e) {
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
         if (1 > $moduleId = (int) $request->request->get('module')) {
             $ret['message'] = 'Missing or Invalid `module` parameter';
 
-            return $app->json($ret);
+            return $this->app->json($ret);
         }
 
-        $session = $app['repo.sessions']->find($app['session']->get('session_id'));
+        /** @var \Alchemy\Phrasea\Model\Entities\Session $session */
+        $session = $this->getSessionRepository()->find($this->getSession()->get('session_id'));
         $session->setUpdated(new \DateTime());
 
+        $manager = $this->getEntityManager();
         if (!$session->hasModuleId($moduleId)) {
             $module = new SessionModule();
             $module->setModuleId($moduleId);
             $module->setSession($session);
-            $app['orm.em']->persist($module);
+            $manager->persist($module);
         } else {
-            $app['orm.em']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+            $manager->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
 
-        $app['orm.em']->persist($session);
-        $app['orm.em']->flush();
+        $manager->persist($session);
+        $manager->flush();
 
         $ret['status'] = 'ok';
 
-        $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', [
-            'notifications' => $app['events-manager']->get_notifications()
+        $ret['notifications'] = $this->render('prod/notifications.html.twig', [
+            'notifications' => $this->getEventsManager()->get_notifications()
         ]);
 
-        $baskets = $app['repo.baskets']->findUnreadActiveByUser($app['authentication']->getUser());
+        $baskets = $this->getBasketRepository()->findUnreadActiveByUser($authenticator->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
         }
 
-        if (in_array($app['session']->get('phraseanet.message'), ['1', null])) {
-            if ($app['conf']->get(['main', 'maintenance'])) {
-                $ret['message'] .= $app->trans('The application is going down for maintenance, please logout.');
+        if (in_array($this->getSession()->get('phraseanet.message'), ['1', null])) {
+            $conf = $this->getConf();
+            if ($conf->get(['main', 'maintenance'])) {
+                $ret['message'] .= $this->app->trans('The application is going down for maintenance, please logout.');
             }
 
-            if ($app['conf']->get(['registry', 'maintenance', 'enabled'])) {
-                $ret['message'] .= strip_tags($app['conf']->get(['registry', 'maintenance', 'message']));
+            if ($conf->get(['registry', 'maintenance', 'enabled'])) {
+                $ret['message'] .= strip_tags($conf->get(['registry', 'maintenance', 'message']));
             }
         }
 
-        return $app->json($ret);
+        return $this->app->json($ret);
     }
 
     /**
      * Deletes identified session
      *
-     * @param Application $app
-     * @param Request     $request
-     * @param integer     $id
-     *
-     * @return RedirectResponse|JsonResponse
+     * @param Request $request
+     * @param integer $id
+     * @return JsonResponse|RedirectResponse
      */
-    public function deleteSession(Application $app, Request $request, $id)
+    public function deleteSession(Request $request, $id)
     {
-        $session = $app['repo.sessions']->find($id);
+        $session = $this->getSessionRepository()->find($id);
 
         if (null === $session) {
-            $app->abort(404, 'Unknown session');
+            $this->app->abort(404, 'Unknown session');
         }
 
         if (null === $session->getUser()) {
-            $app->abort(403, 'Unauthorized');
+            $this->app->abort(403, 'Unauthorized');
         }
 
-        if ($session->getUser()->getId() !== $app['authentication']->getUser()->getId()) {
-            $app->abort(403, 'Unauthorized');
+        if ($session->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
+            $this->app->abort(403, 'Unauthorized');
         }
 
-        $app['orm.em']->remove($session);
-        $app['orm.em']->flush();
+        $manager = $this->getEntityManager();
+        $manager->remove($session);
+        $manager->flush();
 
-        if ($app['request']->isXmlHttpRequest()) {
-            return $app->json([
+        if ($request->isXmlHttpRequest()) {
+            return $this->app->json([
                 'success' => true,
                 'session_id' => $id
             ]);
         }
 
-        return $app->redirectPath('account_sessions');
+        return $this->app->redirectPath('account_sessions');
+    }
+
+    /**
+     * @return \eventsmanager_broker
+     */
+    private function getEventsManager()
+    {
+        return $this->app['events-manager'];
+    }
+
+    /**
+     * @return BasketRepository
+     */
+    private function getBasketRepository()
+    {
+        return $this->getEntityManager()->getRepository('Phraseanet:Basket');
+    }
+
+    /**
+     * @return Session
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
+    }
+
+    /**
+     * @return SessionRepository
+     */
+    private function getSessionRepository()
+    {
+        return $this->app['repo.sessions'];
     }
 }
