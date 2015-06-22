@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Root\Root;
 use Alchemy\Phrasea\ControllerProvider\Root\Session;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
@@ -316,6 +315,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Root\Account' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Developers' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Login' => [],
+            'Alchemy\Phrasea\ControllerProvider\Root\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds' => [],
             'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
             'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
@@ -621,8 +621,6 @@ class Application extends SilexApplication
      */
     public function bindRoutes()
     {
-        $this->mount('/', new Root());
-
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
 
@@ -683,6 +681,7 @@ class Application extends SilexApplication
             '/report/informations'         => 'Alchemy\Phrasea\ControllerProvider\Report\Information',
             '/report/'                     => 'Alchemy\Phrasea\ControllerProvider\Report\Root',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
+            '/'                            => 'Alchemy\Phrasea\ControllerProvider\Root\Root',
         ];
 
         // controllers with routes referenced by api
