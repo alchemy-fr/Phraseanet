@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
+use Doctrine\Common\Collections\ArrayCollection;
 use JsonSerializable;
 
 class FacetsResponse implements JsonSerializable
@@ -32,13 +34,20 @@ class FacetsResponse implements JsonSerializable
     }
 
     /**
-     * Term aggregates
-     *
-     * @return array
+     * @return ArrayCollection
      */
-    public function getFacets()
+    public function getAsSuggestions()
     {
-        return $this->facets;
+        $suggestions = new ArrayCollection();
+
+        // for es, suggestions are a flat view of facets (api backward compatibility)
+        foreach ($this->facets as $facet) {
+            foreach ($facet['values'] as $value) {
+                $suggestions->add(new SearchEngineSuggestion($value['query'], $value['value'], $value['count']));
+            }
+        }
+
+        return $suggestions;
     }
 
     private function buildBucketsValues($name, $buckets)

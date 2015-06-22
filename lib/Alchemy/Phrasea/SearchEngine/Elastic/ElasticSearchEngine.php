@@ -21,7 +21,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
-use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -284,7 +283,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         $res = $this->client->search($params);
 
         $results = new ArrayCollection();
-        $suggestions = new ArrayCollection();
 
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
@@ -294,21 +292,25 @@ class ElasticSearchEngine implements SearchEngineInterface
         /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        // for es, suggestions are a flat view of facets (api backward compatibility)
-        $suggestions->clear();
-        foreach($facets->getFacets() as $facet) {
-            foreach($facet['values'] as $value) {
-                $suggestions->add(new SearchEngineSuggestion($value['query'], $value['value'], $value['count']));
-            }
-        }
         $query['ast'] = $this->app['query_compiler']->parse($string)->dump();
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
 
-        return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
-            $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
-            $this->indexName, $facets);
+        return new SearchEngineResult(
+            $results,   // ArrayCollection of results
+            json_encode($query),
+            $res['took'],   // duration
+            $offset,        // offset start
+            $res['hits']['total'],  // available
+            $res['hits']['total'],  // total
+            null,   // error
+            null,   // warning
+            $facets->getAsSuggestions(),   // ArrayCollection of suggestions
+            [],     // propositions
+            $this->indexName,
+            $facets
+        );
     }
 
     /**
