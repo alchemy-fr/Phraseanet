@@ -9,39 +9,26 @@
  */
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Thesaurus as ThesaurusEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Doctrine\DBAL\Driver\Connection;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
 class ThesaurusController extends Controller
 {
-    private function reindexAll(\databox $databox)
-    {
-        /*
-         * nothing to do anymore since it will be done thru posted events
-         *
-        $connbas = $databox->get_connection();
+    use DispatcherAware;
 
-        $sql = "UPDATE record SET status=status & ~2";
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
-        */
-    }
-
-    public function accept(Application $app, Request $request)
+    public function accept(Request $request)
     {
         if (null === $bid = $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
         }
 
-        $dom = $this->getXMLTerm($app, $bid, $request->get('src'), 'CT', $request->get('piv'), '0', null, '1', null);
+        $dom = $this->getXMLTerm($bid, $request->get('src'), 'CT', $request->get('piv'), '0', null, '1', null);
 
         $cterm_found = (int) $dom->documentElement->getAttribute('found');
 
@@ -66,7 +53,7 @@ class ThesaurusController extends Controller
                 $cfield_t = null;
             }
 
-            $dom = $this->getXMLTerm($app, $bid, $request->get('tgt'), 'TH', $request->get('piv'), '0', null, '1', $cfield_t);
+            $dom = $this->getXMLTerm($bid, $request->get('tgt'), 'TH', $request->get('piv'), '0', null, '1', $cfield_t);
 
             $term_found = (int) $dom->documentElement->getAttribute('found');
 
@@ -76,7 +63,7 @@ class ThesaurusController extends Controller
             }
         }
 
-        return $app['twig']->render('thesaurus/accept.html.twig', [
+        return $this->render('thesaurus/accept.html.twig', [
             'dlg'          => $request->get('dlg'),
             'bid'          => $request->get('bid'),
             'piv'          => $request->get('piv'),
@@ -92,7 +79,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function exportText(Application $app, Request $request)
+    public function exportText(Request $request)
     {
         $tnodes = [];
         $output = '';
@@ -103,8 +90,7 @@ class ThesaurusController extends Controller
 
         if ($request->get("typ") == "TH" || $request->get("typ") == "CT") {
             try {
-                /** @var \databox $databox */
-                $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+                $databox = $this->findDataboxById((int) $bid);
 
                 if ($request->get("typ") == "TH") {
                     $domth = $databox->get_dom_thesaurus();
@@ -128,7 +114,7 @@ class ThesaurusController extends Controller
             }
         }
 
-        return $app['twig']->render('thesaurus/export-text.html.twig', [
+        return $this->render('thesaurus/export-text.html.twig', [
             'output'  => $output,
             'smp' => $request->get('smp'),
         ]);
@@ -284,9 +270,9 @@ class ThesaurusController extends Controller
         }
     }
 
-    public function exportTextDialog(Application $app, Request $request)
+    public function exportTextDialog(Request $request)
     {
-        return $app['twig']->render('thesaurus/export-text-dialog.html.twig', [
+        return $this->render('thesaurus/export-text-dialog.html.twig', [
             'dlg' => $request->get('dlg'),
             'bid' => $request->get('bid'),
             'typ' => $request->get('typ'),
@@ -295,7 +281,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function exportTopics(Application $app, Request $request)
+    public function exportTopics(Request $request)
     {
         $obr = explode(';', $request->get('obr'));
 
@@ -306,7 +292,7 @@ class ThesaurusController extends Controller
                 $lng_code = explode('_', $code);
 
                 return $lng_code[0];
-            }, array_keys($app['locales.available']));
+            }, array_keys($this->getAvailableLocales()));
         } else {
             $t_lng[] = $request->get('piv');
         }
@@ -338,8 +324,7 @@ class ThesaurusController extends Controller
         $now = date('YmdHis');
         $lngs = [];
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $request->get("bid"));
+            $databox = $this->findDataboxById((int) $request->get("bid"));
             if ($request->get("typ") == "TH") {
                 $domth = $databox->get_dom_thesaurus();
             } else {
@@ -366,25 +351,37 @@ class ThesaurusController extends Controller
                     $dom->formatOutput = true;
                     $root = $dom->appendChild($dom->createElementNS('www.phraseanet.com', 'phraseanet:topics'));
 
-                    $root->appendChild($dom->createComment($app->trans('thesaurus:: fichier genere le %date%', ['%date%' => $now])));
+                    $root->appendChild($dom->createComment($this->app->trans('thesaurus:: fichier genere le %date%', ['%date%' => $now])));
 
                     $root->appendChild($dom->createElement('display'))
                         ->appendChild($dom->createElement('defaultview'))
                         ->appendChild($dom->createTextNode($default_display));
 
-                    $this->export0Topics($app, $xpathth->query($q)->item(0), $dom, $root, $lng, $request->get("srt"), $request->get("sth"), $request->get("sand"), $opened_display, $obr);
+                    $this->export0Topics(
+                        $xpathth->query($q)
+                            ->item(0),
+                        $dom,
+                        $root,
+                        $lng,
+                        $request->get("srt"),
+                        $request->get("sth"),
+                        $request->get("sand"),
+                        $opened_display,
+                        $obr
+                    );
 
                     if ($request->get("ofm") == 'toscreen') {
                         $lngs[$lng] = str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $dom->saveXML());
                     } elseif ($request->get("ofm") == 'tofiles') {
                         $fname = 'topics_' . $lng . '.xml';
 
-                        @rename($app['root.path'] . '/config/topics/' . $fname, $app['root.path'] . '/config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
+                        $topicsPath = $this->app['root.path'] . '/config/topics/';
+                        @rename($topicsPath . $fname, $topicsPath . 'topics_' . $lng . '_BKP_' . $now . '.xml');
 
-                        if ($dom->save($app['root.path'] . '/config/topics/' . $fname)) {
-                            $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: fichier genere : %filename%', ['%filename%' => $fname]));
+                        if ($dom->save($topicsPath . $fname)) {
+                            $lngs[$lng] = \p4string::MakeString($this->app->trans('thesaurus:: fichier genere : %filename%', ['%filename%' => $fname]));
                         } else {
-                            $lngs[$lng] = \p4string::MakeString($app->trans('thesaurus:: erreur lors de l\'enregsitrement du fichier'));
+                            $lngs[$lng] = \p4string::MakeString($this->app->trans('thesaurus:: erreur lors de l\'enregsitrement du fichier'));
                         }
                     }
                 }
@@ -393,19 +390,41 @@ class ThesaurusController extends Controller
 
         }
 
-        return $app['twig']->render('thesaurus/export-topics.html.twig', [
+        return $this->render('thesaurus/export-topics.html.twig', [
             'lngs' => $lngs,
             'ofm'  => $request->get('ofm'),
         ]);
     }
 
-    private function export0Topics(Application $app, $znode, \DOMDocument $dom, \DOMNode $root, $lng, $srt, $sth, $sand, $opened_display, $obr)
+    private function export0Topics(
+        $znode,
+        \DOMDocument $dom,
+        \DOMNode $root,
+        $lng,
+        $srt,
+        $sth,
+        $sand,
+        $opened_display,
+        $obr
+    )
     {
         $topics = $root->appendChild($dom->createElement('topics'));
-        $this->doExportTopics($app, $znode, $dom, $topics, '', $lng, $srt, $sth, $sand, $opened_display, $obr, 0);
+        $this->doExportTopics($znode, $dom, $topics, '', $lng, $srt, $sth, $sand, $opened_display, $obr, 0);
     }
 
-    private function doExportTopics(Application $app, \DOMElement $node, \DOMDocument $dom, \DOMNode $topics, $prevQuery, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth = 0)
+    private function doExportTopics(
+        \DOMElement $node,
+        \DOMDocument $dom,
+        \DOMNode $topics,
+        $prevQuery,
+        $lng,
+        $srt,
+        $sth,
+        $sand,
+        $opened_display,
+        $obr,
+        $depth = 0
+    )
     {
         $ntopics = 0;
         if ($node->nodeType == XML_ELEMENT_NODE) {
@@ -473,14 +492,26 @@ class ThesaurusController extends Controller
                 }
 
                 if ($sand && $prevQuery != '') {
-                    $query = $prevQuery . ' ' . $app->trans('phraseanet::technique:: et') . ' ' . $query . '';
+                    $query = $prevQuery . ' ' . $this->app->trans('phraseanet::technique:: et') . ' ' . $query . '';
                 }
 
                 $topic->appendChild($dom->createElement('query'))->appendChild($dom->createTextNode('' . $query . ''));
 
                 $topics2 = $dom->createElement('topics');
 
-                if ($this->doExportTopics($app, $t_node[$i], $dom, $topics2, $query, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth + 1) > 0) {
+                if ($this->doExportTopics(
+                        $t_node[$i],
+                        $dom,
+                        $topics2,
+                        $query,
+                        $lng,
+                        $srt,
+                        $sth,
+                        $sand,
+                        $opened_display,
+                        $obr,
+                        $depth + 1
+                    ) > 0) {
                     $topic->appendChild($topics2);
                 }
             }
@@ -489,9 +520,9 @@ class ThesaurusController extends Controller
         return $ntopics;
     }
 
-    public function exportTopicsDialog(Application $app, Request $request)
+    public function exportTopicsDialog(Request $request)
     {
-        return $app['twig']->render('thesaurus/export-topics-dialog.html.twig', [
+        return $this->render('thesaurus/export-topics-dialog.html.twig', [
             'bid' => $request->get('bid'),
             'piv' => $request->get('piv'),
             'typ' => $request->get('typ'),
@@ -501,7 +532,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function import(Application $app, Request $request)
+    public function import(Request $request)
     {
         set_time_limit(300);
 
@@ -512,8 +543,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             $dom = $databox->get_dom_thesaurus();
 
@@ -547,20 +577,20 @@ class ThesaurusController extends Controller
                                 $line = substr($line, 1);
                             }
                             if ($depth > $curdepth + 1) {
-                                $err = $app->trans("over-indent at line %line%", ['%line%' => $iline]);
+                                $err = $this->app->trans("over-indent at line %line%", ['%line%' => $iline]);
                                 continue;
                             }
 
                             $line = trim($line);
 
                             if ( ! $this->checkEncoding($line, 'UTF-8')) {
-                                $err = $app->trans("bad encoding at line %line%", ['%line%' => $iline]);
+                                $err = $this->app->trans("bad encoding at line %line%", ['%line%' => $iline]);
                                 continue;
                             }
 
                             $line = str_replace($cbad, $cok, ($oldline = $line));
                             if ($line != $oldline) {
-                                $err = $app->trans("bad character at line %line%", ['%line%' => $iline]);
+                                $err = $this->app->trans("bad character at line %line%", ['%line%' => $iline]);
                                 continue;
                             }
 
@@ -626,9 +656,10 @@ class ThesaurusController extends Controller
                                     $v .= ' (' . $kon . ')';
                                 }
                                 $sy->setAttribute('v', $v);
-                                $sy->setAttribute('w', $app['unicode']->remove_indexer_chars($syn));
+                                $unicode = $this->getUnicode();
+                                $sy->setAttribute('w', $unicode->remove_indexer_chars($syn));
                                 if ($kon) {
-                                    $sy->setAttribute('k', $app['unicode']->remove_indexer_chars($kon));
+                                    $sy->setAttribute('k', $unicode->remove_indexer_chars($kon));
                                 }
                                 $sy->setAttribute('lng', $lng);
 
@@ -667,11 +698,7 @@ class ThesaurusController extends Controller
                     $databox->saveCterms($dom);
                 }
 
-                $this->reindexAll($databox);
-
-                /** @var EventDispatcherInterface $dispatcher */
-                $dispatcher = $app['dispatcher'];
-                $dispatcher->dispatch(
+                $this->dispatch(
                     PhraseaEvents::THESAURUS_IMPORTED,
                     new ThesaurusEvent\Imported($databox)
                 );
@@ -680,7 +707,7 @@ class ThesaurusController extends Controller
 
         }
 
-        return $app['twig']->render('thesaurus/import.html.twig', ['err' => $err]);
+        return $this->render('thesaurus/import.html.twig', ['err' => $err]);
     }
 
     private function checkEncoding($string, $string_encoding)
@@ -691,9 +718,9 @@ class ThesaurusController extends Controller
         return $string === mb_convert_encoding(mb_convert_encoding($string, $fs, $ts), $ts, $fs);
     }
 
-    public function importDialog(Application $app, Request $request)
+    public function importDialog(Request $request)
     {
-        return $app['twig']->render('thesaurus/import-dialog.html.twig', [
+        return $this->render('thesaurus/import-dialog.html.twig', [
             'dlg' => $request->get('dlg'),
             'bid' => $request->get('bid'),
             'id'  => $request->get('id'),
@@ -701,7 +728,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function indexThesaurus(Application $app, Request $request)
+    public function indexThesaurus()
     {
         $sql = "SELECT"
             . "    sbas.sbas_id,"
@@ -720,34 +747,33 @@ class ThesaurusController extends Controller
 
         $bases = $languages = [];
 
-        /** @var \appbox $appbox */
-        $appbox = $app['phraseanet.appbox'];
+        $appbox = $this->getApplicationBox();
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $app['authentication']->getUser()->getId()]);
+        $stmt->execute([':usr_id' => $this->getAuthenticatedUser()->getId()]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
             try {
-                $app['phraseanet.appbox']->get_databox($row['sbas_id'])->get_connection()->connect();
+                $this->findDataboxById($row['sbas_id'])->get_connection()->connect();
             } catch (\Exception $e) {
                 continue;
             }
-            $bases[$row['sbas_id']] = \phrasea::sbas_labels($row['sbas_id'], $app);
+            $bases[$row['sbas_id']] = \phrasea::sbas_labels($row['sbas_id'], $this->app);
         }
 
-        foreach ($app['locales.available'] as $lng_code => $lng) {
+        foreach ($this->getAvailableLocales() as $lng_code => $lng) {
             $lng_code = explode('_', $lng_code);
             $languages[$lng_code[0]] = $lng;
         }
 
-        return $app['twig']->render('thesaurus/index.html.twig', [
+        return $this->render('thesaurus/index.html.twig', [
             'languages' => $languages,
             'bases'     => $bases,
         ]);
     }
 
-    public function linkFieldStep1(Application $app, Request $request)
+    public function linkFieldStep1(Request $request)
     {
         if (null === $bid = $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
@@ -756,8 +782,7 @@ class ThesaurusController extends Controller
         $fullBranch = "";
         $fieldnames = [];
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $domstruct = $databox->get_dom_structure();
             $domth = $databox->get_dom_thesaurus();
 
@@ -808,7 +833,7 @@ class ThesaurusController extends Controller
 
         }
 
-        return $app['twig']->render('thesaurus/link-field-step1.html.twig', [
+        return $this->render('thesaurus/link-field-step1.html.twig', [
             'piv'        => $request->get('piv'),
             'bid'        => $request->get('bid'),
             'tid'        => $request->get('tid'),
@@ -817,7 +842,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function linkFieldStep2(Application $app, Request $request)
+    public function linkFieldStep2(Request $request)
     {
         if (null === $bid = $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
@@ -827,8 +852,7 @@ class ThesaurusController extends Controller
         $needreindex = false;
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $domstruct = $databox->get_dom_structure();
             $domth = $databox->get_dom_thesaurus();
 
@@ -897,7 +921,7 @@ class ThesaurusController extends Controller
 
         }
 
-        return $app['twig']->render('thesaurus/link-field-step2.html.twig', [
+        return $this->render('thesaurus/link-field-step2.html.twig', [
             'piv'          => $request->get('piv'),
             'bid'          => $request->get('bid'),
             'tid'          => $request->get('tid'),
@@ -906,7 +930,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function linkFieldStep3(Application $app, Request $request)
+    public function linkFieldStep3(Request $request)
     {
         if (null === $bid = $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
@@ -916,7 +940,7 @@ class ThesaurusController extends Controller
         $ctchanged = false;
         try {
             /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $meta_struct = $databox->get_meta_structure();
             $domct = $databox->get_dom_cterms();
             $domst = $databox->get_dom_structure();
@@ -962,11 +986,7 @@ class ThesaurusController extends Controller
             }
 
             if ($request->get("reindex")) {
-                $this->reindexAll($databox);
-
-                /** @var EventDispatcherInterface $dispatcher */
-                $dispatcher = $app['dispatcher'];
-                $dispatcher->dispatch(
+                $this->dispatch(
                     PhraseaEvents::THESAURUS_FIELD_LINKED,
                     new ThesaurusEvent\FieldLinked($databox)
                 );
@@ -975,7 +995,7 @@ class ThesaurusController extends Controller
 
         }
 
-        return $app['twig']->render('thesaurus/link-field-step3.html.twig', [
+        return $this->render('thesaurus/link-field-step3.html.twig', [
             'field2del'      => $request->get('f2unlk', []),
             'candidates2del' => $candidates2del,
             'branch2del'     => $request->get('fbranch', []),
@@ -984,7 +1004,7 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    private function fixThesaurus($app, \DOMDocument $domct, \DOMDocument $domth, Connection $connbas)
+    private function fixThesaurus(\DOMDocument $domct, \DOMDocument $domth, Connection $connbas)
     {
         $version = $domth->documentElement->getAttribute("version");
 
@@ -996,7 +1016,7 @@ class ThesaurusController extends Controller
 
             $last_version = $version;
             $zcls = new $cls;
-            $version = $zcls->patch($version, $domct, $domth, $connbas, $app['unicode']);
+            $version = $zcls->patch($version, $domct, $domth, $connbas, $this->getUnicode());
 
             if ($version == $last_version) {
                 break;
@@ -1006,7 +1026,7 @@ class ThesaurusController extends Controller
         return $version;
     }
 
-    public function loadThesaurus(Application $app, Request $request)
+    public function loadThesaurus(Request $request)
     {
         if (null === $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
@@ -1015,11 +1035,10 @@ class ThesaurusController extends Controller
         $updated = false;
         $validThesaurus = true;
         $ctlist = [];
-        $name = \phrasea::sbas_labels($request->get('bid'), $app);
+        $name = \phrasea::sbas_labels($request->get('bid'), $this->app);
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $request->get('bid'));
+            $databox = $this->findDataboxById((int) $request->get('bid'));
             $connbas = $databox->get_connection();
 
             $domct = $databox->get_dom_cterms();
@@ -1042,7 +1061,7 @@ class ThesaurusController extends Controller
             if ($domct && $domth) {
 
                 $oldversion = $domth->documentElement->getAttribute("version");
-                if ($this->fixThesaurus($app, $domct, $domth, $connbas) != $oldversion) {
+                if ($this->fixThesaurus($domct, $domth, $connbas) != $oldversion) {
                     $updated = true;
                     $databox->saveCterms($domct);
                     $databox->saveThesaurus($domth);
@@ -1063,7 +1082,7 @@ class ThesaurusController extends Controller
 
         }
 
-        return $app['twig']->render('thesaurus/load-thesaurus.html.twig', [
+        return $this->render('thesaurus/load-thesaurus.html.twig', [
             'bid' => $request->get('bid'),
             'name' => $name,
             'cterms' => $ctlist,
@@ -1072,11 +1091,17 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function newTerm(Application $app, Request $request)
+    public function newTerm(Request $request)
     {
         list($term, $context) = $this->splitTermAndContext($request->get("t"));
 
-        $dom = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $term, $context, $request->get('piv'));
+        $dom = $this->doSearchCandidate(
+            $request->get('bid'),
+            $request->get('pid'),
+            $term,
+            $context,
+            $request->get('piv')
+        );
 
         $xpath = new \DOMXPath($dom);
 
@@ -1107,7 +1132,7 @@ class ThesaurusController extends Controller
             }
         }
 
-        return $app['twig']->render('thesaurus/new-term.html.twig', [
+        return $this->render('thesaurus/new-term.html.twig', [
             'typ' => $request->get('typ'),
             'bid' => $request->get('bid'),
             'piv' => $request->get('piv'),
@@ -1122,9 +1147,18 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function properties(Application $app, Request $request)
+    public function properties(Request $request)
     {
-        $dom = $this->getXMLTerm($app, $request->get('bid'), $request->get('id'), $request->get('typ'), $request->get('piv'), '0', null, '1', null);
+        $dom = $this->getXMLTerm(
+            $request->get('bid'),
+            $request->get('id'),
+            $request->get('typ'),
+            $request->get('piv'),
+            '0',
+            null,
+            '1',
+            null
+        );
         $fullpath = $dom->getElementsByTagName("fullpath_html")->item(0)->firstChild->nodeValue;
         $hits = $dom->getElementsByTagName("allhits")->item(0)->firstChild->nodeValue;
 
@@ -1141,12 +1175,12 @@ class ThesaurusController extends Controller
             ];
         }
 
-        foreach ($app['locales.available'] as $code => $language) {
+        foreach ($this->getAvailableLocales() as $code => $language) {
             $lng_code = explode('_', $code);
             $languages[$lng_code[0]] = $language;
         }
 
-        return $app['twig']->render('thesaurus/properties.html.twig', [
+        return $this->render('thesaurus/properties.html.twig', [
             'typ' => $request->get('typ'),
             'bid' => $request->get('bid'),
             'piv' => $request->get('piv'),
@@ -1159,18 +1193,18 @@ class ThesaurusController extends Controller
         ]);
     }
 
-    public function thesaurus(Application $app, Request $request)
+    public function thesaurus(Request $request)
     {
         $flags = $jsFlags = [];
 
-        foreach ($app['locales.available'] as $code => $language) {
+        foreach ($this->getAvailableLocales() as $code => $language) {
             $lng_code = explode('_', $code);
             $flags[$lng_code[0]] = $language;
             $jsFlags[$lng_code[0]] = ['w' => 18, 'h' => 13];
         }
         $jsFlags = json_encode($jsFlags);
 
-        return $app['twig']->render('thesaurus/thesaurus.html.twig', [
+        return $this->render('thesaurus/thesaurus.html.twig', [
             'piv'     => $request->get('piv'),
             'bid'     => $request->get('bid'),
             'flags'   => $flags,
@@ -1179,7 +1213,6 @@ class ThesaurusController extends Controller
     }
 
     /**
-     * @param Application $app
      * @param Request $request
      * @return Response
      *
@@ -1187,7 +1220,7 @@ class ThesaurusController extends Controller
      * comme candidat (C)
      * appelé par le menu contextuel sur candidat / kcterm_accept
      */
-    public function acceptXml(Application $app, Request $request)
+    public function acceptXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1207,7 +1240,7 @@ class ThesaurusController extends Controller
 
         try {
             /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $databox->get_connection()->connect();
 
             $dom = $databox->get_dom_cterms();
@@ -1217,7 +1250,7 @@ class ThesaurusController extends Controller
             /** @var \DOMElement $te */
             $te = $xpath->query($q)->item(0);
             if ($te) {
-                $this->acceptBranch($app, $bid, $te);
+                $this->acceptBranch($bid, $te);
 
                 $databox->saveCterms($dom);
 
@@ -1237,25 +1270,24 @@ class ThesaurusController extends Controller
 
     /**
      * transforme (R)ejected en (C)andidate sur un node et tous ses enfants
-     * @param Application $app
-     * @param $sbas_id
+     * @param             $sbas_id
      * @param \DOMElement $node
      */
-    private function acceptBranch(Application $app, $sbas_id, \DOMElement $node)
+    private function acceptBranch($sbas_id, \DOMElement $node)
     {
         if (strlen($oldid = $node->getAttribute("id")) > 1) {
             $node->setAttribute("id", $newid = ("C" . substr($oldid, 1)));
         }
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             if ($n->nodeType == XML_ELEMENT_NODE) {
-                $this->acceptBranch($app, $sbas_id, $n);
+                $this->acceptBranch($sbas_id, $n);
             }
         }
     }
 
 
 
-    public function acceptCandidatesXml(Application $app, Request $request)
+    public function acceptCandidatesXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1276,8 +1308,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             $domct = $databox->get_dom_cterms();
             $domth = $databox->get_dom_thesaurus();
@@ -1296,7 +1327,7 @@ class ThesaurusController extends Controller
 
                 if ($parentnode) {
                     $xpathct = new \DOMXPath($domct);
-                    $ctchanged = $thchanged = false;
+                    $ctchanged = false;
 
                     $icid = 0;
                     foreach ($request->get("cid") as $cid) {
@@ -1328,13 +1359,10 @@ class ThesaurusController extends Controller
 
                                 $databox->saveThesaurus($domth);
 
-                                /** @var EventDispatcherInterface $dispatcher */
-                                $dispatcher = $app['dispatcher'];
-                                $dispatcher->dispatch(
+                                $this->dispatch(
                                     PhraseaEvents::THESAURUS_CANDIDATE_ACCEPTED_AS_CONCEPT,
                                     new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id'))
                                 );
-                                $thchanged = true;
 
                                 /** @var \DOMElement $r */
                                 if ($icid == 0) { // on update la destination une seule fois
@@ -1375,13 +1403,10 @@ class ThesaurusController extends Controller
 
                                     $databox->saveThesaurus($domth);
 
-                                    /** @var EventDispatcherInterface $dispatcher */
-                                    $dispatcher = $app['dispatcher'];
-                                    $dispatcher->dispatch(
+                                    $this->dispatch(
                                         PhraseaEvents::THESAURUS_CANDIDATE_ACCEPTED_AS_SYNONYM,
                                         new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id'))
                                     );
-                                    $thchanged = true;
                                 }
                                 /** @var \DOMElement $r */
                                 if ($icid == 0) { // on update la destination une seule fois
@@ -1401,9 +1426,6 @@ class ThesaurusController extends Controller
                     }
                     if ($ctchanged) {
                         $databox->saveCterms($domct);
-                    }
-                    if ($thchanged) {
-                        $this->reindexAll($databox);
                     }
                 }
             }
@@ -1427,7 +1449,7 @@ class ThesaurusController extends Controller
         $node->setAttribute("nextid", $nchild);
     }
 
-    public function changeSynonymLanguageXml(Application $app, Request $request)
+    public function changeSynonymLanguageXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1446,8 +1468,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
@@ -1471,17 +1492,22 @@ class ThesaurusController extends Controller
                     } elseif ($xqroot == "thesaurus") {
                         $databox->saveThesaurus($dom);
 
-                        /** @var EventDispatcherInterface $dispatcher */
-                        $dispatcher = $app['dispatcher'];
-                        $dispatcher->dispatch(
+                        $this->dispatch(
                             PhraseaEvents::THESAURUS_SYNONYM_LNG_CHANGED,
                             new ThesaurusEvent\SynonymLngChanged($databox, $sy0->getAttribute('id'))
                         );
-
-                        $this->reindexAll($databox);
                     }
 
-                    $ret = $this->getXMLTerm($app, $bid, $sy0->parentNode->getAttribute("id"), $request->get('typ'), $request->get('piv'), null, $request->get('id'), '1', null);
+                    $ret = $this->getXMLTerm(
+                        $bid,
+                        $sy0->parentNode->getAttribute("id"),
+                        $request->get('typ'),
+                        $request->get('piv'),
+                        null,
+                        $request->get('id'),
+                        '1',
+                        null
+                    );
 
                     $root = $ret->getElementsByTagName("result")->item(0);
                     $refresh_list = $root->appendChild($ret->createElement("refresh_list"));
@@ -1499,7 +1525,7 @@ class ThesaurusController extends Controller
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    public function changeSynonymPositionXml(Application $app, Request $request)
+    public function changeSynonymPositionXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1520,8 +1546,7 @@ class ThesaurusController extends Controller
         $root->appendChild($ret->createElement("refresh_list"));
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
@@ -1549,17 +1574,23 @@ class ThesaurusController extends Controller
                     } elseif ($xqroot == "thesaurus") {
                         $databox->saveThesaurus($dom);
 
-                        /** @var EventDispatcherInterface $dispatcher */
-                        $dispatcher = $app['dispatcher'];
-                        $dispatcher->dispatch(
+                        $this->dispatch(
                             PhraseaEvents::THESAURUS_SYNONYM_POSITION_CHANGED,
                             new ThesaurusEvent\SynonymPositionChanged($databox, $sy0->getAttribute('id'))
                         );
 
-                        $this->reindexAll($databox);
                     }
 
-                    $ret = $this->getXMLTerm($app, $bid, $sy0->parentNode->getAttribute("id"), $request->get('typ'), $request->get('piv'), null, $request->get('id'), '1', null);
+                    $ret = $this->getXMLTerm(
+                        $bid,
+                        $sy0->parentNode->getAttribute("id"),
+                        $request->get('typ'),
+                        $request->get('piv'),
+                        null,
+                        $request->get('id'),
+                        '1',
+                        null
+                    );
 
                     $root = $ret->getElementsByTagName("result")->item(0);
                     $refresh_list = $root->appendChild($ret->createElement("refresh_list"));
@@ -1578,15 +1609,14 @@ class ThesaurusController extends Controller
     }
 
     /**
-     * @param Application $app
-     * @param Request $request
-     * @return Response
-     *
      * supprime un synonyme
      * appelé par le menu contextuel sur un synonyme, option "delete_sy"
      * dans le dialog des properties sur un terme (properties.html.twig)
+     *
+     * @param Request $request
+     * @return Response
      */
-    public function removeSynonymXml(Application $app, Request $request)
+    public function removeSynonymXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1606,8 +1636,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $domct = $databox->get_dom_cterms();
             $dom = $databox->get_dom_thesaurus();
 
@@ -1635,7 +1664,7 @@ class ThesaurusController extends Controller
                         /** @var \DOMElement $del */
                         $del = $domct->documentElement->appendChild($domct->createElement("te"));
                         $del->setAttribute("id", "C" . $id);
-                        $del->setAttribute("field", $app->trans('thesaurus:: corbeille'));
+                        $del->setAttribute("field", $this->app->trans('thesaurus:: corbeille'));
                         $del->setAttribute("nextid", "0");
                         $del->setAttribute("delbranch", "1");
 
@@ -1690,14 +1719,10 @@ class ThesaurusController extends Controller
                     } else {
                         $databox->saveThesaurus($dom);
 
-                        /** @var EventDispatcherInterface $dispatcher */
-                        $dispatcher = $app['dispatcher'];
-                        $dispatcher->dispatch(
+                        $this->dispatch(
                             PhraseaEvents::THESAURUS_SYNONYM_TRASHED,
                             new ThesaurusEvent\ItemTrashed($databox, $te->getAttribute('id'), $delsy->getAttribute('id'))
                         );
-
-                        $this->reindexAll($databox);
 
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
                         $r->setAttribute("type", "TH");
@@ -1708,7 +1733,16 @@ class ThesaurusController extends Controller
                         }
                     }
 
-                    $ret2 = $this->getXMLTerm($app, $request->get('bid'), $te->getAttribute("id"), $request->get('typ'), $request->get('piv'), null, null, '1', null);
+                    $ret2 = $this->getXMLTerm(
+                        $request->get('bid'),
+                        $te->getAttribute("id"),
+                        $request->get('typ'),
+                        $request->get('piv'),
+                        null,
+                        null,
+                        '1',
+                        null
+                    );
 
                     if ($sl = $ret2->getElementsByTagName("sy_list")->item(0)) {
                         $ret->importNode($sl, true);
@@ -1723,14 +1757,12 @@ class ThesaurusController extends Controller
     }
 
     /**
-     * @param Application $app
-     * @param Request $request
-     * @return Response
-     *
      * Supprime (déplace dans cterms/trash) toute une branche TE avec les SY et tous les TE enfants
      * appelé par le menu contextuel sur terme, option "kterm_delete"
+     * @param Request $request
+     * @return Response
      */
-    public function removeSpecificTermXml(Application $app, Request $request)
+    public function removeSpecificTermXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1750,7 +1782,7 @@ class ThesaurusController extends Controller
 
         try {
             /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $domth = $databox->get_dom_thesaurus();
             $domct = $databox->get_dom_cterms();
 
@@ -1778,7 +1810,7 @@ class ThesaurusController extends Controller
                             /** @var \DOMElement $ct */
                             $ct = $domct->documentElement->appendChild($domct->createElement("te"));
                             $ct->setAttribute("id", "C" . $id);
-                            $ct->setAttribute("field", $app->trans('thesaurus:: corbeille'));
+                            $ct->setAttribute("field", $this->app->trans('thesaurus:: corbeille'));
                             $ct->setAttribute("nextid", "0");
                             $ct->setAttribute("delbranch", "1");
 
@@ -1804,9 +1836,7 @@ class ThesaurusController extends Controller
 
                         $databox->saveThesaurus($domth);
 
-                        /** @var EventDispatcherInterface $dispatcher */
-                        $dispatcher = $app['dispatcher'];
-                        $dispatcher->dispatch(
+                        $this->dispatch(
                             PhraseaEvents::THESAURUS_CONCEPT_TRASHED,
                             new ThesaurusEvent\ItemTrashed($databox, $thnode_parent->getAttribute('id'), $newte->getAttribute('id'))
                         );
@@ -1814,7 +1844,6 @@ class ThesaurusController extends Controller
                         $thnode_parent->removeChild($thnode);
 
                         $databox->saveCterms($domct);
-                        $this->reindexAll($databox);
 
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
                         $r->setAttribute("id", $pid);
@@ -1830,7 +1859,7 @@ class ThesaurusController extends Controller
     }
 
 
-    public function getSynonymXml(Application $app, Request $request)
+    public function getSynonymXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1847,8 +1876,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
@@ -1940,19 +1968,25 @@ class ThesaurusController extends Controller
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    public function getTermXml(Application $app, Request $request)
+    public function getTermXml(Request $request)
     {
         return new Response(
-            $this->getXMLTerm($app, $request->get('bid'), $request->get('id'), $request->get('typ'),
-                $request->get('piv'), $request->get('sortsy'), $request->get('sel'), $request->get('nots'),
-                $request->get('acf'))->saveXML(),
+            $this->getXMLTerm(
+                $request->get('bid'),
+                $request->get('id'),
+                $request->get('typ'),
+                $request->get('piv'),
+                $request->get('sortsy'),
+                $request->get('sel'),
+                $request->get('nots'),
+                $request->get('acf')
+            )->saveXML(),
             200,
             ['Content-Type' => 'text/xml']
         );
     }
 
     /**
-     * @param Application $app
      * @param $bid
      * @param $id
      * @param $typ
@@ -1962,8 +1996,9 @@ class ThesaurusController extends Controller
      * @param $nots
      * @param $acf
      * @return \DOMDocument
+     * @internal param Application $app
      */
-    private function getXMLTerm(Application $app, $bid, $id, $typ, $piv, $sortsy, $sel, $nots, $acf)
+    private function getXMLTerm($bid, $id, $typ, $piv, $sortsy, $sel, $nots, $acf)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -1990,7 +2025,7 @@ class ThesaurusController extends Controller
         if ($bid !== null) {
             try {
                 /** @var \databox $databox */
-                $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+                $databox = $this->findDataboxById((int) $bid);
 
                 if ($typ == "CT") {
                     $xqroot = "cterms";
@@ -2190,7 +2225,7 @@ class ThesaurusController extends Controller
         return $ret;
     }
 
-    public function killTermXml(Application $app, Request $request)
+    public function killTermXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -2210,8 +2245,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
@@ -2247,14 +2281,10 @@ class ThesaurusController extends Controller
 
                         $databox->saveThesaurus($dom);
 
-                        /** @var EventDispatcherInterface $dispatcher */
-                        $dispatcher = $app['dispatcher'];
-                        $dispatcher->dispatch(
+                        $this->dispatch(
                             PhraseaEvents::THESAURUS_CONCEPT_DELETED,
                             new ThesaurusEvent\ConceptDeleted($databox, $refrid, $sy_evt_parm)
                         );
-
-                        $this->reindexAll($databox);
 
                         /** @var \DOMElement $r */
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
@@ -2266,7 +2296,16 @@ class ThesaurusController extends Controller
                         }
                     }
 
-                    $ret2 = $this->getXMLTerm($app, $bid, $parent->getAttribute("id"), $request->get('typ'), $request->get('piv'), null, null, '1', null);
+                    $ret2 = $this->getXMLTerm(
+                        $bid,
+                        $parent->getAttribute("id"),
+                        $request->get('typ'),
+                        $request->get('piv'),
+                        null,
+                        null,
+                        '1',
+                        null
+                    );
 
                     if ($sl = $ret2->getElementsByTagName("sy_list")->item(0)) {
                         $ret->importNode($sl, true);
@@ -2280,7 +2319,7 @@ class ThesaurusController extends Controller
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    public function newSynonymXml(Application $app, Request $request)
+    public function newSynonymXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -2302,8 +2341,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $domth = $databox->get_dom_thesaurus();
 
             if ($domth) {
@@ -2334,13 +2372,14 @@ class ThesaurusController extends Controller
                     list($v, $k) = $this->splitTermAndContext($request->get('t'));
 
                     $k = trim($k) . trim($request->get('k'));
-                    $w = $app['unicode']->remove_indexer_chars($v);
+                    $unicode = $this->getUnicode();
+                    $w = $unicode->remove_indexer_chars($v);
 
                     if ($k) {
                         $v .= " (" . $k . ")";
                     }
 
-                    $k = $app['unicode']->remove_indexer_chars($k);
+                    $k = $unicode->remove_indexer_chars($k);
 
                     $sy->setAttribute("v", $v);
                     $sy->setAttribute("w", $w);
@@ -2351,14 +2390,10 @@ class ThesaurusController extends Controller
 
                     $databox->saveThesaurus($domth);
 
-                    /** @var EventDispatcherInterface $dispatcher */
-                    $dispatcher = $app['dispatcher'];
-                    $dispatcher->dispatch(
+                    $this->dispatch(
                         PhraseaEvents::THESAURUS_SYNONYM_ADDED,
                         new ThesaurusEvent\ItemAdded($databox, $syid)
                     );
-
-                    $this->reindexAll($databox);
 
                     /** @var \DOMElement $r */
                     $r = $refresh_list->appendChild($ret->createElement("refresh"));
@@ -2379,7 +2414,7 @@ class ThesaurusController extends Controller
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    public function newSpecificTermXml(Application $app, Request $request)
+    public function newSpecificTermXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -2401,8 +2436,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $domth = $databox->get_dom_thesaurus();
 
             if ($domth) {
@@ -2443,13 +2477,14 @@ class ThesaurusController extends Controller
                     list($v, $k) = $this->splitTermAndContext($request->get('t'));
                     $k = trim($k) . trim($request->get('k'));
 
-                    $w = $app['unicode']->remove_indexer_chars($v);
+                    $unicode = $this->getUnicode();
+                    $w = $unicode->remove_indexer_chars($v);
 
                     if ($k) {
                         $v .= " (" . $k . ")";
                     }
 
-                    $k = $app['unicode']->remove_indexer_chars($k);
+                    $k = $unicode->remove_indexer_chars($k);
 
                     $sy->setAttribute("v", $v);
                     $sy->setAttribute("w", $w);
@@ -2460,16 +2495,10 @@ class ThesaurusController extends Controller
 
                     $databox->saveThesaurus($domth);
 
-                    /** @var EventDispatcherInterface $dispatcher */
-                    $dispatcher = $app['dispatcher'];
-                    $dispatcher->dispatch(
+                    $this->dispatch(
                         PhraseaEvents::THESAURUS_CONCEPT_ADDED,
                         new ThesaurusEvent\ItemAdded($databox, $syid)
                     );
-
-                    if ($request->get('reindex') == "1") {
-                        $this->reindexAll($databox);
-                    }
 
                     /** @var \DOMElement $r */
                     $r = $refresh_list->appendChild($ret->createElement("refresh"));
@@ -2484,7 +2513,7 @@ class ThesaurusController extends Controller
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    public function openBranchesXml(Application $app, Request $request)
+    public function openBranchesXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -2506,8 +2535,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             if ($request->get('typ') == "CT") {
                 $xqroot = "cterms";
                 $dom = $databox->get_dom_cterms();
@@ -2533,24 +2561,29 @@ class ThesaurusController extends Controller
                     $q2 = "//sy";
                     if ($request->get('t')) {
                         $t = $this->splitTermAndContext($request->get('t'));
+                        $unicode = $this->getUnicode();
                         switch ($request->get('method')) {
                             case "begins":
-                                $q2 = "starts-with(@w, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . "')";
+                                $q2 = "starts-with(@w, '" . \thesaurus::xquery_escape(
+                                        $unicode->remove_indexer_chars($t[0])) . "')";
                                 if ($t[1]) {
-                                    $q2 .= " and starts-with(@k, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . "')";
+                                    $q2 .= " and starts-with(@k, '" . \thesaurus::xquery_escape(
+                                            $unicode->remove_indexer_chars($t[1])) . "')";
                                 }
                                 break;
                             case "contains":
-                                $q2 = "contains(@w, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . "')";
+                                $q2 = "contains(@w, '" . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . "')";
                                 if ($t[1]) {
-                                    $q2 .= " and contains(@k, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . "')";
+                                    $q2 .= " and contains(@k, '" . \thesaurus::xquery_escape(
+                                            $unicode->remove_indexer_chars($t[1])) . "')";
                                 }
                                 break;
                             case "equal":
                             default:
-                                $q2 = "(@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . "')";
+                                $q2 = "(@w='" . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . "')";
                                 if ($t[1]) {
-                                    $q2 .= " and (@k='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . "')";
+                                    $q2 .= " and (@k='" . \thesaurus::xquery_escape(
+                                            $unicode->remove_indexer_chars($t[1])) . "')";
                                 }
                                 break;
                         }
@@ -2626,7 +2659,7 @@ class ThesaurusController extends Controller
         return ["allsy" => $allsy, "nts"   => $nts];
     }
 
-    public function RejectXml(Application $app, Request $request)
+    public function RejectXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -2645,8 +2678,7 @@ class ThesaurusController extends Controller
         }
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
             $connbas = $databox->get_connection();
 
             $dom = $databox->get_dom_cterms();
@@ -2687,18 +2719,24 @@ class ThesaurusController extends Controller
         }
     }
 
-    public function searchCandidateXml(Application $app, Request $request)
+    public function searchCandidateXml(Request $request)
     {
         if (null === $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
         }
 
-        $ret = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $request->get('t'), $request->get('k'), $request->get('piv'));
+        $ret = $this->doSearchCandidate(
+            $request->get('bid'),
+            $request->get('pid'),
+            $request->get('t'),
+            $request->get('k'),
+            $request->get('piv')
+        );
 
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
-    private function doSearchCandidate(Application $app, $bid, $pid, $t, $k, $piv)
+    private function doSearchCandidate($bid, $pid, $t, $k, $piv)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->preserveWhiteSpace = false;
@@ -2715,8 +2753,7 @@ class ThesaurusController extends Controller
         $ctlist = $root->appendChild($ret->createElement("candidates_list"));
 
         try {
-            /** @var \databox $databox */
-            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $databox = $this->findDataboxById((int) $bid);
 
             $domstruct = $databox->get_dom_structure();
             $domth = $databox->get_dom_thesaurus();
@@ -2765,17 +2802,18 @@ class ThesaurusController extends Controller
                 }
                 // on considere que la source 'deleted' est toujours valide
                 $fields["[deleted]"] = [
-                    "name"     => $app->trans('thesaurus:: corbeille'),
+                    "name"     => $this->app->trans('thesaurus:: corbeille'),
                     "tbranch"  => null,
                     "cid"      => null,
                     "sourceok" => true
                 ];
 
                 if (count($fields) > 0) {
-                    $q = "@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t)) . "'";
+                    $unicode = $this->getUnicode();
+                    $q = "@w='" . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t)) . "'";
                     if ($k) {
                         if ($k != "*") {
-                            $q .= " and @k='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($k)) . "'";
+                            $q .= " and @k='" . \thesaurus::xquery_escape($unicode->remove_indexer_chars($k)) . "'";
                         }
                     } else {
                         $q .= " and not(@k)";
@@ -2865,5 +2903,21 @@ class ThesaurusController extends Controller
             return $ret;
         }
         return null;
+    }
+
+    /**
+     * @return \unicode
+     */
+    private function getUnicode()
+    {
+        return $this->app['unicode'];
+    }
+
+    /**
+     * @return array
+     */
+    private function getAvailableLocales()
+    {
+        return $this->app['locales.available'];
     }
 }

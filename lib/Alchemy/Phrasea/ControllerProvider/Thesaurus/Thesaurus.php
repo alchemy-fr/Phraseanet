@@ -25,7 +25,9 @@ class Thesaurus implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.thesaurus'] = $app->share(function (PhraseaApplication $app) {
-            return (new ThesaurusController($app));
+            return (new ThesaurusController($app))
+                ->setDispatcher($app['dispatcher'])
+            ;
         });
     }
 
