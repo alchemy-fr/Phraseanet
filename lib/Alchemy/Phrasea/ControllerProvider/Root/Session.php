@@ -17,8 +17,9 @@ use Alchemy\Phrasea\Controller\Root\SessionController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Silex\ServiceProviderInterface;
 
-class Session implements ControllerProviderInterface
+class Session implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
