@@ -4,4 +4,7 @@ config:
 watch:
 	@echo 'config/configuration.yml' | entr make config
 
-.PHONY: config watch
+test:
+	@exit 0
+
+.PHONY: config watch test
