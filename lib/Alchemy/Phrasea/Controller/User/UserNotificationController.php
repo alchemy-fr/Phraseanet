@@ -9,7 +9,6 @@
  */
 namespace Alchemy\Phrasea\Controller\User;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,45 +16,51 @@ use Symfony\Component\HttpFoundation\Request;
 class UserNotificationController extends Controller
 {
     /**
-     * Set notifications as readed
+     * Set notifications as read
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function readNotifications(Application $app, Request $request)
+    public function readNotifications(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         try {
-            $app['events-manager']->read(
+            $this->getEventsManager()->read(
                 explode('_', (string) $request->request->get('notifications')),
-                $app['authentication']->getUser()->getId()
+                $this->getAuthenticatedUser()->getId()
             );
 
-            return $app->json(['success' => true, 'message' => '']);
+            return $this->app->json(['success' => true, 'message' => '']);
         } catch (\Exception $e) {
-            return $app->json(['success' => false, 'message' => $e->getMessage()]);
+            return $this->app->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
     /**
      * Get all notifications
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Request $request
      * @return JsonResponse
      */
-    public function listNotifications(Application $app, Request $request)
+    public function listNotifications(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
+            $this->app->abort(400);
         }
 
         $page = (int) $request->query->get('page', 0);
 
-        return $app->json($app['events-manager']->get_notifications_as_array(($page < 0 ? 0 : $page)));
+        return $this->app->json($this->getEventsManager()->get_notifications_as_array(($page < 0 ? 0 : $page)));
+    }
+
+    /**
+     * @return \eventsmanager_broker
+     */
+    private function getEventsManager()
+    {
+        return $this->app['events-manager'];
     }
 }
