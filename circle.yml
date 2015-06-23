@@ -16,6 +16,7 @@ dependencies:
     - pecl install json
     - yes '' | pecl install zmq-beta
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    - rm -rf vendor/composer # enforce composer to check installed packages
   post:
     - if [[ ! -e elasticsearch-1.3.2 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.3.2.tar.gz && tar -xvf elasticsearch-1.3.2.tar.gz && elasticsearch-1.3.2/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.3.0; fi
     - elasticsearch-1.3.2/bin/elasticsearch: {background: true}
