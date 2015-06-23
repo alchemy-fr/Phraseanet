@@ -11,23 +11,34 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\User;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\User\UserPreferenceController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Silex\ServiceProviderInterface;
 
-class Preferences implements ControllerProviderInterface
+class Preferences implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
+
+    public function register(Application $app)
+    {
+        $app['controller.user.preferences'] = $app->share(function (PhraseaApplication $app) {
+            return (new UserPreferenceController($app));
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
 
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
-        $app['controller.user.preferences'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
 
         $controllers->post('/', 'controller.user.preferences:saveUserPref')
@@ -37,59 +48,5 @@ class Preferences implements ControllerProviderInterface
             ->bind('save_temp_pref');
 
         return $controllers;
-    }
-
-    /**
-     *  Save temporary user preferences
-     *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @return JsonResponse
-     */
-    public function saveTemporaryPref(Application $app, Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
-        }
-
-        $prop = $request->request->get('prop');
-        $value = $request->request->get('value');
-        $success = false;
-        $msg = $app->trans('Error while saving preference');
-
-        if ($prop && $value) {
-            $app['session']->set('phraseanet.' . $prop, $value);
-            $success = true;
-            $msg = $app->trans('Preference saved !');
-        }
-
-        return new JsonResponse(['success' => $success, 'message' => $msg]);
-    }
-
-    /**
-     *  Save user preferenes
-     *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @return JsonResponse
-     */
-    public function saveUserPref(Application $app, Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
-        }
-
-        $msg = $app->trans('Error while saving preference');
-        $prop = $request->request->get('prop');
-        $value = $request->request->get('value');
-
-        $success = false;
-        if (null !== $prop && null !== $value) {
-            $app['manipulator.user']->setUserSetting($app['authentication']->getUser(), $prop, $value);
-            $success = true;
-            $msg = $app->trans('Preference saved !');
-        }
-
-        return new JsonResponse(['success' => $success, 'message' => $msg]);
     }
 }
