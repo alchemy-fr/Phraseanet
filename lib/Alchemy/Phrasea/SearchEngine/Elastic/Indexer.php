@@ -191,6 +191,9 @@ class Indexer
             $this->recordIndexer->delete($bulk, $this->deleteQueue);
             $bulk->flush();
         });
+
+        $this->indexQueue = new SplObjectStorage();
+        $this->deleteQueue = new SplObjectStorage();
     }
 
     private function apply(Closure $work)
