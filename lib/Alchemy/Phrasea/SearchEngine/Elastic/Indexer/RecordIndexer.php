@@ -140,7 +140,7 @@ class RecordIndexer
         $connection = $databox->get_connection();
         $candidateTerms = new CandidateTerms($databox);
         $fetcher = new Fetcher($connection, array(
-            new CoreHydrator($databox->get_sbas_id(), $this->helper),
+            new CoreHydrator($databox->get_sbas_id(), $databox->get_viewname(), $this->helper),
             new TitleHydrator($connection),
             new MetadataHydrator($connection, $this->structure, $this->helper),
             new ThesaurusHydrator($this->structure, $this->thesaurus, $candidateTerms),
@@ -186,6 +186,7 @@ class RecordIndexer
             // Identifiers
             ->add('record_id', 'integer')  // Compound primary key
             ->add('databox_id', 'integer') // Compound primary key
+            ->add('databox_name', 'string')->notAnalyzed() // database name (still indexed for facets)
             ->add('base_id', 'integer') // Unique collection ID
             ->add('collection_id', 'integer')->notIndexed() // Useless collection ID (local to databox)
             ->add('collection_name', 'string')->notAnalyzed() // Collection name (still indexed for facets)

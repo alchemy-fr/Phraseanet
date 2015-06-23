@@ -17,11 +17,13 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 class CoreHydrator implements HydratorInterface
 {
     private $databox_id;
+    private $databox_name;
     private $helper;
 
-    public function __construct($databox_id, RecordHelper $helper)
+    public function __construct($databox_id, $databox_name, RecordHelper $helper)
     {
         $this->databox_id = $databox_id;
+        $this->databox_name = $databox_name;
         $this->helper = $helper;
     }
 
@@ -41,6 +43,7 @@ class CoreHydrator implements HydratorInterface
         $record['id'] = $this->helper->getUniqueRecordId($this->databox_id, $record['record_id']);
         $record['base_id'] = $this->helper->getUniqueCollectionId($this->databox_id, $record['collection_id']);
         $record['databox_id'] = $this->databox_id;
+        $record['databox_name'] = $this->databox_name;
 
         $record['record_type'] = ((int) $record['parent_record_id'] === 1)
             ? SearchEngineInterface::GEM_TYPE_STORY
