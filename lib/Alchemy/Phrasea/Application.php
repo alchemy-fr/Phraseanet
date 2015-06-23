@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
@@ -281,6 +280,11 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager' => [],
             'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
             'Alchemy\Phrasea\ControllerProvider\Client\Root' => [],
+            'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
+            'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
+            'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
+            'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
+            'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\Bridge' => [],
             'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload' => [],
@@ -315,14 +319,10 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Root\Root' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds' => [],
             'Alchemy\Phrasea\ControllerProvider\Root\Session' => [],
+            'Alchemy\Phrasea\ControllerProvider\Setup' => [],
+            'Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Notifications' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Preferences' => [],
-            'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
-            'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
-            'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
-            'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
-            'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
-            'Alchemy\Phrasea\ControllerProvider\Setup' => [],
         ];
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
@@ -621,7 +621,6 @@ class Application extends SilexApplication
      */
     public function bindRoutes()
     {
-        $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
 
         $providers = [
@@ -677,6 +676,7 @@ class Application extends SilexApplication
             '/report/'                     => 'Alchemy\Phrasea\ControllerProvider\Report\Root',
             '/session/'                    => 'Alchemy\Phrasea\ControllerProvider\Root\Session',
             '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
+            '/thesaurus'                   => 'Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus',
             '/user/notifications/'         => 'Alchemy\Phrasea\ControllerProvider\User\Notifications',
             '/user/preferences/'           => 'Alchemy\Phrasea\ControllerProvider\User\Preferences',
             '/'                            => 'Alchemy\Phrasea\ControllerProvider\Root\Root',
