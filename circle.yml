@@ -1,0 +1,41 @@
+machine:
+  php:
+    version: 5.5.21
+  services:
+    - memcached
+    - redis
+    - mysql
+
+dependencies:
+  cache_directories:
+    - elasticsearch-1.3.2 # relative to the build directory
+    - vendor
+    - node_modules
+  pre:
+    - yes '' | pecl install imagick
+    - pecl install json
+    - yes '' | pecl install zmq-beta
+    - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    - rm -rf vendor/composer # enforce composer to check installed packages
+  post:
+    - if [[ ! -e elasticsearch-1.3.2 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.3.2.tar.gz && tar -xvf elasticsearch-1.3.2.tar.gz && elasticsearch-1.3.2/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.3.0; fi
+    - elasticsearch-1.3.2/bin/elasticsearch: {background: true}
+    - ./node_modules/.bin/grunt install-assets
+    - "./bin/developer assets:compile-less"
+
+
+database:
+  override:
+    - mysql -u ubuntu -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
+  post:
+    - "./bin/developer system:uninstall"
+    - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=ubuntu --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
+    - "./bin/developer ini:setup-tests-dbs"
+    - "./bin/console searchengine:index:create"
+    - "./bin/developer phraseanet:regenerate-sqlite"
+    - "./bin/developer phraseanet:generate-js-fixtures"
+
+test:
+  override:
+    - case $CIRCLE_NODE_INDEX in 0) php -d memory_limit=-1 bin/phpunit --group __nogroup__ ;; 1) grunt test ;; 2) php -d memory_limit=-1 bin/phpunit --group legacy --exclude-group web ;; 3) php -d memory_limit=-1 bin/phpunit --group web ;; esac:
+        parallel: true

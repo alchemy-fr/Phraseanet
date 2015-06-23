@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -22,6 +23,10 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrAuthProviderRepository extends EntityRepository
 {
+    /**
+     * @param User $user
+     * @return UsrAuthProvider[]
+     */
     public function findByUser(User $user)
     {
         $dql = 'SELECT u
@@ -36,6 +41,12 @@ class UsrAuthProviderRepository extends EntityRepository
         return $query->getResult();
     }
 
+    /**
+     * @param $providerId
+     * @param $distantId
+     * @return UsrAuthProvider|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findWithProviderAndId($providerId, $distantId)
     {
         $dql = 'SELECT u

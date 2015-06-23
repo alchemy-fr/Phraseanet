@@ -38,6 +38,10 @@ class ApiApplicationRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param User $user
+     * @return ApiApplication[]
+     */
     public function findByUser(User $user)
     {
         $qb = $this->createQueryBuilder('app');

@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
+use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 
@@ -14,6 +15,10 @@ use Doctrine\ORM\Query\Expr;
  */
 class ApiOauthTokenRepository extends EntityRepository
 {
+    /**
+     * @param ApiAccount $account
+     * @return ApiOauthToken|null
+     */
     public function findDeveloperToken(ApiAccount $account)
     {
         $qb = $this->createQueryBuilder('tok');
@@ -30,15 +35,13 @@ class ApiOauthTokenRepository extends EntityRepository
          * @note until we add expiration token, there is no way to distinguish a developer issued token from
          * a connection process issued token.
          */
-        $tokens = $qb->getQuery()->getResult();
-
-        if (0 === count($tokens)) {
-            return null;
-        }
-
-        return current($tokens);
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @param ApiAccount $account
+     * @return ApiOauthToken[]
+     */
     public function findOauthTokens(ApiAccount $account)
     {
         $qb = $this->createQueryBuilder('tok');

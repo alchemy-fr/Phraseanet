@@ -11,19 +11,32 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\Root;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Root\RootController;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Silex\ServiceProviderInterface;
 
-class Root implements ControllerProviderInterface
+class Root implements ControllerProviderInterface, ServiceProviderInterface
 {
+    use ControllerProviderTrait;
+
+    public function register(Application $app)
+    {
+        $app['controller.root'] = $app->share(function (PhraseaApplication $app) {
+            return (new RootController($app));
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
+
     public function connect(Application $app)
     {
-        $app['controller.root'] = $this;
-
-        $controllers = $app['controllers_factory'];
+        $controllers = $this->createCollection($app);
 
         $controllers
             ->get('/language/{locale}/', 'controller.root:setLocale')
@@ -42,34 +55,5 @@ class Root implements ControllerProviderInterface
             ->bind('robots');
 
         return $controllers;
-    }
-
-    public function getRobots(Application $app, Request $request)
-    {
-        if ($app['conf']->get(['registry', 'general', 'allow-indexation']) === true) {
-            $buffer = "User-Agent: *\n" . "Allow: /\n";
-        } else {
-            $buffer = "User-Agent: *\n" . "Disallow: /\n";
-        }
-
-        return new Response($buffer, 200, ['Content-Type' => 'text/plain']);
-    }
-
-    public function getRoot(Application $app, Request $request)
-    {
-        return $app->redirectPath('homepage');
-    }
-
-    public function setLocale(Application $app, Request $request, $locale)
-    {
-        $response = $app->redirectPath('root');
-        $response->headers->setCookie(new Cookie('locale', $locale));
-
-        return $response;
-    }
-
-    public function getAvailableLanguages(Application $app, Request $request)
-    {
-        return $app->json($app['locales.available']);
     }
 }

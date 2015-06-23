@@ -11,27 +11,39 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\User;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\User\UserNotificationController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Silex\ServiceProviderInterface;
 
-class Notifications implements ControllerProviderInterface
+class Notifications implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
+
+    public function register(Application $app)
+    {
+        $app['controller.user.notifications'] = $app->share(function (PhraseaApplication $app) {
+            return (new UserNotificationController($app));
+        });
+    }
+
+    public function boot(Application $app)
+    {
+        // no-op
+    }
 
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
-        $app['controller.user.notifications'] = $this;
-
         $controllers = $this->createAuthenticatedCollection($app);
+        $firewall = $this->getFirewall($app);
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireNotGuest();
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireNotGuest();
         });
 
         $controllers->get('/', 'controller.user.notifications:listNotifications')
@@ -41,48 +53,5 @@ class Notifications implements ControllerProviderInterface
             ->bind('set_notifications_readed');
 
         return $controllers;
-    }
-
-    /**
-     * Set notifications as readed
-     *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @return JsonResponse
-     */
-    public function readNotifications(Application $app, Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
-        }
-
-        try {
-            $app['events-manager']->read(
-                explode('_', (string) $request->request->get('notifications')),
-                $app['authentication']->getUser()->getId()
-            );
-
-            return $app->json(['success' => true, 'message' => '']);
-        } catch (\Exception $e) {
-            return $app->json(['success' => false, 'message' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Get all notifications
-     *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @return JsonResponse
-     */
-    public function listNotifications(Application $app, Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            $app->abort(400);
-        }
-
-        $page = (int) $request->query->get('page', 0);
-
-        return $app->json($app['events-manager']->get_notifications_as_array(($page < 0 ? 0 : $page)));
     }
 }
