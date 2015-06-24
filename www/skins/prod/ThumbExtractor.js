@@ -9,21 +9,34 @@
     };
 
     Canva.prototype = {
-        resize: function (elementDomNode) {
+        resize: function (elementDomNode, forceWidth) {
+
             var w = elementDomNode.getWidth();
+            var h = null;
             var maxH = elementDomNode.getHeight();
+            var ratio = 1;
 
             if ('' !== elementDomNode.getAspectRatio()) {
-                var ratio = parseFloat(elementDomNode.getAspectRatio());
+                ratio = parseFloat(elementDomNode.getAspectRatio());
 
-                var h = Math.round(w * (1 / ratio));
+                h = Math.round(w * (1 / ratio));
 
                 if (h > maxH) {
-                    var h = maxH;
-                    var w = Math.round(h * ratio);
+                    h = maxH;
+                    w = Math.round(h * ratio);
                 }
             } else {
-                var h = maxH;
+                h = maxH;
+            }
+
+            if( forceWidth !== undefined ) {
+                w = parseInt(forceWidth, 10);
+
+                if (elementDomNode.getAspectRatio() !== '') {
+                    h = Math.round(w * (1 / ratio));
+                } else {
+                    h = maxH;
+                }
             }
 
             this.domCanva.setAttribute("width", w);
@@ -137,7 +150,8 @@
             return this.datas[id];
         },
         remove: function (id) {
-            delete this.datas[id];
+            // never reuse same id
+            this.datas[id] = null;
         },
         getLength: function () {
             var count = 0;
@@ -153,17 +167,34 @@
     /******************
      *  Screenshot Object
      ******************/
-    var ScreenShot = function (id, canva, video) {
+    var ScreenShot = function (id, canva, video, altCanvas) {
 
         var date = new Date();
-
+        var options = options || {};
         canva.resize(video);
         canva.copy(video);
+
+        // handle alternative canvas:
+        var altCanvas = altCanvas == undefined ? [] : altCanvas;
+        this.altScreenShots = [];
+        if( altCanvas.length > 0 ) {
+            for(var i = 0; i< altCanvas.length; i++) {
+                var canvaEl = altCanvas[i].el;
+                canvaEl.resize(video, altCanvas[i].width);
+                canvaEl.copy(video);
+
+                this.altScreenShots.push({
+                    dataURI: canvaEl.extractImage(),
+                    name: altCanvas[i].name
+                })
+            }
+        }
 
         this.id = id;
         this.timestamp = date.getTime();
         this.dataURI = canva.extractImage();
         this.videoTime = video.getCurrentTime();
+
     };
 
     ScreenShot.prototype = {
@@ -178,13 +209,16 @@
         },
         getVideoTime: function () {
             return this.videoTime;
+        },
+        getAltScreenShots: function() {
+            return this.altScreenShots;
         }
     };
 
     /**
      * THUMB EDITOR
      */
-    var ThumbEditor = function (videoId, canvaId) {
+    var ThumbEditor = function (videoId, canvaId, outputOptions) {
 
         var domElement = document.getElementById(videoId);
 
@@ -195,6 +229,23 @@
 
         function getCanva() {
             return document.getElementById(canvaId);
+        }
+
+        var outputOptions = outputOptions || {};
+
+        function setAltCanvas() {
+            var domElements = [],
+                altCanvas = outputOptions.altCanvas;
+            if( altCanvas.length > 0 ) {
+                for(var i = 0; i< altCanvas.length; i++) {
+                    domElements.push({
+                        el: new Canva(altCanvas[i]),
+                        width: altCanvas[i].getAttribute('data-width'),
+                        name: altCanvas[i].getAttribute('data-name')
+                    } );
+                }
+            }
+            return domElements;
         }
 
         return {
@@ -208,7 +259,8 @@
                 var screenshot = new ScreenShot(
                     store.getLength() + 1,
                     new Canva(getCanva()),
-                    editorVideo
+                    editorVideo,
+                    setAltCanvas()
                 );
 
                 store.set(screenshot.getId(), screenshot);
@@ -216,16 +268,39 @@
                 return screenshot;
             },
             store: store,
-            copy: function (elementDomNode) {
+            copy: function (mainSource, altSources) {
+
+                var elementDomNode = document.createElement('img');
+                elementDomNode.src = mainSource;
+
                 var element = new Image(elementDomNode);
                 var editorCanva = new Canva(getCanva());
+                var altEditorCanva = setAltCanvas();
                 editorCanva
                     .reset()
                     .resize(editorVideo)
                     .copy(element);
+
+
+                // handle alternative canvas:
+                if( altEditorCanva.length > 0 ) {
+                    for(var i = 0; i< altEditorCanva.length; i++) {
+
+                        var tmpEl = document.createElement('img');
+                        tmpEl.src = altSources[i].dataURI;
+
+                        var canvaEl = altEditorCanva[i].el;
+
+                        canvaEl
+                            .reset()
+                            .resize(editorVideo, altEditorCanva[i].width)
+                            .copy(new Image(tmpEl)); // @TODO: should copy the right stored image
+                    }
+                }
             },
             getCanvaImage: function () {
                 var canva = new Canva(getCanva());
+
                 return canva.extractImage();
             },
             resetCanva: function () {
