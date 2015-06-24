@@ -88,8 +88,7 @@ class RecoveryService
             array('token' => $token),
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-
-        /** @var MailRequestPasswordUpdate $mail */
+        
         $mail = MailRequestPasswordUpdate::create($this->app, $receiver);
         $mail->setLogin($user->get_login());
         $mail->setButtonUrl($url);

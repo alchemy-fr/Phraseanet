@@ -37,7 +37,7 @@ abstract class AbstractMailWithLink extends AbstractMail implements MailWithLink
      * @param string            $url
      * @param \DateTime         $expiration
      *
-     * @return MailWithLinkInterface
+     * @return static
      */
     public static function create(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null, $url = null, \DateTime $expiration = null)
     {
