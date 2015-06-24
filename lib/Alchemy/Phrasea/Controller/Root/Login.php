@@ -15,7 +15,9 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\RecoveryException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -42,6 +44,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\FormInterface;
 
@@ -640,54 +643,36 @@ class Login implements ControllerProviderInterface
     {
         $form = $app->form(new PhraseaForgotPasswordForm());
 
-        try {
-            if ('POST' === $request->getMethod()) {
-                $form->bind($request);
+        if ('POST' === $request->getMethod()) {
+            $form->bind($request);
 
-                if ($form->isValid()) {
-                    $data = $form->getData();
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $service = new RecoveryService(
+                    $app,
+                    $app['tokens'],
+                    $app['url_generator'],
+                    $app['notification.deliverer']
+                );
 
-                    try {
-                        $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $data['email']), $app);
-                    } catch (\Exception $e) {
-                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
-                    }
-
-                    try {
-                        $receiver = Receiver::fromUser($user);
-                    } catch (InvalidArgumentException $e) {
-                        throw new FormProcessingException(_('Invalid email address'));
-                    }
-
-                    $expirationDate = new \DateTime('+1 day');
-                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expirationDate);
-
-                    if (!$token) {
-                        return $app->abort(500, 'Unable to generate a token');
-                    }
-
-                    $url = $app->url('login_renew_password', array('token' => $token), true);
-
-                    $mail = MailRequestPasswordUpdate::create($app, $receiver);
-                    $mail->setLogin($user->get_login());
-                    $mail->setButtonUrl($url);
-                    $mail->setExpiration($expirationDate);
-
-                    $app['notification.deliverer']->deliver($mail);
-                    $app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
-
-                    return $app->redirectPath('login_forgot_password');
+                try {
+                    $service->requestPasswordResetToken($data['email'], true);
                 }
+                catch (RecoveryException $e) {
+                    throw new HttpException(500, 'Unable to generate a token');
+                }
+                catch (InvalidArgumentException $e) {
+                    $app->addFlash('error', _($e->getMessage()));
+                }
+
+                return $app->redirectPath('login_forgot_password');
             }
-        } catch (FormProcessingException $e) {
-            $app->addFlash('error', $e->getMessage());
         }
 
         return $app['twig']->render('login/forgot-password.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
-            array(
-            'form'  => $form->createView(),
-        )));
+            array('form'  => $form->createView())
+        ));
     }
 
     /**
