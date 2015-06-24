@@ -55,8 +55,8 @@ class InstallerTest extends \PhraseanetTestCase
         });
 
         $abInfo = [
-            'host'     => 'localhost',
-            'port'     => 3306,
+            'host'     => $credentials['host'],
+            'port'     => $credentials['port'],
             'user'     => $credentials['user'],
             'password' => $credentials['password'],
             'dbname'   => 'ab_setup_test',
@@ -64,8 +64,8 @@ class InstallerTest extends \PhraseanetTestCase
 
         $abConn = $app['dbal.provider']($abInfo);
         $dbConn = $app['dbal.provider']([
-            'host'     => 'localhost',
-            'port'     => 3306,
+            'host'     => $credentials['host'],
+            'port'     => $credentials['port'],
             'user'     => $credentials['user'],
             'password' => $credentials['password'],
             'dbname'   => 'db_setup_test',
