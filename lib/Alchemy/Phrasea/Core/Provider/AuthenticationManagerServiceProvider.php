@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
+use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Authentication\Token\TokenValidator;
 use Silex\Application;
@@ -91,6 +92,15 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
         $app['authentication.manager'] = $app->share(function (Application $app) {
             return new Manager($app['authentication'], $app['authentication.providers']);
+        });
+
+        $app['authentication.recovery_service'] = $app->share(function (Application $app) {
+            return new RecoveryService(
+                $app,
+                $app['tokens'],
+                $app['url_generator'],
+                $app['notification.deliverer']
+            );
         });
 
         $app['auth.password-encoder'] = $app->share(function (Application $app) {

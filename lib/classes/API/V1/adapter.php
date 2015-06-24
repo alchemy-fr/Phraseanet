@@ -1912,6 +1912,38 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
+     * Resets the password for a given email address
+     *
+     * @param $email
+     * @return API_V1_result
+     */
+    public function reset_password($email)
+    {
+        /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
+        $service = $this->app['authentication.recovery_service'];
+
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+        $token = $service->requestPasswordResetToken($email, false);
+
+        $result->set_datas(array('reset_token' => $token));
+
+        return $result;
+    }
+
+    public function update_password($token, $password)
+    {
+        /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
+        $service = $this->app['authentication.recovery_service'];
+
+        $service->resetPassword($token, $password);
+
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+        $result->set_datas(array('success' => true));
+
+        return $result;
+    }
+
+    /**
      * List all databoxes of the current appbox
      *
      * @return array

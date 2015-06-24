@@ -97,4 +97,18 @@ class RecoveryService
         $this->mailer->deliver($mail);
         $this->app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
     }
+
+    public function resetPassword($resetToken, $newPassword)
+    {
+        $tokenData = $this->tokenGenerator->helloToken($resetToken);
+
+        if ($tokenData['type'] !== \random::TYPE_PASSWORD) {
+            throw new RecoveryException('Invalid token type');
+        }
+
+        $user = \User_Adapter::getInstance($tokenData['usr_id'], $this->app);
+        $user->set_password($newPassword);
+
+        $this->tokenGenerator->removeToken($resetToken);
+    }
 }

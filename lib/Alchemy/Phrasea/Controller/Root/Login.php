@@ -606,23 +606,20 @@ class Login implements ControllerProviderInterface
 
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
-            try {
-                if ($form->isValid()) {
-                    $data = $form->getData();
 
-                    $datas = $app['tokens']->helloToken($token);
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $service = $app['authentication.recovery_service'];
 
-                    $user = \User_Adapter::getInstance($datas['usr_id'], $app);
-                    $user->set_password($data['password']);
-
-                    $app['tokens']->removeToken($token);
-
+                try {
+                    $service->resetPassword($token, $data['password']);
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('homepage');
                 }
-            } catch (FormProcessingException $e) {
-                $app->addFlash('error', $e->getMessage());
+                catch (RecoveryException $e) {
+                    $app->addFlash('error', _($e->getMessage()));
+                }
             }
         }
 
@@ -648,12 +645,7 @@ class Login implements ControllerProviderInterface
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $service = new RecoveryService(
-                    $app,
-                    $app['tokens'],
-                    $app['url_generator'],
-                    $app['notification.deliverer']
-                );
+                $service = $app['authentication.recovery_service'];
 
                 try {
                     $service->requestPasswordResetToken($data['email'], true);

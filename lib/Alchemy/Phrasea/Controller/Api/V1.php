@@ -930,6 +930,34 @@ class V1 implements ControllerProviderInterface
             return $result->get_response();
         });
 
+        /**
+         * Route : /accounts/reset-password/{email}/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *      email : required STRING
+         */
+        $controllers->post('/accounts/{email}/reset-password/', function ($email) use ($app) {
+            $result = $app['api']->reset_password($email);
+
+            return $result->get_response();
+        });
+
+        /**
+         * Route : /accounts/update-password/{token}/
+         *
+         * Method : POST
+         *
+         * Parameters :
+         *  token : required STRING
+         */
+        $controllers->post('/accounts/update-password/', function (Request $request, $token) use ($app) {
+            $result = $app['api']->update_password($token, $request->query->get('password', null));
+
+            return $result->get_response();
+        });
+
         return $controllers;
     }
 }
