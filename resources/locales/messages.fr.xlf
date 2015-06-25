@@ -12,17 +12,13 @@
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="955ba3f1b3cb9a2d319b73af341dd94392f61e87" resname="                    The parameter &quot;force authentication&quot; forces the recipient(s) of the push to possess a Phraseanet account&#10;                    to see its contents.&#10;                    This avoids anonymous users to access to the content of the push if they were able to get the display&#10;                    url through a forwarded mail for example.&#10;                ">
+      <trans-unit id="955ba3f1b3cb9a2d319b73af341dd94392f61e87" resname="                    The parameter &quot;force authentication&quot; forces the recipient(s) of the push to possess a Phraseanet account&#10;                    to see its contents.&#10;                    This avoids anonymous users to access to the content of the push if they were able to get the display&#10;                    url through a forwarded mail for example.&#10;                " approved="yes">
         <source>                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
                     to see its contents.
                     This avoids anonymous users to access to the content of the push if they were able to get the display
                     url through a forwarded mail for example.
                 </source>
-        <target state="new">                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
-                    to see its contents.
-                    This avoids anonymous users to access to the content of the push if they were able to get the display
-                    url through a forwarded mail for example.
-                </target>
+        <target state="translated">Le paramètre "forcer l'authentification" force les destinataires du push à avoir un compte Phraseanet pour voir le contenu. Cela évite par exemple au utilisateurs inconnus d'accéder au contenu du push même si ceux-ci ont pu obtenir une URL par un email transféré.</target>
         <jms:reference-file line="168">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9378053eb7743587671aa830ffd2c9f1b13ad1a" resname="%ElementsCount% records" approved="yes">
@@ -36,9 +32,9 @@
         <jms:reference-file line="12">WorkZone/Browser/Results.html.twig</jms:reference-file>
         <jms:reference-file line="115">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="21a4ac34dfdf249b5e2e3b3fde7061b354080f4b" resname="%basket_length% documents">
+      <trans-unit id="21a4ac34dfdf249b5e2e3b3fde7061b354080f4b" resname="%basket_length% documents" approved="yes">
         <source>%basket_length% documents</source>
-        <target>%basket_length% documents</target>
+        <target state="translated">%basket_length% documents</target>
         <jms:reference-file line="28">mobile/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="64">lightbox/IE6/index.html.twig</jms:reference-file>
         <jms:reference-file line="122">lightbox/IE6/index.html.twig</jms:reference-file>
@@ -108,9 +104,9 @@
         <target state="translated">%name% est momentanément indisponible à cause d'un trop grand nombre de requêtes</target>
         <jms:reference-file line="6">actions/Bridge/deactivated.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ba3ac166c7bd7945dcbbb999db2e2300a310f11" resname="%nb_rating% like">
+      <trans-unit id="7ba3ac166c7bd7945dcbbb999db2e2300a310f11" resname="%nb_rating% like" approved="yes">
         <source>%nb_rating% like</source>
-        <target>%nb_rating% like</target>
+        <target state="translated">%nb_rating% « J'aime »</target>
         <jms:reference-file line="15">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba61e012d2ffac8b745d878b7986d121b28e739d" resname="%nb_rating% likes">
@@ -4820,7 +4816,7 @@
       </trans-unit>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
         <source>Please provide the same passwords.</source>
-        <target state="translated">Veuillez entrer le même mot de passe.</target>
+        <target state="translated">Veuillez indiquer des mots de passe identiques.</target>
         <jms:reference-file line="234">Controller/Root/Login.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="909937ac0774309e683ebb56a623ec8218c96e14" resname="Please select at least %s choice." approved="yes">
