@@ -21,6 +21,7 @@ use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class V1 implements ControllerProviderInterface
 {
@@ -89,6 +90,25 @@ class V1 implements ControllerProviderInterface
 
             return;
         }, 256);
+
+        $requirePasswordGrant = function () use ($app) {
+            /** @var \API_OAuth2_Token $oauthToken */
+            $oauthToken = $app['token'];
+
+            if (! $oauthToken) {
+                throw new AccessDeniedHttpException('Invalid application.');
+            }
+
+            $oauthApplication = $oauthToken->get_account()->get_application();
+
+            if ($oauthApplication->get_creator()->get_id() !== $oauthToken->get_account()->get_user()->get_id()) {
+                throw new AccessDeniedHttpException('Invalid token.');
+            }
+
+            if (! $oauthApplication->is_password_granted()) {
+                throw new AccessDeniedHttpException('Insufficient privileges.');
+            }
+        };
 
         /**
          * OAuth log process
@@ -888,13 +908,13 @@ class V1 implements ControllerProviderInterface
          *    DATABOX_ID : required INT
          *    STORY_ID : required INT
          *
-         */
+         */
         $controllers->get('/stories/{databox_id}/{record_id}/embed/', function ($databox_id, $record_id) use ($app) {
                 $result = $app['api']->get_story_embed($app['request'], $databox_id, $record_id);
 
                 return $result->get_response();
             }
-        )->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        )->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
@@ -938,11 +958,11 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *      email : required STRING
          */
-        $controllers->post('/accounts/{email}/reset-password/', function ($email) use ($app) {
+        $controllers->post('/accounts/reset-password/{email}/', function ($email) use ($app) {
             $result = $app['api']->reset_password($email);
 
             return $result->get_response();
-        });
+        })->before($requirePasswordGrant);
 
         /**
          * Route : /accounts/update-password/{token}/
@@ -952,11 +972,11 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *  token : required STRING
          */
-        $controllers->post('/accounts/update-password/', function (Request $request, $token) use ($app) {
-            $result = $app['api']->update_password($token, $request->query->get('password', null));
+        $controllers->post('/accounts/update-password/{token}/', function (Request $request, $token) use ($app) {
+            $result = $app['api']->update_password($token, $request->request->get('password', null));
 
             return $result->get_response();
-        });
+        })->before($requirePasswordGrant);
 
         return $controllers;
     }
