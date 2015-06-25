@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2015-03-11T18:12:33Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -4820,7 +4820,7 @@
       </trans-unit>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
         <source>Please provide the same passwords.</source>
-        <target state="translated">Veuillez indiquer des mots de passe identiques</target>
+        <target state="translated">Veuillez entrer le même mot de passe.</target>
         <jms:reference-file line="234">Controller/Root/Login.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="909937ac0774309e683ebb56a623ec8218c96e14" resname="Please select at least %s choice." approved="yes">
