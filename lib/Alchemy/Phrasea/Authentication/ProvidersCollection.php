@@ -33,6 +33,10 @@ class ProvidersCollection implements \Countable, \IteratorAggregate
         return isset($this->providers[$id]);
     }
 
+    /**
+     * @param $id
+     * @return ProviderInterface
+     */
     public function get($id)
     {
         if (!isset($this->providers[$id])) {

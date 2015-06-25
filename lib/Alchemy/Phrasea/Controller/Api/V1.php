@@ -978,6 +978,10 @@ class V1 implements ControllerProviderInterface
             return $result->get_response();
         })->before($requirePasswordGrant);
 
+        $controllers->post('accounts/access-demand/', function (Request $request) use ($app) {
+
+        })->before($requirePasswordGrant);
+
         return $controllers;
     }
 }

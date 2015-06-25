@@ -420,7 +420,7 @@ class appbox extends base
 
     /**
      *
-     * @return Array
+     * @return \databox[]
      */
     public function get_databoxes()
     {
