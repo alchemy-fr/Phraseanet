@@ -277,12 +277,7 @@ class Login implements ControllerProviderInterface
             $form->bind($requestData);
             $data = $form->getData();
 
-            $registrationService = new RegistrationService(
-                $app,
-                $app['phraseanet.appbox'],
-                $app['authentication.providers'],
-                $app['EM']->getRepository('Entities\UsrAuthProvider')
-            );
+            $registrationService = $app['authentication.registration_service'];
 
             if ($data['provider-id']) {
                 try {
@@ -325,6 +320,7 @@ class Login implements ControllerProviderInterface
                     }
 
                     $user = $registrationService->registerUser(
+                        $data,
                         $selected,
                         isset($data['provider-id']) ? $data['provider-id'] : null
                     );

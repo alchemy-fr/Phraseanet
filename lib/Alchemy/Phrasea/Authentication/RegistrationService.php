@@ -87,7 +87,7 @@ class RegistrationService
         return null;
     }
 
-    public function registerUser(array $data, array $selectedCollections, $providerId = null)
+    public function registerUser(array $data, array $selectedCollections = null, $providerId = null)
     {
         require_once $this->app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
@@ -117,7 +117,6 @@ class RegistrationService
             $this->app['EM']->flush();
         }
 
-
         if ($this->app['phraseanet.registry']->get('GV_autoregister')) {
             $this->applyAclsToUser($authorizedCollections, $user);
         }
@@ -126,6 +125,19 @@ class RegistrationService
         $user->set_mail_locked(true);
 
         return $user;
+    }
+
+    public function getAccountUnlockToken(\User_Adapter $user)
+    {
+        $expire = new \DateTime('+3 days');
+        $token = $this->app['tokens']->getUrlToken(
+            \random::TYPE_PASSWORD,
+            $user->get_id(),
+            $expire,
+            $user->get_email()
+        );
+
+        return $token;
     }
 
     private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
@@ -192,7 +204,7 @@ class RegistrationService
      * @return mixed
      * @throws \Exception
      */
-    private function applyAclsToUser($authorizedCollections, $user)
+    private function applyAclsToUser(array $authorizedCollections, \User_Adapter $user)
     {
         $template_user_id = \User_Adapter::get_usr_id_from_login($this->app, 'autoregister');
         $template_user = \User_Adapter::getInstance($template_user_id, $this->app);
