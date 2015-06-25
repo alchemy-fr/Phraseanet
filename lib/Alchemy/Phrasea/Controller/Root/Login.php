@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\RecoveryException;
+use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Authentication\RegistrationService;
@@ -445,30 +446,29 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
+        /** @var RegistrationService $service */
+        $service = $app['authentication.registration_service'];
+
         try {
-            $datas = $app['tokens']->helloToken($code);
+            $user = $service->unlockAccount($code);
         } catch (NotFoundHttpException $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
-        }
+        } catch (RegistrationException $e) {
+            if ($e->getCode() == RegistrationException::ACCOUNT_ALREADY_UNLOCKED) {
+                $app->addFlash('info', _($e->getMessage()));
+            }
+            else {
+                $app->addFlash('error', _($e->getMessage()));
+            }
 
-        try {
-            $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
+            return $app->redirectPath('homepage');
         } catch (\Exception $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
-
-        if (!$user->get_mail_locked()) {
-            $app->addFlash('info', _('Account is already unlocked, you can login.'));
-
-            return $app->redirectPath('homepage');
-        }
-
-        $app['tokens']->removeToken($code);
-        $user->set_mail_locked(false);
 
         try {
             $receiver = Receiver::fromUser($user);

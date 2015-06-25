@@ -985,6 +985,12 @@ class V1 implements ControllerProviderInterface
             return $result->get_response();
         })->before($requirePasswordGrant);
 
+        $controllers->post('/accounts/unlock/{token}/', function ($token) use ($app) {
+            $result = $app['api']->unlock_account($token);
+
+            return $result->get_response();
+        })->before($requirePasswordGrant);
+
         return $controllers;
     }
 }

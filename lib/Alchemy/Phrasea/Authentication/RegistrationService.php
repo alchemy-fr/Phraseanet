@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\ORM\EntityManager;
@@ -138,6 +139,24 @@ class RegistrationService
         );
 
         return $token;
+    }
+
+    public function unlockAccount($token)
+    {
+        $tokenData = $this->app['tokens']->helloToken($token);
+        $user = \User_Adapter::getInstance((int) $tokenData['usr_id'], $this->app);
+
+        if (!$user->get_mail_locked()) {
+            throw new RegistrationException(
+                'Account is already unlocked, you can login.',
+                RegistrationException::ACCOUNT_ALREADY_UNLOCKED
+            );
+        }
+
+        $this->app['tokens']->removeToken($token);
+        $user->set_mail_locked(false);
+
+        return $user;
     }
 
     private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)

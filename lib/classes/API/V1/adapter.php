@@ -1929,6 +1929,22 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
+    public function unlock_account($token)
+    {
+        /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
+        $service = $this->app['authentication.registration_service'];
+
+        $service->unlockAccount($token);
+
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+
+        $result->set_datas(array(
+            'success' => true
+        ));
+
+        return $result;
+    }
+
     /**
      * Resets the password for a given email address
      *
