@@ -8,7 +8,7 @@
     <body>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
         <source>Please provide the same passwords.</source>
-        <target state="translated">Veuillez entrer le même mot de passe.</target>
+        <target state="translated">Veuillez indiquer des mots de passe identiques.</target>
         <jms:reference-file line="44">Form/Login/PhraseaRecoverPasswordForm.php</jms:reference-file>
         <jms:reference-file line="51">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
         <jms:reference-file line="36">Form/Login/PhraseaRenewPasswordForm.php</jms:reference-file>
