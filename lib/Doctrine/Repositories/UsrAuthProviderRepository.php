@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\UsrAuthProvider;
 
 /**
  * UsrAuthProvider
@@ -26,6 +27,12 @@ class UsrAuthProviderRepository extends EntityRepository
         return $query->getResult();
     }
 
+    /**
+     * @param $providerId
+     * @param $distantId
+     * @return UsrAuthProvider|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findWithProviderAndId($providerId, $distantId)
     {
         $dql = 'SELECT u

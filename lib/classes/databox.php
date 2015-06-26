@@ -200,6 +200,9 @@ class databox extends base
         return $this->app['phraseanet.appbox'];
     }
 
+    /**
+     * @return \collection[]
+     */
     public function get_collections()
     {
         $ret = array();

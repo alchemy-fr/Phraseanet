@@ -16,8 +16,10 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\RecoveryException;
+use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\RecoveryService;
+use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -276,38 +278,31 @@ class Login implements ControllerProviderInterface
             $form->bind($requestData);
             $data = $form->getData();
 
-            $provider = null;
+            $registrationService = $app['authentication.registration_service'];
+
             if ($data['provider-id']) {
                 try {
-                    $provider = $this->findProvider($app, $data['provider-id']);
-                } catch (NotFoundHttpException $e) {
+                    $user = $registrationService->registerOauthUser($data['provider-id']);
+
+                    if ($user !== null) {
+                        $this->postAuthProcess($app, $user);
+
+                        if (null !== $redirect = $request->query->get('redirect')) {
+                            $redirection = '../' . $redirect;
+                        } else {
+                            $redirection = $app->path('prod');
+                        }
+
+                        return $app->redirect($redirection);
+                    }
+                } catch (InvalidArgumentException $e) {
                     $app->addFlash('error', _('You tried to register with an unknown provider'));
 
                     return $app->redirectPath('login_register');
-                }
-
-                try {
-                    $token = $provider->getToken();
                 } catch (NotAuthenticatedException $e) {
                     $app->addFlash('error', _('You tried to register with an unknown provider'));
 
                     return $app->redirectPath('login_register');
-                }
-
-                $userAuthProvider = $app['EM']
-                    ->getRepository('Entities\UsrAuthProvider')
-                    ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
-
-                if (null !== $userAuthProvider) {
-                    $this->postAuthProcess($app, $userAuthProvider->getUser($app));
-
-                    if (null !== $redirect = $request->query->get('redirect')) {
-                        $redirection = '../' . $redirect;
-                    } else {
-                        $redirection = $app->path('prod');
-                    }
-
-                    return $app->redirect($redirection);
                 }
             }
 
@@ -319,105 +314,17 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException(_('Invalid captcha answer.'));
                     }
 
-                    require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-
                     if ($app['phraseanet.registry']->get('GV_autoselectDB')) {
                         $selected = null;
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
                     }
-                    $inscriptions = giveMeBases($app);
-                    $inscOK = array();
 
-                    foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-
-                        foreach ($databox->get_collections() as $collection) {
-                            if (null !== $selected && !in_array($collection->get_base_id(), $selected)) {
-                                continue;
-                            }
-
-                            $sbas_id = $databox->get_sbas_id();
-
-                            if (isset($inscriptions[$sbas_id])
-                                && $inscriptions[$sbas_id]['inscript'] === true
-                                && (isset($inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()])
-                                || isset($inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]))) {
-                                $inscOK[$collection->get_base_id()] = true;
-                            } else {
-                                $inscOK[$collection->get_base_id()] = false;
-                            }
-                        }
-                    }
-
-                    if (!isset($data['login'])) {
-                        $data['login'] = $data['email'];
-                    }
-
-                    $user = \User_Adapter::create($app, $data['login'], $data['password'], $data['email'], false);
-
-                    foreach (array(
-                        'gender'    => 'set_gender',
-                        'firstname' => 'set_firstname',
-                        'lastname'  => 'set_lastname',
-                        'address'   => 'set_address',
-                        'zipcode'   => 'set_zip',
-                        'tel'       => 'set_tel',
-                        'fax'       => 'set_fax',
-                        'job'       => 'set_job',
-                        'company'   => 'set_company',
-                        'position'  => 'set_position',
-                        'geonameid' => 'set_geonameid',
-                    ) as $property => $method) {
-                        if (isset($data[$property])) {
-                            call_user_func(array($user, $method), $data[$property]);
-                        }
-                    }
-
-                    if (null !== $provider) {
-                        $this->attachProviderToUser($app['EM'], $provider, $user);
-                        $app['EM']->flush();
-                    }
-
-                    $demandOK = array();
-
-                    if ($app['phraseanet.registry']->get('GV_autoregister')) {
-
-                        $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
-
-                        $template_user = \User_Adapter::getInstance($template_user_id, $app);
-
-                        $base_ids = array();
-
-                        foreach (array_keys($inscOK) as $base_id) {
-                            $base_ids[] = $base_id;
-                        }
-                        $user->ACL()->apply_model($template_user, $base_ids);
-                    }
-
-                    $autoReg = $user->ACL()->get_granted_base();
-
-                    $appbox_register = new \appbox_register($app['phraseanet.appbox']);
-
-                    foreach ($inscOK as $base_id => $autorisation) {
-                        if (false === $autorisation || $user->ACL()->has_access_to_base($base_id)) {
-                            continue;
-                        }
-
-                        $collection = \collection::get_from_base_id($app, $base_id);
-                        $appbox_register->add_request($user, $collection);
-                        $demandOK[$base_id] = true;
-                    }
-
-                    $params = array(
-                        'demand'       => $demandOK,
-                        'autoregister' => $autoReg,
-                        'usr_id'       => $user->get_id()
+                    $user = $registrationService->registerUser(
+                        $data,
+                        $selected,
+                        isset($data['provider-id']) ? $data['provider-id'] : null
                     );
-
-                    $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
-                    $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
-
-                    $user->set_mail_locked(true);
 
                     try {
                         $this->sendAccountUnlockEmail($app, $user);
@@ -539,30 +446,29 @@ class Login implements ControllerProviderInterface
             return $app->redirectPath('homepage');
         }
 
+        /** @var RegistrationService $service */
+        $service = $app['authentication.registration_service'];
+
         try {
-            $datas = $app['tokens']->helloToken($code);
+            $user = $service->unlockAccount($code);
         } catch (NotFoundHttpException $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
-        }
+        } catch (RegistrationException $e) {
+            if ($e->getCode() == RegistrationException::ACCOUNT_ALREADY_UNLOCKED) {
+                $app->addFlash('info', _($e->getMessage()));
+            }
+            else {
+                $app->addFlash('error', _($e->getMessage()));
+            }
 
-        try {
-            $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
+            return $app->redirectPath('homepage');
         } catch (\Exception $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
-
-        if (!$user->get_mail_locked()) {
-            $app->addFlash('info', _('Account is already unlocked, you can login.'));
-
-            return $app->redirectPath('homepage');
-        }
-
-        $app['tokens']->removeToken($code);
-        $user->set_mail_locked(false);
 
         try {
             $receiver = Receiver::fromUser($user);

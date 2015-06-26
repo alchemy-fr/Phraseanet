@@ -978,6 +978,19 @@ class V1 implements ControllerProviderInterface
             return $result->get_response();
         })->before($requirePasswordGrant);
 
+        $controllers->post('/accounts/access-demand/', function (Request $request) use ($app) {
+            $data = json_decode($request->getContent(false), true);
+            $result = $app['api']->create_account($data);
+
+            return $result->get_response();
+        })->before($requirePasswordGrant);
+
+        $controllers->post('/accounts/unlock/{token}/', function ($token) use ($app) {
+            $result = $app['api']->unlock_account($token);
+
+            return $result->get_response();
+        })->before($requirePasswordGrant);
+
         return $controllers;
     }
 }
