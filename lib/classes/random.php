@@ -110,12 +110,13 @@ class random
 
     /**
      *
-     * @param string        $type
-     * @param int           $usr
-     * @param DateTime      $end_date
-     * @param mixed content $datas
-     *
-     * @return boolean
+     * @param string $type
+     * @param int $usr
+     * @param DateTime $end_date
+     * @param string $datas
+     * @return bool
+     * @throws Exception
+     * @throws Exception_InvalidArgument
      */
     public function getUrlToken($type, $usr, DateTime $end_date = null, $datas = '')
     {

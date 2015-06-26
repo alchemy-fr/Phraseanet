@@ -355,16 +355,18 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  type         $id
-     * @param  Application  $app
+     * @param  int $id
+     * @param  Application $app
      * @return User_Adapter
+     * @throws Exception
      */
     public static function getInstance($id, Application $app)
     {
-        if (is_int((int) $id) && (int) $id > 0) {
-            $id = (int) $id;
-        } else
+        $id = (int)$id;
+
+        if ($id <= 0) {
             throw new Exception('Invalid usr_id');
+        }
 
         if (!isset(self::$_instance[$id])) {
             try {
