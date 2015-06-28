@@ -128,8 +128,9 @@ class registry implements registryInterface
      */
     public function get($key, $defaultvalue = null)
     {
-        if (!$this->cache->contains($key))
+        if (!$this->cache->contains($key)) {
             $this->load();
+        }
 
         if (!$this->cache->contains($key) && !is_null($defaultvalue)) {
             return $defaultvalue;

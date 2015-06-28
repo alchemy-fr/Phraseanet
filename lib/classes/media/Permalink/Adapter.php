@@ -21,6 +21,78 @@ use Guzzle\Http\Url;
  */
 class media_Permalink_Adapter implements media_Permalink_Interface, cache_cacheableInterface
 {
+
+    public static function get(Application $app, databox $databox, media_subdef $media_subdef)
+    {
+        return new self($app, $databox, $media_subdef, true);
+    }
+
+    /**
+     * @param databox $databox
+     * @param media_subdef[] $subdefs
+     */
+    public static function loadForSubdefs(Application $app, databox $databox, array $subdefs)
+    {
+        $connection = $databox->get_connection();
+
+        $query = 'SELECT p.id, p.subdef_id, p.token, p.activated, p.created_on, p.last_modified
+              , p.label
+            FROM permalinks p
+            WHERE p.subdef_id IN (%s)';
+
+        $params = array();
+
+        foreach ($subdefs as $subdef) {
+            $params[':id_' . $subdef->get_subdef_id()] = strtolower($subdef->get_subdef_id());
+        }
+
+        $query = sprintf($query, implode(', ', array_keys($params)));
+
+        $statement = $connection->prepare($query);
+        $statement->execute($params);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        $mappedSubdefs = array();
+
+        foreach ($subdefs as $subdef) {
+            $mappedSubdefs[$subdef->get_subdef_id()] = $subdef;
+        }
+
+        foreach ($rows as $row) {
+            $link = new self($app, $databox, $mappedSubdefs[$row['subdef_id']], false);
+
+            self::mapFromQuery($link, $row);
+
+            $mappedSubdefs[$row['subdef_id']]->set_permalink($link);
+        }
+    }
+
+    protected static function load(self $link)
+    {
+        try {
+            return self::mapFromCache($link);
+        } catch (\Exception $e) {
+
+        }
+
+        $sql = 'SELECT p.id, p.token, p.activated, p.created_on, p.last_modified
+              , p.label
+            FROM permalinks p
+            WHERE p.subdef_id = :subdef_id';
+        $stmt = $link->databox->get_connection()->prepare($sql);
+        $stmt->execute(array(':subdef_id' => $link->media_subdef->get_subdef_id()));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if ( ! $row) {
+            throw new Exception_Media_SubdefNotFound ();
+        }
+
+        self::mapFromQuery($link, $row);
+        self::putInCache($link);
+    }
+
     /**
      *
      * @var databox
@@ -76,15 +148,63 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    protected function __construct(Application $app, databox $databox, media_subdef $media_subdef)
+    protected function __construct(Application $app, databox $databox, media_subdef $media_subdef, $load = true)
     {
         $this->app = $app;
         $this->databox = $databox;
         $this->media_subdef = $media_subdef;
 
-        $this->load();
+        if ($load) {
+            self::load($this);
+        }
 
         return $this;
+    }
+
+    /**
+     * @param media_Permalink_Adapter $link
+     */
+    protected static function mapFromCache(self $link)
+    {
+        $datas = $link->get_data_from_cache();
+
+        $link->id = $datas['id'];
+        $link->token = $datas['token'];
+        $link->is_activated = $datas['is_activated'];
+        $link->created_on = $datas['created_on'];
+        $link->last_modified = $datas['last_modified'];
+        $link->label = $datas['label'];
+    }
+
+    /**
+     * @param media_Permalink_Adapter $link
+     */
+    protected static function putInCache(self $link)
+    {
+        $datas = array(
+            'id' => $link->id,
+            'token' => $link->token,
+            'is_activated' => $link->is_activated,
+            'created_on' => $link->created_on,
+            'last_modified' => $link->last_modified,
+            'label' => $link->label,
+        );
+
+        $link->set_data_to_cache($datas);
+    }
+
+    /**
+     * @param media_Permalink_Adapter $link
+     * @param $row
+     */
+    protected static function mapFromQuery(self $link, $row)
+    {
+        $link->id = (int)$row['id'];
+        $link->token = $row['token'];
+        $link->is_activated = !!$row['activated'];
+        $link->created_on = new DateTime($row['created_on']);
+        $link->last_modified = new DateTime($row['last_modified']);
+        $link->label = $row['label'];
     }
 
     /**
@@ -240,59 +360,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    /**
-     *
-     * @return media_Permalink_Adapter
-     */
-    protected function load()
-    {
-        try {
-            $datas = $this->get_data_from_cache();
-            $this->id = $datas['id'];
-            $this->token = $datas['token'];
-            $this->is_activated = $datas['is_activated'];
-            $this->created_on = $datas['created_on'];
-            $this->last_modified = $datas['last_modified'];
-            $this->label = $datas['label'];
-
-            return $this;
-        } catch (\Exception $e) {
-
-        }
-
-        $sql = 'SELECT p.id, p.token, p.activated, p.created_on, p.last_modified
-              , p.label
-            FROM permalinks p
-            WHERE p.subdef_id = :subdef_id';
-        $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':subdef_id' => $this->media_subdef->get_subdef_id()));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ( ! $row)
-            throw new Exception_Media_SubdefNotFound ();
-
-        $this->id = (int) $row['id'];
-        $this->token = $row['token'];
-        $this->is_activated = ! ! $row['activated'];
-        $this->created_on = new DateTime($row['created_on']);
-        $this->last_modified = new DateTime($row['last_modified']);
-        $this->label = $row['label'];
-
-        $datas = array(
-            'id'            => $this->id
-            , 'token'         => $this->token
-            , 'is_activated'  => $this->is_activated
-            , 'created_on'    => $this->created_on
-            , 'last_modified' => $this->last_modified
-            , 'label'         => $this->label
-        );
-
-        $this->set_data_to_cache($datas);
 
         return $this;
     }

@@ -19,6 +19,41 @@ use Alchemy\Phrasea\Application;
  */
 class caption_field implements cache_cacheableInterface
 {
+
+    public static function getMany(Application $app, record_adapter $record, array $metadataIds)
+    {
+        $values = caption_Field_Value::getMany($app, $record, $metadataIds);
+        $groupedValues = array();
+        $fields = array();
+
+        foreach ($values as $value) {
+            $databoxFieldId = $value->getDatabox_field()->get_id();
+
+            if (! isset($fields[$databoxFieldId])) {
+                $field = new self($app, $value->getDatabox_field(), $record, array(), false);
+                $fields[$databoxFieldId] = $field;
+            }
+
+            if (! isset($groupedValues[$databoxFieldId])) {
+                $groupedValues[$databoxFieldId] = array();
+            }
+
+            $groupedValues[$databoxFieldId][$value->getId()] = $value;
+        }
+
+        foreach ($fields as $index => $field) {
+            if ($field->is_multi()) {
+                $field->values = $groupedValues[$index];
+            }
+            else {
+                $value = reset($groupedValues[$index]);
+                $field->values = array($value->getId() => $value);
+            }
+        }
+
+        return $fields;
+    }
+
     /**
      *
      * @var databox_field
@@ -42,33 +77,28 @@ class caption_field implements cache_cacheableInterface
 
     /**
      *
-     * @param Application      $app
-     * @param databox_field    $databox_field
+     * @param Application $app
+     * @param databox_field $databox_field
      * @param record_Interface $record
      *
-     * @return caption_field
+     * @param array $metadataIds
      */
-    public function __construct(Application $app, databox_field $databox_field, record_Interface $record)
+    public function __construct(Application $app, databox_field $databox_field, record_Interface $record, array $metadataIds = null, $loadValues = true)
     {
         $this->app = $app;
         $this->record = $record;
         $this->databox_field = $databox_field;
         $this->values = array();
 
-        $rs = $this->get_metadatas_ids();
+        if ($loadValues) {
+            $rs = $metadataIds ?: $this->get_metadatas_ids();
 
-        foreach ($rs as $row) {
-            $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
+            $ids = array_map(function ($row) {
+                return $row['id'];
+            }, $rs);
 
-            /**
-             * Inconsistent, should not happen
-             */
-            if ( ! $databox_field->is_multi()) {
-                break;
-            }
+            $this->values = caption_Field_Value::getMany($app, $record, $ids);
         }
-
-        return $this;
     }
 
     protected function get_metadatas_ids()
@@ -86,8 +116,8 @@ class caption_field implements cache_cacheableInterface
                   AND meta_struct_id = :meta_struct_id';
 
         $params = array(
-            ':record_id'      => $this->record->get_record_id()
-            , ':meta_struct_id' => $this->databox_field->get_id()
+            ':record_id'      => $this->record->get_record_id(),
+            ':meta_struct_id' => $this->databox_field->get_id()
         );
 
         $stmt = $connbas->prepare($sql);
@@ -185,6 +215,20 @@ class caption_field implements cache_cacheableInterface
     public function get_values()
     {
         return $this->values;
+    }
+
+    /**
+     * @param array $values
+     */
+    public function set_values(array $values)
+    {
+        foreach ($values as $value) {
+            if (! $value instanceof caption_Field_Value || $value->getDatabox_field() != $this) {
+                throw new \InvalidArgumentException();
+            }
+        }
+
+        $this->values = $values;
     }
 
     /**

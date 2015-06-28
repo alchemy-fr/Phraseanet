@@ -431,18 +431,21 @@ class PhraseaEngine implements SearchEngineInterface
         $resultNumber = $offset;
         $records = new ArrayCollection();
 
-        foreach ($rs as $data) {
-            try {
-                $records->add(new \record_adapter(
-                                $this->app,
-                                \phrasea::sbasFromBas($this->app, $data['base_id']),
-                                $data['record_id'],
-                                $resultNumber
-                ));
-            } catch (\Exception $e) {
+        $groupedResults = array();
 
+        foreach ($rs as $data) {
+            $groupedResults[\phrasea::sbasFromBas($this->app, $data['base_id'])][] = [
+                'id' => $data['record_id'],
+                'index' => $resultNumber++
+            ];
+        }
+
+        foreach ($groupedResults as $sbas_id => $sbasResults) {
+            $results = \record_adapter::getMany($this->app, $sbas_id, $sbasResults);
+
+            foreach ($results as $result) {
+                $records->add($result);
             }
-            $resultNumber++;
         }
 
         $propositions = $this->getPropositions();

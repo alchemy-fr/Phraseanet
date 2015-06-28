@@ -424,49 +424,17 @@ class appbox extends base
      */
     public function get_databoxes()
     {
-        if ($this->databoxes) {
-            return $this->databoxes;
+        if (! $this->databoxes) {
+            $this->databoxes = \databox::getAll($this->app, $this);
         }
-
-        $ret = array();
-        foreach ($this->retrieve_sbas_ids() as $sbas_id) {
-            try {
-                $ret[$sbas_id] = new \databox($this->app, $sbas_id);
-            } catch (NotFoundHttpException $e) {
-
-            }
-        }
-
-        $this->databoxes = $ret;
 
         return $this->databoxes;
     }
 
-    protected function retrieve_sbas_ids()
-    {
-        try {
-            return $this->get_data_from_cache(self::CACHE_SBAS_IDS);
-        } catch (\Exception $e) {
-
-        }
-        $sql = 'SELECT sbas_id FROM sbas';
-
-        $ret = array();
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $ret[] = (int) $row['sbas_id'];
-        }
-
-        $this->set_data_to_cache($ret, self::CACHE_SBAS_IDS);
-
-        return $ret;
-    }
-
+    /**
+     * @param $sbas_id
+     * @return databox
+     */
     public function get_databox($sbas_id)
     {
         $databoxes = $this->get_databoxes();

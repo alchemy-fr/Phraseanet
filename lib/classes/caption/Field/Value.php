@@ -19,6 +19,85 @@ use Alchemy\Phrasea\Vocabulary;
  */
 class caption_Field_Value implements cache_cacheableInterface
 {
+
+    public static function fromData(Application $app, databox_field $databox_field, record_adapter $record, array $data)
+    {
+        $value = new self($app, $databox_field, $record, $data['id'], false);
+
+        $value->value = $data['value'];
+        $value->VocabularyId = $data['VocabularyId'];
+        $value->VocabularyType = $data['VocabularyType'];
+
+        return $value;
+    }
+
+    /**
+     * @param Application $app
+     * @param record_adapter $record
+     * @param array $ids
+     * @return self[]
+     */
+    public static function getMany(Application $app, record_adapter $record, array $ids)
+    {
+        if (empty($ids)) {
+            return array();
+        }
+
+        $connection = $record->get_databox()->get_connection();
+
+        $query = 'SELECT id, record_id, meta_struct_id, value, VocabularyType, VocabularyId
+            FROM metadatas WHERE id IN (%s)';
+
+        $query = sprintf($query, implode(', ', $ids));
+
+        $stmt = $connection->prepare($query);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $values = array();
+
+        foreach ($rows as $row) {
+            $databox_field = databox_field::get_instance($app, $record->get_databox(), (int) $row['meta_struct_id']);
+            $value = new self($app, $databox_field, $record, (int) $row['id'], false);
+
+            self::mapFromRow($value, $row);
+
+            $values[$value->getId()] = $value;
+        }
+
+        return $values;
+    }
+
+    protected static function load(self $value)
+    {
+        try {
+            $datas = $value->get_data_from_cache();
+
+            $value->value = $datas['value'];
+            $value->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($value->app, $datas['vocabularyType']) : null;
+            $value->VocabularyId = $datas['vocabularyId'];
+
+            return $value;
+        } catch (\Exception $e) {
+
+        }
+
+        $connbas = $value->databox_field->get_databox()->get_connection();
+
+        $sql = 'SELECT record_id, value, VocabularyType, VocabularyId
+            FROM metadatas WHERE id = :id';
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':id' => $value->id));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        self::mapFromRow($value, $row);
+
+        return $value;
+    }
+
     /**
      *
      * @var int
@@ -73,93 +152,72 @@ class caption_Field_Value implements cache_cacheableInterface
 
     /**
      *
-     * @param  Application          $app
-     * @param  databox_field        $databox_field
-     * @param  record_adapter       $record
-     * @param  type                 $id
-     * @return \caption_Field_Value
+     * @param  Application $app
+     * @param  databox_field $databox_field
+     * @param  record_adapter $record
+     * @param  int $id
+     * @param bool $load
      */
-    public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id)
+    public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id, $load = true)
     {
         $this->id = (int) $id;
         $this->databox_field = $databox_field;
         $this->record = $record;
         $this->app = $app;
 
-        $this->retrieveValues();
+        if ($load) {
+            self::load($this);
+        }
+    }
+
+    /**
+     * @param caption_Field_Value $value
+     * @param $row
+     */
+    protected static function mapFromRow(self $value, $row)
+    {
+        $value->value = $row ? $row['value'] : null;
+
+        try {
+            $value->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($value->app, $row['VocabularyType']) : null;
+            $value->VocabularyId = $row['VocabularyId'];
+        } catch (\InvalidArgumentException $e) {
+
+        }
+
+        if ($value->VocabularyType) {
+            /**
+             * Vocabulary Control has been deactivated
+             */
+            if (!$value->databox_field->getVocabularyControl()) {
+                $value->removeVocabulary();
+            } /**
+             * Vocabulary Control has changed
+             */ elseif ($value->databox_field->getVocabularyControl()->getType() !== $value->VocabularyType->getType()) {
+                $value->removeVocabulary();
+            } /**
+             * Current Id is not available anymore
+             */ elseif (!$value->VocabularyType->validate($value->VocabularyId)) {
+                $value->removeVocabulary();
+            } /**
+             * String equivalence has changed
+             */ elseif ($value->VocabularyType->getValue($value->VocabularyId) !== $value->value) {
+                $value->set_value($value->VocabularyType->getValue($value->VocabularyId));
+            }
+        }
+
+        $datas = array(
+            'value' => $value->value,
+            'vocabularyId' => $value->VocabularyId,
+            'vocabularyType' => $value->VocabularyType ? $value->VocabularyType->getType() : null,
+        );
+
+        $value->set_data_to_cache($datas);
     }
 
     public function getQjs()
     {
         return $this->qjs;
-    }
-
-    protected function retrieveValues()
-    {
-        try {
-            $datas = $this->get_data_from_cache();
-
-            $this->value = $datas['value'];
-            $this->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($this->app, $datas['vocabularyType']) : null;
-            $this->VocabularyId = $datas['vocabularyId'];
-
-            return $this;
-        } catch (\Exception $e) {
-
-        }
-
-        $connbas = $this->databox_field->get_databox()->get_connection();
-
-        $sql = 'SELECT record_id, value, VocabularyType, VocabularyId
-            FROM metadatas WHERE id = :id';
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $this->value = $row ? $row['value'] : null;
-
-        try {
-            $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($this->app, $row['VocabularyType']) : null;
-            $this->VocabularyId = $row['VocabularyId'];
-        } catch (\InvalidArgumentException $e) {
-
-        }
-
-        if ($this->VocabularyType) {
-            /**
-             * Vocabulary Control has been deactivated
-             */
-            if ( ! $this->databox_field->getVocabularyControl()) {
-                $this->removeVocabulary();
-            }
-            /**
-             * Vocabulary Control has changed
-             */ elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->VocabularyType->getType()) {
-                $this->removeVocabulary();
-            }
-            /**
-             * Current Id is not available anymore
-             */ elseif ( ! $this->VocabularyType->validate($this->VocabularyId)) {
-                $this->removeVocabulary();
-            }
-            /**
-             * String equivalence has changed
-             */ elseif ($this->VocabularyType->getValue($this->VocabularyId) !== $this->value) {
-                $this->set_value($this->VocabularyType->getValue($this->VocabularyId));
-            }
-        }
-
-        $datas = array(
-            'value'          => $this->value,
-            'vocabularyId'   => $this->VocabularyId,
-            'vocabularyType' => $this->VocabularyType ? $this->VocabularyType->getType() : null,
-        );
-
-        $this->set_data_to_cache($datas);
-
-        return $this;
     }
 
     public function getVocabularyType()

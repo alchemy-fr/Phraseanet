@@ -22,8 +22,120 @@ use Symfony\Component\Yaml\Dumper as YamlDumper;
 class caption_record implements caption_interface, cache_cacheableInterface
 {
     /**
+     * @param Application $app
+     * @param record_adapter[] $records
+     * @return caption_record[]
+     */
+    public static function getMany(Application $app, databox $databox, array $records)
+    {
+        $query = "SELECT m.record_id, m.id as meta_id, m.id as id, s.id as structure_id,
+                         m.value, m.VocabularyType, m.VocabularyId
+                  FROM metadatas m INNER JOIN metadatas_structure s ON (s.id = m.meta_struct_id)
+                  WHERE m.record_id IN (%s)
+                  ORDER BY m.record_id, s.id, s.sorter ASC";
+
+        $query = sprintf($query, implode(', ', array_map(function (record_adapter $record) {
+            return $record->get_record_id();
+        }, $records)));
+
+        $statement = $databox->get_connection()->prepare($query);
+        $statement->execute();
+        $fields = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        $captions = array();
+
+        $groupedFields = array();
+        $row = reset($fields);
+
+        while ($row !== false) {
+            $recordId = (int) $row['record_id'];
+            $record = $records[$recordId];
+
+            $structureId = (int) $row['structure_id'];
+            $databox_field = databox_field::get_instance($app, $databox, $structureId);
+
+            if (! isset($groupedFields[$recordId])) {
+                $groupedFields[$recordId] = array();
+            }
+
+            if (! isset($groupedFields[$recordId][$structureId])) {
+                $groupedFields[$recordId][$structureId] = array();
+            }
+
+            $caption_field_values = caption_Field_Value::fromData($app, $databox_field, $record, $row);
+            $groupedFieldValues[$recordId][$structureId][] = $caption_field_values;
+
+            $row = next($fields);
+        }
+
+        foreach ($records as $record) {
+            $caption = new self($app, $record, $databox);
+
+            $fields = array();
+
+            foreach ($groupedFields[$record->get_record_id()] as $structureId => $structureFields) {
+                $databox_field = databox_field::get_instance($app, $databox, $structureId);
+                $caption_field = new caption_field($app, $databox_field, $record, null, false);
+
+                if (! $caption_field->is_multi() && ! empty($structureFields)) {
+                    $field = reset($structureFields);
+                    $structureFields = array($field->getId() => $field);
+                }
+
+                $caption_field->set_values($structureFields);
+
+                $fields[] = $caption_field;
+            }
+
+            $caption->fields = $fields;
+            $captions[] = $caption;
+        }
+
+        return $captions;
+    }
+
+    /**
+     * @param caption_record $caption_record
+     * @param $fields
+     */
+    protected static function mapFromFields(self $caption_record, $fields)
+    {
+        $metaIds = array_map(function ($row) {
+            return $row['meta_id'];
+        }, $fields);
+
+        $caption_record->fields = caption_field::getMany($caption_record->app, $caption_record->record, $metaIds);
+    }
+
+    protected static function load(self $caption_record)
+    {
+        try {
+            $fields = $caption_record->get_data_from_cache();
+        } catch (\Exception $e) {
+            $sql = "SELECT m.id as meta_id, s.id as structure_id
+                    FROM metadatas m INNER JOIN metadatas_structure s ON (s.id = m.meta_struct_id)
+                    WHERE m.record_id = :record_id
+                    ORDER BY s.sorter ASC";
+
+            $stmt = $caption_record->databox->get_connection()->prepare($sql);
+            $stmt->execute(array(':record_id' => $caption_record->record->get_record_id()));
+            $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            if ($fields) {
+                $caption_record->set_data_to_cache($fields);
+            }
+        }
+
+        if ($fields) {
+            self::mapFromFields($caption_record, $fields);
+        }
+    }
+
+    /**
      *
-     * @var array
+     * @var caption_field[]
      */
     protected $fields;
 
@@ -193,36 +305,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
             return $this->fields;
         }
 
-        $fields = array();
-        try {
-            $fields = $this->get_data_from_cache();
-        } catch (\Exception $e) {
-            $sql = "SELECT m.id as meta_id, s.id as structure_id
-          FROM metadatas m, metadatas_structure s
-          WHERE m.record_id = :record_id AND s.id = m.meta_struct_id
-            ORDER BY s.sorter ASC";
-            $stmt = $this->databox->get_connection()->prepare($sql);
-            $stmt->execute(array(':record_id' => $this->record->get_record_id()));
-            $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            if ($fields) {
-                $this->set_data_to_cache($fields);
-            }
-        }
-
-        $rec_fields = array();
-
-        if ($fields) {
-            foreach ($fields as $row) {
-                $databox_meta_struct = databox_field::get_instance($this->app, $this->databox, $row['structure_id']);
-                $metadata = new caption_field($this->app, $databox_meta_struct, $this->record);
-
-                $rec_fields[$databox_meta_struct->get_id()] = $metadata;
-            }
-        }
-        $this->fields = $rec_fields;
+        self::load($this);
 
         return $this->fields;
+    }
+
+    public function get_record_id()
+    {
+        return $this->record->get_record_id();
     }
 
     /**
@@ -230,7 +320,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      * @param array   $grep_fields
      * @param Boolean $IncludeBusiness
      *
-     * @return array
+     * @return caption_field[]
      */
     public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
     {
@@ -245,7 +335,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 continue;
             }
 
-            $fields[] = $field;
+            $fields[$meta_struct_id] = $field;
         }
 
         return $fields;

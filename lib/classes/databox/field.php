@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Vocabulary;
+use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
 use PHPExiftool\Driver\TagInterface;
@@ -28,9 +28,172 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class databox_field implements cache_cacheableInterface
 {
+  
+    const TYPE_TEXT = "text";
+    const TYPE_DATE = "date";
+    const TYPE_STRING = "string";
+    const TYPE_NUMBER = "number";
+
+    /**
+     * http://dublincore.org/documents/dces/
+     */
+    const DCES_TITLE = 'Title';
+    const DCES_CREATOR = 'Creator';
+    const DCES_SUBJECT = 'Subject';
+    const DCES_DESCRIPTION = 'Description';
+    const DCES_PUBLISHER = 'Publisher';
+    const DCES_CONTRIBUTOR = 'Contributor';
+    const DCES_DATE = 'Date';
+    const DCES_TYPE = 'Type';
+    const DCES_FORMAT = 'Format';
+    const DCES_IDENTIFIER = 'Identifier';
+    const DCES_SOURCE = 'Source';
+    const DCES_LANGUAGE = 'Language';
+    const DCES_RELATION = 'Relation';
+    const DCES_COVERAGE = 'Coverage';
+    const DCES_RIGHTS = 'Rights';
+
+  
+    protected static $_instance = array();
+  
     /**
      *
-     * @var <type>
+     * @param Application $app
+     * @param \databox    $databox
+     * @param int         $id
+     *
+     * @return \databox_field
+     */
+    public static function get_instance(Application $app, databox $databox, $id)
+    {
+        $cache_key = 'field_' . $id;
+        $instance_id = $databox->get_sbas_id() . '_' . $id;
+      
+        if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
+            try {
+                self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
+            } catch (\Exception $e) {
+                self::$_instance[$instance_id] = new self($app, $databox, $id);
+                $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
+            }
+        }
+
+        return self::$_instance[$instance_id];
+    }
+  
+    public static function get_all(Application $app, databox $databox)
+    {
+        $connection = $databox->get_connection();
+      
+        $query = "SELECT `id`, `thumbtitle`, `separator`, `dces_element`, `tbranch`,
+                         `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
+                         `name`, `src`, `business`, `VocabularyControlType`,
+                         `RestrictToVocabularyControl`, `sorter`,
+                         `label_en`, `label_fr`, `label_de`, `label_nl`
+                  FROM metadatas_structure";
+      
+        $statement = $connection->prepare($query);
+        $statement->execute();
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+      
+        foreach ($rows as $row) {
+            $field = new self($app, $databox, (int) $row['id'], false);
+          
+            self::mapFromRow($field, $row);
+          
+            $field->loadVocabulary();
+            
+            self::$_instance[$databox->get_sbas_id() . '_' . $row['id']] = $field;
+        }
+      
+        return self::$_instance;
+    }
+
+    protected static function load(self $field) 
+    {
+        $connection = $field->get_connection();
+
+        $query = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
+                         `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
+                         `name`, `src`, `business`, `VocabularyControlType`,
+                         `RestrictToVocabularyControl`, `sorter`,
+                         `label_en`, `label_fr`, `label_de`, `label_nl`
+                  FROM metadatas_structure WHERE id=:id";
+
+        $statement = $connection->prepare($query);
+        $statement->execute(array(':id' => $field->id));
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        if (!$row) {
+            throw new NotFoundHttpException(sprintf('Unable to find field in %s', $field));
+        }
+
+        self::mapFromRow($field, $row);
+      
+        $field->loadVocabulary();  
+    }
+  
+    protected static function mapFromRow(self $field, array $row) 
+    {
+        $field->original_src = $row['src'];
+        $field->tag = self::loadClassFromTagName($row['src'], false);
+
+        if ($row['src'] != $field->tag->getTagname()) {
+            $field->on_error = true;
+        }
+
+        foreach (array('en', 'fr', 'de', 'nl') as $code) {
+            $field->labels[$code] = $row['label_' . $code];
+        }
+
+        $field->name = $row['name'];
+        $field->indexable = (bool) $row['indexable'];
+        $field->readonly = (bool) $row['readonly'];
+        $field->required = (bool) $row['required'];
+        $field->multi = (bool) $row['multi'];
+        $field->Business = (bool) $row['business'];
+        $field->report = (bool) $row['report'];
+        $field->position = (int) $row['sorter'];
+        $field->type = $row['type'] ? : self::TYPE_STRING;
+        $field->tbranch = $row['tbranch'];
+        $field->VocabularyType = $row['VocabularyControlType'];
+        $field->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
+
+        if ($row['dces_element']) {
+            $dc_class = 'databox_Field_DCES_' . $row['dces_element'];
+            $field->dces_element = new $dc_class();
+        }
+
+        $field->separator = self::checkMultiSeparator($row['separator'], $field->multi);
+        $field->thumbtitle = $row['thumbtitle']; 
+    }
+  
+    /**
+     * Return the separator depending of the multi attribute
+     *
+     * @param  string  $separator
+     * @param  boolean $multi
+     * @return string
+     */
+    protected static function checkMultiSeparator($separator, $multi)
+    {
+        if (! $multi) {
+            return '';
+        }
+
+        if (strpos($separator, ';') === false) {
+            $separator .= ';';
+        }
+
+        return $separator;
+    }
+
+  
+    /**
+     *
+     * @var int
      */
     protected $id;
 
@@ -40,76 +203,52 @@ class databox_field implements cache_cacheableInterface
      */
     protected $databox;
 
-    /**
-     *
-     * @var \PHPExiftool\Driver\Tag
-     */
     protected $tag;
 
     /**
      *
-     * @var <type>
+     * @var string
      */
     protected $name;
 
     /**
      *
-     * @var <type>
+     * @var bool
      */
     protected $indexable;
 
     /**
      *
-     * @var <type>
+     * @var bool
      */
     protected $readonly;
 
     /**
      *
-     * @var <type>
+     * @var int
      */
     protected $position;
 
     /**
      *
-     * @var <type>
+     * @var bool
      */
     protected $required;
 
     /**
      *
-     * @var <type>
+     * @var bool
      */
     protected $multi;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $report;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $type;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $tbranch;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $separator;
 
-    /**
-     *
-     * @var <type>
-     */
     protected $thumbtitle;
 
     /**
@@ -138,7 +277,7 @@ class databox_field implements cache_cacheableInterface
      * @var int
      */
     protected $sbas_id;
-    protected static $_instance = array();
+  
     protected $dces_element;
     protected $Vocabulary;
     protected $VocabularyType;
@@ -146,104 +285,23 @@ class databox_field implements cache_cacheableInterface
     protected $on_error = false;
     protected $original_src;
 
-    const TYPE_TEXT = "text";
-    const TYPE_DATE = "date";
-    const TYPE_STRING = "string";
-    const TYPE_NUMBER = "number";
-
-    /**
-     * http://dublincore.org/documents/dces/
-     */
-    const DCES_TITLE = 'Title';
-    const DCES_CREATOR = 'Creator';
-    const DCES_SUBJECT = 'Subject';
-    const DCES_DESCRIPTION = 'Description';
-    const DCES_PUBLISHER = 'Publisher';
-    const DCES_CONTRIBUTOR = 'Contributor';
-    const DCES_DATE = 'Date';
-    const DCES_TYPE = 'Type';
-    const DCES_FORMAT = 'Format';
-    const DCES_IDENTIFIER = 'Identifier';
-    const DCES_SOURCE = 'Source';
-    const DCES_LANGUAGE = 'Language';
-    const DCES_RELATION = 'Relation';
-    const DCES_COVERAGE = 'Coverage';
-    const DCES_RIGHTS = 'Rights';
-
     /**
      *
      * @param  databox       $databox
-     * @param  <type>        $id
-     * @return databox_field
+     * @param  int        $id
      */
-    protected function __construct(Application $app, databox $databox, $id)
+    protected function __construct(Application $app, databox $databox, $id, $load = true)
     {
+        $this->id = (int) $id;
         $this->app = $app;
         $this->set_databox($databox);
         $this->sbas_id = $databox->get_sbas_id();
 
-        $connbas = $this->get_connection();
-
-        $sql = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
-                `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
-                `name`, `src`, `business`, `VocabularyControlType`,
-                `RestrictToVocabularyControl`, `sorter`,
-                `label_en`, `label_fr`, `label_de`, `label_nl`
-              FROM metadatas_structure WHERE id=:id";
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if (!$row) {
-            throw new NotFoundHttpException(sprintf('Unable to find field in %s', $id));
+        if ($load) {
+            self::load($this); 
         }
-
-        $this->id = (int) $id;
-
-        $this->original_src = $row['src'];
-        $this->tag = self::loadClassFromTagName($row['src'], false);
-
-        if ($row['src'] != $this->tag->getTagname()) {
-            $this->on_error = true;
-        }
-
-        foreach (array('en', 'fr', 'de', 'nl') as $code) {
-            $this->labels[$code] = $row['label_' . $code];
-        }
-
-        $this->name = $row['name'];
-        $this->indexable = (Boolean) $row['indexable'];
-        $this->readonly = (Boolean) $row['readonly'];
-        $this->required = (Boolean) $row['required'];
-        $this->multi = (Boolean) $row['multi'];
-        $this->Business = (Boolean) $row['business'];
-        $this->report = (Boolean) $row['report'];
-        $this->position = (Int) $row['sorter'];
-        $this->type = $row['type'] ? : self::TYPE_STRING;
-        $this->tbranch = $row['tbranch'];
-        $this->VocabularyType = $row['VocabularyControlType'];
-        $this->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
-
-        if ($row['dces_element']) {
-            $dc_class = 'databox_Field_DCES_' . $row['dces_element'];
-            $this->dces_element = new $dc_class();
-        }
-
-        $this->separator = self::checkMultiSeparator($row['separator'], $this->multi);
-
-        $this->thumbtitle = $row['thumbtitle'];
-
-        $this->loadVocabulary();
-
-        return $this;
     }
 
-    /**
-     *
-     * @return type \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
-     */
     public function getVocabularyControl()
     {
         return $this->Vocabulary;
@@ -265,30 +323,6 @@ class databox_field implements cache_cacheableInterface
     public function isBusiness()
     {
         return $this->Business;
-    }
-
-    /**
-     *
-     * @param Application $app
-     * @param \databox    $databox
-     * @param int         $id
-     *
-     * @return \databox_field
-     */
-    public static function get_instance(Application $app, databox $databox, $id)
-    {
-        $cache_key = 'field_' . $id;
-        $instance_id = $databox->get_sbas_id() . '_' . $id;
-        if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
-            try {
-                self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
-            } catch (\Exception $e) {
-                self::$_instance[$instance_id] = new self($app, $databox, $id);
-                $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
-            }
-        }
-
-        return self::$_instance[$instance_id];
     }
 
     public function hydrate(Application $app)
@@ -470,7 +504,7 @@ class databox_field implements cache_cacheableInterface
      * @param string      $code
      * @param null|string $value
      *
-     * @return \databox_field
+     * @return $this
      *
      * @throws InvalidArgumentException
      */
@@ -506,7 +540,7 @@ class databox_field implements cache_cacheableInterface
     /**
      *
      * @param  string        $name
-     * @return databox_field
+     * @return $this
      */
     public function set_name($name)
     {
@@ -530,8 +564,8 @@ class databox_field implements cache_cacheableInterface
     /**
      * Get a PHPExiftool Tag from tagName
      *
-     * @param  type                                          $tagName
-     * @return \PHPExiftool\Driver\Tag
+     * @param  type $tagName
+     * @return TagInterface
      * @throws Exception_Databox_metadataDescriptionNotFound
      */
     public static function loadClassFromTagName($tagName, $throwException = true)
@@ -587,7 +621,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @return \PHPExiftool\Driver\Tag
+     * @return TagInterface
      */
     public function get_tag()
     {
@@ -759,26 +793,6 @@ class databox_field implements cache_cacheableInterface
         $this->separator = self::checkMultiSeparator($separator, $this->multi);
 
         return $this;
-    }
-
-    /**
-     * Return the separator depending of the multi attribute
-     *
-     * @param  string  $separator
-     * @param  boolean $multi
-     * @return string
-     */
-    protected static function checkMultiSeparator($separator, $multi)
-    {
-        if (! $multi) {
-            return '';
-        }
-
-        if (strpos($separator, ';') === false) {
-            $separator .= ';';
-        }
-
-        return $separator;
     }
 
     /**
@@ -1074,7 +1088,7 @@ class databox_field implements cache_cacheableInterface
     private function loadVocabulary()
     {
         try {
-            $this->Vocabulary = Vocabulary\Controller::get($this->app, $this->VocabularyType);
+            $this->Vocabulary = VocabularyController::get($this->app, $this->VocabularyType);
         } catch (\InvalidArgumentException $e) {
 
         }
