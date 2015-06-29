@@ -33,6 +33,21 @@ class SearchEngineOptions
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
+    private static $serializable_properties = [
+        'record_type',
+        'search_type',
+        'collections',
+        'fields',
+        'status',
+        'date_min',
+        'date_fields',
+        'i18n',
+        'stemming',
+        'sort_by',
+        'sort_ord',
+        'business_fields'
+    ];
+
     /** @var string */
     protected $record_type;
 
@@ -392,7 +407,8 @@ class SearchEngineOptions
     public function serialize()
     {
         $ret = [];
-        foreach ($this as $key => $value) {
+        foreach (self::$serializable_properties as $key) {
+            $value = $this->{$key};
             if ($value instanceof \DateTime) {
                 $value = $value->format(DATE_ATOM);
             }

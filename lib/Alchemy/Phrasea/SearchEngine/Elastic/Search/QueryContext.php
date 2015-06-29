@@ -16,9 +16,10 @@ class QueryContext
     private $queryLocale;
     private $fields;
 
-    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
+    public function __construct(Structure $structure, array $privateCollectionMap, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
+        $this->privateCollectionMap = $privateCollectionMap;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
@@ -34,7 +35,7 @@ class QueryContext
             }
         }
 
-        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
+        return new static($this->structure, $this->privateCollectionMap, $this->locales, $this->queryLocale, $fields);
     }
 
     public function getRawFields()

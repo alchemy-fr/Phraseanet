@@ -305,9 +305,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         // TODO handle $user when null
         $queryContext = new QueryContext(
             $this->structure,
+            $this->getAllowedPrivateFields($options),
             $this->locales,
-            $this->app['locale'],
-            $this->getAllowedPrivateFields($options)
+            $this->app['locale']
         );
 
         return $queryContext;
