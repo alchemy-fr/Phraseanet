@@ -434,10 +434,10 @@ class PhraseaEngine implements SearchEngineInterface
         $groupedResults = array();
 
         foreach ($rs as $data) {
-            $groupedResults[\phrasea::sbasFromBas($this->app, $data['base_id'])][] = [
+            $groupedResults[\phrasea::sbasFromBas($this->app, $data['base_id'])][] = array(
                 'id' => $data['record_id'],
                 'index' => $resultNumber++
-            ];
+            );
         }
 
         foreach ($groupedResults as $sbas_id => $sbasResults) {
