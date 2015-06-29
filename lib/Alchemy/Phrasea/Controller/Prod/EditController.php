@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EditController extends Controller
 {
@@ -379,21 +380,30 @@ class EditController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    /**
+     * @param int $preset_id
+     * @return Preset
+     */
+    private function findPresetOr404($preset_id)
+    {
+        if (null === $preset = $this->getPresetRepository()->find($preset_id)) {
+            $this->app->abort(404, sprintf("Preset with id '%' could not be found", $preset_id));
+        }
+
+        return $preset;
+    }
 
     /**
      * route GET "../prod/records/edit/presets/{preset_id}"
      *
-     * @param Request $request
-     * @param $preset_id
+     * @param int $preset_id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function presetsLoadAction($preset_id)
     {
         $ret = [];
 
-        if ( ($preset = $this->getPresetRepository()->find($preset_id)) === null) {
-            $this->app->abort(404, sprintf("Preset with id '%' could not be found", $preset_id));
-        }
+        $preset = $this->findPresetOr404($preset_id);
 
         $fields = [];
         foreach ($preset->getData() as $field) {
@@ -414,7 +424,7 @@ class EditController extends Controller
     public function presetsListAction(Request $request)
     {
         $sbas_id = $request->get('sbas_id');
-        $user = $this->app['authentication']->getUser();
+        $user = $this->getAuthenticatedUser();
 
         $ret = [];
 
@@ -426,20 +436,17 @@ class EditController extends Controller
     /**
      * route DELETE "../prod/records/edit/presets/{preset_id}"
      *
-     * @param Request $request
-     * @param $preset_id
+     * @param int $preset_id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function presetsDeleteAction($preset_id)
     {
-        $user = $this->app['authentication']->getUser();
+        $user = $this->getAuthenticatedUser();
 
         $ret = [];
 
-        /** @var Preset $preset */
-        if ( ($preset = $this->getPresetRepository()->find($preset_id)) === null) {
-            $this->app->abort(404, sprintf("Preset with id '%' could not be found", $preset_id));
-        }
+        $preset = $this->findPresetOr404($preset_id);
+
         $sbas_id = $preset->getSbasId();
         $this->getPresetManipulator()->delete($preset);
 
@@ -457,7 +464,7 @@ class EditController extends Controller
     public function presetsSaveAction(Request $request)
     {
         $sbas_id = $request->get('sbas_id');
-        $user = $this->app['authentication']->getUser();
+        $user = $this->getAuthenticatedUser();
 
         $ret = [];
 
@@ -478,7 +485,7 @@ class EditController extends Controller
      *
      * @param $sbasId
      * @param User $user
-     * @return mixed
+     * @return Response
      */
     private function getPresetHTMLList($sbasId, User &$user)
     {
