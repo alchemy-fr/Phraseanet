@@ -271,13 +271,13 @@ class ElasticSearchEngine implements SearchEngineInterface
         $res = $this->client->search($params);
 
         $results = new ArrayCollection();
-        $suggestions = new ArrayCollection();
 
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
             $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n++);
         }
 
+        /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
         $query['ast'] = $this->app['query_compiler']->parse($string)->dump();
@@ -285,9 +285,20 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
 
-        return new SearchEngineResult($results, json_encode($query), $res['took'], $offset,
-            $res['hits']['total'], $res['hits']['total'], null, null, $suggestions, [],
-            $this->indexName, $facets);
+        return new SearchEngineResult(
+            $results,   // ArrayCollection of results
+            json_encode($query),
+            $res['took'],   // duration
+            $offset,        // offset start
+            $res['hits']['total'],  // available
+            $res['hits']['total'],  // total
+            null,   // error
+            null,   // warning
+            $facets->getAsSuggestions(),   // ArrayCollection of suggestions
+            [],     // propositions
+            $this->indexName,
+            $facets
+        );
     }
 
     /**

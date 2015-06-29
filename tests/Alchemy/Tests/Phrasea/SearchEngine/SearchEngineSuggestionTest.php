@@ -44,7 +44,7 @@ class SearchEngineSuggestionTest extends \PhraseanetTestCase
         $hits = 35;
 
         $suggestion = new SearchEngineSuggestion($query, $words, $hits);
-        $this->assertEquals(['query' => $words, 'hits' => 35], $suggestion->toArray());
+        $this->assertEquals(['query' => $query, 'hits' => 35, 'suggestion' => $words], $suggestion->toArray());
     }
 
     public function testToArrayWithNullValue()
@@ -54,6 +54,6 @@ class SearchEngineSuggestionTest extends \PhraseanetTestCase
         $hits = null;
 
         $suggestion = new SearchEngineSuggestion($query, $words, $hits);
-        $this->assertEquals(['query' => $words, 'hits' => null], $suggestion->toArray());
+        $this->assertEquals(['query' => $query, 'hits' => null, 'suggestion' => $words], $suggestion->toArray());
     }
 }
