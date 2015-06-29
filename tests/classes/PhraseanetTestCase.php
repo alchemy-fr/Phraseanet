@@ -712,9 +712,6 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->method('createSubscriber')
             ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
         $mock->expects($this->any())
-            ->method('getConfigurationPanel')
-            ->will($this->returnValue($this->getMock('Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface')));
-        $mock->expects($this->any())
             ->method('getStatus')
             ->will($this->returnValue([]));
 

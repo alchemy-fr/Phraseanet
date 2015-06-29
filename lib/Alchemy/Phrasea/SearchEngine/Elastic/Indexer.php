@@ -32,6 +32,7 @@ class Indexer
 
     /** @var \Elasticsearch\Client */
     private $client;
+    /** @var GlobalElasticOptions */
     private $options;
     private $appbox;
     /** @var LoggerInterface|null */
@@ -48,7 +49,7 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    public function __construct(Client $client, array $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
+    public function __construct(Client $client, GlobalElasticOptions $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
     {
         $this->client   = $client;
         $this->options  = $options;
@@ -64,9 +65,9 @@ class Indexer
     public function createIndex($withMapping = true)
     {
         $params = array();
-        $params['index'] = $this->options['index'];
-        $params['body']['settings']['number_of_shards'] = $this->options['shards'];
-        $params['body']['settings']['number_of_replicas'] = $this->options['replicas'];
+        $params['index'] = $this->options->getIndexName();
+        $params['body']['settings']['number_of_shards'] = $this->options->getShards();
+        $params['body']['settings']['number_of_replicas'] = $this->options->getReplicas();
         $params['body']['settings']['analysis'] = $this->getAnalysis();;
 
         if ($withMapping) {
@@ -80,7 +81,7 @@ class Indexer
     public function updateMapping()
     {
         $params = array();
-        $params['index'] = $this->options['index'];
+        $params['index'] = $this->options->getIndexName();
         $params['type'] = RecordIndexer::TYPE_NAME;
         $params['body'][RecordIndexer::TYPE_NAME] = $this->recordIndexer->getMapping();
         $params['body'][TermIndexer::TYPE_NAME]   = $this->termIndexer->getMapping();
@@ -91,13 +92,13 @@ class Indexer
 
     public function deleteIndex()
     {
-        $params = array('index' => $this->options['index']);
+        $params = array('index' => $this->options->getIndexName());
         $this->client->indices()->delete($params);
     }
 
     public function indexExists()
     {
-        $params = array('index' => $this->options['index']);
+        $params = array('index' => $this->options->getIndexName());
 
         return $this->client->indices()->exists($params);
     }
@@ -132,7 +133,7 @@ class Indexer
             }
 
             // Optimize index
-            $params = array('index' => $this->options['index']);
+            $params = array('index' => $this->options->getIndexName());
             $this->client->indices()->optimize($params);
         });
 
@@ -203,7 +204,7 @@ class Indexer
         try {
             // Prepare the bulk operation
             $bulk = new BulkOperation($this->client, $this->logger);
-            $bulk->setDefaultIndex($this->options['index']);
+            $bulk->setDefaultIndex($this->options->getIndexName());
             $bulk->setAutoFlushLimit(1000);
             // Do the work
             $work($bulk);
@@ -233,7 +234,7 @@ class Indexer
 
     private function getSetting($name)
     {
-        $index = $this->options['index'];
+        $index = $this->options->getIndexName();
         $params = array();
         $params['index'] = $index;
         $params['name'] = $name;
@@ -245,7 +246,7 @@ class Indexer
 
     private function setSetting($name, $value)
     {
-        $index = $this->options['index'];
+        $index = $this->options->getIndexName();
         $params = array();
         $params['index'] = $index;
         $params['body'][$name] = $value;

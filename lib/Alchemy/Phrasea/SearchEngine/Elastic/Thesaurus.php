@@ -22,16 +22,17 @@ use Psr\Log\LoggerInterface;
 
 class Thesaurus
 {
+    /** @var Client */
     private $client;
-    private $index;
+    /** @var GlobalElasticOptions */
+    private $options;
+    /** @var LoggerInterface */
     private $logger;
 
-    const MIN_SCORE = 4;
-
-    public function __construct(Client $client, $index, LoggerInterface $logger)
+    public function __construct(Client $client, GlobalElasticOptions $options, LoggerInterface $logger)
     {
         $this->client = $client;
-        $this->index = $index;
+        $this->options = $options;
         $this->logger = $logger;
     }
 
@@ -136,7 +137,7 @@ class Thesaurus
 
         // Search request
         $params = array();
-        $params['index'] = $this->index;
+        $params['index'] = $this->options->getIndexName();
         $params['type'] = TermIndexer::TYPE_NAME;
         $params['body']['query'] = $query;
         $params['body']['aggs'] = $aggs;
@@ -144,7 +145,7 @@ class Thesaurus
         // inexact concepts.
         // We also need to disable TF/IDF on terms, and try to boost score only
         // when the search match nearly all tokens of term's value field.
-        $params['body']['min_score'] = self::MIN_SCORE;
+        $params['body']['min_score'] = $this->options->getMinScore();
         // No need to get any hits since we extract data from aggs
         $params['body']['size'] = 0;
 

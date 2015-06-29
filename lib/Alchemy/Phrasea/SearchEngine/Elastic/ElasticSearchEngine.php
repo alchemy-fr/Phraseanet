@@ -103,18 +103,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigurationPanel()
-    {
-        if (!$this->configurationPanel) {
-            $this->configurationPanel = new ConfigurationPanel($this->app, $this->app['conf']);
-        }
-
-        return $this->configurationPanel;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getAvailableDateFields()
     {
         return array_keys($this->structure->getDateFields());
