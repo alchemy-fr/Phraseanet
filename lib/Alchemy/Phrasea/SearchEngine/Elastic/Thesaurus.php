@@ -24,12 +24,12 @@ class Thesaurus
 {
     /** @var Client */
     private $client;
-    /** @var GlobalElasticOptions */
+    /** @var ElasticsearchOptions */
     private $options;
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(Client $client, GlobalElasticOptions $options, LoggerInterface $logger)
+    public function __construct(Client $client, ElasticsearchOptions $options, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->options = $options;

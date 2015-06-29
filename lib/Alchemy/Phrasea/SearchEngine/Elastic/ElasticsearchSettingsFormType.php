@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
-class ElasticSearchSettingFormType extends AbstractType
+class ElasticsearchSettingsFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -48,6 +48,6 @@ class ElasticSearchSettingFormType extends AbstractType
 
     public function getName()
     {
-        return 'elastic_settings';
+        return 'elasticsearch_settings';
     }
 }

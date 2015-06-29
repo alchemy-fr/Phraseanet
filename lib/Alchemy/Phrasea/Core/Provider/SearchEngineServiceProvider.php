@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
-use Alchemy\Phrasea\SearchEngine\Elastic\GlobalElasticOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -54,7 +54,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
                     throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
             }
-            /** @var GlobalElasticOptions $options */
+            /** @var ElasticsearchOptions $options */
             $options = $app['elasticsearch.options'];
 
             return new ElasticSearchEngine(
@@ -136,7 +136,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         /* Low-level elasticsearch services */
 
         $app['elasticsearch.client'] = $app->share(function($app) {
-            /** @var GlobalElasticOptions $options */
+            /** @var ElasticsearchOptions $options */
             $options        = $app['elasticsearch.options'];
             $clientParams   = ['hosts' => [sprintf('%s:%s', $options->getHost(), $options->getPort())]];
 
@@ -154,7 +154,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.options'] = $app->share(function($app) {
-            $options = GlobalElasticOptions::fromArray($app['conf']->get(['main', 'search-engine', 'options'], []));
+            $options = ElasticsearchOptions::fromArray($app['conf']->get(['main', 'search-engine', 'options'], []));
 
             if (empty($options->getIndexName())) {
                 $options->setIndexName(strtolower(sprintf('phraseanet_%s', str_replace(

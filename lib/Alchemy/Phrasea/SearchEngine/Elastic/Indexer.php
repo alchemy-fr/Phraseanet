@@ -32,7 +32,7 @@ class Indexer
 
     /** @var \Elasticsearch\Client */
     private $client;
-    /** @var GlobalElasticOptions */
+    /** @var ElasticsearchOptions */
     private $options;
     private $appbox;
     /** @var LoggerInterface|null */
@@ -49,7 +49,7 @@ class Indexer
     const DEFAULT_REFRESH_INTERVAL = '1s';
     const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
 
-    public function __construct(Client $client, GlobalElasticOptions $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
+    public function __construct(Client $client, ElasticsearchOptions $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
     {
         $this->client   = $client;
         $this->options  = $options;
