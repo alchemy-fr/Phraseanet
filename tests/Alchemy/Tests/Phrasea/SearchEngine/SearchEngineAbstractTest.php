@@ -556,11 +556,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         }
     }
 
-    public function testConfigurationPanel()
-    {
-        $this->assertInstanceOf('\\Alchemy\\Phrasea\\SearchEngine\\ConfigurationPanelInterface', self::$searchEngine->getConfigurationPanel());
-    }
-
     public function testStatus()
     {
         foreach (self::$searchEngine->getStatus() as $StatusKeyValue) {

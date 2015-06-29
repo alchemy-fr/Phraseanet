@@ -24,9 +24,7 @@ class SearchEngine implements ControllerProviderInterface, ServiceProviderInterf
     public function register(Application $app)
     {
         $app['controller.admin.search-engine'] = $app->share(function (PhraseaApplication $app) {
-            /** @var SearchEngineInterface $searchEngine */
-            $searchEngine = $app['search_engine'];
-            return new SearchEngineController($searchEngine->getConfigurationPanel());
+            return new SearchEngineController($app);
         });
     }
 
@@ -39,11 +37,9 @@ class SearchEngine implements ControllerProviderInterface, ServiceProviderInterf
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', 'controller.admin.search-engine:getConfigurationPanelAction')
-                ->bind('admin_searchengine_get');
-
-        $controllers->post('/', 'controller.admin.search-engine:postConfigurationPanelAction')
-                ->bind('admin_searchengine_post');
+        $controllers->match('/', 'controller.admin.search-engine:formConfigurationPanelAction')
+                ->method('GET|POST')
+                ->bind('admin_searchengine_form');
 
         return $controllers;
     }

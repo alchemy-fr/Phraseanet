@@ -356,7 +356,7 @@ class V1Controller extends Controller
                     'engine'        => [
                         'type'          => $searchEngine->getName(),
                         'status'        => $SEStatus,
-                        'configuration' => $searchEngine->getConfigurationPanel()->getConfiguration(),
+                        'configuration' => $conf->get(['main', 'searchengine', 'options']),
                     ],
                 ],
                 'binary'            => [

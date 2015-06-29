@@ -41,11 +41,6 @@ interface SearchEngineInterface
     public function getStatus();
 
     /**
-     * @return ConfigurationPanelInterface
-     */
-    public function getConfigurationPanel();
-
-    /**
      * @return array an array of field names
      */
     public function getAvailableDateFields();

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\SearchEngine\Elastic\GlobalElasticOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -53,11 +54,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
                     throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
             }
+            /** @var GlobalElasticOptions $options */
+            $options = $app['elasticsearch.options'];
+
             return new ElasticSearchEngine(
                 $app,
                 $app['search_engine.structure'],
                 $app['elasticsearch.client'],
-                $app['elasticsearch.options']['index'],
+                $options->getIndexName(),
                 $app['locales.available'],
                 $app['elasticsearch.facets_response.factory']
             );
@@ -132,11 +136,13 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         /* Low-level elasticsearch services */
 
         $app['elasticsearch.client'] = $app->share(function($app) {
+            /** @var GlobalElasticOptions $options */
             $options        = $app['elasticsearch.options'];
-            $clientParams   = ['hosts' => [sprintf('%s:%s', $options['host'], $options['port'])]];
+            $clientParams   = ['hosts' => [sprintf('%s:%s', $options->getHost(), $options->getPort())]];
 
             // Create file logger for debug
             if ($app['debug']) {
+                /** @var Logger $logger */
                 $logger = new $app['monolog.logger.class']('search logger');
                 $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2), Logger::INFO);
 
@@ -148,22 +154,16 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.options'] = $app->share(function($app) {
-            $options = $app['conf']->get(['main', 'search-engine', 'options'], []);
+            $options = GlobalElasticOptions::fromArray($app['conf']->get(['main', 'search-engine', 'options'], []));
 
-            $indexName = sprintf('phraseanet_%s', str_replace(
-                array('/', '.'), array('', ''),
-                $app['conf']->get(['main', 'key'])
-            ));
+            if (empty($options->getIndexName())) {
+                $options->setIndexName(strtolower(sprintf('phraseanet_%s', str_replace(
+                    array('/', '.'), array('', ''),
+                    $app['conf']->get(['main', 'key'])
+                ))));
+            }
 
-            $defaults = [
-                'host'     => '127.0.0.1',
-                'port'     => 9200,
-                'index'    => strtolower($indexName),
-                'shards'   => 3,
-                'replicas' => 0
-            ];
-
-            return array_replace($defaults, $options);
+            return $options;
         });
 
 
@@ -175,7 +175,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             $logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
             return new Thesaurus(
                 $app['elasticsearch.client'],
-                $app['elasticsearch.options']['index'],
+                $app['elasticsearch.options'],
                 $logger
             );
         });

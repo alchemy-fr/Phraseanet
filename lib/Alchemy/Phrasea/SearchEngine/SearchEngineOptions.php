@@ -408,7 +408,7 @@ class SearchEngineOptions
                         }, $value);
             }
             if (in_array($key, ['collections', 'business_fields'])) {
-                $value = array_map(function ($collection) {
+                $value = array_map(function (\collection $collection) {
                             return $collection->get_base_id();
                         }, $value);
             }
