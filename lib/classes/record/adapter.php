@@ -44,10 +44,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $ids = array_map(function ($id) {
             if (is_array($id)) {
-                return $id['id'];
+                return (int) $id['id'];
             }
 
-            return $id;
+            return (int) $id;
         }, $record_ids);
 
         $numbers = array();
@@ -67,10 +67,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                   FROM record AS r LEFT JOIN subdef AS s ON (s.record_id = r.record_id)
                   WHERE r.record_id IN (%s) ORDER BY s.record_id, s.subdef_id';
 
-        $query = sprintf($query, implode(', ', $ids));
+        $params = array();
+
+        foreach ($ids as $key => $id) {
+            $params[':id_' . (int) $key] = $id;
+        }
+
+        $query = sprintf($query, implode(', ', array_keys($params)));
 
         $statement = $connection->prepare($query);
-        $statement->execute();
+        $statement->execute($params);
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         $records = array();

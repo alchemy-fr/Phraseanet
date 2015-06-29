@@ -48,12 +48,18 @@ class caption_Field_Value implements cache_cacheableInterface
         $query = 'SELECT id, record_id, meta_struct_id, value, VocabularyType, VocabularyId
             FROM metadatas WHERE id IN (%s)';
 
-        $query = sprintf($query, implode(', ', $ids));
+        $params = array();
 
-        $stmt = $connection->prepare($query);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        foreach ($ids as $key => $id) {
+            $params[':id_' . (int) $key] = $id;
+        }
+
+        $query = sprintf($query, implode(', ', array_keys($params)));
+
+        $statement = $connection->prepare($query);
+        $statement->execute($params);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         $values = array();
 
@@ -186,22 +192,17 @@ class caption_Field_Value implements cache_cacheableInterface
         }
 
         if ($value->VocabularyType) {
-            /**
-             * Vocabulary Control has been deactivated
-             */
             if (!$value->databox_field->getVocabularyControl()) {
+                // Vocabulary Control has been deactivated
                 $value->removeVocabulary();
-            } /**
-             * Vocabulary Control has changed
-             */ elseif ($value->databox_field->getVocabularyControl()->getType() !== $value->VocabularyType->getType()) {
+            } elseif ($value->databox_field->getVocabularyControl()->getType() !== $value->VocabularyType->getType()) {
+                // Vocabulary Control has changed
                 $value->removeVocabulary();
-            } /**
-             * Current Id is not available anymore
-             */ elseif (!$value->VocabularyType->validate($value->VocabularyId)) {
+            } elseif (!$value->VocabularyType->validate($value->VocabularyId)) {
+                // Current Id is not available anymore
                 $value->removeVocabulary();
-            } /**
-             * String equivalence has changed
-             */ elseif ($value->VocabularyType->getValue($value->VocabularyId) !== $value->value) {
+            } elseif ($value->VocabularyType->getValue($value->VocabularyId) !== $value->value) {
+                // String equivalence has changed
                 $value->set_value($value->VocabularyType->getValue($value->VocabularyId));
             }
         }
