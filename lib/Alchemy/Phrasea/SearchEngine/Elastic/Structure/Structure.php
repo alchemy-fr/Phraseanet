@@ -7,10 +7,15 @@ use DomainException;
 
 class Structure
 {
+    /** @var Field[] */
     private $fields = array();
+    /** @var Field[] */
     private $date_fields = array();
+    /** @var Field[] */
     private $thesaurus_fields = array();
+    /** @var Field[] */
     private $private = array();
+    /** @var Field[] */
     private $facets = array();
 
     /**
@@ -81,6 +86,10 @@ class Structure
         return $this->date_fields;
     }
 
+    /**
+     * @param string $name
+     * @return null|Field
+     */
     public function get($name)
     {
         return isset($this->fields[$name]) ?
@@ -93,6 +102,10 @@ class Structure
                      $this->fields[$name]->getType() : null;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function isPrivate($name)
     {
         if (isset($this->private[$name])) {

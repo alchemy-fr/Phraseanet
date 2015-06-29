@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 /**
@@ -11,15 +10,18 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
  */
 class QueryContext
 {
+    /** @var Structure */
     private $structure;
+    /** @var array */
     private $locales;
+    /** @var string */
     private $queryLocale;
+    /** @var array */
     private $fields;
 
-    public function __construct(Structure $structure, array $privateCollectionMap, array $locales, $queryLocale, array $fields = null)
+    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
-        $this->privateCollectionMap = $privateCollectionMap;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
@@ -35,7 +37,7 @@ class QueryContext
             }
         }
 
-        return new static($this->structure, $this->privateCollectionMap, $this->locales, $this->queryLocale, $fields);
+        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
     public function getRawFields()
@@ -49,9 +51,11 @@ class QueryContext
 
         $fields = array();
         foreach ($this->fields as $name) {
-            if ($field = $this->normalizeField($name)) {
-                $fields[] = sprintf('%s.raw', $field);
+            $field = $this->normalizeField($name);
+            if (empty($field)) {
+                continue;
             }
+            $fields[] = sprintf('%s.raw', $field);
         }
 
         return $fields;
@@ -88,11 +92,17 @@ class QueryContext
         return $fields;
     }
 
+    /**
+     * Returns normalized name or null
+     *
+     * @param string $name
+     * @return null|string
+     */
     public function normalizeField($name)
     {
         $field = $this->structure->get($name);
         if (!$field) {
-            return;
+            return null;
         }
         // TODO Field label dereferencing (we only want names)
         return $field->getIndexFieldName();
