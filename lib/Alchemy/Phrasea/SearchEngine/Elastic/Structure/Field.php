@@ -76,7 +76,7 @@ class Field
         if ($this->thesaurus_roots !== null) {
             Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
         }
-        Assertion::allInteger($this->used_by_collections);
+        Assertion::allScalar($this->used_by_collections);
     }
 
     public function getName()
