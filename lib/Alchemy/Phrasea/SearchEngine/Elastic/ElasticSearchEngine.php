@@ -326,28 +326,19 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private function getAllowedPrivateFields(SearchEngineOptions $options)
     {
-        $fields = array_keys($this->structure->getPrivateFields());
-
-        $allowed = array_fill_keys($fields, []);
-        foreach ($options->getDataboxes() as $databox) {
-            $databoxFields = $databox->get_meta_structure();
-            foreach ($fields as $field) {
-                if ($databoxFields->get_element_by_name($field)) {
-                    $allowed[$field] += $databox->get_collection_unique_ids();
-                }
-            }
+        // Get structure data and cross it with user rights (from options object)
+        $allowed_collections = [];
+        foreach ($options->getBusinessFieldsOn() as $collection) {
+            $allowed_collections[] = $collection->get_base_id();
         }
 
-        $businessCollections = array_map(function (\collection $collection) {
-            return $collection->get_base_id();
-        }, $options->getBusinessFieldsOn());
-
+        $map = $this->structure->getCollectionsUsedByPrivateFields();
         // Remove collections base_id which access is restricted.
-        foreach ($allowed as $name => &$collections) {
-            $collections = array_diff($collections, $businessCollections);
+        foreach ($map as $_ => &$collections) {
+            $collections = array_intersect($collections, $allowed_collections);
         }
 
-        return $allowed;
+        return $map;
     }
 
     /**

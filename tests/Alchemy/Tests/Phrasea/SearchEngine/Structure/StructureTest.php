@@ -34,7 +34,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isPrivate()->willReturn(false);
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
-        $field->getCollections()->willReturn(['1']);
+        $field->getDependantCollections()->willReturn(['1']);
 
         $structure->add($field->reveal());
         $this->assertCount(1, $structure->getAllFields());
@@ -172,5 +172,29 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     {
         $structure = new Structure();
         $structure->isPrivate('foo');
+    }
+
+    public function testCollectionsUsedByPrivateFields()
+    {
+        $structure = new Structure();
+        $structure->add($foo = (new Field('foo', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [1, 2]
+        ])));
+        $structure->add(new Field('foo', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [2, 3]
+        ]));
+        $structure->add(new Field('bar', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [2, 3]
+        ]));
+        $structure->add(new Field('baz', Mapping::TYPE_STRING, ['private' => false]));
+        $this->assertEquals([1, 2], $foo->getDependantCollections());
+        static $expected = [
+            'foo' => [1, 2, 3],
+            'bar' => [2, 3]
+        ];
+        $this->assertEquals($expected, $structure->getCollectionsUsedByPrivateFields());
     }
 }

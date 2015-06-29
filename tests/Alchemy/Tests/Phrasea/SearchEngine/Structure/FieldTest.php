@@ -26,7 +26,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($merged->isPrivate());
         $this->assertFalse($merged->isFacet());
         $this->assertNull($merged->getThesaurusRoots());
-        $this->assertEquals(['1', '2', '3', '4'], $merged->getCollections());
+        $this->assertEquals(['1', '2', '3', '4'], $merged->getDependantCollections());
     }
 
     /**
@@ -105,5 +105,17 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         ]);
         $merged = $field->mergeWith($other);
         $this->assertEquals([$foo, $bar], $merged->getThesaurusRoots());
+    }
+
+    public function testMergeWithDependantCollections()
+    {
+        $field = new Field('foo', Mapping::TYPE_STRING, [
+            'used_by_collections' => [1, 2]
+        ]);
+        $other = new Field('foo', Mapping::TYPE_STRING, [
+            'used_by_collections' => [2, 3]
+        ]);
+        $merged = $field->mergeWith($other);
+        $this->assertEquals([1, 2, 3], $merged->getDependantCollections());
     }
 }

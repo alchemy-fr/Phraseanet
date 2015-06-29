@@ -103,4 +103,22 @@ class Structure
 
         throw new DomainException(sprintf('Unknown field "%s".', $name));
     }
+
+    /**
+     * Returns an array of collections indexed by field name.
+     *
+     * [
+     *     "FieldName" => [1, 4, 5],
+     *     "OtherFieldName" => [4],
+     * ]
+     */
+    public function getCollectionsUsedByPrivateFields()
+    {
+        $map = [];
+        foreach ($this->private as $name => $field) {
+            $map[$name] = $field->getDependantCollections();
+        }
+
+        return $map;
+    }
 }

@@ -98,9 +98,9 @@ class Field
         return $this->type;
     }
 
-    public function getCollections()
+    public function getDependantCollections()
     {
-        return $this->collections;
+        return $this->used_by_collections;
     }
 
     public function isSearchable()
@@ -169,10 +169,15 @@ class Field
             );
         }
 
-        $used_by_collections = array_unique(array_merge(
-            $this->used_by_collections,
-            $other->used_by_collections
-        ), SORT_REGULAR);
+        $used_by_collections = array_values(
+            array_unique(
+                array_merge(
+                    $this->used_by_collections,
+                    $other->used_by_collections
+                ),
+                SORT_REGULAR
+            )
+        );
 
         return new self($this->name, $this->type, [
             'searchable' => $this->is_searchable,
