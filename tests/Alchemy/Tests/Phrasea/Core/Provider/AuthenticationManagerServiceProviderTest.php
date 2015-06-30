@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 
 /**
  * @group functional
@@ -109,7 +110,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
 
         $app['orm.em'] = $this->createEntityManagerMock();
-        $app['repo.users'] = $this->createEntityRepositoryMock();
+        $app['repo.users'] = $this->createUserRepositoryMock();
         $app['repo.auth-failures'] = $this->createEntityRepositoryMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
@@ -129,7 +130,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);
 
         $app['orm.em'] = $this->createEntityManagerMock();
-        $app['repo.users'] = $this->createEntityRepositoryMock();
+        $app['repo.users'] = $this->createUserRepositoryMock();
         $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
@@ -150,5 +151,12 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $this->removeUser(self::$DI['app'], $template1);
         $this->removeUser(self::$DI['app'], $template2);
+    }
+
+    private function createUserRepositoryMock()
+    {
+        return $this->getMockBuilder(UserRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }
