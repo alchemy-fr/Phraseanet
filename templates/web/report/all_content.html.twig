@@ -12,7 +12,7 @@
 {% block javascript %}
     <script type="text/javascript" >
 
-            var usrId = '{{ app['authentication'].user.getId }}' ;
+            var usrId = '{{ app.getAuthenticator().user.getId }}' ;
 
             var language = {
                 valider : '{{ "boutton::valider" | trans }}',

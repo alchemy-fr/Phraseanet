@@ -128,14 +128,14 @@ class PhraseanetExtension extends \Twig_Extension
 
     public function isGrantedOnDatabox($databoxId, $rights)
     {
-        if (false === ($this->app['authentication']->getUser() instanceof User)) {
+        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
 
             return false;
         }
 
         $rights = (array) $rights;
         foreach ($rights as $right) {
-            if (false === $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_sbas($databoxId, $right)) {
+            if (false === $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
 
                 return false;
             }
@@ -146,14 +146,14 @@ class PhraseanetExtension extends \Twig_Extension
 
     public function isGrantedOnCollection($baseId, $rights)
     {
-        if (false === ($this->app['authentication']->getUser() instanceof User)) {
+        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
 
             return false;
         }
 
         $rights = (array) $rights;
         foreach ($rights as $right) {
-            if (false === $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($baseId, $right)) {
+            if (false === $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_base($baseId, $right)) {
 
                 return false;
             }
@@ -177,12 +177,12 @@ class PhraseanetExtension extends \Twig_Extension
 
     public function hasAccessSubDefinition(RecordInterface $record, $subDefinition)
     {
-        if (false === ($this->app['authentication']->getUser() instanceof User)) {
+        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
 
             return false;
         }
 
-        return $this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_subdef($record, $subDefinition);
+        return $this->app['acl']->get($this->app->getAuthenticatedUser())->has_access_to_subdef($record, $subDefinition);
     }
 
     public function getDoctypeIcon(RecordInterface $record)
@@ -260,12 +260,12 @@ class PhraseanetExtension extends \Twig_Extension
 
     public function getUserSetting($setting, $default = null)
     {
-        if (false === ($this->app['authentication']->getUser() instanceof User)) {
+        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
 
             return $default;
         }
 
-        return $this->app['settings']->getUserSetting($this->app['authentication']->getUser(), $setting, $default);
+        return $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), $setting, $default);
     }
 
     public function getCheckerFromFQCN($checkerFQCN)

@@ -550,7 +550,7 @@ class SearchEngineOptions
         $options->setLocale($app['locale']);
 
         /** @var Authenticator $authenticator */
-        $authenticator = $app['authentication'];
+        $authenticator = $app->getAuthenticator();
         $isAuthenticated = $authenticator->isAuthenticated();
         /** @var ACLProvider $aclProvider */
         $aclProvider = $app['acl'];

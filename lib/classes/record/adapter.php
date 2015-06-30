@@ -1712,7 +1712,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        if ($this->app['authentication']->getUser()) {
+        if ($this->app->getAuthenticatedUser()) {
             $sql = 'SELECT record_id
               FROM regroup g
                 INNER JOIN (record r
@@ -1728,7 +1728,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $params = [
                 ':site'   => $this->app['conf']->get(['main', 'key']),
-                ':usr_id'    => $this->app['authentication']->getUser()->getId(),
+                ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
                 ':record_id' => $this->get_record_id(),
             ];
         } else {
@@ -1780,7 +1780,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
         $stmt->execute([
             ':site'      => $this->app['conf']->get(['main', 'key']),
-            ':usr_id'    => $this->app['authentication']->getUser()->getId(),
+            ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
             ':record_id' => $this->get_record_id(),
         ]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

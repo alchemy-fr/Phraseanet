@@ -55,16 +55,16 @@
                         <label for="feed_add_subtitle"><b>{{ 'publication : sous titre' | trans }}</b></label>
                         <textarea id="feed_add_subtitle" style="max-width:500px" class="input-block-level" name="subtitle" rows="5">{{desc}}</textarea>
                         <label for="feed_add_author_name"><b>{{ 'publication : autheur' | trans }}</b></label>
-                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().getDisplayName() }}" />
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_name" id="feed_add_author_name" value="{{ app.getAuthenticatedUser().getDisplayName() }}" />
                         <label for="feed_add_author_mail"><b>{{ 'publication : email autheur' | trans }}</b></label>
-                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().getEmail() }}" />
+                        <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app.getAuthenticatedUser().getEmail() }}" />
                     </div>
                     <div class="span6">
                         <div class="feeds">
                             <h1>{{ 'Fils disponibles' | trans }}</h1>
                             <div class="list">
                                 {% for feed in feeds %}
-                                    {% if feed.isPublisher(app['authentication'].getUser()) %}
+                                    {% if feed.isPublisher(app.getAuthenticatedUser()) %}
                                         <div class="feed {% if loop.index is odd%}odd{% endif %}">
                                             <span>{{ feed.getTitle() }}</span>
                                             {% if feed.isPublic() %}

@@ -97,7 +97,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         }
 
         // if we are already disconnected (ex. from another window), quit immediatly
-        if (!($this->app['authentication']->isAuthenticated())) {
+        if (!($this->app->getAuthenticator()->isAuthenticated())) {
             if ($event->getRequest()->isXmlHttpRequest()) {
                 $response = new Response("End-Session", 403);
             } else {
@@ -120,7 +120,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $dt = $now->getTimestamp() - $session->getUpdated()->getTimestamp();
         if ($idle > 0 && $dt > $idle) {
             // we must disconnet due to idletime
-            $this->app['authentication']->closeAccount();
+            $this->app->getAuthenticator()->closeAccount();
             if ($event->getRequest()->isXmlHttpRequest()) {
                 $response = new Response("End-Session", 403);
             } else {

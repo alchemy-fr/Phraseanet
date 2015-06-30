@@ -814,14 +814,14 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->only_templates === true) {
-            if (!$this->app['authentication']->getUser()) {
+            if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
-            $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->getId();
+            $sql .= ' AND model_of = ' . $this->app->getAuthenticatedUser()->getId();
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of IS NULL';
-        } elseif ($this->app['authentication']->getUser()) {
-            $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app['authentication']->getUser()->getId() . ' ) ';
+        } elseif ($this->app->getAuthenticatedUser()) {
+            $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId() . ' ) ';
         } else {
             $sql .= ' AND model_of IS NULL';
         }

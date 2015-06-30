@@ -59,7 +59,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function delete_users()
     {
         foreach ($this->users as $usr_id) {
-            if ($this->app['authentication']->getUser()->getId() === (int) $usr_id) {
+            if ($this->app->getAuthenticatedUser()->getId() === (int) $usr_id) {
                 continue;
             }
             $user = $this->app['repo.users']->find($usr_id);
@@ -71,7 +71,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(User $user)
     {
-        $list = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
+        $list = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         $this->app['acl']->get($user)->revoke_access_from_bases($list);
 
@@ -84,7 +84,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function get_users_rights()
     {
-        $list = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
+        $list = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         $sql = "SELECT
             b.sbas_id,
@@ -476,7 +476,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function apply_rights()
     {
-        $ACL = $this->app['acl']->get($this->app['authentication']->getUser());
+        $ACL = $this->app['acl']->get($this->app->getAuthenticatedUser());
         $base_ids = array_keys($ACL->get_granted_base(['canadmin']));
 
         $update = $create = $delete = $create_sbas = $update_sbas = [];
@@ -684,11 +684,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         if (null === $template) {
             throw new NotFoundHttpException(sprintf('Given template "%s" could not be found', $this->request->get('template')));
         }
-        if (null === $template->getTemplateOwner() || $template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
+        if (null === $template->getTemplateOwner() || $template->getTemplateOwner()->getId() !== $this->app->getAuthenticatedUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
-        $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
@@ -744,7 +744,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $activate = !!$this->request->get('limit');
 
-        $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
@@ -763,7 +763,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function resetRights()
     {
-        $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
@@ -772,7 +772,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             if ($user->isTemplate()) {
                 $template = $user;
 
-                if ($template->getTemplateOwner()->getId() !== $this->app['authentication']->getUser()->getId()) {
+                if ($template->getTemplateOwner()->getId() !== $this->app->getAuthenticatedUser()->getId()) {
                     continue;
                 }
             }

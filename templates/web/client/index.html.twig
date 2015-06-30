@@ -461,7 +461,7 @@
                     dataType: 'json',
                     data: {
                         app : 2,
-                        usr : {{ app['authentication'].getUser().getId() }}
+                        usr : {{ app.getAuthenticatedUser().getId() }}
                     },
                     error: function(){
                         window.setTimeout("pollNotifications();", 10000);

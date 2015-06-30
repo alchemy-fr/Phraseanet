@@ -126,7 +126,7 @@
                             {% if usr.isTemplate() %}
                                 <img title="{{ 'This is a template' | trans }}" src="/skins/icons/template.png"/>
                             {% else %}
-                                {% if app['acl'].get(usr).is_phantom() %}
+                                {% if app.getAclForUser(usr).is_phantom() %}
                                     <img title="{{ 'This user has no rights' | trans }}" src="/skins/admin/ghost.png"/>
                                 {% endif %}
                                 {{usr.getId()}}

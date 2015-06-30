@@ -177,7 +177,7 @@ class SetupController extends Controller
 
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
-            $this->app['authentication']->openAccount($user);
+            $this->app->getAuthenticator()->openAccount($user);
 
             return $this->app->redirectPath('admin', [
                 'section' => 'taskmanager',

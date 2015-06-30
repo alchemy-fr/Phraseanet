@@ -28,14 +28,14 @@ class BasketMiddlewareProvider implements ServiceProviderInterface
 
         $app['middleware.basket.user-access'] = $app->protect(function (Request $request, Application $app) {
             if ($request->attributes->has('basket')) {
-                if (!$app['acl.basket']->hasAccess($request->attributes->get('basket'), $app['authentication']->getUser())) {
+                if (!$app['acl.basket']->hasAccess($request->attributes->get('basket'), $app->getAuthenticatedUser())) {
                     throw new AccessDeniedHttpException('Current user does not have access to the basket');
                 }
             }
         });
 
         $app['middleware.basket.user-is-owner'] = $app->protect(function (Request $request, Application $app) {
-            if (!$app['acl.basket']->isOwner($request->attributes->get('basket'), $app['authentication']->getUser())) {
+            if (!$app['acl.basket']->isOwner($request->attributes->get('basket'), $app->getAuthenticatedUser())) {
                 throw new AccessDeniedHttpException('Only basket owner can modify the basket');
             }
         });

@@ -54,7 +54,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), 'test', 'titi@titi.fr');
 
-        self::giveRightsToUser(self::$DI['app'], self::$DI['app']['authentication']->getUser(), [self::$DI['collection']->get_base_id()], true);
+        self::giveRightsToUser(self::$DI['app'], self::$DI['app']->getAuthenticatedUser(), [self::$DI['collection']->get_base_id()], true);
 
         self::$DI['client']->request('POST', '/admin/users/rights/apply/', [
             'users'   => $user->getId(),
@@ -435,7 +435,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         // create a template
         if (null === self::$DI['app']['repo.users']->findByLogin('csv_template')) {
-            $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']['authentication']->getUser());
+            $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']->getAuthenticatedUser());
             self::$DI['app']['acl']->get($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
         }
 

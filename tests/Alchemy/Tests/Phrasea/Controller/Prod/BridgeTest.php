@@ -376,7 +376,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteAccount()
     {
-        $account = \Bridge_Account::create(self::$DI['app'], self::$api, self::$DI['app']['authentication']->getUser(), 'hello', 'you');
+        $account = \Bridge_Account::create(self::$DI['app'], self::$api, self::$DI['app']->getAuthenticatedUser(), 'hello', 'you');
         $url = "/prod/bridge/adapter/" . $account->get_id() . "/delete/";
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();

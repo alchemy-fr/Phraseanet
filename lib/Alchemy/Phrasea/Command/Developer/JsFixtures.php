@@ -93,12 +93,12 @@ class JsFixtures extends Command
 
     private function loginUser(Application $app, User $user)
     {
-        $app['authentication']->openAccount($user);
+        $app->getAuthenticator()->openAccount($user);
     }
 
     private function logoutUser(Application $app)
     {
-        $app['authentication']->closeAccount();
+        $app->getAuthenticator()->closeAccount();
     }
 
     private function writeResponse(OutputInterface $output, $method, $path, $to, $authenticateUser = false)

@@ -109,7 +109,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
         if (trim($Request->get('ssel')) !== '') {
             $Basket = $app['converter.basket']->convert($Request->get('ssel'));
-            $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
+            $app['acl.basket']->hasAccess($Basket, $app->getAuthenticatedUser());
 
             $this->selection->load_basket($Basket);
 
@@ -118,7 +118,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
         } elseif (trim($Request->get('story')) !== '') {
             $repository = $app['repo.story-wz'];
 
-            $storyWZ = $repository->findByUserAndId($app, $app['authentication']->getUser(), $Request->get('story'));
+            $storyWZ = $repository->findByUserAndId($app, $app->getAuthenticatedUser(), $Request->get('story'));
 
             $this->selection->load_list([$storyWZ->getRecord($this->app)->get_serialize_key()], $this->flatten_groupings);
         } else {

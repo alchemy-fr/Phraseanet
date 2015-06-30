@@ -35,7 +35,7 @@
         )%}
     {% endif %}
 
-    {% set url = app['authentication'].isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
+    {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
 
     {% if wrap %}
         <div style="width:{{box_w}}px;height:{{box_h}}px;" class="thumb_wrapper {{extra_class|default('')}}" >

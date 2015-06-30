@@ -271,7 +271,7 @@ class DataboxController extends Controller
         $connection->beginTransaction();
         try {
             /** @var Authenticator $authenticator */
-            $authenticator = $this->app['authentication'];
+            $authenticator = $this->app->getAuthenticator();
             $baseId = \collection::mount_collection(
                 $this->app,
                 $this->findDataboxById($databox_id),

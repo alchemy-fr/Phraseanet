@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Application\Helper;
 
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Model\Entities\User;
 
 trait AuthenticatorAware
 {
@@ -65,5 +66,13 @@ trait AuthenticatorAware
         $this->authenticator = $instance;
 
         return $this->authenticator;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getAuthenticatedUser()
+    {
+        return $this->getAuthenticator()->getUser();
     }
 }

@@ -6,7 +6,7 @@
               <img src="/skins/logos/logo.png" alt="" id="mainLogo">
             </span>
         </li>
-        {% if module is defined and module != "lightbox" and app['authentication'].isAuthenticated() %}
+        {% if module is defined and module != "lightbox" and app.getAuthenticator().isAuthenticated() %}
           <li>
               <a target="_blank" href="{{ path('prod') }}">
                 <span class="">
@@ -15,7 +15,7 @@
               </a>
           </li>
 
-          {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
+          {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
           <li>
             <a target="_blank" href="{{ path('thesaurus') }}">
               <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
@@ -27,7 +27,7 @@
 
 
           {# MODULE #}
-          {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('admin') %}
+          {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
           <li>
             <a target="_blank" href="{{ path('admin') }}">
               <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
@@ -38,7 +38,7 @@
           {% endif %}
 
           {# MODULE #}
-          {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('report') %}
+          {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
           <li>
             <a target="_blank" href="{{ path('report_dashboard') }}">
               <span class="{% if module is defined and module == "report" %}selected{% endif %}">
@@ -59,7 +59,7 @@
 
           {# MODULE #}
           {% if module is defined and module == "prod" %}
-              {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('upload') %}
+              {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
             <li>
                 {% set link = path('upload_html5_form') %}
 
@@ -87,7 +87,7 @@
           </li>
           {% endif %}
 
-          {% if module is defined and module == "prod" and app['acl'].get(app['authentication'].getUser()).has_right('order_master') %}
+          {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right('order_master') %}
           <li>
             <a href="{{ path('prod_orders') }}" class="dialog full-dialog" title="{{ 'Orders manager' | trans }}">
               <span>
@@ -104,7 +104,7 @@
     <div class="PNB right" style="left:auto;overflow:hidden;">
       <ol>
 
-    {% if app['authentication'].isAuthenticated()  and module == "prod" %}
+    {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
         <li id="notification_trigger">
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
@@ -119,15 +119,15 @@
         </li>
     {% endif %}
         <li class="user">
-          {% if app['authentication'].isAuthenticated() %}
-            {% if app['authentication'].getUser().isGuest %}
+          {% if app.getAuthenticator().isAuthenticated() %}
+            {% if app.getAuthenticatedUser().isGuest %}
               <span>
                 {{ 'Guest' | trans }}
               </span>
             {% else %}
               <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
                 <span>
-                  {{app['authentication'].getUser().getLogin()}}
+                  {{app.getAuthenticatedUser().getLogin()}}
                 </span>
               </a>
             {% endif %}
@@ -162,7 +162,7 @@
           </table>
         </li>
         <li>
-        {% if app['authentication'].isAuthenticated() %}
+        {% if app.getAuthenticator().isAuthenticated() %}
           <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}" target="_self">
             <span>
               {{ 'phraseanet:: deconnection' | trans }}
@@ -174,7 +174,7 @@
     </div>
 </div>
 
- {% if app['authentication'].isAuthenticated()  and (module == "client" or module == "prod") %}
+ {% if app.getAuthenticator().isAuthenticated()  and (module == "client" or module == "prod") %}
     <div style="display:none;z-index:30000;" id="notification_box">
         {% set notifications = app['events-manager'].get_notifications %}
         {% include 'prod/notifications.html.twig' %}

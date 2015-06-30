@@ -97,7 +97,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $session->expects($this->any())
             ->method('getUser')
-            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()));
+            ->will($this->returnValue(self::$DI['app']->getAuthenticatedUser()));
 
         $em = $this->createEntityManagerMock();
 

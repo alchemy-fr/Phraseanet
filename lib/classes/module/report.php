@@ -253,7 +253,7 @@ class module_report
         $this->dmax = $d2;
         $this->sbas_id = $sbas_id;
         $this->list_coll_id = $collist;
-        $this->user_id = $this->app['authentication']->getUser()->getId();
+        $this->user_id = $this->app->getAuthenticatedUser()->getId();
         $this->periode = sprintf(
             '%s - %s ',
             $this->app['date-formatter']->getPrettyString(new \DateTime($d1)),

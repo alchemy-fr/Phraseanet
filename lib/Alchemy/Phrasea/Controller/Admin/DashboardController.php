@@ -128,7 +128,7 @@ class DashboardController extends Controller
             $this->app->abort(400, '"admins" parameter must contains at least one value.');
         }
         /** @var Authenticator $authenticator */
-        $authenticator = $this->app['authentication'];
+        $authenticator = $this->app->getAuthenticator();
         if (!in_array($authenticator->getUser()->getId(), $admins)) {
             $admins[] = $authenticator->getUser()->getId();
         }

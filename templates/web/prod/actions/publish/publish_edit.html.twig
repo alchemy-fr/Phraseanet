@@ -51,7 +51,7 @@
                             <div class="list">
                                 {% set feed_id = entry.getFeed().getId() %}
                                 {% for feed in feeds %}
-                                    {% if feed.isPublisher(app['authentication'].getUser()) %}
+                                    {% if feed.isPublisher(app.getAuthenticatedUser()) %}
                                         <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.getId() %}selected{% endif %}">
                                             <span>{{ feed.getTitle() }}</span>
                                             <input type="hidden" value="{{ feed.getId() }}"/>

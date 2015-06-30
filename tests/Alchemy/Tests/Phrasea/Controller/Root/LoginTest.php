@@ -1194,10 +1194,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAuthenticate()
     {
         $password = self::$DI['app']['random.low']->generateString(8);
-        $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
-        self::$DI['app']['authentication']->getUser()->setMailLocked(false);
-        self::$DI['app']['orm.em']->persist(self::$DI['app']['authentication']->getUser());
+        $login = self::$DI['app']->getAuthenticatedUser()->getLogin();
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
+        self::$DI['app']->getAuthenticatedUser()->setMailLocked(false);
+        self::$DI['app']['orm.em']->persist(self::$DI['app']->getAuthenticatedUser());
         self::$DI['app']['orm.em']->flush();
 
         $this->logout(self::$DI['app']);
@@ -1219,9 +1219,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = self::$DI['app']['random.low']->generateString(8);
 
-        $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
-        self::$DI['app']['authentication']->getUser()->setMailLocked(false);
+        $login = self::$DI['app']->getAuthenticatedUser()->getLogin();
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
+        self::$DI['app']->getAuthenticatedUser()->setMailLocked(false);
 
         $this->logout(self::$DI['app']);
 
@@ -1265,8 +1265,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = self::$DI['app']['random.low']->generateString(8);
 
-        $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
+        $login = self::$DI['app']->getAuthenticatedUser()->getLogin();
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
 
         $this->logout(self::$DI['app']);
 

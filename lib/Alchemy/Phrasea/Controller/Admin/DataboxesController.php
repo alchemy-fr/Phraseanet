@@ -222,7 +222,7 @@ class DataboxesController extends Controller
 
                 $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
                 $base = \databox::mount($this->app, $hostname, $port, $user, $password, $dbName);
-                $base->registerAdmin($this->app['authentication']->getUser());
+                $base->registerAdmin($this->app->getAuthenticatedUser());
                 $this->app['phraseanet.appbox']->get_connection()->commit();
 
                 return $this->app->redirectPath('admin_database', [

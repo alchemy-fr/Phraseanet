@@ -37,8 +37,8 @@
                     <h1 id="namePhr">{{ app['conf'].get(['registry', 'general', 'title']) }}</h1>
                 </div>
 
-                {% if app['authentication'].getUser() is not none %}
-                    {% set username = '<b>' ~ app['authentication'].getUser().getDisplayName() ~ '</b>' %}
+                {% if app.getAuthenticatedUser() is not none %}
+                    {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() ~ '</b>' %}
                     <div id="hello-box" class="span6 offset3">
                         <p class="login_hello">
                             {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}
