@@ -68,14 +68,4 @@ class NativeAuthentication implements PasswordAuthenticationInterface
 
         return $user->getId();
     }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return NativeAuthentication
-     */
-    public static function create(Application $app)
-    {
-        return new static($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['phraseanet.appbox']->get_connection());
-    }
 }
