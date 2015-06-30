@@ -310,7 +310,7 @@ class ACL implements cache_cacheableInterface
         $sbas_to_acces = [];
         $rights_to_give = [];
 
-        foreach ($this->app['acl']->get($template_user)->get_granted_sbas() as $databox) {
+        foreach ($this->app->getAclForUser($template_user)->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
             if (!in_array($sbas_id, $sbas_ids))
@@ -321,7 +321,7 @@ class ACL implements cache_cacheableInterface
             }
 
             foreach ($sbas_rights as $right) {
-                if ($this->app['acl']->get($template_user)->has_right_on_sbas($sbas_id, $right)) {
+                if ($this->app->getAclForUser($template_user)->has_right_on_sbas($sbas_id, $right)) {
                     $rights_to_give[$sbas_id][$right] = '1';
                 }
             }
@@ -348,7 +348,7 @@ class ACL implements cache_cacheableInterface
             '11' => ['aa' => '1', 'ao' => '1', 'xa' => '1', 'xo' => '1']
         ];
 
-        foreach ($this->app['acl']->get($template_user)->get_granted_base() as $collection) {
+        foreach ($this->app->getAclForUser($template_user)->get_granted_base() as $collection) {
             $base_id = $collection->get_base_id();
 
             if (!in_array($base_id, $base_ids))
@@ -359,13 +359,13 @@ class ACL implements cache_cacheableInterface
             }
 
             foreach ($bas_rights as $right) {
-                if ($this->app['acl']->get($template_user)->has_right_on_base($base_id, $right)) {
+                if ($this->app->getAclForUser($template_user)->has_right_on_base($base_id, $right)) {
                     $rights_to_give[$base_id][$right] = '1';
                 }
             }
 
-            $mask_and = $this->app['acl']->get($template_user)->get_mask_and($base_id);
-            $mask_xor = $this->app['acl']->get($template_user)->get_mask_xor($base_id);
+            $mask_and = $this->app->getAclForUser($template_user)->get_mask_and($base_id);
+            $mask_xor = $this->app->getAclForUser($template_user)->get_mask_xor($base_id);
 
             /**
              * apply sb is substractive
@@ -417,7 +417,7 @@ class ACL implements cache_cacheableInterface
     private function apply_template_time_limits(User $template_user, Array $base_ids)
     {
         foreach ($base_ids as $base_id) {
-            $limited = $this->app['acl']->get($template_user)->get_limits($base_id);
+            $limited = $this->app->getAclForUser($template_user)->get_limits($base_id);
             if (null !== $limited) {
                 $this->set_limits($base_id, '1', $limited['dmin'], $limited['dmax']);
             } else {

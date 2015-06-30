@@ -99,7 +99,7 @@ class Session_Logger
         $colls = [];
 
         if ($app->getAuthenticatedUser()) {
-            $bases = $app['acl']->get($app->getAuthenticatedUser())->get_granted_base([], [$databox->get_sbas_id()]);
+            $bases = $app->getAclForUser($app->getAuthenticatedUser())->get_granted_base([], [$databox->get_sbas_id()]);
             foreach ($bases as $collection) {
                 $colls[] = $collection->get_coll_id();
             }
@@ -218,7 +218,7 @@ class Session_Logger
         ];
 
         if (isset($appName[$appId])) {
-            $sbas_ids = array_keys($app['acl']->get($app->getAuthenticatedUser())->get_granted_sbas());
+            $sbas_ids = array_keys($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas());
 
             foreach ($sbas_ids as $sbas_id) {
                 try {

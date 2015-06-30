@@ -32,12 +32,12 @@ class Prod extends Helper
         $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search'), true);
         $saveSettings = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'advanced_search_reload');
 
-        foreach ($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
+        foreach ($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
             $sbasId = $databox->get_sbas_id();
 
             $bases[$sbasId] = array('thesaurus' => (trim($databox->get_thesaurus()) !== ""), 'cterms' => false, 'collections' => array(), 'sbas_id' => $sbasId);
 
-            foreach ($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base([], [$databox->get_sbas_id()]) as $coll) {
+            foreach ($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([], [$databox->get_sbas_id()]) as $coll) {
                 $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
                 $bases[$sbasId]['collections'][] = array('selected' => $selected, 'base_id' => $coll->get_base_id());
             }
@@ -78,7 +78,7 @@ class Prod extends Helper
             if (!$bases[$sbasId]['thesaurus']) {
                 continue;
             }
-            if (!$this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_sbas($sbasId, 'bas_modif_th')) {
+            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbasId, 'bas_modif_th')) {
                 continue;
             }
 

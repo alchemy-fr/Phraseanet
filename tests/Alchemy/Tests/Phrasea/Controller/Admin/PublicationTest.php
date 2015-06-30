@@ -25,7 +25,7 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('GET', '/admin/publications/list/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
 
         foreach ($feeds as $feed) {
             $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
@@ -40,14 +40,14 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testCreate()
     {
-        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
         $count = sizeof($feeds);
 
         $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', ["title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/publications/list/'));
 
-        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
         $count_after = sizeof($feeds);
         $this->assertGreaterThan($count, $count_after);
     }

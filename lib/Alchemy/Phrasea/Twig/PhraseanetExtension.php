@@ -135,7 +135,7 @@ class PhraseanetExtension extends \Twig_Extension
 
         $rights = (array) $rights;
         foreach ($rights as $right) {
-            if (false === $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
+            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
 
                 return false;
             }
@@ -153,7 +153,7 @@ class PhraseanetExtension extends \Twig_Extension
 
         $rights = (array) $rights;
         foreach ($rights as $right) {
-            if (false === $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_base($baseId, $right)) {
+            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($baseId, $right)) {
 
                 return false;
             }
@@ -182,7 +182,7 @@ class PhraseanetExtension extends \Twig_Extension
             return false;
         }
 
-        return $this->app['acl']->get($this->app->getAuthenticatedUser())->has_access_to_subdef($record, $subDefinition);
+        return $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_access_to_subdef($record, $subDefinition);
     }
 
     public function getDoctypeIcon(RecordInterface $record)

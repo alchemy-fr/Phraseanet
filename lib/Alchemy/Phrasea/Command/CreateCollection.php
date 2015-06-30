@@ -50,7 +50,7 @@ class CreateCollection extends Command
             while ($n < $total) {
                 $results = $query->limit($n, 40)->execute()->get_results();
                 foreach ($results as $user) {
-                    $this->container['acl']->get($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
+                    $this->container->getAclForUser($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
                 }
                 $n+=40;
             }

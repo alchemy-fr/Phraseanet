@@ -325,7 +325,7 @@ class record_preview extends record_adapter
 
         $tab = [];
 
-        $report = $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
         $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
@@ -401,7 +401,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $report = $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_base(
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
@@ -491,7 +491,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $report = $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_base(
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
@@ -564,7 +564,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $report = $this->app['acl']->get($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
         $ret = false;
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {

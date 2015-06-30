@@ -69,9 +69,9 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->error);
 
-        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "manage"));
-        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canpush"));
-        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canreport"));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "manage"));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canpush"));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canreport"));
 
         self::$DI['app']['orm.em']->refresh($user);
         self::$DI['app']['manipulator.user']->delete($user);
@@ -94,7 +94,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteQuota()
     {
-        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
+        $keys = array_keys(self::$DI['app']->getAclForUser(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
         self::$DI['client']->request('POST', '/admin/users/rights/quotas/', $params);
@@ -114,7 +114,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteQuotaRemove()
     {
-        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
+        $keys = array_keys(self::$DI['app']->getAclForUser(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
 
@@ -125,7 +125,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteRightTime()
     {
-        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
+        $keys = array_keys(self::$DI['app']->getAclForUser(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
 
@@ -188,7 +188,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteRightMask()
     {
-        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
+        $keys = array_keys(self::$DI['app']->getAclForUser(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = ['base_id' => $base_id, 'users'   => self::$DI['user']->getId()];
 
@@ -333,7 +333,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
 
-        self::$DI['app']['acl']->get($user)->give_access_to_sbas(array_keys(self::$DI['app']->getDataboxes()));
+        self::$DI['app']->getAclForUser($user)->give_access_to_sbas(array_keys(self::$DI['app']->getDataboxes()));
 
         foreach (self::$DI['app']->getDataboxes() as $databox) {
 
@@ -344,11 +344,11 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
                 , 'bas_chupub'        => '1'
             ];
 
-            self::$DI['app']['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            self::$DI['app']->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
-                self::$DI['app']['acl']->get($user)->give_access_to_base([$base_id]);
+                self::$DI['app']->getAclForUser($user)->give_access_to_base([$base_id]);
 
                 $rights = [
                     'canputinalbum'  => '1'
@@ -357,7 +357,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
                     , 'nowatermark'    => '1'
                 ];
 
-                self::$DI['app']['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
+                self::$DI['app']->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);
                 break;
             }
         }
@@ -369,7 +369,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
-        $this->assertFalse(self::$DI['app']['acl']->get($user)->has_access_to_base($base_id));
+        $this->assertFalse(self::$DI['app']->getAclForUser($user)->has_access_to_base($base_id));
         self::$DI['app']['manipulator.user']->delete($user);
     }
 
@@ -436,7 +436,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         // create a template
         if (null === self::$DI['app']['repo.users']->findByLogin('csv_template')) {
             $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']->getAuthenticatedUser());
-            self::$DI['app']['acl']->get($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
+            self::$DI['app']->getAclForUser($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
         }
 
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')

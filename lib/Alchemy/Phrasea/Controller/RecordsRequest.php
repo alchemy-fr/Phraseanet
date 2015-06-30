@@ -243,20 +243,20 @@ class RecordsRequest extends ArrayCollection
         $to_remove = [];
 
         foreach ($elements as $id => $record) {
-            if (!$app['acl']->get($app->getAuthenticatedUser())->has_access_to_record($record)) {
+            if (!$app->getAclForUser($app->getAuthenticatedUser())->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if (!$app['acl']->get($app->getAuthenticatedUser())->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if (!$app['acl']->get($app->getAuthenticatedUser())->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$app->getAclForUser($app->getAuthenticatedUser())->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }

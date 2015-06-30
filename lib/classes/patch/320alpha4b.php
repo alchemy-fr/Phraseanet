@@ -212,7 +212,7 @@ class patch_320alpha4b extends patchAbstract
                 $app['orm.em']->flush();
 
             } elseif ($pub_restrict == 1) {
-                $collections = $app['acl']->get($user)->get_granted_base();
+                $collections = $app->getAclForUser($user)->get_granted_base();
                 $collection = array_shift($collections);
                 if ( ! ($collection instanceof collection)) {
                     foreach ($appbox->get_databoxes() as $databox) {

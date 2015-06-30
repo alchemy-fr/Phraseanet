@@ -22,10 +22,10 @@ class databox_status
     public static function getSearchStatus(Application $app)
     {
         $see_all = $structures = $stats = [];
-        foreach ($app['acl']->get($app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
+        foreach ($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
             $see_all[$databox->get_sbas_id()] = false;
             foreach ($databox->get_collections() as $collection) {
-                if ($app['acl']->get($app->getAuthenticatedUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }

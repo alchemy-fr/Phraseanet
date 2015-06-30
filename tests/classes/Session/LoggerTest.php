@@ -25,7 +25,7 @@ class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
         $this->authenticate(self::$DI['app']);
         $logger_creater = self::$DI['app']['phraseanet.logger'];
 
-        foreach (self::$DI['app']['acl']->get($user)->get_granted_sbas() as $databox) {
+        foreach (self::$DI['app']->getAclForUser($user)->get_granted_sbas() as $databox) {
             $this->object = $logger_creater($databox);
             $this->databox = $databox;
             break;

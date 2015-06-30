@@ -54,7 +54,7 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response, $databoxes);
 
         foreach ($databox->get_collections() as $collection) {
-            $this->assertFalse(self::$DI['app']['acl']->get(self::$DI['user_alt2'])->has_access_to_base($collection->get_base_id()));
+            $this->assertFalse(self::$DI['app']->getAclForUser(self::$DI['user_alt2'])->has_access_to_base($collection->get_base_id()));
         }
     }
 

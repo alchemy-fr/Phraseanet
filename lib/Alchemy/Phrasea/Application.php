@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
+use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
@@ -118,6 +119,7 @@ use XPDF\XPDFServiceProvider;
 
 class Application extends SilexApplication
 {
+    use AclAware;
     use ApplicationBoxAware;
     use AuthenticatorAware;
     use UrlGeneratorTrait;
@@ -597,7 +599,7 @@ class Application extends SilexApplication
             return false;
         }
 
-        return count($this['acl']->get($user)->get_granted_base()) > 0;
+        return count($this->getAclForUser($user)->get_granted_base()) > 0;
     }
 
     /**

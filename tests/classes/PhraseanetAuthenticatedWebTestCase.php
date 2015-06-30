@@ -119,7 +119,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             , 'bas_chupub'        => '1'
         ];
 
-        $app['acl']->get($app->getAuthenticatedUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        $app->getAclForUser($app->getAuthenticatedUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
         $databox->registerAdmin($app->getAuthenticatedUser());
 

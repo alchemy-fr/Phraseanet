@@ -18,7 +18,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
         foreach ($feeds as $one_feed) {
             if ($one_feed->isPublisher(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->getId() . "' and @name='feed_proposal[]']")->count());
@@ -338,7 +338,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
 
         foreach ($feeds as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
@@ -355,7 +355,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     public function testGetFeed()
     {
         $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
-        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
+        $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $feed->getId() . "/");
 
         foreach ($feeds as $one_feed) {

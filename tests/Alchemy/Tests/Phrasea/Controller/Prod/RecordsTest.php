@@ -122,7 +122,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['record_1'];
 
         $options = new SearchEngineOptions();
-        $acl = self::$DI['app']['acl']->get(self::$DI['app']->getAuthenticatedUser());
+        $acl = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser());
         $options->onCollections($acl->get_granted_base());
         $serializedOptions = $options->serialize();
 

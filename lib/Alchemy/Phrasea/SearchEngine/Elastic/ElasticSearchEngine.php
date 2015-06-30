@@ -400,7 +400,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             return [];
         }
 
-        $acl = $this->app['acl']->get($this->app->getAuthenticatedUser());
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
         $grantedCollections = array_keys($acl->get_granted_base(['actif']));
 

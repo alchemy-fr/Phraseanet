@@ -46,7 +46,7 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['record_2'];
 
         $options = new SearchEngineOptions();
-        $options->onCollections(self::$DI['app']['acl']->get(self::$DI['app']->getAuthenticatedUser())->get_granted_base());
+        $options->onCollections(self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())->get_granted_base());
         $serializedOptions = $options->serialize();
 
         self::$DI['client']->request('POST', '/prod/query/answer-train/', [

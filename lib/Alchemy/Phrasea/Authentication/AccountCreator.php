@@ -91,7 +91,7 @@ class AccountCreator
         }
 
         foreach (array_merge($this->templates, $templates) as $template) {
-            $app['acl']->get($user)->apply_model($template, $base_ids);
+            $app->getAclForUser($user)->apply_model($template, $base_ids);
         }
 
         return $user;

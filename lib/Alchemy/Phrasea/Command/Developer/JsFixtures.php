@@ -85,7 +85,7 @@ class JsFixtures extends Command
     {
         $user = $app['manipulator.user']->createUser(uniqid('fixturejs'), uniqid('fixturejs'), uniqid('fixturejs') . '@js.js', true);
 
-        $app['acl']->get($user)->set_admin(true);
+        $app->getAclForUser($user)->set_admin(true);
         $app['manipulator.acl']->resetAdminRights($user);
 
         return $user;

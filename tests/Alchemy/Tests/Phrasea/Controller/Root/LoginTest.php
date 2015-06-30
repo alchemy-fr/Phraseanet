@@ -243,7 +243,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 $revokeBases[] = $collection->get_base_id();
             }
         }
-        self::$DI['app']['acl']->get($user)->revoke_access_from_bases($revokeBases);
+        self::$DI['app']->getAclForUser($user)->revoke_access_from_bases($revokeBases);
         $this->deleteRequest();
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
@@ -1287,7 +1287,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticate()
     {
-        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']->getAclForUser(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1314,7 +1314,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($context, $event->getContext()->getContext());
         });
 
-        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']->getAclForUser(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1329,7 +1329,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticateWithGetMethod()
     {
-        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']->getAclForUser(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
         $this->logout(self::$DI['app']);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);

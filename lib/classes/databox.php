@@ -477,9 +477,9 @@ class databox extends base
         while ($n < $total) {
             $results = $query->limit($n, 50)->execute()->get_results();
             foreach ($results as $user) {
-                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
-                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
-                $this->app['acl']->get($user)->delete_injected_rights_sbas($this);
+                $this->app->getAclForUser($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
+                $this->app->getAclForUser($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
+                $this->app->getAclForUser($user)->delete_injected_rights_sbas($this);
             }
             $n+=50;
         }
@@ -1038,7 +1038,7 @@ class databox extends base
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $this->app['acl']->get($user)
+        $this->app->getAclForUser($user)
             ->give_access_to_sbas([$this->id])
             ->update_rights_to_sbas(
                 $this->id, [
@@ -1073,9 +1073,9 @@ class databox extends base
         }
         $stmt->closeCursor();
 
-        $this->app['acl']->get($user)->give_access_to_base($base_ids);
+        $this->app->getAclForUser($user)->give_access_to_base($base_ids);
         foreach ($base_ids as $base_id) {
-            $this->app['acl']->get($user)->update_rights_to_base($base_id, [
+            $this->app->getAclForUser($user)->update_rights_to_base($base_id, [
                 'canpush'         => 1, 'cancmd'          => 1
                 , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
                 , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1

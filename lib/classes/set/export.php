@@ -66,8 +66,8 @@ class set_export extends set_abstract
                 $record_id = $basket_element->getRecord($this->app)->get_record_id();
 
                 if (!isset($remain_hd[$base_id])) {
-                    if ($app['acl']->get($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
-                        $remain_hd[$base_id] = $app['acl']->get($app->getAuthenticatedUser())->remaining_download($base_id);
+                    if ($app->getAclForUser($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
+                        $remain_hd[$base_id] = $app->getAclForUser($app->getAuthenticatedUser())->remaining_download($base_id);
                     } else {
                         $remain_hd[$base_id] = false;
                     }
@@ -106,8 +106,8 @@ class set_export extends set_abstract
                         $record_id = $child_basrec->get_record_id();
 
                         if (!isset($remain_hd[$base_id])) {
-                            if ($app['acl']->get($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
-                                $remain_hd[$base_id] = $app['acl']->get($app->getAuthenticatedUser())->remaining_download($base_id);
+                            if ($app->getAclForUser($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
+                                $remain_hd[$base_id] = $app->getAclForUser($app->getAuthenticatedUser())->remaining_download($base_id);
                             } else {
                                 $remain_hd[$base_id] = false;
                             }
@@ -129,8 +129,8 @@ class set_export extends set_abstract
                     $record_id = $record->get_record_id();
 
                     if (!isset($remain_hd[$base_id])) {
-                        if ($app['acl']->get($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
-                            $remain_hd[$base_id] = $app['acl']->get($app->getAuthenticatedUser())->remaining_download($base_id);
+                        if ($app->getAclForUser($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
+                            $remain_hd[$base_id] = $app->getAclForUser($app->getAuthenticatedUser())->remaining_download($base_id);
                         } else {
                             $remain_hd[$base_id] = false;
                         }
@@ -164,7 +164,7 @@ class set_export extends set_abstract
         $this->businessFieldsAccess = false;
 
         foreach ($this->elements as $download_element) {
-            if ($app['acl']->get($app->getAuthenticatedUser())->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
+            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
                 $this->businessFieldsAccess = true;
             }
 
@@ -216,11 +216,11 @@ class set_export extends set_abstract
 
         $display_ftp = [];
 
-        $hasadminright = $app['acl']->get($app->getAuthenticatedUser())->has_right('addrecord')
-            || $app['acl']->get($app->getAuthenticatedUser())->has_right('deleterecord')
-            || $app['acl']->get($app->getAuthenticatedUser())->has_right('modifyrecord')
-            || $app['acl']->get($app->getAuthenticatedUser())->has_right('coll_manage')
-            || $app['acl']->get($app->getAuthenticatedUser())->has_right('coll_modify_struct');
+        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right('addrecord')
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('deleterecord')
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('modifyrecord')
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('coll_manage')
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('coll_modify_struct');
 
         $this->ftp_datas = [];
 
@@ -228,7 +228,7 @@ class set_export extends set_abstract
             $display_ftp = $display_download;
             $this->total_ftp = $this->total_download;
 
-            $lst_base_id = array_keys($app['acl']->get($app->getAuthenticatedUser())->get_granted_base());
+            $lst_base_id = array_keys($app->getAclForUser($app->getAuthenticatedUser())->get_granted_base());
 
             if ($hasadminright) {
                 $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
@@ -429,7 +429,7 @@ class set_export extends set_abstract
 
             $BF = false;
 
-            if ($includeBusinessFields && $this->app['acl']->get($user)->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
+            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
                 $BF = true;
             }
 
@@ -512,8 +512,8 @@ class set_export extends set_abstract
                             'path' => $sd[$name]->get_path()
                             , 'file' => $sd[$name]->get_file()
                         ];
-                        if (!$this->app['acl']->get($user)->has_right_on_base($download_element->get_base_id(), "nowatermark")
-                            && !$this->app['acl']->get($user)->has_preview_grant($download_element)
+                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->get_base_id(), "nowatermark")
+                            && !$this->app->getAclForUser($user)->has_preview_grant($download_element)
                             && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE) {
                             $path = recordutils_image::watermark($this->app, $sd[$name]);
                             if (file_exists($path)) {
@@ -776,7 +776,7 @@ class set_export extends set_abstract
                     $log["shortXml"] = $app['serializer.caption']->serialize($record_object->get_caption(), CaptionSerializer::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
                     if (!$anonymous && $o == 'document' && null !== $app->getAuthenticatedUser()) {
-                        $app['acl']->get($app->getAuthenticatedUser())->remove_remaining($record_object->get_base_id());
+                        $app->getAclForUser($app->getAuthenticatedUser())->remove_remaining($record_object->get_base_id());
                     }
                 }
 
@@ -794,11 +794,11 @@ class set_export extends set_abstract
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
             foreach ($list_base as $base_id) {
-                if ($app['acl']->get($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
+                if ($app->getAclForUser($app->getAuthenticatedUser())->is_restricted_download($base_id)) {
                     $params = [
-                        ':remain_dl' => $app['acl']->get($app->getAuthenticatedUser())->remaining_download($base_id)
+                        ':remain_dl' => $app->getAclForUser($app->getAuthenticatedUser())->remaining_download($base_id)
                         , ':base_id'   => $base_id
-                        , ':usr_id'    => $app['acl']->get($app->getAuthenticatedUser())->getId()
+                        , ':usr_id'    => $app->getAclForUser($app->getAuthenticatedUser())->getId()
                     ];
 
                     $stmt->execute($params);

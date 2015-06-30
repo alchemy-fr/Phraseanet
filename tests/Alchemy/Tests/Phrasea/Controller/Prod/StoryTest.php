@@ -17,7 +17,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['acl']->get(self::$DI['app']->getAuthenticatedUser())
+        $collections = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
             ->get_granted_base(['canaddrecord']);
 
         $collection = array_shift($collections);
@@ -46,7 +46,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['acl']->get(self::$DI['app']->getAuthenticatedUser())
+        $collections = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
             ->get_granted_base(['canaddrecord']);
 
         $collection = array_shift($collections);

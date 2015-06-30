@@ -71,11 +71,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(User $user)
     {
-        $list = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
-        $this->app['acl']->get($user)->revoke_access_from_bases($list);
+        $this->app->getAclForUser($user)->revoke_access_from_bases($list);
 
-        if ($this->app['acl']->get($user)->is_phantom()) {
+        if ($this->app->getAclForUser($user)->is_phantom()) {
             $this->app['manipulator.user']->delete($user);
         }
 
@@ -84,7 +84,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function get_users_rights()
     {
-        $list = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         $sql = "SELECT
             b.sbas_id,
@@ -476,7 +476,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function apply_rights()
     {
-        $ACL = $this->app['acl']->get($this->app->getAuthenticatedUser());
+        $ACL = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         $base_ids = array_keys($ACL->get_granted_base(['canadmin']));
 
         $update = $create = $delete = $create_sbas = $update_sbas = [];
@@ -571,21 +571,21 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
                 $user = $this->app['repo.users']->find($usr_id);
 
-                $this->app['acl']->get($user)->revoke_access_from_bases($delete)
+                $this->app->getAclForUser($user)->revoke_access_from_bases($delete)
                     ->give_access_to_base($create)
                     ->give_access_to_sbas($create_sbas);
 
                 foreach ($update as $base_id => $rights) {
-                    $this->app['acl']->get($user)->update_rights_to_base($base_id, $rights);
+                    $this->app->getAclForUser($user)->update_rights_to_base($base_id, $rights);
                 }
 
                 foreach ($update_sbas as $sbas_id => $rights) {
-                    $this->app['acl']->get($user)->update_rights_to_sbas($sbas_id, $rights);
+                    $this->app->getAclForUser($user)->update_rights_to_sbas($sbas_id, $rights);
                 }
 
                 $this->app['phraseanet.appbox']->get_connection()->commit();
 
-                $this->app['acl']->get($user)->revoke_unused_sbas_rights();
+                $this->app->getAclForUser($user)->revoke_unused_sbas_rights();
 
                 unset($user);
             } catch (\Exception $e) {
@@ -688,12 +688,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
-        $base_ids = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
             
-            $this->app['acl']->get($user)->apply_model($template, $base_ids);
+            $this->app->getAclForUser($user)->apply_model($template, $base_ids);
         }
 
         return $this;
@@ -706,9 +706,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
             if ($this->request->get('quota'))
-                $this->app['acl']->get($user)->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
+                $this->app->getAclForUser($user)->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
             else
-                $this->app['acl']->get($user)->remove_quotas_on_base($this->base_id);
+                $this->app->getAclForUser($user)->remove_quotas_on_base($this->base_id);
         }
 
         return $this;
@@ -727,7 +727,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             foreach ($this->users as $usr_id) {
                 $user = $this->app['repo.users']->find($usr_id);
 
-                $this->app['acl']->get($user)->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
+                $this->app->getAclForUser($user)->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
             }
         }
 
@@ -744,16 +744,16 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $activate = !!$this->request->get('limit');
 
-        $base_ids = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
 
             if ($this->base_id > 0) {
-                $this->app['acl']->get($user)->set_limits($this->base_id, $activate, $dmin, $dmax);
+                $this->app->getAclForUser($user)->set_limits($this->base_id, $activate, $dmin, $dmax);
             } elseif ($sbas_id > 0) {
                 foreach ($base_ids as $base_id) {
-                    $this->app['acl']->get($user)->set_limits($base_id, $activate, $dmin, $dmax);
+                    $this->app->getAclForUser($user)->set_limits($base_id, $activate, $dmin, $dmax);
                 }
             } else {
                 $this->app->abort(400, 'No collection or databox id available');
@@ -763,11 +763,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function resetRights()
     {
-        $base_ids = array_keys($this->app['acl']->get($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
-            $ACL = $this->app['acl']->get($user);
+            $ACL = $this->app->getAclForUser($user);
 
             if ($user->isTemplate()) {
                 $template = $user;

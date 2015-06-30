@@ -14,7 +14,7 @@ class ACLTest extends \PhraseanetTestCase
         parent::setUp();
 
         self::resetUsersRights(self::$DI['app'], self::$DI['user']);
-        $this->object = self::$DI['app']['acl']->get(self::$DI['user']);
+        $this->object = self::$DI['app']->getAclForUser(self::$DI['user']);
     }
 
     public function tearDown()
@@ -60,42 +60,42 @@ class ACLTest extends \PhraseanetTestCase
     public function testApplyModel()
     {
         $base_ids = [self::$DI['collection']->get_base_id()];
-        self::$DI['app']['acl']->get(self::$DI['user_template'])->give_access_to_base($base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_template'])->give_access_to_base($base_ids);
 
         foreach ($base_ids as $base_id) {
-            self::$DI['app']['acl']->get(self::$DI['user_template'])->set_limits($base_id, 0);
+            self::$DI['app']->getAclForUser(self::$DI['user_template'])->set_limits($base_id, 0);
         }
 
-        self::$DI['app']['acl']->get(self::$DI['user_1'])->apply_model(self::$DI['user_template'], $base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_1'])->apply_model(self::$DI['user_template'], $base_ids);
 
         foreach ($base_ids as $base_id) {
-            $this->assertTrue(self::$DI['app']['acl']->get(self::$DI['user_1'])->has_access_to_base($base_id));
+            $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_1'])->has_access_to_base($base_id));
         }
 
         foreach ($base_ids as $base_id) {
-            $this->assertNull(self::$DI['app']['acl']->get(self::$DI['user_1'])->get_limits($base_id));
+            $this->assertNull(self::$DI['app']->getAclForUser(self::$DI['user_1'])->get_limits($base_id));
         }
     }
 
     public function testApplyModelWithTimeLimit()
     {
         $base_ids = [self::$DI['collection']->get_base_id()];
-        self::$DI['app']['acl']->get(self::$DI['user_template'])->give_access_to_base($base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_template'])->give_access_to_base($base_ids);
 
         $limit_from = new \DateTime('-1 day');
         $limit_to = new \DateTime('+1 day');
 
         foreach ($base_ids as $base_id) {
-            self::$DI['app']['acl']->get(self::$DI['user_template'])->set_limits($base_id, 1, $limit_from, $limit_to);
+            self::$DI['app']->getAclForUser(self::$DI['user_template'])->set_limits($base_id, 1, $limit_from, $limit_to);
         }
 
-        self::$DI['app']['acl']->get(self::$DI['user_2'])->apply_model(self::$DI['user_template'], $base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_2'])->apply_model(self::$DI['user_template'], $base_ids);
 
         foreach ($base_ids as $base_id) {
-            $this->assertTrue(self::$DI['app']['acl']->get(self::$DI['user_2'])->has_access_to_base($base_id));
+            $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_2'])->has_access_to_base($base_id));
         }
         foreach ($base_ids as $base_id) {
-            $this->assertEquals(['dmin' => $limit_from, 'dmax' => $limit_to], self::$DI['app']['acl']->get(self::$DI['user_2'])->get_limits($base_id));
+            $this->assertEquals(['dmin' => $limit_from, 'dmax' => $limit_to], self::$DI['app']->getAclForUser(self::$DI['user_2'])->get_limits($base_id));
         }
     }
 
