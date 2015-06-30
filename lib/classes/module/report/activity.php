@@ -258,69 +258,6 @@ class module_report_activity extends module_report
         return $this->report;
     }
 
-    // =========================== not called ? =====================
-    /**
-     * @desc get all downloads from one specific user
-     * @param $usr user id
-     * @param  array $config config for the html table
-     * @return array
-     */
-/*
-    public function getAllDownloadByUserBase($usr, $config = false)
-    {
-        $result = [];
-        $sqlBuilder = new module_report_sql($this->app, $this);
-        $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge([], $filter['params']);
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
-
-        $sql = "
-            SELECT log_docs.record_id, log_docs.date, log_docs.final AS objets
-            FROM (`log_docs`)
-            INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            INNER JOIN record ON (log_docs.record_id = record.record_id)
-            WHERE (". $filter['sql'] .") AND log_docs.action = 'download'
-            ORDER BY date DESC";
-
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $sqlBuilder->setTotalrows($stmt->rowCount());
-        $stmt->closeCursor();
-
-        $sql .= $sqlBuilder->getFilters()->getLimitFilter() ?: '';
-
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $login = $this->app['repo.users']->find($usr)->getDisplayName();
-
-        $this->setChamp($rs);
-
-        $config ? $this->setConfigColumn($config) : $this->initDefaultConfigColumn($this->champ);
-
-        $i = 0;
-        foreach ($rs as $row) {
-            $record = $databox->get_record($row['record_id']);
-
-            foreach ($this->champ as $value) {
-                $result[$i][$value] = $row[$value];
-            }
-
-            $result[$i]['titre'] = $record->get_title();
-            $i ++;
-        }
-
-        $this->title = $this->app->trans('report:: Telechargement effectue par l\'utilisateur %name%', ['%name%' => $login]);
-
-        $this->setResult($result);
-
-        return $this->result;
-    }
-*/
-
     // ============================ Downloads : Daily ==========================
     /**
      * @desc get all download by base by day
