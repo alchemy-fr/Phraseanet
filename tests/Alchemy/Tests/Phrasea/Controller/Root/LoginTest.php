@@ -970,10 +970,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
         ];
 
-        self::$DI['app']['phraseanet.appbox-register'] = $this->getMockBuilder('\appbox_register')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
             ->disableOriginalConstructor()
             ->getMock();
@@ -1068,10 +1064,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRegister($parameters, $extraParameters)
     {
-        self::$DI['app']['phraseanet.appbox-register'] = $this->getMockBuilder('\appbox_register')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
             ->disableOriginalConstructor()
             ->getMock();
