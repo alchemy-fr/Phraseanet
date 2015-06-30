@@ -1008,7 +1008,7 @@ class User_Query implements User_QueryInterface
 
     private function setActiveBases()
     {
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
             $this->active_sbas[] = $databox->get_sbas_id();
             foreach ($databox->get_collections() as $collection) {
                 $this->active_bases[] = $collection->get_base_id();

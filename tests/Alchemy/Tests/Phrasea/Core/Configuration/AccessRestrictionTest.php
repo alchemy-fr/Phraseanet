@@ -43,7 +43,7 @@ class AccessRestrictionTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
 
-        $databoxes = $app['phraseanet.appbox']->get_databoxes();
+        $databoxes = $app->getDataboxes();
         $databox = current($databoxes);
         $collections = $databox->get_collections();
         $collection = current($collections);

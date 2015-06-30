@@ -373,7 +373,7 @@ class RegenerateSqliteDb extends Command
     {
         $coll = $collection_no_acces = $collection_no_acces_by_status = null;
         /** @var \databox[] $databoxes */
-        $databoxes = $this->container['phraseanet.appbox']->get_databoxes();
+        $databoxes = $this->container->getDataboxes();
 
         foreach ($databoxes as $databox) {
             foreach ($databox->get_collections() as $collection) {

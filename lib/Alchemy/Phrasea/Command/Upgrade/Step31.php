@@ -41,7 +41,7 @@ class Step31 implements DatasUpgraderInterface
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
             do {
                 $records = $this->getNullUUIDs($databox);
 
@@ -60,7 +60,7 @@ class Step31 implements DatasUpgraderInterface
     {
         $time = 0;
 
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
             $time += $this->getDataboxTimeEstimation($databox);
         }
 

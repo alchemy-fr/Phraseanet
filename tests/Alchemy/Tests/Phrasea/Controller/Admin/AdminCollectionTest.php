@@ -68,7 +68,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function createOneCollection()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $collection = \collection::create(self::$DI['app'], array_shift($databoxes), self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
 
         self::$createdCollections[] = $collection;
@@ -531,7 +531,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $collection = $this->createOneCollection();
 
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($collection->get_sbas_id());
+        $databox = self::$DI['app']->findDataboxById($collection->get_sbas_id());
         $sql = '
             INSERT INTO record
               (coll_id, record_id, parent_record_id, moddate, credate

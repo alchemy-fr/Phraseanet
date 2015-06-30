@@ -85,7 +85,7 @@ class record_exportElement extends record_adapter
 
         $sbas_id = phrasea::sbasFromBas($this->app, $this->base_id);
 
-        $subdefgroups = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_subdef_structure();
+        $subdefgroups = $this->app->findDataboxById($sbas_id)->get_subdef_structure();
 
         $subdefs = [];
 

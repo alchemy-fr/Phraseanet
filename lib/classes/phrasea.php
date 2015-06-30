@@ -197,7 +197,7 @@ class phrasea
             try {
                 self::$_sbas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_NAMES);
             } catch (\Exception $e) {
-                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_names[$databox->get_sbas_id()] = $databox->get_viewname();
                 }
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_names, self::CACHE_SBAS_NAMES);
@@ -213,7 +213,7 @@ class phrasea
             try {
                 self::$_sbas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_LABELS);
             } catch (\Exception $e) {
-                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),
                         'en' => $databox->get_label('en'),
@@ -238,7 +238,7 @@ class phrasea
             try {
                 self::$_bas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_BAS_LABELS);
             } catch (\Exception $e) {
-                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($app->getDataboxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
                         self::$_bas_labels[$collection->get_base_id()] = [
                             'fr' => $collection->get_label('fr'),

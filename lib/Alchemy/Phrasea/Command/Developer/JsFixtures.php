@@ -38,7 +38,7 @@ class JsFixtures extends Command
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 
-        $sbasId = current($this->container['phraseanet.appbox']->get_databoxes())->get_sbas_id();
+        $sbasId = current($this->container->getDataboxes())->get_sbas_id();
         $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');
         $this->writeResponse($output, 'GET', '/admin/fields/'.$sbasId , '/admin/fields/index.html', true);
         $this->writeResponse($output, 'GET', '/admin/task-manager/tasks', '/admin/task-manager/index.html', true);

@@ -108,7 +108,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('stories', $data);
         $this->assertCount(1, $data['stories']);
         list($empty, $path, $databox_id, $story_id) = explode('/', current($data['stories']));
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
+        $databox = self::$DI['app']->findDataboxById($databox_id);
         $story = $databox->get_record($story_id);
         $story->delete();
         $record->delete();
@@ -632,7 +632,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
+        $databox = self::$DI['app']->findDataboxById($databox_id);
         $statusStructure = $databox->getStatusStructure();
         $route = '/api/v1/databoxes/' . $databox_id . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
@@ -681,7 +681,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
         $databox_id = self::$DI['record_1']->get_sbas_id();
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
+        $databox = self::$DI['app']->findDataboxById($databox_id);
         $ref_structure = $databox->get_meta_structure();
 
         try {

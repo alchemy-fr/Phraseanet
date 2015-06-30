@@ -55,7 +55,7 @@ class AbstractCheckerTest extends \PhraseanetTestCase
         $databox = $collection = null;
         $app = $this->loadApp();
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
+        foreach ($app->getDataboxes() as $db) {
             if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
@@ -105,7 +105,7 @@ class AbstractCheckerTest extends \PhraseanetTestCase
     {
         $othercollection = $collection = null;
         $app = $this->loadApp();
-        $databoxes = $app['phraseanet.appbox']->get_databoxes();
+        $databoxes = $app->getDataboxes();
         if (count($databoxes) === 0) {
             $this->fail('Unable to find collections');
         }
@@ -188,7 +188,7 @@ class AbstractCheckerTest extends \PhraseanetTestCase
         $databox = $collection = null;
         $app = $this->loadApp();
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
+        foreach ($app->getDataboxes() as $db) {
             if (! $databox) {
                 $databox = $db;
             }

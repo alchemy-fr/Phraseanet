@@ -665,7 +665,7 @@ class databox extends base
 
         $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);

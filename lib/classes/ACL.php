@@ -254,7 +254,7 @@ class ACL implements cache_cacheableInterface
             return true;
         }
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($record->getDataboxId());
+        $databox = $this->app->findDataboxById($record->getDataboxId());
         try {
             $subdef_class = $databox->get_subdef_structure()
                 ->get_subdef($record->getType(), $subdef_name)
@@ -692,7 +692,7 @@ class ACL implements cache_cacheableInterface
         $this->load_rights_bas();
         $ret = [];
 
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
             if ($sbas_ids && !in_array($databox->get_sbas_id(), $sbas_ids)) {
                 continue;
             }
@@ -758,7 +758,7 @@ class ACL implements cache_cacheableInterface
                 continue;
 
             try {
-                $ret[$sbas_id] = $this->app['phraseanet.appbox']->get_databox((int) $sbas_id);
+                $ret[$sbas_id] = $this->app->findDataboxById((int) $sbas_id);
             } catch (\Exception $e) {
 
             }

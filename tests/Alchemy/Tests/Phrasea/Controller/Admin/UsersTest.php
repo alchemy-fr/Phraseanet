@@ -333,9 +333,9 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('user_'), "test");
 
-        self::$DI['app']['acl']->get($user)->give_access_to_sbas(array_keys(self::$DI['app']['phraseanet.appbox']->get_databoxes()));
+        self::$DI['app']['acl']->get($user)->give_access_to_sbas(array_keys(self::$DI['app']->getDataboxes()));
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
 
             $rights = [
                 'bas_manage'        => '1'

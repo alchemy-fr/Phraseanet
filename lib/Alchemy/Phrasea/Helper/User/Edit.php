@@ -280,7 +280,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $tbits_right = [];
 
         $sbas_id = \phrasea::sbasFromBas($this->app, $this->base_id);
-        $databox = $this->app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $this->app->findDataboxById($sbas_id);
         $statusStructure = $databox->getStatusStructure();
 
         foreach ($statusStructure as $bit => $status) {
@@ -470,7 +470,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             'datas'        => $this->users_datas,
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
-            'databox'      => $this->app['phraseanet.appbox']->get_databox($sbas_id),
+            'databox'      => $this->app->findDataboxById($sbas_id),
         ];
     }
 

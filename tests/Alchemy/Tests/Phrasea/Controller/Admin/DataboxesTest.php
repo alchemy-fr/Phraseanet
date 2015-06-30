@@ -81,7 +81,7 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         $databoxId = $explode[3];
 
         try {
-            $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
+            $databox = self::$DI['app']->findDataboxById($databoxId);
             $databox->unmount_databox();
             $databox->delete();
         } catch (NotFoundHttpException $e) {
@@ -143,7 +143,7 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
         $explode = explode('/', $uriRedirect);
         $databoxId = $explode[3];
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
+        $databox = self::$DI['app']->findDataboxById($databoxId);
         $databox->unmount_databox();
         $databox->delete();
 

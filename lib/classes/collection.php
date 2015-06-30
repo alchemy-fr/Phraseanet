@@ -448,7 +448,7 @@ class collection implements cache_cacheableInterface
         if (! $sbas_id || ! $coll_id) {
             throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
         }
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
 
         return self::get_from_coll_id($app, $databox, $coll_id);
     }

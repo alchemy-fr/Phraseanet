@@ -238,7 +238,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $token = self::$DI['app']['manipulator.token']->createResetEmailToken($user, $email);
         $user->setMailLocked(true);
         $revokeBases = array();
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $revokeBases[] = $collection->get_base_id();
             }
@@ -1866,7 +1866,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         if (null === self::$termsOfUse) {
             self::$termsOfUse = [];
-            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach (self::$DI['app']->getDataboxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
                 foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
@@ -1882,7 +1882,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             return;
         }
         self::$termsOfUse = [];
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
             foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
@@ -1896,7 +1896,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         if (null === self::$termsOfUse) {
             return;
         }
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             if (!isset(self::$termsOfUse[$databox->get_sbas_id()])) {
                 continue;
             }

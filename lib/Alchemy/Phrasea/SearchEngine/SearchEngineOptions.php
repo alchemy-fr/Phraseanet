@@ -464,7 +464,7 @@ class SearchEngineOptions
                     $value = array_map(function ($serialized) use ($app) {
                                 $data = explode('_', $serialized);
 
-                                return \databox_field::get_instance($app, $app['phraseanet.appbox']->get_databox($data[0]), $data[1]);
+                                return \databox_field::get_instance($app, $app->findDataboxById($data[0]), $data[1]);
                                 return \collection::get_from_base_id($app, $base_id);
                             }, $value);
                     break;

@@ -57,7 +57,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
                         $databoxes = [];
                         foreach ($checker['databoxes'] as $sbas_id) {
                             try {
-                                $databoxes[] = $app['phraseanet.appbox']->get_databox($sbas_id);
+                                $databoxes[] = $app->findDataboxById($sbas_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid databox option');
                             }

@@ -358,7 +358,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $bases = $notifs = [];
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $bases[] = $collection->get_base_id();
             }

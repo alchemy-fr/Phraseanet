@@ -106,8 +106,7 @@ class MetaField implements AttributeInterface
         }
 
         try {
-            return new static($app['phraseanet.appbox']
-                    ->get_databox($datas['sbas_id'])
+            return new static($app->findDataboxById($datas['sbas_id'])
                     ->get_meta_structure()->get_element($datas['id']), $datas['value']);
         } catch (NotFoundHttpException $e) {
             throw new \InvalidArgumentException('Field does not exist anymore');

@@ -37,7 +37,7 @@ class BuildMissingSubdefs extends Command
         $start = microtime(true);
         $n = 0;
 
-        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->container->getDataboxes() as $databox) {
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();

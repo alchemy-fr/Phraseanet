@@ -735,7 +735,7 @@ class CollectionController extends Controller
     public function getSuggestedValues($bas_id)
     {
         /** @var \databox $databox */
-        $databox = $this->app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($this->app, $bas_id));
+        $databox = $this->app->findDataboxById(\phrasea::sbasFromBas($this->app, $bas_id));
         $collection = \collection::get_from_base_id($this->app, $bas_id);
         $structFields = $suggestedValues = $basePrefs = [];
 

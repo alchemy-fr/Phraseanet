@@ -69,7 +69,7 @@ class patch_361alpha1a extends patchAbstract
             $sbas_id = (int) $row['sbas_id'];
 
             try {
-                $connbas = $app['phraseanet.appbox']->get_databox($sbas_id)->get_connection();
+                $connbas = $app->findDataboxById($sbas_id)->get_connection();
                 $connbas->connect();
             } catch (\Exception $e) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);

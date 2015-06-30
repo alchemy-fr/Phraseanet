@@ -15,7 +15,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRoot()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
 
         self::$DI['client']->request("GET", "/admin/fields/" . $databox->get_sbas_id());
@@ -127,7 +127,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testUpdateFields()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
         $fieldObjects = [];
         // create two fields
@@ -217,7 +217,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testCreateField()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
 
         $body = json_encode([
@@ -267,7 +267,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testListField()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
 
         self::$DI['client']->request("GET", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()));
@@ -286,7 +286,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetField()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
 
         $field = \databox_field::create(self::$DI['app'], $databox, 'testfield' . mt_rand(), false);
@@ -305,7 +305,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testUpdateField()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
 
         $field = \databox_field::create(self::$DI['app'], $databox, 'testfield' . mt_rand(), false);
@@ -325,7 +325,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteField()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
 
         $field = \databox_field::create(self::$DI['app'], $databox, 'testfield' . mt_rand(), false);

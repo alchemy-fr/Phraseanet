@@ -557,7 +557,7 @@ class module_report_activity extends module_report
     // ========================== ???????????????? ===========================
     public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $result['top_ten_doc'] = [];
@@ -652,7 +652,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $res = [];
         $datefilter =
@@ -708,7 +708,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activityDay(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = array();
         $res = array();
@@ -761,7 +761,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -814,7 +814,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -870,7 +870,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteTopTenSiteView(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -928,7 +928,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteAddedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
@@ -977,7 +977,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteEditedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
@@ -1026,7 +1026,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteAddedTopTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');

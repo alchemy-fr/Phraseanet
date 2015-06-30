@@ -37,7 +37,7 @@ class Step35 implements DatasUpgraderInterface
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
 
             foreach ($databox->get_meta_structure()->get_elements() as $databox_field) {
                 if ($databox_field->is_on_error()) {
@@ -96,7 +96,7 @@ class Step35 implements DatasUpgraderInterface
             } while (count($rs) > 0);
         }
 
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
             $this->ensureDropMigrateColumn($databox);
         }
     }
@@ -108,7 +108,7 @@ class Step35 implements DatasUpgraderInterface
     {
         $time = 0;
 
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($this->app->getDataboxes() as $databox) {
             $sql = 'select record_id
                             FROM record';
 

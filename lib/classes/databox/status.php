@@ -58,7 +58,7 @@ class databox_status
 
     public static function deleteIcon(Application $app, $databox_id, $bit, $switch)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $app->findDataboxById($databox_id);
 
         $statusStructure = $app['factory.status-structure']->getStructure($databox);
 
@@ -88,7 +88,7 @@ class databox_status
 
     public static function updateIcon(Application $app, $databox_id, $bit, $switch, UploadedFile $file)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $app->findDataboxById($databox_id);
 
         $statusStructure = $app['factory.status-structure']->getStructure($databox);
 

@@ -62,4 +62,25 @@ trait ApplicationBoxAware
 
         return $this->applicationBox;
     }
+
+    /**
+     * Find a registered Databoxes.
+     *
+     * @return \databox[]
+     */
+    public function getDataboxes()
+    {
+        return $this->getApplicationBox()->get_databoxes();
+    }
+
+    /**
+     * Find a registered Databox by its id.
+     *
+     * @param int $id
+     * @return \databox
+     */
+    public function findDataboxById($id)
+    {
+        return $this->getApplicationBox()->get_databox($id);
+    }
 }

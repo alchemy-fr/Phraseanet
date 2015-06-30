@@ -487,9 +487,9 @@ abstract class PhraseanetTestCase extends WebTestCase
     {
         $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
         $app['acl']->get($user)->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
+        $app['acl']->get($user)->give_access_to_sbas(array_keys($app->getDataboxes()));
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($app->getDataboxes() as $databox) {
             $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
 
             $rights = [

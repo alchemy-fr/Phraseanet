@@ -29,7 +29,7 @@ class cache_databox
 
         self::$refreshing = true;
 
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $databox = $app->findDataboxById((int) $sbas_id);
 
         $date = new \DateTime('-3 seconds');
 
@@ -144,7 +144,7 @@ class cache_databox
      */
     public static function update(Application $app, $sbas_id, $type, $value = '')
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $connbas = $databox->get_connection();
 
         $sql = 'SELECT distinct site_id as site_id

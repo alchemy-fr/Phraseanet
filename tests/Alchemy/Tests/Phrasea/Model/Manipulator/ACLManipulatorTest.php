@@ -16,7 +16,7 @@ class ACLManipulatorTest extends \PhraseanetTestCase
         $databoxId = null;
         $baseId = null;
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
 
             $acl->update_rights_to_sbas($databoxId, [

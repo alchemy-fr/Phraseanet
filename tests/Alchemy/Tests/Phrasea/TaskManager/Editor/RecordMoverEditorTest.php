@@ -53,7 +53,7 @@ class RecordMoverEditorTest extends EditorTestCase
     public function testFacilityWithActions($action)
     {
         $databox = null;
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $box) {
+        foreach (self::$DI['app']->getDataboxes() as $box) {
             $databox = $box;
             break;
         }

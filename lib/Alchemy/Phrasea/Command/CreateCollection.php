@@ -37,7 +37,7 @@ class CreateCollection extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $databox = $this->container['phraseanet.appbox']->get_databox((int) $input->getArgument('databox_id'));
+        $databox = $this->container->findDataboxById((int) $input->getArgument('databox_id'));
 
         $new_collection = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 

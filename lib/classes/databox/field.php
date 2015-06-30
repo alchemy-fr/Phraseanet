@@ -232,7 +232,7 @@ class databox_field implements cache_cacheableInterface
     public function hydrate(Application $app)
     {
         $this->app = $app;
-        $this->set_databox($this->app['phraseanet.appbox']->get_databox($this->sbas_id));
+        $this->set_databox($this->app->findDataboxById($this->sbas_id));
         $this->loadVocabulary();
     }
 

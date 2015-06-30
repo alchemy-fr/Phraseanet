@@ -222,9 +222,9 @@ class Session_Logger
 
             foreach ($sbas_ids as $sbas_id) {
                 try {
-                    $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
+                    $logger = $app['phraseanet.logger']($app->findDataboxById($sbas_id));
 
-                    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+                    $databox = $app->findDataboxById($sbas_id);
                     $connbas = $databox->get_connection();
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';
                     $stmt = $connbas->prepare($sql);

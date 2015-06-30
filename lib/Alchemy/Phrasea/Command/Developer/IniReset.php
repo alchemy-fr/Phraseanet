@@ -54,7 +54,7 @@ class IniReset extends Command
         // get dbs
         $conf = $this->container['phraseanet.configuration']->getConfig();
         $dbs = array('ab' => $conf['main']['database']['dbname'], 'dbs' => array(), 'setup_dbs' => array());
-        foreach($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach($this->container->getDataboxes() as $databox) {
             $dbs['dbs'][] = $databox;
         }
 

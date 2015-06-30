@@ -836,7 +836,7 @@ class module_report
             return $this->report;
         }
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
+        $databox = $this->app->findDataboxById($this->sbas_id);
         $conn = $databox->get_connection();
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
@@ -887,7 +887,7 @@ class module_report
     {
         $tab = [];
 
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbasid);
+        $databox = $app->findDataboxById((int) $sbasid);
 
         foreach ($databox->get_meta_structure() as $databox_field) {
             /* @var $databox_field \databox_field */

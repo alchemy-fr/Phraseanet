@@ -68,7 +68,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['search_engine.structure'] = $app->share(function ($app) {
-            $databoxes = $app['phraseanet.appbox']->get_databoxes();
+            $databoxes = $app->getDataboxes();
             return Structure::createFromDataboxes($databoxes);
         });
 

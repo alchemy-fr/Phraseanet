@@ -20,7 +20,7 @@ class report_sqlFilterTest extends \report_abstractReportTestCase
         $dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $dmin = $date->format("Y-m-d H:i:s");
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $ret = [];
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();

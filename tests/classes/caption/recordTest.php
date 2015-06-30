@@ -165,7 +165,7 @@ class caption_recordTest extends \PhraseanetTestCase
     {
         $field = null;
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_meta_structure() as $meta) {
                 $meta->set_dces_element(new databox_Field_DCES_Contributor());
                 $field = $meta;

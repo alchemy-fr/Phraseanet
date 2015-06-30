@@ -46,7 +46,7 @@ class databox_cgu
     {
         $terms = [];
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($app->getDataboxes() as $databox) {
             try {
                 $cgus = $databox->get_cgus();
 

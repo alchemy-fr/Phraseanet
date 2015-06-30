@@ -35,7 +35,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
                 $field->save();
             }
 
-            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach (self::$DI['app']->getDataboxes() as $databox) {
                 break;
             }
         }

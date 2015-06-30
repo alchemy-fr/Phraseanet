@@ -80,7 +80,7 @@ class InstallerTest extends \PhraseanetTestCase
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
 
-        $databox = current($app['phraseanet.appbox']->get_databoxes());
+        $databox = current($app->getDataboxes());
         $this->assertContains('<path>'.realpath($dataPath).'/db_setup_test/subdefs</path>', $databox->get_structure());
 
         $conf = $app['configuration.store']->getConfig();

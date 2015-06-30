@@ -327,7 +327,7 @@ class record_preview extends record_adapter
 
         $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
@@ -431,7 +431,7 @@ class record_preview extends record_adapter
           AND site_id = :site
           GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
@@ -500,7 +500,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT count( id ) AS views, referrer
@@ -594,7 +594,7 @@ class record_preview extends record_adapter
         AND site= :site
         GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
