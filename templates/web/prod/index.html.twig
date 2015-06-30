@@ -185,19 +185,21 @@
         <div id="idFrameC" class="PNB" style="right:auto;width:{{ w1 ~ '%' }}">
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
-                    <div id="retractableButton"></div>
-                    {% include 'prod/tab_headers.html.twig' %}
-                    <div id="baskets" class="PNB">
-                        {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                        {{WorkZoneMacros.make_bloc(app, WorkZone)}}
-                    </div>
-                    {% if GV_thesaurus %}
-                    <div id="proposals" class="PNB"
-                        ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
-                        <button id="facets-back-btn" style="display:none;">back</button>
-                    </div>
-                    {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus')} %}
-                    {% endif %}
+                    {% block tabs_panel %}
+                        <div id="retractableButton"></div>
+                        {% include 'prod/tab_headers.html.twig' %}
+                        <div id="baskets" class="PNB">
+                            {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
+                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                        </div>
+                        {% if GV_thesaurus %}
+                            <div id="proposals" class="PNB"
+                                ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
+                                <button id="facets-back-btn" style="display:none;">back</button>
+                            </div>
+                            {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus')} %}
+                        {% endif %}
+                    {% endblock %}
                 </div>
             </div>
             <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
