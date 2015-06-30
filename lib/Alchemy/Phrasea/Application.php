@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Geonames\GeonamesServiceProvider;
+use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
@@ -116,6 +117,7 @@ use XPDF\XPDFServiceProvider;
 
 class Application extends SilexApplication
 {
+    use ApplicationBoxAware;
     use UrlGeneratorTrait;
     use TranslationTrait;
 
