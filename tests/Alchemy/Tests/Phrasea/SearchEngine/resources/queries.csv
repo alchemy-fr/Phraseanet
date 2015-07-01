@@ -70,6 +70,11 @@ fooINbar|<text:"fooINbar">
 collection:foo|<collection:foo>
 collection:foo AND bar|(<collection:foo> AND <text:"bar">)
 collection:foo bar|<text:"collection:foo bar">
+recordid:90|<recordid:90>
+base:foo|<base:foo>
+
+# Matcher on unknown name --> fulltext
+foo:bar|<text:"foo:bar">
 
 # Search terms with embedded keywords
 INA|<text:"INA">
