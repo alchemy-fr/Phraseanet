@@ -135,11 +135,14 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetCGUHasNoRights()
     {
-        $this->setAdmin(true)
-            ->expects($this->once())
-            ->method('has_right_on_sbas')
-            ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
-            ->will($this->returnValue(false));
+        $this->setAdmin(true, [
+            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+                $acl->expects($this->once())
+                    ->method('has_right_on_sbas')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->will($this->returnValue(false));
+            }
+        ]);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
 
@@ -151,11 +154,14 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetCGU()
     {
-        $this->setAdmin(true)
-            ->expects($this->once())
-            ->method('has_right_on_sbas')
-            ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
-            ->will($this->returnValue(true));
+        $this->setAdmin(true, [
+            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+                $acl->expects($this->once())
+                    ->method('has_right_on_sbas')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->will($this->returnValue(true));
+            }
+        ]);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -182,11 +188,14 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdateDatabaseCGU()
     {
-        $this->setAdmin(true)
-            ->expects($this->once())
-            ->method('has_right_on_sbas')
-            ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
-            ->will($this->returnValue(true));
+        $this->setAdmin(true, [
+            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+                $acl->expects($this->once())
+                    ->method('has_right_on_sbas')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->will($this->returnValue(true));
+            }
+        ]);
 
         $cgusUpdate = 'Test update CGUS';
 

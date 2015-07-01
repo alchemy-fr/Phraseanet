@@ -9,62 +9,69 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
     private static $createdDataboxes = [];
 
     /**
-     * @param bool $bool
+     * @param bool  $bool
+     * @param array $stubs List of Closure to call indexed by method names, null to avoid calls
      * @return PHPUnit_Framework_MockObject_MockObject The stubbedACL
      */
-    public function setAdmin($bool)
+    public function setAdmin($bool, array $stubs = [])
     {
         $stubbedACL = $this->stubACL();
+        $stubs = array_filter(array_replace($this->getDefaultStubs(), $stubs));
 
-        $stubbedACL->expects($this->any())
-            ->method('is_admin')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('give_access_to_sbas')
-            ->will($this->returnSelf());
-
-        $stubbedACL->expects($this->any())
-            ->method('update_rights_to_sbas')
-            ->will($this->returnSelf());
-
-        $stubbedACL->expects($this->any())
-            ->method('update_rights_to_bas')
-            ->will($this->returnSelf());
-
-        $stubbedACL->expects($this->any())
-            ->method('has_right_on_base')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('has_right_on_sbas')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('has_access_to_sbas')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('has_access_to_base')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('has_right')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('has_access_to_module')
-            ->will($this->returnValue($bool));
-
-        $stubbedACL->expects($this->any())
-            ->method('get_granted_base')
-            ->will($this->returnValue([self::$DI['collection']]));
-
-        $stubbedACL->expects($this->any())
-            ->method('get_granted_sbas')
-            ->will($this->returnValue([self::$DI['collection']->get_databox()]));
+        foreach ($stubs as $method => $stub) {
+            call_user_func($stub, $stubbedACL, $method, $bool);
+        }
 
         return $stubbedACL;
+    }
+
+    protected function getDefaultStubs()
+    {
+        static $stubs;
+
+        if (is_array($stubs)) {
+            return $stubs;
+        }
+
+        $returnBool = function (PHPUnit_Framework_MockObject_MockObject $acl, $method, $is_admin) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnValue($is_admin));
+        };
+
+        $returnSelf = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnSelf());
+        };
+
+        $stubGrantedBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnValue([self::$DI['collection']]));
+        };
+        $stubGrantedSBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnValue([self::$DI['collection']->get_databox()]));
+        };
+
+        $stubs = [
+            'is_admin' => $returnBool,
+            'give_access_to_sbas' => $returnSelf,
+            'update_rights_to_sbas' => $returnSelf,
+            'update_rights_to_bas' => $returnSelf,
+            'has_right_on_base' => $returnBool,
+            'has_right_on_sbas' => $returnBool,
+            'has_access_to_sbas' => $returnBool,
+            'has_access_to_base' => $returnBool,
+            'has_right' => $returnBool,
+            'has_access_to_module' => $returnBool,
+            'get_granted_base' => $stubGrantedBase,
+            'get_granted_sbas' => $stubGrantedSBase,
+        ];
+
+        return $stubs;
     }
 
     public function createDatabox()
