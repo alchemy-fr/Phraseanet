@@ -78,6 +78,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
     {
         $this->createDatabase();
 
+        /** @var Application $app */
         $app = self::$DI['app'];
         $info = $app['phraseanet.configuration']['main']['database'];
 
@@ -134,7 +135,10 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
     {
         self::dropDatabase();
 
-        $stmt = self::$DI['app']['phraseanet.appbox']
+        /** @var Application $app */
+        $app = self::$DI['app'];
+        $stmt = $app
+            ->getApplicationBox()
             ->get_connection()
             ->prepare('CREATE DATABASE `unit_test_db`
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');

@@ -9,8 +9,6 @@
  */
 namespace Alchemy\Phrasea\Application\Helper;
 
-use Alchemy\Phrasea\Application;
-
 trait ApplicationBoxAware
 {
     /** @var \appbox|callable */

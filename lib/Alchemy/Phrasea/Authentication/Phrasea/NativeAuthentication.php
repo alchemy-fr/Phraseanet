@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
