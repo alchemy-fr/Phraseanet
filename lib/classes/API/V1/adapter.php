@@ -1893,7 +1893,7 @@ class API_V1_adapter extends API_V1_Abstract
             $baseGrants = array();
 
             foreach ($rights as $right) {
-                if (! $acl->has_right_on_base($base->get_coll_id(), $right)) {
+                if (! $acl->has_right_on_base($base->get_base_id(), $right)) {
                     continue;
                 }
 
