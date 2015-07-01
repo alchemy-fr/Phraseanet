@@ -761,7 +761,7 @@ class V1Controller extends Controller
             $baseGrants = [];
 
             foreach ($rights as $right) {
-                if (! $acl->has_right_on_base($base->get_coll_id(), $right)) {
+                if (! $acl->has_right_on_base($base->get_base_id(), $right)) {
                     continue;
                 }
 
