@@ -22,6 +22,8 @@ class NodeTypes
     const TEXT                = '#text';
     const CONTEXT             = '#context';
     const COLLECTION          = '#collection';
+    const RECORDID            = '#recordid';
+    const BASE                = '#base';
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
