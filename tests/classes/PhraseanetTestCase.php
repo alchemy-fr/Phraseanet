@@ -566,21 +566,22 @@ abstract class PhraseanetTestCase extends WebTestCase
      * @param Application $app
      * @param User        $user
      */
-    protected function authenticate(Application $app, $user = null)
+    protected function authenticate(Application $app, User $user = null)
     {
+        /** @var User $user */
         $user = $user ?: self::$DI['user'];
 
         $app['session']->clear();
-        $app['session']->set('usr_id', self::$DI['user']->getId());
+        $app['session']->set('usr_id', $user->getId());
         $session = new Session();
-        $session->setUser(self::$DI['user']);
+        $session->setUser($user);
         $session->setUserAgent('');
-        self::$DI['app']['orm.em']->persist($session);
-        self::$DI['app']['orm.em']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         $app['session']->set('session_id', $session->getId());
 
-        self::$DI['app']['authentication']->reinitUser();
+        $app->getAuthenticator()->reinitUser();
     }
 
     /**
@@ -591,7 +592,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function logout(Application $app)
     {
         $app['session']->clear();
-        self::$DI['app']['authentication']->reinitUser();
+        $app->getAuthenticator()->reinitUser();
     }
 
     protected function assertXMLHTTPBadJsonResponse(Response $response)

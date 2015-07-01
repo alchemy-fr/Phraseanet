@@ -1,7 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
 use Doctrine\DBAL\DBALException;
-use Silex\Application;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
@@ -119,14 +119,13 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
     public static function dropDatabase()
     {
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
+        /** @var Application $app */
+        $app = self::$DI['app'];
+        $connection = $app->getApplicationBox()->get_connection();
+        $stmt = $connection->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
         $stmt->execute();
         $stmt->closeCursor();
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
+        $stmt = $connection->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
         $stmt->execute();
         $stmt->closeCursor();
     }
