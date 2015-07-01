@@ -23,7 +23,6 @@ use Doctrine\ORM\Tools\SchemaTool;
 class Installer
 {
     private $app;
-    private $phraseaIndexer;
 
     public function __construct(Application $app)
     {
@@ -50,11 +49,6 @@ class Installer
         $this->app['dispatcher']->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
 
         return $user;
-    }
-
-    public function setPhraseaIndexerPath($path)
-    {
-        $this->phraseaIndexer = $path;
     }
 
     private function createDB(Connection $dbConn = null, $template, User $admin)

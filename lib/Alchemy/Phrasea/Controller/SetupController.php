@@ -158,7 +158,6 @@ class SetupController extends Controller
 
         try {
             $installer = $this->app['phraseanet.installer'];
-            $installer->setPhraseaIndexerPath($request->request->get('binary_phraseanet_indexer'));
 
             $binaryData = [];
             foreach ([
