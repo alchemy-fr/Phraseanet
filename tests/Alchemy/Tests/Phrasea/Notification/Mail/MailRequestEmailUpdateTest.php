@@ -14,7 +14,7 @@ class MailRequestEmailUpdateTest extends MailWithLinkTestCase
     public function getMail()
     {
         return MailRequestEmailUpdate::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

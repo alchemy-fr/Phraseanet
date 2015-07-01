@@ -14,7 +14,7 @@ class MailRecordsExportTest extends MailWithLinkTestCase
     public function getMail()
     {
         return MailRecordsExport::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

@@ -47,7 +47,7 @@ class UserProviderTest extends \PhraseanetTestCase
         // mandatory until user rights are managed by doctrine
         //self::$DI['app']['orm.em'] = EntityManager::create(self::$DI['app']['conf']->get(['main', 'database']), self::$DI['app']['db.config'], self::$DI['app']['db.event_manager']);
 
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $params = $app['db.appbox.info'];
         $info = $app['db.info']($params);
         $key = $app['orm.add']($info);

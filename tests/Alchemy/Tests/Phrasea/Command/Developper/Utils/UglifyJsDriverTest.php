@@ -14,7 +14,7 @@ class UglifyJsDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $app->register(new CLIDriversServiceProvider());
         $driver = UglifyJsDriver::create(['uglifyjs.binaries' => $app['driver.binary-finder']('uglifyjs', 'uglifyjs_binary')]);
         $this->assertInstanceOf('Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver', $driver);

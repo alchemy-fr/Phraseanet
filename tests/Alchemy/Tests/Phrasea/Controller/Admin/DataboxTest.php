@@ -21,10 +21,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     public function setUp()
     {
         parent::setUp();
-        self::$DI['app'] = $this->loadApp();
-        self::dropDatabase();
-        parent::setUp();
-        self::dropDatabase();
+        $this->dropDatabase();
     }
 
     public function tearDown()

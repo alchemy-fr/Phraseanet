@@ -14,7 +14,7 @@ class MailInfoRecordQuarantinedTest extends MailTestCase
     public function getMail()
     {
         return MailInfoRecordQuarantined::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

@@ -32,7 +32,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoTitleProvided()
     {
         $mail = MailInfoValidationDone::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -59,7 +59,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoUserProvided()
     {
         $mail = MailInfoValidationDone::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -87,7 +87,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailInfoValidationDone::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

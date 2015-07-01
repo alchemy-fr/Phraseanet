@@ -36,8 +36,7 @@ abstract class PhraseanetAuthenticatedTestCase extends \PhraseanetTestCase
             ->method('get')
             ->will($this->returnValue($stubbedACL));
 
-        /** @var \Alchemy\Phrasea\Application $app */
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $app['acl'] = $aclProvider;
         $app->setAclProvider($aclProvider);
 

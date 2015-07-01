@@ -22,7 +22,7 @@ class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase
     public function testSHouldThrowALogicExceptionIfNoAdapterProvided()
     {
         $mail = MailInfoBridgeUploadFailed::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -43,7 +43,7 @@ class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase
     public function testSHouldThrowALogicExceptionIfNoReasonProvided()
     {
         $mail = MailInfoBridgeUploadFailed::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -71,7 +71,7 @@ class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailInfoBridgeUploadFailed::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

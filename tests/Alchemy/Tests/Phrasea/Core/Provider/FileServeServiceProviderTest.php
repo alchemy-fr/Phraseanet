@@ -40,7 +40,7 @@ class FileServeServiceProviderTest extends ServiceProviderTestCase
 
     public function testMapping()
     {
-        $app = clone self::$DI['app'];
+        $app = clone $this->getApplication();
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
         $app->register(new FileServeServiceProvider());

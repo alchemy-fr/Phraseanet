@@ -23,7 +23,7 @@ class MailInfoValidationReminderTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoTitleProvided()
     {
         $mail =  MailInfoValidationReminder::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -40,7 +40,7 @@ class MailInfoValidationReminderTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailInfoValidationReminder::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

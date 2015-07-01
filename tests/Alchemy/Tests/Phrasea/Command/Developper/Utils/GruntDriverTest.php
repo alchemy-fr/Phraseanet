@@ -14,7 +14,7 @@ class GruntDriverTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $app->register(new CLIDriversServiceProvider());
         $driver = GruntDriver::create(['grunt.binaries' => $app['driver.binary-finder']('grunt', 'grunt_binary')]);
         $this->assertInstanceOf('Alchemy\Phrasea\Command\Developer\Utils\GruntDriver', $driver);

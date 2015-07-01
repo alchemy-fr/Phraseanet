@@ -78,8 +78,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
     {
         $this->createDatabase();
 
-        /** @var Application $app */
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $info = $app['phraseanet.configuration']['main']['database'];
 
         try {
@@ -117,10 +116,9 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         return $databox;
     }
 
-    public static function dropDatabase()
+    public function dropDatabase()
     {
-        /** @var Application $app */
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $connection = $app->getApplicationBox()->get_connection();
         $stmt = $connection->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
         $stmt->execute();
@@ -132,10 +130,9 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
     protected function createDatabase()
     {
-        self::dropDatabase();
+        $this->dropDatabase();
 
-        /** @var Application $app */
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $stmt = $app
             ->getApplicationBox()
             ->get_connection()

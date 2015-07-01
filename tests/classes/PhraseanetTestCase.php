@@ -271,6 +271,14 @@ abstract class PhraseanetTestCase extends WebTestCase
         self::$fixtureIds = $decodedFixtureIds;
     }
 
+    /**
+     * @return Application
+     */
+    public function getApplication()
+    {
+        return self::$DI['app'];
+    }
+
     public static function tearDownAfterClass()
     {
         gc_collect_cycles();

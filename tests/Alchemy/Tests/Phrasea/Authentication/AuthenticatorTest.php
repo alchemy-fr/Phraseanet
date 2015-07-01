@@ -202,7 +202,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
      */
     public function testCloseAccount()
     {
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $user = self::$DI['user'];
 
         $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
@@ -214,7 +214,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
     public function testCloseAccountWhenNoSessionThrowsAnException()
     {
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
 
         $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
         $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'No session to close.');

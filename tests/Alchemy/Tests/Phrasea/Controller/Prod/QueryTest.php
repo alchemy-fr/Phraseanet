@@ -42,11 +42,12 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testQueryAnswerTrain()
     {
-        $this->authenticate(self::$DI['app']);
+        $app = $this->getApplication();
+        $this->authenticate($app);
         self::$DI['record_2'];
 
         $options = new SearchEngineOptions();
-        $options->onCollections(self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())->get_granted_base());
+        $options->onCollections($app->getAclForUser($app->getAuthenticatedUser())->get_granted_base());
         $serializedOptions = $options->serialize();
 
         self::$DI['client']->request('POST', '/prod/query/answer-train/', [

@@ -25,7 +25,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
     public function testShouldThrowALogicExceptionIfNoDelivererProvided()
     {
         $mail = MailInfoOrderDelivered::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -49,7 +49,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
     public function testShouldThrowALogicExceptionIfNoBasketProvided()
     {
         $mail = MailInfoOrderDelivered::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -74,7 +74,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
     public function getMail()
     {
         $mail = MailInfoOrderDelivered::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
