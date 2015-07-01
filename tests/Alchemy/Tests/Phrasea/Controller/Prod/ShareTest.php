@@ -34,9 +34,7 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRouteSlash()
     {
-        $stubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $stubbedACL = $this->stubACL();
 
         //has_right_on_base return true
         $stubbedACL->expects($this->once())
@@ -48,14 +46,6 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('has_access_to_subdef')
             ->will($this->returnValue(true));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($stubbedACL));
-
-        self::$DI['app']['acl'] = $aclProvider;
 
         $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
         self::$DI['client']->request('GET', $url);

@@ -135,12 +135,11 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetCGUHasNoRights()
     {
-        $this->StubbedACL->expects($this->once())
+        $this->setAdmin(true)
+            ->expects($this->once())
             ->method('has_right_on_sbas')
             ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
             ->will($this->returnValue(false));
-
-        $this->setAdmin(true);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
 
@@ -152,12 +151,11 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetCGU()
     {
-        $this->StubbedACL->expects($this->once())
+        $this->setAdmin(true)
+            ->expects($this->once())
             ->method('has_right_on_sbas')
             ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
             ->will($this->returnValue(true));
-
-        $this->setAdmin(true);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -184,12 +182,11 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdateDatabaseCGU()
     {
-        $this->StubbedACL->expects($this->once())
+        $this->setAdmin(true)
+            ->expects($this->once())
             ->method('has_right_on_sbas')
             ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
             ->will($this->returnValue(true));
-
-        $this->setAdmin(true);
 
         $cgusUpdate = 'Test update CGUS';
 

@@ -6,82 +6,65 @@ use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
-    protected $StubbedACL;
     private static $createdDataboxes = [];
 
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->StubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
+    /**
+     * @param bool $bool
+     * @return PHPUnit_Framework_MockObject_MockObject The stubbedACL
+     */
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->setMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $stubbedACL = $this->stubACL();
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('is_admin')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('give_access_to_sbas')
-            ->will($this->returnValue($this->StubbedACL));
+            ->will($this->returnSelf());
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('update_rights_to_sbas')
-            ->will($this->returnValue($this->StubbedACL));
+            ->will($this->returnSelf());
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('update_rights_to_bas')
-            ->will($this->returnValue($this->StubbedACL));
+            ->will($this->returnSelf());
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('has_right_on_base')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('has_right_on_sbas')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('has_access_to_sbas')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('has_access_to_base')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('has_right')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('has_access_to_module')
             ->will($this->returnValue($bool));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('get_granted_base')
             ->will($this->returnValue([self::$DI['collection']]));
 
-        $this->StubbedACL->expects($this->any())
+        $stubbedACL->expects($this->any())
             ->method('get_granted_sbas')
             ->will($this->returnValue([self::$DI['collection']->get_databox()]));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($this->StubbedACL));
-
-        self::$DI['app']['acl'] = $aclProvider;
+        return $stubbedACL;
     }
 
     public function createDatabox()
