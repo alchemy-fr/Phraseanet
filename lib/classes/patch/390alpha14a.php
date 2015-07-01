@@ -52,7 +52,7 @@ class patch_390alpha14a extends patchAbstract
 
         if ($this->tableHasField($app['orm.em'], 'api_logs', 'api_log_ressource')) {
             $sql = "ALTER TABLE api_logs CHANGE api_log_ressource api_log_resource varchar(64)";
-            $app['phraseanet.appbox']->get_connection()->executeUpdate($sql);
+            $app->getApplicationBox()->get_connection()->executeUpdate($sql);
         }
 
         return true;

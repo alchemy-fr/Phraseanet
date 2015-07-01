@@ -101,7 +101,7 @@ class CollectionController extends Controller
         $admins = $users;
 
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $conn->beginTransaction();
 
         try {
@@ -187,7 +187,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $this->app['phraseanet.appbox']->write_collection_pic(
+            $this->app->getApplicationBox()->write_collection_pic(
                 $this->app['media-alchemyst'],
                 $this->app['filesystem'],
                 $collection,
@@ -227,7 +227,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $this->app['phraseanet.appbox']->write_collection_pic(
+            $this->app->getApplicationBox()->write_collection_pic(
                 $this->app['media-alchemyst'],
                 $this->app['filesystem'],
                 $collection,
@@ -268,7 +268,7 @@ class CollectionController extends Controller
 
         try {
             $collection->update_logo(null);
-            $this->app['phraseanet.appbox']->write_collection_pic(
+            $this->app->getApplicationBox()->write_collection_pic(
                 $this->app['media-alchemyst'],
                 $this->app['filesystem'],
                 $collection,
@@ -326,7 +326,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $this->app['phraseanet.appbox']->write_collection_pic(
+            $this->app->getApplicationBox()->write_collection_pic(
                 $this->app['media-alchemyst'],
                 $this->app['filesystem'],
                 $collection,
@@ -381,7 +381,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $this->app['phraseanet.appbox']->write_collection_pic(
+            $this->app->getApplicationBox()->write_collection_pic(
                 $this->app['media-alchemyst'],
                 $this->app['filesystem'],
                 $collection,
@@ -435,7 +435,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $this->app['phraseanet.appbox']->write_collection_pic(
+            $this->app->getApplicationBox()->write_collection_pic(
                 $this->app['media-alchemyst'],
                 $this->app['filesystem'],
                 $collection,
@@ -674,7 +674,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $collection->enable($this->app['phraseanet.appbox']);
+            $collection->enable($this->app->getApplicationBox());
             $success = true;
         } catch (\Exception $e) {
 
@@ -707,7 +707,7 @@ class CollectionController extends Controller
         $collection = \collection::get_from_base_id($this->app, $bas_id);
 
         try {
-            $collection->disable($this->app['phraseanet.appbox']);
+            $collection->disable($this->app->getApplicationBox());
             $success = true;
         } catch (\Exception $e) {
 

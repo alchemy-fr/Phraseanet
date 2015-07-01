@@ -50,15 +50,15 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.acl'] = $app->share(function ($app) {
-            return new ACLManipulator($app['acl'], $app['phraseanet.appbox']);
+            return new ACLManipulator($app['acl'], $app->getApplicationBox());
         });
 
         $app['model.user-manager'] = $app->share(function ($app) {
-            return new UserManager($app['orm.em'], $app['phraseanet.appbox']->get_connection());
+            return new UserManager($app['orm.em'], $app->getApplicationBox()->get_connection());
         });
 
         $app['manipulator.registration'] = $app->share(function ($app) {
-            return new RegistrationManipulator($app, $app['orm.em'], $app['acl'], $app['phraseanet.appbox'], $app['repo.registrations']);
+            return new RegistrationManipulator($app, $app['orm.em'], $app['acl'], $app->getApplicationBox(), $app['repo.registrations']);
         });
 
         $app['manipulator.api-application'] = $app->share(function ($app) {

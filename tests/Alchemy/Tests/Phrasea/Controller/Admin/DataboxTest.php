@@ -388,7 +388,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
 
-        $this->assertTrue(!!self::$DI['app']['phraseanet.appbox']->is_databox_indexable(new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id())));
+        $this->assertTrue(!!self::$DI['app']->getApplicationBox()->is_databox_indexable(new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id())));
     }
 
     /**
@@ -515,7 +515,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         // delete mounted collection
         $sql = "DELETE FROM bas ORDER BY base_id DESC LIMIT 1";
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
         unset($stmt);

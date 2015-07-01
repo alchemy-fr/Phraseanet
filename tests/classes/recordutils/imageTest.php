@@ -11,7 +11,7 @@ class recordutils_imageTest extends \PhraseanetTestCase
 {
     public function testWatermarkWithoutFile()
     {
-        self::$DI['app']['phraseanet.appbox']->write_collection_pic(
+        self::$DI['app']->getApplicationBox()->write_collection_pic(
             self::$DI['app']['media-alchemyst'],
             self::$DI['app']['filesystem'],
             self::$DI['record_1']->get_collection(),
@@ -27,7 +27,7 @@ class recordutils_imageTest extends \PhraseanetTestCase
 
     public function testWatermarkWithFile()
     {
-        self::$DI['app']['phraseanet.appbox']->write_collection_pic(
+        self::$DI['app']->getApplicationBox()->write_collection_pic(
             self::$DI['app']['media-alchemyst'],
             self::$DI['app']['filesystem'],
             self::$DI['record_1']->get_collection(),
@@ -76,7 +76,7 @@ class recordutils_imageTest extends \PhraseanetTestCase
     {
         $this->addStampConf(self::$DI['record_1']->get_collection());
 
-        self::$DI['app']['phraseanet.appbox']->write_collection_pic(
+        self::$DI['app']->getApplicationBox()->write_collection_pic(
             self::$DI['app']['media-alchemyst'],
             self::$DI['app']['filesystem'],
             self::$DI['record_1']->get_collection(),
@@ -94,7 +94,7 @@ class recordutils_imageTest extends \PhraseanetTestCase
     {
         $this->addStampConf(self::$DI['record_1']->get_collection());
 
-        self::$DI['app']['phraseanet.appbox']->write_collection_pic(
+        self::$DI['app']->getApplicationBox()->write_collection_pic(
             self::$DI['app']['media-alchemyst'],
             self::$DI['app']['filesystem'],
             self::$DI['record_1']->get_collection(),

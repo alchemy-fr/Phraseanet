@@ -233,7 +233,7 @@ class User_Query implements User_QueryInterface
      */
     public function execute()
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $sql = 'SELECT DISTINCT Users.id ' . $this->generate_sql_constraints();
 
         if ('' !== $sorter = $this->generate_sort_constraint()) {
@@ -275,7 +275,7 @@ class User_Query implements User_QueryInterface
             return $this->total;
         }
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql_count = 'SELECT COUNT(DISTINCT Users.id) as total ' . $this->generate_sql_constraints();
 
@@ -657,7 +657,7 @@ class User_Query implements User_QueryInterface
      */
     public function getRelatedActivities()
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT DISTINCT Users.activity ' . $this->generate_sql_constraints(). ' ORDER BY Users.activity';
 
@@ -684,7 +684,7 @@ class User_Query implements User_QueryInterface
      */
     public function getRelatedPositions()
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT DISTINCT Users.job ' . $this->generate_sql_constraints() . ' ORDER BY Users.job';
 
@@ -711,7 +711,7 @@ class User_Query implements User_QueryInterface
      */
     public function getRelatedCountries()
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT DISTINCT Users.country ' . $this->generate_sql_constraints() . ' ORDER BY Users.country';
 
@@ -742,7 +742,7 @@ class User_Query implements User_QueryInterface
      */
     public function getRelatedCompanies()
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT DISTINCT Users.company ' . $this->generate_sql_constraints() . ' ORDER BY Users.company';
 
@@ -769,7 +769,7 @@ class User_Query implements User_QueryInterface
      */
     public function getRelatedTemplates()
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT DISTINCT Users.last_model ' . $this->generate_sql_constraints() . ' ORDER BY Users.last_model';
 
@@ -899,7 +899,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->last_model) {
-            $sql .= ' AND Users.last_model = ' . $this->app['phraseanet.appbox']->get_connection()->quote($this->last_model) . ' ';
+            $sql .= ' AND Users.last_model = ' . $this->app->getApplicationBox()->get_connection()->quote($this->last_model) . ' ';
         }
 
         $sql_like = [];

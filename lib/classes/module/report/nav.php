@@ -410,7 +410,7 @@ class module_report_nav extends module_report
         $this->initialize();
         empty($on) ? $on = false : "";
         $filter_id_apbox = $filter_id_datbox = [];
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $this->title = $this->app->trans('report:: Information sur les utilisateurs correspondant a %critere%', ['%critere%' => $val]);
 

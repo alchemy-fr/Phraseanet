@@ -73,7 +73,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         $cache_id = 'feed_' . md5($sbasid . '_' . $sbas_coll . '_' . $dmin . '_' . $dmax);
 
         try {
-            $result = $app['phraseanet.appbox']->get_data_from_cache($cache_id);
+            $result = $app->getApplicationBox()->get_data_from_cache($cache_id);
             $result->setApplication($app);
 
             return $result;
@@ -82,7 +82,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         }
         $tmp = new self($app, $sbasid, $sbas_coll, $dmin, $dmax);
 
-        $app['phraseanet.appbox']->set_data_to_cache($tmp, $cache_id);
+        $app->getApplicationBox()->set_data_to_cache($tmp, $cache_id);
 
         return $tmp;
     }

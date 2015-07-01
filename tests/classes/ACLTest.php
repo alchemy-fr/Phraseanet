@@ -439,7 +439,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertEquals(count($base_ids), count($bases));
 
         $sql = 'SELECT actif FROM basusr WHERE usr_id = :usr_id AND base_id = :base_id';
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
 
         foreach ($bases as $base_id) {
             $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);

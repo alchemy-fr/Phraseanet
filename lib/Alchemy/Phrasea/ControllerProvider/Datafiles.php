@@ -24,7 +24,7 @@ class Datafiles implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.datafiles'] = $app->share(function (PhraseaApplication $app) {
-            return (new DatafileController($app, $app['phraseanet.appbox'], $app['acl'], $app->getAuthenticator()))
+            return (new DatafileController($app, $app->getApplicationBox(), $app['acl'], $app->getAuthenticator()))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
             ;

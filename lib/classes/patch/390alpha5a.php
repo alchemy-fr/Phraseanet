@@ -58,11 +58,11 @@ class patch_390alpha5a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM UserNotificationSettings';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
         $sql = 'SELECT * FROM usr_settings
                 WHERE prop LIKE "notification_%"';
         $stmt = $conn->prepare($sql);

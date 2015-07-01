@@ -106,7 +106,7 @@ class IniReset extends Command
             }, $selected);
         }
 
-        if ($input->getOption('dependencies') || !SemVer::eq($this->container['phraseanet.appbox']->get_version(), $this->container['phraseanet.version']->getNumber())) {
+        if ($input->getOption('dependencies') || !SemVer::eq($this->container->getApplicationBox()->get_version(), $this->container['phraseanet.version']->getNumber())) {
             $this->getApplication()->find('dependencies:all')->run( new ArrayInput(array(
                 'command' => 'dependencies:all'
             )), $output);
@@ -213,7 +213,7 @@ class IniReset extends Command
             if ($input->getOption('run-patches')) {
                 $output->write(sprintf('Upgrading... from version <info>3.1.21</info> to <info>%s</info>', $version->getNumber()), true);
             } else {
-                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app['phraseanet.appbox']->get_version(), $version->getNumber()), true);
+                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app->getApplicationBox()->get_version(), $version->getNumber()), true);
             }
             
             $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';

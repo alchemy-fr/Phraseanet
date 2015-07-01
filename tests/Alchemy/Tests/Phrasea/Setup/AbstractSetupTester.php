@@ -29,7 +29,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
     protected function goBackTo31()
     {
         $app = new Application(Application::ENV_TEST);
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
 
         $this->uninstall();
 
@@ -54,7 +54,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
     protected function goBackTo35()
     {
         $app = new Application(Application::ENV_TEST);
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
 
         $this->uninstall();
 

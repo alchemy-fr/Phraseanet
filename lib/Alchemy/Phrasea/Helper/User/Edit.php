@@ -134,7 +134,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             GROUP BY b.base_id
             ORDER BY s.ord, s.sbas_id, b.ord, b.base_id ";
 
-        $rs = $this->app['phraseanet.appbox']->get_connection()->fetchAll(
+        $rs = $this->app->getApplicationBox()->get_connection()->fetchAll(
             $sql,
             [
                 'users' => $this->users,
@@ -150,7 +150,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             WHERE (usr_id IN (:users))
               AND  (base_id IN (:bases))
             GROUP BY base_id';
-        $access = $this->app['phraseanet.appbox']->get_connection()->fetchAll(
+        $access = $this->app->getApplicationBox()->get_connection()->fetchAll(
             $sql,
             [
                 'users' => $this->users,
@@ -208,7 +208,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       WHERE (u.id IN (:users)) AND bu.base_id = :base_id";
 
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $rs = $conn->fetchAll($sql,
             [
                 'base_id' => $this->base_id,
@@ -241,7 +241,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
               AND base_id = :base_id";
 
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $rs = $conn->fetchAll($sql,
             [
                 'base_id' => $this->base_id,
@@ -344,7 +344,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       WHERE (u.id IN (:users)) AND bu.base_id = :base_id";
 
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $rs = $conn->fetchAll($sql,
             [
                 'base_id' => $this->base_id,
@@ -406,7 +406,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             WHERE (u.id IN (:users)) AND b.sbas_id = :sbas_id";
 
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $rs = $conn->fetchAll($sql,
             [
                 'sbas_id' => $sbas_id,
@@ -567,7 +567,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($this->users as $usr_id) {
             try {
-                $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
+                $this->app->getApplicationBox()->get_connection()->beginTransaction();
 
                 $user = $this->app['repo.users']->find($usr_id);
 
@@ -583,13 +583,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                     $this->app->getAclForUser($user)->update_rights_to_sbas($sbas_id, $rights);
                 }
 
-                $this->app['phraseanet.appbox']->get_connection()->commit();
+                $this->app->getApplicationBox()->get_connection()->commit();
 
                 $this->app->getAclForUser($user)->revoke_unused_sbas_rights();
 
                 unset($user);
             } catch (\Exception $e) {
-                $this->app['phraseanet.appbox']->get_connection()->rollBack();
+                $this->app->getApplicationBox()->get_connection()->rollBack();
             }
         }
 

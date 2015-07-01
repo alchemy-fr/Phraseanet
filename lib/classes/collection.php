@@ -105,7 +105,7 @@ class collection implements cache_cacheableInterface
             'nl' => $row['label_nl'],
         ];
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT server_coll_id, sbas_id, base_id, active, ord FROM bas
             WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
@@ -164,9 +164,9 @@ class collection implements cache_cacheableInterface
 
     public function set_ord($ord)
     {
-        $this->app['phraseanet.appbox']->set_collection_order($this, $ord);
+        $this->app->getApplicationBox()->set_collection_order($this, $ord);
         $this->delete_data_from_cache();
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return $this;
     }
@@ -548,12 +548,12 @@ class collection implements cache_cacheableInterface
         }
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 

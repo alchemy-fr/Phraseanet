@@ -26,7 +26,7 @@ class random
     public function cleanTokens()
     {
         try {
-            $conn = $this->app['phraseanet.appbox']->get_connection();
+            $conn = $this->app->getApplicationBox()->get_connection();
 
             $date = new DateTime();
             $date = $this->app['date-formatter']->format_mysql($date);

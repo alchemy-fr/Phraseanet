@@ -275,7 +275,7 @@ class set_export extends set_abstract
                 'sendermail'        => $app->getAuthenticatedUser()->getEmail()
             ];
 
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
             $stmt->execute($params);
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -791,7 +791,7 @@ class set_export extends set_abstract
             SET remain_dwnld = :remain_dl
             WHERE base_id = :base_id AND usr_id = :usr_id";
 
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
             foreach ($list_base as $base_id) {
                 if ($app->getAclForUser($app->getAuthenticatedUser())->is_restricted_download($base_id)) {

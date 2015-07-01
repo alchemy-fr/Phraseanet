@@ -4,7 +4,7 @@
     <div class="control-group">
         <label class="control-label"> {{ 'Databox' | trans }}</label>
         <div class="controls">
-            {% for databox in app['phraseanet.appbox'].get_databoxes() %}
+            {% for databox in app.getApplicationBox().get_databoxes() %}
             <label class="checkbox inline">
                 <input type="checkbox" name="sbas[]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
                 ({{ databox.get_sbas_id() }})

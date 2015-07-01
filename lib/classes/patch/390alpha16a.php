@@ -64,7 +64,7 @@ class patch_390alpha16a extends patchAbstract
         $em = $app['orm.em'];
         $n = 0;
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
-        foreach ($app['phraseanet.appbox']->get_connection()->fetchAll($sql) as $row) {
+        foreach ($app->getApplicationBox()->get_connection()->fetchAll($sql) as $row) {
             if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }

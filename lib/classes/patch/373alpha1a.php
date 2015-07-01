@@ -50,7 +50,7 @@ class patch_373alpha1a extends patchAbstract
     {
         $sql = 'SELECT * FROM registry
                 WHERE `key` = :key';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
         $Regbinaries = [
             'GV_cli',
@@ -92,7 +92,7 @@ class patch_373alpha1a extends patchAbstract
         $config['binaries'] = $binaries;
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
         foreach ($Regbinaries as $name) {
             $stmt->execute([':key' => $name]);
@@ -101,7 +101,7 @@ class patch_373alpha1a extends patchAbstract
         $stmt->closeCursor();
 
         $sql = 'SELECT value FROM registry WHERE `key` = :key';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':key'=>'GV_sit']);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -111,7 +111,7 @@ class patch_373alpha1a extends patchAbstract
         $app['configuration.store']->setConfig($config);
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':key'=>'GV_sit']);
         $stmt->closeCursor();
 

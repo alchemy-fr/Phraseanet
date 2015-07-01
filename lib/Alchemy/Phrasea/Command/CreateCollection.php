@@ -39,7 +39,7 @@ class CreateCollection extends Command
     {
         $databox = $this->container->findDataboxById((int) $input->getArgument('databox_id'));
 
-        $new_collection = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
+        $new_collection = \collection::create($this->container, $databox, $this->container->getApplicationBox(), $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('base_id_rights')) {
 

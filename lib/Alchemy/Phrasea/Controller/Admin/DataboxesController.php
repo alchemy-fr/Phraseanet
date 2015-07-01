@@ -220,10 +220,10 @@ class DataboxesController extends Controller
                 $user = $connexion['user'];
                 $password = $connexion['password'];
 
-                $this->app['phraseanet.appbox']->get_connection()->beginTransaction();
+                $this->app->getApplicationBox()->get_connection()->beginTransaction();
                 $base = \databox::mount($this->app, $hostname, $port, $user, $password, $dbName);
                 $base->registerAdmin($this->app->getAuthenticatedUser());
-                $this->app['phraseanet.appbox']->get_connection()->commit();
+                $this->app->getApplicationBox()->get_connection()->commit();
 
                 return $this->app->redirectPath('admin_database', [
                     'databox_id' => $base->get_sbas_id(),
@@ -231,7 +231,7 @@ class DataboxesController extends Controller
                     'reload-tree' => 1,
                 ]);
             } catch (\Exception $e) {
-                $this->app['phraseanet.appbox']->get_connection()->rollBack();
+                $this->app->getApplicationBox()->get_connection()->rollBack();
 
                 return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
             }

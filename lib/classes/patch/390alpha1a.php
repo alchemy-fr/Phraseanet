@@ -62,16 +62,16 @@ class patch_390alpha1a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM Orders';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM OrderElements';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
         $sql = 'SELECT id, usr_id, created_on, `usage`, deadline, ssel_id FROM `order`';
         $stmt = $conn->prepare($sql);
         $stmt->execute();

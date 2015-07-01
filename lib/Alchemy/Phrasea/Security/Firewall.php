@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Security;
 
-use Silex\Application;
+use Alchemy\Phrasea\Application;
 use Silex\Controller;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\RedirectResponse;

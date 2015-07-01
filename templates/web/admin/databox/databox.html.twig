@@ -96,7 +96,7 @@
     <div>
          <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}" style="margin:0;">
              <label class="checkbox" for="is_indexable">
-                <input type="checkbox" id="is_indexable" name="indexable" value="1" {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
+                <input type="checkbox" id="is_indexable" name="indexable" value="1" {{ app.getApplicationBox().is_databox_indexable(databox) ? 'checked' : ''}} />
                 {{ "admin::base: Cette base est indexable" | trans }}
             </label>
         </form>

@@ -180,7 +180,7 @@ class ACL implements cache_cacheableInterface
             , ':pusher'    => $pusher->getId()
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -204,7 +204,7 @@ class ACL implements cache_cacheableInterface
             , ':pusher'    => $pusher->getId()
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -496,7 +496,7 @@ class ACL implements cache_cacheableInterface
                 break;
         }
 
-        return $this->app['phraseanet.appbox']->delete_data_from_cache($this->get_cache_key($option));
+        return $this->app->getApplicationBox()->delete_data_from_cache($this->get_cache_key($option));
     }
 
     /**
@@ -506,7 +506,7 @@ class ACL implements cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-        return $this->app['phraseanet.appbox']->get_data_from_cache($this->get_cache_key($option));
+        return $this->app->getApplicationBox()->get_data_from_cache($this->get_cache_key($option));
     }
 
     /**
@@ -518,7 +518,7 @@ class ACL implements cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->app['phraseanet.appbox']->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->app->getApplicationBox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     /**
@@ -807,7 +807,7 @@ class ACL implements cache_cacheableInterface
         $sql = 'SELECT sbas_id, record_id, preview, document
             FROM records_rights WHERE usr_id = :usr_id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -867,7 +867,7 @@ class ACL implements cache_cacheableInterface
             WHERE usr_id= :usr_id
               AND sbas.sbas_id = sbasusr.sbas_id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -939,7 +939,7 @@ class ACL implements cache_cacheableInterface
             AND b.sbas_id = s.sbas_id
             AND s.sbas_id = b.sbas_id ';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1115,7 +1115,7 @@ class ACL implements cache_cacheableInterface
     public function revoke_access_from_bases(Array $base_ids)
     {
         $sql_del = 'DELETE FROM basusr WHERE base_id = :base_id AND usr_id = :usr_id';
-        $stmt_del = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_del);
+        $stmt_del = $this->app->getApplicationBox()->get_connection()->prepare($sql_del);
 
         $usr_id = $this->user->getId();
 
@@ -1139,7 +1139,7 @@ class ACL implements cache_cacheableInterface
     {
         $sql_ins = 'INSERT INTO basusr (id, base_id, usr_id, actif)
                 VALUES (null, :base_id, :usr_id, "1")';
-        $stmt_ins = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_ins);
+        $stmt_ins = $this->app->getApplicationBox()->get_connection()->prepare($sql_ins);
         $usr_id = $this->user->getId();
         $to_update = [];
         $this->load_rights_bas();
@@ -1164,7 +1164,7 @@ class ACL implements cache_cacheableInterface
 
         $sql_upd = 'UPDATE basusr SET actif="1"
                   WHERE usr_id = :usr_id AND base_id = :base_id';
-        $stmt_upd = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_upd);
+        $stmt_upd = $this->app->getApplicationBox()->get_connection()->prepare($sql_upd);
         foreach ($to_update as $base_id) {
             $stmt_upd->execute([':usr_id'  => $usr_id, ':base_id' => $base_id]);
         }
@@ -1184,7 +1184,7 @@ class ACL implements cache_cacheableInterface
     public function give_access_to_sbas(Array $sbas_ids)
     {
         $sql_ins = 'INSERT INTO sbasusr (sbasusr_id, sbas_id, usr_id) VALUES (null, :sbas_id, :usr_id)';
-        $stmt_ins = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_ins);
+        $stmt_ins = $this->app->getApplicationBox()->get_connection()->prepare($sql_ins);
 
         $usr_id = $this->user->getId();
 
@@ -1248,7 +1248,7 @@ class ACL implements cache_cacheableInterface
             , [':base_id' => $base_id, ':usr_id'  => $usr_id]
         );
 
-        $stmt_up = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_up);
+        $stmt_up = $this->app->getApplicationBox()->get_connection()->prepare($sql_up);
         $stmt_up->execute($params);
         $stmt_up->closeCursor();
 
@@ -1272,7 +1272,7 @@ class ACL implements cache_cacheableInterface
         $usr_id = $this->user->getId();
         $params = [':usr_id_1' => $usr_id, ':usr_id_2' => $usr_id];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -1310,7 +1310,7 @@ class ACL implements cache_cacheableInterface
         $sql_up .= implode(', ', $sql_args) . '
                 WHERE sbas_id = :sbas_id AND usr_id = :usr_id';
 
-        $stmt_up = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_up);
+        $stmt_up = $this->app->getApplicationBox()->get_connection()->prepare($sql_up);
 
         if (!$stmt_up->execute($params)) {
             throw new Exception('Error while updating some rights');
@@ -1332,7 +1332,7 @@ class ACL implements cache_cacheableInterface
       SET remain_dwnld = 0, restrict_dwnld = 0, month_dwnld_max = 0
       WHERE usr_id = :usr_id AND base_id = :base_id ';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id'  => $this->user->getId(), ':base_id' => $base_id]);
         $stmt->closeCursor();
 
@@ -1348,13 +1348,13 @@ class ACL implements cache_cacheableInterface
             WHERE actif = 1
             AND usr_id = :usr_id
             AND MONTH(lastconn) != MONTH(NOW()) AND restrict_dwnld = 1';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $stmt->closeCursor();
 
         $sql = "UPDATE basusr SET lastconn=now()
             WHERE usr_id = :usr_id AND actif = 1";
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $stmt->closeCursor();
 
@@ -1384,7 +1384,7 @@ class ACL implements cache_cacheableInterface
             ':droits'  => $droits
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -1404,7 +1404,7 @@ class ACL implements cache_cacheableInterface
             ':usr_id'    => $this->user->getId()
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1555,7 +1555,7 @@ class ACL implements cache_cacheableInterface
           ,mask_xor=((mask_xor & " . $vhex['xor_and'] . ") | " . $vhex['xor_or'] . ")
         WHERE usr_id = :usr_id and base_id = :base_id";
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':base_id' => $base_id, ':usr_id'  => $this->user->getId()]);
         $stmt->closeCursor();
 
@@ -1616,7 +1616,7 @@ class ACL implements cache_cacheableInterface
             , 'limited_to'   => ($limit_to ? $limit_to->format(DATE_ISO8601) : null)
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
 
         $stmt->execute($params);
 
@@ -1647,7 +1647,7 @@ class ACL implements cache_cacheableInterface
     public function get_order_master_collections()
     {
         $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1674,7 +1674,7 @@ class ACL implements cache_cacheableInterface
         $sql = 'UPDATE basusr SET order_master = :master
                 WHERE usr_id = :usr_id AND base_id = :base_id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([
             ':master'    => $bool ? 1 : 0,
             ':usr_id'    => $this->user->getId(),

@@ -57,7 +57,7 @@ class patch_380alpha4a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
         $sql = 'SELECT date, login, ip, locked
                 FROM badlog
                 ORDER BY id ASC';

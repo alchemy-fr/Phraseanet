@@ -36,7 +36,7 @@ class H264MappingGenerator extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $paths = $this->extractPath($this->container['phraseanet.appbox']);
+        $paths = $this->extractPath($this->container->getApplicationBox());
         foreach ($paths as $path) {
             $this->container['filesystem']->mkdir($path);
         }

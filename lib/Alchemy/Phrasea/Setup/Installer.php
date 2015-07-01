@@ -162,7 +162,7 @@ class Installer
             $tool->createSchema($metadata);
         }
 
-        $this->app['phraseanet.appbox']->insert_datas($this->app);
+        $this->app->getApplicationBox()->insert_datas($this->app);
     }
 
     private function createConfigFile(Connection $abConn, $serverName, $binaryData, $dataPath)

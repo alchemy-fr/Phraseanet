@@ -397,13 +397,13 @@ class RegenerateSqliteDb extends Command
         $DI['databox'] = $databox = $coll->get_databox();
         $DI['coll'] = $coll;
         if (!$collection_no_acces instanceof \collection) {
-            $collection_no_acces = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'COLL_TEST_NO_ACCESS', $DI['user']);
+            $collection_no_acces = \collection::create($this->container, $databox, $this->container->getApplicationBox(), 'COLL_TEST_NO_ACCESS', $DI['user']);
         }
 
         $DI['coll_no_access'] = $collection_no_acces;
 
         if (!$collection_no_acces_by_status instanceof \collection) {
-            $collection_no_acces_by_status = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], 'COLL_TEST_NO_ACCESS_BY_STATUS', $DI['user']);
+            $collection_no_acces_by_status = \collection::create($this->container, $databox, $this->container->getApplicationBox(), 'COLL_TEST_NO_ACCESS_BY_STATUS', $DI['user']);
         }
 
         $DI['coll_no_status'] = $collection_no_acces_by_status;

@@ -87,7 +87,7 @@ class eventsmanager_broker
                 , ':datas'      => $datas
             ];
 
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
             $stmt->execute($params);
             $stmt->closeCursor();
         } catch (\Exception $e) {
@@ -104,7 +104,7 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -122,7 +122,7 @@ class eventsmanager_broker
 
         $data = ['notifications' => [], 'next' => ''];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -139,7 +139,7 @@ class eventsmanager_broker
 
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
-                $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+                $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
                 $stmt->execute([':id' => $row['id']]);
                 $stmt->closeCursor();
                 continue;
@@ -178,7 +178,7 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total
             FROM notifications
             WHERE usr_id = :usr_id AND unread="1"';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -197,7 +197,7 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -215,7 +215,7 @@ class eventsmanager_broker
         }
 
         $ret = [];
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -235,7 +235,7 @@ class eventsmanager_broker
 
             if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
-                $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+                $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
                 $stmt->execute([':id' => $row['id']]);
                 $stmt->closeCursor();
                 continue;
@@ -262,7 +262,7 @@ class eventsmanager_broker
         }
 
         /** @var Connection $connection */
-        $connection = $this->app['phraseanet.appbox']->get_connection();
+        $connection = $this->app->getApplicationBox()->get_connection();
         $builder = $connection->createQueryBuilder();
         $builder
             ->update('notifications')

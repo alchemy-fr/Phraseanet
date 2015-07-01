@@ -49,14 +49,14 @@ class patch_380alpha2b extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $sql = "SHOW TABLE STATUS LIKE 'cache'";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row['Auto_increment']) {
             $sql = sprintf('ALTER TABLE Sessions AUTO_INCREMENT = %d', $row['Auto_increment']);
-            $app['phraseanet.appbox']->get_connection()->exec($sql);
+            $app->getApplicationBox()->get_connection()->exec($sql);
         }
 
         return true;
