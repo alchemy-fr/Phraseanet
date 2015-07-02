@@ -198,8 +198,6 @@ class record_preview extends record_adapter
                 break;
         }
         parent::__construct($app, $sbas_id, $record_id, $number);
-
-        return $this;
     }
 
     public function get_train()

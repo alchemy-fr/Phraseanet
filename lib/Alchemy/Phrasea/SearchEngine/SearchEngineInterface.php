@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Doctrine\Common\Collections\ArrayCollection;

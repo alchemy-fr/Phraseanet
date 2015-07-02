@@ -1,7 +1,12 @@
 <?php
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\DBALException;
+use Prophecy\Argument;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
@@ -185,5 +190,41 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         }
 
         $this->assertEquals($quantity, count($app['session']->getFlashBag()->get($flashType)));
+    }
+
+    /**
+     * @param \record_adapter $record
+     * @return \Alchemy\Phrasea\Application
+     */
+    protected function mockElasticsearchResult(\record_adapter $record)
+    {
+        $app = $this->getApplication();
+
+        $elasticsearchRecord = new ElasticsearchRecord();
+        $elasticsearchRecord->setDataboxId($record->get_sbas_id());
+        $elasticsearchRecord->setRecordId($record->get_record_id());
+
+        $result = new SearchEngineResult(
+            new ArrayCollection([$elasticsearchRecord]), // Records
+            '', // Query
+            0, // Duration
+            0, // offsetStart
+            1, // available
+            1, // total
+            0, // warning
+            0, // error
+            new ArrayCollection(), // suggestions
+            null, // propositions
+            null // indexes
+        );
+
+        $searchEngine = $this->prophesize(SearchEngineInterface::class);
+        $searchEngine->query('', 0, Argument::any(), Argument::any())
+            ->willReturn($result);
+        $searchEngine->excerpt(Argument::any(), Argument::any(), Argument::any(), Argument::any())
+            ->willReturn([]);
+
+        $app['search_engine'] = $searchEngine->reveal();
+        return $app;
     }
 }
