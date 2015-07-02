@@ -58,7 +58,7 @@ class patch_390alpha8a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM Tasks';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 

@@ -54,14 +54,14 @@
 
 {% block rss %}
     {% for feed in feeds %}
-        {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'rss') %}
+        {% set link = app['feed.user-link-generator'].generate(feed, app.getAuthenticatedUser(), 'rss') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
-        {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'atom') %}
+        {% set link = app['feed.user-link-generator'].generate(feed, app.getAuthenticatedUser(), 'atom') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
     {% endfor %}
-    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app['authentication'].getUser(), 'rss') %}
+    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app.getAuthenticatedUser(), 'rss') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
-    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app['authentication'].getUser(), 'atom') %}
+    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app.getAuthenticatedUser(), 'atom') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
 {% endblock %}
 
@@ -97,12 +97,12 @@
 
     <style title="color_selection" type="text/css">
         /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
-            color: #{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF') }};
-            background-color: #{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection-disabled', '333333')}}};
+            color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
+            background-color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection-disabled', '333333')}}};
         }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
-            color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'fontcolor-selection', 'FFFFFF')}};
-            background-color: {{"#" ~ app['settings'].getUserSetting(app['authentication'].getUser(), 'background-selection', '404040')}};
+            color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
+            background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
         }
     </style>
     <!-- Include Fancytree skin and library -->
@@ -176,7 +176,7 @@
             </script>
         {% endif %}
         
-        {% set ratio = app['settings'].getUserSetting(app['authentication'].getUser(), 'search_window') %}
+        {% set ratio = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
@@ -197,7 +197,7 @@
                                 ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
                                 <button id="facets-back-btn" style="display:none;">back</button>
                             </div>
-                            {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus')} %}
+                            {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
                         {% endif %}
                     {% endblock %}
                 </div>
@@ -216,7 +216,7 @@
                                 {{ 'Browse Baskets' | trans }}
                             </a>
                         </div>
-                        {% if app['conf'].get(['registry', 'modules', 'stories']) and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
+                        {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
                                     <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
@@ -250,9 +250,9 @@
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
-                        <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
+                        <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                         <div class="input-append">
-                            <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}">
+                            <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                             <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                 <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                             </a>
@@ -446,17 +446,17 @@
 
             <div id="idFrameT" class="PNB ui-corner-top">
                 <div class="tools PNB10 btn-toolbar">
-                    {% include "prod/toolbar.html.twig" with {acl: app['acl'].get(app['authentication'].getUser())} %}
+                    {% include "prod/toolbar.html.twig" with {acl: app.getAclForUser(app.getAuthenticatedUser())} %}
                     <a href="#" id="settings" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
                 </div>
                 <div id="answers" class=" PNB10">
                     <script>
                         $(document).ready(function(){
-                            {% if app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page') == 'QUERY' %}
+                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
                                 $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page') == 'LAST_QUERY' %}
+                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
                                 $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page') == 'PUBLI' %}
+                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
                                 getHome('PUBLI');
                             {% endif %}
                         });
@@ -520,7 +520,7 @@
     <div id="MESSAGE-push"></div>
     <div id="MESSAGE-publi"></div>
     <div id="DIALOG"></div>
-    <div id="keyboard-dialog" class="{% if app['settings'].getUserSetting(app['authentication'].getUser(), 'keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{{ 'raccourci :: a propos des raccourcis claviers' | trans }}">
+    <div id="keyboard-dialog" class="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{{ 'raccourci :: a propos des raccourcis claviers' | trans }}">
         <div>
             <h1>{{ 'Raccourcis claviers en cours de recherche :' | trans }}</h1>
             <ul>
@@ -583,7 +583,7 @@
             <div id="look_box_screen">
                 <div class="box">
                     <div class="" style="float:left; width:100%;margin-top:20px;">
-                        {% set mod = app['settings'].getUserSetting(app['authentication'].getUser(), 'advanced_search_reload') %}
+                        {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'advanced_search_reload') %}
                         <label class="checkbox inline" for="user_settings_advanced_search_reload">
                             <input onchange="setPref('advanced_search_reload',$(this).attr('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
                             {{ 'Use latest search settings on Production loading' | trans }}
@@ -593,7 +593,7 @@
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'Mode de presentation' | trans }}</h1>
-                        {% set mod = app['settings'].getUserSetting(app['authentication'].getUser(), 'view') %}
+                        {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'view') %}
                         <label class="radio inline" for="thumbs_view">
                             <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
                             {{ 'reponses:: mode vignettes' | trans }}
@@ -612,7 +612,7 @@
                     </div>
                 </div>
                 <div class="box">
-                    {% set rollover_thumbnail = app['settings'].getUserSetting(app['authentication'].getUser(), 'rollover_thumbnail') %}
+                    {% set rollover_thumbnail = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'rollover_thumbnail') %}
                     <h1>{{ 'Presentation de vignettes'  | trans }}</h1>
                     <label class="radio" for="rollover_caption">
                         <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
@@ -624,7 +624,7 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set technical_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'technical_display') %}
+                    {% set technical_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'technical_display') %}
                     <h1>{{'Display technical data'  | trans }}</h1>
                     <label class="radio" for="technical_show">
                         <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
@@ -640,7 +640,7 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set doctype_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'doctype_display') %}
+                    {% set doctype_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'doctype_display') %}
                     <h1>{{'Type de documents'  | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
                         <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
@@ -653,14 +653,14 @@
                         <h1>{{ 'reponses:: images par pages :' | trans }}</h1>
                         <div class="box">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
-                            <input type="text" readonly style="width:35px;" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'images_per_page')}}" id="nperpage_value"/>
+                            <input type="text" readonly style="width:35px;" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'images_per_page')}}" id="nperpage_value"/>
                         </div>
                     </div>
                     <div style="float:right; width:49%;">
                         <h1>{{ 'reponses:: taille des images :' | trans }}</h1>
                         <div class="box">
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
-                            <input type="hidden" value="{{app['settings'].getUserSetting(app['authentication'].getUser(), 'images_size')}}" id="sizeAns_value"/>
+                            <input type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'images_size')}}" id="sizeAns_value"/>
                         </div>
                     </div>
                 </div>
@@ -676,7 +676,7 @@
                     <div class="box">
                         <h1>{{ 'Affichage au demarrage' | trans }}</h1>
                         <form class="form-inline">
-                            {% set start_page_pref = app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page') %}
+                            {% set start_page_pref = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') %}
                             <select class="span4" name="start_page" onchange="start_page_selector();">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
                                     {{ 'Ma derniere question' | trans }}
@@ -691,7 +691,7 @@
                                     {{ 'Aide' | trans }}
                                 </option>
                             </select>
-                            <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app['authentication'].getUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
+                            <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
                             <input type="button" class="btn btn-inverse" value="{{'boutton::valider'  | trans }}" onclick="set_start_page();" />
                         </form>
                     </div>
@@ -767,7 +767,7 @@
         <div class="box">
             <h1>{{ 'Presentation de vignettes de panier' | trans }}</h1>
             <div>
-                {% set basket_status_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_status_display') %}
+                {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
@@ -776,7 +776,7 @@
                 </label>
             </div>
             <div>
-                {% set basket_caption_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_caption_display') %}
+                {% set basket_caption_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
                     <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
@@ -785,7 +785,7 @@
                 </label>
             </div>
             <div>
-                {% set basket_title_display = app['settings'].getUserSetting(app['authentication'].getUser(), 'basket_title_display') %}
+                {% set basket_title_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
                     <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
@@ -888,7 +888,7 @@
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            p4.reg_delete="{% if app['settings'].getUserSetting(app['authentication'].getUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
+            p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 
         function pollNotifications(){
@@ -898,7 +898,7 @@
                 dataType: "json",
                 data: {
                     module : 1,
-                    usr : {{app['authentication'].getUser().getId()}}
+                    usr : {{app.getAuthenticatedUser().getId()}}
                 },
                 error: function(){
                     window.setTimeout("pollNotifications();", 10000);

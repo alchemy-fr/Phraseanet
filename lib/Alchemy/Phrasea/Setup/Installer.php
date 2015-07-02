@@ -23,7 +23,6 @@ use Doctrine\ORM\Tools\SchemaTool;
 class Installer
 {
     private $app;
-    private $phraseaIndexer;
 
     public function __construct(Application $app)
     {
@@ -52,17 +51,12 @@ class Installer
         return $user;
     }
 
-    public function setPhraseaIndexerPath($path)
-    {
-        $this->phraseaIndexer = $path;
-    }
-
     private function createDB(Connection $dbConn = null, $template, User $admin)
     {
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
         $databox = \databox::create($this->app, $dbConn, $template);
 
-        $this->app['acl']->get($admin)
+        $this->app->getAclForUser($admin)
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
                 $databox->get_sbas_id(), [
@@ -73,8 +67,8 @@ class Installer
 
         $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
 
-        $this->app['acl']->get($admin)->give_access_to_base([$collection->get_base_id()]);
-        $this->app['acl']->get($admin)->update_rights_to_base($collection->get_base_id(), [
+        $this->app->getAclForUser($admin)->give_access_to_base([$collection->get_base_id()]);
+        $this->app->getAclForUser($admin)->update_rights_to_base($collection->get_base_id(), [
             'canpush'           => 1, 'cancmd'          => 1
             , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
             , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
@@ -162,7 +156,7 @@ class Installer
             $tool->createSchema($metadata);
         }
 
-        $this->app['phraseanet.appbox']->insert_datas($this->app);
+        $this->app->getApplicationBox()->insert_datas($this->app);
     }
 
     private function createConfigFile(Connection $abConn, $serverName, $binaryData, $dataPath)

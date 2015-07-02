@@ -126,7 +126,7 @@
                                             {% if app['conf'].get(['registry', 'classic', 'collection-presentation']) == 'popup' %}
                                                 <div>
                                                     {{ "client::recherche: rechercher dans les bases :" | trans }}
-                                                    {% if app['phraseanet.appbox'].get_databoxes()|length > 0 %}
+                                                    {% if app.getApplicationBox().get_databoxes()|length > 0 %}
                                                         <select id="basSelector" onchange="beforeAnswer();" style="width:245px;">
                                                             <option value="{{ storage_access['collections']|keys|join(';') }}">{{ "client::recherche: rechercher dans toutes les bases" | trans }}</option>
                                                             {% for sbasId, databoxWrapper in storage_access['databoxes'] %}
@@ -461,7 +461,7 @@
                     dataType: 'json',
                     data: {
                         app : 2,
-                        usr : {{ app['authentication'].getUser().getId() }}
+                        usr : {{ app.getAuthenticatedUser().getId() }}
                     },
                     error: function(){
                         window.setTimeout("pollNotifications();", 10000);

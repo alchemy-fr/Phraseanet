@@ -16,7 +16,7 @@
                 </h1>
             </td>
             <td style="width:60px;text-align:right;">
-                {% if entry.feed.isOwner(app['authentication'].user) or entry.isPublisher(app['authentication'].user) %}
+                {% if entry.feed.isOwner(app.getAuthenticator().user) or entry.isPublisher(app.getAuthenticator().user) %}
                     <a class="tools options feed_edit" href="{{ path('prod_feeds_entry_edit', { 'id' : entry.id }) }}">
                         <img src="/skins/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}"/>
                     </a>

@@ -23,7 +23,7 @@ class Bridge_AccountSettingsTest extends \PhraseanetTestCase
         try {
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-            $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
             $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');

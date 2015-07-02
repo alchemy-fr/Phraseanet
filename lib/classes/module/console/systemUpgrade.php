@@ -61,7 +61,7 @@ class module_console_systemUpgrade extends Command
 
         if ($continue == 'y') {
             $version = new Version();
-            $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->container['phraseanet.appbox']->get_version(), $version->getNumber()), true);
+            $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->container->getApplicationBox()->get_version(), $version->getNumber()), true);
 
             try {
                 $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));

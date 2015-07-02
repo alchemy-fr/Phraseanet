@@ -44,9 +44,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
      */
     public function testSetExport()
     {
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acl = $this->stubACL();
         $acl->expects($this->any())
             ->method('has_right')
             ->with($this->equalTo('order'))
@@ -63,15 +61,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             ->method('has_right_on_sbas')
             ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('cancmd'))
             ->will($this->returnValue(true));
-
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($acl));
-
-        self::$DI['app']['acl'] = $aclProvider;
 
         self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
         self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));

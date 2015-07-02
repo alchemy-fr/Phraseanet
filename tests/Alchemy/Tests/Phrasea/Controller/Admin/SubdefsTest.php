@@ -19,7 +19,7 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
     public function setUp()
     {
         parent::setUp();
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $this->databox = array_shift($databoxes);
     }
 

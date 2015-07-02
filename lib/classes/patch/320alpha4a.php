@@ -108,7 +108,7 @@ class patch_320alpha4a extends patchAbstract
         $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
 
         $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
         $stmt = $conn->prepare($sql);

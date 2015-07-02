@@ -77,7 +77,7 @@ class SubdefsJob extends AbstractJob
             return;
         }
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($app->getDataboxes() as $databox) {
             if (!$this->isStarted()) {
                 break;
             }

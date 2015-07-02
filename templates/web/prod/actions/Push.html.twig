@@ -62,7 +62,7 @@
                         {% for list in lists %}
                             <li class="list" style="padding:2px;">
                                 <a class="list_loader" href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}">
-                                    {% if list.getOwner(app['authentication'].getUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                                    {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                                         <img src="/skins/prod/Push/list-icon.png" />
                                     {% else %}
                                         <img src="/skins/icons/SHARE16.png" />
@@ -87,7 +87,7 @@
                                 <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
                                 <br/>
                                 {{ 'Select a user in the list' | trans }} <br/>
-                                {% if app['acl'].get(app['authentication'].getUser()).has_right('manageusers') %}
+                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
                                     {{ 'or' | trans }}
                                     <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{{ 'Add user' | trans }}</a>
                                 {% endif %}

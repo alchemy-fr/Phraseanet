@@ -158,7 +158,6 @@ class SetupController extends Controller
 
         try {
             $installer = $this->app['phraseanet.installer'];
-            $installer->setPhraseaIndexerPath($request->request->get('binary_phraseanet_indexer'));
 
             $binaryData = [];
             foreach ([
@@ -177,7 +176,7 @@ class SetupController extends Controller
 
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
-            $this->app['authentication']->openAccount($user);
+            $this->app->getAuthenticator()->openAccount($user);
 
             return $this->app->redirectPath('admin', [
                 'section' => 'taskmanager',

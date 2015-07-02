@@ -139,7 +139,7 @@ class record_preview extends record_adapter
                 break;
             case "BASK":
                 $Basket = $app['converter.basket']->convert($contId);
-                $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
+                $app['acl.basket']->hasAccess($Basket, $app->getAuthenticatedUser());
 
                 /* @var $Basket Basket */
                 $this->container = $Basket;
@@ -198,8 +198,6 @@ class record_preview extends record_adapter
                 break;
         }
         parent::__construct($app, $sbas_id, $record_id, $number);
-
-        return $this;
     }
 
     public function get_train()
@@ -325,9 +323,9 @@ class record_preview extends record_adapter
 
         $tab = [];
 
-        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
@@ -338,7 +336,7 @@ class record_preview extends record_adapter
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
-            $params[':usr_id'] = $this->app['authentication']->getUser()->getId();
+            $params[':usr_id'] = $this->app->getAuthenticatedUser()->getId();
             $params[':site'] = $this->app['conf']->get(['main', 'key']);
         }
 
@@ -401,7 +399,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base(
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
@@ -431,7 +429,7 @@ class record_preview extends record_adapter
           AND site_id = :site
           GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
@@ -491,7 +489,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base(
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
@@ -500,7 +498,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT count( id ) AS views, referrer
@@ -564,7 +562,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $report = $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
 
         $ret = false;
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
@@ -594,7 +592,7 @@ class record_preview extends record_adapter
         AND site= :site
         GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(

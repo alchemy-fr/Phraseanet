@@ -64,7 +64,7 @@ class Bridge_Api
 
         $sql = 'SELECT id, name, disable_time, created_on, updated_on
             FROM bridge_apis WHERE id = :id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -382,7 +382,7 @@ class Bridge_Api
 
         $sql = 'DELETE FROM bridge_apis WHERE id = :id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
@@ -406,7 +406,7 @@ class Bridge_Api
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -495,7 +495,7 @@ class Bridge_Api
         $name = strtolower($name);
 
         $sql = 'SELECT id FROM bridge_apis WHERE name = :name';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':name' => $name]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -514,7 +514,7 @@ class Bridge_Api
     public static function get_availables(Application $app)
     {
         $sql = 'SELECT id FROM bridge_apis';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -538,11 +538,11 @@ class Bridge_Api
             (id, name, disable, disable_time, created_on, updated_on)
             VALUES (null, :name, 0, null, NOW(), NOW())';
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':name' => strtolower($name)]);
         $stmt->closeCursor();
 
-        $api_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
+        $api_id = $app->getApplicationBox()->get_connection()->lastInsertId();
 
         return new self($app, $api_id);
     }

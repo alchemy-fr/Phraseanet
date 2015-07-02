@@ -25,7 +25,7 @@ class MailInfoUserRegisteredTest extends MailTestCase
     public function testGetMessageWithoutRegisteredUserShouldThrowALogicException()
     {
         $mail = MailInfoUserRegistered::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -42,7 +42,7 @@ class MailInfoUserRegisteredTest extends MailTestCase
     public function getMail()
     {
         $mail = MailInfoUserRegistered::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

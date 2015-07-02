@@ -16,8 +16,6 @@ machine:
 dependencies:
   cache_directories:
     - elasticsearch-1.3.2 # relative to the build directory
-    - bin
-    - vendor
     - node_modules
   pre:
     - yes '' | pecl install imagick

@@ -43,7 +43,7 @@
     </ul>
 </div>
 
-{% if app['acl'].get(app['authentication'].getUser()).is_admin() %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
     <div class="db_infos">
         <h2>{{ 'admin::base: Version' | trans }}</h2>
 

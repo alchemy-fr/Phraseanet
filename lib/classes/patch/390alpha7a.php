@@ -68,36 +68,36 @@ class patch_390alpha7a extends patchAbstract
         }
 
         $sql = 'DELETE FROM Feeds';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM FeedEntries';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM FeedPublishers';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM FeedItems';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM FeedTokens';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM AggregateTokens';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT id, title, subtitle, public, created_on, updated_on, base_id FROM feeds_backup;';
         $stmt = $conn->prepare($sql);

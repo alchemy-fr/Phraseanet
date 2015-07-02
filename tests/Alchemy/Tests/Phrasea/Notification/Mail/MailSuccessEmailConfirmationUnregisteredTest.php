@@ -14,7 +14,7 @@ class MailSuccessEmailConfirmationUnregisteredTest extends MailWithLinkTestCase
     public function getMail()
     {
         return MailSuccessEmailConfirmationUnregistered::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

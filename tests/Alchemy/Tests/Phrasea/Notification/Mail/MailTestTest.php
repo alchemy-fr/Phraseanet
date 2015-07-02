@@ -14,7 +14,7 @@ class MailTestTest extends MailTestCase
     public function getMail()
     {
         return MailTest::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

@@ -22,7 +22,7 @@ class MailInfoNewPublicationTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoTitleProvided()
     {
         $mail = MailInfoNewPublication::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -48,7 +48,7 @@ class MailInfoNewPublicationTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoAuthorProvided()
     {
         $mail = MailInfoNewPublication::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -72,7 +72,7 @@ class MailInfoNewPublicationTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailInfoNewPublication::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

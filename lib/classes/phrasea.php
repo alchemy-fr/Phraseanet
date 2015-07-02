@@ -34,7 +34,7 @@ class phrasea
     public static function clear_sbas_params(Application $app)
     {
         self::$_sbas_params = null;
-        $app['phraseanet.appbox']->delete_data_from_cache(self::CACHE_SBAS_PARAMS);
+        $app->getApplicationBox()->delete_data_from_cache(self::CACHE_SBAS_PARAMS);
 
         return true;
     }
@@ -46,7 +46,7 @@ class phrasea
         }
 
         try {
-            $params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
+            $params = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_PARAMS);
             if (is_array($params)) {
                 self::$_sbas_params = $params;
 
@@ -59,7 +59,7 @@ class phrasea
         self::$_sbas_params = [];
 
         $sql = 'SELECT sbas_id, host, port, user, pwd, dbname FROM sbas';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -68,7 +68,7 @@ class phrasea
             self::$_sbas_params[$row['sbas_id']] = $row;
         }
 
-        $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_params, self::CACHE_SBAS_PARAMS);
+        $app->getApplicationBox()->set_data_to_cache(self::$_sbas_params, self::CACHE_SBAS_PARAMS);
 
         return self::$_sbas_params;
     }
@@ -100,14 +100,14 @@ class phrasea
     {
         if (!self::$_bas2sbas) {
             try {
-                $data = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
+                $data = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
                 if (!$data) {
                     throw new \Exception('Could not get sbas from cache');
                 }
                 self::$_bas2sbas = $data;
             } catch (\Exception $e) {
                 $sql = 'SELECT base_id, sbas_id FROM bas';
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+                $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
                 $stmt->execute();
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
@@ -116,7 +116,7 @@ class phrasea
                     self::$_bas2sbas[$row['base_id']] = (int) $row['sbas_id'];
                 }
 
-                $app['phraseanet.appbox']->set_data_to_cache(self::$_bas2sbas, self::CACHE_SBAS_FROM_BAS);
+                $app->getApplicationBox()->set_data_to_cache(self::$_bas2sbas, self::CACHE_SBAS_FROM_BAS);
             }
         }
 
@@ -126,7 +126,7 @@ class phrasea
     public static function baseFromColl($sbas_id, $coll_id, Application $app)
     {
         if (!self::$_coll2bas) {
-            $conn = $app['phraseanet.appbox']->get_connection();
+            $conn = $app->getApplicationBox()->get_connection();
             $sql = 'SELECT base_id, server_coll_id, sbas_id FROM bas';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -176,7 +176,7 @@ class phrasea
     public static function collFromBas(Application $app, $base_id)
     {
         if (!self::$_bas2coll) {
-            $conn = $app['phraseanet.appbox']->get_connection();
+            $conn = $app->getApplicationBox()->get_connection();
             $sql = 'SELECT base_id, server_coll_id FROM bas';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -195,12 +195,12 @@ class phrasea
     {
         if (!self::$_sbas_names) {
             try {
-                self::$_sbas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_NAMES);
+                self::$_sbas_names = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_NAMES);
             } catch (\Exception $e) {
-                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_names[$databox->get_sbas_id()] = $databox->get_viewname();
                 }
-                $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_names, self::CACHE_SBAS_NAMES);
+                $app->getApplicationBox()->set_data_to_cache(self::$_sbas_names, self::CACHE_SBAS_NAMES);
             }
         }
 
@@ -211,9 +211,9 @@ class phrasea
     {
         if (!self::$_sbas_labels) {
             try {
-                self::$_sbas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_LABELS);
+                self::$_sbas_labels = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_LABELS);
             } catch (\Exception $e) {
-                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),
                         'en' => $databox->get_label('en'),
@@ -221,7 +221,7 @@ class phrasea
                         'nl' => $databox->get_label('nl'),
                     ];
                 }
-                $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_labels, self::CACHE_SBAS_LABELS);
+                $app->getApplicationBox()->set_data_to_cache(self::$_sbas_labels, self::CACHE_SBAS_LABELS);
             }
         }
 
@@ -236,9 +236,9 @@ class phrasea
     {
         if (!self::$_bas_labels) {
             try {
-                self::$_bas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_BAS_LABELS);
+                self::$_bas_labels = $app->getApplicationBox()->get_data_from_cache(self::CACHE_BAS_LABELS);
             } catch (\Exception $e) {
-                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($app->getDataboxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
                         self::$_bas_labels[$collection->get_base_id()] = [
                             'fr' => $collection->get_label('fr'),
@@ -249,7 +249,7 @@ class phrasea
                     }
                 }
 
-                $app['phraseanet.appbox']->set_data_to_cache(self::$_bas_labels, self::CACHE_BAS_LABELS);
+                $app->getApplicationBox()->set_data_to_cache(self::$_bas_labels, self::CACHE_BAS_LABELS);
             }
         }
 

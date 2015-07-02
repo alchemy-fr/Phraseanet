@@ -21,7 +21,7 @@ class MailRequestPasswordSetupTest extends MailWithLinkTestCase
     public function testThatALogicExceptionIsThrownIfNoLoginProvided()
     {
         $mail = MailRequestPasswordSetup::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -40,7 +40,7 @@ class MailRequestPasswordSetupTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailRequestPasswordSetup::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

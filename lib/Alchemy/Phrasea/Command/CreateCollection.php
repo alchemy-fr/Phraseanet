@@ -37,9 +37,9 @@ class CreateCollection extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $databox = $this->container['phraseanet.appbox']->get_databox((int) $input->getArgument('databox_id'));
+        $databox = $this->container->findDataboxById((int) $input->getArgument('databox_id'));
 
-        $new_collection = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
+        $new_collection = \collection::create($this->container, $databox, $this->container->getApplicationBox(), $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('base_id_rights')) {
 
@@ -50,7 +50,7 @@ class CreateCollection extends Command
             while ($n < $total) {
                 $results = $query->limit($n, 40)->execute()->get_results();
                 foreach ($results as $user) {
-                    $this->container['acl']->get($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
+                    $this->container->getAclForUser($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
                 }
                 $n+=40;
             }

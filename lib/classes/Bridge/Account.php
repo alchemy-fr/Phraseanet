@@ -86,7 +86,7 @@ class Bridge_Account
         $sql = 'SELECT id, dist_id, usr_id, name, created_on, updated_on
             FROM bridge_accounts WHERE id = :id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -197,7 +197,7 @@ class Bridge_Account
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         ];
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -219,7 +219,7 @@ class Bridge_Account
 
         $sql = 'DELETE FROM bridge_accounts WHERE id = :id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':id' => $this->id]);
         $stmt->closeCursor();
 
@@ -236,7 +236,7 @@ class Bridge_Account
     {
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE id = :account_id';
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':account_id' => $account_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -269,7 +269,7 @@ class Bridge_Account
             , ':dist_id' => $distant_id
         ];
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -292,7 +292,7 @@ class Bridge_Account
         $sql = 'SELECT id FROM bridge_accounts WHERE api_id = :api_id
             LIMIT 0,' . (int) $quantity;
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':api_id' => $api->get_id()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -316,7 +316,7 @@ class Bridge_Account
     {
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE usr_id = :usr_id';
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $user->getId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -362,11 +362,11 @@ class Bridge_Account
             , ':name'    => $name
         ];
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $account_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
+        $account_id = $app->getApplicationBox()->get_connection()->lastInsertId();
 
         return new self($app, $api, $account_id);
     }

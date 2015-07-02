@@ -8,7 +8,7 @@
         <hr/>
         {% for validationDatas in basket_element.getValidationDatas() %}
             {% if validationDatas.getNote() != '' %}
-                <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().getId() == app['authentication'].getUser().getId() %}my_note{% endif %} ">
+                <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().getId() == app.getAuthenticatedUser().getId() %}my_note{% endif %} ">
                     <span class="note_author title15">
                       {{validationDatas.getParticipant().getUser().getDisplayName()}}
                     </span> : {{ validationDatas.getNote()|nl2br }}
@@ -17,7 +17,7 @@
         {% endfor %}
 
         <form>
-            <textarea>{{basket_element.getUserValidationDatas(app['authentication'].getUser()).getNote()}}</textarea>
+            <textarea>{{basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getNote()}}</textarea>
             <div class="buttons">
                 <button class="note_closer ui-corner-all">
                   {{ 'boutton::fermer' | trans }}

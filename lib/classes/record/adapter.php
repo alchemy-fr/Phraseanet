@@ -82,7 +82,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function __construct(Application $app, $sbas_id, $record_id, $number = null)
     {
         $this->app = $app;
-        $this->databox = $this->app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $this->databox = $this->app->findDataboxById((int) $sbas_id);
         $this->number = (int) $number;
         $this->record_id = (int) $record_id;
 
@@ -220,7 +220,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('unrecognized document type');
         }
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connbas = $databox->get_connection();
 
         $sql = 'UPDATE record SET type = :type WHERE record_id = :record_id';
@@ -1083,7 +1083,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function rebuild_subdefs()
     {
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::MAKE_SUBDEF . ') WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
@@ -1131,7 +1131,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function write_metas()
     {
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record
             SET jeton = jeton | (' . (PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF) . ')
@@ -1150,7 +1150,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function set_binary_status($status)
     {
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connbas = $databox->get_connection();
 
         $sql = 'UPDATE record SET status = 0b' . $status . '
@@ -1376,7 +1376,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public static function get_record_by_sha(Application $app, $sbas_id, $sha256, $record_id = null)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
 
         $sql = "SELECT record_id
@@ -1631,7 +1631,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function log_view($log_id, $referrer, $gv_sit)
     {
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connbas = $databox->get_connection();
 
         $sql = 'INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id)
@@ -1712,7 +1712,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        if ($this->app['authentication']->getUser()) {
+        if ($this->app->getAuthenticatedUser()) {
             $sql = 'SELECT record_id
               FROM regroup g
                 INNER JOIN (record r
@@ -1728,7 +1728,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $params = [
                 ':site'   => $this->app['conf']->get(['main', 'key']),
-                ':usr_id'    => $this->app['authentication']->getUser()->getId(),
+                ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
                 ':record_id' => $this->get_record_id(),
             ];
         } else {
@@ -1780,7 +1780,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
         $stmt->execute([
             ':site'      => $this->app['conf']->get(['main', 'key']),
-            ':usr_id'    => $this->app['authentication']->getUser()->getId(),
+            ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
             ':record_id' => $this->get_record_id(),
         ]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

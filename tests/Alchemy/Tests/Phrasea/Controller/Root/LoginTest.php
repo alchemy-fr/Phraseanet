@@ -238,12 +238,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $token = self::$DI['app']['manipulator.token']->createResetEmailToken($user, $email);
         $user->setMailLocked(true);
         $revokeBases = array();
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $revokeBases[] = $collection->get_base_id();
             }
         }
-        self::$DI['app']['acl']->get($user)->revoke_access_from_bases($revokeBases);
+        self::$DI['app']->getAclForUser($user)->revoke_access_from_bases($revokeBases);
         $this->deleteRequest();
 
         self::$DI['client']->request('GET', '/login/register-confirm/', ['code' => $token->getValue()]);
@@ -970,10 +970,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
         ];
 
-        self::$DI['app']['phraseanet.appbox-register'] = $this->getMockBuilder('\appbox_register')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
             ->disableOriginalConstructor()
             ->getMock();
@@ -1068,10 +1064,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRegister($parameters, $extraParameters)
     {
-        self::$DI['app']['phraseanet.appbox-register'] = $this->getMockBuilder('\appbox_register')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
             ->disableOriginalConstructor()
             ->getMock();
@@ -1202,10 +1194,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public function testAuthenticate()
     {
         $password = self::$DI['app']['random.low']->generateString(8);
-        $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
-        self::$DI['app']['authentication']->getUser()->setMailLocked(false);
-        self::$DI['app']['orm.em']->persist(self::$DI['app']['authentication']->getUser());
+        $login = self::$DI['app']->getAuthenticatedUser()->getLogin();
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
+        self::$DI['app']->getAuthenticatedUser()->setMailLocked(false);
+        self::$DI['app']['orm.em']->persist(self::$DI['app']->getAuthenticatedUser());
         self::$DI['app']['orm.em']->flush();
 
         $this->logout(self::$DI['app']);
@@ -1227,9 +1219,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = self::$DI['app']['random.low']->generateString(8);
 
-        $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
-        self::$DI['app']['authentication']->getUser()->setMailLocked(false);
+        $login = self::$DI['app']->getAuthenticatedUser()->getLogin();
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
+        self::$DI['app']->getAuthenticatedUser()->setMailLocked(false);
 
         $this->logout(self::$DI['app']);
 
@@ -1273,8 +1265,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = self::$DI['app']['random.low']->generateString(8);
 
-        $login = self::$DI['app']['authentication']->getUser()->getLogin();
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
+        $login = self::$DI['app']->getAuthenticatedUser()->getLogin();
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
 
         $this->logout(self::$DI['app']);
 
@@ -1295,7 +1287,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticate()
     {
-        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']->getAclForUser(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1322,7 +1314,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $this->assertEquals($context, $event->getContext()->getContext());
         });
 
-        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']->getAclForUser(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
 
         $this->logout(self::$DI['app']);
 
@@ -1337,7 +1329,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGuestAuthenticateWithGetMethod()
     {
-        self::$DI['app']['acl']->get(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
+        self::$DI['app']->getAclForUser(self::$DI['user_guest'])->give_access_to_base([self::$DI['collection']->get_base_id()]);
         $this->logout(self::$DI['app']);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -1866,7 +1858,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         if (null === self::$termsOfUse) {
             self::$termsOfUse = [];
-            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach (self::$DI['app']->getDataboxes() as $databox) {
                 self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
                 foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
@@ -1882,7 +1874,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             return;
         }
         self::$termsOfUse = [];
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
 
             foreach ( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
@@ -1896,7 +1888,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         if (null === self::$termsOfUse) {
             return;
         }
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             if (!isset(self::$termsOfUse[$databox->get_sbas_id()])) {
                 continue;
             }

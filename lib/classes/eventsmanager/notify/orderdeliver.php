@@ -50,7 +50,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         try {
             $repository = $this->app['repo.baskets'];
 
-            $basket = $repository->findUserBasket($ssel_id, $this->app['authentication']->getUser(), false);
+            $basket = $repository->findUserBasket($ssel_id, $this->app->getAuthenticatedUser(), false);
         } catch (\Exception $e) {
             return [];
         }

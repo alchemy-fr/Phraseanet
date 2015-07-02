@@ -25,7 +25,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         parent::setUp();
 
         $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 

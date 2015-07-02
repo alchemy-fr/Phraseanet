@@ -410,13 +410,13 @@ class module_report_nav extends module_report
         $this->initialize();
         empty($on) ? $on = false : "";
         $filter_id_apbox = $filter_id_datbox = [];
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $this->title = $this->app->trans('report:: Information sur les utilisateurs correspondant a %critere%', ['%critere%' => $val]);
 
         if ($on) {
             if ( ! empty($req)) {
-                $stmt = $this->app['phraseanet.appbox']->get_databox($this->sbas_id)->get_connection()->prepare($req);
+                $stmt = $this->app->findDataboxById($this->sbas_id)->get_connection()->prepare($req);
                 $stmt->execute($params);
                 $rsu = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
@@ -531,7 +531,7 @@ class module_report_nav extends module_report
 
     public function buildTabInfoNav($tab = false, $navigator)
     {
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
+        $databox = $this->app->findDataboxById($this->sbas_id);
         $conn = $databox->get_connection();
         $this->title = $this->app->trans('report:: Information sur le navigateur %name%', ['%name%' => $navigator]);
         $sqlBuilder = new module_report_sql($this->app, $this);

@@ -21,10 +21,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     public function setUp()
     {
         parent::setUp();
-        self::$DI['app'] = $this->loadApp();
-        self::dropDatabase();
-        parent::setUp();
-        self::dropDatabase();
+        $this->dropDatabase();
     }
 
     public function tearDown()
@@ -67,7 +64,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function createOneCollection()
     {
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $collection = \collection::create(self::$DI['app'], array_shift($databoxes), self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
 
         self::$createdCollections[] = $collection;
@@ -135,12 +132,14 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetCGUHasNoRights()
     {
-        $this->StubbedACL->expects($this->once())
-            ->method('has_right_on_sbas')
-            ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
-            ->will($this->returnValue(false));
-
-        $this->setAdmin(true);
+        $this->setAdmin(true, [
+            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+                $acl->expects($this->once())
+                    ->method('has_right_on_sbas')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->will($this->returnValue(false));
+            }
+        ]);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
 
@@ -152,12 +151,14 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetCGU()
     {
-        $this->StubbedACL->expects($this->once())
-            ->method('has_right_on_sbas')
-            ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
-            ->will($this->returnValue(true));
-
-        $this->setAdmin(true);
+        $this->setAdmin(true, [
+            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+                $acl->expects($this->once())
+                    ->method('has_right_on_sbas')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->will($this->returnValue(true));
+            }
+        ]);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -184,12 +185,14 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdateDatabaseCGU()
     {
-        $this->StubbedACL->expects($this->once())
-            ->method('has_right_on_sbas')
-            ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
-            ->will($this->returnValue(true));
-
-        $this->setAdmin(true);
+        $this->setAdmin(true, [
+            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+                $acl->expects($this->once())
+                    ->method('has_right_on_sbas')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->will($this->returnValue(true));
+            }
+        ]);
 
         $cgusUpdate = 'Test update CGUS';
 
@@ -199,7 +202,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/?success=1');
 
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
+        $databox = self::$DI['app']->findDataboxById(self::$DI['collection']->get_sbas_id());
         $cgus = $databox->get_cgus();
         $this->assertEquals($cgus['fr']['value'], $cgusUpdate);
         unset($databox);
@@ -391,7 +394,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
 
-        $this->assertTrue(!!self::$DI['app']['phraseanet.appbox']->is_databox_indexable(new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id())));
+        $this->assertTrue(!!self::$DI['app']->getApplicationBox()->is_databox_indexable(new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id())));
     }
 
     /**
@@ -459,7 +462,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->setAdmin(true);
 
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
+        $databox = self::$DI['app']->findDataboxById(self::$DI['collection']->get_sbas_id());
         $databox->set_viewname('old_databox_name');
 
         $this->assertEquals('old_databox_name', $databox->get_viewname());
@@ -475,7 +478,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
 
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
+        $databox = self::$DI['app']->findDataboxById(self::$DI['collection']->get_sbas_id());
         $this->assertEquals('new_databox_name', $databox->get_viewname());
     }
 
@@ -495,7 +498,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('sbas_id', $json);
 
         try {
-            self::$DI['app']['phraseanet.appbox']->get_databox((int) $json->sbas_id);
+            self::$DI['app']->findDataboxById((int) $json->sbas_id);
             $this->fail('Databox not deleted');
         } catch (NotFoundHttpException $e) {
 
@@ -518,7 +521,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         // delete mounted collection
         $sql = "DELETE FROM bas ORDER BY base_id DESC LIMIT 1";
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
         unset($stmt);
@@ -577,7 +580,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('sbas_id', $json);
 
         try {
-            self::$DI['app']['phraseanet.appbox']->get_databox((int) $json->sbas_id);
+            self::$DI['app']->findDataboxById((int) $json->sbas_id);
             $this->fail('Databox not unmounted');
         } catch (NotFoundHttpException $e) {
 

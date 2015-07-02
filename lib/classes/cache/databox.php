@@ -29,14 +29,14 @@ class cache_databox
 
         self::$refreshing = true;
 
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $databox = $app->findDataboxById((int) $sbas_id);
 
         $date = new \DateTime('-3 seconds');
 
         $last_update = null;
 
         try {
-            $last_update = $app['phraseanet.appbox']->get_data_from_cache('memcached_update_' . $sbas_id);
+            $last_update = $app->getApplicationBox()->get_data_from_cache('memcached_update_' . $sbas_id);
         } catch (\Exception $e) {
 
         }
@@ -101,8 +101,8 @@ class cache_databox
 
                     break;
                 case 'structure':
-                    $app['phraseanet.appbox']->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
-                    $app['phraseanet.appbox']->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
+                    $app->getApplicationBox()->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
+                    $app->getApplicationBox()->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
 
                     $sql = 'DELETE FROM memcached
               WHERE site_id = :site_id AND type="structure" AND value = :value';
@@ -122,9 +122,9 @@ class cache_databox
         $date = new \DateTime();
         $now = $date->format(DATE_ISO8601);
 
-        $app['phraseanet.appbox']->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
+        $app->getApplicationBox()->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
 
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
 
         $sql = 'UPDATE sitepreff SET memcached_update = :date';
         $stmt = $conn->prepare($sql);
@@ -144,7 +144,7 @@ class cache_databox
      */
     public static function update(Application $app, $sbas_id, $type, $value = '')
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $connbas = $databox->get_connection();
 
         $sql = 'SELECT distinct site_id as site_id

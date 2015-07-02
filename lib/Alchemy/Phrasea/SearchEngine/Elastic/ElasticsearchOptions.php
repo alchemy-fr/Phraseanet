@@ -9,7 +9,7 @@
  */
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-class GlobalElasticOptions
+class ElasticsearchOptions
 {
     /** @var string */
     private $host;

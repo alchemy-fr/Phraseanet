@@ -25,7 +25,7 @@ class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
         $this->authenticate(self::$DI['app']);
         $logger_creater = self::$DI['app']['phraseanet.logger'];
 
-        foreach (self::$DI['app']['acl']->get($user)->get_granted_sbas() as $databox) {
+        foreach (self::$DI['app']->getAclForUser($user)->get_granted_sbas() as $databox) {
             $this->object = $logger_creater($databox);
             $this->databox = $databox;
             break;
@@ -44,7 +44,7 @@ class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = [
             ':ses_id' => self::$DI['app']['session']->get('session_id')
-            , ':usr_id' => self::$DI['app']['authentication']->getUser()->getId()
+            , ':usr_id' => self::$DI['app']->getAuthenticatedUser()->getId()
             , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
         ];
 
@@ -56,7 +56,7 @@ class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
         $ses_id = self::$DI['app']['session']->get('session_id');
-        $usr_id = self::$DI['app']['authentication']->getUser()->getId();
+        $usr_id = self::$DI['app']->getAuthenticatedUser()->getId();
 
         $this->logout(self::$DI['app']);
 

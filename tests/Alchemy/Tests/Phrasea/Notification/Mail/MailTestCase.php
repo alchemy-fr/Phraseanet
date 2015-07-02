@@ -34,11 +34,6 @@ abstract class MailTestCase extends \PhraseanetTestCase
         $this->assertTrue(0 === stripos($this->getMail()->getButtonURL(), 'http://'), 'Checking that URL button points to an absolute URL');
     }
 
-    public function getApp()
-    {
-        return self::$DI['app'];
-    }
-
     public function getReceiverMock()
     {
         return $this->getMock('Alchemy\Phrasea\Notification\ReceiverInterface');

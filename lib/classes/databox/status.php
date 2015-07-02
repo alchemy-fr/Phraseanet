@@ -22,10 +22,10 @@ class databox_status
     public static function getSearchStatus(Application $app)
     {
         $see_all = $structures = $stats = [];
-        foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_sbas() as $databox) {
+        foreach ($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
             $see_all[$databox->get_sbas_id()] = false;
             foreach ($databox->get_collections() as $collection) {
-                if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }
@@ -58,7 +58,7 @@ class databox_status
 
     public static function deleteIcon(Application $app, $databox_id, $bit, $switch)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $app->findDataboxById($databox_id);
 
         $statusStructure = $app['factory.status-structure']->getStructure($databox);
 
@@ -88,7 +88,7 @@ class databox_status
 
     public static function updateIcon(Application $app, $databox_id, $bit, $switch, UploadedFile $file)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox = $app->findDataboxById($databox_id);
 
         $statusStructure = $app['factory.status-structure']->getStructure($databox);
 

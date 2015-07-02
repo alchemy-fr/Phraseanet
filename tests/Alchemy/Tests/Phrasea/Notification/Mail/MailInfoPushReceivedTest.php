@@ -22,7 +22,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
     public function testShouldThrowLogicExceptionsIfBasketNotSet()
     {
         $mail = MailInfoPushReceived::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -56,7 +56,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
     public function testShouldThrowLogicExceptionsIfPusherNotSet()
     {
         $mail = MailInfoPushReceived::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -89,7 +89,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailInfoPushReceived::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

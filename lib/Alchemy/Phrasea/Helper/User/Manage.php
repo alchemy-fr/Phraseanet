@@ -76,7 +76,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), ['canadmin'])
+            ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), ['canadmin'])
             ->execute();
 
         return $this->results->get_results();
@@ -114,7 +114,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), ['canadmin'])
+            ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), ['canadmin'])
             ->limit($offset_start, $results_quantity)
             ->execute();
 
@@ -198,8 +198,8 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid template name');
         }
 
-        $created_user = $this->app['manipulator.user']->createTemplate($name, $this->app['authentication']->getUser());
-        $this->usr_id = $this->app['authentication']->getUser()->getId();
+        $created_user = $this->app['manipulator.user']->createTemplate($name, $this->app->getAuthenticatedUser());
+        $this->usr_id = $this->app->getAuthenticatedUser()->getId();
 
         return $created_user;
     }

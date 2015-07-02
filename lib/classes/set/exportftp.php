@@ -39,7 +39,7 @@ class set_exportftp extends set_export
 
         $text_mail_receiver = "Bonjour,\n"
             . "L'utilisateur "
-            . $this->app['authentication']->getUser()->getDisplayName() . " (login : " . $this->app['authentication']->getUser()->getLogin() . ") "
+            . $this->app->getAuthenticatedUser()->getDisplayName() . " (login : " . $this->app->getAuthenticatedUser()->getLogin() . ") "
             . "a fait un transfert FTP sur le serveur ayant comme adresse \""
             . $host . "\" avec le login \"" . $login . "\"  "
             . "et pour repertoire de destination \""
@@ -58,10 +58,10 @@ class set_exportftp extends set_export
             ->setMail($email_dest)
             ->setLogfile($logfile)
             ->setFoldertocreate($makedirectory)
-            ->setUser($this->app['authentication']->getUser())
+            ->setUser($this->app->getAuthenticatedUser())
             ->setTextMailSender($text_mail_sender)
             ->setTextMailReceiver($text_mail_receiver)
-            ->setSendermail($this->app['authentication']->getUser()->getEmail())
+            ->setSendermail($this->app->getAuthenticatedUser()->getEmail())
             ->setDestfolder($destfolder)
             ->setPassif($passif == '1')
             ->setPwd($password)

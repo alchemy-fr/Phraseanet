@@ -14,7 +14,7 @@ class MailSuccessEmailUpdateTest extends MailTestCase
     public function getMail()
     {
         return MailSuccessEmailUpdate::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

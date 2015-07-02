@@ -38,7 +38,7 @@ class JsFixtures extends Command
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 
-        $sbasId = current($this->container['phraseanet.appbox']->get_databoxes())->get_sbas_id();
+        $sbasId = current($this->container->getDataboxes())->get_sbas_id();
         $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');
         $this->writeResponse($output, 'GET', '/admin/fields/'.$sbasId , '/admin/fields/index.html', true);
         $this->writeResponse($output, 'GET', '/admin/task-manager/tasks', '/admin/task-manager/index.html', true);
@@ -85,7 +85,7 @@ class JsFixtures extends Command
     {
         $user = $app['manipulator.user']->createUser(uniqid('fixturejs'), uniqid('fixturejs'), uniqid('fixturejs') . '@js.js', true);
 
-        $app['acl']->get($user)->set_admin(true);
+        $app->getAclForUser($user)->set_admin(true);
         $app['manipulator.acl']->resetAdminRights($user);
 
         return $user;
@@ -93,12 +93,12 @@ class JsFixtures extends Command
 
     private function loginUser(Application $app, User $user)
     {
-        $app['authentication']->openAccount($user);
+        $app->getAuthenticator()->openAccount($user);
     }
 
     private function logoutUser(Application $app)
     {
-        $app['authentication']->closeAccount();
+        $app->getAuthenticator()->closeAccount();
     }
 
     private function writeResponse(OutputInterface $output, $method, $path, $to, $authenticateUser = false)

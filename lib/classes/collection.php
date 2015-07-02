@@ -105,7 +105,7 @@ class collection implements cache_cacheableInterface
             'nl' => $row['label_nl'],
         ];
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT server_coll_id, sbas_id, base_id, active, ord FROM bas
             WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
@@ -164,9 +164,9 @@ class collection implements cache_cacheableInterface
 
     public function set_ord($ord)
     {
-        $this->app['phraseanet.appbox']->set_collection_order($this, $ord);
+        $this->app->getApplicationBox()->set_collection_order($this, $ord);
         $this->delete_data_from_cache();
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return $this;
     }
@@ -448,7 +448,7 @@ class collection implements cache_cacheableInterface
         if (! $sbas_id || ! $coll_id) {
             throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
         }
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
 
         return self::get_from_coll_id($app, $databox, $coll_id);
     }
@@ -541,19 +541,19 @@ class collection implements cache_cacheableInterface
         while ($n < $total) {
             $results = $query->limit($n, 50)->execute()->get_results();
             foreach ($results as $user) {
-                $app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
-                $app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
+                $app->getAclForUser($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
+                $app->getAclForUser($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
             }
             $n+=50;
         }
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -654,7 +654,7 @@ class collection implements cache_cacheableInterface
             "modify_struct"   => "1"
         ];
 
-        $this->app['acl']->get($user)->update_rights_to_base($base_id, $rights);
+        $this->app->getAclForUser($user)->update_rights_to_base($base_id, $rights);
 
         return true;
     }

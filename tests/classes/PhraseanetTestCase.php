@@ -271,6 +271,14 @@ abstract class PhraseanetTestCase extends WebTestCase
         self::$fixtureIds = $decodedFixtureIds;
     }
 
+    /**
+     * @return Application
+     */
+    public function getApplication()
+    {
+        return self::$DI['app'];
+    }
+
     public static function tearDownAfterClass()
     {
         gc_collect_cycles();
@@ -457,9 +465,9 @@ abstract class PhraseanetTestCase extends WebTestCase
         switch ($user->getId()) {
             case self::$fixtureIds['user']['test_phpunit']:
                 self::giveRightsToUser($app, $user);
-                $app['acl']->get($user)->set_admin(true);
-                $app['acl']->get($user)->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
-                $app['acl']->get($user)->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
+                $app->getAclForUser($user)->set_admin(true);
+                $app->getAclForUser($user)->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+                $app->getAclForUser($user)->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
                 break;
             case self::$fixtureIds['user']['user_1']:
             case self::$fixtureIds['user']['user_2']:
@@ -469,9 +477,9 @@ abstract class PhraseanetTestCase extends WebTestCase
             case self::$fixtureIds['user']['test_phpunit_alt2']:
             case self::$fixtureIds['user']['user_template']:
                 self::giveRightsToUser($app, $user);
-                $app['acl']->get($user)->set_admin(false);
-                $app['acl']->get($user)->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
-                $app['acl']->get($user)->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
+                $app->getAclForUser($user)->set_admin(false);
+                $app->getAclForUser($user)->revoke_access_from_bases([self::$DI['collection_no_access']->get_base_id()]);
+                $app->getAclForUser($user)->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000', '00000000000000000000000000010000');
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf('User %s not found', $user->getLogin()));
@@ -485,12 +493,12 @@ abstract class PhraseanetTestCase extends WebTestCase
      */
     public static function giveRightsToUser(Application $app, User $user, $base_ids = null, $force = false)
     {
-        $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
-        $app['acl']->get($user)->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
+        $app->getAclForUser($user)->delete_data_from_cache(\ACL::CACHE_GLOBAL_RIGHTS);
+        $app->getAclForUser($user)->delete_data_from_cache(databox::CACHE_COLLECTIONS);
+        $app->getAclForUser($user)->give_access_to_sbas(array_keys($app->getDataboxes()));
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-            $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
+        foreach ($app->getDataboxes() as $databox) {
+            $app->getAclForUser($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
 
             $rights = [
                 'bas_manage'        => '1'
@@ -499,7 +507,7 @@ abstract class PhraseanetTestCase extends WebTestCase
                 , 'bas_chupub'        => '1'
             ];
 
-            $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            $app->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
                 if (null !== $base_ids && !in_array($collection->get_base_id(), (array) $base_ids, true)) {
@@ -509,13 +517,13 @@ abstract class PhraseanetTestCase extends WebTestCase
                 $base_id = $collection->get_base_id();
 
 
-                if ($app['acl']->get($user)->has_access_to_base($base_id) && false === $force) {
+                if ($app->getAclForUser($user)->has_access_to_base($base_id) && false === $force) {
                     continue;
                 }
 
-                $app['acl']->get($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
-                $app['acl']->get($user)->give_access_to_base([$base_id]);
-                $app['acl']->get($user)->update_rights_to_base($base_id, ['order_master' => true]);
+                $app->getAclForUser($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
+                $app->getAclForUser($user)->give_access_to_base([$base_id]);
+                $app->getAclForUser($user)->update_rights_to_base($base_id, ['order_master' => true]);
 
                 $rights = [
                     'canputinalbum'     => '1'
@@ -538,7 +546,7 @@ abstract class PhraseanetTestCase extends WebTestCase
                     , 'bas_modify_struct' => '1'
                 ];
 
-                $app['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
+                $app->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);
             }
         }
     }
@@ -566,21 +574,22 @@ abstract class PhraseanetTestCase extends WebTestCase
      * @param Application $app
      * @param User        $user
      */
-    protected function authenticate(Application $app, $user = null)
+    protected function authenticate(Application $app, User $user = null)
     {
+        /** @var User $user */
         $user = $user ?: self::$DI['user'];
 
         $app['session']->clear();
-        $app['session']->set('usr_id', self::$DI['user']->getId());
+        $app['session']->set('usr_id', $user->getId());
         $session = new Session();
-        $session->setUser(self::$DI['user']);
+        $session->setUser($user);
         $session->setUserAgent('');
-        self::$DI['app']['orm.em']->persist($session);
-        self::$DI['app']['orm.em']->flush();
+        $app['orm.em']->persist($session);
+        $app['orm.em']->flush();
 
         $app['session']->set('session_id', $session->getId());
 
-        self::$DI['app']['authentication']->reinitUser();
+        $app->getAuthenticator()->reinitUser();
     }
 
     /**
@@ -591,7 +600,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function logout(Application $app)
     {
         $app['session']->clear();
-        self::$DI['app']['authentication']->reinitUser();
+        $app->getAuthenticator()->reinitUser();
     }
 
     protected function assertXMLHTTPBadJsonResponse(Response $response)

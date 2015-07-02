@@ -11,11 +11,9 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\ORM\EntityRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class NativeAuthentication implements PasswordAuthenticationInterface
@@ -26,10 +24,10 @@ class NativeAuthentication implements PasswordAuthenticationInterface
     private $encoder;
     /** @var OldPasswordEncoder */
     private $oldEncoder;
-    /** @var EntityRepository */
+    /** @var UserRepository */
     private $repository;
 
-    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, EntityRepository $repo)
+    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, UserRepository $repo)
     {
         $this->userManipulator = $userManipulator;
         $this->encoder = $encoder;
@@ -67,15 +65,5 @@ class NativeAuthentication implements PasswordAuthenticationInterface
         }
 
         return $user->getId();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return NativeAuthentication
-     */
-    public static function create(Application $app)
-    {
-        return new static($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['phraseanet.appbox']->get_connection());
     }
 }

@@ -153,7 +153,7 @@ class databox extends base
         } catch (\Exception $e) {
             $sql = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl
                 FROM sbas WHERE sbas_id = :sbas_id';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
             $stmt->execute(['sbas_id' => $this->id]);
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -188,12 +188,12 @@ class databox extends base
 
         $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':viewname' => $viewname, ':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache(static::CACHE_BASE_DATABOX);
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($this->app, $this->id, 'structure');
 
         $this->viewname = $viewname;
@@ -238,7 +238,7 @@ class databox extends base
 
         }
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
         $sql = "SELECT b.server_coll_id FROM sbas s, bas b
             WHERE s.sbas_id = b.sbas_id AND b.sbas_id = :sbas_id
@@ -296,7 +296,7 @@ class databox extends base
 
         $sql = "UPDATE sbas SET label_$code = :label
             WHERE sbas_id = :sbas_id";
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':label' => $label, ':sbas_id'   => $this->id]);
         $stmt->closeCursor();
 
@@ -477,9 +477,9 @@ class databox extends base
         while ($n < $total) {
             $results = $query->limit($n, 50)->execute()->get_results();
             foreach ($results as $user) {
-                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
-                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
-                $this->app['acl']->get($user)->delete_injected_rights_sbas($this);
+                $this->app->getAclForUser($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
+                $this->app->getAclForUser($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
+                $this->app->getAclForUser($user)->delete_injected_rights_sbas($this);
             }
             $n+=50;
         }
@@ -507,17 +507,17 @@ class databox extends base
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         return;
     }
@@ -639,7 +639,7 @@ class databox extends base
         ]);
         $conn->connect();
 
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $app->getApplicationBox()->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -663,12 +663,12 @@ class databox extends base
         $stmt->closeCursor();
         $sbas_id = (int) $conn->lastInsertId();
 
-        $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
+        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
@@ -772,7 +772,7 @@ class databox extends base
         $stmt->execute();
         $stmt->closeCursor();
 
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return;
     }
@@ -819,7 +819,7 @@ class databox extends base
     public function get_mountable_colls()
     {
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $colls = [];
 
         $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
@@ -862,7 +862,7 @@ class databox extends base
     public function get_activable_colls()
     {
         /** @var Connection $conn */
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
         $base_ids = [];
 
         $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
@@ -906,7 +906,7 @@ class databox extends base
 
         $this->meta_struct = null;
 
-        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->delete_data_from_cache(self::CACHE_STRUCTURE);
         $this->delete_data_from_cache(self::CACHE_META_STRUCT);
 
@@ -1036,9 +1036,9 @@ class databox extends base
      */
     public function registerAdmin(User $user)
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $conn = $this->app->getApplicationBox()->get_connection();
 
-        $this->app['acl']->get($user)
+        $this->app->getAclForUser($user)
             ->give_access_to_sbas([$this->id])
             ->update_rights_to_sbas(
                 $this->id, [
@@ -1073,9 +1073,9 @@ class databox extends base
         }
         $stmt->closeCursor();
 
-        $this->app['acl']->get($user)->give_access_to_base($base_ids);
+        $this->app->getAclForUser($user)->give_access_to_base($base_ids);
         foreach ($base_ids as $base_id) {
-            $this->app['acl']->get($user)->update_rights_to_base($base_id, [
+            $this->app->getAclForUser($user)->update_rights_to_base($base_id, [
                 'canpush'         => 1, 'cancmd'          => 1
                 , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
                 , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1

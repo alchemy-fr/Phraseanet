@@ -20,7 +20,7 @@ class MailInfoNewOrderTest extends MailTestCase
     public function testShouldThrowALogicExceptionIfNoUserProvided()
     {
         $mail =  MailInfoNewOrder::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -37,7 +37,7 @@ class MailInfoNewOrderTest extends MailTestCase
     public function getMail()
     {
         $mail =  MailInfoNewOrder::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

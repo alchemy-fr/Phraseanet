@@ -108,7 +108,7 @@ class BuildSubdefs extends Command
 
         list($sqlCount, $stmtParams) = SQLParserUtils::expandListParameters($sqlCount, $params, $types);
 
-        $databox = $this->container['phraseanet.appbox']->get_databox($input->getArgument('databox'));
+        $databox = $this->container->findDataboxById($input->getArgument('databox'));
 
         $connection = $databox->get_connection();
         $stmt = $connection->prepare($sqlCount);

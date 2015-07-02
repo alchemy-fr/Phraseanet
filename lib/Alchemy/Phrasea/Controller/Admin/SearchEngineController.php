@@ -11,8 +11,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchSettingFormType;
-use Alchemy\Phrasea\SearchEngine\Elastic\GlobalElasticOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchSettingsFormType;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +25,7 @@ class SearchEngineController extends Controller
      */
     public function formConfigurationPanelAction(Request $request)
     {
-        $options = $this->getElasticSearchOptions();
+        $options = $this->getElasticsearchOptions();
         $form = $this->getConfigurationForm($options);
 
         $form->handleRequest($request);
@@ -42,29 +42,29 @@ class SearchEngineController extends Controller
     }
 
     /**
-     * @return GlobalElasticOptions
+     * @return ElasticsearchOptions
      */
-    private function getElasticSearchOptions()
+    private function getElasticsearchOptions()
     {
         return $this->app['elasticsearch.options'];
     }
 
     /**
-     * @param GlobalElasticOptions $configuration
+     * @param ElasticsearchOptions $configuration
      * @return void
      */
-    private function saveElasticSearchOptions(GlobalElasticOptions $configuration)
+    private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
     {
         $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
     }
 
     /**
-     * @param GlobalElasticOptions $options
+     * @param ElasticsearchOptions $options
      * @return FormInterface
      */
-    private function getConfigurationForm(GlobalElasticOptions $options)
+    private function getConfigurationForm(ElasticsearchOptions $options)
     {
-        return $this->app->form(new ElasticSearchSettingFormType(), $options, [
+        return $this->app->form(new ElasticsearchSettingsFormType(), $options, [
             'action' => $this->app->url('admin_searchengine_form'),
         ]);
     }

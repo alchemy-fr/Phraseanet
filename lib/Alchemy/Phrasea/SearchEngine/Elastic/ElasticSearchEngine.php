@@ -396,11 +396,11 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createACLFilters()
     {
         // No ACLs if no user
-        if (false === $this->app['authentication']->isAuthenticated()) {
+        if (false === $this->app->getAuthenticator()->isAuthenticated()) {
             return [];
         }
 
-        $acl = $this->app['acl']->get($this->app['authentication']->getUser());
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
         $grantedCollections = array_keys($acl->get_granted_base(['actif']));
 

@@ -85,7 +85,7 @@ class record_exportElement extends record_adapter
 
         $sbas_id = phrasea::sbasFromBas($this->app, $this->base_id);
 
-        $subdefgroups = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_subdef_structure();
+        $subdefgroups = $this->app->findDataboxById($sbas_id)->get_subdef_structure();
 
         $subdefs = [];
 
@@ -102,17 +102,17 @@ class record_exportElement extends record_adapter
             'thumbnail' => true
         ];
 
-        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'candwnldhd')) {
+        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'candwnldhd')) {
             $go_dl['document'] = true;
         }
-        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->get_base_id(), 'candwnldpreview')) {
+        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'candwnldpreview')) {
             $go_dl['preview'] = true;
         }
-        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_hd_grant($this)) {
+        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_hd_grant($this)) {
             $go_dl['document'] = true;
             $go_dl['preview'] = true;
         }
-        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_preview_grant($this)) {
+        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_preview_grant($this)) {
             $go_dl['preview'] = true;
         }
 
@@ -122,14 +122,14 @@ class record_exportElement extends record_adapter
                 ->who_have_right(['order_master'])
                 ->execute()->get_results();
 
-        $go_cmd = (count($masters) > 0 && $this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->base_id, 'cancmd'));
+        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->base_id, 'cancmd'));
 
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
         if (isset($sd['document']) && is_file($sd['document']->get_pathfile())) {
             if ($go_dl['document'] === true) {
-                if ($this->app['acl']->get($this->app['authentication']->getUser())->is_restricted_download($this->base_id)) {
+                if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->base_id)) {
                     $this->remain_hd --;
                     if ($this->remain_hd >= 0) {
                         $localizedLabel = $this->app->trans('document original');
@@ -183,7 +183,7 @@ class record_exportElement extends record_adapter
                 if (isset($sd[$name]) && $sd[$name]->is_physically_present()) {
                     if ($class == 'document') {
 
-                        if ($this->app['acl']->get($this->app['authentication']->getUser())->is_restricted_download($this->base_id)) {
+                        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->base_id)) {
                             $this->remain_hd --;
                             if ($this->remain_hd >= 0)
                                 $downloadable[$name] = [

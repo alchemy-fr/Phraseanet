@@ -118,11 +118,11 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetRecordDetailResult()
     {
-        $this->authenticate(self::$DI['app']);
-        self::$DI['record_1'];
+        $app = $this->mockElasticsearchResult(self::$DI['record_1']);
+        $this->authenticate($app);
 
         $options = new SearchEngineOptions();
-        $acl = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser());
+        $acl = $app->getAclForUser($app->getAuthenticatedUser());
         $options->onCollections($acl->get_granted_base());
         $serializedOptions = $options->serialize();
 

@@ -39,26 +39,26 @@ class WorkZone extends Helper
 
         $ret = new ArrayCollection();
 
-        $baskets = $repo_baskets->findActiveByUser($this->app['authentication']->getUser(), $sort);
+        $baskets = $repo_baskets->findActiveByUser($this->app->getAuthenticatedUser(), $sort);
 
         // force creation of a default basket
         if (0 === count($baskets)) {
             $basket = new BasketEntity();
 
             $basket->setName($this->app->trans('Default basket'));
-            $basket->setUser($this->app['authentication']->getUser());
+            $basket->setUser($this->app->getAuthenticatedUser());
 
             $this->app['orm.em']->persist($basket);
             $this->app['orm.em']->flush();
             $baskets = [$basket];
         }
 
-        $validations = $repo_baskets->findActiveValidationByUser($this->app['authentication']->getUser(), $sort);
+        $validations = $repo_baskets->findActiveValidationByUser($this->app->getAuthenticatedUser(), $sort);
 
         /* @var $repo_stories Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
         $repo_stories = $this->app['repo.story-wz'];
 
-        $stories = $repo_stories->findByUser($this->app, $this->app['authentication']->getUser(), $sort);
+        $stories = $repo_stories->findByUser($this->app, $this->app->getAuthenticatedUser(), $sort);
 
         $ret->set(self::BASKETS, $baskets);
         $ret->set(self::VALIDATIONS, $validations);

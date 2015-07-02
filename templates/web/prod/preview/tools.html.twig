@@ -1,5 +1,5 @@
 
-{% if (record.is_from_basket is empty) and app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canputinalbum') %}
+{% if (record.is_from_basket is empty) and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'canputinalbum') %}
   <div sbas="{{record.get_sbas_id()}}" id="PREV_BASKADD_{{record.get_serialize_key}}"
        class="baskAdder" title="{{ 'action : ajouter au panier' | trans }}"
        onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);"></div>
@@ -17,7 +17,7 @@
   <div class="printer" title="'{{ 'action : print' | trans }}"
        onclick="evt_print('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);"></div>
 
-{% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldhd') or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'candwnldhd') or app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
     <div class="downloader" title="{{ 'action : exporter' | trans }}"
     onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);"></div>
 {% endif %}

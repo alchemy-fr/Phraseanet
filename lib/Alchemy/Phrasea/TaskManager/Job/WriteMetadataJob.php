@@ -69,7 +69,7 @@ class WriteMetadataJob extends AbstractJob
         // move this in service provider configuration
         // $app['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach ($app->getDataboxes() as $databox) {
 
             $conn = $databox->get_connection();
             $metaSubdefs = [];

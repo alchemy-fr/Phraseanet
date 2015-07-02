@@ -75,7 +75,7 @@ class RecordMoverJob extends AbstractJob
     private function processData(Application $app, $row, $logsql)
     {
         /** @var databox $databox */
-        $databox = $app['phraseanet.appbox']->get_databox($row['sbas_id']);
+        $databox = $app->findDataboxById($row['sbas_id']);
         $rec = $databox->get_record($row['record_id']);
 
         switch ($row['action']) {
@@ -145,7 +145,7 @@ class RecordMoverJob extends AbstractJob
 
             try {
                 /** @var databox $databox */
-                $databox = $app['phraseanet.appbox']->get_databox($task['sbas_id']);
+                $databox = $app->findDataboxById($task['sbas_id']);
             } catch (\Exception $e) {
                 $this->log('error', sprintf("can't connect sbas %s", $task['sbas_id']));
                 continue;
@@ -207,7 +207,7 @@ class RecordMoverJob extends AbstractJob
 
         try {
             /** @var databox $dbox */
-            $dbox = $app['phraseanet.appbox']->get_databox($sbas_id);
+            $dbox = $app->findDataboxById($sbas_id);
 
             $ret['basename'] = $dbox->get_label($app['locale']);
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
@@ -351,7 +351,7 @@ class RecordMoverJob extends AbstractJob
     private function playTest(Application $app, $sbas_id, $sql)
     {
         /** @var databox $databox */
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
@@ -374,7 +374,7 @@ class RecordMoverJob extends AbstractJob
     {
         $err = "";
         /** @var databox $databox */
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         /** @var Connection $connbas */
         $connbas = $databox->get_connection();
 

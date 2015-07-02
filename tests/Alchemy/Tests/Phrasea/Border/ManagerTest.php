@@ -386,7 +386,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $file->addAttribute(new Metadata($monoData));
         $file->addAttribute(new Metadata($multiData));
 
-        $application = self::$DI['app'];
+        $application = $this->getApplication();
 
         $postProcess = function ($element, $visa, $code) use ($application) {
             $this->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);

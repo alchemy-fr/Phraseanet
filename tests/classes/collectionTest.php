@@ -23,7 +23,7 @@ class collectionTest extends \PhraseanetTestCase
         parent::setup();
 
         if (!self::$object) {
-            if (0 === count($databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes())) {
+            if (0 === count($databoxes = self::$DI['app']->getDataboxes())) {
                 $this->fail('No databox found for collection test');
             }
 
@@ -68,7 +68,7 @@ class collectionTest extends \PhraseanetTestCase
         $this->assertFalse(self::$object->is_active());
 
         $sbas_id = self::$object->get_databox()->get_sbas_id();
-        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = self::$DI['app']->findDataboxById($sbas_id);
 
         foreach ($databox->get_collections() as $collection) {
             $this->assertTrue($collection->get_base_id() !== $base_id);

@@ -208,7 +208,7 @@ class RecordsRequest extends ArrayCollection
 
         if ($request->get('ssel')) {
             $basket = $app['converter.basket']->convert($request->get('ssel'));
-            $app['acl.basket']->hasAccess($basket, $app['authentication']->getUser());
+            $app['acl.basket']->hasAccess($basket, $app->getAuthenticatedUser());
 
             foreach ($basket->getElements() as $basket_element) {
                 $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
@@ -217,7 +217,7 @@ class RecordsRequest extends ArrayCollection
             $repository = $app['repo.story-wz'];
 
             $storyWZ = $repository->findByUserAndId(
-                $app, $app['authentication']->getUser()
+                $app, $app->getAuthenticatedUser()
                 , $request->get('story')
             );
 
@@ -243,20 +243,20 @@ class RecordsRequest extends ArrayCollection
         $to_remove = [];
 
         foreach ($elements as $id => $record) {
-            if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_record($record)) {
+            if (!$app->getAclForUser($app->getAuthenticatedUser())->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$app->getAclForUser($app->getAuthenticatedUser())->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }

@@ -88,7 +88,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testNoPersistentCookie()
     {
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $this->logout($app);
 
         $boolean = false;
@@ -107,7 +107,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPersistentCookie()
     {
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $this->logout(self::$DI['app']);
 
         $browser = $this->getMockBuilder('\Browser')

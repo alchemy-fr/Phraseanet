@@ -225,7 +225,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostResetMailBadEmail()
     {
         $password = self::$DI['app']['random.low']->generateString(8);
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
@@ -245,7 +245,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     public function testPostResetMailEmailNotIdentical()
     {
         $password = self::$DI['app']['random.low']->generateString(8);
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
         self::$DI['client']->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -268,7 +268,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         $password = self::$DI['app']['random.low']->generateString(8);
         self::$DI['app']['manipulator.user']->setPassword(
-            self::$DI['app']['authentication']->getUser(),
+            self::$DI['app']->getAuthenticatedUser(),
             $password
         );
         self::$DI['client']->request('POST', '/account/reset-email/', [
@@ -358,7 +358,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $bases = $notifs = [];
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $bases[] = $collection->get_base_id();
             }
@@ -368,7 +368,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             $this->markTestSkipped('No collections');
         }
 
-        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['authentication']->getUser()) as $notifications) {
+        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']->getAuthenticatedUser()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -403,10 +403,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
+        $this->assertEquals('minet', self::$DI['app']->getAuthenticatedUser()->getLastName());
 
         $rs = self::$DI['app']['orm.em']->getRepository('Phraseanet:Registration')->findBy([
-            'user' => self::$DI['app']['authentication']->getUser()->getId(),
+            'user' => self::$DI['app']->getAuthenticatedUser()->getId(),
             'pending' => true
         ]);
 
@@ -470,7 +470,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm)
     {
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $oldPassword);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $oldPassword);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
             'password' => [
@@ -507,7 +507,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = self::$DI['app']['random.low']->generateString(8);
 
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
             'password' => [
@@ -527,7 +527,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = self::$DI['app']['random.low']->generateString(8);
 
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']['authentication']->getUser(), $password);
+        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
 
         self::$DI['client']->request('POST', '/account/reset-password/', [
             'password' => [

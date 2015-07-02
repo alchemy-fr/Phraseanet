@@ -56,7 +56,7 @@ class patch_390alpha9a extends patchAbstract
     private function updateRegistry(Application $app)
     {
         $sql = 'SELECT `value` FROM registry WHERE `key` = :key';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':key' => 'GV_default_lng']);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -64,7 +64,7 @@ class patch_390alpha9a extends patchAbstract
         $locale = null !== $row ? $row['value'] : 'fr';
 
         $sql = 'UPDATE registry SET `value` = :value WHERE `key` = :key';
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':key' => 'GV_default_lng', ':value' => $this->extractLocale($locale)]);
         $stmt->closeCursor();
     }

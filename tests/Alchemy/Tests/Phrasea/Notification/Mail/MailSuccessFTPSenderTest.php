@@ -20,7 +20,7 @@ class MailSuccessFTPSenderTest extends MailTestCase
     public function testThatALgicExceptionIsThrownIfNoServerSet()
     {
         $mail = MailSuccessFTPSender::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -37,7 +37,7 @@ class MailSuccessFTPSenderTest extends MailTestCase
     public function getMail()
     {
         $mail = MailSuccessFTPSender::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

@@ -11,12 +11,12 @@ class ACLManipulatorTest extends \PhraseanetTestCase
     public function testResetAdminRights()
     {
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('toto'), 'toto', null, true);
-        $acl = self::$DI['app']['acl']->get($user);
+        $acl = self::$DI['app']->getAclForUser($user);
 
         $databoxId = null;
         $baseId = null;
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
 
             $acl->update_rights_to_sbas($databoxId, [
@@ -59,7 +59,7 @@ class ACLManipulatorTest extends \PhraseanetTestCase
         self::$DI['app']['manipulator.acl']->resetAdminRights($user);
 
         self::$DI['app']['acl']->purge();
-        $acl = self::$DI['app']['acl']->get($user);
+        $acl = self::$DI['app']->getAclForUser($user);
 
         if ($baseId === null) {
             $this->fail("Need at least one collection");

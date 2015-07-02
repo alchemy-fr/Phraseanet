@@ -119,8 +119,8 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
             return null;
         }
 
-        if ($app['authentication']->isAuthenticated()) {
-            $app['authentication']->closeAccount();
+        if ($app->getAuthenticator()->isAuthenticated()) {
+            $app->getAuthenticator()->closeAccount();
         }
 
         if (null === $token = $app['repo.tokens']->findValidToken($request->query->get('LOG'))) {
@@ -130,7 +130,7 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
         }
 
         /** @var Token $token */
-        $app['authentication']->openAccount($token->getUser());
+        $app->getAuthenticator()->openAccount($token->getUser());
 
         switch ($token->getType()) {
             case TokenManipulator::TYPE_FEED_ENTRY:

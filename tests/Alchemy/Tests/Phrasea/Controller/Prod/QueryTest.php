@@ -2,9 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-namespace Alchemy\Phrasea\Controller\Prod;
-
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Prophecy\Argument;
 
 /**
  * @group functional
@@ -42,11 +41,11 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testQueryAnswerTrain()
     {
-        $this->authenticate(self::$DI['app']);
-        self::$DI['record_2'];
+        $app = $this->mockElasticsearchResult(self::$DI['record_2']);
+        $this->authenticate($app);
 
         $options = new SearchEngineOptions();
-        $options->onCollections(self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->get_granted_base());
+        $options->onCollections($app->getAclForUser($app->getAuthenticatedUser())->get_granted_base());
         $serializedOptions = $options->serialize();
 
         self::$DI['client']->request('POST', '/prod/query/answer-train/', [

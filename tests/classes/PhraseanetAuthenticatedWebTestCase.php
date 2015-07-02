@@ -1,94 +1,89 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\DBALException;
-use Silex\Application;
+use Prophecy\Argument;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
-    protected $StubbedACL;
     private static $createdDataboxes = [];
 
-    public function setUp()
+    /**
+     * @param bool  $bool
+     * @param array $stubs List of Closure to call indexed by method names, null to avoid calls
+     * @return PHPUnit_Framework_MockObject_MockObject The stubbedACL
+     */
+    public function setAdmin($bool, array $stubs = [])
     {
-        parent::setUp();
+        $stubbedACL = $this->stubACL();
+        $stubs = array_filter(array_replace($this->getDefaultStubs(), $stubs));
 
-        $this->StubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        foreach ($stubs as $method => $stub) {
+            call_user_func($stub, $stubbedACL, $method, $bool);
+        }
+
+        return $stubbedACL;
     }
 
-    public function setAdmin($bool)
+    protected function getDefaultStubs()
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->setMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        static $stubs;
 
-        $this->StubbedACL->expects($this->any())
-            ->method('is_admin')
-            ->will($this->returnValue($bool));
+        if (is_array($stubs)) {
+            return $stubs;
+        }
 
-        $this->StubbedACL->expects($this->any())
-            ->method('give_access_to_sbas')
-            ->will($this->returnValue($this->StubbedACL));
+        $returnBool = function (PHPUnit_Framework_MockObject_MockObject $acl, $method, $is_admin) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnValue($is_admin));
+        };
 
-        $this->StubbedACL->expects($this->any())
-            ->method('update_rights_to_sbas')
-            ->will($this->returnValue($this->StubbedACL));
+        $returnSelf = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnSelf());
+        };
 
-        $this->StubbedACL->expects($this->any())
-            ->method('update_rights_to_bas')
-            ->will($this->returnValue($this->StubbedACL));
+        $stubGrantedBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnValue([self::$DI['collection']]));
+        };
+        $stubGrantedSBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
+            $acl->expects($this->any())
+                ->method($method)
+                ->will($this->returnValue([self::$DI['collection']->get_databox()]));
+        };
 
-        $this->StubbedACL->expects($this->any())
-            ->method('has_right_on_base')
-            ->will($this->returnValue($bool));
+        $stubs = [
+            'is_admin' => $returnBool,
+            'give_access_to_sbas' => $returnSelf,
+            'update_rights_to_sbas' => $returnSelf,
+            'update_rights_to_bas' => $returnSelf,
+            'has_right_on_base' => $returnBool,
+            'has_right_on_sbas' => $returnBool,
+            'has_access_to_sbas' => $returnBool,
+            'has_access_to_base' => $returnBool,
+            'has_right' => $returnBool,
+            'has_access_to_module' => $returnBool,
+            'get_granted_base' => $stubGrantedBase,
+            'get_granted_sbas' => $stubGrantedSBase,
+        ];
 
-        $this->StubbedACL->expects($this->any())
-            ->method('has_right_on_sbas')
-            ->will($this->returnValue($bool));
-
-        $this->StubbedACL->expects($this->any())
-            ->method('has_access_to_sbas')
-            ->will($this->returnValue($bool));
-
-        $this->StubbedACL->expects($this->any())
-            ->method('has_access_to_base')
-            ->will($this->returnValue($bool));
-
-        $this->StubbedACL->expects($this->any())
-            ->method('has_right')
-            ->will($this->returnValue($bool));
-
-        $this->StubbedACL->expects($this->any())
-            ->method('has_access_to_module')
-            ->will($this->returnValue($bool));
-
-        $this->StubbedACL->expects($this->any())
-            ->method('get_granted_base')
-            ->will($this->returnValue([self::$DI['collection']]));
-
-        $this->StubbedACL->expects($this->any())
-            ->method('get_granted_sbas')
-            ->will($this->returnValue([self::$DI['collection']->get_databox()]));
-
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($this->StubbedACL));
-
-        self::$DI['app']['acl'] = $aclProvider;
+        return $stubs;
     }
 
     public function createDatabox()
     {
         $this->createDatabase();
 
-        $app = self::$DI['app'];
+        $app = $this->getApplication();
         $info = $app['phraseanet.configuration']['main']['database'];
 
         try {
@@ -119,32 +114,32 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             , 'bas_chupub'        => '1'
         ];
 
-        $app['acl']->get($app['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        $app->getAclForUser($app->getAuthenticatedUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
-        $databox->registerAdmin($app['authentication']->getUser());
+        $databox->registerAdmin($app->getAuthenticatedUser());
 
         return $databox;
     }
 
-    public static function dropDatabase()
+    public function dropDatabase()
     {
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
+        $app = $this->getApplication();
+        $connection = $app->getApplicationBox()->get_connection();
+        $stmt = $connection->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
         $stmt->execute();
         $stmt->closeCursor();
-        $stmt = self::$DI['app']['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
+        $stmt = $connection->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
         $stmt->execute();
         $stmt->closeCursor();
     }
 
     protected function createDatabase()
     {
-        self::dropDatabase();
+        $this->dropDatabase();
 
-        $stmt = self::$DI['app']['phraseanet.appbox']
+        $app = $this->getApplication();
+        $stmt = $app
+            ->getApplicationBox()
             ->get_connection()
             ->prepare('CREATE DATABASE `unit_test_db`
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');
@@ -195,5 +190,41 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         }
 
         $this->assertEquals($quantity, count($app['session']->getFlashBag()->get($flashType)));
+    }
+
+    /**
+     * @param \record_adapter $record
+     * @return \Alchemy\Phrasea\Application
+     */
+    protected function mockElasticsearchResult(\record_adapter $record)
+    {
+        $app = $this->getApplication();
+
+        $elasticsearchRecord = new ElasticsearchRecord();
+        $elasticsearchRecord->setDataboxId($record->get_sbas_id());
+        $elasticsearchRecord->setRecordId($record->get_record_id());
+
+        $result = new SearchEngineResult(
+            new ArrayCollection([$elasticsearchRecord]), // Records
+            '', // Query
+            0, // Duration
+            0, // offsetStart
+            1, // available
+            1, // total
+            0, // warning
+            0, // error
+            new ArrayCollection(), // suggestions
+            null, // propositions
+            null // indexes
+        );
+
+        $searchEngine = $this->prophesize(SearchEngineInterface::class);
+        $searchEngine->query('', 0, Argument::any(), Argument::any())
+            ->willReturn($result);
+        $searchEngine->excerpt(Argument::any(), Argument::any(), Argument::any(), Argument::any())
+            ->willReturn([]);
+
+        $app['search_engine'] = $searchEngine->reveal();
+        return $app;
     }
 }

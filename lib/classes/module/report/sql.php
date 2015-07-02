@@ -39,8 +39,8 @@ class module_report_sql
 
     public function __construct(Application $app, module_report $report)
     {
-        $this->conn = $app['phraseanet.appbox']->get_connection();
-        $this->connbas = $app['phraseanet.appbox']->get_databox($report->getSbasId())->get_connection();
+        $this->conn = $app->getApplicationBox()->get_connection();
+        $this->connbas = $app->findDataboxById($report->getSbasId())->get_connection();
         $this->filter = new module_report_sqlfilter($app, $report);
         $this->sql = '';
         $this->params = [];

@@ -24,7 +24,7 @@ class Datafiles implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.datafiles'] = $app->share(function (PhraseaApplication $app) {
-            return (new DatafileController($app, $app['phraseanet.appbox'], $app['acl'], $app['authentication']))
+            return (new DatafileController($app, $app->getApplicationBox(), $app['acl'], $app->getAuthenticator()))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
             ;
@@ -40,7 +40,7 @@ class Datafiles implements ControllerProviderInterface, ServiceProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function (Request $request) use ($app) {
-            if (!$app['authentication']->isAuthenticated()) {
+            if (!$app->getAuthenticator()->isAuthenticated()) {
                 $app->abort(403, sprintf('You are not authorized to access %s', $request->getRequestUri()));
             }
         });

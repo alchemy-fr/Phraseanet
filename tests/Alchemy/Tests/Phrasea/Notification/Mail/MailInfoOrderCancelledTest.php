@@ -25,7 +25,7 @@ class MailInfoOrderCancelledTest extends MailTestCase
     public function testShouldThrowALogicExceptionIfNoQuantityProvided()
     {
         $mail = MailInfoOrderCancelled::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -49,7 +49,7 @@ class MailInfoOrderCancelledTest extends MailTestCase
     public function testShouldThrowALogicExceptionIfNoDelivererProvided()
     {
         $mail = MailInfoOrderCancelled::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()
@@ -68,7 +68,7 @@ class MailInfoOrderCancelledTest extends MailTestCase
     public function getMail()
     {
         $mail = MailInfoOrderCancelled::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage()

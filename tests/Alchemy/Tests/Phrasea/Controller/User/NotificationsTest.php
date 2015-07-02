@@ -71,7 +71,7 @@ class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock());
 
-        self::$DI['app']['authentication']->getUser()->expects($this->once())
+        self::$DI['app']->getAuthenticatedUser()->expects($this->once())
             ->method('isGuest')
             ->will($this->returnValue(true));
 

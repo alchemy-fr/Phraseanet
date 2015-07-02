@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Security;
 
-use Silex\Application;
+use Alchemy\Phrasea\Application;
 use Silex\Controller;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,7 +41,7 @@ class Firewall
     {
         $this->requireNotGuest();
 
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->is_admin()) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->is_admin()) {
             $this->app->abort(403, 'Admin role is required');
         }
 
@@ -50,7 +50,7 @@ class Firewall
 
     public function requireAccessToModule($module)
     {
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_module($module)) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_access_to_module($module)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -59,7 +59,7 @@ class Firewall
 
     public function requireAccessToSbas($sbas_id)
     {
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_sbas($sbas_id)) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_access_to_sbas($sbas_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -68,7 +68,7 @@ class Firewall
 
     public function requireAccessToBase($base_id)
     {
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_base($base_id)) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_access_to_base($base_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -77,7 +77,7 @@ class Firewall
 
     public function requireRight($right)
     {
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right($right)) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right($right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -86,7 +86,7 @@ class Firewall
 
     public function requireRightOnBase($base_id, $right)
     {
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($base_id, $right)) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($base_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -95,7 +95,7 @@ class Firewall
 
     public function requireRightOnSbas($sbas_id, $right)
     {
-        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_sbas($sbas_id, $right)) {
+        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbas_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -104,7 +104,7 @@ class Firewall
 
     public function requireNotGuest()
     {
-        if ($this->app['authentication']->getUser()->isGuest()) {
+        if ($this->app->getAuthenticatedUser()->isGuest()) {
             $this->app->abort(403, 'Guests do not have admin role');
         }
 
@@ -117,7 +117,7 @@ class Firewall
         if (null !== $request) {
             $params['redirect'] = '..' . $request->getPathInfo().'?'.$request->getQueryString();
         }
-        if (!$this->app['authentication']->isAuthenticated()) {
+        if (!$this->app->getAuthenticator()->isAuthenticated()) {
             return new RedirectResponse($this->app->path('homepage', $params));
         }
     }
@@ -139,14 +139,14 @@ class Firewall
 
     public function requireNotAuthenticated()
     {
-        if ($this->app['authentication']->isAuthenticated()) {
+        if ($this->app->getAuthenticator()->isAuthenticated()) {
             return new RedirectResponse($this->app->path('prod'));
         }
     }
 
     public function requireOrdersAdmin()
     {
-        if (false === !!count($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['order_master']))) {
+        if (false === !!count($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['order_master']))) {
             $this->app->abort(403, 'You are not an order admin');
         }
 

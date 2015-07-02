@@ -6,7 +6,7 @@
     <div class="controls">
         <select class="formElem" name="base_id">
             <option value="">...</option>
-            {% for databox in app['phraseanet.appbox'].get_databoxes() %}
+            {% for databox in app.getApplicationBox().get_databoxes() %}
                 {% for collection in databox.get_collections() %}
                     <option value="{{ collection.get_base_id() }}">{{ databox.get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}</option>
                 {% endfor %}

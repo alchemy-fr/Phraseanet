@@ -258,69 +258,6 @@ class module_report_activity extends module_report
         return $this->report;
     }
 
-    // =========================== not called ? =====================
-    /**
-     * @desc get all downloads from one specific user
-     * @param $usr user id
-     * @param  array $config config for the html table
-     * @return array
-     */
-/*
-    public function getAllDownloadByUserBase($usr, $config = false)
-    {
-        $result = [];
-        $sqlBuilder = new module_report_sql($this->app, $this);
-        $filter = $sqlBuilder->getFilters()->getReportFilter();
-        $params = array_merge([], $filter['params']);
-        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
-
-        $sql = "
-            SELECT log_docs.record_id, log_docs.date, log_docs.final AS objets
-            FROM (`log_docs`)
-            INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            INNER JOIN record ON (log_docs.record_id = record.record_id)
-            WHERE (". $filter['sql'] .") AND log_docs.action = 'download'
-            ORDER BY date DESC";
-
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $sqlBuilder->setTotalrows($stmt->rowCount());
-        $stmt->closeCursor();
-
-        $sql .= $sqlBuilder->getFilters()->getLimitFilter() ?: '';
-
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $login = $this->app['repo.users']->find($usr)->getDisplayName();
-
-        $this->setChamp($rs);
-
-        $config ? $this->setConfigColumn($config) : $this->initDefaultConfigColumn($this->champ);
-
-        $i = 0;
-        foreach ($rs as $row) {
-            $record = $databox->get_record($row['record_id']);
-
-            foreach ($this->champ as $value) {
-                $result[$i][$value] = $row[$value];
-            }
-
-            $result[$i]['titre'] = $record->get_title();
-            $i ++;
-        }
-
-        $this->title = $this->app->trans('report:: Telechargement effectue par l\'utilisateur %name%', ['%name%' => $login]);
-
-        $this->setResult($result);
-
-        return $this->result;
-    }
-*/
-
     // ============================ Downloads : Daily ==========================
     /**
      * @desc get all download by base by day
@@ -620,7 +557,7 @@ class module_report_activity extends module_report
     // ========================== ???????????????? ===========================
     public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $result['top_ten_doc'] = [];
@@ -715,7 +652,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $res = [];
         $datefilter =
@@ -771,7 +708,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activityDay(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = array();
         $res = array();
@@ -824,7 +761,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -877,7 +814,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -933,7 +870,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteTopTenSiteView(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
@@ -991,7 +928,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteAddedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
@@ -1040,7 +977,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteEditedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');
@@ -1089,7 +1026,7 @@ class module_report_activity extends module_report
     //============================= Dashboard =========================
     public static function activiteAddedTopTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
         $result = [];
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, 'log_docs.date');

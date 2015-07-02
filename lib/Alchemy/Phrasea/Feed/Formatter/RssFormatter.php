@@ -182,7 +182,7 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
         if ($feed->isPublic()) {
             $link = $app['feed.link-generator-collection']->generatePublic($feed, FeedLinkGenerator::FORMAT_RSS);
         } else {
-            $link = $app['feed.link-generator-collection']->generate($feed, $app['authentication']->getUser(), FeedLinkGenerator::FORMAT_RSS);
+            $link = $app['feed.link-generator-collection']->generate($feed, $app->getAuthenticatedUser(), FeedLinkGenerator::FORMAT_RSS);
         }
 
         $this->addTag($document, $item, 'title', $entry->getTitle());

@@ -98,8 +98,8 @@ class Session_Logger
     {
         $colls = [];
 
-        if ($app['authentication']->getUser()) {
-            $bases = $app['acl']->get($app['authentication']->getUser())->get_granted_base([], [$databox->get_sbas_id()]);
+        if ($app->getAuthenticatedUser()) {
+            $bases = $app->getAclForUser($app->getAuthenticatedUser())->get_granted_base([], [$databox->get_sbas_id()]);
             foreach ($bases as $collection) {
                 $colls[] = $collection->get_coll_id();
             }
@@ -118,9 +118,9 @@ class Session_Logger
 
         $params = [
             ':ses_id'          => $app['session']->get('session_id'),
-            ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->getLogin() : null,
+            ':usr_login'       => $app->getAuthenticatedUser() ? $app->getAuthenticatedUser()->getLogin() : null,
             ':site_id'         => $app['conf']->get(['main', 'key']),
-            ':usr_id'          => $app['authentication']->isAuthenticated() ? $app['authentication']->getUser()->getId() : null,
+            ':usr_id'          => $app->getAuthenticator()->isAuthenticated() ? $app->getAuthenticatedUser()->getId() : null,
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
             ':platform'        => $browser->getPlatform(),
@@ -128,10 +128,10 @@ class Session_Logger
             ':ip'              => $browser->getIP(),
             ':user_agent'      => $browser->getUserAgent(),
             ':appli'           => serialize([]),
-            ':fonction' => $app['authentication']->getUser() ? $app['authentication']->getUser()->getJob() : null,
-            ':company'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->getCompany() : null,
-            ':activity' => $app['authentication']->getUser() ? $app['authentication']->getUser()->getActivity() : null,
-            ':country'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->getCountry() : null
+            ':fonction' => $app->getAuthenticatedUser() ? $app->getAuthenticatedUser()->getJob() : null,
+            ':company'  => $app->getAuthenticatedUser() ? $app->getAuthenticatedUser()->getCompany() : null,
+            ':activity' => $app->getAuthenticatedUser() ? $app->getAuthenticatedUser()->getActivity() : null,
+            ':country'  => $app->getAuthenticatedUser() ? $app->getAuthenticatedUser()->getCountry() : null
         ];
 
         $stmt = $conn->prepare($sql);
@@ -157,7 +157,7 @@ class Session_Logger
 
     public static function load(Application $app, databox $databox)
     {
-        if ( ! $app['authentication']->isAuthenticated()) {
+        if ( ! $app->getAuthenticator()->isAuthenticated()) {
             throw new Exception_Session_LoggerNotFound('Not authenticated');
         }
 
@@ -182,7 +182,7 @@ class Session_Logger
 
     public static function updateClientInfos(Application $app, $appId)
     {
-        if (!$app['authentication']->isAuthenticated()) {
+        if (!$app->getAuthenticator()->isAuthenticated()) {
             return;
         }
 
@@ -218,13 +218,13 @@ class Session_Logger
         ];
 
         if (isset($appName[$appId])) {
-            $sbas_ids = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas());
+            $sbas_ids = array_keys($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas());
 
             foreach ($sbas_ids as $sbas_id) {
                 try {
-                    $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
+                    $logger = $app['phraseanet.logger']($app->findDataboxById($sbas_id));
 
-                    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+                    $databox = $app->findDataboxById($sbas_id);
                     $connbas = $databox->get_connection();
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';
                     $stmt = $connbas->prepare($sql);

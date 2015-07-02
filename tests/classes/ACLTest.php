@@ -14,7 +14,7 @@ class ACLTest extends \PhraseanetTestCase
         parent::setUp();
 
         self::resetUsersRights(self::$DI['app'], self::$DI['user']);
-        $this->object = self::$DI['app']['acl']->get(self::$DI['user']);
+        $this->object = self::$DI['app']->getAclForUser(self::$DI['user']);
     }
 
     public function tearDown()
@@ -60,42 +60,42 @@ class ACLTest extends \PhraseanetTestCase
     public function testApplyModel()
     {
         $base_ids = [self::$DI['collection']->get_base_id()];
-        self::$DI['app']['acl']->get(self::$DI['user_template'])->give_access_to_base($base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_template'])->give_access_to_base($base_ids);
 
         foreach ($base_ids as $base_id) {
-            self::$DI['app']['acl']->get(self::$DI['user_template'])->set_limits($base_id, 0);
+            self::$DI['app']->getAclForUser(self::$DI['user_template'])->set_limits($base_id, 0);
         }
 
-        self::$DI['app']['acl']->get(self::$DI['user_1'])->apply_model(self::$DI['user_template'], $base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_1'])->apply_model(self::$DI['user_template'], $base_ids);
 
         foreach ($base_ids as $base_id) {
-            $this->assertTrue(self::$DI['app']['acl']->get(self::$DI['user_1'])->has_access_to_base($base_id));
+            $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_1'])->has_access_to_base($base_id));
         }
 
         foreach ($base_ids as $base_id) {
-            $this->assertNull(self::$DI['app']['acl']->get(self::$DI['user_1'])->get_limits($base_id));
+            $this->assertNull(self::$DI['app']->getAclForUser(self::$DI['user_1'])->get_limits($base_id));
         }
     }
 
     public function testApplyModelWithTimeLimit()
     {
         $base_ids = [self::$DI['collection']->get_base_id()];
-        self::$DI['app']['acl']->get(self::$DI['user_template'])->give_access_to_base($base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_template'])->give_access_to_base($base_ids);
 
         $limit_from = new \DateTime('-1 day');
         $limit_to = new \DateTime('+1 day');
 
         foreach ($base_ids as $base_id) {
-            self::$DI['app']['acl']->get(self::$DI['user_template'])->set_limits($base_id, 1, $limit_from, $limit_to);
+            self::$DI['app']->getAclForUser(self::$DI['user_template'])->set_limits($base_id, 1, $limit_from, $limit_to);
         }
 
-        self::$DI['app']['acl']->get(self::$DI['user_2'])->apply_model(self::$DI['user_template'], $base_ids);
+        self::$DI['app']->getAclForUser(self::$DI['user_2'])->apply_model(self::$DI['user_template'], $base_ids);
 
         foreach ($base_ids as $base_id) {
-            $this->assertTrue(self::$DI['app']['acl']->get(self::$DI['user_2'])->has_access_to_base($base_id));
+            $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_2'])->has_access_to_base($base_id));
         }
         foreach ($base_ids as $base_id) {
-            $this->assertEquals(['dmin' => $limit_from, 'dmax' => $limit_to], self::$DI['app']['acl']->get(self::$DI['user_2'])->get_limits($base_id));
+            $this->assertEquals(['dmin' => $limit_from, 'dmax' => $limit_to], self::$DI['app']->getAclForUser(self::$DI['user_2'])->get_limits($base_id));
         }
     }
 
@@ -111,7 +111,7 @@ class ACLTest extends \PhraseanetTestCase
     public function testGive_access_to_sbas()
     {
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
             $base_ids = [];
             foreach ($databox->get_collections() as $collection) {
@@ -128,7 +128,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testRevoke_unused_sbas_rights()
     {
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
             $base_ids = [];
             foreach ($databox->get_collections() as $collection) {
@@ -150,7 +150,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testSet_quotas_on_base()
     {
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $droits = 50;
@@ -174,7 +174,7 @@ class ACLTest extends \PhraseanetTestCase
         $first = true;
         $base_ref = null;
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -220,7 +220,7 @@ class ACLTest extends \PhraseanetTestCase
             'canaddrecord' => true,
         ];
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $this->object->give_access_to_base([$base_id]);
@@ -359,7 +359,7 @@ class ACLTest extends \PhraseanetTestCase
             'bas_modif_th'      => true,
         ];
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
             $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_false);
             $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
@@ -381,7 +381,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testGet_mask_and()
     {
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -400,7 +400,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testGet_mask_xor()
     {
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -422,7 +422,7 @@ class ACLTest extends \PhraseanetTestCase
     {
         $base_ids = [];
         $n = 0;
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();
                 $n ++;
@@ -439,7 +439,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertEquals(count($base_ids), count($bases));
 
         $sql = 'SELECT actif FROM basusr WHERE usr_id = :usr_id AND base_id = :base_id';
-        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
 
         foreach ($bases as $base_id) {
             $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);
@@ -476,7 +476,7 @@ class ACLTest extends \PhraseanetTestCase
     {
         $base_ids = [];
         $n = 0;
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();
                 $n ++;
@@ -508,7 +508,7 @@ class ACLTest extends \PhraseanetTestCase
     {
         $sbas_ids = [];
         $n = 0;
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $sbas_ids[] = $databox->get_sbas_id();
             $n ++;
         }
@@ -532,7 +532,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testHas_access_to_module()
     {
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $base_ids = [];
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -551,7 +551,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertFalse($this->object->has_access_to_module('report'));
 
         $found = false;
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
@@ -566,7 +566,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertFalse($this->object->has_access_to_module('thesaurus'));
         $this->assertFalse($this->object->has_access_to_module('upload'));
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             $this->object->update_rights_to_sbas($databox->get_sbas_id(), ['bas_modif_th' => true]);
             $found = true;
         }
@@ -575,7 +575,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertFalse($this->object->has_access_to_module('upload'));
 
         $found = false;
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
@@ -596,7 +596,7 @@ class ACLTest extends \PhraseanetTestCase
 
         $found = false;
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -629,7 +629,7 @@ class ACLTest extends \PhraseanetTestCase
 
         $found = false;
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 

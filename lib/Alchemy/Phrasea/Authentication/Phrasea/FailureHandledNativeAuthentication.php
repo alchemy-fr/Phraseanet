@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
-use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 class FailureHandledNativeAuthentication implements PasswordAuthenticationInterface
@@ -30,7 +29,7 @@ class FailureHandledNativeAuthentication implements PasswordAuthenticationInterf
      */
     public function getUsrId($username, $password, Request $request)
     {
-        // check failures and throws a RequireCaptchaExeption is needed
+        // check failures and throws a RequireCaptchaException is needed
         $this->failure->checkFailures($username, $request);
 
         $usr_id = $this->auth->getUsrId($username, $password, $request);
@@ -42,15 +41,5 @@ class FailureHandledNativeAuthentication implements PasswordAuthenticationInterf
         }
 
         return $usr_id;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return FailureHandledNativeAuthentication
-     */
-    public static function create(Application $app)
-    {
-        return new static(NativeAuthentication::create($app));
     }
 }

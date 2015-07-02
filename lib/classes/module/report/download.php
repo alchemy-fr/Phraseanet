@@ -177,7 +177,7 @@ class module_report_download extends module_report
 
     public static function getNbDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
 
         $params = [':site_id'  => $app['conf']->get(['main', 'key'])];
@@ -223,7 +223,7 @@ class module_report_download extends module_report
 
     public static function getTopDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $databox = $app->findDataboxById((int) $sbas_id);
         $conn = $databox->get_connection();
 
         $params = [':site_id'  => $app['conf']->get(['main', 'key'])];

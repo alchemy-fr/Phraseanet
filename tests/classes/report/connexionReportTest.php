@@ -19,7 +19,7 @@ class report_connexionReportTest extends \report_abstractReportTestCase
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databoxes = self::$DI['app']->getDataboxes();
         $this->ret = [];
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();

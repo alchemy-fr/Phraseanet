@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,11 +30,4 @@ interface PasswordAuthenticationInterface
      * @throws RequireCaptchaException
      */
     public function getUsrId($username, $password, Request $request);
-
-    /**
-     * Factory for the class
-     *
-     * @param Application $app
-     */
-    public static function create(Application $app);
 }

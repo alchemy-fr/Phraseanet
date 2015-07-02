@@ -20,7 +20,7 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoUserProvided()
     {
         $mail = MailInfoValidationRequest::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -41,7 +41,7 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
     public function testShouldThrowALogicExceptionIfNoTitleProvided()
     {
         $mail = MailInfoValidationRequest::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),
@@ -73,7 +73,7 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
     public function getMail()
     {
         $mail = MailInfoValidationRequest::create(
-            $this->getApp(),
+            $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
             $this->getMessage(),

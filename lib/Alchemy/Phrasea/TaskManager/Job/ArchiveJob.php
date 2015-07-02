@@ -79,7 +79,7 @@ class ArchiveJob extends AbstractJob
             throw new RuntimeException('Invalid collection base_id.');
         }
 
-        $databox = $app['phraseanet.appbox']->get_databox($sbasId);
+        $databox = $app->findDataboxById($sbasId);
 
         $TColls = [];
         $collection = null;
