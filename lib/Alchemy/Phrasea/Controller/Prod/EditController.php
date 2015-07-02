@@ -506,7 +506,7 @@ class EditController extends Controller
             $data[] = $presetData;
         }
 
-        return $this->app['twig']->render('thesaurus/presets.html.twig', ['presets' => $data]);
+        return $this->render('thesaurus/presets.html.twig', ['presets' => $data]);
     }
 
     /**
