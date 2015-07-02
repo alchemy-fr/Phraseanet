@@ -269,7 +269,7 @@ class QueryVisitor implements Visit
         return new AST\CollectionExpression($collectionName);
     }
 
-    private function visitrecordidNode(Element $element)
+    private function visitRecordidNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
             throw new \Exception('Recordid filter can only have a single child.');
