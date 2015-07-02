@@ -16,9 +16,13 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Media\SubdefSubstituer;
+use Alchemy\Phrasea\Model\Entities\Preset;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
+use Alchemy\Phrasea\Model\Repositories\PresetRepository;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EditController extends Controller
 {
@@ -375,4 +379,150 @@ class EditController extends Controller
 
         return $this->app->json(['success' => true]);
     }
+
+    /**
+     * @param int $preset_id
+     * @return Preset
+     */
+    private function findPresetOr404($preset_id)
+    {
+        if (null === $preset = $this->getPresetRepository()->find($preset_id)) {
+            $this->app->abort(404, sprintf("Preset with id '%' could not be found", $preset_id));
+        }
+
+        return $preset;
+    }
+
+    /**
+     * route GET "../prod/records/edit/presets/{preset_id}"
+     *
+     * @param int $preset_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function presetsLoadAction($preset_id)
+    {
+        $ret = [];
+
+        $preset = $this->findPresetOr404($preset_id);
+
+        $fields = [];
+        foreach ($preset->getData() as $field) {
+            $fields[$field['name']] = $field['value'];
+        }
+
+        $ret['fields'] = $fields;
+
+        return $this->app->json($ret);
+    }
+
+    /**
+     * route GET "../prod/records/edit/presets"
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function presetsListAction(Request $request)
+    {
+        $sbas_id = $request->get('sbas_id');
+        $user = $this->getAuthenticatedUser();
+
+        $ret = [];
+
+        $ret['html'] = $this->getPresetHTMLList($sbas_id, $user);
+
+        return $this->app->json($ret);
+    }
+
+    /**
+     * route DELETE "../prod/records/edit/presets/{preset_id}"
+     *
+     * @param int $preset_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function presetsDeleteAction($preset_id)
+    {
+        $user = $this->getAuthenticatedUser();
+
+        $ret = [];
+
+        $preset = $this->findPresetOr404($preset_id);
+
+        $sbas_id = $preset->getSbasId();
+        $this->getPresetManipulator()->delete($preset);
+
+        $ret['html'] = $this->getPresetHTMLList($sbas_id, $user);
+
+        return $this->app->json($ret);
+    }
+
+    /**
+     * route POST "../prod/records/edit/presets"
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function presetsSaveAction(Request $request)
+    {
+        $sbas_id = $request->get('sbas_id');
+        $user = $this->getAuthenticatedUser();
+
+        $ret = [];
+
+        $this->getPresetManipulator()->create(
+            $user,
+            $sbas_id,
+            $request->get('title'),
+            $request->get('fields')
+        );
+
+        $ret['html'] = $this->getPresetHTMLList($sbas_id, $user);
+
+        return $this->app->json($ret);
+    }
+
+    /**
+     * render edit preset
+     *
+     * @param $sbasId
+     * @param User $user
+     * @return Response
+     */
+    private function getPresetHTMLList($sbasId, User &$user)
+    {
+        $presetRepo = $this->getPresetRepository();
+
+        $data = [];
+        /** @var Preset $preset */
+        foreach ($presetRepo->findBy(['user' => $user, 'sbasId' => $sbasId], ['created' => 'asc']) as $preset) {
+            $fields = $presetData = [];
+            $d = $preset->getData();
+            array_walk($d, function ($field) use (&$fields) {
+                $fields[$field['name']] = $field['value'];
+            });
+            $presetData['id'] = $preset->getId();
+            $presetData['title'] = $preset->getTitle();
+            $presetData['fields'] = $fields;
+
+            $data[] = $presetData;
+        }
+
+        return $this->render('thesaurus/presets.html.twig', ['presets' => $data]);
+    }
+
+    /**
+     * @return PresetRepository
+     */
+    private function getPresetRepository()
+    {
+        return $this->app['repo.presets'];
+    }
+
+    /**
+     * @return PresetManipulator
+     */
+    private function getPresetManipulator()
+    {
+        return $this->app['manipulator.preset'];
+    }
+
 }

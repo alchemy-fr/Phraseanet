@@ -46,7 +46,6 @@ class Xmlhttp implements ControllerProviderInterface, ServiceProviderInterface
             ->before($requireAccessToThesaurus);
         $controllers->match('checkcandidatetarget.j.php', 'controller.thesaurus.xmlhttp:checkCandidateTargetJson')
             ->before($requireAccessToThesaurus);
-        $controllers->match('editing_presets.j.php', 'controller.thesaurus.xmlhttp:editingPresetsJson');
         $controllers->match('getsy_prod.x.php', 'controller.thesaurus.xmlhttp:getSynonymsXml');
         $controllers->match('getterm_prod.h.php', 'controller.thesaurus.xmlhttp:getTermHtml');
         $controllers->match('getterm_prod.x.php', 'controller.thesaurus.xmlhttp:getTermXml');

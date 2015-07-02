@@ -56,6 +56,11 @@ class Edit implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/apply/', 'controller.prod.edit:applyAction');
 
+        $controllers->get('/presets/{preset_id}', 'controller.prod.edit:presetsLoadAction');
+        $controllers->get('/presets', 'controller.prod.edit:presetsListAction');
+        $controllers->delete('/presets/{preset_id}', 'controller.prod.edit:presetsDeleteAction');
+        $controllers->post('/presets', 'controller.prod.edit:presetsSaveAction');
+
         return $controllers;
     }
 }

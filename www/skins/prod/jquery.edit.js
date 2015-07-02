@@ -674,7 +674,7 @@ function edit_clk_editimg(evt, i) {
 }
 
 // ---------------------------------------------------------------------------
-// on a clique sur une checkbow de status
+// on a clique sur une checkbox de status
 // ---------------------------------------------------------------------------
 function edit_clkstatus(evt, bit, val) {
     var ck0 = $("#idCheckboxStatbit0_" + bit);
@@ -889,8 +889,11 @@ function updateFieldDisplay() {
         if (o = document.getElementById("idEditField_" + f)) {
             if (p4.edit.T_fields[f]._status == 2)	// mixed
                 o.innerHTML = "<span class='hetero'>xxxxx</span>";
-            else
-                o.innerHTML = cleanTags(p4.edit.T_fields[f]._value).replace(/\n/gm, "<span style='color:#0080ff'>&para;</span><br/>");
+            else {
+                var v = p4.edit.T_fields[f]._value;
+                v = (v instanceof(Array)) ? v.join(";") : v;
+                o.innerHTML = cleanTags(v).replace(/\n/gm, "<span style='color:#0080ff'>&para;</span><br/>");
+            }
         }
     }
 }
@@ -1062,9 +1065,6 @@ function edit_applyMultiDesc(evt) {
     };
     if (p4.edit.newrepresent != false)
         options.newrepresent = p4.edit.newrepresent;
-
-    //  options.mds = t;
-
 
     $.ajax({
         url: "../prod/records/edit/apply/",
@@ -1406,14 +1406,10 @@ function preset_paint(data) {
 }
 
 function preset_delete(preset_id, li) {
-    var p = {
-        "act": "DELETE",
-        "presetid": preset_id
-    };
     $.ajax({
-        type: 'POST',
-        url: "/xmlhttp/editing_presets.j.php",
-        data: p,
+        type: 'DELETE',
+        url: "../prod/records/edit/presets/" + preset_id,
+        data: {},
         dataType: 'json',
         success: function (data, textStatus) {
             li.remove();
@@ -1422,15 +1418,12 @@ function preset_delete(preset_id, li) {
 }
 
 function preset_load(preset_id) {
-    var p = {
-        "act": "LOAD",
-        "presetid": preset_id
-    };
-
-    $.getJSON(
-        "/xmlhttp/editing_presets.j.php",
-        p,
-        function (data, textStatus) {
+    $.ajax({
+        type: 'GET',
+        url: "../prod/records/edit/presets/" + preset_id,
+        data: {},
+        dataType: 'json',
+        success: function (data, textStatus) {
             if ($("#Edit_copyPreset_dlg").data("ui-dialog")) {
                 $("#Edit_copyPreset_dlg").dialog("close");
             }
@@ -1448,14 +1441,15 @@ function preset_load(preset_id) {
                 for (i in p4.edit.T_fields) {
                     if (p4.edit.T_fields[i].preset != null) {
                         for (val in p4.edit.T_fields[i].preset) {
-                            p4.edit.T_records[r].fields["" + i].addValue(p4.edit.T_fields[i].preset[val], false, null);
+                            // fix : some (old, malformed) presets values may need trim()
+                            p4.edit.T_records[r].fields["" + i].addValue(p4.edit.T_fields[i].preset[val].trim(), false, null);
                         }
                     }
                 }
             }
             updateEditSelectedRecords();
         }
-    );
+    });
 }
 
 
@@ -1810,6 +1804,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
     });
 
     var buttons = {};
+
     buttons[language.valider] = function () {
         var form = $("#Edit_copyPreset_dlg FORM");
         var jtitle = $(".EDIT_presetTitle", form);
@@ -1819,32 +1814,38 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
             return;
         }
 
-        var p = {
-            "act": "SAVE",
-            "sbas": p4.edit.sbas_id,
-            "title": jtitle.val(),
-            "fields": []
-        };
-
+        var fields = [];
         $(":checkbox", form).each(function (idx, elem) {
             var $el = $(elem);
             if ($el.is(":checked")) {
                 var val = $el.val();
-                var field = {name: p4.edit.T_fields[val].name};
-
+                var field = {
+                    name: p4.edit.T_fields[val].name,
+                    value: []
+                };
+                var tval;
                 if (p4.edit.T_fields[val].multi) {
-                    field.value = $.map(p4.edit.T_fields[i]._value.split(";"), cleanTags);
+                    field.value = $.map(
+                        p4.edit.T_fields[val]._value.split(";"),
+                        function(obj, idx){
+                            return obj.trim();
+                        }
+                    );
                 } else {
-                    field.value = $.map([p4.edit.T_fields[i]._value], cleanTags);
+                    field.value = [p4.edit.T_fields[val]._value.trim()];
                 }
-                p.fields.push(field);
+                fields.push(field);
             }
         });
 
         $.ajax({
             type: 'POST',
-            url: "/xmlhttp/editing_presets.j.php",
-            data: p,
+            url: "../prod/records/edit/presets",
+            data: {
+                sbas_id: p4.edit.sbas_id,
+                title: jtitle.val(),
+                fields: fields
+            },
             dataType: 'json',
             success: function (data, textStatus) {
                 preset_paint(data);
@@ -1855,6 +1856,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
             }
         });
     };
+
     buttons[language.annuler] = function () {
         $(this).dialog("close");
 
@@ -1899,17 +1901,17 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
 
     setSizeLimits();
 
-    var p = {
-        "act": "LIST",
-        "sbas": p4.edit.sbas_id
-    };
-    $.getJSON(
-        "/xmlhttp/editing_presets.j.php",
-        p,
-        function (data, textStatus) {
+    $.ajax({
+        type: 'GET',
+        url: "../prod/records/edit/presets",
+        data: {
+            sbas_id: p4.edit.sbas_id,
+        },
+        dataType: 'json',
+        success: function (data, textStatus) {
             preset_paint(data);
         }
-    );
+    });
 
     check_required();
 

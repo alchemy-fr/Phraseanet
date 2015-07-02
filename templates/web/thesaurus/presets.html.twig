@@ -7,7 +7,7 @@
         </h1>
         <div>
             {% for name, fields in preset['fields'] %}
-                <p><b>{{ name }} : </b> {{ fields|join(';') }}</p>
+                <p><b>{{ name }} : </b> {{ fields|join(' ; ') }}</p>
             {% endfor %}
         </div>
     </li>

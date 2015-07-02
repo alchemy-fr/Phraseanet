@@ -12,8 +12,6 @@ namespace Alchemy\Phrasea\Controller\Thesaurus;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
-use Alchemy\Phrasea\Model\Repositories\PresetRepository;
 use caption_field;
 use caption_Field_Value;
 use databox;
@@ -370,7 +368,6 @@ class ThesaurusXmlHttpController extends Controller
     public function getSynonymsXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
-        $ret->standalone = true;
         $ret->preserveWhiteSpace = false;
         /** @var DOMElement $root */
         $root = $ret->appendChild($ret->createElement("result"));
@@ -536,7 +533,6 @@ class ThesaurusXmlHttpController extends Controller
     public function getTermXml(Request $request)
     {
         $ret = new \DOMDocument("1.0", "UTF-8");
-        $ret->standalone = true;
         $ret->preserveWhiteSpace = false;
         $root = $ret->appendChild($ret->createElement("result"));
         $root->appendChild($ret->createCDATASection(var_export([
@@ -1144,7 +1140,6 @@ class ThesaurusXmlHttpController extends Controller
         }
 
         $ret = new \DOMDocument('1.0', 'UTF-8');
-        $ret->standalone = true;
         $ret->preserveWhiteSpace = false;
         $root = $ret->appendChild($ret->createElement('result'));
         $root->appendChild($ret->createCDATASection(var_export([
@@ -1661,22 +1656,6 @@ class ThesaurusXmlHttpController extends Controller
                 $html .= $tab . '</UL>' . "\n";
             }
         }
-    }
-
-    /**
-     * @return PresetRepository
-     */
-    private function getPresetRepository()
-    {
-        return $this->app['repo.presets'];
-    }
-
-    /**
-     * @return PresetManipulator
-     */
-    private function getPresetManipulator()
-    {
-        return $this->app['manipulator.preset'];
     }
 
     /**
