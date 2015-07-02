@@ -85,6 +85,12 @@ class QueryVisitor implements Visit
             case NodeTypes::COLLECTION:
                 return $this->visitCollectionNode($element);
 
+            case NodeTypes::RECORDID:
+                return $this->visitRecordidNode($element);
+
+            case NodeTypes::BASE:
+                return $this->visitBaseNode($element);
+
             default:
                 throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
         }
@@ -261,5 +267,25 @@ class QueryVisitor implements Visit
         $collectionName = $element->getChild(0)->getValue()['value'];
 
         return new AST\CollectionExpression($collectionName);
+    }
+
+    private function visitRecordidNode(Element $element)
+    {
+        if ($element->getChildrenNumber() !== 1) {
+            throw new \Exception('Recordid filter can only have a single child.');
+        }
+        $recordid = $element->getChild(0)->getValue()['value'];
+
+        return new AST\RecordidExpression($recordid);
+    }
+
+    private function visitBaseNode(Element $element)
+    {
+        if ($element->getChildrenNumber() !== 1) {
+            throw new \Exception('Base filter can only have a single child.');
+        }
+        $baseName = $element->getChild(0)->getValue()['value'];
+
+        return new AST\BaseExpression($baseName);
     }
 }

@@ -28,6 +28,8 @@
 
 // Rest
 %token  collection      collection
+%token  recordid        recordid
+%token  base            base
 %token  word            [^\s()\[\]:<>≤≥=]+
 
 // relative order of precedence is NOT > XOR > AND > OR
@@ -48,10 +50,12 @@ ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
 
-// Collection matcher
+// Collection / recordid / base matcher
 
 quaternary:
     ::collection:: ::colon:: string() #collection
+  | ::recordid:: ::colon:: string() #recordid
+  | ::base:: ::colon:: string() #base
   | quinary()
 
 
@@ -131,6 +135,8 @@ keyword:
   | <and>
   | <or>
   | <collection>
+  | <recordid>
+  | <base>
 
 symbol:
     <parenthese_>
