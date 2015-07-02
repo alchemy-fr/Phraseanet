@@ -208,6 +208,9 @@ class databox extends base
         return $this->ord;
     }
 
+    /**
+     * @return appbox
+     */
     public function get_appbox()
     {
         return $this->app['phraseanet.appbox'];
@@ -225,6 +228,29 @@ class databox extends base
         }
 
         return $ret;
+    }
+
+    public function get_collection_unique_ids()
+    {
+        static $base_ids;
+
+        if (isset($base_ids)) {
+            return $base_ids;
+        }
+
+        $conn = $this->get_appbox()->get_connection();
+        $sql = "SELECT b.base_id FROM bas b WHERE b.sbas_id = :sbas_id AND b.active = '1' ORDER BY b.ord ASC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':sbas_id' => $this->id]);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $base_ids = [];
+        foreach ($rs as $row) {
+            $base_ids[] = (int) $row['base_id'];
+        }
+
+        return $base_ids;
     }
 
     protected function get_available_collections()

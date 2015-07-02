@@ -34,22 +34,21 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isPrivate()->willReturn(false);
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
+        $field->getDependantCollections()->willReturn(['1']);
 
         $structure->add($field->reveal());
         $this->assertCount(1, $structure->getAllFields());
 
-        $conflicting_field = $this->prophesize(Field::class);
-        $conflicting_field->getName()->willReturn('foo');
-        $conflicting_field->getType()->willReturn(Mapping::TYPE_STRING);
-        $conflicting_field->isPrivate()->willReturn(false);
-        $conflicting_field->isFacet()->willReturn(false);
-        $conflicting_field->hasConceptInference()->willReturn(false);
-        $dummy = $conflicting_field->reveal();
+        $conflicting_field = new Field('foo', Mapping::TYPE_STRING, ['2']);
 
-        $field->mergeWith($dummy)->willReturn($dummy);
+        $merged = new Field('foo', Mapping::TYPE_STRING, ['1', '2']);
+
+        $field->mergeWith($conflicting_field)->willReturn($merged);
         // Should still have only one (both have the same name)
-        $structure->add($dummy);
-        $this->assertCount(1, $structure->getAllFields());
+        $structure->add($conflicting_field);
+        $this->assertCount(1, $fields = $structure->getAllFields());
+        $this->assertInternalType('array', $fields);
+        $this->assertSame($merged, reset($fields));
     }
 
     public function testFieldMerge()
@@ -166,12 +165,36 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException DomainException
+     * @expectedException \DomainException
      * @expectedExceptionMessageRegExp #field#u
      */
     public function testPrivateCheckWithInvalidField()
     {
         $structure = new Structure();
         $structure->isPrivate('foo');
+    }
+
+    public function testCollectionsUsedByPrivateFields()
+    {
+        $structure = new Structure();
+        $structure->add($foo = (new Field('foo', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [1, 2]
+        ])));
+        $structure->add(new Field('foo', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [2, 3]
+        ]));
+        $structure->add(new Field('bar', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [2, 3]
+        ]));
+        $structure->add(new Field('baz', Mapping::TYPE_STRING, ['private' => false]));
+        $this->assertEquals([1, 2], $foo->getDependantCollections());
+        static $expected = [
+            'foo' => [1, 2, 3],
+            'bar' => [2, 3]
+        ];
+        $this->assertEquals($expected, $structure->getCollectionsUsedByPrivateFields());
     }
 }

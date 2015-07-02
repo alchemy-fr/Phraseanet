@@ -11,22 +11,18 @@
 
 class databox_descriptionStructure implements IteratorAggregate, Countable
 {
-    /**
-     *
-     * @var Array
-     */
+    /** @var databox_field[] */
     protected $elements = [];
 
     /**
      * Cache array for the get element by name function
      *
-     * @var Array
+     * @var databox_field[]
      */
     protected $cache_name_id = [];
 
     /**
-     *
-     * @return databox_field
+     * @return Iterator
      */
     public function getIterator()
     {
@@ -34,9 +30,8 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
-     * @param  databox_field                $field
-     * @return databox_descriptionStructure
+     * @param  databox_field $field
+     * @return $this
      */
     public function add_element(databox_field $field)
     {
@@ -46,9 +41,8 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
-     * @param  databox_field                $field
-     * @return databox_descriptionStructure
+     * @param  databox_field $field
+     * @return $this
      */
     public function remove_element(databox_field $field)
     {
@@ -59,7 +53,6 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
      * @return databox_field[]
      */
     public function get_elements()
@@ -81,8 +74,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
-     * @param  string        $name
+     * @param  string $name
      * @return databox_field
      */
     public function get_element_by_name($name)
@@ -118,7 +110,6 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
      * @param  string  $id
      * @return boolean
      */
@@ -129,7 +120,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
 
     public function toArray()
     {
-        return array_map(function ($element) {
+        return array_map(function (databox_field $element) {
             return $element->toArray();
         }, array_values($this->elements));
     }

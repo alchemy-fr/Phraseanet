@@ -16,6 +16,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -246,12 +247,10 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $queryContext = new QueryContext(
-            $this->structure,
-            $this->locales,
-            $this->app['locale']
-        );
-        $recordQuery = $this->app['query_compiler']->compile($string, $queryContext);
+        $context = $this->createQueryContext($options);
+        /** @var QueryCompiler $query_compiler */
+        $query_compiler = $this->app['query_compiler'];
+        $recordQuery = $query_compiler->compile($string, $context);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
 
@@ -280,7 +279,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $this->app['query_compiler']->parse($string)->dump();
+        $query['ast'] = $query_compiler->parse($string)->dump();
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
@@ -299,6 +298,47 @@ class ElasticSearchEngine implements SearchEngineInterface
             $this->indexName,
             $facets
         );
+    }
+
+    private function createQueryContext(SearchEngineOptions $options)
+    {
+        // TODO handle $user when null
+        $queryContext = new QueryContext(
+            $this->structure,
+            $this->getAllowedPrivateFields($options),
+            $this->locales,
+            $this->app['locale']
+        );
+
+        return $queryContext;
+    }
+
+    /**
+     * Returns an array of allowed collection base_id indexed by field name.
+     *
+     * [
+     *     "FieldName" => [1, 4, 5],
+     *     "OtherFieldName" => [4],
+     * ]
+     *
+     * @param SearchEngineOptions $options
+     * @return array
+     */
+    private function getAllowedPrivateFields(SearchEngineOptions $options)
+    {
+        // Get structure data and cross it with user rights (from options object)
+        $allowed_collections = [];
+        foreach ($options->getBusinessFieldsOn() as $collection) {
+            $allowed_collections[] = $collection->get_base_id();
+        }
+
+        $map = $this->structure->getCollectionsUsedByPrivateFields();
+        // Remove collections base_id which access is restricted.
+        foreach ($map as $_ => &$collections) {
+            $collections = array_intersect($collections, $allowed_collections);
+        }
+
+        return $map;
     }
 
     /**

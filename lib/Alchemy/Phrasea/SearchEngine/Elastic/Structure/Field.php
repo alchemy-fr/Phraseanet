@@ -20,15 +20,16 @@ class Field
     private $is_private;
     private $is_facet;
     private $thesaurus_roots;
+    private $used_by_collections;
 
     public static function createFromLegacyField(databox_field $field)
     {
         $type = self::getTypeFromLegacy($field);
+        $databox = $field->get_databox();
 
         // Thesaurus concept inference
         $xpath = $field->get_tbranch();
         if ($type === Mapping::TYPE_STRING && !empty($xpath)) {
-            $databox = $field->get_databox();
             $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         } else {
             $roots = null;
@@ -38,7 +39,8 @@ class Field
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
             'facet' => $field->isAggregable(),
-            'thesaurus_roots' => $roots
+            'thesaurus_roots' => $roots,
+            'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
     }
 
@@ -53,9 +55,9 @@ class Field
             case databox_field::TYPE_STRING:
             case databox_field::TYPE_TEXT:
                 return Mapping::TYPE_STRING;
-            default:
-                throw new Exception(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
         }
+
+        throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
     }
 
     public function __construct($name, $type, array $options = [])
@@ -66,6 +68,7 @@ class Field
         $this->is_private      = \igorw\get_in($options, ['private'], false);
         $this->is_facet        = \igorw\get_in($options, ['facet'], false);
         $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
+        $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
 
         Assertion::boolean($this->is_searchable);
         Assertion::boolean($this->is_private);
@@ -73,6 +76,7 @@ class Field
         if ($this->thesaurus_roots !== null) {
             Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
         }
+        Assertion::allScalar($this->used_by_collections);
     }
 
     public function getName()
@@ -92,6 +96,11 @@ class Field
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getDependantCollections()
+    {
+        return $this->used_by_collections;
     }
 
     public function isSearchable()
@@ -160,11 +169,22 @@ class Field
             );
         }
 
+        $used_by_collections = array_values(
+            array_unique(
+                array_merge(
+                    $this->used_by_collections,
+                    $other->used_by_collections
+                ),
+                SORT_REGULAR
+            )
+        );
+
         return new self($this->name, $this->type, [
             'searchable' => $this->is_searchable,
             'private' => $this->is_private,
             'facet' => $this->is_facet,
-            'thesaurus_roots' => $thesaurus_roots
+            'thesaurus_roots' => $thesaurus_roots,
+            'used_by_collections' => $used_by_collections
         ]);
     }
 }

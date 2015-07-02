@@ -7,10 +7,15 @@ use DomainException;
 
 class Structure
 {
+    /** @var Field[] */
     private $fields = array();
+    /** @var Field[] */
     private $date_fields = array();
+    /** @var Field[] */
     private $thesaurus_fields = array();
+    /** @var Field[] */
     private $private = array();
+    /** @var Field[] */
     private $facets = array();
 
     /**
@@ -81,6 +86,10 @@ class Structure
         return $this->date_fields;
     }
 
+    /**
+     * @param string $name
+     * @return null|Field
+     */
     public function get($name)
     {
         return isset($this->fields[$name]) ?
@@ -93,14 +102,36 @@ class Structure
                      $this->fields[$name]->getType() : null;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function isPrivate($name)
     {
         if (isset($this->private[$name])) {
             return true;
         } elseif (isset($this->fields[$name])) {
             return false;
-        } else {
-            throw new DomainException(sprintf('Unknown field "%s".', $name));
         }
+
+        throw new DomainException(sprintf('Unknown field "%s".', $name));
+    }
+
+    /**
+     * Returns an array of collections indexed by field name.
+     *
+     * [
+     *     "FieldName" => [1, 4, 5],
+     *     "OtherFieldName" => [4],
+     * ]
+     */
+    public function getCollectionsUsedByPrivateFields()
+    {
+        $map = [];
+        foreach ($this->private as $name => $field) {
+            $map[$name] = $field->getDependantCollections();
+        }
+
+        return $map;
     }
 }
