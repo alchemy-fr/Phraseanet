@@ -18,11 +18,14 @@ class DataboxRepository implements DataboxRepositoryInterface
     private $app;
     /** @var \appbox */
     private $appbox;
+    /** @var DataboxFactory */
+    private $factory;
 
-    public function __construct(Application $app, \appbox $appbox)
+    public function __construct(Application $app, \appbox $appbox, DataboxFactory $factory = null)
     {
         $this->app = $app;
         $this->appbox = $appbox;
+        $this->factory = $factory ?: new DataboxFactory();
     }
 
     /**
@@ -32,7 +35,7 @@ class DataboxRepository implements DataboxRepositoryInterface
     public function find($id)
     {
         try {
-            $databox = new \databox($this->app, (int)$id);
+            $databox = $this->factory->create($this->app, (int)$id);
         } catch (NotFoundHttpException $exception) {
             $databox = null;
         }
@@ -65,7 +68,7 @@ class DataboxRepository implements DataboxRepositoryInterface
         $databoxes = array();
 
         foreach ($rows as $row) {
-            $databox = new \databox($this->app, (int)$row['sbas_id'], $row);
+            $databox = $this->factory->create($this->app, (int)$row['sbas_id'], $row);
 
             $databoxes[$databox->get_sbas_id()] = $databox;
         }
