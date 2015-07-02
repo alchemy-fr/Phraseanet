@@ -71,16 +71,12 @@ class FacetsResponse implements JsonSerializable
     {
         switch($name) {
             case 'Collection':
-                $r = sprintf('collection:%s', $this->escaper->escapeWord($value));
-                break;
-            case "Base":
-                $r = sprintf('base:%s', $this->escaper->escapeWord($value));
-                break;
+                return sprintf('collection:%s', $this->escaper->escapeWord($value));
+            case 'Base':
+                return sprintf('database:%s', $this->escaper->escapeWord($value));
             default:
-                $r = sprintf('r"%s" IN %s', $this->escaper->escapeRaw($value), $name);
-                break;
+                return sprintf('r"%s" IN %s', $this->escaper->escapeRaw($value), $name);
         }
-        return $r;
     }
 
     private function throwAggregationResponseError()

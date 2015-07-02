@@ -27,9 +27,9 @@
 %token  except          [Ee][Xx][Cc][Ee][Pp][Tt]|[Ss][Aa][Uu][Ff]
 
 // Rest
+%token  database        database
 %token  collection      collection
-%token  recordid        recordid
-%token  base            base
+%token  id              id|recordid
 %token  word            [^\s()\[\]:<>≤≥=]+
 
 // relative order of precedence is NOT > XOR > AND > OR
@@ -50,12 +50,12 @@ ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
 
-// Collection / recordid / base matcher
+// Collection / database / record id matcher
 
 quaternary:
-    ::collection:: ::colon:: string() #collection
-  | ::recordid:: ::colon:: string() #recordid
-  | ::base:: ::colon:: string() #base
+    ::database:: ::colon:: string() #database
+  | ::collection:: ::colon:: string() #collection
+  | ::id:: ::colon:: string() #id
   | quinary()
 
 
@@ -134,9 +134,9 @@ keyword:
   | <except>
   | <and>
   | <or>
+  | <database>
   | <collection>
-  | <recordid>
-  | <base>
+  | <id>
 
 symbol:
     <parenthese_>

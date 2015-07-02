@@ -4,19 +4,19 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class BaseExpression extends Node
+class DatabaseExpression extends Node
 {
-    private $baseName;
+    private $database;
 
-    public function __construct($baseName)
+    public function __construct($database)
     {
-        $this->baseName = $baseName;
+        $this->database = $database;
     }
 
     public function buildQuery(QueryContext $context)
     {
         $query = array();
-        $query['term']['databox_name'] = $this->baseName;
+        $query['term']['databox_name'] = $this->database;
 
         return $query;
     }
@@ -28,6 +28,6 @@ class BaseExpression extends Node
 
     public function __toString()
     {
-        return sprintf('<base:%s>', $this->baseName);
+        return sprintf('<database:%s>', $this->database);
     }
 }
