@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -120,6 +121,10 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
         $app['repo.webhook-delivery'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WebhookEventDelivery');
+        });
+
+        $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
+            return new DataboxRepository($app, $app['phraseanet.appbox']);
         });
     }
 

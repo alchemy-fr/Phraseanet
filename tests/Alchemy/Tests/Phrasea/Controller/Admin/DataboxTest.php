@@ -111,7 +111,8 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->setAdmin(true);
 
-        $collection = \collection::create(self::$DI['app'], $databox, self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
+        $app = $this->getApplication();
+        $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], 'TESTTODELETE');
 
         $this->XMLHTTPRequest('POST', '/admin/databox/' . $databox->get_sbas_id() . '/collections/order/', [
             'order' => [
