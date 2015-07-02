@@ -15,7 +15,6 @@ use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
-use Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
@@ -327,6 +326,7 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Root\Session' => [],
             'Alchemy\Phrasea\ControllerProvider\Setup' => [],
             'Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus' => [],
+            'Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Notifications' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Preferences' => [],
         ];
@@ -627,8 +627,6 @@ class Application extends SilexApplication
      */
     public function bindRoutes()
     {
-        $this->mount('/xmlhttp', new ThesaurusXMLHttp());
-
         $providers = [
             '/account/'                    => 'Alchemy\Phrasea\ControllerProvider\Root\Account',
             '/admin/'                      => 'Alchemy\Phrasea\ControllerProvider\Admin\Root',
@@ -685,6 +683,7 @@ class Application extends SilexApplication
             '/thesaurus'                   => 'Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus',
             '/user/notifications/'         => 'Alchemy\Phrasea\ControllerProvider\User\Notifications',
             '/user/preferences/'           => 'Alchemy\Phrasea\ControllerProvider\User\Preferences',
+            '/xmlhttp'                     => 'Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp',
             '/'                            => 'Alchemy\Phrasea\ControllerProvider\Root\Root',
         ];
 
