@@ -82,14 +82,14 @@ class QueryVisitor implements Visit
             case NodeTypes::FIELD:
                 return new AST\Field($this->visitString($element));
 
+            case NodeTypes::DATABASE:
+                return $this->visitDatabaseNode($element);
+
             case NodeTypes::COLLECTION:
                 return $this->visitCollectionNode($element);
 
-            case NodeTypes::RECORDID:
-                return $this->visitRecordidNode($element);
-
-            case NodeTypes::BASE:
-                return $this->visitBaseNode($element);
+            case NodeTypes::IDENTIFIER:
+                return $this->visitIdentifierNode($element);
 
             default:
                 throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
@@ -259,6 +259,16 @@ class QueryVisitor implements Visit
         return implode($tokens);
     }
 
+    private function visitDatabaseNode(Element $element)
+    {
+        if ($element->getChildrenNumber() !== 1) {
+            throw new \Exception('Base filter can only have a single child.');
+        }
+        $baseName = $element->getChild(0)->getValue()['value'];
+
+        return new AST\DatabaseExpression($baseName);
+    }
+
     private function visitCollectionNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
@@ -269,23 +279,13 @@ class QueryVisitor implements Visit
         return new AST\CollectionExpression($collectionName);
     }
 
-    private function visitRecordidNode(Element $element)
+    private function visitIdentifierNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Recordid filter can only have a single child.');
+            throw new \Exception('Identifier filter can only have a single child.');
         }
-        $recordid = $element->getChild(0)->getValue()['value'];
+        $identifier = $element->getChild(0)->getValue()['value'];
 
-        return new AST\RecordidExpression($recordid);
-    }
-
-    private function visitBaseNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Base filter can only have a single child.');
-        }
-        $baseName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\BaseExpression($baseName);
+        return new AST\RecordIdentifierExpression($identifier);
     }
 }

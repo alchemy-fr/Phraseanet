@@ -70,8 +70,13 @@ fooINbar|<text:"fooINbar">
 collection:foo|<collection:foo>
 collection:foo AND bar|(<collection:foo> AND <text:"bar">)
 collection:foo bar|<text:"collection:foo bar">
-recordid:90|<recordid:90>
-base:foo|<base:foo>
+database:foo|<database:foo>
+database:foo AND bar|(<database:foo> AND <text:"bar">)
+database:foo bar|<text:"database:foo bar">
+id:90|<record_identifier:90>
+id:90 AND foo|(<record_identifier:90> AND <text:"foo">)
+id:90 foo|<text:"id:90 foo">
+recordid:90|<record_identifier:90>
 
 # Matcher on unknown name --> fulltext
 foo:bar|<text:"foo:bar">

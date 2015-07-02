@@ -4,19 +4,19 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class RecordidExpression extends Node
+class RecordIdentifierExpression extends Node
 {
-    private $recordid;
+    private $record_id;
 
-    public function __construct($recordid)
+    public function __construct($record_id)
     {
-        $this->recordid = $recordid;
+        $this->record_id = $record_id;
     }
 
     public function buildQuery(QueryContext $context)
     {
         $query = array();
-        $query['term']['record_id'] = $this->recordid;
+        $query['term']['record_id'] = $this->record_id;
 
         return $query;
     }
@@ -28,6 +28,6 @@ class RecordidExpression extends Node
 
     public function __toString()
     {
-        return sprintf('<recordid:%s>', $this->recordid);
+        return sprintf('<record_identifier:%s>', $this->record_id);
     }
 }
