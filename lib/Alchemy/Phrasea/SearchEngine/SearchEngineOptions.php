@@ -40,6 +40,7 @@ class SearchEngineOptions
         'fields',
         'status',
         'date_min',
+        'date_max',
         'date_fields',
         'i18n',
         'stemming',
@@ -414,8 +415,8 @@ class SearchEngineOptions
             }
             if (in_array($key, ['date_fields', 'fields'])) {
                 $value = array_map(function (\databox_field $field) {
-                            return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
-                        }, $value);
+                    return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
+                }, $value);
             }
             if (in_array($key, ['collections', 'business_fields'])) {
                 $value = array_map(function (\collection $collection) {
