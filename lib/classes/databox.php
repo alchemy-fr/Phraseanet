@@ -1531,7 +1531,7 @@ class databox extends base
      *
      * @return array
      */
-    public function getAsRow()
+    public function getRawData()
     {
         return [
             'ord' => $this->ord,

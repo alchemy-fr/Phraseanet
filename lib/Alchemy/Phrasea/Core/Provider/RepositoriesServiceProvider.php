@@ -130,7 +130,7 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             $appbox = $app->getApplicationBox();
             $repository = new DbalDataboxRepository($appbox->get_connection(), $factory);
 
-            return new CachedDataboxRepository($repository, $app['cache'], $factory);
+            return new CachedDataboxRepository($repository, $app['cache'], $appbox->get_cache_key($appbox::CACHE_LIST_BASES), $factory);
         });
     }
 

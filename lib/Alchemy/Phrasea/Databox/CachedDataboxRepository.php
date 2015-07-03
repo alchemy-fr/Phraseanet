@@ -14,25 +14,26 @@ use Doctrine\Common\Cache\Cache;
 
 class CachedDataboxRepository implements DataboxRepositoryInterface
 {
-    const CACHE_KEY = \appbox::CACHE_LIST_BASES;
-
     /** @var DataboxRepositoryInterface */
     private $repository;
     /** @var Cache */
     private $cache;
+    /** @var string */
+    private $cacheKey;
     /** @var DataboxFactory */
     private $factory;
 
-    public function __construct(DataboxRepositoryInterface $repository, Cache $cache, DataboxFactory $factory)
+    public function __construct(DataboxRepositoryInterface $repository, Cache $cache, $cacheKey, DataboxFactory $factory)
     {
         $this->repository = $repository;
         $this->cache = $cache;
+        $this->cacheKey = $cacheKey;
         $this->factory = $factory;
     }
 
     public function find($id)
     {
-        $rows = $this->cache->fetch(self::CACHE_KEY);
+        $rows = $this->cache->fetch($this->cacheKey);
 
         if (isset($rows[$id])) {
             return $this->factory->create($id, $rows[$id]);
@@ -43,7 +44,7 @@ class CachedDataboxRepository implements DataboxRepositoryInterface
 
     public function findAll()
     {
-        $rows = $this->cache->fetch(self::CACHE_KEY);
+        $rows = $this->cache->fetch($this->cacheKey);
 
         if (is_array($rows)) {
             return $this->factory->createMany($rows);
@@ -64,9 +65,9 @@ class CachedDataboxRepository implements DataboxRepositoryInterface
         $rows = array();
 
         foreach ($databoxes as $databox) {
-            $rows[$databox->get_sbas_id()] = $databox->getAsRow();
+            $rows[$databox->get_sbas_id()] = $databox->getRawData();
         }
 
-        $this->cache->save(self::CACHE_KEY, $rows);
+        $this->cache->save($this->cacheKey, $rows);
     }
 }

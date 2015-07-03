@@ -20,6 +20,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ObjectProphecy */
     private $cache;
+    private $cacheKey = 'test_key';
     /** @var ObjectProphecy */
     private $factory;
     /** @var ObjectProphecy */
@@ -34,7 +35,12 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->repository = $this->prophesize(DataboxRepositoryInterface::class);
         $this->factory = $this->prophesize(DataboxFactory::class);
 
-        $this->sut = new CachedDataboxRepository($this->repository->reveal(), $this->cache->reveal(), $this->factory->reveal());
+        $this->sut = new CachedDataboxRepository(
+            $this->repository->reveal(),
+            $this->cache->reveal(),
+            $this->cacheKey,
+            $this->factory->reveal()
+        );
     }
 
     public function testItImplementsDataboxRepositoryInterface()
@@ -46,7 +52,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $databox = $this->prophesize(\databox::class);
 
-        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
+        $this->cache->fetch($this->cacheKey)
             ->willReturn(false);
         $this->repository->find(42)
             ->willReturn($databox->reveal());
@@ -58,7 +64,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $databox = $this->prophesize(\databox::class);
 
-        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
+        $this->cache->fetch($this->cacheKey)
             ->willReturn([42 => ['foo' => 'bar']]);
         $this->repository->find(42)
             ->shouldNotBeCalled();
@@ -73,17 +79,17 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $databox = $this->prophesize(\databox::class);
         $databox->get_sbas_id()
             ->willReturn(42);
-        $databox->getAsRow()
+        $databox->getRawData()
             ->willReturn(['foo' => 'bar']);
 
         $cache_data = [42 => ['foo' => 'bar']];
         $databoxes = [42 => $databox->reveal()];
 
-        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
+        $this->cache->fetch($this->cacheKey)
             ->willReturn(false);
         $this->repository->findAll()
             ->willReturn($databoxes);
-        $this->cache->save(CachedDataboxRepository::CACHE_KEY, $cache_data)
+        $this->cache->save($this->cacheKey, $cache_data)
             ->shouldBeCalled();
 
         $this->factory->createMany(Argument::any())
@@ -99,7 +105,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $cache_data = [42 => ['foo' => 'bar']];
         $databoxes = [42 => $databox->reveal()];
 
-        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
+        $this->cache->fetch($this->cacheKey)
             ->willReturn($cache_data);
         $this->repository->findAll()
             ->shouldNotBeCalled();
