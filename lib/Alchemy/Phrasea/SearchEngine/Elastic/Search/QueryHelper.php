@@ -6,6 +6,43 @@ class QueryHelper
 {
     private function __construct() {}
 
+    public static function buildPrivateFieldQueries(QueryContext $context, \Closure $matcher_callback)
+    {
+        // We make a boolean clause for each collection set to shrink query size
+        // (instead of a clause for each field, with his collection set)
+        $fields_map = [];
+        $collections_map = [];
+        foreach ($context->getAllowedPrivateFields() as $field) {
+            $collections = $context->getAllowedCollectionsOnPrivateField($field);
+            $hash = self::hashCollections($collections);
+            $collections_map[$hash] = $collections;
+            if (!isset($fields_map[$hash])) {
+                $fields_map[$hash] = [];
+            }
+            // Merge fields with others having the same collections
+            $fields = $context->localizeField($field->getIndexFieldName());
+            foreach ($fields as $fields_map[$hash][]);
+        }
+
+        $queries = [];
+        foreach ($fields_map as $hash => $fields) {
+            // Right to query on a private field is dependant of document collection
+            // Here we make sure we can only match on allowed collections
+            $query = [];
+            $query['bool']['must'][0]['terms']['base_id'] = $collections_map[$hash];
+            $query['bool']['must'][1] = $matcher_callback->__invoke($fields);
+            $queries[] = $query;
+        }
+
+        return $queries;
+    }
+
+    private static function hashCollections(array $collections)
+    {
+        sort($collections, SORT_REGULAR);
+        return implode('|', $collections);
+    }
+
     /**
      * Apply conjunction or disjunction between a query and a sub query clause
      *
