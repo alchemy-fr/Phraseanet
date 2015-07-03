@@ -9,7 +9,7 @@
  */
 namespace Alchemy\Tests\Phrasea\Databox;
 
-use Alchemy\Phrasea\Databox\DataboxHydrator;
+use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Doctrine\DBAL\Connection;
@@ -22,16 +22,16 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @var ObjectProphecy */
     private $connection;
     /** @var ObjectProphecy */
-    private $hydrator;
+    private $factory;
     /** @var DbalDataboxRepository */
     private $sut;
 
     protected function setUp()
     {
         $this->connection = $this->prophesize(Connection::class);
-        $this->hydrator = $this->prophesize(DataboxHydrator::class);
+        $this->factory = $this->prophesize(DataboxFactory::class);
 
-        $this->sut = new DbalDataboxRepository($this->connection->reveal(), $this->hydrator->reveal());
+        $this->sut = new DbalDataboxRepository($this->connection->reveal(), $this->factory->reveal());
     }
 
     public function testItImplementsDataboxRepositoryInterface()
@@ -54,7 +54,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->closeCursor()
             ->shouldBeCalled();
 
-        $this->hydrator->hydrateRow(42, ['foo' => 'bar'])
+        $this->factory->create(42, ['foo' => 'bar'])
             ->willReturn($databox->reveal());
 
         $this->assertSame($databox->reveal(), $this->sut->find(42));
@@ -73,7 +73,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->closeCursor()
             ->shouldBeCalled();
 
-        $this->hydrator->hydrateRow(42, Argument::any())
+        $this->factory->create(42, Argument::any())
             ->shouldNotBeCalled();
 
         $this->assertNull($this->sut->find(42));
@@ -94,7 +94,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->closeCursor()
             ->shouldBeCalled();
 
-        $this->hydrator->hydrateRows([42 => ['foo' => 'bar']])
+        $this->factory->createMany([42 => ['foo' => 'bar']])
             ->willReturn([$databox->reveal()]);
 
         $this->assertSame([$databox->reveal()], $this->sut->findAll());

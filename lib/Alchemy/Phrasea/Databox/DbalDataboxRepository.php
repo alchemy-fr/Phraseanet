@@ -16,13 +16,13 @@ class DbalDataboxRepository implements DataboxRepositoryInterface
 {
     /** @var Connection */
     private $connection;
-    /** @var DataboxHydrator */
-    private $hydrator;
+    /** @var DataboxFactory */
+    private $factory;
 
-    public function __construct(Connection $connection, DataboxHydrator $hydrator)
+    public function __construct(Connection $connection, DataboxFactory $factory)
     {
         $this->connection = $connection;
-        $this->hydrator = $hydrator;
+        $this->factory = $factory;
     }
 
     /**
@@ -34,7 +34,7 @@ class DbalDataboxRepository implements DataboxRepositoryInterface
         $row = $this->fetchRow($id);
 
         if (is_array($row)) {
-            return $this->hydrator->hydrateRow($id, $row);
+            return $this->factory->create($id, $row);
         }
 
         return null;
@@ -45,7 +45,7 @@ class DbalDataboxRepository implements DataboxRepositoryInterface
      */
     public function findAll()
     {
-        return $this->hydrator->hydrateRows($this->fetchRows());
+        return $this->factory->createMany($this->fetchRows());
     }
 
     /**

@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Databox\CachedDataboxRepository;
 use Alchemy\Phrasea\Databox\DataboxFactory;
-use Alchemy\Phrasea\Databox\DataboxHydrator;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -127,11 +126,11 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
 
         $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
-            $hydrator = new DataboxHydrator(new DataboxFactory($app));
+            $factory = new DataboxFactory($app);
             $appbox = $app->getApplicationBox();
-            $repository = new DbalDataboxRepository($appbox->get_connection(), $hydrator);
+            $repository = new DbalDataboxRepository($appbox->get_connection(), $factory);
 
-            return new CachedDataboxRepository($repository, $appbox, $hydrator);
+            return new CachedDataboxRepository($repository, $app['cache'], $factory);
         });
     }
 

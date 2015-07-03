@@ -9,19 +9,19 @@
  */
 namespace Alchemy\Tests\Phrasea\Databox;
 
-use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Databox\CachedDataboxRepository;
-use Alchemy\Phrasea\Databox\DataboxHydrator;
+use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
+use Doctrine\Common\Cache\Cache;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
 final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ObjectProphecy */
-    private $appbox;
+    private $cache;
     /** @var ObjectProphecy */
-    private $hydrator;
+    private $factory;
     /** @var ObjectProphecy */
     private $repository;
 
@@ -30,11 +30,11 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->appbox = $this->prophesize(\appbox::class);
+        $this->cache = $this->prophesize(Cache::class);
         $this->repository = $this->prophesize(DataboxRepositoryInterface::class);
-        $this->hydrator = $this->prophesize(DataboxHydrator::class);
+        $this->factory = $this->prophesize(DataboxFactory::class);
 
-        $this->sut = new CachedDataboxRepository($this->repository->reveal(), $this->appbox->reveal(), $this->hydrator->reveal());
+        $this->sut = new CachedDataboxRepository($this->repository->reveal(), $this->cache->reveal(), $this->factory->reveal());
     }
 
     public function testItImplementsDataboxRepositoryInterface()
@@ -46,7 +46,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $databox = $this->prophesize(\databox::class);
 
-        $this->appbox->get_data_from_cache(\appbox::CACHE_LIST_BASES)
+        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
             ->willReturn(false);
         $this->repository->find(42)
             ->willReturn($databox->reveal());
@@ -58,11 +58,11 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $databox = $this->prophesize(\databox::class);
 
-        $this->appbox->get_data_from_cache(\appbox::CACHE_LIST_BASES)
+        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
             ->willReturn([42 => ['foo' => 'bar']]);
         $this->repository->find(42)
             ->shouldNotBeCalled();
-        $this->hydrator->hydrateRow(42, ['foo' => 'bar'])
+        $this->factory->create(42, ['foo' => 'bar'])
             ->willReturn($databox->reveal());
 
         $this->assertSame($databox->reveal(), $this->sut->find(42));
@@ -79,14 +79,14 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $cache_data = [42 => ['foo' => 'bar']];
         $databoxes = [42 => $databox->reveal()];
 
-        $this->appbox->get_data_from_cache(\appbox::CACHE_LIST_BASES)
-            ->willThrow(new Exception());
+        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
+            ->willReturn(false);
         $this->repository->findAll()
             ->willReturn($databoxes);
-        $this->appbox->set_data_to_cache($cache_data, \appbox::CACHE_LIST_BASES)
+        $this->cache->save(CachedDataboxRepository::CACHE_KEY, $cache_data)
             ->shouldBeCalled();
 
-        $this->hydrator->hydrateRows(Argument::any())
+        $this->factory->createMany(Argument::any())
             ->shouldNotBeCalled();
 
         $this->assertSame($databoxes, $this->sut->findAll());
@@ -99,11 +99,11 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
         $cache_data = [42 => ['foo' => 'bar']];
         $databoxes = [42 => $databox->reveal()];
 
-        $this->appbox->get_data_from_cache(\appbox::CACHE_LIST_BASES)
+        $this->cache->fetch(CachedDataboxRepository::CACHE_KEY)
             ->willReturn($cache_data);
         $this->repository->findAll()
             ->shouldNotBeCalled();
-        $this->hydrator->hydrateRows($cache_data)
+        $this->factory->createMany($cache_data)
             ->willReturn($databoxes);
 
         $this->assertSame($databoxes, $this->sut->findAll());

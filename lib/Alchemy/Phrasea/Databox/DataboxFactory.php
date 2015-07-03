@@ -32,4 +32,20 @@ class DataboxFactory
     {
         return new \databox($this->app, $id, $raw);
     }
+
+    /**
+     * @param array $rows
+     * @throws NotFoundHttpException when Databox could not be retrieved from Persistence layer
+     * @return \databox[]
+     */
+    public function createMany(array $rows)
+    {
+        $databoxes = [];
+
+        foreach ($rows as $id => $raw) {
+            $databoxes[$id] = new \databox($this->app, $id, $raw);
+        }
+
+        return $databoxes;
+    }
 }

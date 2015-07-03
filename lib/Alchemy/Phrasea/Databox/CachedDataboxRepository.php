@@ -10,30 +10,32 @@
 namespace Alchemy\Phrasea\Databox;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Cache\Exception;
+use Doctrine\Common\Cache\Cache;
 
 class CachedDataboxRepository implements DataboxRepositoryInterface
 {
+    const CACHE_KEY = \appbox::CACHE_LIST_BASES;
+
     /** @var DataboxRepositoryInterface */
     private $repository;
-    /** @var \appbox */
-    private $appbox;
-    /** @var DataboxHydrator */
-    private $hydrator;
+    /** @var Cache */
+    private $cache;
+    /** @var DataboxFactory */
+    private $factory;
 
-    public function __construct(DataboxRepositoryInterface $repository, \appbox $appbox, DataboxHydrator $hydrator)
+    public function __construct(DataboxRepositoryInterface $repository, Cache $cache, DataboxFactory $factory)
     {
         $this->repository = $repository;
-        $this->appbox = $appbox;
-        $this->hydrator = $hydrator;
+        $this->cache = $cache;
+        $this->factory = $factory;
     }
 
     public function find($id)
     {
-        $rows = $this->fetchRows();
+        $rows = $this->cache->fetch(self::CACHE_KEY);
 
         if (isset($rows[$id])) {
-            return $this->hydrator->hydrateRow($id, $rows[$id]);
+            return $this->factory->create($id, $rows[$id]);
         }
 
         return $this->repository->find($id);
@@ -41,37 +43,23 @@ class CachedDataboxRepository implements DataboxRepositoryInterface
 
     public function findAll()
     {
-        $rows = $this->fetchRows();
+        $rows = $this->cache->fetch(self::CACHE_KEY);
 
         if (is_array($rows)) {
-            return $this->hydrator->hydrateRows($rows);
+            return $this->factory->createMany($rows);
         }
 
         $databoxes = $this->repository->findAll();
 
-        $this->saveRows($databoxes);
+        $this->saveCache($databoxes);
 
         return $databoxes;
     }
 
     /**
-     * @return bool|array false on cache miss
-     */
-    private function fetchRows()
-    {
-        try {
-            $rows = $this->appbox->get_data_from_cache(\appbox::CACHE_LIST_BASES);
-        } catch (Exception $e) {
-            $rows = false;
-        }
-
-        return $rows;
-    }
-
-    /**
      * @param \databox[] $databoxes
      */
-    private function saveRows(array $databoxes)
+    private function saveCache(array $databoxes)
     {
         $rows = array();
 
@@ -79,6 +67,6 @@ class CachedDataboxRepository implements DataboxRepositoryInterface
             $rows[$databox->get_sbas_id()] = $databox->getAsRow();
         }
 
-        $this->appbox->set_data_to_cache($rows, \appbox::CACHE_LIST_BASES);
+        $this->cache->save(self::CACHE_KEY, $rows);
     }
 }
