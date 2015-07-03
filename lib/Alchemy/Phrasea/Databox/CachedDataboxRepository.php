@@ -9,10 +9,9 @@
  */
 namespace Alchemy\Phrasea\Databox;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\Common\Cache\Cache;
 
-class CachedDataboxRepository implements DataboxRepositoryInterface
+final class CachedDataboxRepository implements DataboxRepositoryInterface
 {
     /** @var DataboxRepositoryInterface */
     private $repository;

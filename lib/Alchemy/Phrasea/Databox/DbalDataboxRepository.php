@@ -9,10 +9,9 @@
  */
 namespace Alchemy\Phrasea\Databox;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\DBAL\Connection;
 
-class DbalDataboxRepository implements DataboxRepositoryInterface
+final class DbalDataboxRepository implements DataboxRepositoryInterface
 {
     /** @var Connection */
     private $connection;
