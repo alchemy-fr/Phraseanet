@@ -37,13 +37,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
 
     public function buildQuery(QueryContext $context)
     {
-        $query = array(
-            'multi_match' => array(
-                'fields'   => $context->getLocalizedFields(),
-                'query'    => $this->text,
-                'operator' => 'and',
-            )
-        );
+        $query = $this->buildMatcher($context->getLocalizedFields());
 
         foreach ($this->buildPrivateFieldQueries($context) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
@@ -78,17 +72,24 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
         foreach ($fields_map as $hash => $fields) {
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
-            $match = [];
-            $match['multi_match']['fields'] = $fields;
-            $match['multi_match']['query'] = $this->text;
-            $match['multi_match']['operator'] = 'and';
             $query = [];
             $query['bool']['must'][0]['terms']['base_id'] = $collections_map[$hash];
-            $query['bool']['must'][1] = $match;
+            $query['bool']['must'][1] = $this->buildMatcher($fields);
             $queries[] = $query;
         }
 
         return $queries;
+    }
+
+    private function buildMatcher(array $fields)
+    {
+        return [
+            'multi_match' => [
+                'fields'   => $fields,
+                'query'    => $this->text,
+                'operator' => 'and',
+            ]
+        ];
     }
 
     private static function hashCollections(array $collections)
