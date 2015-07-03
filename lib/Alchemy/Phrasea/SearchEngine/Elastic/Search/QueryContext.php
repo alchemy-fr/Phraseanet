@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 /**
@@ -46,10 +47,7 @@ class QueryContext
     public function getRawFields()
     {
         if ($this->fields === null) {
-            return array(
-                'caption_all.raw',
-                'private_caption_all.raw'
-            );
+            return array('caption_all.raw');
         }
 
         $fields = array();
@@ -66,10 +64,7 @@ class QueryContext
     public function getLocalizedFields()
     {
         if ($this->fields === null) {
-            return array_merge(
-                $this->localizeField('caption_all'),
-                $this->localizeField('private_caption_all')
-            );
+            return $this->localizeField('caption_all');
         }
 
         $fields = array();
@@ -81,7 +76,27 @@ class QueryContext
         return $fields;
     }
 
-    private function localizeField($field)
+    public function getAllowedPrivateFields()
+    {
+        $allowed_field_names = array_keys($this->privateCollectionMap);
+
+        return array_map(array($this->structure, 'get'), $allowed_field_names);
+    }
+
+    public function getAllowedCollectionsOnPrivateField(Field $field)
+    {
+        $name = $field->getName();
+        if (!isset($this->privateCollectionMap[$name])) {
+            throw new \OutOfRangeException('Given field is not an allowed private field.');
+        }
+
+        return $this->privateCollectionMap[$name];
+    }
+
+    /**
+     * @todo Maybe we should put this logic in Field class?
+     */
+    public function localizeField($field)
     {
         $fields = array();
         foreach ($this->locales as $locale) {

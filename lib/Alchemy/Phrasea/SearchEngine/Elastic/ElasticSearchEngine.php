@@ -300,6 +300,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         );
     }
 
+    /**
+     * @todo Move in search engine service provider
+     */
     private function createQueryContext(SearchEngineOptions $options)
     {
         // TODO handle $user when null
@@ -321,6 +324,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      *     "OtherFieldName" => [4],
      * ]
      *
+     * @todo Move in query context
      * @param SearchEngineOptions $options
      * @return array
      */
@@ -334,8 +338,11 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $map = $this->structure->getCollectionsUsedByPrivateFields();
         // Remove collections base_id which access is restricted.
-        foreach ($map as $_ => &$collections) {
+        foreach ($map as $key => &$collections) {
             $collections = array_intersect($collections, $allowed_collections);
+            if (!$collections) {
+                unset($map[$key]);
+            }
         }
 
         return $map;

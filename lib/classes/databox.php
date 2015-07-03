@@ -232,10 +232,10 @@ class databox extends base
 
     public function get_collection_unique_ids()
     {
-        static $base_ids;
+        static $base_ids_cache = [];
 
-        if (isset($base_ids)) {
-            return $base_ids;
+        if (isset($base_ids_cache[$this->id])) {
+            return $base_ids_cache[$this->id];
         }
 
         $conn = $this->get_appbox()->get_connection();
@@ -250,7 +250,7 @@ class databox extends base
             $base_ids[] = (int) $row['base_id'];
         }
 
-        return $base_ids;
+        return $base_ids_cache[$this->id] = $base_ids;
     }
 
     protected function get_available_collections()
