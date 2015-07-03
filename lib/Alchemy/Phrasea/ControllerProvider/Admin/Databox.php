@@ -142,13 +142,4 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
     {
         $this->getFirewall($app)->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
     }
-
-    /**
-     * @param Application $app
-     * @return Firewall
-     */
-    private function getFirewall(Application $app)
-    {
-        return $app['firewall'];
-    }
 }

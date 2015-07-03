@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Model\Entities\Collection;
 use Alchemy\Phrasea\Model\Entities\Databox;
+use Assert\Assertion;
 use Psr\Log\LoggerInterface;
 
 class AccessRestriction
@@ -57,6 +58,25 @@ class AccessRestriction
         }
 
         return in_array($databox->get_sbas_id(), $this->cache->fetch('available_databoxes'), true);
+    }
+
+    /**
+     * @param \databox[] $databoxes
+     * @return \databox[]
+     */
+    public function filterAvailableDataboxes(array $databoxes)
+    {
+        Assertion::allIsInstanceOf($databoxes, \databox::class);
+
+        if (!$this->isRestricted()) {
+            return $databoxes;
+        }
+
+        $available = array_flip($this->cache->fetch('available_databoxes'));
+
+        return array_filter($databoxes, function (\databox $databox) use ($available) {
+            return isset($available[$databox->get_sbas_id()]);
+        });
     }
 
     /**

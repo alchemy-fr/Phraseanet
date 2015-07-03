@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Databox\CachedDataboxRepository;
+use Alchemy\Phrasea\Databox\DataboxFactory;
+use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -120,6 +123,14 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
         $app['repo.webhook-delivery'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WebhookEventDelivery');
+        });
+
+        $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
+            $factory = new DataboxFactory($app);
+            $appbox = $app->getApplicationBox();
+            $repository = new DbalDataboxRepository($appbox->get_connection(), $factory);
+
+            return new CachedDataboxRepository($repository, $app['cache'], $appbox->get_cache_key($appbox::CACHE_LIST_BASES), $factory);
         });
     }
 

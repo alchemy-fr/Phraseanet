@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
+use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
@@ -358,54 +360,12 @@ class appbox extends base
      */
     public function get_databoxes()
     {
-        if ($this->databoxes) {
-            return $this->databoxes;
+        if (!$this->databoxes) {
+            $this->databoxes = $this->getAccessRestriction()
+                ->filterAvailableDataboxes($this->getDataboxRepository()->findAll());
         }
-
-        $ret = [];
-        foreach ($this->retrieve_sbas_ids() as $sbas_id) {
-            try {
-                $databox = new \databox($this->app, $sbas_id);
-                if (!$this->app['conf.restrictions']->isDataboxAvailable($databox)) {
-                    continue;
-                }
-                $ret[$sbas_id] = $databox;
-            } catch (NotFoundHttpException $e) {
-                $this->app['monolog']->error(sprintf('Databox %s is not reliable.', $sbas_id));
-            }
-        }
-
-        $this->databoxes = $ret;
 
         return $this->databoxes;
-    }
-
-    protected function retrieve_sbas_ids()
-    {
-        try {
-            $data = $this->get_data_from_cache(self::CACHE_SBAS_IDS);
-            if (is_array($data)) {
-                return $data;
-            }
-        } catch (\Exception $e) {
-
-        }
-        $sql = 'SELECT sbas_id FROM sbas';
-
-        $ret = [];
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $ret[] = (int) $row['sbas_id'];
-        }
-
-        $this->set_data_to_cache($ret, self::CACHE_SBAS_IDS);
-
-        return $ret;
     }
 
     public function get_databox($sbas_id)
@@ -435,5 +395,21 @@ class appbox extends base
         }
 
         parent::delete_data_from_cache($option);
+    }
+
+    /**
+     * @return AccessRestriction
+     */
+    private function getAccessRestriction()
+    {
+        return $this->app['conf.restrictions'];
+    }
+
+    /**
+     * @return DataboxRepositoryInterface
+     */
+    private function getDataboxRepository()
+    {
+        return $this->app['repo.databoxes'];
     }
 }
