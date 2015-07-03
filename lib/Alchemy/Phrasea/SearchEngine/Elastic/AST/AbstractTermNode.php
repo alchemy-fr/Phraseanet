@@ -10,7 +10,7 @@ abstract class AbstractTermNode extends Node implements TermInterface
 {
     protected $text;
     protected $context;
-    private $concepts = array();
+    private $concepts = [];
 
     public function __construct($text, Context $context = null)
     {
@@ -25,21 +25,24 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
     protected function buildConceptQueries(QueryContext $context)
     {
-        $queries = array();
+        $queries = [];
         $concepts = Concept::pruneNarrowConcepts($this->concepts);
+        if (!$concepts) {
+            return [];
+        }
         $fields = $context->getFields();
         if (empty($fields)) {
-            $fields = array('*');
+            $fields = ['*'];
         }
         $prefixedFields = array();
         foreach ($fields as $field) {
             $prefixedFields[] = 'concept_path.' . $field;
         }
         foreach ($concepts as $concept) {
-            $queries[]['multi_match'] = array(
+            $queries[]['multi_match'] = [
                 'fields' => $prefixedFields,
                 'query' => $concept->getPath()
-            );
+            ];
         }
 
         return $queries;
@@ -62,6 +65,6 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
     public function getTermNodes()
     {
-        return array($this);
+        return [$this];
     }
 }
