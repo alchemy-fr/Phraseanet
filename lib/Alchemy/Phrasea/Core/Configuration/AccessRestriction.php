@@ -64,7 +64,7 @@ class AccessRestriction
      * @param \databox[] $databoxes
      * @return \databox[]
      */
-    public function filterDataboxAvailable(array $databoxes)
+    public function filterAvailableDataboxes(array $databoxes)
     {
         Assertion::allIsInstanceOf($databoxes, \databox::class);
 

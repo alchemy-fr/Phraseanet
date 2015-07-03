@@ -362,7 +362,7 @@ class appbox extends base
     {
         if (!$this->databoxes) {
             $this->databoxes = $this->getAccessRestriction()
-                ->filterDataboxAvailable($this->getDataboxRepository()->findAll());
+                ->filterAvailableDataboxes($this->getDataboxRepository()->findAll());
         }
 
         return $this->databoxes;
