@@ -14,14 +14,15 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /** @var \databox */
-    protected $databox;
+    protected $databox_id;
 
     public function setUp()
     {
         parent::setUp();
         $databoxes = $this->getApplication()->getDataboxes();
-        $this->databox = array_shift($databoxes);
+        // Can not keep databox instance as appbox is cleared
+        $databox = array_shift($databoxes);
+        $this->databox_id = $databox->get_sbas_id();
     }
 
     public function getSubdefName()
@@ -34,30 +35,31 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRouteGetSubdef()
     {
-        self::$DI['client']->request("GET", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/");
+        self::$DI['client']->request("GET", "/admin/subdefs/" .  $this->databox_id . "/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testPostRouteAddSubdef()
     {
         $name = $this->getSubdefName();
-        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/", ['add_subdef' => [
+        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/", ['add_subdef' => [
                 'class'  => 'thumbnail',
                 'name'   => $name,
                 'group'  => 'image'
             ]]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
-        $subdefs = new \databox_subdefsStructure($this->databox, self::$DI['app']['translator']);
+        $app = $this->getApplication();
+        $subdefs = new \databox_subdefsStructure($app->findDataboxById($this->databox_id), $app['translator']);
         $subdefs->delete_subdef('image', $name);
     }
 
     public function testPostRouteDeleteSubdef()
     {
-        $subdefs =  $this->databox->get_subdef_structure();
+        $subdefs =  $this->getApplication()->findDataboxById($this->databox_id)->get_subdef_structure();
         $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail");
-        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/", ['delete_subdef' => 'image_' . $name]);
+        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/", ['delete_subdef' => 'image_' . $name]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
             $subdefs->get_subdef("image", $name);
@@ -69,10 +71,10 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRouteAddSubdefWithNoParams()
     {
-        $subdefs =  $this->databox->get_subdef_structure();
+        $subdefs =  $this->getApplication()->findDataboxById($this->databox_id)->get_subdef_structure();
         $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail");
-        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox->get_sbas_id() . "/"
+        self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/"
             , ['subdefs' => [
                 'image_' . $name
             ]
@@ -88,7 +90,8 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
         );
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $subdefs = new \databox_subdefsStructure($this->databox, self::$DI['app']['translator']);
+        $app = $this->getApplication();
+        $subdefs = new \databox_subdefsStructure($app->findDataboxById($this->databox_id), $app['translator']);
         $subdef = $subdefs->get_subdef("image", $name);
 
         /* @var $subdef \databox_subdef */
