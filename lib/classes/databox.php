@@ -49,7 +49,6 @@ class databox extends base
     protected static $_sxml_thesaurus = [];
 
     const BASE_TYPE = self::DATA_BOX;
-    const CACHE_BASE_DATABOX = 'base_infos';
     const CACHE_META_STRUCT = 'meta_struct';
     const CACHE_THESAURUS = 'thesaurus';
     const CACHE_COLLECTIONS = 'collections';
@@ -66,7 +65,7 @@ class databox extends base
      * @param int         $sbas_id
      * @param array       $row
      */
-    public function __construct(Application $app, $sbas_id, array $row = null)
+    public function __construct(Application $app, $sbas_id, array $row)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
@@ -94,34 +93,7 @@ class databox extends base
         $this->passwd = $params['password'];
         $this->dbname = $params['dbname'];
 
-        if (empty($row)) {
-            $row = $this->fetchRow();
-        }
         $this->loadFromRow($row);
-    }
-
-    private function fetchRow()
-    {
-        try {
-            $row = $this->get_data_from_cache(static::CACHE_BASE_DATABOX);
-            if (!is_array($row)) {
-                throw new UnexpectedValueException('Expects row to be an array');
-            }
-        } catch (\Exception $e) {
-            $sql = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :sbas_id';
-            $stmt = $this->get_appbox()->get_connection()->prepare($sql);
-            $stmt->execute(['sbas_id' => $this->id]);
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            $this->set_data_to_cache($row, static::CACHE_BASE_DATABOX);
-        }
-
-        if (!$row) {
-            throw new NotFoundHttpException(sprintf('databox %d not found', $this->id));
-        }
-
-        return $row;
     }
 
     public function get_viewname()
@@ -137,7 +109,6 @@ class databox extends base
         $stmt->execute([':viewname' => $viewname, ':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
-        $this->delete_data_from_cache(static::CACHE_BASE_DATABOX);
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($this->app, $this->id, 'structure');
 
@@ -266,8 +237,6 @@ class databox extends base
         $stmt->closeCursor();
 
         $this->labels[$code] = $label;
-
-        $this->delete_data_from_cache(static::CACHE_BASE_DATABOX);
 
         phrasea::reset_sbasDatas($this->app['phraseanet.appbox']);
 

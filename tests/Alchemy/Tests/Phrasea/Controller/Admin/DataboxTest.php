@@ -395,7 +395,8 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
 
-        $this->assertTrue(!!self::$DI['app']->getApplicationBox()->is_databox_indexable(new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id())));
+        $app = $this->getApplication();
+        $this->assertTrue(!!$app->getApplicationBox()->is_databox_indexable($app->findDataboxById(self::$DI['collection']->get_sbas_id())));
     }
 
     /**
