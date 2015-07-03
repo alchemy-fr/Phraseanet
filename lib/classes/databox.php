@@ -95,12 +95,12 @@ class databox extends base
         $this->dbname = $params['dbname'];
 
         if (empty($row)) {
-            $row = $this->loadRow();
+            $row = $this->fetchRow();
         }
         $this->loadFromRow($row);
     }
 
-    private function loadRow()
+    private function fetchRow()
     {
         try {
             $row = $this->get_data_from_cache(static::CACHE_BASE_DATABOX);
@@ -482,7 +482,6 @@ class databox extends base
         $stmt->closeCursor();
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        $this->get_appbox()->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         return;
     }
@@ -633,7 +632,6 @@ class databox extends base
         $databox = $app->findDataboxById($sbas_id);
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
@@ -1526,5 +1524,22 @@ class databox extends base
         $this->labels['en'] = $row['label_en'];
         $this->labels['de'] = $row['label_de'];
         $this->labels['nl'] = $row['label_nl'];
+    }
+
+    /**
+     * Return an array that can be used to restore databox.
+     *
+     * @return array
+     */
+    public function getAsRow()
+    {
+        return [
+            'ord' => $this->ord,
+            'viewname' => $this->viewname,
+            'label_en' => $this->labels['en'],
+            'label_fr' => $this->labels['fr'],
+            'label_de' => $this->labels['de'],
+            'label_nl' => $this->labels['nl'],
+        ];
     }
 }

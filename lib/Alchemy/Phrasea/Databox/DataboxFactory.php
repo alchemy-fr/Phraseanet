@@ -10,11 +10,26 @@
 namespace Alchemy\Phrasea\Databox;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DataboxFactory
 {
-    public function create(Application $app, $id, array $raw = null)
+    /** @var Application */
+    private $app;
+
+    public function __construct(Application $app)
     {
-        return new \databox($app, $id, $raw);
+        $this->app = $app;
+    }
+
+    /**
+     * @param int   $id
+     * @param array $raw
+     * @throws NotFoundHttpException when Databox could not be retrieved from Persistence layer
+     * @return \databox
+     */
+    public function create($id, array $raw)
+    {
+        return new \databox($this->app, $id, $raw);
     }
 }

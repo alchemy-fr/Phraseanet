@@ -102,7 +102,6 @@ class cache_databox
                     break;
                 case 'structure':
                     $app->getApplicationBox()->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
-                    $app->getApplicationBox()->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
 
                     $sql = 'DELETE FROM memcached
               WHERE site_id = :site_id AND type="structure" AND value = :value';

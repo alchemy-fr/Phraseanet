@@ -85,6 +85,9 @@ abstract class base implements cache_cacheableInterface
         return $this->connection;
     }
 
+    /**
+     * @return \Alchemy\Phrasea\Cache\Cache
+     */
     public function get_cache()
     {
         return $this->app['cache'];
@@ -118,7 +121,6 @@ abstract class base implements cache_cacheableInterface
             phrasea::reset_sbasDatas($appbox);
             phrasea::reset_baseDatas($appbox);
             phrasea::clear_sbas_params($this->app);
-            $keys[] = $this->get_cache_key(appbox::CACHE_SBAS_IDS);
 
             return $this->get_cache()->deleteMulti($keys);
         }
@@ -133,6 +135,11 @@ abstract class base implements cache_cacheableInterface
         }
     }
 
+    /**
+     * @param mixed $option
+     * @throws Exception
+     * @return string
+     */
     public function get_cache_key($option = null)
     {
         throw new Exception(__METHOD__ . ' must be defined in extended class');
