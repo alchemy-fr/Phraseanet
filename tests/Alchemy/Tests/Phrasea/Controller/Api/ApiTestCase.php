@@ -973,18 +973,30 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
+        $app = $this->getApplication();
+        /** @var \collection $collection */
+        $collection = self::$DI['collection'];
+        // Ensure permalinks will return exact subdef permalinks
+        if ('none' !== $collection->get_pub_wm()) {
+            $collection->set_public_presentation('none');
+        }
+        $app->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(
+            $collection->get_base_id(), array(
             'candwnldpreview' => 1,
             'candwnldhd' => 1
         ));
-        
-        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
+
+        /** @var \record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $route = '/api/v1/records/' . $record_1->get_sbas_id() . '/' . $record_1->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($client->getResponse());
         $this->evaluateMeta200($content);
 
         $this->assertArrayHasKey('embed', $content['response']);
@@ -997,7 +1009,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('thumbnail', $embedTypes);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, self::$DI['record_1']);
+            $this->checkEmbed($embed, $record_1);
         }
         $route = '/api/v1/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, ['GET']);
@@ -1061,15 +1073,18 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testStoriesEmbedRoute()
     {
         $this->setToken($this->userAccessToken);
+        /** @var \record_adapter $story */
         $story = self::$DI['record_story_1'];
 
         $route = '/api/v1/stories/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($client->getResponse());
         $this->evaluateMeta200($content);
 
         $this->assertArrayHasKey('embed', $content['response']);

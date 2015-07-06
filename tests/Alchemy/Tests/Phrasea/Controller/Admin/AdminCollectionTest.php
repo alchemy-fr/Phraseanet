@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 use Rhumsaa\Uuid\Uuid;
+use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -668,9 +669,13 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $files = [
             'newWm' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         ];
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/watermark/', [], $files);
-        $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getWatermark(self::$DI['collection']->get_base_id())));
+        /** @var \collection $collection */
+        $collection = self::$DI['collection'];
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request('POST', '/admin/collection/' . $collection->get_base_id() . '/picture/watermark/', [], $files);
+        $this->checkRedirection($client->getResponse(), '/admin/collection/' . $collection->get_base_id() . '/?success=1');
+        $this->assertEquals(1, count(\collection::getWatermark($collection->get_base_id())));
     }
 
     /**
