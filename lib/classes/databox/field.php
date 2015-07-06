@@ -90,7 +90,7 @@ class databox_field implements cache_cacheableInterface
                          `name`, `src`, `business`, `VocabularyControlType`,
                          `RestrictToVocabularyControl`, `sorter`,
                          `label_en`, `label_fr`, `label_de`, `label_nl`
-                  FROM metadatas_structure";
+                  FROM metadatas_structure ORDER BY sorter";
       
         $statement = $connection->prepare($query);
         $statement->execute();

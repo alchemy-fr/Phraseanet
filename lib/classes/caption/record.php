@@ -32,7 +32,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                          m.value, m.VocabularyType, m.VocabularyId
                   FROM metadatas m INNER JOIN metadatas_structure s ON (s.id = m.meta_struct_id)
                   WHERE m.record_id IN (%s)
-                  ORDER BY m.record_id, s.id, s.sorter ASC";
+                  ORDER BY m.record_id, s.sorter ASC";
 
         $query = sprintf($query, implode(', ', array_map(function (record_adapter $record) {
             return $record->get_record_id();
@@ -394,7 +394,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      * @param SearchEngineInterface $searchEngine
      * @param Boolean               $includeBusiness
      *
-     * @return array
+     * @return caption_field[]
      */
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
     {
@@ -402,6 +402,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
         foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
             $values = array();
+
             foreach ($field->get_values() as $metaId => $v) {
                 $values[$metaId] = array(
                     'value' => $v->getValue(),
@@ -409,6 +410,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                     'qjs' => $v->getQjs(),
                  );
             }
+
             $fields[$field->get_name()] = array(
                 'values'    => $values,
                 'name'      => $field->get_name(),

@@ -114,7 +114,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $query = 'SELECT s.subdef_id, s.name, s.file, s.width, s.height, s.mime,
                          s.path, s.size, s.substit, s.created_on, s.updated_on, s.etag
                   FROM subdef s
-                  WHERE s.name IN (%s) AND s.record_id = :record_id';
+                  WHERE s.name IN (%s) AND s.record_id = :record_id
+                  ORDER BY s.record_id';
 
         $query = sprintf($query, implode(', ', array_map(function ($index) {
             return ':name_' . $index;

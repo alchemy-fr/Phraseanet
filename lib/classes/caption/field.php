@@ -42,13 +42,7 @@ class caption_field implements cache_cacheableInterface
         }
 
         foreach ($fields as $index => $field) {
-            if ($field->is_multi()) {
-                $field->values = $groupedValues[$index];
-            }
-            else {
-                $value = reset($groupedValues[$index]);
-                $field->values = array($value->getId() => $value);
-            }
+            $field->values = $groupedValues[$index];
         }
 
         return $fields;
@@ -172,7 +166,6 @@ class caption_field implements cache_cacheableInterface
      */
     public function delete()
     {
-
         foreach ($this->get_values() as $value) {
             $value->delete();
         }
