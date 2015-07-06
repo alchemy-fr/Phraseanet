@@ -1,3 +1,12 @@
+# vim:noexpandtab:ts=4:sts=4:ft=make:
+
+install:
+	php bin/console system:clear-cache
+	npm install
+	composer install -o
+	./node_modules/.bin/grunt install-assets
+	php bin/developer assets:compile-less
+
 config:
 	@php bin/console compile:configuration
 
@@ -7,4 +16,4 @@ watch:
 test:
 	@exit 0
 
-.PHONY: config watch test
+.PHONY: install config watch test
