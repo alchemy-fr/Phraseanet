@@ -239,8 +239,8 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     * @param String  $custom_separator
-     * @param Boolean $highlightTheso
+     * @param string  $custom_separator
+     * @param bool $highlight
      *
      * @return mixed
      */
@@ -256,7 +256,7 @@ class caption_field implements cache_cacheableInterface
             return self::serialize_value($this->values, $separator, $highlight);
         }
 
-        $value = current($this->values);
+        $value = reset($this->values);
 
             /* @var $value Caption_Field_Value */
         if ($highlight) {
@@ -264,7 +264,6 @@ class caption_field implements cache_cacheableInterface
         }
 
         return $value->getValue();
-
     }
 
     /**
