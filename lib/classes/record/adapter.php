@@ -116,7 +116,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             }
         }
 
-        $captionRecords = caption_record::getMany($app, $databox, $records);
+        $captionRecords = \caption_record::getMany($app, $databox, $records);
 
         foreach ($captionRecords as $captionRecord) {
             $records[$captionRecord->get_record_id()]->caption_record = $captionRecord;

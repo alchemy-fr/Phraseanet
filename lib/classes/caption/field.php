@@ -41,11 +41,15 @@ class caption_field implements cache_cacheableInterface
             $groupedValues[$databoxFieldId][$value->getId()] = $value;
         }
 
+        $indexedFields = array();
+
         foreach ($fields as $index => $field) {
             $field->values = $groupedValues[$index];
+
+            $indexedFields[$field->get_name()] = $field;
         }
 
-        return $fields;
+        return $indexedFields;
     }
 
     /**
@@ -216,8 +220,8 @@ class caption_field implements cache_cacheableInterface
     public function set_values(array $values)
     {
         foreach ($values as $value) {
-            if (! $value instanceof caption_Field_Value || $value->getDatabox_field() != $this) {
-                throw new \InvalidArgumentException();
+            if (! $value instanceof caption_Field_Value || $value->getDatabox_field() != $this->get_databox_field()) {
+                throw new \InvalidArgumentException('Invalid values');
             }
         }
 

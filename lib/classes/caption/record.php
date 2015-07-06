@@ -28,7 +28,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public static function getMany(Application $app, databox $databox, array $records)
     {
-        $query = "SELECT m.record_id, m.id as meta_id, m.id as id, s.id as structure_id,
+        $query = "SELECT m.record_id as record_id, m.id as meta_id, m.id as id, s.id as structure_id,
                          m.value, m.VocabularyType, m.VocabularyId
                   FROM metadatas m INNER JOIN metadatas_structure s ON (s.id = m.meta_struct_id)
                   WHERE m.record_id IN (%s)
@@ -55,28 +55,28 @@ class caption_record implements caption_interface, cache_cacheableInterface
             $structureId = (int) $row['structure_id'];
             $databox_field = databox_field::get_instance($app, $databox, $structureId);
 
-            if (! isset($groupedFields[$recordId])) {
+            if (! array_key_exists($recordId, $groupedFields)) {
                 $groupedFields[$recordId] = array();
             }
 
-            if (! isset($groupedFields[$recordId][$structureId])) {
+            if (! array_key_exists($structureId, $groupedFields[$recordId])) {
                 $groupedFields[$recordId][$structureId] = array();
             }
 
             $caption_field_values = caption_Field_Value::fromData($app, $databox_field, $record, $row);
-            $groupedFieldValues[$recordId][$structureId][] = $caption_field_values;
+            $groupedFields[$recordId][$structureId][] = $caption_field_values;
 
             $row = next($fields);
         }
 
         foreach ($records as $record) {
             $caption = new self($app, $record, $databox);
-
             $fields = array();
+
 
             foreach ($groupedFields[$record->get_record_id()] as $structureId => $structureFields) {
                 $databox_field = databox_field::get_instance($app, $databox, $structureId);
-                $caption_field = new caption_field($app, $databox_field, $record, null, false);
+                $caption_field = new caption_field($app, $databox_field, $record, array(), false);
 
                 if (! $caption_field->is_multi() && ! empty($structureFields)) {
                     $field = reset($structureFields);
