@@ -1000,7 +1000,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('Metadata value should be scalar');
         }
 
-        $databox_field = databox_field::get_instance($this->app, $databox, $params['meta_struct_id']);
+        $databox_field = $databox->get_meta_structure()->get_element($params['meta_struct_id']);
 
         $caption_field = new caption_field($this->app, $databox_field, $this);
 
@@ -1047,14 +1047,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @return record_adapter
      */
-    public function set_metadatas(Array $metadatas, $force_readonly = false)
+    public function set_metadatas(array $metadatas, $force_readonly = false)
     {
+        $databox_descriptionStructure = $this->get_databox()->get_meta_structure();
+
         foreach ($metadatas as $param) {
             if (!is_array($param)) {
                 throw new Exception_InvalidArgument('Invalid metadatas argument');
             }
 
-            $db_field = \databox_field::get_instance($this->app, $this->get_databox(), $param['meta_struct_id']);
+            $db_field = $databox_descriptionStructure->get_element($param['meta_struct_id']);
 
             if ($db_field->is_readonly() === true && !$force_readonly) {
                 continue;

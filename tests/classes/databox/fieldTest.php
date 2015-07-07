@@ -8,11 +8,11 @@ use Alchemy\Phrasea\Application;
  */
 class databox_fieldTest extends \PhraseanetTestCase
 {
-    /**
-     * @var databox_field
-     */
+    /** @var databox_field */
     protected $object_mono;
+    /** @var databox_field */
     protected $object_multi;
+    /** @var databox */
     protected $databox;
     protected $name_mono;
     protected $name_multi;
@@ -20,7 +20,10 @@ class databox_fieldTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->databox = self::$DI['record_1']->get_databox();
+
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $this->databox = $record_1->get_databox();
         $this->name_mono = 'Field Test Mono';
         $this->name_multi = 'Field Test Multi';
 
@@ -51,15 +54,6 @@ class databox_fieldTest extends \PhraseanetTestCase
         }
 
         parent::tearDown();
-    }
-
-    public function testGet_instance()
-    {
-        $instance = databox_field::get_instance(self::$DI['app'], $this->databox, $this->object_mono->get_id());
-        $this->assertEquals($this->object_mono->get_id(), $instance->get_id());
-
-        $instance = databox_field::get_instance(self::$DI['app'], $this->databox, $this->object_multi->get_id());
-        $this->assertEquals($this->object_multi->get_id(), $instance->get_id());
     }
 
     /**

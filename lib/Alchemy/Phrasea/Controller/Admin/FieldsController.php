@@ -34,7 +34,7 @@ class FieldsController extends Controller
 
         foreach ($data as $jsonField) {
             try {
-                $field = \databox_field::get_instance($this->app, $databox, $jsonField['id']);
+                $field = $metaStructure->get_element($jsonField['id']);
 
                 if ($field->get_name() !== $jsonField['name']) {
                     $this->validateNameField($metaStructure, $jsonField);
@@ -191,7 +191,7 @@ class FieldsController extends Controller
     public function getField($sbas_id, $id)
     {
         $databox = $this->findDataboxById((int) $sbas_id);
-        $field = \databox_field::get_instance($this->app, $databox, $id);
+        $field = $databox->get_meta_structure()->get_element($id);
 
         return $this->app->json($field->toArray());
     }
@@ -199,7 +199,7 @@ class FieldsController extends Controller
     public function updateField(Request $request, $sbas_id, $id)
     {
         $databox = $this->findDataboxById((int) $sbas_id);
-        $field = \databox_field::get_instance($this->app, $databox, $id);
+        $field = $databox->get_meta_structure()->get_element($id);
         $data = $this->getFieldJsonFromRequest($request);
 
         $this->validateTagField($data);
@@ -218,7 +218,7 @@ class FieldsController extends Controller
     public function deleteField($sbas_id, $id)
     {
         $databox = $this->findDataboxById((int) $sbas_id);
-        \databox_field::get_instance($this->app, $databox, $id)->delete();
+        $databox->get_meta_structure()->get_element($id)->delete();
 
         return new Response('', 204);
     }

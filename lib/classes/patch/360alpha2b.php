@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Assert\Assertion;
 use Doctrine\DBAL\DBALException;
 
 class patch_360alpha2b extends patchAbstract
@@ -49,6 +50,8 @@ class patch_360alpha2b extends patchAbstract
      */
     public function apply(base $databox, Application $app)
     {
+        Assertion::isInstanceOf($databox, databox::class);
+        /** @var databox $databox */
         /**
          * Fail if upgrade has previously failed, no problem
          */
@@ -115,16 +118,13 @@ class patch_360alpha2b extends patchAbstract
                     VALUES (null, :record_id, :meta_struct_id, :value)';
             $stmt = $databox->get_connection()->prepare($sql);
 
-            $databox_fields = [];
+            $databox_fields = $databox->get_meta_structure();
 
             foreach ($rs as $row) {
                 $meta_struct_id = $row['meta_struct_id'];
 
-                if ( ! isset($databox_fields[$meta_struct_id])) {
-                    $databox_fields[$meta_struct_id] = \databox_field::get_instance($app, $databox, $meta_struct_id);
-                }
-
-                $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
+                $databox_field = $databox_fields->get_element($meta_struct_id);
+                $values = \caption_field::get_multi_values($row['value'], $databox_field->get_separator());
 
                 foreach ($values as $value) {
                     $params = [

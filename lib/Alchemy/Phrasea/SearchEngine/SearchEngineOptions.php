@@ -473,10 +473,10 @@ class SearchEngineOptions
                     break;
                 case in_array($key, ['date_fields', 'fields']):
                     $value = array_map(function ($serialized) use ($app) {
-                                $data = explode('_', $serialized);
+                        $data = explode('_', $serialized);
 
-                                return \databox_field::get_instance($app, $app->findDataboxById($data[0]), $data[1]);
-                            }, $value);
+                        return $app->findDataboxById($data[0])->get_meta_structure()->get_element($data[1]);
+                    }, $value);
                     break;
                 case in_array($key, ['collections', 'business_fields']):
                     $value = array_map(function ($base_id) use ($app) {

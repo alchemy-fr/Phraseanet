@@ -29,7 +29,9 @@ class MetadataBagTest extends \PhraseanetTestCase
      */
     public function testToMetadataArray()
     {
-        $structure = self::$DI['collection']->get_databox()->get_meta_structure();
+        /** @var \collection $collection */
+        $collection = self::$DI['collection'];
+        $structure = $collection->get_databox()->get_meta_structure();
 
         $valueMono = new Mono('mono value');
         $valueMulti = new Multi(['multi', 'value']);

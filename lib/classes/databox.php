@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Databox\DataboxFieldRepositoryInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Status\StatusStructure;
@@ -620,7 +621,6 @@ class databox extends base
     }
 
     /**
-     *
      * @return databox_descriptionStructure|databox_field[]
      */
     public function get_meta_structure()
@@ -629,31 +629,10 @@ class databox extends base
             return $this->meta_struct;
         }
 
-        try {
-            $metaStructData = $this->get_data_from_cache(self::CACHE_META_STRUCT);
-            if (!is_array($metaStructData)) {
-                throw new Exception('Invalid metaStructData');
-            }
-        } catch (\Exception $e) {
-            $metaStructData = array();
+        /** @var DataboxFieldRepositoryInterface $fieldRepository */
+        $fieldRepository = $this->app['repo.fields.factory']($this);
 
-            $sql = 'SELECT id, `name` FROM metadatas_structure ORDER BY sorter ASC';
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if ($rs) {
-                $metaStructData = $rs;
-                $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
-            }
-        }
-
-        $this->meta_struct = new databox_descriptionStructure();
-
-        foreach ($metaStructData as $row) {
-            $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
-        }
+        $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll());
 
         return $this->meta_struct;
     }

@@ -194,35 +194,6 @@ class databox_field implements cache_cacheableInterface
         return $this->aggregable != 0;
     }
 
-    /**
-     * @param Application $app
-     * @param \databox    $databox
-     * @param int         $id
-     *
-     * @return \databox_field
-     */
-    public static function get_instance(Application $app, databox $databox, $id)
-    {
-        $cache_key = 'field_' . $id;
-        $instance_id = $databox->get_sbas_id() . '_' . $id;
-        if (! isset(self::$_instance[$instance_id])) {
-            try {
-                $field = $databox->get_data_from_cache($cache_key);
-                if (!$field instanceof self) {
-                    trigger_error('Cache type returned mismatch', E_WARNING);
-                    throw new \Exception('Retrieved $field value is invalid');
-                }
-            } catch (\Exception $e) {
-                $field = new self($app, $databox, $id);
-                $databox->set_data_to_cache($field, $cache_key);
-            }
-            self::$_instance[$instance_id] = $field;
-        }
-        $field =& self::$_instance[$instance_id];
-        $field->app = $app;
-        return $field;
-    }
-
     public function hydrate(Application $app)
     {
         $this->app = $app;
@@ -934,7 +905,7 @@ class databox_field implements cache_cacheableInterface
 
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
-        return self::get_instance($app, $databox, $id);
+        return $databox->get_meta_structure()->get_element($id);
     }
 
     public static function generateName($name)

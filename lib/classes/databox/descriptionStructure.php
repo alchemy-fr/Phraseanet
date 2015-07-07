@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Assert\Assertion;
+
 class databox_descriptionStructure implements IteratorAggregate, Countable
 {
     /** @var databox_field[] */
@@ -17,9 +19,21 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /**
      * Cache array for the get element by name function
      *
-     * @var databox_field[]
+     * @var array
      */
     protected $cache_name_id = [];
+
+    /**
+     * @param databox_field[] $fields
+     */
+    public function __construct($fields = [])
+    {
+        Assertion::allIsInstanceOf($fields, databox_field::class);
+
+        foreach ($fields as $field) {
+            $this->add_element($field);
+        }
+    }
 
     /**
      * @return Iterator

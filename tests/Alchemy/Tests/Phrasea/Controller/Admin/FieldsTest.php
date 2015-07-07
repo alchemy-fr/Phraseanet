@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use PHPExiftool\Driver\Tag\IPTC\ObjectName;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
+use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -217,7 +218,8 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testCreateField()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
+        $databoxes = $this->getApplication()->getDataboxes();
+        /** @var \databox $databox */
         $databox = array_shift($databoxes);
 
         $body = json_encode([
@@ -246,10 +248,12 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'vocabulary-restricted' => true,
         ]);
 
-        self::$DI['client']->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], $body);
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], $body);
 
-        $response = self::$DI['client']->getResponse()->getContent();
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $response = $client->getResponse()->getContent();
+        $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
 
         $data = json_decode($response, true);
 
@@ -261,7 +265,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(json_decode($body, true), $dataWithoutIds);
 
-        $field = \databox_field::get_instance(self::$DI['app'], $databox, $data['id']);
+        $field = $databox->get_meta_structure()->get_element($data['id']);
         $field->delete();
     }
 
@@ -325,10 +329,12 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteField()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
+        $app = $this->getApplication();
+        $databoxes = $app->getDataboxes();
+        /** @var \databox $databox */
         $databox = array_shift($databoxes);
 
-        $field = \databox_field::create(self::$DI['app'], $databox, 'testfield' . mt_rand(), false);
+        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
         $fieldId = $field->get_id();
 
         $data = $field->toArray();
@@ -336,14 +342,16 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $data['business'] = true;
         $data['vocabulary-type'] = 'User';
 
-        self::$DI['client']->request("DELETE", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request("DELETE", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
 
-        $response = self::$DI['client']->getResponse()->getContent();
+        $response = $client->getResponse()->getContent();
         $this->assertEquals('', $response);
-        $this->assertEquals(204, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals(204, $client->getResponse()->getStatusCode());
 
         try {
-            \databox_field::get_instance(self::$DI['app'], $databox, $fieldId);
+            $databox->get_meta_structure()->get_element($fieldId);
             $this->fail('Should have raise an exception');
         } catch (\Exception $e) {
 

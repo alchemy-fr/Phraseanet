@@ -126,6 +126,6 @@ class TooltipController extends Controller
     {
         $databox = $this->findDataboxById((int)$sbas_id);
 
-        return \databox_field::get_instance($this->app, $databox, $field_id);
+        return $databox->get_meta_structure()->get_element($field_id);
     }
 }
