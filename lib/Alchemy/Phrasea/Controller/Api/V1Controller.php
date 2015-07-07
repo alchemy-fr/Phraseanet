@@ -472,8 +472,14 @@ class V1Controller extends Controller
 
     public function getDataboxCollectionAction(Request $request, $base_id)
     {
+        try {
+            $collection = $this->getApplicationBox()->get_collection($base_id);
+        } catch (\RuntimeException $exception) {
+            throw new \HttpException('Collection not found', 404, $exception);
+        }
+
         return Result::create($request, [
-            $this->listCollection($this->app->getApplicationBox()->get_collection($base_id))
+            'collection' => $this->listCollection($collection),
         ])->createResponse();
     }
 
@@ -2507,6 +2513,18 @@ class V1Controller extends Controller
         $databox = $this->findDataboxById($request->attributes->get('databox_id'));
 
         if (!$this->getAclForUser($user)->has_access_to_sbas($databox->get_sbas_id())) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+
+        return null;
+    }
+
+    public function ensureAccessToBase(Request $request)
+    {
+        $user = $this->getApiAuthenticatedUser();
+        $base_id = $request->attributes->get('base_id');
+
+        if (!$this->getAclForUser($user)->has_access_to_base($base_id)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 

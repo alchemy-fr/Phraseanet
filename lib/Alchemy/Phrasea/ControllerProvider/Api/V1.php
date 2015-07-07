@@ -72,7 +72,9 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:showPhraseanetConfigurationAction')
             ->before('controller.api.v1:ensureAdmin');
 
-        $controllers->get('/collections/{base_id}/', 'controller.api.v1:getDataboxCollectionAction');
+        $controllers->get('/collections/{base_id}/', 'controller.api.v1:getDataboxCollectionAction')
+            ->before('controller.api.v1:ensureAccessToBase')
+            ->assert('base_id', '\d+');
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:listDataboxesAction');
 
