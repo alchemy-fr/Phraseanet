@@ -56,7 +56,7 @@ class appbox extends base
 
         $connection = $app['db.provider']($connectionConfig);
 
-        parent::__construct($app, $app['db.provider']($connection), $connectionSettings);
+        parent::__construct($app, $connection, $connectionSettings);
     }
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
