@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
@@ -23,33 +24,39 @@ use vierbergenlars\SemVer\version;
 
 class appbox extends base
 {
-    /** @var int */
-    protected $id;
-
     /**
      * constant defining the app type
      */
     const BASE_TYPE = self::APPLICATION_BOX;
 
-    protected $cache;
-    protected $connection;
-    protected $app;
-
-    protected $databoxes;
-
     const CACHE_LIST_BASES = 'list_bases';
+
     const CACHE_SBAS_IDS = 'sbas_ids';
+
+    /**
+     * @var int
+     */
+    protected $id;
+    /**
+     * @var \databox[]
+     */
+    protected $databoxes;
 
     public function __construct(Application $app)
     {
-        $connexion = $app['conf']->get(['main', 'database']);
-        parent::__construct($app, $app['db.provider']($connexion));
+        $connectionConfig = $app['conf']->get(['main', 'database']);
 
-        $this->host = $connexion['host'];
-        $this->port = $connexion['port'];
-        $this->user = $connexion['user'];
-        $this->passwd = $connexion['password'];
-        $this->dbname = $connexion['dbname'];
+        $connectionSettings = new ConnectionSettings(
+            $connectionConfig['host'],
+            $connectionConfig['port'],
+            $connectionConfig['dbname'],
+            $connectionConfig['user'],
+            $connectionConfig['password']
+        );
+
+        $connection = $app['db.provider']($connectionConfig);
+
+        parent::__construct($app, $app['db.provider']($connection), $connectionSettings);
     }
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
@@ -216,9 +223,8 @@ class appbox extends base
     }
 
     /**
-     *
      * @param  databox $databox
-     * @param  <type>  $boolean
+     * @param  bool  $boolean
      * @return appbox
      */
     public function set_databox_indexable(databox $databox, $boolean)
@@ -237,9 +243,8 @@ class appbox extends base
     }
 
     /**
-     *
      * @param  databox $databox
-     * @return <type>
+     * @return bool
      */
     public function is_databox_indexable(databox $databox)
     {
@@ -256,8 +261,7 @@ class appbox extends base
     }
 
     /**
-     *
-     * @return const
+     * @return string
      */
     public function get_base_type()
     {

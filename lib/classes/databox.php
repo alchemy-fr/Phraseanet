@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxFieldRepositoryInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -56,7 +57,6 @@ class databox extends base
     const CACHE_STRUCTURE = 'structure';
     const PIC_PDF = 'logopdf';
 
-    protected $cache;
     private $labels = [];
     private $ord;
     private $viewname;
@@ -73,26 +73,24 @@ class databox extends base
 
         $this->id = $sbas_id;
 
-        $connection_params = phrasea::sbas_params($app);
+        $connectionConfigs = phrasea::sbas_params($app);
 
-        if (! isset($connection_params[$sbas_id])) {
+        if (! isset($connectionConfigs[$sbas_id])) {
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $params = [
-            'host'     => $connection_params[$sbas_id]['host'],
-            'port'     => $connection_params[$sbas_id]['port'],
-            'user'     => $connection_params[$sbas_id]['user'],
-            'password' => $connection_params[$sbas_id]['pwd'],
-            'dbname'   => $connection_params[$sbas_id]['dbname'],
-        ];
-        parent::__construct($app, $app['db.provider']($params));
+        $connectionConfig = $connectionConfigs[$sbas_id];
+        $connectionSettings = new ConnectionSettings(
+            $connectionConfig['host'],
+            $connectionConfig['port'],
+            $connectionConfig['dbname'],
+            $connectionConfig['user'],
+            $connectionConfig['password']
+        );
 
-        $this->host = $params['host'];
-        $this->port = $params['port'];
-        $this->user = $params['user'];
-        $this->passwd = $params['password'];
-        $this->dbname = $params['dbname'];
+        $connection = $app['db.provider']($connectionConfig);
+
+        parent::__construct($app, $connection, $connectionSettings);
 
         $this->loadFromRow($row);
     }

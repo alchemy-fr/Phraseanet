@@ -10,39 +10,69 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use vierbergenlars\SemVer\version;
 use Doctrine\DBAL\Connection;
 
 abstract class base implements cache_cacheableInterface
 {
-    protected $version;
-
-    /** @var int */
-    protected $id;
-    protected $schema;
-    protected $dbname;
-    protected $passwd;
-    protected $user;
-    protected $port;
-    protected $host;
-
-    /** @var Connection */
-    protected $connection;
-    /** @var Application */
-    protected $app;
 
     const APPLICATION_BOX = 'APPLICATION_BOX';
+
     const DATA_BOX = 'DATA_BOX';
 
-    public function __construct(Application $application, Connection $connection)
+    /**
+     * @var string
+     */
+    protected $version;
+
+    /**
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * @var SimpleXMLElement
+     */
+    protected $schema;
+
+    /**
+     * @var ConnectionSettings
+     */
+    protected $connectionSettings;
+
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
+     * @param Application $application
+     * @param Connection $connection
+     * @param ConnectionSettings $connectionSettings
+     */
+    public function __construct(Application $application, Connection $connection, ConnectionSettings $connectionSettings)
     {
         $this->app = $application;
         $this->connection = $connection;
+        $this->connectionSettings = $connectionSettings;
     }
 
+    /**
+     * @return string
+     */
     abstract public function get_base_type();
 
+    /**
+     * @return SimpleXMLElement
+     * @throws Exception
+     */
     public function get_schema()
     {
         if ($this->schema) {
@@ -54,32 +84,49 @@ abstract class base implements cache_cacheableInterface
         return $this->schema;
     }
 
+    /**
+     * @return string
+     */
     public function get_dbname()
     {
-        return $this->dbname;
+        return $this->connectionSettings->getDatabaseName();
     }
 
+    /**
+     * @return string
+     */
     public function get_passwd()
     {
-        return $this->passwd;
+        return $this->connectionSettings->getPassword();
     }
 
+    /**
+     * @return string
+     */
     public function get_user()
     {
-        return $this->user;
+        return $this->connectionSettings->getUser();
     }
 
+    /**
+     * @return int
+     */
     public function get_port()
     {
-        return $this->port;
+        return $this->connectionSettings->getPort();
     }
 
+    /**
+     * @return string
+     */
     public function get_host()
     {
-        return $this->host;
+        return $this->connectionSettings->getHost();
     }
 
-    /** @return Connection */
+    /**
+     * @return Connection
+     */
     public function get_connection()
     {
         return $this->connection;
@@ -126,8 +173,9 @@ abstract class base implements cache_cacheableInterface
         }
 
         if (is_array($option)) {
-            foreach ($option as $key => $value)
+            foreach ($option as $key => $value) {
                 $option[$key] = $this->get_cache_key($value);
+            }
 
             return $this->get_cache()->deleteMulti($option);
         } else {
@@ -154,18 +202,21 @@ abstract class base implements cache_cacheableInterface
         $version = '0.0.0';
 
         $sql = '';
-        if ($this->get_base_type() == self::APPLICATION_BOX)
+        if ($this->get_base_type() == self::APPLICATION_BOX) {
             $sql = 'SELECT version FROM sitepreff';
-        if ($this->get_base_type() == self::DATA_BOX)
+        }
+        if ($this->get_base_type() == self::DATA_BOX) {
             $sql = 'SELECT value AS version FROM pref WHERE prop="version" LIMIT 1;';
+        }
 
         if ($sql !== '') {
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
-            if ($row)
+            if ($row) {
                 $version = $row['version'];
+            }
         }
 
         $this->version = $version;
@@ -182,7 +233,7 @@ abstract class base implements cache_cacheableInterface
         $schema = $this->get_schema();
 
         foreach ($schema->tables->table as $table) {
-            $allTables[(string) $table['name']] = $table;
+            $allTables[(string)$table['name']] = $table;
         }
 
         $sql = "SHOW TABLE STATUS";
@@ -249,8 +300,9 @@ abstract class base implements cache_cacheableInterface
                         $stmt->closeCursor();
                     } catch (\Exception $e) {
                         $recommends[] = [
-                            'message' => $app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
-                            'sql'     => $sql
+                            'message' => $app->trans('Erreur lors de la tentative ; errreur : %message%',
+                                ['%message%' => $e->getMessage()]),
+                            'sql' => $sql
                         ];
                     }
                 }
@@ -258,10 +310,10 @@ abstract class base implements cache_cacheableInterface
                 $ret = self::upgradeTable($allTables[$tname]);
                 $recommends = array_merge($recommends, $ret);
                 unset($allTables[$tname]);
-            } elseif ( ! in_array($tname, $ORMTables)) {
+            } elseif (!in_array($tname, $ORMTables)) {
                 $recommends[] = [
                     'message' => 'Une table pourrait etre supprime',
-                    'sql'     => 'DROP TABLE ' . $this->dbname . '.`' . $tname . '`;'
+                    'sql' => 'DROP TABLE ' . $this->dbname . '.`' . $tname . '`;'
                 ];
             }
         }
@@ -282,8 +334,9 @@ abstract class base implements cache_cacheableInterface
     {
         try {
             $sql = '';
-            if ($this->get_base_type() === self::APPLICATION_BOX)
+            if ($this->get_base_type() === self::APPLICATION_BOX) {
                 $sql = 'UPDATE sitepreff SET version = :version WHERE id = 1';
+            }
             if ($this->get_base_type() === self::DATA_BOX) {
                 $sql = 'DELETE FROM pref WHERE prop="version"';
                 $this->get_connection()->query($sql);
@@ -299,7 +352,7 @@ abstract class base implements cache_cacheableInterface
                 return true;
             }
         } catch (\Exception $e) {
-            throw new Exception('Unable to set the database version : '.$e->getMessage());
+            throw new Exception('Unable to set the database version : ' . $e->getMessage());
         }
 
         return;
@@ -307,6 +360,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      * @return base
+     * @throws Exception
      */
     protected function load_schema()
     {
@@ -318,12 +372,13 @@ abstract class base implements cache_cacheableInterface
             throw new Exception('Unable to load schema');
         }
 
-        if ($this->get_base_type() === self::APPLICATION_BOX)
+        if ($this->get_base_type() === self::APPLICATION_BOX) {
             $this->schema = $structure->appbox;
-        elseif ($this->get_base_type() === self::DATA_BOX)
+        } elseif ($this->get_base_type() === self::DATA_BOX) {
             $this->schema = $structure->databox;
-        else
+        } else {
             throw new Exception('Unknown schema type');
+        }
 
         return $this;
     }
@@ -357,19 +412,21 @@ abstract class base implements cache_cacheableInterface
         foreach ($table->fields->field as $field) {
             $isnull = trim($field->null) == "" ? "NOT NULL" : "NULL";
 
-            if (trim($field->default) != "" && trim($field->default) != "CURRENT_TIMESTAMP")
+            if (trim($field->default) != "" && trim($field->default) != "CURRENT_TIMESTAMP") {
                 $is_default = " default '" . $field->default . "'";
-            elseif (trim($field->default) == "CURRENT_TIMESTAMP")
+            } elseif (trim($field->default) == "CURRENT_TIMESTAMP") {
                 $is_default = " default " . $field->default;
-            else
+            } else {
                 $is_default = '';
+            }
 
             $character_set = '';
-            if (in_array(strtolower((string) $field->type), ['text', 'longtext', 'mediumtext', 'tinytext'])
-                || substr(strtolower((string) $field->type), 0, 7) == 'varchar'
-                || in_array(substr(strtolower((string) $field->type), 0, 4), ['char', 'enum'])) {
+            if (in_array(strtolower((string)$field->type), ['text', 'longtext', 'mediumtext', 'tinytext'])
+                || substr(strtolower((string)$field->type), 0, 7) == 'varchar'
+                || in_array(substr(strtolower((string)$field->type), 0, 4), ['char', 'enum'])
+            ) {
 
-                $collation = trim((string) $field->collation) != '' ? trim((string) $field->collation) : 'utf8_unicode_ci';
+                $collation = trim((string)$field->collation) != '' ? trim((string)$field->collation) : 'utf8_unicode_ci';
 
                 $collations = array_reverse(explode('_', $collation));
                 $code = array_pop($collations);
@@ -421,27 +478,31 @@ abstract class base implements cache_cacheableInterface
                 $nonce = $this->app['random.medium']->generateString(16);
                 foreach ($default->data as $data) {
                     $k = trim($data['key']);
-                    if ($k === 'usr_password')
+                    if ($k === 'usr_password') {
                         $data = $this->app['auth.password-encoder']->encodePassword($data, $nonce);
-                    if ($k === 'nonce')
+                    }
+                    if ($k === 'nonce') {
                         $data = $nonce;
+                    }
                     $v = trim(str_replace(["\r\n", "\r", "\n", "\t"], '', $data));
 
-                    if (trim(mb_strtolower($v)) == 'now()')
+                    if (trim(mb_strtolower($v)) == 'now()') {
                         $dates_values [$k] = 'NOW()';
-                    else
+                    } else {
                         $params[$k] = (trim(mb_strtolower($v)) == 'null' ? null : $v);
+                    }
                 }
 
                 $separator = ((count($params) > 0 && count($dates_values) > 0) ? ', ' : '');
 
                 $defaults_stmt[] = [
-                    'sql'    =>
-                    'INSERT INTO `' . $table['name'] . '` (' . implode(', ', array_keys($params))
-                    . $separator . implode(', ', array_keys($dates_values)) . ')
+                    'sql' =>
+                        'INSERT INTO `' . $table['name'] . '` (' . implode(', ', array_keys($params))
+                        . $separator . implode(', ', array_keys($dates_values)) . ')
                       VALUES (:' . implode(', :', array_keys($params))
-                    . $separator . implode(', ', array_values($dates_values)) . ') '
-                    , 'params' => $params
+                        . $separator . implode(', ', array_values($dates_values)) . ') '
+                    ,
+                    'params' => $params
                 ];
             }
         }
@@ -472,49 +533,54 @@ abstract class base implements cache_cacheableInterface
         $alter = $alter_pre = $return = [];
 
         foreach ($table->fields->field as $field) {
-            $expr = trim((string) $field->type);
+            $expr = trim((string)$field->type);
 
-            $_extra = trim((string) $field->extra);
-            if ($_extra)
+            $_extra = trim((string)$field->extra);
+            if ($_extra) {
                 $expr .= ' ' . $_extra;
+            }
 
-            $collation = trim((string) $field->collation) != '' ? trim((string) $field->collation) : 'utf8_unicode_ci';
+            $collation = trim((string)$field->collation) != '' ? trim((string)$field->collation) : 'utf8_unicode_ci';
 
-            if (in_array(strtolower((string) $field->type), ['text', 'longtext', 'mediumtext', 'tinytext'])
-                || substr(strtolower((string) $field->type), 0, 7) == 'varchar'
-                || in_array(substr(strtolower((string) $field->type), 0, 4), ['char', 'enum'])) {
+            if (in_array(strtolower((string)$field->type), ['text', 'longtext', 'mediumtext', 'tinytext'])
+                || substr(strtolower((string)$field->type), 0, 7) == 'varchar'
+                || in_array(substr(strtolower((string)$field->type), 0, 4), ['char', 'enum'])
+            ) {
                 $collations = array_reverse(explode('_', $collation));
                 $code = array_pop($collations);
 
                 $collation = ' CHARACTER SET ' . $code . ' COLLATE ' . $collation;
 
-                $correct_table['collation'][trim((string) $field->name)] = $collation;
+                $correct_table['collation'][trim((string)$field->name)] = $collation;
 
                 $expr .= $collation;
             }
 
-            $_null = mb_strtolower(trim((string) $field->null));
-            if ( ! $_null || $_null == 'no')
+            $_null = mb_strtolower(trim((string)$field->null));
+            if (!$_null || $_null == 'no') {
                 $expr .= ' NOT NULL';
+            }
 
-            $_default = (string) $field->default;
-            if ($_default && $_default != 'CURRENT_TIMESTAMP')
+            $_default = (string)$field->default;
+            if ($_default && $_default != 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT \'' . $_default . '\'';
-            elseif ($_default == 'CURRENT_TIMESTAMP')
+            } elseif ($_default == 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT ' . $_default . '';
+            }
 
-            $correct_table['fields'][trim((string) $field->name)] = $expr;
+            $correct_table['fields'][trim((string)$field->name)] = $expr;
         }
         if ($table->indexes) {
             foreach ($table->indexes->index as $index) {
-                $i_name = (string) $index->name;
+                $i_name = (string)$index->name;
                 $expr = [];
-                foreach ($index->fields->field as $field)
-                    $expr[] = '`' . trim((string) $field) . '`';
+                foreach ($index->fields->field as $field) {
+                    $expr[] = '`' . trim((string)$field) . '`';
+                }
 
                 $expr = implode(', ', $expr);
 
-                switch ((string) $index->type) {
+                switch ((string)$index->type) {
                     case "PRIMARY":
                         $correct_table['indexes']['PRIMARY'] = 'PRIMARY KEY (' . $expr . ')';
                         break;
@@ -540,8 +606,9 @@ abstract class base implements cache_cacheableInterface
 
             $_extra = $row2['Extra'];
 
-            if ($_extra)
+            if ($_extra) {
                 $expr_found .= ' ' . $_extra;
+            }
 
             $_collation = $row2['Collation'];
 
@@ -550,21 +617,24 @@ abstract class base implements cache_cacheableInterface
             if ($_collation) {
                 $_collation = explode('_', $row2['Collation']);
 
-                $expr_found .= $current_collation = ' CHARACTER SET ' . $_collation[0] . ' COLLATE ' . implode('_', $_collation);
+                $expr_found .= $current_collation = ' CHARACTER SET ' . $_collation[0] . ' COLLATE ' . implode('_',
+                        $_collation);
             }
 
             $_null = mb_strtolower(trim($row2['Null']));
 
-            if ( ! $_null || $_null == 'no')
+            if (!$_null || $_null == 'no') {
                 $expr_found .= ' NOT NULL';
+            }
 
             $_default = $row2['Default'];
 
             if ($_default) {
-                if (trim($row2['Type']) == 'timestamp' && $_default == 'CURRENT_TIMESTAMP')
+                if (trim($row2['Type']) == 'timestamp' && $_default == 'CURRENT_TIMESTAMP') {
                     $expr_found .= ' DEFAULT CURRENT_TIMESTAMP';
-                else
+                } else {
                     $expr_found .= ' DEFAULT \'' . $_default . '\'';
+                }
             }
 
             if (isset($correct_table['fields'][$f_name])) {
@@ -586,10 +656,12 @@ abstract class base implements cache_cacheableInterface
                             $new_type = 'tinyblob';
                             break;
                         default:
-                            if (substr($old_type, 0, 4) == 'char')
+                            if (substr($old_type, 0, 4) == 'char') {
                                 $new_type = 'varbinary(255)';
-                            if (substr($old_type, 0, 7) == 'varchar')
+                            }
+                            if (substr($old_type, 0, 7) == 'varchar') {
                                 $new_type = 'varbinary(767)';
+                            }
                             break;
                     }
 
@@ -605,7 +677,7 @@ abstract class base implements cache_cacheableInterface
             } else {
                 $return[] = [
                     'message' => 'Un champ pourrait etre supprime',
-                    'sql'     => "ALTER TABLE " . $this->dbname . ".`" . $table['name'] . "` DROP `$f_name`;"
+                    'sql' => "ALTER TABLE " . $this->dbname . ".`" . $table['name'] . "` DROP `$f_name`;"
                 ];
             }
         }
@@ -622,26 +694,29 @@ abstract class base implements cache_cacheableInterface
         $stmt->closeCursor();
 
         foreach ($rs2 as $row2) {
-            if ( ! isset($tIndex[$row2['Key_name']]))
-                $tIndex[$row2['Key_name']] = ['unique'  => ((int) ($row2['Non_unique']) == 0), 'columns' => []];
-            $tIndex[$row2['Key_name']]['columns'][(int) ($row2['Seq_in_index'])] = $row2['Column_name'];
+            if (!isset($tIndex[$row2['Key_name']])) {
+                $tIndex[$row2['Key_name']] = ['unique' => ((int)($row2['Non_unique']) == 0), 'columns' => []];
+            }
+            $tIndex[$row2['Key_name']]['columns'][(int)($row2['Seq_in_index'])] = $row2['Column_name'];
         }
 
         foreach ($tIndex as $kIndex => $vIndex) {
             $strColumns = [];
 
-            foreach ($vIndex['columns'] as $column)
+            foreach ($vIndex['columns'] as $column) {
                 $strColumns[] = '`' . $column . '`';
+            }
 
             $strColumns = '(' . implode(', ', $strColumns) . ')';
 
-            if ($kIndex == 'PRIMARY')
+            if ($kIndex == 'PRIMARY') {
                 $expr_found = 'PRIMARY KEY ' . $strColumns;
-            else {
-                if ($vIndex['unique'])
+            } else {
+                if ($vIndex['unique']) {
                     $expr_found = 'UNIQUE KEY `' . $kIndex . '` ' . $strColumns;
-                else
+                } else {
                     $expr_found = 'KEY `' . $kIndex . '` ' . $strColumns;
+                }
             }
 
             $full_name_index = ($kIndex == 'PRIMARY') ? 'PRIMARY KEY' : ('INDEX `' . $kIndex . '`');
@@ -656,13 +731,14 @@ abstract class base implements cache_cacheableInterface
             } else {
                 $return[] = [
                     'message' => 'Un index pourrait etre supprime',
-                    'sql'     => 'ALTER TABLE ' . $this->dbname . '.`' . $table['name'] . '` DROP ' . $full_name_index . ';'
+                    'sql' => 'ALTER TABLE ' . $this->dbname . '.`' . $table['name'] . '` DROP ' . $full_name_index . ';'
                 ];
             }
         }
 
-        foreach ($correct_table['indexes'] as $kIndex => $expr)
+        foreach ($correct_table['indexes'] as $kIndex => $expr) {
             $alter[] = 'ALTER TABLE `' . $table['name'] . '` ADD ' . $expr;
+        }
 
         foreach ($alter_pre as $a) {
             try {
@@ -671,8 +747,9 @@ abstract class base implements cache_cacheableInterface
                 $stmt->closeCursor();
             } catch (\Exception $e) {
                 $return[] = [
-                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
-                    'sql'     => $a
+                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%',
+                        ['%message%' => $e->getMessage()]),
+                    'sql' => $a
                 ];
             }
         }
@@ -684,8 +761,9 @@ abstract class base implements cache_cacheableInterface
                 $stmt->closeCursor();
             } catch (\Exception $e) {
                 $return[] = [
-                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%', ['%message%' => $e->getMessage()]),
-                    'sql'     => $a
+                    'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%',
+                        ['%message%' => $e->getMessage()]),
+                    'sql' => $a
                 ];
             }
         }
@@ -704,20 +782,23 @@ abstract class base implements cache_cacheableInterface
         $iterator = new DirectoryIterator($this->app['root.path'] . '/lib/classes/patch/');
 
         foreach ($iterator as $fileinfo) {
-            if ( ! $fileinfo->isDot()) {
-                if (substr($fileinfo->getFilename(), 0, 1) == '.')
+            if (!$fileinfo->isDot()) {
+                if (substr($fileinfo->getFilename(), 0, 1) == '.') {
                     continue;
+                }
 
                 $versions = array_reverse(explode('.', $fileinfo->getFilename()));
                 $classname = 'patch_' . array_pop($versions);
 
                 $patch = new $classname();
 
-                if ( ! in_array($this->get_base_type(), $patch->concern()))
+                if (!in_array($this->get_base_type(), $patch->concern())) {
                     continue;
+                }
 
-                if ( ! ! $post_process !== ! ! $patch->require_all_upgrades())
+                if (!!$post_process !== !!$patch->require_all_upgrades()) {
                     continue;
+                }
 
                 // if patch is older than current install
                 if (version::lte($patch->get_release(), $from)) {
@@ -731,7 +812,7 @@ abstract class base implements cache_cacheableInterface
                 $n = 0;
                 do {
                     $key = $patch->get_release() . '.' . $n;
-                    $n ++;
+                    $n++;
                 } while (isset($list_patches[$key]));
 
                 $list_patches[$key] = $patch;
