@@ -367,7 +367,7 @@ class appbox extends base
 
         return $this->databoxes;
     }
-
+    
     public function get_databox($sbas_id)
     {
         $databoxes = $this->get_databoxes();
@@ -377,6 +377,26 @@ class appbox extends base
         }
 
         return $databoxes[$sbas_id];
+    }
+
+    public function get_collection($base_id)
+    {
+        $sbas_id = phrasea::sbasFromBas($this->app, $base_id);
+
+        if ($sbas_id === false) {
+            throw new \RuntimeException('Collection not found.');
+        }
+
+        $collections = $this->get_databox($sbas_id)->get_collections();
+
+        foreach ($collections as $collection) {
+            if ($collection->get_base_id() == $base_id) {
+                return $collection;
+            }
+        }
+
+        // This should not happen, but I'd rather be safe than sorry.
+        throw new \RuntimeException('Collection not found.');
     }
 
     /**
