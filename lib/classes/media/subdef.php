@@ -23,7 +23,182 @@ use Guzzle\Http\Url;
  */
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
+
+    public static function create(Application $app, record_Interface $record, $name, MediaInterface $media)
+    {
+        $databox = $record->get_databox();
+        $connbas = $databox->get_connection();
+
+        $path = $media->getFile()->getPath();
+        $newname = $media->getFile()->getFilename();
+
+        $params = array(
+            ':path'       => $path,
+            ':file'       => $newname,
+            ':width'      => 0,
+            ':height'     => 0,
+            ':mime'       => $media->getFile()->getMimeType(),
+            ':size'       => $media->getFile()->getSize(),
+            ':dispatched' => 1,
+        );
+
+        if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
+            $params[':width'] = $media->getWidth();
+        }
+
+        if (method_exists($media, 'getHeight') && null !== $media->getHeight()) {
+            $params[':height'] = $media->getHeight();
+        }
+
+        try {
+            $sql = 'SELECT subdef_id FROM subdef
+                    WHERE record_id = :record_id AND name = :name';
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(array(
+                ':record_id' => $record->get_record_id(),
+                ':name'      => $name,
+            ));
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            if (! $row) {
+                throw new \Exception_Media_SubdefNotFound('Require the real one');
+            }
+
+            $sql = "UPDATE subdef
+              SET path = :path, file = :file
+                  , width = :width , height = :height, mime = :mime
+                  , size = :size, dispatched = :dispatched, updated_on = NOW()
+              WHERE subdef_id = :subdef_id";
+
+            $params[':subdef_id'] = $row['subdef_id'];
+        } catch (\Exception_Media_SubdefNotFound $e) {
+            $sql = "INSERT INTO subdef
+              (record_id, name, path, file, width
+                , height, mime, size, dispatched, created_on, updated_on)
+              VALUES (:record_id, :name, :path, :file, :width, :height
+                , :mime, :size, :dispatched, NOW(), NOW())";
+
+            $params[':record_id'] = $record->get_record_id();
+            $params[':name'] = $name;
+        }
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        $subdef = new self($app, $record, $name);
+        $subdef->delete_data_from_cache();
+
+        if ($subdef->get_permalink() instanceof media_Permalink_Adapter) {
+            $subdef->get_permalink()->delete_data_from_cache();
+        }
+
+        if ($name === 'thumbnail' && $app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
+            $app['phraseanet.thumb-symlinker']->symlink($subdef->get_pathfile());
+        }
+
+        unset($media);
+
+        return $subdef;
+    }
+
+    public static function get(Application $app, record_adapter $record, $name, $substitute = false)
+    {
+        return new self($app, $record, $name, $substitute, true);
+    }
+
+    public static function getMany(Application $app, record_adapter $record, array $names)
+    {
+        $connection = $record->get_databox()->get_connection();
+        $query = 'SELECT s.subdef_id, s.name, s.file, s.width, s.height, s.mime,
+                         s.path, s.size, s.substit, s.created_on, s.updated_on, s.etag
+                  FROM subdef s
+                  WHERE s.name IN (%s) AND s.record_id = :record_id
+                  ORDER BY s.record_id';
+
+        $query = sprintf($query, implode(', ', array_map(function ($index) {
+            return ':name_' . $index;
+        }, array_keys($names))));
+
+        $params = array(':record_id' => $record->get_record_id());
+
+        foreach ($names as $index => $name) {
+            $params[':name_' . $index] = strtolower($name);
+        }
+
+        $statement = $connection->prepare($query);
+        $statement->execute($params);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        $subdefs = array();
+
+        foreach ($rows as $row) {
+			$name = strtolower($row['name']);
+            $subdef = new self($app, $record, $name, false, false);
+
+            self::mapFromQuery($subdef, $row);
+
+            $subdefs[$name] = $subdef;
+        }
+
+        $found = array_keys($subdefs);
+        $notFound = array_diff(array_map('strtolower', $names), $found);
+
+        foreach ($notFound as $name) {
+            $subdef = new self($app, $record, $name, false, false);
+
+            self::mapFromSubstitute($subdef);
+
+            $subdefs[$name] = $subdef;
+        }
+
+        media_Permalink_Adapter::loadForSubdefs($app, $record->get_databox(), $subdefs);
+
+        return $subdefs;
+    }
+
+    protected static function load(self $subdef, $substitute = false)
+    {
+        try {
+            return self::mapFromCache($subdef, $subdef->get_data_from_cache());
+        } catch (\Exception $e) {
+
+        }
+
+        $connbas = $subdef->record->get_databox()->get_connection();
+
+        $sql = 'SELECT s.subdef_id, s.name, s.file, s.width, s.height, s.mime,
+                s.path, s.size, s.substit, s.created_on, s.updated_on, s.etag
+                FROM subdef as s
+                WHERE s.name = :name AND s.record_id = :record_id';
+
+        $params = array(
+            ':record_id' => $subdef->record->get_record_id(),
+            ':name'      => $subdef->name
+        );
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (! $row && $substitute === false) {
+            throw new Exception_Media_SubdefNotFound($subdef->name . ' not found');
+        }
+
+        if ($row) {
+            self::mapFromQuery($subdef, $row);
+        } else {
+            self::mapFromSubstitute($subdef);
+        }
+
+        self::putDataInCache($subdef);
+    }
+
     protected $app;
+
     /**
      *
      * @var string
@@ -104,7 +279,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /** @var integer */
     private $size = 0;
-
     /**
      * Players types constants
      */
@@ -113,6 +287,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TYPE_FLEXPAPER = 'FLEXPAPER';
     const TYPE_AUDIO_MP3 = 'AUDIO_MP3';
     const TYPE_IMAGE = 'IMAGE';
+
     const TYPE_NO_PLAYER = 'UNKNOWN';
     /**
      * Technical datas types constants
@@ -139,116 +314,128 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_SHUTTERSPEED = 'ShutterSpeed';
     const TC_DATA_HYPERFOCALDISTANCE = 'HyperfocalDistance';
     const TC_DATA_ISO = 'ISO';
+
     const TC_DATA_LIGHTVALUE = 'LightValue';
 
     /**
-     * @param  Application    $app
-     * @param  record_adapter $record
-     * @param  type           $name
-     * @param  type           $substitute
-     * @return media_subdef
+     * @param Application $app
+     * @param record_adapter $record
+     * @param string $name
+     * @param bool $substitute
+     * @param bool $load
      */
-    public function __construct(Application $app, record_adapter $record, $name, $substitute = false)
+    public function __construct(Application $app, record_adapter $record, $name, $substitute = false, $load = true)
     {
         $this->app = $app;
         $this->name = $name;
         $this->record = $record;
-        $this->load($substitute);
 
-        $this->generate_url();
-
-        return $this;
+        if ($load) {
+            self::load($this, $substitute);
+            $this->generate_url();
+        }
     }
 
     /**
-     *
-     * @param  boolean      $substitute
-     * @return media_subdef
+     * @param media_subdef $subdef
+     * @param $row
      */
-    protected function load($substitute)
+    public static function mapFromQuery(self $subdef, $row)
     {
-        try {
-            $datas = $this->get_data_from_cache();
-            $this->mime = $datas['mime'];
-            $this->width = $datas['width'];
-            $this->height = $datas['height'];
-            $this->size = $datas['size'];
-            $this->etag = $datas['etag'];
-            $this->path = $datas['path'];
-            $this->url = $datas['url'];
-            $this->file = $datas['file'];
-            $this->is_physically_present = $datas['physically_present'];
-            $this->is_substituted = $datas['is_substituted'];
-            $this->subdef_id = $datas['subdef_id'];
-            $this->modification_date = $datas['modification_date'];
-            $this->creation_date = $datas['creation_date'];
+        $subdef->width = (int)$row['width'];
+        $subdef->size = (int)$row['size'];
+        $subdef->height = (int)$row['height'];
+        $subdef->mime = $row['mime'];
+        $subdef->file = $row['file'];
+        $subdef->path = p4string::addEndSlash($row['path']);
+        $subdef->is_physically_present = file_exists($subdef->get_pathfile());
+        $subdef->etag = $row['etag'];
+        $subdef->is_substituted = !!$row['substit'];
+        $subdef->subdef_id = (int)$row['subdef_id'];
 
-            return $this;
-        } catch (\Exception $e) {
-
+        if ($row['updated_on']) {
+            $subdef->modification_date = new DateTime($row['updated_on']);
+        }
+        if ($row['created_on']) {
+            $subdef->creation_date = new DateTime($row['created_on']);
         }
 
-        $connbas = $this->record->get_databox()->get_connection();
+        $subdef->generate_url();
+    }
 
-        $sql = 'SELECT subdef_id, name, file, width, height, mime,
-                path, size, substit, created_on, updated_on, etag
-                FROM subdef
-                WHERE name = :name AND record_id = :record_id';
+    /**
+     * @param media_subdef $subdef
+     * @param $datas
+     */
+    protected static function mapFromCache(self $subdef, $datas)
+    {
+        $subdef->mime = $datas['mime'];
+        $subdef->width = $datas['width'];
+        $subdef->height = $datas['height'];
+        $subdef->size = $datas['size'];
+        $subdef->etag = $datas['etag'];
+        $subdef->path = $datas['path'];
+        $subdef->url = $datas['url'];
+        $subdef->file = $datas['file'];
+        $subdef->is_physically_present = $datas['physically_present'];
+        $subdef->is_substituted = $datas['is_substituted'];
+        $subdef->subdef_id = $datas['subdef_id'];
+        $subdef->modification_date = $datas['modification_date'];
+        $subdef->creation_date = $datas['creation_date'];
+    }
 
-        $params = array(
-            ':record_id' => $this->record->get_record_id(),
-            ':name'      => $this->name
-        );
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $this->width = (int) $row['width'];
-            $this->size = (int) $row['size'];
-            $this->height = (int) $row['height'];
-            $this->mime = $row['mime'];
-            $this->file = $row['file'];
-            $this->path = p4string::addEndSlash($row['path']);
-            $this->is_physically_present = file_exists($this->get_pathfile());
-            $this->etag = $row['etag'];
-            $this->is_substituted = ! ! $row['substit'];
-            $this->subdef_id = (int) $row['subdef_id'];
-
-            if ($row['updated_on'])
-                $this->modification_date = new DateTime($row['updated_on']);
-            if ($row['created_on'])
-                $this->creation_date = new DateTime($row['created_on']);
-
-        } elseif ($substitute === false) {
-            throw new Exception_Media_SubdefNotFound($this->name . ' not found');
-        }
-
-        if (! $row) {
-            $this->find_substitute_file();
-        }
-
+    /**
+     * @param media_subdef $subdef
+     */
+    protected static function putDataInCache(self $subdef)
+    {
         $datas = array(
-            'mime'               => $this->mime
-            , 'width'              => $this->width
-            , 'size'               => $this->size
-            , 'height'             => $this->height
-            , 'etag'               => $this->etag
-            , 'path'               => $this->path
-            , 'url'                => $this->url
-            , 'file'               => $this->file
-            , 'physically_present' => $this->is_physically_present
-            , 'is_substituted'     => $this->is_substituted
-            , 'subdef_id'          => $this->subdef_id
-            , 'modification_date'  => $this->modification_date
-            , 'creation_date'      => $this->creation_date
+            'mime' => $subdef->mime,
+            'width' => $subdef->width,
+            'size' => $subdef->size,
+            'height' => $subdef->height,
+            'etag' => $subdef->etag,
+            'path' => $subdef->path,
+            'url' => $subdef->url,
+            'file' => $subdef->file,
+            'physically_present' => $subdef->is_physically_present,
+            'is_substituted' => $subdef->is_substituted,
+            'subdef_id' => $subdef->subdef_id,
+            'modification_date' => $subdef->modification_date,
+            'creation_date' => $subdef->creation_date,
         );
 
-        $this->set_data_to_cache($datas);
+        $subdef->set_data_to_cache($datas);
+    }
 
-        return $this;
+    public static function mapFromSubstitute(self $subdef)
+    {
+        if ($subdef->record->is_grouping()) {
+            $subdef->mime = 'image/png';
+            $subdef->width = 256;
+            $subdef->height = 256;
+            $subdef->path = $subdef->app['root.path'] . '/www/skins/icons/substitution/';
+            $subdef->file = 'regroup_thumb.png';
+            $subdef->url = Url::factory('/skins/icons/substitution/regroup_thumb.png');
+        } else {
+            $mime = $subdef->record->get_mime();
+            $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
+
+            $subdef->mime = 'image/png';
+            $subdef->width = 256;
+            $subdef->height = 256;
+            $subdef->path = $subdef->app['root.path'] . '/www/skins/icons/substitution/';
+            $subdef->file = str_replace('+', '%20', $mime) . '.png';
+            $subdef->url = Url::factory('/skins/icons/substitution/' . $subdef->file);
+        }
+
+        $subdef->is_physically_present = false;
+
+        if ( ! file_exists($subdef->path . $subdef->file)) {
+            $subdef->path = $subdef->app['root.path'] . '/www/skins/icons/';
+            $subdef->file = 'substitution.png';
+            $subdef->url = Url::factory('/skins/icons/' . $subdef->file);
+        }
     }
 
     /**
@@ -280,32 +467,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function find_substitute_file()
     {
-        if ($this->record->is_grouping()) {
-            $this->mime = 'image/png';
-            $this->width = 256;
-            $this->height = 256;
-            $this->path = $this->app['root.path'] . '/www/skins/icons/substitution/';
-            $this->file = 'regroup_thumb.png';
-            $this->url = Url::factory('/skins/icons/substitution/regroup_thumb.png');
-        } else {
-            $mime = $this->record->get_mime();
-            $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
-
-            $this->mime = 'image/png';
-            $this->width = 256;
-            $this->height = 256;
-            $this->path = $this->app['root.path'] . '/www/skins/icons/substitution/';
-            $this->file = str_replace('+', '%20', $mime) . '.png';
-            $this->url = Url::factory('/skins/icons/substitution/' . $this->file);
-        }
-
-        $this->is_physically_present = false;
-
-        if ( ! file_exists($this->path . $this->file)) {
-            $this->path = $this->app['root.path'] . '/www/skins/icons/';
-            $this->file = 'substitution.png';
-            $this->url = Url::factory('/skins/icons/' . $this->file);
-        }
+        self::mapFromSubstitute($this);
 
         return $this;
     }
@@ -334,10 +496,19 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_permalink()
     {
-        if ( ! $this->permalink && $this->is_physically_present())
+        if ( ! $this->permalink && $this->is_physically_present()) {
             $this->permalink = media_Permalink_Adapter::getPermalink($this->app, $this->record->get_databox(), $this);
+        }
 
         return $this->permalink;
+    }
+
+    /**
+     * @param media_Permalink_Adapter $permalink
+     */
+    public function set_permalink(media_Permalink_Adapter $permalink)
+    {
+        $this->permalink = $permalink;
     }
 
     /**
@@ -479,7 +650,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @return id
+     * @return int
      */
     public function get_subdef_id()
     {
@@ -621,132 +792,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function readTechnicalDatas(MediaVorus $mediavorus)
     {
-        if ( ! $this->is_physically_present()) {
-            return array();
-        }
+        $reader = new \media_TechnicalData_Reader();
 
-        $media = $mediavorus->guess($this->get_pathfile());
-
-        $datas = array();
-
-        $methods = array(
-            self::TC_DATA_WIDTH              => 'getWidth',
-            self::TC_DATA_HEIGHT             => 'getHeight',
-            self::TC_DATA_FOCALLENGTH        => 'getFocalLength',
-            self::TC_DATA_CHANNELS           => 'getChannels',
-            self::TC_DATA_COLORDEPTH         => 'getColorDepth',
-            self::TC_DATA_CAMERAMODEL        => 'getCameraModel',
-            self::TC_DATA_FLASHFIRED         => 'getFlashFired',
-            self::TC_DATA_APERTURE           => 'getAperture',
-            self::TC_DATA_SHUTTERSPEED       => 'getShutterSpeed',
-            self::TC_DATA_HYPERFOCALDISTANCE => 'getHyperfocalDistance',
-            self::TC_DATA_ISO                => 'getISO',
-            self::TC_DATA_LIGHTVALUE         => 'getLightValue',
-            self::TC_DATA_COLORSPACE         => 'getColorSpace',
-            self::TC_DATA_DURATION           => 'getDuration',
-            self::TC_DATA_FRAMERATE          => 'getFrameRate',
-            self::TC_DATA_AUDIOSAMPLERATE    => 'getAudioSampleRate',
-            self::TC_DATA_VIDEOCODEC         => 'getVideoCodec',
-            self::TC_DATA_AUDIOCODEC         => 'getAudioCodec',
-        );
-
-        foreach ($methods as $tc_name => $method) {
-            if (method_exists($media, $method)) {
-                $result = call_user_func(array($media, $method));
-
-                if (null !== $result) {
-                    $datas[$tc_name] = $result;
-                }
-            }
-        }
-
-        $datas[self::TC_DATA_LONGITUDE] = $media->getLongitude();
-        $datas[self::TC_DATA_LATITUDE] = $media->getLatitude();
-        $datas[self::TC_DATA_MIMETYPE] = $media->getFile()->getMimeType();
-        $datas[self::TC_DATA_FILESIZE] = $media->getFile()->getSize();
-
-        unset($media);
-
-        return $datas;
-    }
-
-    public static function create(Application $app, record_Interface $record, $name, MediaInterface $media)
-    {
-        $databox = $record->get_databox();
-        $connbas = $databox->get_connection();
-
-        $path = $media->getFile()->getPath();
-        $newname = $media->getFile()->getFilename();
-
-        $params = array(
-            ':path'       => $path,
-            ':file'       => $newname,
-            ':width'      => 0,
-            ':height'     => 0,
-            ':mime'       => $media->getFile()->getMimeType(),
-            ':size'       => $media->getFile()->getSize(),
-            ':dispatched' => 1,
-        );
-
-        if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
-            $params[':width'] = $media->getWidth();
-        }
-        if (method_exists($media, 'getHeight') && null !== $media->getHeight()) {
-            $params[':height'] = $media->getHeight();
-        }
-
-        try {
-
-            $sql = 'SELECT subdef_id FROM subdef
-                    WHERE record_id = :record_id AND name = :name';
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(
-                ':record_id' => $record->get_record_id(),
-                ':name'      => $name,
-            ));
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if (! $row) {
-                throw new \Exception_Media_SubdefNotFound('Require the real one');
-            }
-
-            $sql = "UPDATE subdef
-              SET path = :path, file = :file
-                  , width = :width , height = :height, mime = :mime
-                  , size = :size, dispatched = :dispatched, updated_on = NOW()
-              WHERE subdef_id = :subdef_id";
-
-            $params[':subdef_id'] = $row['subdef_id'];
-        } catch (\Exception_Media_SubdefNotFound $e) {
-            $sql = "INSERT INTO subdef
-              (record_id, name, path, file, width
-                , height, mime, size, dispatched, created_on, updated_on)
-              VALUES (:record_id, :name, :path, :file, :width, :height
-                , :mime, :size, :dispatched, NOW(), NOW())";
-
-            $params[':record_id'] = $record->get_record_id();
-            $params[':name'] = $name;
-        }
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-
-        $subdef = new self($app, $record, $name);
-        $subdef->delete_data_from_cache();
-
-        if ($subdef->get_permalink() instanceof media_Permalink_Adapter) {
-            $subdef->get_permalink()->delete_data_from_cache();
-        }
-
-        if ($name === 'thumbnail' && $app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
-            $app['phraseanet.thumb-symlinker']->symlink($subdef->get_pathfile());
-        }
-
-        unset($media);
-
-        return $subdef;
+        return $reader->readTechnicalDatas($this, $mediavorus);
     }
 
     /**

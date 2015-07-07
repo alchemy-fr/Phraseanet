@@ -31,18 +31,257 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class record_adapter implements record_Interface, cache_cacheableInterface
 {
+
+    public static function get(Application $app, $sbas_id, $record_id, $number = null)
+    {
+        return new self($app, $sbas_id, $record_id, $number, true);
+    }
+
+    public static function getMany(Application $app, $sbas_id, $record_ids = array())
+    {
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $connection = $databox->get_connection();
+
+        $ids = array_map(function ($id) {
+            if (is_array($id)) {
+                return (int) $id['id'];
+            }
+
+            return (int) $id;
+        }, $record_ids);
+
+        $numbers = array();
+
+        foreach ($record_ids as $id) {
+            $numbers[$id['id']] = null;
+
+            if (is_array($id)) {
+                $numbers[$id['id']] = $id['index'];
+            }
+        }
+
+        $query = 'SELECT r.coll_id, r.record_id, r.credate , r.uuid, r.moddate, r.parent_record_id,
+                    r.type, r.originalname, r.bitly, r.sha256, r.mime, BIN(r.status) AS status,
+                    s.subdef_id, s.name, s.file, s.width, s.height, s.mime,
+                    s.path, s.size, s.substit, s.created_on, s.updated_on, s.etag
+                  FROM record AS r LEFT JOIN subdef AS s ON (s.record_id = r.record_id)
+                  WHERE r.record_id IN (%s) ORDER BY s.record_id, s.subdef_id';
+
+        $params = array();
+
+        foreach ($ids as $key => $id) {
+            $params[':id_' . (int) $key] = $id;
+        }
+
+        $query = sprintf($query, implode(', ', array_keys($params)));
+
+        $statement = $connection->prepare($query);
+        $statement->execute($params);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $records = array();
+
+        $row = reset($rows);
+
+        while ($row !== false) {
+            $record = new self($app, $sbas_id, $row['record_id'], $numbers[$row['record_id']], false);
+            $record->technical_datas = array();
+
+            self::mapFromQuery($record, $rows);
+
+            $records[$record->get_record_id()] = $record;
+
+            $row = next($rows);
+        }
+
+        $query = sprintf('SELECT record_id, name, value FROM technical_datas WHERE record_id IN (%s) ORDER BY record_id', implode(', ', $ids));
+        $statement = $connection->prepare($query);
+        $statement->execute();
+        $rs = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        foreach ($rs as $row) {
+            $recordId = (int) $row['record_id'];
+
+            switch (true) {
+                case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
+                    $records[$recordId]->technical_datas[$row['name']] = (float) $row['value'];
+                    break;
+                case ctype_digit($row['value']):
+                    $records[$recordId]->technical_datas[$row['name']] = (int) $row['value'];
+                    break;
+                default:
+                    $records[$recordId]->technical_datas[$row['name']] = $row['value'];
+                    break;
+            }
+        }
+
+        $captionRecords = \caption_record::getMany($app, $databox, $records);
+
+        foreach ($captionRecords as $captionRecord) {
+            $records[$captionRecord->get_record_id()]->caption_record = $captionRecord;
+        }
+
+        usort($records, function ($a, $b) {
+            return $a->number > $b->number;
+        });
+
+        return $records;
+    }
+
+    protected static function load(self $record)
+    {
+        try {
+            return self::mapFromCache($record);
+        } catch (\Exception $e) {
+
+        }
+
+        $connection = $record->databox->get_connection();
+        $query = 'SELECT r.coll_id, r.record_id, r.credate , r.uuid, r.moddate, r.parent_record_id, BIN(r.status) as status,
+                         r.type, r.originalname, r.bitly, r.sha256, r.mime, s.name,
+                         s.subdef_id, s.name, s.file, s.width, s.height, s.mime,
+                         s.path, s.size, s.substit, s.created_on, s.updated_on, s.etag
+                    FROM record AS r LEFT JOIN subdef AS s ON (s.record_id = r.record_id)
+                    WHERE r.record_id = :record_id';
+        $statement = $connection->prepare($query);
+        $statement->execute(array(':record_id' => $record->record_id));
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            throw new Exception_Record_AdapterNotFound('Record ' . $record->record_id . ' on database ' . $record->databox->get_sbas_id() . ' not found ');
+        }
+
+        self::mapFromQuery($record, $rows);
+
+        $statement->closeCursor();
+
+        self::putInCache($record);
+    }
+
+    /**
+     * @param record_adapter $record
+     * @return mixed
+     */
+    protected static function mapFromCache(self $record)
+    {
+        $datas = $record->get_data_from_cache();
+
+        $record->mime = $datas['mime'];
+        $record->sha256 = $datas['sha256'];
+        $record->bitly_link = $datas['bitly_link'];
+        $record->original_name = $datas['original_name'];
+        $record->type = $datas['type'];
+        $record->grouping = $datas['grouping'];
+        $record->uuid = $datas['uuid'];
+        $record->modification_date = $datas['modification_date'];
+        $record->creation_date = $datas['creation_date'];
+        $record->base_id = $datas['base_id'];
+        $record->collection_id = $datas['collection_id'];
+        $record->subdef_names = $datas['subdef_names'];
+    }
+
+    /**
+     * @param record_adapter $record
+     */
+    protected static function putInCache(self $record)
+    {
+        $datas = array(
+            'mime' => $record->mime,
+            'sha256' => $record->sha256,
+            'original_name' => $record->original_name,
+            'type' => $record->type,
+            'grouping' => $record->grouping,
+            'uuid' => $record->uuid,
+            'modification_date' => $record->modification_date,
+            'creation_date' => $record->creation_date,
+            'base_id' => $record->base_id,
+            'collection_id' => $record->collection_id,
+            'bitly_link' => $record->bitly_link,
+            'subdef_names' => $record->subdef_names
+        );
+
+        $record->set_data_to_cache($datas);
+    }
+
+    /**
+     * @param record_adapter $record
+     * @param array $rows
+     */
+    protected static function mapFromQuery(self $record, & $rows)
+    {
+        $row = current($rows);
+
+        $currentId = $row['record_id'];
+
+        $record->collection_id = (int)$row['coll_id'];
+        $record->base_id = (int)phrasea::baseFromColl($record->databox->get_sbas_id(), $record->collection_id, $record->app);
+        $record->creation_date = new DateTime($row['credate']);
+        $record->modification_date = new DateTime($row['moddate']);
+        $record->uuid = $row['uuid'];
+
+        $record->grouping = ($row['parent_record_id'] == '1');
+        $record->type = $row['type'];
+        $record->original_name = $row['originalname'];
+        $record->bitly_link = $row['bitly'];
+        $record->sha256 = $row['sha256'];
+        $record->mime = $row['mime'];
+
+        if (isset($row['status'])) {
+            $status = $row['status'];
+            $n = strlen($status);
+            while ($n < 32) {
+                $status = '0' . $status;
+                $n++;
+            }
+
+            $record->status = $status;
+        }
+
+        $subdef_names = array('preview', 'thumbnail');
+        $subdefs = array();
+
+        while ($row !== false) {
+            $subdef_names[] = $row['name'];
+            $subdef = new media_subdef($record->app, $record, $row['name'], false, false);
+
+            media_subdef::mapFromQuery($subdef, $row);
+
+            $subdefs[$row['name']] = $subdef;
+            $row = next($rows);
+
+            if ($row === false || $row['record_id'] != $currentId) {
+                prev($rows);
+                break;
+            }
+        };
+
+        $subdef_names = array_unique($subdef_names);
+        $missing = array_diff($subdef_names, array_unique(array_keys($subdefs)));
+
+        foreach ($missing as $subdefName) {
+            $subdef = new media_subdef($record->app, $record, $subdefName, false, false);
+
+            media_subdef::mapFromSubstitute($subdef);
+
+            $subdefs[$subdefName] = $subdef;
+        }
+
+        $record->subdef_names = $subdef_names;
+        $record->subdefs = $subdefs;
+    }
     /**
      *
      * @var <type>
      */
     protected $xml;
-
     /**
      *
      * @var <type>
      */
     protected $base_id;
     protected $collection_id;
+
     protected $record_id;
 
     /**
@@ -68,6 +307,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @var <type>
      */
     protected $subdefs;
+
+    /**
+     * @var string[]
+     */
+    protected $subdef_names = array();
 
     /**
      *
@@ -134,14 +378,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @var string
      */
     protected $uuid;
-
     /**
      *
      * @var DateTime
      */
     protected $modification_date;
-    protected $app;
 
+    protected $app;
     const CACHE_ORIGINAL_NAME = 'originalname';
     const CACHE_TECHNICAL_DATAS = 'technical_datas';
     const CACHE_MIME = 'mime';
@@ -149,6 +392,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     const CACHE_SHA256 = 'sha256';
     const CACHE_SUBDEFS = 'subdefs';
     const CACHE_GROUPING = 'grouping';
+
     const CACHE_STATUS = 'status';
 
     /**
@@ -160,81 +404,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return record_adapter
      */
-    public function __construct(Application $app, $sbas_id, $record_id, $number = null)
+    public function __construct(Application $app, $sbas_id, $record_id, $number = null, $load = true)
     {
         $this->app = $app;
         $this->databox = $this->app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $this->number = (int) $number;
         $this->record_id = (int) $record_id;
 
-        return $this->load();
-        ;
-    }
-
-    protected function load()
-    {
-        try {
-            $datas = $this->get_data_from_cache();
-
-            $this->mime = $datas['mime'];
-            $this->sha256 = $datas['sha256'];
-            $this->bitly_link = $datas['bitly_link'];
-            $this->original_name = $datas['original_name'];
-            $this->type = $datas['type'];
-            $this->grouping = $datas['grouping'];
-            $this->uuid = $datas['uuid'];
-            $this->modification_date = $datas['modification_date'];
-            $this->creation_date = $datas['creation_date'];
-            $this->base_id = $datas['base_id'];
-            $this->collection_id = $datas['collection_id'];
-
-            return $this;
-        } catch (\Exception $e) {
-
+        if ($load) {
+            self::load($this);
         }
-
-        $connbas = $this->databox->get_connection();
-        $sql = 'SELECT coll_id, record_id,credate , uuid, moddate, parent_record_id
-            , type, originalname, bitly, sha256, mime
-            FROM record WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->record_id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if (!$row) {
-            throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
-        }
-
-        $this->collection_id = (int) $row['coll_id'];
-        $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $this->collection_id, $this->app);
-        $this->creation_date = new DateTime($row['credate']);
-        $this->modification_date = new DateTime($row['moddate']);
-        $this->uuid = $row['uuid'];
-
-        $this->grouping = ($row['parent_record_id'] == '1');
-        $this->type = $row['type'];
-        $this->original_name = $row['originalname'];
-        $this->bitly_link = $row['bitly'];
-        $this->sha256 = $row['sha256'];
-        $this->mime = $row['mime'];
-
-        $datas = array(
-            'mime' => $this->mime,
-            'sha256' => $this->sha256,
-            'original_name' => $this->original_name,
-            'type' => $this->type,
-            'grouping' => $this->grouping,
-            'uuid' => $this->uuid,
-            'modification_date' => $this->modification_date,
-            'creation_date' => $this->creation_date,
-            'base_id' => $this->base_id,
-            'collection_id' => $this->collection_id,
-        );
-
-        $this->set_data_to_cache($datas);
-
-        return $this;
     }
 
     /**
@@ -642,21 +821,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $name = strtolower($name);
 
-        if (!in_array($name, $this->get_available_subdefs())) {
+        if (! in_array($name, $this->subdef_names)) {
             throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
         }
 
-        if (isset($this->subdefs[$name])) {
-            return $this->subdefs[$name];
-        }
-
-        if (!$this->subdefs) {
-            $this->subdefs = array();
-        }
-
-        $substitute = ($name !== 'document');
-
-        return $this->subdefs[$name] = new media_subdef($this->app, $this, $name, $substitute);
+        return $this->get_subdefs()[$name];
     }
 
     /**
@@ -725,12 +894,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     public function get_subdefs()
     {
         if (!$this->subdefs) {
-            $this->subdefs = array();
-        }
-
-        $subdefs = $this->get_available_subdefs();
-        foreach ($subdefs as $name) {
-            $this->get_subdef($name);
+            $this->subdefs = media_subdef::getMany($this->app, $this, $this->get_available_subdefs());
         }
 
         return $this->subdefs;
@@ -742,31 +906,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     protected function get_available_subdefs()
     {
-        try {
-            return $this->get_data_from_cache(self::CACHE_SUBDEFS);
-        } catch (\Exception $e) {
-
-        }
-
-        $connbas = $this->get_databox()->get_connection();
-
-        $sql = 'SELECT name FROM record r, subdef s
-            WHERE s.record_id = r.record_id AND r.record_id = :record_id';
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->get_record_id()));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $subdefs = array('preview', 'thumbnail');
-
-        foreach ($rs as $row) {
-            $subdefs[] = $row['name'];
-        }
-        $subdefs = array_unique($subdefs);
-        $this->set_data_to_cache($subdefs, self::CACHE_SUBDEFS);
-
-        return $subdefs;
+        return $this->subdef_names;
     }
 
     /**
@@ -833,7 +973,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_caption()
     {
-        return new caption_record($this->app, $this, $this->get_databox());
+        if ($this->caption_record === null) {
+            $this->caption_record = new caption_record($this->app, $this, $this->get_databox());
+        }
+
+        return $this->caption_record;
     }
 
     /**
@@ -933,12 +1077,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         if (count($fields_to_retrieve) > 0) {
             $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
+
             $titles = array();
             foreach ($retrieved_fields as $value) {
                 foreach ($value['values'] as $v) {
                     $titles[] = $v['value'];
                 }
             }
+
             $title = trim(implode(' - ', $titles));
         }
 

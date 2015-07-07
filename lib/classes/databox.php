@@ -16,6 +16,79 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class databox extends base
 {
+
+    public static function getAll(Application $app, \appbox $appbox)
+    {
+        try {
+            $rows = $appbox->get_data_from_cache(static::CACHE_BASE_DATABOX . '_all');
+        }
+        catch (\Exception $e) {
+            $connection = $app['phraseanet.appbox']->get_connection();
+
+            $query = 'SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl
+                FROM sbas';
+            $statement = $connection->prepare($query);
+            $statement->execute();
+            $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $statement->closeCursor();
+
+            $appbox->set_data_to_cache($rows, static::CACHE_BASE_DATABOX . '_all');
+        }
+
+        $databoxes = array();
+
+        foreach ($rows as $row) {
+            $databox = new self($app, (int) $row['sbas_id'], false);
+
+            self::loadFromRow($databox, $row);
+
+            $databoxes[$databox->get_sbas_id()] = $databox;
+        }
+
+        return $databoxes;
+    }
+
+    /**
+     * @param databox $databox
+     * @param $row
+     */
+    protected static function loadFromRow(self $databox, $row)
+    {
+        $databox->ord = $row['ord'];
+        $databox->viewname = $row['viewname'];
+        $databox->labels['fr'] = $row['label_fr'];
+        $databox->labels['en'] = $row['label_en'];
+        $databox->labels['de'] = $row['label_de'];
+        $databox->labels['nl'] = $row['label_nl'];
+
+        $databox->loaded = true;
+    }
+
+    /**
+     * @param databox $databox
+     */
+    protected static function load(self $databox)
+    {
+        try {
+            $row = $databox->get_data_from_cache(static::CACHE_BASE_DATABOX);
+        } catch (\Exception $e) {
+            $sql = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl
+                FROM sbas WHERE sbas_id = :sbas_id';
+            $stmt = $databox->app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt->execute(array('sbas_id' => $databox->id));
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            $databox->set_data_to_cache($row, static::CACHE_BASE_DATABOX);
+        }
+
+        if (!$row) {
+            throw new NotFoundHttpException(sprintf('databox %d not found', $databox->id));
+        }
+
+        self::loadFromRow($databox, $row);
+    }
+    
     /**
      *
      * @var int
@@ -104,7 +177,7 @@ class databox extends base
     private $viewname;
     private $loaded = false;
 
-    public function __construct(Application $app, $sbas_id)
+    public function __construct(Application $app, $sbas_id, $load = true)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
@@ -126,53 +199,18 @@ class databox extends base
         $this->passwd = $connection_params[$sbas_id]['pwd'];
         $this->dbname = $connection_params[$sbas_id]['dbname'];
 
-        return $this;
-    }
-
-    private function load()
-    {
-        if ($this->loaded) {
-            return;
+        if ($load) {
+            self::load($this);
         }
-
-        try {
-            $row = $this->get_data_from_cache(static::CACHE_BASE_DATABOX);
-        } catch (\Exception $e) {
-            $sql = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl
-                FROM sbas WHERE sbas_id = :sbas_id';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array('sbas_id' => $this->id));
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            $this->set_data_to_cache($row, static::CACHE_BASE_DATABOX);
-        }
-
-        if (!$row) {
-            throw new NotFoundHttpException(sprintf('databox %d not found', $this->id));
-        }
-
-        $this->ord = $row['ord'];
-        $this->viewname = $row['viewname'];
-        $this->labels['fr'] = $row['label_fr'];
-        $this->labels['en'] = $row['label_en'];
-        $this->labels['de'] = $row['label_de'];
-        $this->labels['nl'] = $row['label_nl'];
-
-        $this->loaded = true;
     }
 
     public function get_viewname()
     {
-        $this->load();
-
         return $this->viewname ? : $this->dbname;
     }
 
     public function set_viewname($viewname)
     {
-        $this->load();
-
         $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -190,8 +228,6 @@ class databox extends base
 
     public function get_ord()
     {
-        $this->load();
-
         return $this->ord;
     }
 
@@ -260,8 +296,6 @@ class databox extends base
 
     public function get_label($code, $substitute = true)
     {
-        $this->load();
-
         if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
@@ -275,8 +309,6 @@ class databox extends base
 
     public function set_label($code, $label)
     {
-        $this->load();
-
         if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
@@ -679,31 +711,15 @@ class databox extends base
      */
     public function get_meta_structure()
     {
-        $metaStructData = array();
-
         if ($this->meta_struct) {
             return $this->meta_struct;
         }
 
-        try {
-            $metaStructData = $this->get_data_from_cache(self::CACHE_META_STRUCT);
-        } catch (\Exception $e) {
-            $sql = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if ($rs) {
-                $metaStructData = $rs;
-                $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
-            }
-        }
-
         $this->meta_struct = new databox_descriptionStructure();
+        $fields = databox_field::get_all($this->app, $this);
 
-        foreach ((array) $metaStructData as $row) {
-            $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
+        foreach ($fields as $field) {
+            $this->meta_struct->add_element($field);
         }
 
         return $this->meta_struct;
