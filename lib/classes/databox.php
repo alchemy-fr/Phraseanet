@@ -97,7 +97,7 @@ class databox extends base
 
     public function get_viewname()
     {
-        return $this->viewname ? : $this->dbname;
+        return $this->viewname ? : $this->connectionSettings->getDatabaseName();
     }
 
     public function set_viewname($viewname)
@@ -479,11 +479,11 @@ class databox extends base
         $password = $connection->getPassword();
 
         $params = [
-            ':host'     => $host
-            , ':port'     => $port
-            , ':dbname'   => $dbname
-            , ':user'     => $user
-            , ':password' => $password
+            ':host'     => $host,
+            ':port'     => $port,
+            ':dbname'   => $dbname,
+            ':user'     => $user,
+            ':password' => $password
         ];
 
         /** @var appbox $appbox */
@@ -517,6 +517,7 @@ class databox extends base
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+
         if ($row) {
             $ord = $row['ord'] + 1;
         }
@@ -569,6 +570,7 @@ class databox extends base
             'password' => $password,
             'dbname'   => $dbname,
         ]);
+
         $conn->connect();
 
         $conn = $app->getApplicationBox()->get_connection();
@@ -584,12 +586,12 @@ class databox extends base
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $conn->prepare($sql);
         $stmt->execute([
-            ':ord'      => $ord
-            , ':host'     => $host
-            , ':port'     => $port
-            , ':dbname'   => $dbname
-            , ':user'     => $user
-            , ':password' => $password
+            ':ord'      => $ord,
+            ':host'     => $host,
+            ':port'     => $port,
+            ':dbname'   => $dbname,
+            ':user'     => $user,
+            ':password' => $password
         ]);
 
         $stmt->closeCursor();
@@ -663,8 +665,6 @@ class databox extends base
         $n = 0;
         $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
 
-        $pathout = $repository_path . $comp;
-
         while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100) {
             $n ++;
         }
@@ -688,36 +688,37 @@ class databox extends base
 
     private static function addZeros($n, $length = 5)
     {
-        while (strlen($n) < $length) {
-            $n = '0' . $n;
-        }
-
-        return $n;
+        return str_pad($n, $length, '0');
     }
 
     public function get_serialized_server_info()
     {
-        return sprintf("%s@%s:%s (MySQL %s)", $this->dbname, $this->host, $this->port, $this->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION));
+        return sprintf("%s@%s:%s (MySQL %s)",
+            $this->connectionSettings->getDatabaseName(),
+            $this->connectionSettings->getHost(),
+            $this->connectionSettings->getPort(),
+            $this->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION)
+        );
     }
 
     public static function get_available_dcfields()
     {
         return [
-            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor()
-            , databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage()
-            , databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator()
-            , databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date()
-            , databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description()
-            , databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format()
-            , databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier()
-            , databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language()
-            , databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher()
-            , databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation
-            , databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights
-            , databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source
-            , databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject()
-            , databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title()
-            , databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
+            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor(),
+            databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage(),
+            databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator(),
+            databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date(),
+            databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description(),
+            databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format(),
+            databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier(),
+            databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language(),
+            databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher(),
+            databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation(),
+            databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights(),
+            databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source(),
+            databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject(),
+            databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title(),
+            databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
         ];
     }
 
@@ -870,7 +871,7 @@ class databox extends base
 
         $contents = str_replace(
             ["{{basename}}", "{{datapathnoweb}}"]
-            , [$this->dbname, rtrim($path_doc, '/').'/']
+            , [$this->connectionSettings->getDatabaseName(), rtrim($path_doc, '/').'/']
             , $contents
         );
 
@@ -999,8 +1000,8 @@ class databox extends base
 
     /**
      *
-     * @param  <type> $sbas_id
-     * @return <type>
+     * @param  int $sbas_id
+     * @return string
      */
     public static function getPrintLogo($sbas_id)
     {

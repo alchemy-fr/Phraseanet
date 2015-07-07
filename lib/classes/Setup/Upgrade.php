@@ -17,7 +17,7 @@ class Setup_Upgrade
 {
     /**
      *
-     * @var Applications
+     * @var Application
      */
     private $app;
 
@@ -62,8 +62,8 @@ class Setup_Upgrade
 
     /**
      *
-     * @param type $recommendation
-     * @param type $command
+     * @param string $recommendation
+     * @param string $command
      */
     public function addRecommendation($recommendation, $command = null)
     {
@@ -81,9 +81,8 @@ class Setup_Upgrade
     }
 
     /**
-     *
-     *
      * @return Setup_Upgrade
+     * @throws Exception_Setup_CannotWriteLockFile
      */
     private function write_lock()
     {
