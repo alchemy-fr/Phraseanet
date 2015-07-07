@@ -280,6 +280,17 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
+    public function get_collection(Request $request, $base_id)
+    {
+        $result = new API_V1_result($this->app, $request, $this);
+
+        $collection = $this->app['phraseanet.appbox']->get_collection($base_id);
+
+        $result->set_datas(array('collection' => $this->list_collection($collection)));
+
+        return $result;
+    }
+
     /**
      * Get detailed about databoxes
      *

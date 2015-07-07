@@ -376,6 +376,15 @@ class V1 implements ControllerProviderInterface
         })->before($mustBeAdmin);
 
         /**
+         * Route : /collections/BASE_ID/
+         * Method : GET
+         * Parameters :
+         */
+        $controllers->get('/collections/{base_id}/', function (SilexApplication $app, Request $request, $base_id) {
+           return $app['api']->get_collection($request, $base_id)->get_response();
+        });
+
+        /**
          * Route : /databoxes/list/
          *
          * Method : GET
@@ -908,13 +917,13 @@ class V1 implements ControllerProviderInterface
          *    DATABOX_ID : required INT
          *    STORY_ID : required INT
          *
-         */
+         */
         $controllers->get('/stories/{databox_id}/{record_id}/embed/', function ($databox_id, $record_id) use ($app) {
                 $result = $app['api']->get_story_embed($app['request'], $databox_id, $record_id);
 
                 return $result->get_response();
             }
-        )->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
+        )->before($hasAccessToRecord)->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
