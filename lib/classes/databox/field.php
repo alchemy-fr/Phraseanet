@@ -14,12 +14,11 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\FieldDeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldUpdatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
 use Doctrine\DBAL\Driver\Connection;
-use PHPExiftool\Driver\TagInterface;
-use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Exception\TagUnknown;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -31,14 +30,10 @@ class databox_field implements cache_cacheableInterface
     /** @var Application  */
     protected $app;
 
-    /**
-     * @var databox
-     */
+    /** @var databox */
     protected $databox;
 
-    /**
-     * @var TagInterface
-     */
+    /** DO NOT IMPORT, makes PHPSTORM HANG. PHPExiftool\Driver\TagInterface */
     protected $tag;
 
     protected $name;
@@ -53,23 +48,36 @@ class databox_field implements cache_cacheableInterface
     protected $separator;
     protected $thumbtitle;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $labels = [];
 
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     protected $Business;
 
     protected $renamed = false;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $sbas_id;
+
     protected static $_instance = [];
+    protected static $knownDCES = [
+        'Contributor' => 'databox_Field_DCES_Contributor',
+        'Coverage'    => 'databox_Field_DCES_Coverage',
+        'Creator'     => 'databox_Field_DCES_Creator',
+        'Date'        => 'databox_Field_DCES_Date',
+        'Description' => 'databox_Field_DCES_Description',
+        'Format'      => 'databox_Field_DCES_Format',
+        'Identifier'  => 'databox_Field_DCES_Identifier',
+        'Language'    => 'databox_Field_DCES_Language',
+        'Publisher'   => 'databox_Field_DCES_Publisher',
+        'Relation'    => 'databox_Field_DCES_Relation',
+        'Rights'      => 'databox_Field_DCES_Rights',
+        'Source'      => 'databox_Field_DCES_Source',
+        'Subject'     => 'databox_Field_DCES_Subject',
+        'Title'       => 'databox_Field_DCES_Title',
+        'Type'        => 'databox_Field_DCES_Type',
+    ];
+
     protected $dces_element;
     protected $Vocabulary;
     protected $VocabularyType;
@@ -101,37 +109,25 @@ class databox_field implements cache_cacheableInterface
     const DCES_RIGHTS = 'Rights';
 
     /**
-     *
-     * @param  databox       $databox
-     * @param  int           $id
-     * @return databox_field
+     * @param Application $app
+     * @param databox     $databox
+     * @param array       $row
      */
-    protected function __construct(Application $app, databox $databox, $id)
+    public function __construct(Application $app, databox $databox, array $row)
     {
         $this->app = $app;
         $this->set_databox($databox);
         $this->sbas_id = $databox->get_sbas_id();
 
-        $connbas = $this->get_connection();
+        $this->loadFromRow($row);
+    }
 
-        $sql = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
-                `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
-                `name`, `src`, `business`, `aggregable`,  `VocabularyControlType`,
-                `RestrictToVocabularyControl`, `sorter`,
-                `label_en`, `label_fr`, `label_de`, `label_nl`
-              FROM metadatas_structure WHERE id=:id";
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if (!$row) {
-            throw new NotFoundHttpException(sprintf('Unable to find field in %s', $id));
-        }
-
-        $this->id = (int) $id;
-
+    /**
+     * @param array $row
+     */
+    protected function loadFromRow(array $row)
+    {
+        $this->id = (int)$row['id'];
         $this->original_src = $row['src'];
         $this->tag = self::loadClassFromTagName($row['src'], false);
 
@@ -144,22 +140,22 @@ class databox_field implements cache_cacheableInterface
         }
 
         $this->name = $row['name'];
-        $this->indexable = (Boolean) $row['indexable'];
-        $this->readonly = (Boolean) $row['readonly'];
-        $this->required = (Boolean) $row['required'];
-        $this->multi = (Boolean) $row['multi'];
-        $this->Business = (Boolean) $row['business'];
-        $this->report = (Boolean) $row['report'];
-        $this->aggregable = (Int) $row['aggregable'];
-        $this->position = (Int) $row['sorter'];
-        $this->type = $row['type'] ? : self::TYPE_STRING;
+        $this->indexable = (bool)$row['indexable'];
+        $this->readonly = (bool)$row['readonly'];
+        $this->required = (bool)$row['required'];
+        $this->multi = (bool)$row['multi'];
+        $this->Business = (bool)$row['business'];
+        $this->report = (bool)$row['report'];
+        $this->aggregable = (int)$row['aggregable'];
+        $this->position = (int)$row['sorter'];
+        $this->type = $row['type'] ?: self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
         $this->VocabularyType = $row['VocabularyControlType'];
-        $this->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
+        $this->VocabularyRestriction = (bool)$row['RestrictToVocabularyControl'];
 
-        if ($row['dces_element']) {
-            $dc_class = 'databox_Field_DCES_' . $row['dces_element'];
-            $this->dces_element = new $dc_class();
+        if (isset($row['dces_element'])) {
+            $class = self::$knownDCES[$row['dces_element']];
+            $this->dces_element = new $class();
         }
 
         $this->separator = self::checkMultiSeparator($row['separator'], $this->multi);
@@ -167,8 +163,6 @@ class databox_field implements cache_cacheableInterface
         $this->thumbtitle = $row['thumbtitle'];
 
         $this->loadVocabulary();
-
-        return $this;
     }
 
     /**
@@ -476,50 +470,33 @@ class databox_field implements cache_cacheableInterface
     /**
      * Get a PHPExiftool Tag from tagName
      *
-     * @param  string                                          $tagName
-     * @return \PHPExiftool\Driver\TagInterface
-     * @throws Exception_Databox_metadataDescriptionNotFound
+     * @param string $tagName
+     * @param bool    $throwException
+     * @return object Makes phpstorm hangs \PHPExiftool\Driver\TagInterface
      */
     public static function loadClassFromTagName($tagName, $throwException = true)
     {
-        $tagName = str_replace('/rdf:rdf/rdf:description/', '', $tagName);
+        $tagName = str_ireplace('/rdf:rdf/rdf:description/', '', $tagName);
 
-        if (trim($tagName) === '') {
+        if ('' === trim($tagName)) {
+            return new Nosource();
+        }
 
-            $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
-        } elseif (strpos($tagName, 'Phraseanet:') === 0) {
-
-            $tagName = str_replace('Phraseanet:', '', $tagName);
-
-            $tagName = explode('-', $tagName);
-            $tagName = array_map('ucfirst', $tagName);
-            $tagName = implode('', $tagName);
-
-            $classname = '\\Alchemy\\Phrasea\\Metadata\\Tag\\' . $tagName;
-
-            if ( ! class_exists($classname)) {
-                if ($throwException) {
-                    throw new Exception_Databox_metadataDescriptionNotFound(sprintf("tagname %s not found", $tagName));
-                } else {
-                    $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
-                }
-            } else {
-                $tag = new $classname();
-            }
-        } else {
-            try {
-                $tag = TagFactory::getFromRDFTagname($tagName);
-            } catch (TagUnknown $e) {
-                if ($throwException) {
-                    throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $e);
-                }
-                $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
+        try {
+            return TagFactory::getFromRDFTagname($tagName);
+        } catch (TagUnknown $exception) {
+            if ($throwException) {
+                throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $exception);
             }
         }
 
-        return $tag;
+        return new Nosource();
     }
 
+    /**
+     * @param object $tag Actually \PHPExiftool\Driver\TagInterface but make PHPStorm hangs
+     * @return $this
+     */
     public function set_tag($tag = null)
     {
         if ($tag === null) {
@@ -532,8 +509,7 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return TagInterface
+     * @return object Avoid PHPStorm stucks on 16k classes... \PHPExiftool\Driver\TagInterface
      */
     public function get_tag()
     {
@@ -588,7 +564,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function set_indexable($bool)
     {
-        $this->indexable = ! ! $bool;
+        $this->indexable = (bool)$bool;
 
         return $this;
     }
@@ -614,7 +590,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function setVocabularyRestricted($boolean)
     {
-        $this->VocabularyRestriction = ! ! $boolean;
+        $this->VocabularyRestriction = (bool)$boolean;
 
         return $this;
     }
@@ -627,7 +603,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function set_readonly($readonly)
     {
-        $this->readonly = ! ! $readonly;
+        $this->readonly = (bool)$readonly;
 
         return $this;
     }
@@ -639,7 +615,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function set_business($boolean)
     {
-        $this->Business = ! ! $boolean;
+        $this->Business = (bool)$boolean;
 
         if ($this->Business) {
             $this->thumbtitle = null;
@@ -663,7 +639,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function set_required($required)
     {
-        $this->required = ! ! $required;
+        $this->required = (bool)$required;
 
         return $this;
     }
@@ -675,7 +651,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function set_report($report)
     {
-        $this->report = ! ! $report;
+        $this->report = (bool)$report;
 
         return $this;
     }
@@ -723,7 +699,7 @@ class databox_field implements cache_cacheableInterface
      * @param  boolean $multi
      * @return string
      */
-    protected static function checkMultiSeparator($separator, $multi)
+    private static function checkMultiSeparator($separator, $multi)
     {
         if (! $multi) {
             return '';
@@ -1029,7 +1005,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function delete_data_from_cache($option = null)
     {
-        return $this->databox->delete_data_from_cache($this->get_cache_key($option));
+        $this->databox->delete_data_from_cache($this->get_cache_key($option));
     }
 
     private function loadVocabulary()

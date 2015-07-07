@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Databox\CachedDataboxRepository;
 use Alchemy\Phrasea\Databox\DataboxFactory;
+use Alchemy\Phrasea\Databox\DataboxFieldFactory;
+use Alchemy\Phrasea\Databox\DbalDataboxFieldRepository;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -131,6 +133,10 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             $repository = new DbalDataboxRepository($appbox->get_connection(), $factory);
 
             return new CachedDataboxRepository($repository, $app['cache'], $appbox->get_cache_key($appbox::CACHE_LIST_BASES), $factory);
+        });
+
+        $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {
+            return new DbalDataboxFieldRepository($databox->get_connection(), new DataboxFieldFactory($app, $databox));
         });
     }
 
