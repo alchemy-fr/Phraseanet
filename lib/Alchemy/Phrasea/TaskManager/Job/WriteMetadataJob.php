@@ -12,13 +12,12 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
-use PHPExiftool\Writer;
-use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Writer as ExifWriter;
 use PHPExiftool\Exception\TagUnknown;
 
