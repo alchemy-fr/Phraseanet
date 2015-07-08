@@ -208,7 +208,7 @@ abstract class base implements cache_cacheableInterface
     public function get_version()
     {
         if (! $this->version) {
-            $this->version = $this->versionRepository->getVersion($this);
+            $this->version = $this->versionRepository->getVersion();
         }
 
         return $this->version;
@@ -216,8 +216,8 @@ abstract class base implements cache_cacheableInterface
 
     protected function setVersion(PhraseaVersion $version)
     {
-        try {
-            return $this->versionRepository->saveVersion($this, $version);
+        try {   
+            return $this->versionRepository->saveVersion($version);
         } catch (\Exception $e) {
             throw new Exception('Unable to set the database version : ' . $e->getMessage());
         }
