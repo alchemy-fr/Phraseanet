@@ -11,9 +11,9 @@ namespace Alchemy\Phrasea\Databox;
 
 use Doctrine\Common\Cache\Cache;
 
-final class CachedDataboxRepository implements DataboxRepositoryInterface
+final class CachingDataboxRepositoryDecorator implements DataboxRepository
 {
-    /** @var DataboxRepositoryInterface */
+    /** @var DataboxRepository */
     private $repository;
     /** @var Cache */
     private $cache;
@@ -22,7 +22,7 @@ final class CachedDataboxRepository implements DataboxRepositoryInterface
     /** @var DataboxFactory */
     private $factory;
 
-    public function __construct(DataboxRepositoryInterface $repository, Cache $cache, $cacheKey, DataboxFactory $factory)
+    public function __construct(DataboxRepository $repository, Cache $cache, $cacheKey, DataboxFactory $factory)
     {
         $this->repository = $repository;
         $this->cache = $cache;

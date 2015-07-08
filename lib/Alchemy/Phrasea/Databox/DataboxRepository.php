@@ -9,7 +9,7 @@
  */
 namespace Alchemy\Phrasea\Databox;
 
-interface DataboxRepositoryInterface
+interface DataboxRepository
 {
     /**
      * @param int $id

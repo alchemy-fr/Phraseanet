@@ -11,10 +11,11 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
-use Alchemy\Phrasea\Databox\DataboxFieldRepositoryInterface;
-use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Databox\Field\DataboxFieldRepository;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
@@ -23,7 +24,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
-use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement
 {
@@ -646,7 +646,7 @@ class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\Thumbnaile
             return $this->meta_struct;
         }
 
-        /** @var DataboxFieldRepositoryInterface $fieldRepository */
+        /** @var \Alchemy\Phrasea\Databox\Field\DataboxFieldRepository $fieldRepository */
         $fieldRepository = $this->app['repo.fields.factory']($this);
 
         $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll());

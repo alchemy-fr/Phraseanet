@@ -10,7 +10,7 @@
 namespace Alchemy\Tests\Phrasea\Databox;
 
 use Alchemy\Phrasea\Databox\DataboxFactory;
-use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
@@ -36,7 +36,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testItImplementsDataboxRepositoryInterface()
     {
-        $this->assertInstanceOf(DataboxRepositoryInterface::class, $this->sut);
+        $this->assertInstanceOf(DataboxRepository::class, $this->sut);
     }
 
     public function testItFindsDataboxProperly()

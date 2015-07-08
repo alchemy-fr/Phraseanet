@@ -9,9 +9,9 @@
  */
 namespace Alchemy\Tests\Phrasea\Databox;
 
-use Alchemy\Phrasea\Databox\CachedDataboxRepository;
+use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
 use Alchemy\Phrasea\Databox\DataboxFactory;
-use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use Doctrine\Common\Cache\Cache;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -26,16 +26,16 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @var ObjectProphecy */
     private $repository;
 
-    /** @var CachedDataboxRepository */
+    /** @var CachingDataboxRepositoryDecorator */
     private $sut;
 
     protected function setUp()
     {
         $this->cache = $this->prophesize(Cache::class);
-        $this->repository = $this->prophesize(DataboxRepositoryInterface::class);
+        $this->repository = $this->prophesize(DataboxRepository::class);
         $this->factory = $this->prophesize(DataboxFactory::class);
 
-        $this->sut = new CachedDataboxRepository(
+        $this->sut = new CachingDataboxRepositoryDecorator(
             $this->repository->reveal(),
             $this->cache->reveal(),
             $this->cacheKey,
@@ -45,7 +45,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testItImplementsDataboxRepositoryInterface()
     {
-        $this->assertInstanceOf(DataboxRepositoryInterface::class, $this->sut);
+        $this->assertInstanceOf(DataboxRepository::class, $this->sut);
     }
 
     public function testItFindsASpecificDataboxWhenNotInCache()

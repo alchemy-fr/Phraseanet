@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
-use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
@@ -295,7 +295,7 @@ class appbox extends base
     }
 
     /**
-     * @return DataboxRepositoryInterface
+     * @return DataboxRepository
      */
     private function getDataboxRepository()
     {
