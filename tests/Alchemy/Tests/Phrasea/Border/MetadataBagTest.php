@@ -39,12 +39,13 @@ class MetadataBagTest extends \PhraseanetTestCase
         $monoAdded = $multiAdded = false;
 
         foreach ($structure as $databox_field) {
+            $tag = $databox_field->get_tag();
             if (!$monoAdded) {
-                $this->object->set($databox_field->get_tag()->getTagname(), new Metadata($databox_field->get_tag(), $valueMono));
+                $this->object->set($tag->getTagname(), new Metadata($tag, $valueMono));
                 $monoAdded = $databox_field->get_id();
             } elseif (!$multiAdded) {
                 if ($databox_field->is_multi()) {
-                    $this->object->set($databox_field->get_tag()->getTagname(), new Metadata($databox_field->get_tag(), $valueMulti));
+                    $this->object->set($tag->getTagname(), new Metadata($tag, $valueMulti));
                     $multiAdded = $databox_field->get_id();
                 }
             } else {

@@ -290,17 +290,18 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetField()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
-        $databox = array_shift($databoxes);
+        $app = $this->getApplication();
+        $databox = $this->getFirstDatabox($app);
 
-        $field = \databox_field::create(self::$DI['app'], $databox, 'testfield' . mt_rand(), false);
+        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
 
         $data = $field->toArray();
 
-        self::$DI['client']->request("GET", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()));
+        $client = $this->getClient();
+        $client->request("GET", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()));
 
-        $response = self::$DI['client']->getResponse()->getContent();
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $response = $client->getResponse()->getContent();
+        $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
 
         $this->assertEquals($data, json_decode($response, true));
 
@@ -309,19 +310,20 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testUpdateField()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
-        $databox = array_shift($databoxes);
+        $app = $this->getApplication();
+        $databox = $this->getFirstDatabox($app);
 
-        $field = \databox_field::create(self::$DI['app'], $databox, 'testfield' . mt_rand(), false);
+        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
 
         $data = $field->toArray();
 
         $data['business'] = true;
         $data['vocabulary-type'] = 'User';
 
-        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
+        $client = $this->getClient();
+        $client->request("PUT", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
 
-        $response = self::$DI['client']->getResponse()->getContent();
+        $response = $client->getResponse()->getContent();
         $this->assertEquals($data, json_decode($response, true));
 
         $field->delete();
@@ -330,9 +332,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDeleteField()
     {
         $app = $this->getApplication();
-        $databoxes = $app->getDataboxes();
-        /** @var \databox $databox */
-        $databox = array_shift($databoxes);
+        $databox = $this->getFirstDatabox($app);
 
         $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
         $fieldId = $field->get_id();

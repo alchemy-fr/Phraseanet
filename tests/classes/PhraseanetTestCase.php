@@ -279,6 +279,24 @@ abstract class PhraseanetTestCase extends WebTestCase
         return self::$DI['app'];
     }
 
+    /**
+     * @return databox
+     */
+    public function getFirstDatabox(Application $app)
+    {
+        $databoxes = $app->getDataboxes();
+
+        return reset($databoxes);
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return self::$DI['client'];
+    }
+
     public static function tearDownAfterClass()
     {
         gc_collect_cycles();
