@@ -129,9 +129,11 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepositoryInterfac
     private function getQuotedFields()
     {
         $fields = [];
+
         foreach (self::$columnNames as $field) {
             $fields[] = $this->connection->quoteIdentifier($field);
         };
+
         return $fields;
     }
 }

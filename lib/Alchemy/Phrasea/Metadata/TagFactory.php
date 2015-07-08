@@ -35,6 +35,7 @@ class TagFactory extends BaseTagFactory
         'tf-size'        => 'Alchemy\Phrasea\Metadata\Tag\TfSize',
         'tf-width'       => 'Alchemy\Phrasea\Metadata\Tag\TfWidth',
     ];
+
     protected static function classnameFromTagname($tagname)
     {
         $tagname = str_replace('rdf:RDF/rdf:Description/', '', $tagname);
