@@ -154,7 +154,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
 
-        $collection = $collection = \collection::get_from_base_id(self::$DI['app'], self::$DI['collection']->get_base_id());
+        $collection = $collection = \collection::getByBaseId(self::$DI['app'], self::$DI['collection']->get_base_id());
         $this->assertTrue( ! ! strrpos($collection->get_prefs(), 'my_new_value'));
         unset($collection);
     }
@@ -212,7 +212,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
 
-        $collection = \collection::get_from_base_id(self::$DI['app'], self::$DI['collection']->get_base_id());
+        $collection = \collection::getByBaseId(self::$DI['app'], self::$DI['collection']->get_base_id());
         $this->assertTrue($collection->is_active());
         unset($collection);
     }
@@ -252,7 +252,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
-        $collection = \collection::get_from_base_id(self::$DI['app'], self::$DI['collection']->get_base_id());
+        $collection = \collection::getByBaseId(self::$DI['app'], self::$DI['collection']->get_base_id());
         $this->assertFalse($collection->is_active());
         unset($collection);
     }
@@ -335,7 +335,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
-        $collection = \collection::get_from_base_id(self::$DI['app'], self::$DI['collection']->get_base_id());
+        $collection = \collection::getByBaseId(self::$DI['app'], self::$DI['collection']->get_base_id());
         $this->assertNotNull($collection->get_pub_wm());
         unset($collection);
     }
@@ -832,7 +832,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
         try {
-            \collection::get_from_base_id(self::$DI['app'], $collection->get_base_id());
+            \collection::getByBaseId(self::$DI['app'], $collection->get_base_id());
             $this->fail('Collection not deleted');
         } catch (\Exception $e) {
 
@@ -902,7 +902,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
 
         try {
-            \collection::get_from_base_id(self::$DI['app'], $collection->get_base_id());
+            \collection::getByBaseId(self::$DI['app'], $collection->get_base_id());
             $this->fail('Collection not unmounted');
         } catch (\Exception_Databox_CollectionNotFound $e) {
 

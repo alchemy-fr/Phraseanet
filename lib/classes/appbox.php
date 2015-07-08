@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
-use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Finder\Finder;
@@ -257,9 +256,13 @@ class appbox extends base
         return $this->databoxes;
     }
 
+    /**
+     * @param int $sbas_id
+     * @return databox
+     */
     public function get_databox($sbas_id)
     {
-        $databoxes = $this->get_databoxes();
+        $databoxes = $this->getDataboxRepository()->findAll();
 
         if (!isset($databoxes[$sbas_id]) && !array_key_exists($sbas_id, $databoxes)) {
             throw new NotFoundHttpException('Databox `' . $sbas_id . '` not found');

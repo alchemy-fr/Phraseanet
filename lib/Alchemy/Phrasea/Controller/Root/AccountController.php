@@ -312,7 +312,7 @@ class AccountController extends Controller
         if (0 !== count($registrations)) {
             foreach ($registrations as $baseId) {
                 $this->getRegistrationManipulator()
-                    ->createRegistration($user, \collection::get_from_base_id($this->app, $baseId));
+                    ->createRegistration($user, \collection::getByBaseId($this->app, $baseId));
             }
             $this->app->addFlash('success', $this->app->trans('Your registration requests have been taken into account.'));
         }

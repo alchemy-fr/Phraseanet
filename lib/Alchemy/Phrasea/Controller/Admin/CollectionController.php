@@ -33,7 +33,7 @@ class CollectionController extends Controller
      */
     public function getCollection(Request $request, $bas_id)
     {
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         $admins = [];
 
@@ -144,7 +144,7 @@ class CollectionController extends Controller
         $success = false;
         $msg = $this->app->trans('An error occurred');
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
         try {
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
@@ -184,7 +184,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $this->app->getApplicationBox()->write_collection_pic(
@@ -224,7 +224,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $this->app->getApplicationBox()->write_collection_pic(
@@ -264,7 +264,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $collection->update_logo(null);
@@ -323,7 +323,7 @@ class CollectionController extends Controller
             ]);
         }
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $this->app->getApplicationBox()->write_collection_pic(
@@ -378,7 +378,7 @@ class CollectionController extends Controller
             ]);
         }
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $this->app->getApplicationBox()->write_collection_pic(
@@ -432,7 +432,7 @@ class CollectionController extends Controller
             ]);
         }
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $this->app->getApplicationBox()->write_collection_pic(
@@ -468,7 +468,7 @@ class CollectionController extends Controller
         $success = false;
         $msg = $this->app->trans('An error occured');
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             if ($collection->get_record_amount() > 0) {
@@ -522,7 +522,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $collection->unmount_collection($this->app);
@@ -562,7 +562,7 @@ class CollectionController extends Controller
 
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $collection->set_name($name);
@@ -594,7 +594,7 @@ class CollectionController extends Controller
             $this->app->abort(400, $this->app->trans('Invalid labels parameter'));
         }
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
         $success = true;
 
         try {
@@ -638,7 +638,7 @@ class CollectionController extends Controller
 
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $collection->set_public_presentation($watermark);
@@ -671,7 +671,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $collection->enable($this->app->getApplicationBox());
@@ -704,7 +704,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
             $collection->disable($this->app->getApplicationBox());
@@ -736,7 +736,7 @@ class CollectionController extends Controller
     {
         /** @var \databox $databox */
         $databox = $this->app->findDataboxById(\phrasea::sbasFromBas($this->app, $bas_id));
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
         $structFields = $suggestedValues = $basePrefs = [];
 
         /** @var \databox_field $meta */
@@ -806,7 +806,7 @@ class CollectionController extends Controller
     {
         $success = false;
 
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
         $prefs = $request->request->get('str');
 
         try {
@@ -843,7 +843,7 @@ class CollectionController extends Controller
      */
     public function getDetails($bas_id)
     {
-        $collection = \collection::get_from_base_id($this->app, $bas_id);
+        $collection = \collection::getByBaseId($this->app, $bas_id);
 
         $out = ['total' => ['totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'], 'result' => []];
 

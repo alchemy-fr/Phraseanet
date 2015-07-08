@@ -58,7 +58,7 @@ class MoveCollectionController extends Controller
             }
 
             try {
-                $collection = \collection::get_from_base_id($this->app, $request->request->get('base_id'));
+                $collection = \collection::getByBaseId($this->app, $request->request->get('base_id'));
             } catch (\Exception_Databox_CollectionNotFound $e) {
                 $datas['message'] = $this->app->trans('Invalid target collection');
 

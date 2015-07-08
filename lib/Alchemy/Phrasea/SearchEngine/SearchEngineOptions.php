@@ -480,7 +480,7 @@ class SearchEngineOptions
                     break;
                 case in_array($key, ['collections', 'business_fields']):
                     $value = array_map(function ($base_id) use ($app) {
-                                return \collection::get_from_base_id($app, $base_id);
+                                return \collection::getByBaseId($app, $base_id);
                             }, $value);
                     break;
             }
@@ -571,7 +571,7 @@ class SearchEngineOptions
             $bas = [];
             foreach ($selected_bases as $bas_id) {
                 try {
-                    $bas[$bas_id] = \collection::get_from_base_id($app, $bas_id);
+                    $bas[$bas_id] = \collection::getByBaseId($app, $bas_id);
                 } catch (\Exception_Databox_CollectionNotFound $e) {
                     // Ignore
                 }

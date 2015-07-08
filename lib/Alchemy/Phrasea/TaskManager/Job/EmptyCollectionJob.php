@@ -61,7 +61,7 @@ class EmptyCollectionJob extends AbstractJob
 
         $baseId = (string) $settings->bas_id;
 
-        $collection = \collection::get_from_base_id($app, $baseId);
+        $collection = \collection::getByBaseId($app, $baseId);
         $collection->empty_collection(200);
 
         if (0 === $collection->get_record_amount()) {

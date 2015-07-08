@@ -175,7 +175,7 @@ class collectionTest extends \PhraseanetTestCase
 
     public function testGet_from_coll_id()
     {
-        $temp_coll = collection::get_from_coll_id(self::$DI['app'], self::$object->get_databox(), self::$object->get_coll_id());
+        $temp_coll = collection::getByCollectionId(self::$DI['app'], self::$object->get_databox(), self::$object->get_coll_id());
         $this->assertEquals(self::$object->get_coll_id(), $temp_coll->get_coll_id());
         $this->assertEquals(self::$object->get_base_id(), $temp_coll->get_base_id());
     }

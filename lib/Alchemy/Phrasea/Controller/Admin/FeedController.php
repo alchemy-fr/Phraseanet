@@ -56,7 +56,7 @@ class FeedController extends Controller
         if ($request->request->get('public') == '1') {
             $feed->setIsPublic(true);
         } elseif ($request->request->get('base_id')) {
-            $feed->setCollection(\collection::get_from_base_id($this->app, $request->request->get('base_id')));
+            $feed->setCollection(\collection::getByBaseId($this->app, $request->request->get('base_id')));
         }
 
         $publisher->setFeed($feed);
@@ -106,7 +106,7 @@ class FeedController extends Controller
         }
 
         try {
-            $collection = \collection::get_from_base_id($this->app, $request->request->get('base_id'));
+            $collection = \collection::getByBaseId($this->app, $request->request->get('base_id'));
         } catch (\Exception $e) {
             $collection = null;
         }

@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionReference;
+use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
 use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
@@ -23,125 +25,279 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class collection implements cache_cacheableInterface, ThumbnailedElement
 {
-    protected $base_id;
-    protected $sbas_id;
-    protected $coll_id;
-    protected $available = false;
-    protected $name;
-    protected $prefs;
-    protected $pub_wm;
-    protected $labels = [];
-    private static $_logos = [];
-    private static $_stamps = [];
-    private static $_watermarks = [];
-    private static $_presentations = [];
-    private static $_collections = [];
-    protected $databox;
-    protected $is_active;
-    protected $binary_logo;
-    protected $ord;
-    protected $app;
 
     const PIC_LOGO = 'minilogos';
     const PIC_WM = 'wm';
     const PIC_STAMP = 'stamp';
     const PIC_PRESENTATION = 'presentation';
 
-    protected function __construct(Application $app, $coll_id, databox $databox)
+    private static $_logos = [];
+    private static $_stamps = [];
+    private static $_watermarks = [];
+    private static $_presentations = [];
+    private static $_collections = [];
+
+    private static function getNewOrder(Connection $conn, $sbas_id)
     {
-        $this->app = $app;
-        $this->databox = $databox;
-        $this->sbas_id = (int) $databox->get_sbas_id();
-        $this->coll_id = (int) $coll_id;
-        $this->load();
-
-        return $this;
-    }
-
-    private function dispatch($eventName, CollectionEvent $event)
-    {
-        $this->app['dispatcher']->dispatch($eventName, $event);
-    }
-
-    protected function load()
-    {
-        try {
-            $datas = $this->get_data_from_cache();
-            if (!is_array($datas)) {
-                throw new \Exception('Collection could not be retrieved from cache');
-            }
-            $this->is_active = $datas['is_active'];
-            $this->base_id = $datas['base_id'];
-            $this->available = $datas['available'];
-            $this->pub_wm = $datas['pub_wm'];
-            $this->name = $datas['name'];
-            $this->ord = $datas['ord'];
-            $this->prefs = $datas['prefs'];
-            $this->labels = $datas['labels'];
-
-            return $this;
-        } catch (\Exception $e) {
-
-        }
-
-        $connbas = $this->databox->get_connection();
-        $sql = 'SELECT
-                    asciiname, prefs, pub_wm, coll_id,
-                    label_en, label_fr, label_de, label_nl
-                FROM coll WHERE coll_id = :coll_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':coll_id' => $this->coll_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':sbas_id' => $sbas_id]);
+        $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
-            throw new Exception('Unknown collection ' . $this->coll_id . ' on ' . $this->databox->get_dbname());
+        return $ord['ord'] ?: 1;
+    }
 
+    public static function create(Application $app, databox $databox, appbox $appbox, $name, User $user = null)
+    {
+        $sbas_id = $databox->get_sbas_id();
+        $connbas = $databox->get_connection();
+        $conn = $appbox->get_connection();
+        $new_bas = false;
+
+        $prefs = <<<EOT
+<?xml version="1.0" encoding="UTF-8"?>
+<baseprefs>
+    <status>0</status>
+    <sugestedValues></sugestedValues>
+</baseprefs>
+EOT;
+
+        $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
+                VALUES (null, :name, :prefs, '')";
+
+        $params = [
+            ':name' => $name,
+            'prefs'  => $prefs,
+        ];
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        $new_id = (int) $connbas->lastInsertId();
+
+        $sql = "INSERT INTO bas (base_id, active, ord, server_coll_id, sbas_id, aliases)
+            VALUES
+            (null, 1, :ord, :server_coll_id, :sbas_id, '')";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            ':server_coll_id' => $new_id,
+            ':sbas_id' => $sbas_id,
+            ':ord' => self::getNewOrder($conn, $sbas_id),
+        ]);
+        $stmt->closeCursor();
+
+        $new_bas = $conn->lastInsertId();
+        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
+        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        phrasea::reset_baseDatas($appbox);
+
+        $collection = self::getByCollectionId($app, $databox, $new_id);
+
+        if (null !== $user) {
+            $collection->set_admin($new_bas, $user);
+        }
+
+        $app['dispatcher']->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
+
+        return $collection;
+    }
+
+    public static function mount_collection(Application $app, databox $databox, $coll_id, User $user)
+    {
+        $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases, ord)
+            VALUES
+            (null, 1, :server_coll_id, :sbas_id, '', :ord)";
+        $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
+        $stmt->execute([
+            ':server_coll_id' => $coll_id,
+            ':sbas_id'        => $databox->get_sbas_id(),
+            ':ord'            => self::getNewOrder($databox->get_appbox()->get_connection(), $databox->get_sbas_id()),
+        ]);
+        $stmt->closeCursor();
+
+        $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();
+        $databox->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
+
+        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
+
+        phrasea::reset_baseDatas($databox->get_appbox());
+
+        $coll = self::getByBaseId($app, $new_bas);
+        $coll->set_admin($new_bas, $user);
+
+        return $new_bas;
+    }
+
+    public static function getLogo($base_id, Application $app, $printname = false)
+    {
+        $base_id_key = $base_id . '_' . ($printname ? '1' : '0');
+
+        if ( ! isset(self::$_logos[$base_id_key])) {
+
+            if (is_file($app['root.path'] . '/config/minilogos/' . $base_id)) {
+                $name = phrasea::bas_labels($base_id, $app);
+                self::$_logos[$base_id_key] = '<img title="' . $name
+                    . '" src="/custom/minilogos/' . $base_id . '" />';
+            } elseif ($printname) {
+                self::$_logos[$base_id_key] = phrasea::bas_labels($base_id, $app);
+            }
+        }
+
+        return isset(self::$_logos[$base_id_key]) ? self::$_logos[$base_id_key] : '';
+    }
+
+    public static function getWatermark($base_id)
+    {
+        if ( ! isset(self::$_watermarks['base_id'])) {
+
+            if (is_file(__DIR__  . '/../../config/wm/' . $base_id))
+                self::$_watermarks['base_id'] = '<img src="/custom/wm/' . $base_id . '" />';
+        }
+
+        return isset(self::$_watermarks['base_id']) ? self::$_watermarks['base_id'] : '';
+    }
+
+    public static function getPresentation($base_id)
+    {
+        if ( ! isset(self::$_presentations['base_id'])) {
+
+            if (is_file(__DIR__ . '/../../config/presentation/' . $base_id))
+                self::$_presentations['base_id'] = '<img src="/custom/presentation/' . $base_id . '" />';
+        }
+
+        return isset(self::$_presentations['base_id']) ? self::$_presentations['base_id'] : '';
+    }
+
+    public static function getStamp($base_id)
+    {
+        if ( ! isset(self::$_stamps['base_id'])) {
+
+            if (is_file(__DIR__ . '/../../config/stamp/' . $base_id))
+                self::$_stamps['base_id'] = '<img src="/custom/stamp/' . $base_id . '" />';
+        }
+
+        return isset(self::$_stamps['base_id']) ? self::$_stamps['base_id'] : '';
+    }
+
+    public static function purge()
+    {
+        self::$_collections = [];
+    }
+
+    /**
+     * @param  Application $app
+     * @param  int         $base_id
+     * @return collection
+     */
+    public static function getByBaseId(Application $app, $base_id)
+    {
+        /** @var CollectionRepository $repository */
+        $repository = $app['repo.collections'];
+        $collection = $repository->find($base_id);
+
+        if (! $collection) {
+            throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
+        }
+
+        if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
+            throw new Exception_Databox_CollectionNotFound('Collection `' . $collection->get_base_id() . '` is not available here.');
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param  Application $app
+     * @param  databox     $databox
+     * @param  int         $coll_id
+     * @return collection
+     */
+    public static function getByCollectionId(Application $app, databox $databox, $coll_id)
+    {
+        assert(is_int($coll_id));
+
+        /** @var CollectionRepository $repository */
+        $repository = $app['repo.collections'];
+        $collection = $repository->findByCollectionId($databox->get_sbas_id(), $coll_id);
+
+        if (! $collection) {
+            throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
+        }
+
+        if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
+            throw new Exception_Databox_CollectionNotFound('Collection `' . $collection->get_base_id() . '` is not available here.');
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @var CollectionReference
+     */
+    protected $reference;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var string
+     */
+    protected $preferences;
+
+    /**
+     * @var string
+     */
+    protected $pub_wm;
+
+    /**
+     * @var string[]
+     */
+    protected $labels = [];
+
+    /**
+     * @var databox
+     */
+    protected $databox;
+
+    /**
+     * @var int[]|string
+     */
+    protected $binary_logo;
+
+    /**
+     * @var Application
+     */
+    protected $app;
+
+    public function __construct(Application $app, $baseId, CollectionReference $reference, array $row)
+    {
+        $this->app = $app;
+        $this->databox = $app->getApplicationBox()->get_databox($reference->getDataboxId());
+
+        $this->reference = $reference;
+
+        $this->name = $row['asciiname'];
         $this->available = true;
         $this->pub_wm = $row['pub_wm'];
-        $this->name = $row['asciiname'];
-        $this->prefs = $row['prefs'];
+        $this->preferences = $row['prefs'];
         $this->labels = [
             'fr' => $row['label_fr'],
             'en' => $row['label_en'],
             'de' => $row['label_de'],
             'nl' => $row['label_nl'],
         ];
+    }
 
-        $conn = $this->app->getApplicationBox()->get_connection();
-
-        $sql = 'SELECT server_coll_id, sbas_id, base_id, active, ord FROM bas
-            WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':coll_id' => $this->coll_id, ':sbas_id' => $this->databox->get_sbas_id()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $this->is_active = false;
-
-        if ($row) {
-            $this->is_active = ! ! $row['active'];
-            $this->base_id = (int) $row['base_id'];
-            $this->ord = (int) $row['ord'];
-        }
-
-        $stmt->closeCursor();
-
-        $datas = [
-            'is_active' => $this->is_active
-            , 'base_id'   => $this->base_id
-            , 'available' => $this->available
-            , 'pub_wm'    => $this->pub_wm
-            , 'name'      => $this->name
-            , 'ord'       => $this->ord
-            , 'prefs'     => $this->prefs
-            , 'labels'    => $this->labels
-        ];
-
-        $this->set_data_to_cache($datas);
-
-        return $this;
+    private function dispatch($eventName, CollectionEvent $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     public function enable(appbox $appbox)
@@ -162,7 +318,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function get_ord()
     {
-        return $this->ord;
+        return $this->reference->getDisplayIndex();
     }
 
     public function set_ord($ord)
@@ -170,6 +326,8 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->app->getApplicationBox()->set_collection_order($this, $ord);
         $this->delete_data_from_cache();
         $this->app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $this->reference->setDisplayIndex($ord);
 
         return $this;
     }
@@ -185,6 +343,8 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
+
+        $this->reference->disable();
 
         return $this;
     }
@@ -211,9 +371,12 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function is_active()
     {
-        return $this->is_active;
+        return $this->reference->isActive();
     }
 
     /**
@@ -225,16 +388,26 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         return $this->databox;
     }
 
+    /**
+     * @return \Doctrine\DBAL\Connection
+     */
     public function get_connection()
     {
         return $this->databox->get_connection();
     }
 
+    /**
+     * @return int
+     */
     public function getRootIdentifier()
     {
-        return $this->base_id;
+        return $this->reference->getBaseId();
     }
 
+    /**
+     * @param string $thumbnailType
+     * @param File $file
+     */
     public function updateThumbnail($thumbnailType, File $file = null)
     {
         switch ($thumbnailType) {
@@ -253,7 +426,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
                 throw new \InvalidArgumentException('Unsupported thumbnail type.');
         }
     }
-
 
     public function set_public_presentation($publi)
     {
@@ -344,7 +516,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function get_record_details()
     {
-
         $sql = "SELECT record.coll_id,name,COALESCE(asciiname, CONCAT('_',record.coll_id)) AS asciiname,
                     SUM(1) AS n, SUM(size) AS size
                   FROM record NATURAL JOIN subdef
@@ -386,7 +557,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function reset_watermark()
     {
-
         $sql = 'SELECT path, file FROM record r INNER JOIN subdef s USING(record_id)
             WHERE r.coll_id = :coll_id AND r.type="image" AND s.name="preview"';
 
@@ -403,7 +573,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function reset_stamp($record_id = null)
     {
-
         $sql = 'SELECT path, file FROM record r INNER JOIN subdef s USING(record_id)
             WHERE r.coll_id = :coll_id
               AND r.type="image" AND s.name IN ("preview", "document")';
@@ -463,81 +632,38 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         return $this->binary_logo;
     }
 
-    /**
-     *
-     * @param  Application $app
-     * @param  int         $base_id
-     * @return collection
-     */
-    public static function get_from_base_id(Application $app, $base_id)
-    {
-        $coll_id = phrasea::collFromBas($app, $base_id);
-        $sbas_id = phrasea::sbasFromBas($app, $base_id);
-        if (! $sbas_id || ! $coll_id) {
-            throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
-        }
-        $databox = $app->findDataboxById($sbas_id);
-
-        return self::get_from_coll_id($app, $databox, $coll_id);
-    }
-
-    /**
-     *
-     * @param  Application $app
-     * @param  databox     $databox
-     * @param  int         $coll_id
-     * @return collection
-     */
-    public static function get_from_coll_id(Application $app, databox $databox, $coll_id)
-    {
-        assert(is_int($coll_id));
-
-        $key = sprintf('%d_%d', $databox->get_sbas_id(), $coll_id);
-        if (!isset(self::$_collections[$key])) {
-            $collection = new self($app, $coll_id, $databox);
-
-            if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
-                throw new Exception_Databox_CollectionNotFound('Collection `' . $collection->get_base_id() . '` is not available here.');
-            }
-
-            self::$_collections[$key] = $collection;
-        }
-
-        return self::$_collections[$key];
-    }
-
     public function get_base_id()
     {
-        return $this->base_id;
+        return $this->reference->getBaseId();
     }
 
     public function get_sbas_id()
     {
-        return $this->sbas_id;
+        return $this->reference->getDataboxId();
     }
 
     public function get_coll_id()
     {
-        return $this->coll_id;
+        return $this->reference->getCollectionId();
     }
 
     public function get_prefs()
     {
-        return $this->prefs;
+        return $this->preferences;
     }
 
     public function set_prefs(DOMDocument $dom)
     {
-        $this->prefs = $dom->saveXML();
+        $this->preferences = $dom->saveXML();
 
         $sql = "UPDATE coll SET prefs = :prefs WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute([':prefs'   => $this->prefs, ':coll_id' => $this->get_coll_id()]);
+        $stmt->execute([':prefs'   => $this->preferences, ':coll_id' => $this->get_coll_id()]);
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
 
-        return $this->prefs;
+        return $this->preferences;
     }
 
     public function get_name()
@@ -592,73 +718,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         return $this;
     }
 
-    private static function getNewOrder(Connection $conn, $sbas_id)
-    {
-        $sql = "SELECT GREATEST(0, MAX(ord)) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $sbas_id]);
-        $ord = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        return $ord['ord'] ?: 1;
-    }
-
-    public static function create(Application $app, databox $databox, appbox $appbox, $name, User $user = null)
-    {
-        $sbas_id = $databox->get_sbas_id();
-        $connbas = $databox->get_connection();
-        $conn = $appbox->get_connection();
-        $new_bas = false;
-
-        $prefs = '<?xml version="1.0" encoding="UTF-8"?>
-            <baseprefs>
-                <status>0</status>
-                <sugestedValues>
-                </sugestedValues>
-            </baseprefs>';
-
-        $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
-                VALUES (null, :name, :prefs, '')";
-
-        $params = [
-            ':name' => $name,
-            'prefs'  => $prefs,
-        ];
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-
-        $new_id = (int) $connbas->lastInsertId();
-
-        $sql = "INSERT INTO bas (base_id, active, ord, server_coll_id, sbas_id, aliases)
-            VALUES
-            (null, 1, :ord, :server_coll_id, :sbas_id, '')";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':server_coll_id' => $new_id,
-            ':sbas_id' => $sbas_id,
-            ':ord' => self::getNewOrder($conn, $sbas_id),
-        ]);
-        $stmt->closeCursor();
-
-        $new_bas = $conn->lastInsertId();
-        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-
-        phrasea::reset_baseDatas($appbox);
-
-        $collection = self::get_from_coll_id($app, $databox, $new_id);
-
-        if (null !== $user) {
-            $collection->set_admin($new_bas, $user);
-        }
-
-        $app['dispatcher']->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
-
-        return $collection;
-    }
-
     public function set_admin($base_id, User $user)
     {
 
@@ -687,86 +746,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         return true;
     }
 
-    public static function mount_collection(Application $app, databox $databox, $coll_id, User $user)
-    {
-
-        $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases, ord)
-            VALUES
-            (null, 1, :server_coll_id, :sbas_id, '', :ord)";
-        $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute([
-            ':server_coll_id' => $coll_id,
-            ':sbas_id'        => $databox->get_sbas_id(),
-            ':ord'            => self::getNewOrder($databox->get_appbox()->get_connection(), $databox->get_sbas_id()),
-        ]);
-        $stmt->closeCursor();
-
-        $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();
-        $databox->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-
-        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-
-        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
-
-        phrasea::reset_baseDatas($databox->get_appbox());
-
-        $coll = self::get_from_base_id($app, $new_bas);
-        $coll->set_admin($new_bas, $user);
-
-        return $new_bas;
-    }
-
-    public static function getLogo($base_id, Application $app, $printname = false)
-    {
-        $base_id_key = $base_id . '_' . ($printname ? '1' : '0');
-
-        if ( ! isset(self::$_logos[$base_id_key])) {
-
-            if (is_file($app['root.path'] . '/config/minilogos/' . $base_id)) {
-                $name = phrasea::bas_labels($base_id, $app);
-                self::$_logos[$base_id_key] = '<img title="' . $name
-                    . '" src="/custom/minilogos/' . $base_id . '" />';
-            } elseif ($printname) {
-                self::$_logos[$base_id_key] = phrasea::bas_labels($base_id, $app);
-            }
-        }
-
-        return isset(self::$_logos[$base_id_key]) ? self::$_logos[$base_id_key] : '';
-    }
-
-    public static function getWatermark($base_id)
-    {
-        if ( ! isset(self::$_watermarks['base_id'])) {
-
-            if (is_file(__DIR__  . '/../../config/wm/' . $base_id))
-                self::$_watermarks['base_id'] = '<img src="/custom/wm/' . $base_id . '" />';
-        }
-
-        return isset(self::$_watermarks['base_id']) ? self::$_watermarks['base_id'] : '';
-    }
-
-    public static function getPresentation($base_id)
-    {
-        if ( ! isset(self::$_presentations['base_id'])) {
-
-            if (is_file(__DIR__ . '/../../config/presentation/' . $base_id))
-                self::$_presentations['base_id'] = '<img src="/custom/presentation/' . $base_id . '" />';
-        }
-
-        return isset(self::$_presentations['base_id']) ? self::$_presentations['base_id'] : '';
-    }
-
-    public static function getStamp($base_id)
-    {
-        if ( ! isset(self::$_stamps['base_id'])) {
-
-            if (is_file(__DIR__ . '/../../config/stamp/' . $base_id))
-                self::$_stamps['base_id'] = '<img src="/custom/stamp/' . $base_id . '" />';
-        }
-
-        return isset(self::$_stamps['base_id']) ? self::$_stamps['base_id'] : '';
-    }
-
     public function get_cache_key($option = null)
     {
         return 'collection_' . $this->coll_id . ($option ? '_' . $option : '');
@@ -785,11 +764,6 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function delete_data_from_cache($option = null)
     {
         return $this->databox->delete_data_from_cache($this->get_cache_key($option));
-    }
-
-    public static function purge()
-    {
-        self::$_collections = [];
     }
 
     /**

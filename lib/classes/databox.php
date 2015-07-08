@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
@@ -151,69 +152,30 @@ class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\Thumbnaile
      */
     public function get_collections()
     {
-        $ret = [];
+        static $collections;
 
-        foreach ($this->get_available_collections() as $coll_id) {
-            $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
+        if ($collections === null) {
+            /** @var CollectionRepository $collectionsRepository */
+            $collectionsRepository = $this->app['repo.collections'];
+            $collections = $collectionsRepository->findAllByDatabox($this->get_sbas_id());
         }
 
-        return $ret;
+        return $collections;
     }
 
     public function get_collection_unique_ids()
     {
-        static $base_ids;
+        static $collectionsIds;
 
-        if (isset($base_ids)) {
-            return $base_ids;
-        }
+        if ($collectionsIds === null) {
+            $collectionsIds = [];
 
-        $conn = $this->get_appbox()->get_connection();
-        $sql = "SELECT b.base_id FROM bas b WHERE b.sbas_id = :sbas_id AND b.active = '1' ORDER BY b.ord ASC";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $base_ids = [];
-        foreach ($rs as $row) {
-            $base_ids[] = (int) $row['base_id'];
-        }
-
-        return $base_ids;
-    }
-
-    protected function get_available_collections()
-    {
-        try {
-            $data = $this->get_data_from_cache(self::CACHE_COLLECTIONS);
-            if (is_array($data)) {
-                return $data;
+            foreach ($this->get_collections() as $collection) {
+                $collectionsIds[] = $collection->get_base_id();
             }
-        } catch (\Exception $e) {
-
         }
 
-        $conn = $this->get_appbox()->get_connection();
-
-        $sql = "SELECT b.server_coll_id FROM sbas s, bas b
-            WHERE s.sbas_id = b.sbas_id AND b.sbas_id = :sbas_id
-              AND b.active = '1'
-            ORDER BY s.ord ASC, b.ord,b.base_id ASC";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $ret = [];
-
-        foreach ($rs as $row) {
-            $ret[] = (int) $row['server_coll_id'];
-        }
-
-        $this->set_data_to_cache($ret, self::CACHE_COLLECTIONS);
-
-        return $ret;
+        return $collectionsIds;
     }
 
     /**

@@ -12,7 +12,12 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Collection\CollectionFactory;
+use Alchemy\Phrasea\Collection\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\DbalCollectionRepository;
+use Alchemy\Phrasea\Collection\CachedCollectionRepository;
 use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
+use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Alchemy\Phrasea\Databox\Field\DataboxFieldFactory;
@@ -137,6 +142,23 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
 
         $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {
             return new DbalDataboxFieldRepository($databox->get_connection(), new DataboxFieldFactory($app, $databox));
+        });
+
+        $app['repo.collection-references'] = $app->share(function (PhraseaApplication $app) {
+            return new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
+        });
+
+        $app['repo.collections'] = $app->share(function (PhraseaApplication $app) {
+            $appbox = $app->getApplicationBox();
+            $factory = new CollectionFactory($app);
+            $connectionProvider = new DataboxConnectionProvider($appbox);
+            $repository =  new DbalCollectionRepository(
+                $connectionProvider,
+                $app['repo.collection-references'],
+                $factory
+            );
+
+            return new CachedCollectionRepository($repository, $app['cache'], 'collection_');
         });
     }
 

@@ -300,7 +300,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_collection()
     {
-        return \collection::get_from_coll_id($this->app, $this->databox, $this->collection_id);
+        return \collection::getByCollectionId($this->app, $this->databox, $this->collection_id);
     }
 
     /**

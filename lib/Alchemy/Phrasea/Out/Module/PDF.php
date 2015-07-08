@@ -350,7 +350,7 @@ class PDF
                 }
             }
 
-            $collection = \collection::get_from_base_id($this->app, $rec->get_base_id());
+            $collection = \collection::getByBaseId($this->app, $rec->get_base_id());
 
             $vn = "";
             if (false !== $str = simplexml_load_string($collection->get_prefs())) {

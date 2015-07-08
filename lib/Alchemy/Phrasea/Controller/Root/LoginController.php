@@ -302,7 +302,7 @@ class LoginController extends Controller
                             return;
                         }
 
-                        $collection = \collection::get_from_base_id($this->app, $baseId);
+                        $collection = \collection::getByBaseId($this->app, $baseId);
                         $registrationManipulator->createRegistration($user, $collection);
                         $registrationsOK[$baseId] = $collection;
                     });
