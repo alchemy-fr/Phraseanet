@@ -20,22 +20,34 @@ use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 
-class databox extends base
+class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement
 {
-    /** @var int */
-    protected $id;
-    /** @var string */
-    protected $structure;
+
+    const BASE_TYPE = self::DATA_BOX;
+    const CACHE_META_STRUCT = 'meta_struct';
+    const CACHE_THESAURUS = 'thesaurus';
+    const CACHE_COLLECTIONS = 'collections';
+    const CACHE_STRUCTURE = 'structure';
+    const PIC_PDF = 'logopdf';
+
     /** @var array */
     protected static $_xpath_thesaurus = [];
     /** @var array */
     protected static $_dom_thesaurus = [];
     /** @var array */
     protected static $_thesaurus = [];
+    /** @var SimpleXMLElement */
+    protected static $_sxml_thesaurus = [];
+
+    /** @var int */
+    protected $id;
+    /** @var string */
+    protected $structure;
     /** @var array */
     protected $_xpath_structure;
     /** @var DOMDocument */
@@ -48,16 +60,8 @@ class databox extends base
     protected $meta_struct;
     /** @var databox_subdefsStructure */
     protected $subdef_struct;
-    /** @var SimpleXMLElement */
-    protected static $_sxml_thesaurus = [];
 
-    const BASE_TYPE = self::DATA_BOX;
-    const CACHE_META_STRUCT = 'meta_struct';
-    const CACHE_THESAURUS = 'thesaurus';
-    const CACHE_COLLECTIONS = 'collections';
-    const CACHE_STRUCTURE = 'structure';
-    const PIC_PDF = 'logopdf';
-
+    /** @var string[]  */
     private $labels = [];
     private $ord;
     private $viewname;
@@ -130,6 +134,16 @@ class databox extends base
     public function get_appbox()
     {
         return $this->app->getApplicationBox();
+    }
+
+    public function getRootIdentifier()
+    {
+        return $this->get_sbas_id();
+    }
+
+    public function updateThumbnail($thumbnailType, File $file = null)
+    {
+        $this->delete_data_from_cache('printLogo');
     }
 
     /**

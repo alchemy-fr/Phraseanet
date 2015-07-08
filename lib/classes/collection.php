@@ -14,11 +14,14 @@ use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
 use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\Collection\NameChangedEvent;
+use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
+use Alchemy\Phrasea\Core\Thumbnail\ThumbnailManager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Driver\Connection;
+use Symfony\Component\HttpFoundation\File\File;
 
-class collection implements cache_cacheableInterface
+class collection implements cache_cacheableInterface, ThumbnailedElement
 {
     protected $base_id;
     protected $sbas_id;
@@ -226,6 +229,31 @@ class collection implements cache_cacheableInterface
     {
         return $this->databox->get_connection();
     }
+
+    public function getRootIdentifier()
+    {
+        return $this->base_id;
+    }
+
+    public function updateThumbnail($thumbnailType, File $file = null)
+    {
+        switch ($thumbnailType) {
+            case ThumbnailManager::TYPE_WM;
+                $this->reset_watermark();
+                break;
+            case ThumbnailManager::TYPE_LOGO:
+                $this->update_logo($file);
+                break;
+            case ThumbnailManager::TYPE_PRESENTATION:
+                break;
+            case ThumbnailManager::TYPE_STAMP:
+                $this->reset_stamp();
+                break;
+            default:
+                throw new \InvalidArgumentException('Unsupported thumbnail type.');
+        }
+    }
+
 
     public function set_public_presentation($publi)
     {

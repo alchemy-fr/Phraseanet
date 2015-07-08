@@ -63,145 +63,28 @@ class appbox extends base
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
-        $filename = null;
+        $manager = new \Alchemy\Phrasea\Core\Thumbnail\CollectionThumbnailManager(
+            $this->app,
+            $alchemyst,
+            $filesystem,
+            $this->app['root.path']
+        );
 
-        if (!is_null($pathfile)) {
-
-            if (!in_array(mb_strtolower($pathfile->getMimeType()), ['image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'])) {
-                throw new \InvalidArgumentException('Invalid file format');
-            }
-
-            $filename = $pathfile->getPathname();
-
-            if ($pic_type === collection::PIC_LOGO) {
-                //resize collection logo
-                $imageSpec = new ImageSpecification();
-
-                $media = $this->app->getMediaFromUri($filename);
-
-                if ($media->getWidth() > 120 || $media->getHeight() > 24) {
-                    $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                    $imageSpec->setDimensions(120, 24);
-                }
-
-                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-                try {
-                    $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
-                    $filename = $tmp;
-                } catch (\MediaAlchemyst\Exception $e) {
-
-                }
-            } elseif ($pic_type === collection::PIC_PRESENTATION) {
-                //resize collection logo
-                $imageSpec = new ImageSpecification();
-                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                $imageSpec->setDimensions(650, 200);
-
-                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-                try {
-                    $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
-                    $filename = $tmp;
-                } catch (\MediaAlchemyst\Exception $e) {
-
-                }
-            }
-        }
-
-        switch ($pic_type) {
-            case collection::PIC_WM;
-                $collection->reset_watermark();
-                break;
-            case collection::PIC_LOGO:
-            case collection::PIC_PRESENTATION:
-                break;
-            case collection::PIC_STAMP:
-                $collection->reset_stamp();
-                break;
-            default:
-                throw new \InvalidArgumentException('unknown pic_type');
-                break;
-        }
-
-        if ($pic_type == collection::PIC_LOGO) {
-            $collection->update_logo($pathfile);
-        }
-
-        $file = $this->app['root.path'] . '/config/' . $pic_type . '/' . $collection->get_base_id();
-        $custom_path = $this->app['root.path'] . '/www/custom/' . $pic_type . '/' . $collection->get_base_id();
-
-        foreach ([$file, $custom_path] as $target) {
-
-            if (is_file($target)) {
-
-                $filesystem->remove($target);
-            }
-
-            if (null === $target || null === $filename) {
-                continue;
-            }
-
-            $filesystem->mkdir(dirname($target), 0750);
-            $filesystem->copy($filename, $target, true);
-            $filesystem->chmod($target, 0760);
-        }
+        $manager->setThumbnail($collection, $pic_type, $pathfile);
 
         return $this;
     }
 
     public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
-        $filename = null;
+        $manager = new \Alchemy\Phrasea\Core\Thumbnail\DataboxThumbnailManager(
+            $this->app,
+            $alchemyst,
+            $filesystem,
+            $this->app['root.path']
+        );
 
-        if (!is_null($pathfile)) {
-
-            if (!in_array(mb_strtolower($pathfile->getMimeType()), ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'])) {
-                throw new \InvalidArgumentException('Invalid file format');
-            }
-        }
-
-        if (!in_array($pic_type, [databox::PIC_PDF])) {
-            throw new \InvalidArgumentException('unknown pic_type');
-        }
-
-        if ($pathfile) {
-
-            $filename = $pathfile->getPathname();
-
-            $imageSpec = new ImageSpecification();
-            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-            $imageSpec->setDimensions(120, 35);
-
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-            try {
-                $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
-                $filename = $tmp;
-            } catch (\MediaAlchemyst\Exception $e) {
-
-            }
-        }
-
-        $file = $this->app['root.path'] . '/config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-        $custom_path = $this->app['root.path'] . '/www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-
-        foreach ([$file, $custom_path] as $target) {
-
-            if (is_file($target)) {
-                $filesystem->remove($target);
-            }
-
-            if (is_null($filename)) {
-                continue;
-            }
-
-            $filesystem->mkdir(dirname($target));
-            $filesystem->copy($filename, $target);
-            $filesystem->chmod($target, 0760);
-        }
-
-        $databox->delete_data_from_cache('printLogo');
+        $manager->setThumbnail($databox, $pic_type, $pathfile);
 
         return $this;
     }
