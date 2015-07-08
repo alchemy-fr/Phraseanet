@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\Database\DatabaseMaintenanceService;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
-use vierbergenlars\SemVer\version;
 use Doctrine\DBAL\Connection;
 
 abstract class base implements cache_cacheableInterface
@@ -54,15 +53,25 @@ abstract class base implements cache_cacheableInterface
     protected $app;
 
     /**
+     * @var PhraseaVersion\VersionRepository
+     */
+    protected $versionRepository;
+
+    /**
      * @param Application $application
      * @param Connection $connection
      * @param ConnectionSettings $connectionSettings
+     * @param PhraseaVersion\VersionRepository $versionRepository
      */
-    public function __construct(Application $application, Connection $connection, ConnectionSettings $connectionSettings)
+    public function __construct(Application $application,
+        Connection $connection,
+        ConnectionSettings $connectionSettings,
+        PhraseaVersion\VersionRepository $versionRepository)
     {
         $this->app = $application;
         $this->connection = $connection;
         $this->connectionSettings = $connectionSettings;
+        $this->versionRepository = $versionRepository;
     }
 
     /**
@@ -199,29 +208,19 @@ abstract class base implements cache_cacheableInterface
     public function get_version()
     {
         if (! $this->version) {
-            $version = '0.0.0';
-            $sql = '';
-
-            if ($this->get_base_type() == self::APPLICATION_BOX) {
-                $sql = 'SELECT version FROM sitepreff';
-            }
-
-            if ($this->get_base_type() == self::DATA_BOX) {
-                $sql = 'SELECT value AS version FROM pref WHERE prop="version" LIMIT 1;';
-            }
-
-            if ($sql !== '') {
-                $row = $this->connection->fetchAssoc($sql);
-
-                if ($row) {
-                    $version = $row['version'];
-                }
-            }
-
-            $this->version = $version;
+            $this->version = $this->versionRepository->getVersion($this);
         }
 
         return $this->version;
+    }
+
+    protected function setVersion(PhraseaVersion $version)
+    {
+        try {
+            return $this->versionRepository->saveVersion($this, $version);
+        } catch (\Exception $e) {
+            throw new Exception('Unable to set the database version : ' . $e->getMessage());
+        }
     }
 
     protected function upgradeDb($applyPatches)
@@ -229,32 +228,6 @@ abstract class base implements cache_cacheableInterface
         $service = new DatabaseMaintenanceService($this->app, $this->connection);
 
         return $service->upgradeDatabase($this, $applyPatches);
-    }
-
-    protected function setVersion(PhraseaVersion $version)
-    {
-        try {
-            $sql = '';
-            if ($this->get_base_type() === self::APPLICATION_BOX) {
-                $sql = 'UPDATE sitepreff SET version = :version WHERE id = 1';
-            }
-            if ($this->get_base_type() === self::DATA_BOX) {
-                $sql = 'DELETE FROM pref WHERE prop="version"';
-                $this->get_connection()->query($sql);
-                $sql = 'INSERT INTO pref (prop, value, locale, updated_on) VALUES ("version", :version, "", NOW())';
-            }
-            if ($sql !== '') {
-                $stmt = $this->get_connection()->prepare($sql);
-                $stmt->execute([':version' => $version->getNumber()]);
-                $stmt->closeCursor();
-
-                $this->version = $version->getNumber();
-
-                return true;
-            }
-        } catch (\Exception $e) {
-            throw new Exception('Unable to set the database version : ' . $e->getMessage());
-        }
     }
 
     /**

@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxFieldRepositoryInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -80,6 +81,8 @@ class databox extends base
         }
 
         $connectionConfig = $connectionConfigs[$sbas_id];
+        $connection = $app['db.provider']($connectionConfig);
+
         $connectionSettings = new ConnectionSettings(
             $connectionConfig['host'],
             $connectionConfig['port'],
@@ -88,9 +91,9 @@ class databox extends base
             $connectionConfig['password']
         );
 
-        $connection = $app['db.provider']($connectionConfig);
+        $versionRepository = new DataboxVersionRepository($connection);
 
-        parent::__construct($app, $connection, $connectionSettings);
+        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
 
         $this->loadFromRow($row);
     }

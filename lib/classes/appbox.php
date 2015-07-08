@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
@@ -45,6 +46,7 @@ class appbox extends base
     public function __construct(Application $app)
     {
         $connectionConfig = $app['conf']->get(['main', 'database']);
+        $connection = $app['db.provider']($connectionConfig);
 
         $connectionSettings = new ConnectionSettings(
             $connectionConfig['host'],
@@ -54,9 +56,9 @@ class appbox extends base
             $connectionConfig['password']
         );
 
-        $connection = $app['db.provider']($connectionConfig);
+        $versionRepository = new AppboxVersionRepository($connection);
 
-        parent::__construct($app, $connection, $connectionSettings);
+        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
     }
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
