@@ -1794,8 +1794,8 @@ if $elasticsearch_values == undef {
 
 if hash_key_equals($elasticsearch_values, 'install', 1) {
   case $::osfamily {
-    'debian': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.deb' }
-    'redhat': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.noarch.rpm' }
+    'debian': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.6.0.deb' }
+    'redhat': { $elasticsearch_package_url = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.6.0.noarch.rpm' }
     default:  { fail('Unrecognized operating system for Elasticsearch') }
   }
 
@@ -1809,5 +1809,5 @@ if hash_key_equals($elasticsearch_values, 'install', 1) {
   # Custom plugins
   elasticsearch::plugin{'mobz/elasticsearch-head': module_dir => 'head' }
   elasticsearch::plugin{'elasticsearch/marvel/latest': module_dir => 'marvel' }
-  elasticsearch::plugin{'elasticsearch/elasticsearch-analysis-icu/2.3.0': module_dir => 'analysis-icu' }
+  elasticsearch::plugin{'elasticsearch/elasticsearch-analysis-icu/2.6.0': module_dir => 'analysis-icu' }
 }
