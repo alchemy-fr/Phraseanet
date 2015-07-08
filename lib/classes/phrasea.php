@@ -58,7 +58,7 @@ class phrasea
 
         self::$_sbas_params = [];
 
-        $sql = 'SELECT sbas_id, host, port, user, pwd, dbname FROM sbas';
+        $sql = 'SELECT sbas_id, host, port, user, pwd as password, dbname FROM sbas';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

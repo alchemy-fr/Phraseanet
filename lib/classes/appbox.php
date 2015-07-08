@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxRepositoryInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
@@ -23,176 +25,66 @@ use vierbergenlars\SemVer\version;
 
 class appbox extends base
 {
-    /** @var int */
-    protected $id;
-
     /**
      * constant defining the app type
      */
     const BASE_TYPE = self::APPLICATION_BOX;
 
-    protected $cache;
-    protected $connection;
-    protected $app;
-
-    protected $databoxes;
-
     const CACHE_LIST_BASES = 'list_bases';
+
     const CACHE_SBAS_IDS = 'sbas_ids';
+
+    /**
+     * @var int
+     */
+    protected $id;
+    /**
+     * @var \databox[]
+     */
+    protected $databoxes;
 
     public function __construct(Application $app)
     {
-        $connexion = $app['conf']->get(['main', 'database']);
-        parent::__construct($app, $app['db.provider']($connexion));
+        $connectionConfig = $app['conf']->get(['main', 'database']);
+        $connection = $app['db.provider']($connectionConfig);
 
-        $this->host = $connexion['host'];
-        $this->port = $connexion['port'];
-        $this->user = $connexion['user'];
-        $this->passwd = $connexion['password'];
-        $this->dbname = $connexion['dbname'];
+        $connectionSettings = new ConnectionSettings(
+            $connectionConfig['host'],
+            $connectionConfig['port'],
+            $connectionConfig['dbname'],
+            $connectionConfig['user'],
+            $connectionConfig['password']
+        );
+
+        $versionRepository = new AppboxVersionRepository($connection);
+
+        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
     }
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
-        $filename = null;
+        $manager = new \Alchemy\Phrasea\Core\Thumbnail\CollectionThumbnailManager(
+            $this->app,
+            $alchemyst,
+            $filesystem,
+            $this->app['root.path']
+        );
 
-        if (!is_null($pathfile)) {
-
-            if (!in_array(mb_strtolower($pathfile->getMimeType()), ['image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'])) {
-                throw new \InvalidArgumentException('Invalid file format');
-            }
-
-            $filename = $pathfile->getPathname();
-
-            if ($pic_type === collection::PIC_LOGO) {
-                //resize collection logo
-                $imageSpec = new ImageSpecification();
-
-                $media = $this->app->getMediaFromUri($filename);
-
-                if ($media->getWidth() > 120 || $media->getHeight() > 24) {
-                    $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                    $imageSpec->setDimensions(120, 24);
-                }
-
-                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-                try {
-                    $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
-                    $filename = $tmp;
-                } catch (\MediaAlchemyst\Exception $e) {
-
-                }
-            } elseif ($pic_type === collection::PIC_PRESENTATION) {
-                //resize collection logo
-                $imageSpec = new ImageSpecification();
-                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                $imageSpec->setDimensions(650, 200);
-
-                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-                try {
-                    $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
-                    $filename = $tmp;
-                } catch (\MediaAlchemyst\Exception $e) {
-
-                }
-            }
-        }
-
-        switch ($pic_type) {
-            case collection::PIC_WM;
-                $collection->reset_watermark();
-                break;
-            case collection::PIC_LOGO:
-            case collection::PIC_PRESENTATION:
-                break;
-            case collection::PIC_STAMP:
-                $collection->reset_stamp();
-                break;
-            default:
-                throw new \InvalidArgumentException('unknown pic_type');
-                break;
-        }
-
-        if ($pic_type == collection::PIC_LOGO) {
-            $collection->update_logo($pathfile);
-        }
-
-        $file = $this->app['root.path'] . '/config/' . $pic_type . '/' . $collection->get_base_id();
-        $custom_path = $this->app['root.path'] . '/www/custom/' . $pic_type . '/' . $collection->get_base_id();
-
-        foreach ([$file, $custom_path] as $target) {
-
-            if (is_file($target)) {
-
-                $filesystem->remove($target);
-            }
-
-            if (null === $target || null === $filename) {
-                continue;
-            }
-
-            $filesystem->mkdir(dirname($target), 0750);
-            $filesystem->copy($filename, $target, true);
-            $filesystem->chmod($target, 0760);
-        }
+        $manager->setThumbnail($collection, $pic_type, $pathfile);
 
         return $this;
     }
 
     public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
-        $filename = null;
+        $manager = new \Alchemy\Phrasea\Core\Thumbnail\DataboxThumbnailManager(
+            $this->app,
+            $alchemyst,
+            $filesystem,
+            $this->app['root.path']
+        );
 
-        if (!is_null($pathfile)) {
-
-            if (!in_array(mb_strtolower($pathfile->getMimeType()), ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'])) {
-                throw new \InvalidArgumentException('Invalid file format');
-            }
-        }
-
-        if (!in_array($pic_type, [databox::PIC_PDF])) {
-            throw new \InvalidArgumentException('unknown pic_type');
-        }
-
-        if ($pathfile) {
-
-            $filename = $pathfile->getPathname();
-
-            $imageSpec = new ImageSpecification();
-            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-            $imageSpec->setDimensions(120, 35);
-
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-            try {
-                $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
-                $filename = $tmp;
-            } catch (\MediaAlchemyst\Exception $e) {
-
-            }
-        }
-
-        $file = $this->app['root.path'] . '/config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-        $custom_path = $this->app['root.path'] . '/www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-
-        foreach ([$file, $custom_path] as $target) {
-
-            if (is_file($target)) {
-                $filesystem->remove($target);
-            }
-
-            if (is_null($filename)) {
-                continue;
-            }
-
-            $filesystem->mkdir(dirname($target));
-            $filesystem->copy($filename, $target);
-            $filesystem->chmod($target, 0760);
-        }
-
-        $databox->delete_data_from_cache('printLogo');
+        $manager->setThumbnail($databox, $pic_type, $pathfile);
 
         return $this;
     }
@@ -216,9 +108,8 @@ class appbox extends base
     }
 
     /**
-     *
      * @param  databox $databox
-     * @param  <type>  $boolean
+     * @param  bool  $boolean
      * @return appbox
      */
     public function set_databox_indexable(databox $databox, $boolean)
@@ -237,9 +128,8 @@ class appbox extends base
     }
 
     /**
-     *
      * @param  databox $databox
-     * @return <type>
+     * @return bool
      */
     public function is_databox_indexable(databox $databox)
     {
@@ -256,8 +146,7 @@ class appbox extends base
     }
 
     /**
-     *
-     * @return const
+     * @return string
      */
     public function get_base_type()
     {

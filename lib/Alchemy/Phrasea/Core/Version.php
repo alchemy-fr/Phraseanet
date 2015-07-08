@@ -13,14 +13,27 @@ namespace Alchemy\Phrasea\Core;
 
 class Version
 {
+    /**
+     * @var string
+     */
     private $number = '4.0.0-alpha.2';
+
+    /**
+     * @var string
+     */
     private $name = 'Herrerasaurus';
 
+    /**
+     * @return string
+     */
     public function getNumber()
     {
         return $this->number;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;

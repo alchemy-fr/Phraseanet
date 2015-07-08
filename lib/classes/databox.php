@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxFieldRepositoryInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -18,22 +20,34 @@ use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 
-class databox extends base
+class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement
 {
-    /** @var int */
-    protected $id;
-    /** @var string */
-    protected $structure;
+
+    const BASE_TYPE = self::DATA_BOX;
+    const CACHE_META_STRUCT = 'meta_struct';
+    const CACHE_THESAURUS = 'thesaurus';
+    const CACHE_COLLECTIONS = 'collections';
+    const CACHE_STRUCTURE = 'structure';
+    const PIC_PDF = 'logopdf';
+
     /** @var array */
     protected static $_xpath_thesaurus = [];
     /** @var array */
     protected static $_dom_thesaurus = [];
     /** @var array */
     protected static $_thesaurus = [];
+    /** @var SimpleXMLElement */
+    protected static $_sxml_thesaurus = [];
+
+    /** @var int */
+    protected $id;
+    /** @var string */
+    protected $structure;
     /** @var array */
     protected $_xpath_structure;
     /** @var DOMDocument */
@@ -46,17 +60,8 @@ class databox extends base
     protected $meta_struct;
     /** @var databox_subdefsStructure */
     protected $subdef_struct;
-    /** @var SimpleXMLElement */
-    protected static $_sxml_thesaurus = [];
 
-    const BASE_TYPE = self::DATA_BOX;
-    const CACHE_META_STRUCT = 'meta_struct';
-    const CACHE_THESAURUS = 'thesaurus';
-    const CACHE_COLLECTIONS = 'collections';
-    const CACHE_STRUCTURE = 'structure';
-    const PIC_PDF = 'logopdf';
-
-    protected $cache;
+    /** @var string[]  */
     private $labels = [];
     private $ord;
     private $viewname;
@@ -73,33 +78,33 @@ class databox extends base
 
         $this->id = $sbas_id;
 
-        $connection_params = phrasea::sbas_params($app);
+        $connectionConfigs = phrasea::sbas_params($app);
 
-        if (! isset($connection_params[$sbas_id])) {
+        if (! isset($connectionConfigs[$sbas_id])) {
             throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
-        $params = [
-            'host'     => $connection_params[$sbas_id]['host'],
-            'port'     => $connection_params[$sbas_id]['port'],
-            'user'     => $connection_params[$sbas_id]['user'],
-            'password' => $connection_params[$sbas_id]['pwd'],
-            'dbname'   => $connection_params[$sbas_id]['dbname'],
-        ];
-        parent::__construct($app, $app['db.provider']($params));
+        $connectionConfig = $connectionConfigs[$sbas_id];
+        $connection = $app['db.provider']($connectionConfig);
 
-        $this->host = $params['host'];
-        $this->port = $params['port'];
-        $this->user = $params['user'];
-        $this->passwd = $params['password'];
-        $this->dbname = $params['dbname'];
+        $connectionSettings = new ConnectionSettings(
+            $connectionConfig['host'],
+            $connectionConfig['port'],
+            $connectionConfig['dbname'],
+            $connectionConfig['user'],
+            $connectionConfig['password']
+        );
+
+        $versionRepository = new DataboxVersionRepository($connection);
+
+        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
 
         $this->loadFromRow($row);
     }
 
     public function get_viewname()
     {
-        return $this->viewname ? : $this->dbname;
+        return $this->viewname ? : $this->connectionSettings->getDatabaseName();
     }
 
     public function set_viewname($viewname)
@@ -129,6 +134,16 @@ class databox extends base
     public function get_appbox()
     {
         return $this->app->getApplicationBox();
+    }
+
+    public function getRootIdentifier()
+    {
+        return $this->get_sbas_id();
+    }
+
+    public function updateThumbnail($thumbnailType, File $file = null)
+    {
+        $this->delete_data_from_cache('printLogo');
     }
 
     /**
@@ -481,11 +496,11 @@ class databox extends base
         $password = $connection->getPassword();
 
         $params = [
-            ':host'     => $host
-            , ':port'     => $port
-            , ':dbname'   => $dbname
-            , ':user'     => $user
-            , ':password' => $password
+            ':host'     => $host,
+            ':port'     => $port,
+            ':dbname'   => $dbname,
+            ':user'     => $user,
+            ':password' => $password
         ];
 
         /** @var appbox $appbox */
@@ -519,6 +534,7 @@ class databox extends base
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+
         if ($row) {
             $ord = $row['ord'] + 1;
         }
@@ -571,6 +587,7 @@ class databox extends base
             'password' => $password,
             'dbname'   => $dbname,
         ]);
+
         $conn->connect();
 
         $conn = $app->getApplicationBox()->get_connection();
@@ -586,12 +603,12 @@ class databox extends base
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $conn->prepare($sql);
         $stmt->execute([
-            ':ord'      => $ord
-            , ':host'     => $host
-            , ':port'     => $port
-            , ':dbname'   => $dbname
-            , ':user'     => $user
-            , ':password' => $password
+            ':ord'      => $ord,
+            ':host'     => $host,
+            ':port'     => $port,
+            ':dbname'   => $dbname,
+            ':user'     => $user,
+            ':password' => $password
         ]);
 
         $stmt->closeCursor();
@@ -665,8 +682,6 @@ class databox extends base
         $n = 0;
         $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
 
-        $pathout = $repository_path . $comp;
-
         while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100) {
             $n ++;
         }
@@ -690,36 +705,37 @@ class databox extends base
 
     private static function addZeros($n, $length = 5)
     {
-        while (strlen($n) < $length) {
-            $n = '0' . $n;
-        }
-
-        return $n;
+        return str_pad($n, $length, '0');
     }
 
     public function get_serialized_server_info()
     {
-        return sprintf("%s@%s:%s (MySQL %s)", $this->dbname, $this->host, $this->port, $this->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION));
+        return sprintf("%s@%s:%s (MySQL %s)",
+            $this->connectionSettings->getDatabaseName(),
+            $this->connectionSettings->getHost(),
+            $this->connectionSettings->getPort(),
+            $this->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION)
+        );
     }
 
     public static function get_available_dcfields()
     {
         return [
-            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor()
-            , databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage()
-            , databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator()
-            , databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date()
-            , databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description()
-            , databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format()
-            , databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier()
-            , databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language()
-            , databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher()
-            , databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation
-            , databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights
-            , databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source
-            , databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject()
-            , databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title()
-            , databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
+            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor(),
+            databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage(),
+            databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator(),
+            databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date(),
+            databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description(),
+            databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format(),
+            databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier(),
+            databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language(),
+            databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher(),
+            databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation(),
+            databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights(),
+            databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source(),
+            databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject(),
+            databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title(),
+            databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
         ];
     }
 
@@ -872,7 +888,7 @@ class databox extends base
 
         $contents = str_replace(
             ["{{basename}}", "{{datapathnoweb}}"]
-            , [$this->dbname, rtrim($path_doc, '/').'/']
+            , [$this->connectionSettings->getDatabaseName(), rtrim($path_doc, '/').'/']
             , $contents
         );
 
@@ -1001,8 +1017,8 @@ class databox extends base
 
     /**
      *
-     * @param  <type> $sbas_id
-     * @return <type>
+     * @param  int $sbas_id
+     * @return string
      */
     public static function getPrintLogo($sbas_id)
     {
