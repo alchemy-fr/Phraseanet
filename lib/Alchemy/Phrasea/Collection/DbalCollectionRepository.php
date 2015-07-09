@@ -99,7 +99,7 @@ class DbalCollectionRepository implements CollectionRepository
         $row = $connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
-            return $this->collectionFactory->create($databoxId, $row['baseId'], $reference, $row);
+            return $this->collectionFactory->create($databoxId, $reference, $row);
         }
 
         return null;
