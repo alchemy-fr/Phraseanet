@@ -11,17 +11,20 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
-use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -29,9 +32,7 @@ use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
-use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
-use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -78,86 +79,36 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param integer     $sbas_id
      * @param integer     $record_id
      * @param integer     $number
+     * @param bool        $load
      */
-    public function __construct(Application $app, $sbas_id, $record_id, $number = null)
+    public function __construct(Application $app, $sbas_id, $record_id, $number = null, $load = true)
     {
         $this->app = $app;
         $this->databox = $this->app->findDataboxById((int) $sbas_id);
         $this->number = (int) $number;
         $this->record_id = (int) $record_id;
 
-        $this->load();
+        if ($load) {
+            $this->load();
+        }
     }
 
     protected function load()
     {
-        try {
-            $datas = $this->get_data_from_cache();
-
-            if (!is_array($datas)) {
-                throw new Exception('Could not retrieve record data');
-            }
-
-            $this->mime = $datas['mime'];
-            $this->sha256 = $datas['sha256'];
-            $this->original_name = $datas['original_name'];
-            $this->type = $datas['type'];
-            $this->grouping = $datas['grouping'];
-            $this->uuid = $datas['uuid'];
-            $this->modification_date = $datas['modification_date'];
-            $this->creation_date = $datas['creation_date'];
-            $this->base_id = $datas['base_id'];
-            $this->collection_id = $datas['collection_id'];
-
-            return $this;
-        } catch (\Exception $e) {
+        if ($this->mapFromCache()) {
+            return;
         }
 
-        $connbas = $this->databox->get_connection();
-        $sql = 'SELECT coll_id, record_id,credate , uuid, moddate, parent_record_id
-            , type, originalname, bitly, sha256, mime
-            FROM record WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->record_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
+        $row = $this->fetchDataFromDb();
         if (!$row) {
-            throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
+            throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->get_sbas_id() . ' not found ');
         }
 
-        $this->collection_id = (int) $row['coll_id'];
-        $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $this->collection_id, $this->app);
-        $this->creation_date = new DateTime($row['credate']);
-        $this->modification_date = new DateTime($row['moddate']);
-        $this->uuid = $row['uuid'];
-
-        $this->grouping = ($row['parent_record_id'] == '1');
-        $this->type = $row['type'];
-        $this->original_name = $row['originalname'];
-        $this->sha256 = $row['sha256'];
-        $this->mime = $row['mime'];
-
-        $datas = [
-            'mime' => $this->mime,
-            'sha256' => $this->sha256,
-            'original_name' => $this->original_name,
-            'type' => $this->type,
-            'grouping' => $this->grouping,
-            'uuid' => $this->uuid,
-            'modification_date' => $this->modification_date,
-            'creation_date' => $this->creation_date,
-            'base_id' => $this->base_id,
-            'collection_id' => $this->collection_id,
-        ];
-
-        $this->set_data_to_cache($datas);
-
-        return $this;
+        $this->mapFromDbData($row);
+        $this->putInCache();
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_creation_date()
@@ -166,7 +117,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_uuid()
@@ -175,7 +125,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_modification_date()
@@ -184,7 +133,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_number()
@@ -193,7 +141,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * Set a relative number (order) for the vurrent in its set
+     * Set a relative number (order) for the current in its set
      *
      * @param  int            $number
      * @return record_adapter
@@ -206,9 +154,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  string         $type
-     * @return record_adapter
+     * @param  string $type
+     * @return $this
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function set_type($type)
     {
@@ -410,7 +359,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return media
      */
     public function get_rollover_thumbnail()
@@ -1986,5 +1934,102 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getStatusStructure()
     {
         return $this->databox->getStatusStructure();
+    }
+
+    /**
+     * Try to map data from cache.
+     *
+     * @return bool true when cache hit.
+     *              false when cache miss.
+     */
+    protected function mapFromCache()
+    {
+        try {
+            $data = $this->get_data_from_cache();
+        } catch (Exception $exception) {
+            $data = false;
+        };
+
+        if (false === $data) {
+            return false;
+        }
+
+        $this->mime = $data['mime'];
+        $this->sha256 = $data['sha256'];
+        $this->original_name = $data['original_name'];
+        $this->type = $data['type'];
+        $this->grouping = $data['grouping'];
+        $this->uuid = $data['uuid'];
+        $this->modification_date = $data['modification_date'];
+        $this->creation_date = $data['creation_date'];
+        $this->base_id = $data['base_id'];
+        $this->collection_id = $data['collection_id'];
+
+        return true;
+    }
+
+    protected function putInCache()
+    {
+        $data = [
+            'mime'              => $this->mime,
+            'sha256'            => $this->sha256,
+            'original_name'     => $this->original_name,
+            'type'              => $this->type,
+            'grouping'          => $this->grouping,
+            'uuid'              => $this->uuid,
+            'modification_date' => $this->modification_date,
+            'creation_date'     => $this->creation_date,
+            'base_id'           => $this->base_id,
+            'collection_id'     => $this->collection_id,
+        ];
+
+        $this->set_data_to_cache($data);
+    }
+
+    /**
+     * @param array $row
+     */
+    protected function mapFromDbData(array $row)
+    {
+        $this->collection_id = (int)$row['coll_id'];
+        $this->base_id = (int)phrasea::baseFromColl($this->get_sbas_id(), $this->collection_id, $this->app);
+        $this->creation_date = new DateTime($row['credate']);
+        $this->modification_date = new DateTime($row['moddate']);
+        $this->uuid = $row['uuid'];
+
+        $this->grouping = ($row['parent_record_id'] == '1');
+        $this->type = $row['type'];
+        $this->original_name = $row['originalname'];
+        $this->sha256 = $row['sha256'];
+        $this->mime = $row['mime'];
+    }
+
+    /**
+     * @return false|array
+     */
+    protected function fetchDataFromDb()
+    {
+        static $sql;
+
+        $connection = $this->databox->get_connection();
+        if (!$sql) {
+            $sql = $connection->createQueryBuilder()
+                ->select(
+                    'coll_id',
+                    'record_id',
+                    'credate',
+                    'uuid',
+                    'moddate',
+                    'parent_record_id',
+                    $connection->quoteIdentifier('type'),
+                    'originalname',
+                    'sha256',
+                    'mime'
+                )->from('record', 'r')
+                ->where('record_id = :record_id')
+                ->getSQL();
+        }
+
+        return $connection->fetchAssoc($sql, [':record_id' => $this->record_id]);
     }
 }
