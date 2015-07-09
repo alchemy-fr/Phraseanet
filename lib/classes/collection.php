@@ -772,7 +772,7 @@ EOT;
 
     public function get_cache_key($option = null)
     {
-        return 'collection_' . $this->coll_id . ($option ? '_' . $option : '');
+        return 'collection_' . $this->get_coll_id() . ($option ? '_' . $option : '');
     }
 
     public function get_data_from_cache($option = null)
