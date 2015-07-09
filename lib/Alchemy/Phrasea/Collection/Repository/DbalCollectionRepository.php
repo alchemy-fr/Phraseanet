@@ -1,8 +1,11 @@
 <?php
 
-namespace Alchemy\Phrasea\Collection;
+namespace Alchemy\Phrasea\Collection\Repository;
 
-use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
+use Alchemy\Phrasea\Collection\CollectionFactory;
+use Alchemy\Phrasea\Collection\CollectionRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
+use Doctrine\DBAL\Connection;
 
 class DbalCollectionRepository implements CollectionRepository
 {
@@ -11,14 +14,19 @@ class DbalCollectionRepository implements CollectionRepository
                                 FROM coll';
 
     /**
+     * @var int
+     */
+    private $databoxId;
+
+    /**
      * @var CollectionReferenceRepository
      */
     private $referenceRepository;
 
     /**
-     * @var DataboxConnectionProvider
+     * @var Connection
      */
-    private $connectionProvider;
+    private $connection;
 
     /**
      * @var CollectionFactory
@@ -26,24 +34,23 @@ class DbalCollectionRepository implements CollectionRepository
     private $collectionFactory;
 
     public function __construct(
-        DataboxConnectionProvider $connectionProvider,
+        $databoxId,
+        Connection $connection,
         CollectionReferenceRepository $referenceRepository,
         CollectionFactory $collectionFactory
     ) {
-        $this->connectionProvider = $connectionProvider;
+        $this->databoxId = (int) $databoxId;
+        $this->connection = $connection;
         $this->referenceRepository = $referenceRepository;
         $this->collectionFactory = $collectionFactory;
     }
 
     /**
-     * @param int $databoxId
      * @return \collection[]
      */
-    public function findAllByDatabox($databoxId)
+    public function findAll()
     {
-        $references = $this->referenceRepository->findAllByDatabox($databoxId);
-        $connection = $this->connectionProvider->getConnection($databoxId);
-
+        $references = $this->referenceRepository->findAllByDatabox($this->databoxId);
         $params = [];
 
         foreach ($references as $reference) {
@@ -51,9 +58,9 @@ class DbalCollectionRepository implements CollectionRepository
         }
 
         $query = self::$query . sprintf(' WHERE coll_id IN (%s)', implode(', ', array_keys($params)));
-        $rows = $connection->fetchAll($query, $params);
+        $rows = $this->connection->fetchAll($query, $params);
 
-        return $this->collectionFactory->createMany($databoxId, $references, $rows);
+        return $this->collectionFactory->createMany($this->databoxId, $references, $rows);
     }
 
     /**
@@ -68,13 +75,11 @@ class DbalCollectionRepository implements CollectionRepository
             return null;
         }
 
-        $connection = $this->connectionProvider->getConnection($reference->getDataboxId());
-
         $query = self::$query . ' WHERE coll_id = :collectionId';
-        $row = $connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
+        $row = $this->connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
-            return $this->collectionFactory->create($reference->getDataboxId(), $reference, $row);
+            return $this->collectionFactory->create($this->databoxId, $reference, $row);
         }
 
         return null;
@@ -93,13 +98,11 @@ class DbalCollectionRepository implements CollectionRepository
             return null;
         }
 
-        $connection = $this->connectionProvider->getConnection($databoxId);
-
         $query = self::$query . ' WHERE coll_id = :collectionId';
-        $row = $connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
+        $row = $this->connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
-            return $this->collectionFactory->create($databoxId, $reference, $row);
+            return $this->collectionFactory->create($this->databoxId, $reference, $row);
         }
 
         return null;

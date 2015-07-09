@@ -12,11 +12,15 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Collection\ArrayCacheCollectionRepository;
 use Alchemy\Phrasea\Collection\CollectionFactory;
-use Alchemy\Phrasea\Collection\DbalCollectionReferenceRepository;
-use Alchemy\Phrasea\Collection\DbalCollectionRepository;
-use Alchemy\Phrasea\Collection\CachedCollectionRepository;
+use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
+use Alchemy\Phrasea\Collection\Factory\ArrayCachedCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Factory\CachedCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Factory\DbalCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Repository\ArrayCacheCollectionRepository;
+use Alchemy\Phrasea\Collection\Repository\CachedCollectionRepository;
+use Alchemy\Phrasea\Collection\Repository\DbalCollectionRepository;
 use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxFactory;
@@ -149,19 +153,26 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             return new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
         });
 
-        $app['repo.collections'] = $app->share(function (PhraseaApplication $app) {
-            $appbox = $app->getApplicationBox();
+        $app['repo.collections-registry'] = $app->share(function (PhraseaApplication $app) {
             $factory = new CollectionFactory($app);
-            $connectionProvider = new DataboxConnectionProvider($appbox);
-            $repository =  new DbalCollectionRepository(
+            $connectionProvider = new DataboxConnectionProvider($app->getApplicationBox());
+
+            $repositoryFactory = new DbalCollectionRepositoryFactory(
                 $connectionProvider,
-                $app['repo.collection-references'],
-                $factory
+                $factory,
+                $app['repo.collection-references']
             );
 
-            $repository = new CachedCollectionRepository($app, $repository, $app['cache'], 'collection_');
+            $repositoryFactory = new CachedCollectionRepositoryFactory(
+                $app,
+                $repositoryFactory,
+                $app['cache'],
+                'phrasea.collections'
+            );
 
-            return new ArrayCacheCollectionRepository($repository);
+            $repositoryFactory = new ArrayCachedCollectionRepositoryFactory($repositoryFactory);
+
+            return new CollectionRepositoryRegistry($repositoryFactory, $app['repo.collection-references']);
         });
     }
 

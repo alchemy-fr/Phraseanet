@@ -7,9 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Alchemy\Phrasea\Collection;
+namespace Alchemy\Phrasea\Collection\Repository;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionRepository;
 use Doctrine\Common\Cache\Cache;
 
 final class CachedCollectionRepository implements CollectionRepository
@@ -50,17 +51,17 @@ final class CachedCollectionRepository implements CollectionRepository
     }
 
     /**
-     * @param int $databoxId
      * @return \collection[]
      */
-    public function findAllByDatabox($databoxId)
+    public function findAll()
     {
-        $cacheKey = hash('sha256', $this->cacheKey . '.findAll.' . $databoxId);
+        $cacheKey = hash('sha256', $this->cacheKey . '.findAll');
+        /** @var \collection[] $collections */
         $collections = $this->cache->fetch($cacheKey);
 
         if ($collections === false) {
-            $collections = $this->repository->findAllByDatabox($databoxId);
-            $this->save($cacheKey, $collections);
+            $collections = $this->repository->findAll();
+            $this->putInCache($cacheKey, $collections);
         } else {
             foreach ($collections as $collection) {
                 $collection->hydrate($this->app);
@@ -71,45 +72,21 @@ final class CachedCollectionRepository implements CollectionRepository
     }
 
     /**
-     * @param int $baseId
-     * @return \collection|null
-     */
-    public function find($baseId)
-    {
-        $cacheKey = hash('sha256', $this->cacheKey . '.find.' . $baseId);
-        $collection = $this->cache->fetch($cacheKey);
-
-        if ($collection === false) {
-            $collection = $this->repository->find($baseId);
-            $this->save($cacheKey, $collection);
-        } else {
-            $collection->hydrate($this->app);
-        }
-
-        return $collection;
-    }
-
-    /**
-     * @param int $databoxId
      * @param int $collectionId
      * @return \collection|null
      */
-    public function findByCollectionId($databoxId, $collectionId)
+    public function find($collectionId)
     {
-        $cacheKey = hash('sha256', $this->cacheKey . '.findByCollection.' . $databoxId . $collectionId);
-        $collection = $this->cache->fetch($cacheKey);
+        $collections = $this->findAll();
 
-        if ($collection === false) {
-            $collection = $this->repository->findByCollectionId($databoxId, $collectionId);
-            $this->save($cacheKey, $collection);
-        } else {
-            $collection->hydrate($this->app);
+        if (isset($collections[$collectionId])) {
+            return $collections[$collectionId];
         }
 
-        return $collection;
+        return null;
     }
 
-    private function save($key, $value)
+    private function putInCache($key, $value)
     {
         $this->cache->save($key, $value);
     }

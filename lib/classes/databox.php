@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Collection\CollectionRepository;
+use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
@@ -155,14 +155,19 @@ class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\Thumbnaile
         static $collections;
 
         if ($collections === null) {
-            /** @var CollectionRepository $collectionsRepository */
-            $collectionsRepository = $this->app['repo.collections'];
-            $collections = $collectionsRepository->findAllByDatabox($this->get_sbas_id());
+            /** @var CollectionRepositoryRegistry $repositoryRegistry */
+            $repositoryRegistry = $this->app['repo.collections-registry'];
+            $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
+
+            $collections = $repository->findAll();
         }
 
         return $collections;
     }
 
+    /**
+     * @return int[]
+     */
     public function get_collection_unique_ids()
     {
         static $collectionsIds;

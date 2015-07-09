@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Collection;
+namespace Alchemy\Phrasea\Collection\Reference;
 
 use Doctrine\DBAL\Connection;
 

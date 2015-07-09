@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Collection;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Assert\Assertion;
 
 class CollectionFactory
