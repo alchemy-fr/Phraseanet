@@ -37,7 +37,7 @@ use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
     const CACHE_ORIGINAL_NAME = 'originalname';
-    const CACHE_TECHNICAL_DATAS = 'technical_datas';
+    const CACHE_TECHNICAL_DATA = 'technical_data';
     const CACHE_MIME = 'mime';
     const CACHE_TITLE = 'title';
     const CACHE_SHA256 = 'sha256';
@@ -595,7 +595,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         if (!$this->technical_data) {
             try {
-                $this->technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
+                $this->technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATA);
             } catch (\Exception $e) {
                 $this->technical_data = [];
                 $connbas = $this->get_databox()->get_connection();
@@ -618,7 +618,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                             break;
                     }
                 }
-                $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATAS);
+                $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATA);
                 unset($e);
             }
         }
@@ -1303,7 +1303,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $stmt->closeCursor();
 
-        $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATAS);
+        $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
 
         return $this;
     }

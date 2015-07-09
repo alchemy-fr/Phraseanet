@@ -77,7 +77,7 @@ class cache_databox
                     $databox->delete_data_from_cache($key);
                     $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_STATUS;
                     $databox->delete_data_from_cache($key);
-                    $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_TECHNICAL_DATAS;
+                    $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_TECHNICAL_DATA;
                     $databox->delete_data_from_cache($key);
 
                     $sql = 'DELETE FROM memcached
