@@ -83,7 +83,7 @@ class record_exportElement extends record_adapter
 
         $sd = $this->get_subdefs();
 
-        $sbas_id = phrasea::sbasFromBas($this->app, $this->base_id);
+        $sbas_id = phrasea::sbasFromBas($this->app, $this->get_base_id());
 
         $subdefgroups = $this->app->findDataboxById($sbas_id)->get_subdef_structure();
 
@@ -118,18 +118,18 @@ class record_exportElement extends record_adapter
 
         $query = $this->app['phraseanet.user-query'];
 
-        $masters = $query->on_base_ids([$this->base_id])
+        $masters = $query->on_base_ids([$this->get_base_id()])
                 ->who_have_right(['order_master'])
                 ->execute()->get_results();
 
-        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->base_id, 'cancmd'));
+        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'cancmd'));
 
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
         if (isset($sd['document']) && is_file($sd['document']->get_pathfile())) {
             if ($go_dl['document'] === true) {
-                if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->base_id)) {
+                if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->get_base_id())) {
                     $this->remain_hd --;
                     if ($this->remain_hd >= 0) {
                         $localizedLabel = $this->app->trans('document original');
@@ -183,7 +183,7 @@ class record_exportElement extends record_adapter
                 if (isset($sd[$name]) && $sd[$name]->is_physically_present()) {
                     if ($class == 'document') {
 
-                        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->base_id)) {
+                        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->get_base_id())) {
                             $this->remain_hd --;
                             if ($this->remain_hd >= 0)
                                 $downloadable[$name] = [

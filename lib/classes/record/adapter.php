@@ -36,35 +36,6 @@ use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
-    protected $xml;
-    protected $base_id;
-    protected $collection_id;
-    protected $record_id;
-    protected $mime;
-    protected $number;
-    protected $status;
-    protected $subdefs;
-    protected $type;
-    protected $sha256;
-    protected $grouping;
-    protected $duration;
-    /** @var databox */
-    protected $databox;
-    /** @var DateTime */
-    protected $creation_date;
-    /** @var string */
-    protected $original_name;
-    /** @var array */
-    protected $technical_datas;
-    /** @var caption_record */
-    protected $caption_record;
-    /** @var string */
-    protected $uuid;
-    /** @var DateTime */
-    protected $modification_date;
-    /** @var Application */
-    protected $app;
-
     const CACHE_ORIGINAL_NAME = 'originalname';
     const CACHE_TECHNICAL_DATAS = 'technical_datas';
     const CACHE_MIME = 'mime';
@@ -73,6 +44,32 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     const CACHE_SUBDEFS = 'subdefs';
     const CACHE_GROUPING = 'grouping';
     const CACHE_STATUS = 'status';
+
+    private $base_id;
+    private $collection_id;
+    private $record_id;
+    private $mime;
+    private $number;
+    private $status;
+    private $subdefs;
+    private $type;
+    private $sha256;
+    private $grouping;
+    private $duration;
+    /** @var databox */
+    private $databox;
+    /** @var DateTime */
+    private $creation_date;
+    /** @var string */
+    private $original_name;
+    /** @var array */
+    private $technical_data;
+    /** @var string */
+    private $uuid;
+    /** @var DateTime */
+    private $modification_date;
+    /** @var Application */
+    protected $app;
 
     /**
      * @param Application $app
@@ -596,11 +593,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_technical_infos($data = false)
     {
-        if (!$this->technical_datas) {
+        if (!$this->technical_data) {
             try {
-                $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
+                $this->technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
             } catch (\Exception $e) {
-                $this->technical_datas = [];
+                $this->technical_data = [];
                 $connbas = $this->get_databox()->get_connection();
                 $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
                 $stmt = $connbas->prepare($sql);
@@ -611,30 +608,30 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 foreach ($rs as $row) {
                     switch (true) {
                         case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
-                            $this->technical_datas[$row['name']] = (float) $row['value'];
+                            $this->technical_data[$row['name']] = (float) $row['value'];
                             break;
                         case ctype_digit($row['value']):
-                            $this->technical_datas[$row['name']] = (int) $row['value'];
+                            $this->technical_data[$row['name']] = (int) $row['value'];
                             break;
                         default:
-                            $this->technical_datas[$row['name']] = $row['value'];
+                            $this->technical_data[$row['name']] = $row['value'];
                             break;
                     }
                 }
-                $this->set_data_to_cache($this->technical_datas, self::CACHE_TECHNICAL_DATAS);
+                $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATAS);
                 unset($e);
             }
         }
 
         if ($data) {
-            if (isset($this->technical_datas[$data])) {
-                return $this->technical_datas[$data];
+            if (isset($this->technical_data[$data])) {
+                return $this->technical_data[$data];
             } else {
                 return false;
             }
         }
 
-        return $this->technical_datas;
+        return $this->technical_data;
     }
 
     /**
@@ -982,8 +979,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $caption_field_value = caption_Field_Value::create($this->app, $databox_field, $this, $params['value'], $vocab, $vocab_id);
         }
 
-        $this->caption_record = null;
-
         return $this;
     }
 
@@ -1012,9 +1007,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $this->set_metadata($param, $this->databox);
         }
-
-        $this->xml = null;
-        $this->caption_record = null;
 
         $xml = new DOMDocument();
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
