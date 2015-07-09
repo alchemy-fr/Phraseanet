@@ -45,6 +45,35 @@ class ArrayCacheCollectionRepository implements CollectionRepository
         $this->baseIdMap[$baseId] = [ $databoxId, $collectionId ];
     }
 
+    private function getCollectionInCache($databoxId, $collectionId)
+    {
+        if (isset($this->collectionCache[$databoxId][$collectionId])) {
+            return $this->collectionCache[$databoxId][$collectionId];
+        }
+
+        return null;
+    }
+
+    private function getCollectionInCacheByBaseId($baseId)
+    {
+        if (isset($this->baseIdMap[$baseId])) {
+            list ($databoxId, $collectionId) = $this->baseIdMap[$baseId];
+
+            return $this->getCollectionInCache($databoxId, $collectionId);
+        }
+
+        return null;
+    }
+
+    private function getCollectionsInCache($databoxId)
+    {
+        if (isset($this->collectionCache[$databoxId])) {
+            return $this->collectionCache[$databoxId];
+        }
+
+        return [];
+    }
+
     /**
      * @param int $databoxId
      * @return \collection[]
@@ -56,7 +85,7 @@ class ArrayCacheCollectionRepository implements CollectionRepository
             $this->databoxFlags[$databoxId] = true;
         }
 
-        return $this->collectionCache[$databoxId];
+        return $this->getCollectionsInCache($databoxId);
     }
 
     /**
@@ -69,9 +98,7 @@ class ArrayCacheCollectionRepository implements CollectionRepository
             $this->putCollectionInCache($this->collectionRepository->find($baseId));
         }
 
-        list ($databoxId, $collectionId) = $this->baseIdMap[$baseId];
-
-        return $this->collectionCache[$databoxId][$collectionId];
+        return $this->getCollectionInCacheByBaseId($baseId);
     }
 
     /**
@@ -85,6 +112,6 @@ class ArrayCacheCollectionRepository implements CollectionRepository
             $this->putCollectionInCache($this->collectionRepository->findByCollectionId($databoxId, $collectionId));
         }
 
-        return $this->collectionCache[$databoxId][$collectionId];
+        return $this->getCollectionInCache($databoxId, $collectionId);
     }
 }

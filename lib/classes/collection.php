@@ -339,7 +339,8 @@ EOT;
         $stmt->execute([':base_id' => $this->get_base_id()]);
         $stmt->closeCursor();
 
-        $this->is_active = true;
+        $this->reference->enable();
+
         $this->delete_data_from_cache();
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
@@ -370,13 +371,13 @@ EOT;
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute([':base_id'       => $this->get_base_id()]);
         $stmt->closeCursor();
-        $this->is_active = false;
+
+        $this->reference->disable();
+
         $this->delete_data_from_cache();
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
-
-        $this->reference->disable();
 
         return $this;
     }
