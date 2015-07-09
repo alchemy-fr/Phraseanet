@@ -21,6 +21,12 @@ use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
+use Alchemy\Phrasea\Media\FloatTechnicalData;
+use Alchemy\Phrasea\Media\IntegerTechnicalData;
+use Alchemy\Phrasea\Media\StringTechnicalData;
+use Alchemy\Phrasea\Media\TechnicalData;
+use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -62,7 +68,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $creation_date;
     /** @var string */
     private $original_name;
-    /** @var array */
+    /** @var TechnicalDataSet */
     private $technical_data;
     /** @var string */
     private $uuid;
@@ -314,7 +320,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_duration()
     {
         if (!$this->duration) {
-            $this->duration = round($this->get_technical_infos(media_subdef::TC_DATA_DURATION));
+            $this->duration = round($this->get_technical_infos(media_subdef::TC_DATA_DURATION)->getValue());
         }
 
         return $this->duration;
@@ -587,40 +593,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * Return a Technical data set or a specific technical data or false when not found
      *
      * @param  string $data
-     * @return Array
+     * @return TechnicalDataSet|TechnicalData|false
      */
-    public function get_technical_infos($data = false)
+    public function get_technical_infos($data = '')
     {
-        if (!$this->technical_data) {
-            try {
-                $this->technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATA);
-            } catch (\Exception $e) {
-                $this->technical_data = [];
-                $connbas = $this->get_databox()->get_connection();
-                $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute([':record_id' => $this->get_record_id()]);
-                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+        if (!$this->technical_data && !$this->mapTechnicalDataFromCache()) {
+            $this->technical_data = [];
+            $rs = $this->fetchTechnicalDataFromDb();
 
-                foreach ($rs as $row) {
-                    switch (true) {
-                        case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
-                            $this->technical_data[$row['name']] = (float) $row['value'];
-                            break;
-                        case ctype_digit($row['value']):
-                            $this->technical_data[$row['name']] = (int) $row['value'];
-                            break;
-                        default:
-                            $this->technical_data[$row['name']] = $row['value'];
-                            break;
-                    }
-                }
-                $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATA);
-                unset($e);
-            }
+            $this->mapTechnicalDataFromDb($rs);
+
+            $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATA);
         }
 
         if ($data) {
@@ -1920,7 +1906,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** {@inheritdoc} */
     public function getExif()
     {
-        return $this->get_technical_infos();
+        return $this->get_technical_infos()->getValues();
     }
 
     public function getStatusStructure()
@@ -2023,5 +2009,57 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $connection->fetchAssoc($sql, [':record_id' => $this->record_id]);
+    }
+
+    /**
+     * @return bool
+     */
+    private function mapTechnicalDataFromCache()
+    {
+        try {
+            $technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATA);
+        } catch (Exception $e) {
+            $technical_data = false;
+        }
+
+        if (!false === $technical_data) {
+            return false;
+        }
+
+        $this->technical_data = $technical_data;
+
+        return true;
+    }
+
+    /**
+     * @return false|array
+     */
+    private function fetchTechnicalDataFromDb()
+    {
+        $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
+
+        return $this->get_databox()->get_connection()
+            ->fetchAll($sql, ['record_id' => $this->get_record_id()]);
+    }
+
+    /**
+     * @param array $rows
+     */
+    private function mapTechnicalDataFromDb(array $rows)
+    {
+        $this->technical_data = new ArrayTechnicalDataSet();
+
+        foreach ($rows as $row) {
+            switch (true) {
+                case ctype_digit($row['value']):
+                    $this->technical_data[] = new IntegerTechnicalData($row['name'], $row['value']);
+                    break;
+                case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
+                    $this->technical_data[] = new FloatTechnicalData($row['name'], $row['value']);
+                    break;
+                default:
+                    $this->technical_data[] = new StringTechnicalData($row['name'], $row['value']);
+            }
+        }
     }
 }

@@ -15,11 +15,9 @@ class ESRecordSerializer extends AbstractSerializer
 {
     public function serialize(\record_adapter $record)
     {
-        $technicalInformation = $caption = $business = $status = [];
+        $caption = $business = $status = [];
 
-        foreach ($record->get_technical_infos() as $name => $value) {
-            $technicalInformation[$name] = $value;
-        }
+        $technicalInformation = $record->get_technical_infos()->getValues();
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
             $isDate = $field->get_databox_field()->get_type() === \databox_field::TYPE_DATE;

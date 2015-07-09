@@ -110,8 +110,8 @@
               {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
               {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
 
-              {% set width = record.get_technical_infos(dataW) %}
-              {% set height = record.get_technical_infos(dataH) %}
+              {% set width = record.get_technical_infos(dataW).value %}
+              {% set height = record.get_technical_infos(dataH).value %}
 
               {% if width and height %}
                 {% set ratio = (width / height)|number_format(2, '.') %}

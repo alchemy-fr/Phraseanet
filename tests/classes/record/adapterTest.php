@@ -243,7 +243,9 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_technical_infos()
     {
-        $this->assertTrue(is_array(self::$DI['record_1']->get_technical_infos()));
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $this->assertInstanceOf('array', $record_1->get_technical_infos()->getValues());
     }
 
     public function testGet_caption()

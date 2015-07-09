@@ -1019,7 +1019,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)
             $errors["duration_" . $key] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", ['%duration%' => self::AUTH_VIDEO_DURATION / 60]);
 
-        if ($record->get_technical_infos('size') > self::AUTH_VIDEO_SIZE)
+        if ($record->get_technical_infos('size')->getValue() > self::AUTH_VIDEO_SIZE)
             $errors["size_" . $key] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
 
         return $errors;

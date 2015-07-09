@@ -96,7 +96,7 @@ class CaptionSerializer extends AbstractSerializer
 
         $doc = $dom_doc->createElement('doc');
 
-        $tc_datas = $caption->get_record()->get_technical_infos();
+        $tc_datas = $caption->get_record()->get_technical_infos()->getValues();
 
         foreach ($tc_datas as $key => $data) {
             $doc->setAttribute($key, $data);
