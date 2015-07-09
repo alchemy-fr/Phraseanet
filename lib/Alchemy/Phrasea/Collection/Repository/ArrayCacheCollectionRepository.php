@@ -47,4 +47,13 @@ class ArrayCacheCollectionRepository implements CollectionRepository
 
         return null;
     }
+
+    public function save(\collection $collection)
+    {
+        $this->collectionRepository->save($collection);
+
+        if ($this->collectionCache !== null) {
+            $this->collectionCache[$collection->get_coll_id()] = $collection;
+        }
+    }
 }

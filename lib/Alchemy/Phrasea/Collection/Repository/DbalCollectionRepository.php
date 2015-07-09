@@ -107,4 +107,9 @@ class DbalCollectionRepository implements CollectionRepository
 
         return null;
     }
+
+    public function save(\collection $collection)
+    {
+
+    }
 }

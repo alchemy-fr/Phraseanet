@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
@@ -47,6 +48,19 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $stmt->closeCursor();
 
         return $ord['ord'] ?: 1;
+    }
+
+    /**
+     * @param Application $app
+     * @param $databoxId
+     * @return CollectionRepository
+     */
+    private static function getRepository(Application $app, $databoxId)
+    {
+        /** @var CollectionRepositoryRegistry $registry */
+        $registry = $app['repo.collections-registry'];
+
+        return $registry->getRepositoryByDatabox($databoxId);
     }
 
     public static function create(Application $app, databox $databox, appbox $appbox, $name, User $user = null)
@@ -201,21 +215,28 @@ EOT;
         $referenceRepository = $app['repo.collection-references'];
         $reference = $referenceRepository->find($base_id);
 
-        if (! $reference) {
-            throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
+        if (!$reference) {
+            throw new Exception_Databox_CollectionNotFound(sprintf(
+                "Collection with base_id %s could not be found",
+                $base_id
+            ));
         }
 
-        /** @var CollectionRepositoryRegistry $registry */
-        $registry = $app['repo.collections-registry'];
-        $repository = $registry->getRepositoryByDatabox($reference->getDataboxId());
+        $repository = self::getRepository($app, $reference->getDataboxId());
         $collection = $repository->find($reference->getCollectionId());
 
-        if (! $collection) {
-            throw new Exception_Databox_CollectionNotFound(sprintf("Collection with base_id %s could not be found", $base_id));
+        if (!$collection) {
+            throw new Exception_Databox_CollectionNotFound(sprintf(
+                "Collection with base_id %s could not be found",
+                $base_id
+            ));
         }
 
         if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
-            throw new Exception_Databox_CollectionNotFound('Collection `' . $collection->get_base_id() . '` is not available here.');
+            throw new Exception_Databox_CollectionNotFound(sprintf(
+                'Collection `%d` is not available here.',
+                $collection->get_base_id()
+            ));
         }
 
         return $collection;
@@ -231,9 +252,7 @@ EOT;
     {
         assert(is_int($coll_id));
 
-        /** @var CollectionRepositoryRegistry $registry */
-        $registry = $app['repo.collections-registry'];
-        $repository = $registry->getRepositoryByDatabox($databox->get_sbas_id());
+        $repository = self::getRepository($app, $databox->get_sbas_id());
         $collection = $repository->find($coll_id);
 
         if (!$collection) {
@@ -246,8 +265,8 @@ EOT;
         if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
             throw new Exception_Databox_CollectionNotFound(sprintf(
                 'Collection `%d` is not available here.',
-                $collection->get_base_id())
-            );
+                $collection->get_base_id()
+            ));
         }
 
         return $collection;
@@ -814,6 +833,8 @@ EOT;
 
     public function delete_data_from_cache($option = null)
     {
+        self::getRepository($this->app, $this->reference->getDataboxId())->save($this);
+
         return $this->databox->delete_data_from_cache($this->get_cache_key($option));
     }
 

@@ -16,4 +16,9 @@ interface CollectionRepository
      */
     public function find($collectionId);
 
+    /**
+     * @param \collection $collection
+     * @return void
+     */
+    public function save(\collection $collection);
 }
