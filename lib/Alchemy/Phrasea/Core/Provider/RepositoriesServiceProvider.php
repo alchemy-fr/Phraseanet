@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Collection\ArrayCacheCollectionRepository;
 use Alchemy\Phrasea\Collection\CollectionFactory;
 use Alchemy\Phrasea\Collection\DbalCollectionReferenceRepository;
 use Alchemy\Phrasea\Collection\DbalCollectionRepository;
@@ -158,7 +159,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
                 $factory
             );
 
-            return new CachedCollectionRepository($app, $repository, $app['cache'], 'collection_');
+            $repository = new CachedCollectionRepository($app, $repository, $app['cache'], 'collection_');
+
+            return new ArrayCacheCollectionRepository($repository);
         });
     }
 
