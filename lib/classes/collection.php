@@ -319,6 +319,14 @@ EOT;
         $this->databox = $app->getApplicationBox()->get_databox($this->reference->getDataboxId());
     }
 
+    /**
+     * @return CollectionReference
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
     private function dispatch($eventName, CollectionEvent $event)
     {
         $this->app['dispatcher']->dispatch($eventName, $event);
