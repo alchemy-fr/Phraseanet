@@ -53,7 +53,7 @@ class DbalCollectionRepository implements CollectionRepository
         $query = self::$query . sprintf(' WHERE coll_id IN (%s)', implode(', ', array_keys($params)));
         $rows = $connection->fetchAll($query, $params);
 
-        return $this->collectionFactory->createMany($references, $rows);
+        return $this->collectionFactory->createMany($databoxId, $references, $rows);
     }
 
     /**
@@ -74,7 +74,7 @@ class DbalCollectionRepository implements CollectionRepository
         $row = $connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
-            return $this->collectionFactory->create($reference, $row);
+            return $this->collectionFactory->create($reference->getDataboxId(), $reference, $row);
         }
 
         return null;
@@ -99,7 +99,7 @@ class DbalCollectionRepository implements CollectionRepository
         $row = $connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
-            return $this->collectionFactory->create($row['baseId'], $reference, $row);
+            return $this->collectionFactory->create($databoxId, $row['baseId'], $reference, $row);
         }
 
         return null;

@@ -9,20 +9,41 @@
  */
 namespace Alchemy\Phrasea\Collection;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\Common\Cache\Cache;
 
 final class CachedCollectionRepository implements CollectionRepository
 {
 
-    /** @var CollectionRepository */
+    /**
+     * @var Application
+     */
+    private $app;
+
+    /**
+     * @var CollectionRepository
+     */
     private $repository;
-    /** @var Cache */
+
+    /**
+     * @var Cache
+     */
     private $cache;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     private $cacheKey;
 
-    public function __construct(CollectionRepository $repository, Cache $cache, $cacheKey)
+    /**
+     * @param Application $application
+     * @param CollectionRepository $repository
+     * @param Cache $cache
+     * @param $cacheKey
+     */
+    public function __construct(Application $application, CollectionRepository $repository, Cache $cache, $cacheKey)
     {
+        $this->app = $application;
         $this->repository = $repository;
         $this->cache = $cache;
         $this->cacheKey = $cacheKey;
@@ -40,6 +61,10 @@ final class CachedCollectionRepository implements CollectionRepository
         if ($collections === false) {
             $collections = $this->repository->findAllByDatabox($databoxId);
             $this->save($cacheKey, $collections);
+        } else {
+            foreach ($collections as $collection) {
+                $collection->hydrate($this->app);
+            }
         }
 
         return $collections;
@@ -57,6 +82,8 @@ final class CachedCollectionRepository implements CollectionRepository
         if ($collection === false) {
             $collection = $this->repository->find($baseId);
             $this->save($cacheKey, $collection);
+        } else {
+            $collection->hydrate($this->app);
         }
 
         return $collection;
@@ -75,6 +102,8 @@ final class CachedCollectionRepository implements CollectionRepository
         if ($collection === false) {
             $collection = $this->repository->findByCollectionId($databoxId, $collectionId);
             $this->save($cacheKey, $collection);
+        } else {
+            $collection->hydrate($this->app);
         }
 
         return $collection;

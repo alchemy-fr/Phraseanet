@@ -237,6 +237,16 @@ EOT;
     }
 
     /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
+     * @var databox
+     */
+    protected $databox;
+
+    /**
      * @var CollectionReference
      */
     protected $reference;
@@ -262,20 +272,16 @@ EOT;
     protected $labels = [];
 
     /**
-     * @var databox
-     */
-    protected $databox;
-
-    /**
      * @var int[]|string
      */
     protected $binary_logo;
 
     /**
-     * @var Application
+     * @param Application $app
+     * @param $baseId
+     * @param CollectionReference $reference
+     * @param array $row
      */
-    protected $app;
-
     public function __construct(Application $app, $baseId, CollectionReference $reference, array $row)
     {
         $this->app = $app;
@@ -293,6 +299,24 @@ EOT;
             'de' => $row['label_de'],
             'nl' => $row['label_nl'],
         ];
+    }
+
+    public function __sleep()
+    {
+        return array(
+            'reference',
+            'name',
+            'preferences',
+            'pub_wm',
+            'labels',
+            'binary_logo'
+        );
+    }
+
+    public function hydrate(Application $app)
+    {
+        $this->app = $app;
+        $this->databox = $app->getApplicationBox()->get_databox($this->reference->getDataboxId());
     }
 
     private function dispatch($eventName, CollectionEvent $event)

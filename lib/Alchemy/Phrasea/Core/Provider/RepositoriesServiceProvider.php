@@ -158,7 +158,7 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
                 $factory
             );
 
-            return new CachedCollectionRepository($repository, $app['cache'], 'collection_');
+            return new CachedCollectionRepository($app, $repository, $app['cache'], 'collection_');
         });
     }
 
