@@ -92,18 +92,11 @@ EOT;
 
         $new_id = (int) $connbas->lastInsertId();
 
-        $sql = "INSERT INTO bas (base_id, active, ord, server_coll_id, sbas_id, aliases)
-            VALUES
-            (null, 1, :ord, :server_coll_id, :sbas_id, '')";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':server_coll_id' => $new_id,
-            ':sbas_id' => $sbas_id,
-            ':ord' => self::getNewOrder($conn, $sbas_id),
-        ]);
-        $stmt->closeCursor();
+        $repository = $app['repo.collection-references'];
+        $collectionReference = new CollectionReference(0, $sbas_id, $new_id, 0, true, '');
 
-        $new_bas = $conn->lastInsertId();
+        $repository->save($collectionReference);
+
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 

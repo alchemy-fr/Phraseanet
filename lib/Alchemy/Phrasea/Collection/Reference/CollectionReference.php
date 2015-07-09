@@ -69,6 +69,18 @@ class CollectionReference
     }
 
     /**
+     * @param int $baseId
+     */
+    public function setBaseId($baseId)
+    {
+        if ($this->baseId > 0) {
+            throw new \LogicException('Cannot change the baseId of an existing collection reference.');
+        }
+
+        $this->baseId = $baseId;
+    }
+
+    /**
      * @return int
      */
     public function getCollectionId()

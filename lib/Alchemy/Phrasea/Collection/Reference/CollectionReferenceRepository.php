@@ -27,4 +27,10 @@ interface CollectionReferenceRepository
      * @return CollectionReference|null
      */
     public function findByCollectionId($databoxId, $collectionId);
+
+    /**
+     * @param CollectionReference $reference
+     * @return void
+     */
+    public function save(CollectionReference $reference);
 }

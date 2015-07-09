@@ -718,7 +718,7 @@ class DataboxController extends Controller
         } catch (\Exception $e) {
             return $this->app->redirectPath('admin_database_submit_collection', [
                 'databox_id' => $databox_id,
-                'error' => 'error',
+                'error' => $e->getMessage(),
             ]);
         }
     }
