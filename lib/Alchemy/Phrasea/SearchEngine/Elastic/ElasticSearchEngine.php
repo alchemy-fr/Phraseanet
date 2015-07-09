@@ -339,7 +339,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $map = $this->structure->getCollectionsUsedByPrivateFields();
         // Remove collections base_id which access is restricted.
         foreach ($map as $key => &$collections) {
-            $collections = array_intersect($collections, $allowed_collections);
+            $collections = array_values(array_intersect($collections, $allowed_collections));
             if (!$collections) {
                 unset($map[$key]);
             }
