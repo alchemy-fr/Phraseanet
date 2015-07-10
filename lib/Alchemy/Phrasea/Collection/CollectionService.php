@@ -233,8 +233,6 @@ class CollectionService
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
-
-        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
     }
 
     /**

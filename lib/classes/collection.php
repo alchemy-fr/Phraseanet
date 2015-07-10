@@ -25,7 +25,7 @@ use Alchemy\Phrasea\Core\Thumbnail\ThumbnailManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\File\File;
 
-class collection implements ThumbnailedElement
+class collection implements ThumbnailedElement, cache_cacheableInterface
 {
 
     const PIC_LOGO = 'minilogos';
@@ -711,5 +711,25 @@ class collection implements ThumbnailedElement
         foreach ($xml->xpath('/baseprefs/cgu') as $sbpcgu) {
             return $sbpcgu->saveXML();
         }
+    }
+
+    public function get_cache_key($option = null)
+    {
+        return 'collection_' . $this->collectionVO->getCollectionId() . ($option ? '_' . $option : '');
+    }
+
+    public function get_data_from_cache($option = null)
+    {
+        return $this->databox->get_data_from_cache($this->get_cache_key($option));
+    }
+
+    public function set_data_to_cache($value, $option = null, $duration = 0)
+    {
+        return $this->databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+    }
+
+    public function delete_data_from_cache($option = null)
+    {
+        $this->databox->delete_data_from_cache($this->get_cache_key($option));
     }
 }

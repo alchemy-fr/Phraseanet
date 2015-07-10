@@ -36,7 +36,7 @@ class PropertyController extends Controller
             ]));
         }
 
-        $databox = current($records->databoxes());
+        $databox = reset($records->databoxes());
         $statusStructure = $databox->getStatusStructure();
         $recordsStatuses = [];
 
