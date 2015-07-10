@@ -31,6 +31,8 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
     private static $updateQuery = 'UPDATE bas SET ord = :displayIndex, active = :isActive, aliases = :alias
                                    WHERE base_id = :baseId';
 
+    private static $deleteQuery = 'DELETE FROM bas WHERE base_id = :baseId';
+
     /**
      * @var Connection
      */
@@ -124,6 +126,19 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
         if ($isInsert) {
             $collectionReference->setBaseId($this->connection->lastInsertId());
         }
+    }
+
+    /**
+     * @param CollectionReference $collectionReference
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function delete(CollectionReference $collectionReference)
+    {
+        $parameters  = [
+            'baseId' => $collectionReference->getBaseId()
+        ];
+
+        $this->connection->executeQuery(self::$deleteQuery, $parameters);
     }
 
     /**

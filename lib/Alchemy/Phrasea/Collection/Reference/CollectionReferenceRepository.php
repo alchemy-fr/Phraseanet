@@ -33,4 +33,10 @@ interface CollectionReferenceRepository
      * @return void
      */
     public function save(CollectionReference $reference);
+
+    /**
+     * @param CollectionReference $reference
+     * @return void
+     */
+    public function delete(CollectionReference $reference);
 }

@@ -20,6 +20,8 @@ class DbalCollectionRepository implements CollectionRepository
                                 label_de = :labelDe, label_nl = :labelNl, prefs = :preferences, logo = :logo,
                                 majLogo = :logoTimestamp, pub_wm = :publicWatermark WHERE coll_id = :collectionId';
 
+    private static $deleteQuery = 'DELETE FROM coll WHERE coll_id = :collectionId';
+
     /**
      * @var int
      */
@@ -149,5 +151,14 @@ class DbalCollectionRepository implements CollectionRepository
         if ($isInsert) {
             $collection->setCollectionId($this->connection->lastInsertId());
         }
+    }
+
+    public function delete(Collection $collection)
+    {
+        $parameters = [
+            'collectionId' => $collection->getCollectionId()
+        ];
+
+        $this->connection->executeQuery(self::$deleteQuery, $parameters);
     }
 }

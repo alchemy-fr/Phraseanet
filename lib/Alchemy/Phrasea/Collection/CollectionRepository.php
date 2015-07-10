@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Collection;
 
-interface CollectionRepository 
+interface CollectionRepository
 {
 
     /**
@@ -21,4 +21,10 @@ interface CollectionRepository
      * @return void
      */
     public function save(Collection $collection);
+
+    /**
+     * @param Collection $collection
+     * @return void
+     */
+    public function delete(Collection $collection);
 }

@@ -54,7 +54,16 @@ class ArrayCacheCollectionRepository implements CollectionRepository
         $this->collectionRepository->save($collection);
 
         if ($this->collectionCache !== null) {
-            $this->collectionCache = null;
+            $this->collectionCache[$collection->getCollectionId()] = $collection;
+        }
+    }
+
+    public function delete(Collection $collection)
+    {
+        $this->collectionRepository->delete($collection);
+
+        if (isset($this->collectionCache[$collection->getCollectionId()])) {
+            unset($this->collectionCache[$collection->getCollectionId()]);
         }
     }
 }

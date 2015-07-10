@@ -96,6 +96,15 @@ final class CachedCollectionRepository implements CollectionRepository
         $this->cache->delete($cacheKey);
     }
 
+    public function delete(Collection $collection)
+    {
+        $this->repository->delete($collection);
+
+        $cacheKey = hash('sha256', $this->cacheKey);
+
+        $this->cache->delete($cacheKey);
+    }
+
     private function putInCache($key, $value)
     {
         $this->cache->save($key, $value);

@@ -2,12 +2,18 @@
 
 namespace Alchemy\Phrasea\Collection;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
 
 class CollectionRepositoryRegistry
 {
 
     private $baseIdMap = null;
+
+    /**
+     * @var Application
+     */
+    private $application;
 
     /**
      * @var CollectionRepository[]
@@ -25,13 +31,16 @@ class CollectionRepositoryRegistry
     private $repositoryFactory;
 
     /**
+     * @param Application $app
      * @param CollectionRepositoryFactory $collectionRepositoryFactory
      * @param CollectionReferenceRepository $referenceRepository
      */
     public function __construct(
+        Application $app,
         CollectionRepositoryFactory $collectionRepositoryFactory,
         CollectionReferenceRepository $referenceRepository
     ) {
+        $this->application = $app;
         $this->repositoryFactory = $collectionRepositoryFactory;
         $this->referenceRepository = $referenceRepository;
     }
@@ -70,6 +79,11 @@ class CollectionRepositoryRegistry
     public function purgeRegistry()
     {
         $this->baseIdMap = null;
+
+        $appBox = $this->application->getApplicationBox();
+
+        \phrasea::reset_baseDatas($appBox);
+        \phrasea::reset_sbasDatas($appBox);
     }
 
     private function loadBaseIdMap()

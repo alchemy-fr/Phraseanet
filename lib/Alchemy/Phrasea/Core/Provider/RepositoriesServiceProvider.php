@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
 use Alchemy\Phrasea\Collection\Factory\ArrayCachedCollectionRepositoryFactory;
 use Alchemy\Phrasea\Collection\Factory\CachedCollectionRepositoryFactory;
 use Alchemy\Phrasea\Collection\Factory\DbalCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Reference\ArrayCacheCollectionReferenceRepository;
 use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
 use Alchemy\Phrasea\Collection\Repository\ArrayCacheCollectionRepository;
 use Alchemy\Phrasea\Collection\Repository\CachedCollectionRepository;
@@ -150,7 +151,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
 
         $app['repo.collection-references'] = $app->share(function (PhraseaApplication $app) {
-            return new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
+            $repository = new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
+
+            return new ArrayCacheCollectionReferenceRepository($repository);
         });
 
         $app['repo.collections-registry'] = $app->share(function (PhraseaApplication $app) {
@@ -172,7 +175,7 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
 
             $repositoryFactory = new ArrayCachedCollectionRepositoryFactory($repositoryFactory);
 
-            return new CollectionRepositoryRegistry($repositoryFactory, $app['repo.collection-references']);
+            return new CollectionRepositoryRegistry($app, $repositoryFactory, $app['repo.collection-references']);
         });
     }
 

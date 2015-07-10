@@ -303,6 +303,14 @@ class collection implements ThumbnailedElement
     }
 
     /**
+     * @return CollectionVO
+     */
+    public function getCollection()
+    {
+        return $this->collectionVO;
+    }
+
+    /**
      * @return CollectionReference
      */
     public function getReference()
@@ -642,6 +650,8 @@ class collection implements ThumbnailedElement
         $this->collectionService->delete($this->databox, $this->collectionVO, $this->reference);
 
         $this->getCollectionRepository()->delete($this->collectionVO);
+
+        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
         $this->app['repo.collections-registry']->purgeRegistry();
     }
 
@@ -654,6 +664,8 @@ class collection implements ThumbnailedElement
         $this->collectionService->unmountCollection($this->reference);
 
         $this->getReferenceRepository()->delete($this->reference);
+
+        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
         $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this;

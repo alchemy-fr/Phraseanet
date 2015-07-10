@@ -162,8 +162,6 @@ class CollectionService
         $stmt->execute([':base_id' => $reference->getBaseId()]);
         $stmt->closeCursor();
 
-        $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
-
         return;
     }
 
