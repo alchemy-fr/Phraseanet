@@ -105,6 +105,21 @@ class Field
         );
     }
 
+    public static function toConceptPathIndexFieldArray(array $fields)
+    {
+        $index_fields = [];
+        foreach ($fields as $field) {
+            // TODO Skip fields without inference enabled?
+            $index_fields[] = $field->getConceptPathIndexField();
+        }
+        return $index_fields;
+    }
+
+    public function getConceptPathIndexField()
+    {
+        return sprintf('concept_path.%s', $this->name);
+    }
+
     public function getType()
     {
         return $this->type;

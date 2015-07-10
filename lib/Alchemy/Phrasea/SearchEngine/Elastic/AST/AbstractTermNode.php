@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 
@@ -25,25 +27,29 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
     protected function buildConceptQueries(QueryContext $context)
     {
-        $queries = [];
         $concepts = Concept::pruneNarrowConcepts($this->concepts);
         if (!$concepts) {
             return [];
         }
-        $fields = $context->getFields();
-        if (empty($fields)) {
-            $fields = ['*'];
-        }
-        $prefixedFields = array();
-        foreach ($fields as $field) {
-            $prefixedFields[] = 'concept_path.' . $field;
-        }
-        foreach ($concepts as $concept) {
-            $queries[]['multi_match'] = [
-                'fields' => $prefixedFields,
-                'query' => $concept->getPath()
-            ];
-        }
+
+        $queries_builder = function (array $index_fields) use ($concepts) {
+            $queries = [];
+            foreach ($concepts as $concept) {
+                $queries[] = [
+                    'multi_match' => [
+                        'fields'   => $index_fields,
+                        'query'    => $concept->getPath()
+                    ]
+                ];
+            }
+            return $queries;
+        };
+
+        $fields = $context->getUnrestrictedFields();
+        $index_fields = Field::toConceptPathIndexFieldArray($fields);
+
+        $queries = $queries_builder($index_fields);
+        foreach (QueryHelper::buildPrivateFieldConceptQueries($context, $queries_builder) as $queries[]);
 
         return $queries;
     }

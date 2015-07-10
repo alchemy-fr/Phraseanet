@@ -27,16 +27,17 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
+        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
+        $query_context
+            ->getUnrestrictedFields()
+            ->willReturn([$field]);
+        $query_context
+            ->getPrivateFields()
+            ->willReturn([]);
         $query_context
             ->getLocalizedFields()
             ->willReturn(['foo.fr', 'foo.en']);
-        $query_context
-            ->getAllowedPrivateFields()
-            ->willReturn([]);
-        $query_context
-            ->getFields()
-            ->willReturn(['foo']);
 
         $node = new TermNode('bar');
         $node->setConcepts([
@@ -56,6 +57,67 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "fields": ["concept_path.foo"],
                         "query": "/qux"
+                    }
+                }]
+            }
+        }';
+
+        $this->assertEquals(json_decode($expected, true), $query);
+    }
+
+    public function testQueryBuildWithPrivateFields()
+    {
+        $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $private_field = new Field('bar', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [1, 2, 3]
+        ]);
+
+        $query_context = $this->prophesize(QueryContext::class);
+        $query_context
+            ->getUnrestrictedFields()
+            ->willReturn([$public_field]);
+        $query_context
+            ->getPrivateFields()
+            ->willReturn([$private_field]);
+
+        $node = new TermNode('baz');
+        $node->setConcepts([
+            new Concept('/baz'),
+            new Concept('/qux'),
+        ]);
+        $query = $node->buildQuery($query_context->reveal());
+
+        $expected = '{
+            "bool": {
+                "should": [{
+                    "multi_match": {
+                        "fields": ["concept_path.foo"],
+                        "query": "/baz"
+                    }
+                }, {
+                    "multi_match": {
+                        "fields": ["concept_path.foo"],
+                        "query": "/qux"
+                    }
+                }, {
+                    "bool": {
+                        "must": [{
+                            "terms": {
+                                "base_id": [1, 2, 3]
+                            }
+                        }],
+                        "should": [{
+                            "multi_match": {
+                                "fields": ["concept_path.bar"],
+                                "query": "/baz"
+                            }
+                        }, {
+                            "multi_match": {
+                                "fields": ["concept_path.bar"],
+                                "query": "/qux"
+                            }
+                        }]
                     }
                 }]
             }

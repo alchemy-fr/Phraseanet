@@ -90,22 +90,6 @@ class QueryContext
     }
 
     /**
-     * @deprecated Use getPrivateFields() instead
-     */
-    public function getAllowedPrivateFields()
-    {
-        return $this->getPrivateFields();
-    }
-
-    /**
-     * @deprecated Use getDependantCollections() on a Field from a LimitedStructure
-     */
-    public function getAllowedCollectionsOnPrivateField(Field $field)
-    {
-        return $field->getDependantCollections();
-    }
-
-    /**
      * @todo Maybe we should put this logic in Field class?
      */
     public function localizeField(Field $field)
@@ -131,6 +115,7 @@ class QueryContext
      *
      * @param string $name
      * @return null|string
+     * @deprecated Use getIndexField() on Field instance
      */
     public function normalizeField($name)
     {

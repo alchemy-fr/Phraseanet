@@ -113,16 +113,17 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithConcepts()
     {
+        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
-            ->getLocalizedFields()
-            ->willReturn(['foo.fr', 'foo.en']);
+            ->getUnrestrictedFields()
+            ->willReturn([$field]);
         $query_context
             ->getPrivateFields()
             ->willReturn([]);
         $query_context
-            ->getFields()
-            ->willReturn(['foo']);
+            ->getLocalizedFields()
+            ->willReturn(['foo.fr', 'foo.en']);
 
         $node = new TextNode('bar');
         $node->setConcepts([
@@ -140,9 +141,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                     }
                 }, {
                     "multi_match": {
-                        "fields": [
-                            "concept_path.foo"
-                        ],
+                        "fields": ["concept_path.foo"],
                         "query": "/qux"
                     }
                 }]
