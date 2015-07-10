@@ -1056,7 +1056,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $connection->executeUpdate(
             'UPDATE record SET status = :status WHERE record_id= :record_id',
-            ['status' => '0b' . $status, 'record_id' => $this->record_id]
+            ['status' => bindec($status), 'record_id' => $this->record_id]
         );
 
         $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
