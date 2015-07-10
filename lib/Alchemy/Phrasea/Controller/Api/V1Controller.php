@@ -511,6 +511,7 @@ class V1Controller extends Controller
     {
         return [
             'base_id' => $collection->get_base_id(),
+            'databox_id' => $collection->get_sbas_id(),
             'collection_id' => $collection->get_coll_id(),
             'name' => $collection->get_name(),
             'labels' => [
