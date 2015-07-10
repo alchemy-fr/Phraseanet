@@ -897,14 +897,20 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     private function check_record_constraints(record_adapter $record)
     {
         $errors = [];
-        if ( ! $record->get_hd_file() instanceof \SplFileInfo)
-            $errors["file_size"] = $this->translator->trans("Le record n'a pas de fichier physique"); //Record must rely on real file
+        //Record must rely on real file
+        if (!$record->get_hd_file() instanceof \SplFileInfo) {
+            $errors["file_size"] = $this->translator->trans("Le record n'a pas de fichier physique");
+        }
 
-        if ($record->get_duration() > self::AUTH_VIDEO_DURATION)
+        if ($record->get_duration() > self::AUTH_VIDEO_DURATION) {
             $errors["duration"] = $this->translator->trans("La taille maximale d'une video est de %duration% minutes.", ['%duration%' => self::AUTH_VIDEO_DURATION / 60]);
+        }
 
-        if ($record->get_technical_infos('size')->getValue() > self::AUTH_VIDEO_SIZE)
+        $size = $record->get_technical_infos('size');
+        $size = $size ? $size->getValue() : PHP_INT_MAX;
+        if ($size > self::AUTH_VIDEO_SIZE) {
             $errors["size"] = $this->translator->trans("Le poids maximum d'un fichier est de %size%", ['%size%' => p4string::format_octets(self::AUTH_VIDEO_SIZE)]);
+        }
 
         return $errors;
     }
