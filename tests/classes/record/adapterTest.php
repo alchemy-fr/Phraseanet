@@ -207,6 +207,19 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertRegExp('/image\/\w+/', self::$DI['record_1']->get_mime());
     }
 
+    public function testSetMimeType()
+    {
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+
+        $oldMime = $record_1->get_mime();
+        $record_1->set_mime('foo/bar');
+        $this->assertEquals('foo/bar', $record_1->get_mime());
+
+        $record_1->set_mime($oldMime);
+        $this->assertEquals($oldMime, $record_1->get_mime());
+    }
+
     public function testGet_status()
     {
         $this->assertRegExp('/[01]{32}/', self::$DI['record_1']->get_status());

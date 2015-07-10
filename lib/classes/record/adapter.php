@@ -246,7 +246,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
         }
 
-        $connection = connection::getPDOConnection($this->app, $this->get_sbas_id());
+        $connection = $this->databox->get_connection();
 
         $sql = 'UPDATE record SET mime = :mime WHERE record_id = :record_id';
         $stmt = $connection->prepare($sql);
