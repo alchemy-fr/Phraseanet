@@ -297,6 +297,30 @@ abstract class PhraseanetTestCase extends WebTestCase
         return self::$DI['client'];
     }
 
+    /**
+     * @return record_adapter
+     */
+    public function getRecord1()
+    {
+        return self::$DI['record_1'];
+    }
+
+    /**
+     * @return record_adapter
+     */
+    public function getRecordStory1()
+    {
+        return self::$DI['record_story_1'];
+    }
+
+    /**
+     * @return collection
+     */
+    public function getCollection()
+    {
+        return self::$DI['collection'];
+    }
+
     public static function tearDownAfterClass()
     {
         gc_collect_cycles();

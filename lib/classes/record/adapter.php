@@ -321,7 +321,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         if (!$this->duration) {
             $duration = $this->get_technical_infos(media_subdef::TC_DATA_DURATION);
-            $this->duration = $duration ? round($duration->getValue()) : 0;
+            $this->duration = $duration ? round($duration->getValue()) : false;
         }
 
         return $this->duration;
