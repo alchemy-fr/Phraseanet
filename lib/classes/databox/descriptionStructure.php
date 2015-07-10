@@ -89,7 +89,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
 
     /**
      * @param  string $name
-     * @return databox_field
+     * @return databox_field|null
      */
     public function get_element_by_name($name)
     {

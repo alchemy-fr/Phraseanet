@@ -264,6 +264,24 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals('test001.jpg', $this->getRecord1()->get_original_name());
     }
 
+    public function testSetOriginalName()
+    {
+        $record_1 = $this->getRecord1();
+        $originalName = $record_1->get_original_name();
+
+        $record_1->set_original_name('test001-renamed.jpg');
+
+        $this->assertEquals('test001-renamed.jpg', $record_1->get_original_name());
+
+        $values = $record_1->get_caption()->get_field('FileName')->get_values();
+        $this->assertCount(1, $values);
+        foreach ($values as $value) {
+            $this->assertEquals('test001-renamed.jpg', $value->getValue());
+        }
+
+        $record_1->set_original_name($originalName);
+    }
+
     public function testGet_title()
     {
         $this->markTestSkipped('Unable to test title');

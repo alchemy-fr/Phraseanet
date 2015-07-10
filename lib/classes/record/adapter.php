@@ -667,7 +667,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
 
             // Replacing original name in multi values is non sense
-            if (!$data_field->is_multi()) {
+            if ($data_field->is_multi()) {
                 continue;
             }
 
@@ -684,9 +684,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
 
             $this->set_metadatas([
-                'meta_struct_id' => $meta_struct_id,
-                'meta_id'        => $meta_id,
-                'value'          => $original_name,
+                ['meta_struct_id' => $meta_struct_id, 'meta_id' => $meta_id, 'value' => $original_name],
             ], true);
         }
 
