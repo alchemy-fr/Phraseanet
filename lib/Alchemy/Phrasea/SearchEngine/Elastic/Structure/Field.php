@@ -79,6 +79,17 @@ class Field
         Assertion::allScalar($this->used_by_collections);
     }
 
+    public function withOptions(array $options)
+    {
+        return new self($this->name, $this->type, $options + [
+            'searchable' => $this->is_searchable,
+            'private' => $this->is_private,
+            'facet' => $this->is_facet,
+            'thesaurus_roots' => $this->thesaurus_roots,
+            'used_by_collections' => $this->used_by_collections
+        ]);
+    }
+
     public function getName()
     {
         return $this->name;
@@ -179,10 +190,7 @@ class Field
             )
         );
 
-        return new self($this->name, $this->type, [
-            'searchable' => $this->is_searchable,
-            'private' => $this->is_private,
-            'facet' => $this->is_facet,
+        return $this->withOptions([
             'thesaurus_roots' => $thesaurus_roots,
             'used_by_collections' => $used_by_collections
         ]);

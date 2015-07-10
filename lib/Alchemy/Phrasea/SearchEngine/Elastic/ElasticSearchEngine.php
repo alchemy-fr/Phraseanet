@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\LimitedStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -106,6 +107,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getAvailableDateFields()
     {
+        // TODO Use limited structure
         return array_keys($this->structure->getDateFields());
     }
 
@@ -305,47 +307,12 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private function createQueryContext(SearchEngineOptions $options)
     {
-        // TODO handle $user when null
-        $queryContext = new QueryContext(
-            $this->structure,
-            $this->getAllowedPrivateFields($options),
+        return new QueryContext(
+            new LimitedStructure($this->structure, $options),
+            [],
             $this->locales,
             $this->app['locale']
         );
-
-        return $queryContext;
-    }
-
-    /**
-     * Returns an array of allowed collection base_id indexed by field name.
-     *
-     * [
-     *     "FieldName" => [1, 4, 5],
-     *     "OtherFieldName" => [4],
-     * ]
-     *
-     * @todo Move in query context
-     * @param SearchEngineOptions $options
-     * @return array
-     */
-    private function getAllowedPrivateFields(SearchEngineOptions $options)
-    {
-        // Get structure data and cross it with user rights (from options object)
-        $allowed_collections = [];
-        foreach ($options->getBusinessFieldsOn() as $collection) {
-            $allowed_collections[] = $collection->get_base_id();
-        }
-
-        $map = $this->structure->getCollectionsUsedByPrivateFields();
-        // Remove collections base_id which access is restricted.
-        foreach ($map as $key => &$collections) {
-            $collections = array_values(array_intersect($collections, $allowed_collections));
-            if (!$collections) {
-                unset($map[$key]);
-            }
-        }
-
-        return $map;
     }
 
     /**
@@ -429,6 +396,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $base_facet_agg['terms']['field'] = 'databox_name';
         $aggs['Base'] = $base_facet_agg;
 
+        // TODO Use limited structure
         foreach ($this->structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no

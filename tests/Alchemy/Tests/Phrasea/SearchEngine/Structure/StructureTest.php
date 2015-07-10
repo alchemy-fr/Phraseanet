@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure as Structure;
 
 /**
  * @group unit
