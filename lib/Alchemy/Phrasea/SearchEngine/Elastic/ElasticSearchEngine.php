@@ -309,7 +309,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         return new QueryContext(
             new LimitedStructure($this->structure, $options),
-            [],
             $this->locales,
             $this->app['locale']
         );
@@ -401,8 +400,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $field_name = $field->getIndexFieldName();
-            $aggs[$name]['terms']['field'] = sprintf('%s.raw', $field_name);
+            $aggs[$name]['terms']['field'] = $field->getIndexField(true);
         }
 
         return $aggs;

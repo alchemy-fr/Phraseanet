@@ -25,7 +25,7 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
     {
         $query_context = $this->prophesize(QueryContext::class);
         $query_context->getLocalizedFields()->willReturn(['foo.fr', 'foo.en']);
-        $query_context->getAllowedPrivateFields()->willReturn([]);
+        $query_context->getPrivateFields()->willReturn([]);
 
         $node = new QuotedTextNode('bar');
         $query = $node->buildQuery($query_context->reveal());
@@ -44,20 +44,20 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
     public function testQueryBuildWithPrivateFields()
     {
         $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
-        $private_field = new Field('bar', Mapping::TYPE_STRING, ['private' => true]);
+        $private_field = new Field('bar', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [1, 2, 3]
+        ]);
 
         $query_context = $this->prophesize(QueryContext::class);
+        $query_context
+            ->getPrivateFields()
+            ->willReturn([$private_field]);
         $query_context
             ->getLocalizedFields()
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
-            ->getAllowedPrivateFields()
-            ->willReturn([$private_field]);
-        $query_context
-            ->getAllowedCollectionsOnPrivateField($private_field)
-            ->willReturn([1, 2, 3]);
-        $query_context
-            ->localizeField('private_caption.bar')
+            ->localizeField($private_field)
             ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
 
         $node = new QuotedTextNode('baz');

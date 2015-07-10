@@ -12,15 +12,15 @@ class QueryHelper
         // (instead of a clause for each field, with his collection set)
         $fields_map = [];
         $collections_map = [];
-        foreach ($context->getAllowedPrivateFields() as $field) {
-            $collections = $context->getAllowedCollectionsOnPrivateField($field);
+        foreach ($context->getPrivateFields() as $field) {
+            $collections = $field->getDependantCollections();
             $hash = self::hashCollections($collections);
             $collections_map[$hash] = $collections;
             if (!isset($fields_map[$hash])) {
                 $fields_map[$hash] = [];
             }
             // Merge fields with others having the same collections
-            $fields = $context->localizeField($field->getIndexFieldName());
+            $fields = $context->localizeField($field);
             foreach ($fields as $fields_map[$hash][]);
         }
 

@@ -95,12 +95,13 @@ class Field
         return $this->name;
     }
 
-    public function getIndexFieldName()
+    public function getIndexField($raw = false)
     {
         return sprintf(
-            '%scaption.%s',
+            '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
-            $this->name
+            $this->name,
+            $raw ? '.raw' : ''
         );
     }
 

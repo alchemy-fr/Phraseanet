@@ -19,13 +19,10 @@ class QueryContext
     private $queryLocale;
     /** @var array */
     private $fields;
-    /** @var array */
-    private $privateCollectionMap;
 
-    public function __construct(Structure $structure, array $privateCollectionMap, array $locales, $queryLocale, array $fields = null)
+    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
-        $this->privateCollectionMap = $privateCollectionMap;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
@@ -41,7 +38,7 @@ class QueryContext
             }
         }
 
-        return new static($this->structure, $this->privateCollectionMap, $this->locales, $this->queryLocale, $fields);
+        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
     public function getRawFields()
@@ -51,11 +48,8 @@ class QueryContext
         }
 
         $fields = array();
-        foreach ($this->fields as $name) {
-            $field = $this->normalizeField($name);
-            if ($field) {
-                $fields[] = sprintf('%s.raw', $field);
-            }
+        foreach ($this->getUnrestrictedFields() as $name => $field) {
+            $fields[] = $field->getIndexField(true);
         }
 
         return $fields;
@@ -64,39 +58,62 @@ class QueryContext
     public function getLocalizedFields()
     {
         if ($this->fields === null) {
-            return $this->localizeField('caption_all');
+            return $this->localizeFieldName('caption_all');
         }
 
         $fields = array();
-        foreach ($this->fields as $field) {
-            $normalized = $this->normalizeField($field);
-            foreach ($this->localizeField($normalized) as $fields[]);
+        foreach ($this->getUnrestrictedFields() as $_ => $field) {
+            foreach ($this->localizeField($field) as $fields[]);
         }
 
         return $fields;
     }
 
-    public function getAllowedPrivateFields()
+    public function getUnrestrictedFields()
     {
-        $allowed_field_names = array_keys($this->privateCollectionMap);
-
-        return array_map(array($this->structure, 'get'), $allowed_field_names);
+        // TODO Restore search optimization by using "caption_all" field
+        // (only when $this->fields is null)
+        return array_intersect_key(
+            $this->structure->getUnrestrictedFields(),
+            array_flip($this->fields)
+        );
     }
 
+    public function getPrivateFields()
+    {
+        $private_fields = $this->structure->getPrivateFields();
+        if ($this->fields === null) {
+            return $private_fields;
+        } else {
+            return array_intersect_key($private_fields, array_flip($this->fields));
+        }
+    }
+
+    /**
+     * @deprecated Use getPrivateFields() instead
+     */
+    public function getAllowedPrivateFields()
+    {
+        return $this->getPrivateFields();
+    }
+
+    /**
+     * @deprecated Use getDependantCollections() on a Field from a LimitedStructure
+     */
     public function getAllowedCollectionsOnPrivateField(Field $field)
     {
-        $name = $field->getName();
-        if (!isset($this->privateCollectionMap[$name])) {
-            throw new \OutOfRangeException('Given field is not an allowed private field.');
-        }
-
-        return $this->privateCollectionMap[$name];
+        return $field->getDependantCollections();
     }
 
     /**
      * @todo Maybe we should put this logic in Field class?
      */
-    public function localizeField($field)
+    public function localizeField(Field $field)
+    {
+        return $this->localizeFieldName($field->getIndexField());
+    }
+
+    private function localizeFieldName($field)
     {
         $fields = array();
         foreach ($this->locales as $locale) {
@@ -122,7 +139,7 @@ class QueryContext
             return null;
         }
         // TODO Field label dereferencing (we only want names)
-        return $field->getIndexFieldName();
+        return $field->getIndexField();
     }
 
     public function getFields()
