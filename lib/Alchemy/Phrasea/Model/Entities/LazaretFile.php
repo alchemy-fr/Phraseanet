@@ -211,7 +211,7 @@ class LazaretFile
      */
     public function getCollection(Application $app)
     {
-        return \collection::get_from_base_id($app, $this->getBaseId());
+        return \collection::getByBaseId($app, $this->getBaseId());
     }
 
     /**

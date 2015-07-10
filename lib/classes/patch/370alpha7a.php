@@ -110,7 +110,7 @@ class patch_370alpha7a extends patchAbstract
 
                 $media = $app->getMediaFromUri($filePath);
 
-                $collection = \collection::get_from_base_id($app, $row['base_id']);
+                $collection = \collection::getByBaseId($app, $row['base_id']);
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 

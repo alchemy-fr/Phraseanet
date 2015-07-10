@@ -454,7 +454,7 @@ class UserController extends Controller
                     $registrationRepository->getUserRegistrations(
                     $user,
                     array_map(function ($baseId) {
-                        return \collection::get_from_base_id($this->app, $baseId);
+                        return \collection::getByBaseId($this->app, $baseId);
                     }, $bases)
                 ) as $registration) {
                     $registrationManipulator->rejectRegistration($registration);
@@ -472,7 +472,7 @@ class UserController extends Controller
                 foreach ($registrationRepository->getUserRegistrations(
                     $user,
                     array_map(function ($baseId) {
-                        return \collection::get_from_base_id($this->app, $baseId);
+                        return \collection::getByBaseId($this->app, $baseId);
                     }, $bases)
                 ) as $registration) {
                     $done[$usr][$registration->getBaseId()] = true;
@@ -494,7 +494,7 @@ class UserController extends Controller
                 $acceptColl = $denyColl = [];
 
                 foreach ($bases as $bas => $isok) {
-                    $collection = \collection::get_from_base_id($this->app, $bas);
+                    $collection = \collection::getByBaseId($this->app, $bas);
 
                     if ($isok) {
                         $acceptColl[] = $collection->get_label($this->app['locale']);

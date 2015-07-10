@@ -34,7 +34,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach (self::$createdCollections as $collection) {
             try {
-                $collection->unmount_collection(self::$DI['app']);
+                $collection->unmount();
             } catch (\Exception $e) {
 
             }
@@ -515,7 +515,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->setAdmin(true);
 
         $collection = $this->createOneCollection();
-        $collection->unmount_collection(self::$DI['app']);
+        $collection->unmount();
 
         self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', [
             'othcollsel' => self::$DI['collection']->get_base_id()

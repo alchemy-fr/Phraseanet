@@ -798,7 +798,7 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing base_id parameter');
         }
 
-        $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
+        $collection = \collection::getByBaseId($this->app, $request->get('base_id'));
 
         if (!$this->getAclForUser()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
             return Result::createError($request, 403, sprintf(
@@ -896,7 +896,7 @@ class V1Controller extends Controller
         $media = $this->app->getMediaFromUri($file->getPathname());
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
         $base_id = $record->get_base_id();
-        $collection = \collection::get_from_base_id($this->app, $base_id);
+        $collection = \collection::getByBaseId($this->app, $base_id);
         if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
             return Result::create($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])
@@ -1572,7 +1572,7 @@ class V1Controller extends Controller
         $record = $databox->get_record($record_id);
 
         try {
-            $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
+            $collection = \collection::getByBaseId($this->app, $request->get('base_id'));
             $record->move_to_collection($collection, $this->getApplicationBox());
 
             return Result::create($request, ["record" => $this->listRecord($request, $record)])->createResponse();
@@ -2064,7 +2064,7 @@ class V1Controller extends Controller
             $this->app->abort(400, 'Request body does not contains a valid "story" object');
         }
 
-        $collection = \collection::get_from_base_id($this->app, $data->{'base_id'});
+        $collection = \collection::getByBaseId($this->app, $data->{'base_id'});
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
             $this->app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
