@@ -2022,7 +2022,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $technical_data = false;
         }
 
-        if (!false === $technical_data) {
+        if (false === $technical_data) {
             return false;
         }
 
