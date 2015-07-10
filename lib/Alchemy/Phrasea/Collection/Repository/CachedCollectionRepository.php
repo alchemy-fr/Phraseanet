@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Collection\Repository;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\Collection;
 use Alchemy\Phrasea\Collection\CollectionRepository;
 use Doctrine\Common\Cache\Cache;
 
@@ -86,7 +87,7 @@ final class CachedCollectionRepository implements CollectionRepository
         return null;
     }
 
-    public function save(\collection $collection)
+    public function save(Collection $collection)
     {
         $this->repository->save($collection);
 

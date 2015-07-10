@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Collection\Repository;
 
+use Alchemy\Phrasea\Collection\Collection;
 use Alchemy\Phrasea\Collection\CollectionFactory;
 use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
@@ -33,6 +34,12 @@ class DbalCollectionRepository implements CollectionRepository
      */
     private $collectionFactory;
 
+    /**
+     * @param $databoxId
+     * @param Connection $connection
+     * @param CollectionReferenceRepository $referenceRepository
+     * @param CollectionFactory $collectionFactory
+     */
     public function __construct(
         $databoxId,
         Connection $connection,
@@ -108,7 +115,7 @@ class DbalCollectionRepository implements CollectionRepository
         return null;
     }
 
-    public function save(\collection $collection)
+    public function save(Collection $collection)
     {
 
     }

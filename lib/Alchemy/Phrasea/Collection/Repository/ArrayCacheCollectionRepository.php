@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Collection\Repository;
 
+use Alchemy\Phrasea\Collection\Collection;
 use Alchemy\Phrasea\Collection\CollectionRepository;
 
 class ArrayCacheCollectionRepository implements CollectionRepository
@@ -48,7 +49,7 @@ class ArrayCacheCollectionRepository implements CollectionRepository
         return null;
     }
 
-    public function save(\collection $collection)
+    public function save(Collection $collection)
     {
         $this->collectionRepository->save($collection);
 
