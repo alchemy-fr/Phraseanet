@@ -126,8 +126,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  type           $fieldname
+     * @param  string $fieldname
      * @return \caption_field
      * @throws \Exception
      */

@@ -218,7 +218,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Return true if the record is a grouping
      *
-     * @return boolean
+     * @return bool
      */
     public function is_grouping()
     {
@@ -228,7 +228,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Return base_id of the record
      *
-     * @return <int>
+     * @return int
      */
     public function get_base_id()
     {
@@ -258,7 +258,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Returns record_id of the record
      *
-     * @return <int>
+     * @return int
      */
     public function get_record_id()
     {
@@ -266,7 +266,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return databox
      */
     public function get_databox()
@@ -275,7 +274,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return media_subdef
      */
     public function get_thumbnail()
@@ -284,8 +282,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return Array
+     * @param string|string[] $devices
+     * @param string|string[] $mimes
+     * @return media_subdef[]
      */
     public function get_embedable_medias($devices = null, $mimes = null)
     {
@@ -363,7 +362,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @return media
+     * @return null|media_subdef
      */
     public function get_rollover_thumbnail()
     {
@@ -374,14 +373,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (\Exception $e) {
-
+            return null;
         }
-
-        return null;
     }
 
     /**
-     *
      * @return string
      */
     public function get_sha256()
@@ -390,7 +386,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_mime()
@@ -399,7 +394,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_status()
@@ -447,8 +441,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  <type>       $name
+     * @param string $name
      * @return media_subdef
      */
     public function get_subdef($name)
@@ -475,9 +468,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Returns an array of subdef matching
      *
-     * @param  string|array $devices the matching device (see databox_subdef::DEVICE_*)
-     * @param  type         $mimes   the matching mime types
-     * @return array
+     * @param  string|string[] $devices the matching device (see databox_subdef::DEVICE_*)
+     * @param  string|string[] $mimes   the matching mime types
+     * @return media_subdef[]
      */
     public function getSubdfefByDeviceAndMime($devices = null, $mimes = null)
     {
@@ -585,7 +578,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_collection_logo()
@@ -654,16 +646,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
+     * @param bool $removeExtension
      * @return string
      */
     public function get_original_name($removeExtension = null)
     {
         if ($removeExtension) {
             return pathinfo($this->original_name, PATHINFO_FILENAME);
-        } else {
-            return $this->original_name;
         }
+
+        return $this->original_name;
     }
 
     public function set_original_name($original_name)
@@ -723,7 +715,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
+     * @param bool                  $highlight
+     * @param SearchEngineInterface $searchEngine
+     * @param null                  $removeExtension
+     * @param SearchEngineOptions   $options
      * @return string
      */
     public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null, SearchEngineOptions $options = null)
@@ -775,7 +770,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return media_subdef
      */
     public function get_preview()
@@ -784,8 +778,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function has_preview()
     {
@@ -801,7 +794,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_serialize_key()
@@ -892,7 +884,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param  DOMDocument    $dom_doc
      * @return record_adapter
      */
@@ -913,10 +904,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @todo move this function to caption_record
-     * @param  Array          $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
+     * @param  Array  $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
+     * @param databox $databox
      * @return record_adapter
+     * @throws Exception
+     * @throws Exception_InvalidArgument
      */
     protected function set_metadata(Array $params, databox $databox)
     {
@@ -1007,7 +1000,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function rebuild_subdefs()
@@ -1038,16 +1030,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $record = $this;
-        $wanted_subdefs = array_map(function($subDef) {
+        $wanted_subdefs = array_map(function(media_subdef $subDef) {
            return  $subDef->get_name();
-        }, array_filter($subDefDefinitions, function($subDef) use ($record) {
+        }, array_filter($subDefDefinitions, function(media_subdef $subDef) use ($record) {
             return !$record->has_subdef($subDef->get_name());
         }));
 
 
-        $missing_subdefs = array_map(function($subDef) {
+        $missing_subdefs = array_map(function(media_subdef $subDef) {
             return $subDef->get_name();
-        }, array_filter($this->get_subdefs(), function($subdef) {
+        }, array_filter($this->get_subdefs(), function(media_subdef $subdef) {
             return !$subdef->is_physically_present();
         }));
 
@@ -1055,7 +1047,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function write_metas()
@@ -1073,7 +1064,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param  string         $status
      * @return record_adapter
      */
@@ -1167,7 +1157,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        self::dispatchCreatedEvent($app, $story);
+        $story->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($story));
 
         return $story;
     }
@@ -1237,14 +1227,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $record->insertTechnicalDatas($app['mediavorus']);
 
-        self::dispatchCreatedEvent($app, $record);
+        $record->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
 
         return $record;
-    }
-
-    private static function dispatchCreatedEvent(Application $app, RecordInterface $record)
-    {
-        $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
     }
 
     /**
@@ -1296,7 +1281,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param  Application    $app
      * @param  integer        $sbas_id
      * @param  string         $sha256
@@ -1371,7 +1355,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return \Symfony\Component\HttpFoundation\File\File|null
      */
     public function get_hd_file()
@@ -1386,7 +1369,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return Array : list of deleted files;
      */
     public function delete()
@@ -1498,8 +1480,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  string $option optionnal cache name
+     * @param  string $option optional cache name
      * @return string
      */
     public function get_cache_key($option = null)
@@ -1523,8 +1504,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  string $option optionnal cache name
+     * @param  string $option optional cache name
      * @return mixed
      */
     public function get_data_from_cache($option = null)
@@ -1581,7 +1561,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @var Array
      */
     protected $container_basket;
@@ -1598,12 +1577,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param databox $databox
-     * @param integer $original_name
-     * @param integer $caseSensitive
-     * @param integer $offset_start
-     * @param integer $how_many
+     * @param int     $original_name
+     * @param bool    $caseSensitive
+     * @param int     $offset_start
+     * @param int     $how_many
      *
      * @return array
      */
@@ -1632,8 +1610,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return set_selection
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function get_children()
     {
@@ -1688,7 +1667,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return set_selection
      */
     public function get_grouping_parents()
