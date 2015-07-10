@@ -25,7 +25,7 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
 
     private static $insertQuery = 'INSERT INTO bas (sbas_id, server_coll_id, ord, active, aliases)
                                    VALUES (:databoxId, :collectionId,
-                                           (SELECT COALESCE(MAX(ord), 0) + 1 AS ord FROM bas WHERE sbas_id = :sbas_id),
+                                           (SELECT COALESCE(MAX(b.ord), 0) + 1 AS ord FROM bas b WHERE b.sbas_id = :databoxId),
                                            :isActive, :alias)';
 
     private static $updateQuery = 'UPDATE bas SET ord = :displayIndex, active = :isActive, aliases = :alias

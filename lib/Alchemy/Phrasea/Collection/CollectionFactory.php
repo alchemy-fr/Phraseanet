@@ -33,7 +33,17 @@ class CollectionFactory
             throw new \InvalidArgumentException('Reference does not belong to given databoxId.');
         }
 
-        return new \collection($this->app, $reference->getBaseId(), $reference, $row);
+        $collection = new Collection($databoxId, $row['coll_id'], $row['asciiname']);
+
+        $collection->setLabel('en', $row['label_en']);
+        $collection->setLabel('fr', $row['label_fr']);
+        $collection->setLabel('de', $row['label_de']);
+        $collection->setLabel('nl', $row['label_nl']);
+        $collection->setLogo($row['logo']);
+        $collection->setPreferences($row['prefs']);
+        $collection->setPublicWatermark($row['pub_wm']);
+
+        return new \collection($this->app, $collection, $reference, $row);
     }
 
     /**

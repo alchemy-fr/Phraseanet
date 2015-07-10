@@ -474,7 +474,7 @@ class CollectionController extends Controller
             if ($collection->get_record_amount() > 0) {
                 $msg = $this->app->trans('Empty the collection before removing');
             } else {
-                $collection->unmount_collection($this->app);
+                $collection->unmount();
                 $collection->delete();
                 $success = true;
                 $msg = $this->app->trans('Successful removal');
@@ -525,7 +525,7 @@ class CollectionController extends Controller
         $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
-            $collection->unmount_collection($this->app);
+            $collection->unmount();
             $success = true;
         } catch (\Exception $e) {
 

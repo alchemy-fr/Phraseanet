@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Collection;
 
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use PHPExiftool\Exception\LogicException;
 
 class Collection
 {
@@ -64,6 +65,14 @@ class Collection
     <sugestedValues></sugestedValues>
 </baseprefs>
 EOT;
+        $this->logo = '';
+        $this->labels = array(
+            'en' => '',
+            'fr' => '',
+            'de' => '',
+            'nl' => ''
+        );
+        $this->publicWatermark = '';
     }
 
     /**
@@ -80,6 +89,18 @@ EOT;
     public function getCollectionId()
     {
         return $this->collectionId;
+    }
+
+    /**
+     * @param $collectionId
+     */
+    public function setCollectionId($collectionId)
+    {
+        if ($this->collectionId > 0) {
+            throw new LogicException('Cannot change the ID of an existing collection.');
+        }
+
+        $this->collectionId = (int) $collectionId;
     }
 
     /**

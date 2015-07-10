@@ -30,7 +30,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['acl'] = new ACLProvider(self::$DI['app']);
         foreach (self::$createdCollections as $collection) {
             try {
-                $collection->unmount_collection(self::$DI['app']);
+                $collection->unmount();
             } catch (\Exception $e) {
 
             }
@@ -440,7 +440,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
         $this->assertEquals($collection->get_name(), 'test_rename_coll');
-        $collection->unmount_collection(self::$DI['app']);
+        $collection->unmount();
         $collection->delete();
     }
 
@@ -469,7 +469,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($collection->get_label('nl'), 'netherlands label');
         $this->assertEquals($collection->get_label('fr'), 'label français');
         $this->assertEquals($collection->get_label('en'), 'label à l\'anglaise');
-        $collection->unmount_collection(self::$DI['app']);
+        $collection->unmount();
         $collection->delete();
     }
 

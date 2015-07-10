@@ -11,8 +11,14 @@ use Doctrine\DBAL\Connection;
 class DbalCollectionRepository implements CollectionRepository
 {
 
-    private static $query = 'SELECT coll_id, asciiname, label_en, label_fr, label_de, label_nl, prefs, logo, majLogo, pub_wm
+    private static $selectQuery = 'SELECT coll_id, asciiname, label_en, label_fr, label_de, label_nl, prefs, logo, majLogo, pub_wm
                                 FROM coll';
+
+    private static $insertQuery = 'INSERT INTO coll (asciiname, prefs, logo) VALUES (:name, :preferences, :logo)';
+
+    private static $updateQuery = 'UPDATE coll SET asciiname = :name, label_en = :labelEn, label_fr = :labelFr,
+                                label_de = :labelDe, label_nl = :labelNl, prefs = :preferences, logo = :logo,
+                                majLogo = :logoTimestamp, pub_wm = :publicWatermark WHERE coll_id = :collectionId';
 
     /**
      * @var int
@@ -64,7 +70,7 @@ class DbalCollectionRepository implements CollectionRepository
             $params[':id_' . $reference->getCollectionId()] = $reference->getCollectionId();
         }
 
-        $query = self::$query . sprintf(' WHERE coll_id IN (%s)', implode(', ', array_keys($params)));
+        $query = self::$selectQuery . sprintf(' WHERE coll_id IN (%s)', implode(', ', array_keys($params)));
         $rows = $this->connection->fetchAll($query, $params);
 
         return $this->collectionFactory->createMany($this->databoxId, $references, $rows);
@@ -82,7 +88,7 @@ class DbalCollectionRepository implements CollectionRepository
             return null;
         }
 
-        $query = self::$query . ' WHERE coll_id = :collectionId';
+        $query = self::$selectQuery . ' WHERE coll_id = :collectionId';
         $row = $this->connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
@@ -105,7 +111,7 @@ class DbalCollectionRepository implements CollectionRepository
             return null;
         }
 
-        $query = self::$query . ' WHERE coll_id = :collectionId';
+        $query = self::$selectQuery . ' WHERE coll_id = :collectionId';
         $row = $this->connection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
 
         if ($row !== false) {
@@ -117,6 +123,31 @@ class DbalCollectionRepository implements CollectionRepository
 
     public function save(Collection $collection)
     {
+        $isInsert = true;
+        $query = self::$insertQuery;
+        $parameters = array(
+            'name' => $collection->getName(),
+            'preferences' => $collection->getPreferences(),
+            'logo' => $collection->getLogo()
+        );
 
+        if ($collection->getCollectionId() > 0) {
+            $parameters['collectionId'] = $collection->getCollectionId();
+            $parameters['labelEn'] = $collection->getLabel('en', false);
+            $parameters['labelFr'] = $collection->getLabel('fr', false);
+            $parameters['labelDe'] = $collection->getLabel('de', false);
+            $parameters['labelNl'] = $collection->getLabel('nl', false);
+            $parameters['logoTimestamp'] = $collection->getLogoUpdatedAt();
+            $parameters['publicWatermark'] = $collection->getPublicWatermark();
+
+            $query = self::$updateQuery;
+            $isInsert = false;
+        }
+
+        $this->connection->executeQuery($query, $parameters);
+
+        if ($isInsert) {
+            $collection->setCollectionId($this->connection->lastInsertId());
+        }
     }
 }

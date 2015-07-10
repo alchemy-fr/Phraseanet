@@ -67,6 +67,11 @@ class CollectionRepositoryRegistry
         throw new \OutOfBoundsException('No repository available for given base [baseId: ' . $baseId . ' ].');
     }
 
+    public function purgeRegistry()
+    {
+        $this->baseIdMap = null;
+    }
+
     private function loadBaseIdMap()
     {
         $references = $this->referenceRepository->findAll();

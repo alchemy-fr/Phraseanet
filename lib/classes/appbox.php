@@ -10,9 +10,11 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionService;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
+use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
@@ -41,6 +43,10 @@ class appbox extends base
      * @var \databox[]
      */
     protected $databoxes;
+    /**
+     * @var CollectionService
+     */
+    protected $collectionService;
 
     public function __construct(Application $app)
     {
@@ -287,6 +293,19 @@ class appbox extends base
         }
 
         parent::delete_data_from_cache($option);
+    }
+
+    public function getCollectionService()
+    {
+        if ($this->collectionService === null) {
+            $this->collectionService = new CollectionService(
+                $this->app,
+                $this->connection,
+                new DataboxConnectionProvider($this)
+            );
+        }
+
+        return $this->collectionService;
     }
 
     /**

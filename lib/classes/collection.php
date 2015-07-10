@@ -25,7 +25,7 @@ use Alchemy\Phrasea\Core\Thumbnail\ThumbnailManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\File\File;
 
-class collection implements cache_cacheableInterface, ThumbnailedElement
+class collection implements ThumbnailedElement
 {
 
     const PIC_LOGO = 'minilogos';
@@ -66,13 +66,12 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
         $repository->save($collectionReference);
 
-        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $app['repo.collections-registry']->purgeRegistry();
 
-        phrasea::reset_baseDatas($appbox);
+        $collection = new self($app, $collection, $collectionReference);
 
         if (null !== $user) {
-            $collection->set_admin($collectionReference->getBaseId(), $user);
+            $collection->collectionService->grantAdminRights($collectionReference, $user);
         }
 
         $app['dispatcher']->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
@@ -85,16 +84,10 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $reference = new CollectionReference(0, $databox->get_sbas_id(), $coll_id, 0, true, '');
 
         $app['repo.collection-references']->save($reference);
+        $app['repo.collections-registry']->purgeRegistry();
 
-        $databox->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-
-        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
-
-        phrasea::reset_baseDatas($databox->get_appbox());
-
-        $coll = self::getByBaseId($app, $reference->getBaseId());
-        $coll->set_admin($reference->getBaseId(), $user);
+        $collection = self::getByBaseId($app, $reference->getBaseId());
+        $collection->collectionService->grantAdminRights($collection->reference, $user);
 
         return $reference->getBaseId();
     }
@@ -103,7 +96,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         $base_id_key = $base_id . '_' . ($printname ? '1' : '0');
 
-        if ( ! isset(self::$_logos[$base_id_key])) {
+        if (!isset(self::$_logos[$base_id_key])) {
 
             if (is_file($app['root.path'] . '/config/minilogos/' . $base_id)) {
                 $name = phrasea::bas_labels($base_id, $app);
@@ -119,10 +112,11 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public static function getWatermark($base_id)
     {
-        if ( ! isset(self::$_watermarks['base_id'])) {
+        if (!isset(self::$_watermarks['base_id'])) {
 
-            if (is_file(__DIR__  . '/../../config/wm/' . $base_id))
+            if (is_file(__DIR__ . '/../../config/wm/' . $base_id)) {
                 self::$_watermarks['base_id'] = '<img src="/custom/wm/' . $base_id . '" />';
+            }
         }
 
         return isset(self::$_watermarks['base_id']) ? self::$_watermarks['base_id'] : '';
@@ -130,10 +124,11 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public static function getPresentation($base_id)
     {
-        if ( ! isset(self::$_presentations['base_id'])) {
+        if (!isset(self::$_presentations['base_id'])) {
 
-            if (is_file(__DIR__ . '/../../config/presentation/' . $base_id))
+            if (is_file(__DIR__ . '/../../config/presentation/' . $base_id)) {
                 self::$_presentations['base_id'] = '<img src="/custom/presentation/' . $base_id . '" />';
+            }
         }
 
         return isset(self::$_presentations['base_id']) ? self::$_presentations['base_id'] : '';
@@ -141,10 +136,11 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public static function getStamp($base_id)
     {
-        if ( ! isset(self::$_stamps['base_id'])) {
+        if (!isset(self::$_stamps['base_id'])) {
 
-            if (is_file(__DIR__ . '/../../config/stamp/' . $base_id))
+            if (is_file(__DIR__ . '/../../config/stamp/' . $base_id)) {
                 self::$_stamps['base_id'] = '<img src="/custom/stamp/' . $base_id . '" />';
+            }
         }
 
         return isset(self::$_stamps['base_id']) ? self::$_stamps['base_id'] : '';
@@ -157,7 +153,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     /**
      * @param  Application $app
-     * @param  int         $base_id
+     * @param  int $base_id
      * @return collection
      */
     public static function getByBaseId(Application $app, $base_id)
@@ -195,8 +191,8 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     /**
      * @param  Application $app
-     * @param  databox     $databox
-     * @param  int         $coll_id
+     * @param  databox $databox
+     * @param  int $coll_id
      * @return collection
      */
     public static function getByCollectionId(Application $app, databox $databox, $coll_id)
@@ -260,8 +256,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         $this->app = $app;
         $this->databox = $app->getApplicationBox()->get_databox($reference->getDataboxId());
+        $this->collectionService = $app->getApplicationBox()->getCollectionService();
 
-        $this->collection = $collection;
+        $this->collectionVO = $collection;
         $this->reference = $reference;
     }
 
@@ -294,12 +291,13 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         $this->app = $app;
         $this->databox = $app->getApplicationBox()->get_databox($this->reference->getDataboxId());
+        $this->collectionService = $app->getApplicationBox()->getCollectionService();
     }
 
     public function __sleep()
     {
         return array(
-            'collection',
+            'collectionVO',
             'reference'
         );
     }
@@ -345,6 +343,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         $this->collectionVO->setPublicWatermark($publi);
         $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this;
     }
@@ -358,12 +357,13 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         try {
             $this->collectionVO->setName($name);
-        }
-        catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             throw new Exception_InvalidArgument();
         }
 
         $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
+
         $this->dispatch(CollectionEvents::NAME_CHANGED, new NameChangedEvent($this));
 
         return $this;
@@ -377,7 +377,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function set_label($code, $label)
     {
         $this->collectionVO->setLabel($code, $label);
+
         $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this;
     }
@@ -407,7 +409,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function set_ord($ord)
     {
         $this->reference->setDisplayIndex($ord);
+
         $this->getReferenceRepository()->save($this->reference);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this;
     }
@@ -459,7 +463,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function set_prefs(DOMDocument $dom)
     {
         $this->collectionVO->setPreferences($dom->saveXML());
+
         $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this->collectionVO->getPreferences();
     }
@@ -502,7 +508,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function disable()
     {
         $this->reference->disable();
+
         $this->getReferenceRepository()->save($this->reference);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
@@ -515,7 +523,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function enable()
     {
         $this->reference->enable();
+
         $this->getReferenceRepository()->save($this->reference);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
@@ -583,12 +593,14 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         $fileContents = null;
 
-        if (! is_null($pathfile)) {
+        if (!is_null($pathfile)) {
             $fileContents = file_get_contents($pathfile->getPathname());
         }
 
         $this->collectionVO->setLogo($fileContents);
+
         $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this;
     }
@@ -600,6 +612,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function reset_watermark()
     {
         $this->collectionService->resetWatermark($this->collectionVO);
+
+        $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
 
         return $this;
     }
@@ -613,6 +628,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     {
         $this->collectionService->resetStamp($this->collectionVO, $record_id);
 
+        $this->getCollectionRepository()->save($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
+
         return $this;
     }
 
@@ -622,68 +640,23 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
     public function delete()
     {
         $this->collectionService->delete($this->databox, $this->collectionVO, $this->reference);
+
+        $this->getCollectionRepository()->delete($this->collectionVO);
+        $this->app['repo.collections-registry']->purgeRegistry();
     }
 
     /**
-     * @param Application $app
      * @return $this
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function unmount_collection(Application $app)
+    public function unmount()
     {
         $this->collectionService->unmountCollection($this->reference);
 
+        $this->getReferenceRepository()->delete($this->reference);
+        $this->app['repo.collections-registry']->purgeRegistry();
+
         return $this;
-    }
-
-    /**
-     * @param $base_id
-     * @param User $user
-     * @return bool
-     */
-    public function set_admin($base_id, User $user)
-    {
-        $this->collectionService->grantAdminRights($this->reference, $user);
-
-        return true;
-    }
-
-    /**
-     * @param null $option
-     * @return string
-     */
-    public function get_cache_key($option = null)
-    {
-        return 'collection_' . $this->get_coll_id() . ($option ? '_' . $option : '');
-    }
-
-    /**
-     * @param null $option
-     * @return string
-     */
-    public function get_data_from_cache($option = null)
-    {
-        return $this->databox->get_data_from_cache($this->get_cache_key($option));
-    }
-
-    /**
-     * @param $value
-     * @param null $option
-     * @param int $duration
-     * @return bool
-     */
-    public function set_data_to_cache($value, $option = null, $duration = 0)
-    {
-        return $this->databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
-    }
-
-    /**
-     * @param null $option
-     */
-    public function delete_data_from_cache($option = null)
-    {
-        $this->getCollectionRepository()->save($this->collectionVO);
-        $this->databox->delete_data_from_cache($this->get_cache_key($option));
     }
 
     /**
@@ -704,7 +677,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         }
 
         foreach ($element as $caninscript) {
-            if (false !== (bool) (string) $caninscript) {
+            if (false !== (bool)(string)$caninscript) {
                 return true;
             }
         }

@@ -380,7 +380,7 @@ class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\Thumbnaile
     public function unmount_databox()
     {
         foreach ($this->get_collections() as $collection) {
-            $collection->unmount_collection($this->app);
+            $collection->unmount();
         }
 
         $query = $this->app['phraseanet.user-query'];
