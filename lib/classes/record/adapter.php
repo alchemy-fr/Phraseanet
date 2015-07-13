@@ -676,16 +676,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $values = $field->get_values();
                 $value = end($values);
 
-                $meta_struct_id = $field->get_meta_struct_id();
-                $meta_id = $value->getId();
+                $this->set_metadatas([[
+                    'meta_struct_id' => $field->get_meta_struct_id(),
+                    'meta_id' => $value->getId(),
+                    'value' => $original_name,
+                ]], true);
             } catch (\Exception $e) {
-                $meta_struct_id = null;
-                $meta_id = null;
+                // Caption is not setup, ignore error
             }
-
-            $this->set_metadatas([
-                ['meta_struct_id' => $meta_struct_id, 'meta_id' => $meta_id, 'value' => $original_name],
-            ], true);
         }
 
         $this->get_databox()->get_connection()->executeUpdate(
