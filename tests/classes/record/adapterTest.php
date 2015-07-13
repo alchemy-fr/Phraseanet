@@ -94,14 +94,14 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertTrue($triggered);
     }
 
-    public function testGet_creation_date()
+    public function testGetCreated()
     {
         $date_obj = new DateTime();
         $record_1 = $this->getRecord1();
-        $this->assertTrue($record_1->get_creation_date() instanceof DateTime);
+        $this->assertTrue($record_1->getCreated() instanceof DateTime);
         $this->assertTrue(
-            $record_1->get_creation_date() <= $date_obj,
-            sprintf('Asserting that %s is before %s', $record_1->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+            $record_1->getCreated() <= $date_obj,
+            sprintf('Asserting that %s is before %s', $record_1->getCreated()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
         );
     }
 
@@ -114,10 +114,10 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $date_obj = new DateTime();
         $record_1 = $this->getRecord1();
-        $this->assertTrue(($record_1->get_creation_date() instanceof DateTime));
+        $this->assertTrue(($record_1->getCreated() instanceof DateTime));
         $this->assertTrue(
-            $record_1->get_creation_date() <= $date_obj,
-            sprintf('Asserting that %s is before %s', $record_1->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+            $record_1->getCreated() <= $date_obj,
+            sprintf('Asserting that %s is before %s', $record_1->getCreated()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
         );
     }
 

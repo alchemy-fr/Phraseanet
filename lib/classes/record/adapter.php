@@ -65,7 +65,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** @var databox */
     private $databox;
     /** @var DateTime */
-    private $creation_date;
+    private $created;
     /** @var string */
     private $original_name;
     /** @var TechnicalDataSet */
@@ -113,10 +113,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @return DateTime
+     * @deprecated {@link self::getCreated}
      */
     public function get_creation_date()
     {
-        return $this->creation_date;
+        return $this->getCreated();
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
     }
 
     /**
@@ -1769,12 +1775,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function getCreated()
-    {
-        return $this->get_creation_date();
-    }
-
-    /** {@inheritdoc} */
     public function getDataboxId()
     {
         return $this->get_databox()->get_sbas_id();
@@ -1889,7 +1889,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->grouping = $data['grouping'];
         $this->uuid = $data['uuid'];
         $this->modification_date = $data['modification_date'];
-        $this->creation_date = $data['creation_date'];
+        $this->created = $data['creation_date'];
         $this->base_id = $data['base_id'];
         $this->collection_id = $data['collection_id'];
 
@@ -1906,7 +1906,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             'grouping'          => $this->grouping,
             'uuid'              => $this->uuid,
             'modification_date' => $this->modification_date,
-            'creation_date'     => $this->creation_date,
+            'creation_date'     => $this->created,
             'base_id'           => $this->base_id,
             'collection_id'     => $this->collection_id,
         ];
@@ -1921,7 +1921,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $this->collection_id = (int)$row['coll_id'];
         $this->base_id = (int)phrasea::baseFromColl($this->get_sbas_id(), $this->collection_id, $this->app);
-        $this->creation_date = new DateTime($row['credate']);
+        $this->created = new DateTime($row['credate']);
         $this->modification_date = new DateTime($row['moddate']);
         $this->uuid = $row['uuid'];
 
