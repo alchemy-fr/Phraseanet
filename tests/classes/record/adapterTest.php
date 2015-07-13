@@ -107,7 +107,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_uuid()
     {
-        $this->assertTrue(Uuid::isValid($this->getRecord1()->get_uuid()));
+        $this->assertTrue(Uuid::isValid($this->getRecord1()->getUuid()));
     }
 
     public function testGetUpdated()

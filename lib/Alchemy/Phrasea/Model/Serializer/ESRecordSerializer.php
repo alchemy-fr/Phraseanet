@@ -70,7 +70,7 @@ class ESRecordSerializer extends AbstractSerializer
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'type'                   => $record->is_grouping() ? 'story' : 'record',
-            'uuid'                   => $record->get_uuid(),
+            'uuid'                   => $record->getUuid(),
             'caption'                => $caption,
             'status'                 => $status,
             'caption-business'       => $business,

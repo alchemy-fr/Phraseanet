@@ -1147,7 +1147,7 @@ class V1Controller extends Controller
             'thumbnail'              => $this->listEmbeddableMedia($request, $record, $record->get_thumbnail()),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
-            'uuid'                   => $record->get_uuid(),
+            'uuid'                   => $record->getUuid(),
         ];
 
         if ($request->attributes->get('_extended', false)) {
@@ -1219,7 +1219,7 @@ class V1Controller extends Controller
             'created_on'    => $story->getCreated()->format(DATE_ATOM),
             'collection_id' => \phrasea::collFromBas($this->app, $story->get_base_id()),
             'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->get_uuid(),
+            'uuid'          => $story->getUuid(),
             'metadatas'     => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),

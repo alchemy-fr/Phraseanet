@@ -108,23 +108,23 @@ class WriteMetadataJob extends AbstractJob
 
                 $metadata = new Metadata\MetadataBag();
 
-                if ($record->get_uuid()) {
+                if ($record->getUuid()) {
                     $metadata->add(
                         new Metadata\Metadata(
                             new Tag\XMPExif\ImageUniqueID(),
-                            new Value\Mono($record->get_uuid())
+                            new Value\Mono($record->getUuid())
                         )
                     );
                     $metadata->add(
                         new Metadata\Metadata(
                             new Tag\ExifIFD\ImageUniqueID(),
-                            new Value\Mono($record->get_uuid())
+                            new Value\Mono($record->getUuid())
                         )
                     );
                     $metadata->add(
                         new Metadata\Metadata(
                             new Tag\IPTC\UniqueDocumentID(),
-                            new Value\Mono($record->get_uuid())
+                            new Value\Mono($record->getUuid())
                         )
                     );
                 }

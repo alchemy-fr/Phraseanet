@@ -127,8 +127,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @return string
+     * @deprecated use {@link getUuid} instead.
      */
     public function get_uuid()
+    {
+        return $this->getUuid();
+    }
+
+    public function getUuid()
     {
         return $this->uuid;
     }
@@ -1826,12 +1832,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getType()
     {
         return $this->get_type();
-    }
-
-    /** {@inheritdoc} */
-    public function getUuid()
-    {
-        return $this->get_uuid();
     }
 
     /** {@inheritdoc} */
