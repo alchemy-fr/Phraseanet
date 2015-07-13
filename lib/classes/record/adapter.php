@@ -264,8 +264,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Return collection_id of the record
      *
      * @return int
+     * @deprecated use {@link self::getCollectionId} instead.
      */
     public function get_collection_id()
+    {
+        return $this->getCollectionId();
+    }
+
+    public function getCollectionId()
     {
         return $this->collection_id;
     }
@@ -1784,12 +1790,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
-    }
-
-    /** {@inheritdoc} */
-    public function getCollectionId()
-    {
-        return $this->get_collection()->get_coll_id();
     }
 
     /** {@inheritdoc} */
