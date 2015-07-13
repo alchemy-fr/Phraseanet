@@ -28,7 +28,7 @@
             )
         %}
 
-      <li class="{% if record.get_number == item.ord %}selected{% endif %} prevTrainCurrent">
+      <li class="{% if record.getNumber == item.ord %}selected{% endif %} prevTrainCurrent">
         <img {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}
                 tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' :record_item.databoxId, 'record_id' : record_item.recordId }) }}"
               {% endif %}

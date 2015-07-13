@@ -144,7 +144,7 @@ class EditController extends Controller
 
             /** @var \record_adapter $record */
             foreach ($records as $record) {
-                $indice = $record->get_number();
+                $indice = $record->getNumber();
                 $elements[$indice] = [
                     'bid'         => $record->get_base_id(),
                     'rid'         => $record->get_record_id(),

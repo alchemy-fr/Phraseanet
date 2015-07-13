@@ -150,7 +150,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @return int
      */
-    public function get_number()
+    public function getNumber()
     {
         return $this->number;
     }
@@ -158,10 +158,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Set a relative number (order) for the current in its set
      *
-     * @param  int            $number
-     * @return record_adapter
+     * @param  int $number
+     * @return $this
      */
-    public function set_number($number)
+    public function setNumber($number)
     {
         $this->number = (int) $number;
 

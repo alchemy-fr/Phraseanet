@@ -63,8 +63,8 @@
           )
           %}
 
-      <li class="{% if loop.index == record.get_number %}selected{% endif %} prevTrainCurrent" style="">
-        <img {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record_item.databoxId, 'record_id' : record_item.recordId, 'context' : 'preview', 'number' : record_item.get_number }) }}"{% endif %}
+      <li class="{% if loop.index == record.getNumber %}selected{% endif %} prevTrainCurrent" style="">
+        <img {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record_item.databoxId, 'record_id' : record_item.recordId, 'context' : 'preview', 'number' : record_item.getNumber }) }}"{% endif %}
              jsargs="REG|{{loop.index}}|{{story.get_serialize_key}}"
             class="openPreview prevRegToolTip" src="{{url}}"
             style="

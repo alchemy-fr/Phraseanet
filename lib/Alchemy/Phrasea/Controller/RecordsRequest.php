@@ -65,7 +65,7 @@ class RecordsRequest extends ArrayCollection
         $i = 0;
         $records = $this->toArray();
         array_walk($records, function ($record) use (&$i) {
-            $record->set_number($i++);
+            $record->setNumber($i++);
         });
     }
 

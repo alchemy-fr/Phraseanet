@@ -294,7 +294,7 @@
           </div>
       {% endif %}
           <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
-              {{record.get_number()}}
+              {{record.getNumber()}}
           </div>
     {{thumbnail.format(record.get_thumbnail,82,82, '', true, false)}}
       <div class="bottom">
@@ -312,7 +312,7 @@
             X
           </a>
           {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
-              <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.get_number() }) }}"></div>
+              <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}"></div>
           {% endif %}
       </div>
   </div>

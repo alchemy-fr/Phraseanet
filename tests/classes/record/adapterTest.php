@@ -121,22 +121,17 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         );
     }
 
-    public function testGet_number()
+    public function testNumber()
     {
         $record_1 = $this->getRecord1();
-        $record_1->set_number(24);
-        $this->assertEquals(24, $record_1->get_number());
-        $record_1->set_number(42);
-        $this->assertEquals(42, $record_1->get_number());
-        $record_1->set_number(0);
-        $this->assertEquals(0, $record_1->get_number());
-        $record_1->set_number(null);
-        $this->assertEquals(0, $record_1->get_number());
-    }
-
-    public function testSet_number()
-    {
-        $this->testGet_number();
+        $record_1->setNumber(24);
+        $this->assertEquals(24, $record_1->getNumber());
+        $record_1->setNumber(42);
+        $this->assertEquals(42, $record_1->getNumber());
+        $record_1->setNumber(0);
+        $this->assertEquals(0, $record_1->getNumber());
+        $record_1->setNumber(null);
+        $this->assertEquals(0, $record_1->getNumber());
     }
 
     public function testSet_type()

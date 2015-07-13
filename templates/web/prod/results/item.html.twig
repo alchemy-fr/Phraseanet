@@ -6,7 +6,7 @@
      sbas="{{ record.databoxId }}"
      id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
      class="IMGT diapo type-{{ record.type }}"
-     onDblClick="openPreview('FEED',{{ record.get_number }},{{ entry.id }});"
+     onDblClick="openPreview('FEED',{{ record.getNumber }},{{ entry.id }});"
 >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
@@ -66,7 +66,7 @@
                                  class="previewTips"></div>
                         {% endif %}
                         {% if rollover_thumbnail == 'preview' %}
-                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.get_number }) }}"
+                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.getNumber }) }}"
                                  class="captionRolloverTips"></div>
                         {% endif %}
                         {% if technical_display == '1' %}

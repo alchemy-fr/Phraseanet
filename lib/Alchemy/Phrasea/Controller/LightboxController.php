@@ -96,7 +96,7 @@ class LightboxController extends Controller
         $basket = $basketElement->getBasket();
 
         $ret = [];
-        $ret['number'] = $basketElement->getRecord($this->app)->get_number();
+        $ret['number'] = $basketElement->getRecord($this->app)->getNumber();
         $ret['title'] = $basketElement->getRecord($this->app)->get_title();
 
         $ret['preview'] = $this->render(
@@ -143,7 +143,7 @@ class LightboxController extends Controller
         }
 
         $ret = [];
-        $ret['number'] = $record->get_number();
+        $ret['number'] = $record->getNumber();
         $ret['title'] = $record->get_title();
         $ret['preview'] = $this->render('common/preview.html.twig', [
             'record' => $record,

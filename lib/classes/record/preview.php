@@ -129,7 +129,7 @@ class record_preview extends record_adapter
                         $sbas_id = $child->get_sbas_id();
                         $this->original_item = $child;
                         $record_id = $child->get_record_id();
-                        if ($child->get_number() == $pos)
+                        if ($child->getNumber() == $pos)
                             break;
                     }
                     $number = $pos;
@@ -277,20 +277,20 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= $this->app->trans('resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->get_number() + 1) . '</span> : ']);
+                $this->title .= $this->app->trans('resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span> : ']);
                 $this->title .= parent::get_title($highlight, $searchEngine);
                 break;
             case "BASK":
                 $this->title .= $this->name . ' - ' . parent::get_title($highlight, $searchEngine)
-                    . ' (' . $this->get_number() . '/' . $this->total . ') ';
+                    . ' (' . $this->getNumber() . '/' . $this->total . ') ';
                 break;
             case "REG":
                 $title = parent::get_title();
-                if ($this->get_number() == 0) {
+                if ($this->getNumber() == 0) {
                     $this->title .= $title;
                 } else {
                     $this->title .= sprintf(
-                        '%s %s', $title, $this->get_number() . '/' . $this->total
+                        '%s %s', $title, $this->getNumber() . '/' . $this->total
                     );
                 }
                 break;
