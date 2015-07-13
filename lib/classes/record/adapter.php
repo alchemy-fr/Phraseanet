@@ -354,8 +354,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @return databox
+     * @deprecated use {@link self::getDatabox} instead.
      */
     public function get_databox()
+    {
+        return $this->getDatabox();
+    }
+
+    /**
+     * @return databox
+     */
+    public function getDatabox()
     {
         return $this->databox;
     }
