@@ -110,14 +110,14 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertTrue(Uuid::isValid($this->getRecord1()->get_uuid()));
     }
 
-    public function testGet_modification_date()
+    public function testGetUpdated()
     {
         $date_obj = new DateTime();
         $record_1 = $this->getRecord1();
-        $this->assertTrue(($record_1->getCreated() instanceof DateTime));
+        $this->assertTrue(($record_1->getUpdated() instanceof DateTime));
         $this->assertTrue(
             $record_1->getCreated() <= $date_obj,
-            sprintf('Asserting that %s is before %s', $record_1->getCreated()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+            sprintf('Asserting that %s is before %s', $record_1->getUpdated()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
         );
     }
 
