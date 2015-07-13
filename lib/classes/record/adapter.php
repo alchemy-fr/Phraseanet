@@ -290,8 +290,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Returns record_id of the record
      *
      * @return int
+     * @deprecated use {@link self::getRecordId} instead.
      */
     public function get_record_id()
+    {
+        return $this->getRecordId();
+    }
+
+    public function getRecordId()
     {
         return $this->record_id;
     }
@@ -1814,12 +1820,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function setOriginalName($originalName)
     {
         $this->set_original_name($originalName);
-    }
-
-    /** {@inheritdoc} */
-    public function getRecordId()
-    {
-        return $this->get_record_id();
     }
 
     /** {@inheritdoc} */
