@@ -1129,7 +1129,7 @@ class V1Controller extends Controller
     public function listRecord(Request $request, \record_adapter $record)
     {
         $technicalInformation = [];
-        foreach ($record->get_technical_infos() as $name => $value) {
+        foreach ($record->get_technical_infos()->getValues() as $name => $value) {
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 

@@ -12,8 +12,8 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
-use Alchemy\Phrasea\Databox\Field\DataboxFieldRepository;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Status\StatusStructure;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class databox extends base implements \Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement
+class databox extends base implements ThumbnailedElement
 {
 
     const BASE_TYPE = self::DATA_BOX;

@@ -15,20 +15,17 @@ use Doctrine\DBAL\Driver\Statement;
 class caption_field implements cache_cacheableInterface
 {
     /**
-     *
      * @var databox_field
      */
     protected $databox_field;
 
     /**
-     *
      * @var string
      */
     protected $values;
 
     /**
-     *
-     * @var record
+     * @var record_adapter
      */
     protected $record;
     protected $app;
@@ -36,12 +33,11 @@ class caption_field implements cache_cacheableInterface
     protected static $localCache = [];
 
     /**
-     *
      * @param Application      $app
      * @param databox_field    $databox_field
      * @param record_adapter $record
      *
-     * @return caption_field
+     * @return $this
      */
     public function __construct(Application $app, databox_field $databox_field, \record_adapter $record)
     {
@@ -55,15 +51,11 @@ class caption_field implements cache_cacheableInterface
         foreach ($rs as $row) {
             $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
 
-            /**
-             * Inconsistent, should not happen
-             */
-            if ( ! $databox_field->is_multi()) {
+            // Inconsistent, should not happen
+            if (! $databox_field->is_multi()) {
                 break;
             }
         }
-
-        return $this;
     }
 
     protected function get_metadatas_ids()
@@ -76,13 +68,11 @@ class caption_field implements cache_cacheableInterface
 
         $connbas = $this->databox_field->get_connection();
 
-        $sql = 'SELECT id FROM metadatas
-                WHERE record_id = :record_id
-                  AND meta_struct_id = :meta_struct_id';
+        $sql = 'SELECT id FROM metadatas WHERE record_id = :record_id AND meta_struct_id = :meta_struct_id';
 
         $params = [
-            ':record_id'      => $this->record->get_record_id()
-            , ':meta_struct_id' => $this->databox_field->get_id()
+            ':record_id'      => $this->record->get_record_id(),
+            ':meta_struct_id' => $this->databox_field->get_id(),
         ];
 
         $stmt = $connbas->prepare($sql);
@@ -96,7 +86,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function get_record()
@@ -105,8 +94,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_required()
     {
@@ -114,8 +102,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_multi()
     {
@@ -123,8 +110,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_readonly()
     {
@@ -132,8 +118,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return caption_field
+     * @return $this
      */
     public function delete()
     {
@@ -146,7 +131,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  array  $values
      * @param  string $separator
      * @return string
@@ -174,7 +158,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return \caption_Field_Value[]
      */
     public function get_values()
@@ -183,7 +166,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  int   $meta_id
      * @return array
      */
@@ -193,8 +175,8 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     * @param String  $custom_separator
-     * @param Boolean $highlightTheso
+     * @param bool|string $custom_separator
+     * @param bool        $highlight
      *
      * @return mixed
      */
@@ -222,7 +204,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_name()
@@ -231,7 +212,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_meta_struct_id()
@@ -240,8 +220,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_indexable()
     {
@@ -249,7 +228,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return databox_field
      */
     public function get_databox_field()
@@ -258,7 +236,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  string $serialized_value
      * @param  string $separator
      * @return array
@@ -412,7 +389,7 @@ class caption_field implements cache_cacheableInterface
      * @param  mixed         $value
      * @param  string        $option
      * @param  int           $duration
-     * @return caption_field
+     * @return $this
      */
     public function set_data_to_cache($value, $option = null, $duration = 360000)
     {
@@ -423,7 +400,7 @@ class caption_field implements cache_cacheableInterface
      * Part of the cache_cacheableInterface
      *
      * @param  string        $option
-     * @return caption_field
+     * @return $this
      */
     public function delete_data_from_cache($option = null)
     {

@@ -11,17 +11,26 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
-use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
+use Alchemy\Phrasea\Media\FloatTechnicalData;
+use Alchemy\Phrasea\Media\IntegerTechnicalData;
+use Alchemy\Phrasea\Media\StringTechnicalData;
+use Alchemy\Phrasea\Media\TechnicalData;
+use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -29,43 +38,12 @@ use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Rhumsaa\Uuid\Uuid;
-use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
-use Alchemy\Phrasea\Core\PhraseaTokens;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
-    protected $xml;
-    protected $base_id;
-    protected $collection_id;
-    protected $record_id;
-    protected $mime;
-    protected $number;
-    protected $status;
-    protected $subdefs;
-    protected $type;
-    protected $sha256;
-    protected $grouping;
-    protected $duration;
-    /** @var databox */
-    protected $databox;
-    /** @var DateTime */
-    protected $creation_date;
-    /** @var string */
-    protected $original_name;
-    /** @var array */
-    protected $technical_datas;
-    /** @var caption_record */
-    protected $caption_record;
-    /** @var string */
-    protected $uuid;
-    /** @var DateTime */
-    protected $modification_date;
-    /** @var Application */
-    protected $app;
-
     const CACHE_ORIGINAL_NAME = 'originalname';
-    const CACHE_TECHNICAL_DATAS = 'technical_datas';
+    const CACHE_TECHNICAL_DATA = 'technical_data';
     const CACHE_MIME = 'mime';
     const CACHE_TITLE = 'title';
     const CACHE_SHA256 = 'sha256';
@@ -73,91 +51,67 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     const CACHE_GROUPING = 'grouping';
     const CACHE_STATUS = 'status';
 
+    private $base_id;
+    private $collection_id;
+    private $record_id;
+    private $mime;
+    private $number;
+    private $status;
+    private $subdefs;
+    private $type;
+    private $sha256;
+    private $grouping;
+    private $duration;
+    /** @var databox */
+    private $databox;
+    /** @var DateTime */
+    private $creation_date;
+    /** @var string */
+    private $original_name;
+    /** @var TechnicalDataSet */
+    private $technical_data;
+    /** @var string */
+    private $uuid;
+    /** @var DateTime */
+    private $modification_date;
+    /** @var Application */
+    protected $app;
+
     /**
      * @param Application $app
      * @param integer     $sbas_id
      * @param integer     $record_id
      * @param integer     $number
+     * @param bool        $load
      */
-    public function __construct(Application $app, $sbas_id, $record_id, $number = null)
+    public function __construct(Application $app, $sbas_id, $record_id, $number = null, $load = true)
     {
         $this->app = $app;
         $this->databox = $this->app->findDataboxById((int) $sbas_id);
         $this->number = (int) $number;
         $this->record_id = (int) $record_id;
 
-        $this->load();
+        if ($load) {
+            $this->load();
+        }
     }
 
     protected function load()
     {
-        try {
-            $datas = $this->get_data_from_cache();
-
-            if (!is_array($datas)) {
-                throw new Exception('Could not retrieve record data');
-            }
-
-            $this->mime = $datas['mime'];
-            $this->sha256 = $datas['sha256'];
-            $this->original_name = $datas['original_name'];
-            $this->type = $datas['type'];
-            $this->grouping = $datas['grouping'];
-            $this->uuid = $datas['uuid'];
-            $this->modification_date = $datas['modification_date'];
-            $this->creation_date = $datas['creation_date'];
-            $this->base_id = $datas['base_id'];
-            $this->collection_id = $datas['collection_id'];
-
-            return $this;
-        } catch (\Exception $e) {
+        if ($this->mapFromCache()) {
+            return;
         }
 
-        $connbas = $this->databox->get_connection();
-        $sql = 'SELECT coll_id, record_id,credate , uuid, moddate, parent_record_id
-            , type, originalname, bitly, sha256, mime
-            FROM record WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->record_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
+        $row = $this->fetchDataFromDb();
         if (!$row) {
-            throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
+            throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->get_sbas_id() . ' not found ');
         }
 
-        $this->collection_id = (int) $row['coll_id'];
-        $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $this->collection_id, $this->app);
-        $this->creation_date = new DateTime($row['credate']);
-        $this->modification_date = new DateTime($row['moddate']);
-        $this->uuid = $row['uuid'];
-
-        $this->grouping = ($row['parent_record_id'] == '1');
-        $this->type = $row['type'];
-        $this->original_name = $row['originalname'];
-        $this->sha256 = $row['sha256'];
-        $this->mime = $row['mime'];
-
-        $datas = [
-            'mime' => $this->mime,
-            'sha256' => $this->sha256,
-            'original_name' => $this->original_name,
-            'type' => $this->type,
-            'grouping' => $this->grouping,
-            'uuid' => $this->uuid,
-            'modification_date' => $this->modification_date,
-            'creation_date' => $this->creation_date,
-            'base_id' => $this->base_id,
-            'collection_id' => $this->collection_id,
-        ];
-
-        $this->set_data_to_cache($datas);
-
-        return $this;
+        $this->mapFromDbData($row);
+        $this->putInCache();
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_creation_date()
@@ -166,7 +120,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_uuid()
@@ -175,7 +128,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_modification_date()
@@ -184,7 +136,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_number()
@@ -193,7 +144,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * Set a relative number (order) for the vurrent in its set
+     * Set a relative number (order) for the current in its set
      *
      * @param  int            $number
      * @return record_adapter
@@ -206,9 +157,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  string         $type
-     * @return record_adapter
+     * @param  string $type
+     * @return $this
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function set_type($type)
     {
@@ -239,26 +191,21 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function set_mime($mime)
     {
-        $old_mime = $this->get_mime();
-
         // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
-        if (!preg_match("/^[a-zA-Z0-9!#$%^&\*_\-\+{}\|'.`~]+\/[a-zA-Z0-9!#$%^&\*_\-\+{}\|'.`~]+$/", $mime)) {
+        if (!preg_match("/^[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+\\/[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+$/", $mime)) {
             throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
         }
 
-        $connection = $this->databox->get_connection();
+        if ($this->databox->get_connection()->executeUpdate(
+            'UPDATE record SET mime = :mime WHERE record_id = :record_id',
+            array(':mime' => $mime, ':record_id' => $this->get_record_id())
+        )) {
 
-        $sql = 'UPDATE record SET mime = :mime WHERE record_id = :record_id';
-        $stmt = $connection->prepare($sql);
-        $stmt->execute(array(':mime' => $mime, ':record_id' => $this->get_record_id()));
-        $stmt->closeCursor();
-
-        if ($mime !== $old_mime) {
             $this->rebuild_subdefs();
+            $this->delete_data_from_cache();
         }
 
         $this->mime = $mime;
-        $this->delete_data_from_cache();
 
         return $this;
     }
@@ -266,7 +213,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Return true if the record is a grouping
      *
-     * @return boolean
+     * @return bool
      */
     public function is_grouping()
     {
@@ -276,7 +223,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Return base_id of the record
      *
-     * @return <int>
+     * @return int
      */
     public function get_base_id()
     {
@@ -306,7 +253,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Returns record_id of the record
      *
-     * @return <int>
+     * @return int
      */
     public function get_record_id()
     {
@@ -314,7 +261,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return databox
      */
     public function get_databox()
@@ -323,7 +269,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return media_subdef
      */
     public function get_thumbnail()
@@ -332,8 +277,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return Array
+     * @param string|string[] $devices
+     * @param string|string[] $mimes
+     * @return media_subdef[]
      */
     public function get_embedable_medias($devices = null, $mimes = null)
     {
@@ -368,7 +314,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_duration()
     {
         if (!$this->duration) {
-            $this->duration = round($this->get_technical_infos(media_subdef::TC_DATA_DURATION));
+            $duration = $this->get_technical_infos(media_subdef::TC_DATA_DURATION);
+            $this->duration = $duration ? round($duration->getValue()) : false;
         }
 
         return $this->duration;
@@ -410,8 +357,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return media
+     * @return null|media_subdef
      */
     public function get_rollover_thumbnail()
     {
@@ -422,14 +368,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (\Exception $e) {
-
+            return null;
         }
-
-        return null;
     }
 
     /**
-     *
      * @return string
      */
     public function get_sha256()
@@ -438,7 +381,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_mime()
@@ -447,7 +389,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_status()
@@ -460,28 +401,31 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
      */
     protected function retrieve_status()
     {
         try {
-            return $this->get_data_from_cache(self::CACHE_STATUS);
-        } catch (\Exception $e) {
-
+            $data = $this->get_data_from_cache(self::CACHE_STATUS);
+        } catch (Exception $e) {
+            $data = false;
         }
-        $sql = 'SELECT BIN(status) as status FROM record
-              WHERE record_id = :record_id';
-        $stmt = $this->get_databox()->get_connection()->prepare($sql);
-        $stmt->execute([':record_id' => $this->get_record_id()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
 
-        if (!$row) {
+        if (false !== $data) {
+            return $data;
+        }
+
+        $status = $this->get_databox()->get_connection()->fetchColumn(
+            'SELECT BIN(status) as status FROM record WHERE record_id = :record_id',
+            [':record_id' => $this->get_record_id()]
+        );
+
+        if (false === $status) {
             throw new Exception('status not found');
         }
 
-        $status = $row['status'];
         $status = str_pad($status, 32, '0', STR_PAD_LEFT);
 
         $this->set_data_to_cache($status, self::CACHE_STATUS);
@@ -495,8 +439,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  <type>       $name
+     * @param string $name
      * @return media_subdef
      */
     public function get_subdef($name)
@@ -523,9 +466,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Returns an array of subdef matching
      *
-     * @param  string|array $devices the matching device (see databox_subdef::DEVICE_*)
-     * @param  type         $mimes   the matching mime types
-     * @return array
+     * @param  string|string[] $devices the matching device (see databox_subdef::DEVICE_*)
+     * @param  string|string[] $mimes   the matching mime types
+     * @return media_subdef[]
      */
     public function getSubdfefByDeviceAndMime($devices = null, $mimes = null)
     {
@@ -597,35 +540,33 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return Array
+     * @return string[]
      */
     protected function get_available_subdefs()
     {
         try {
             $data = $this->get_data_from_cache(self::CACHE_SUBDEFS);
-            if (is_array($data)) {
-                return $data;
-            }
         } catch (\Exception $e) {
+            $data = false;
+        }
 
+        if (is_array($data)) {
+            return $data;
         }
 
         $connbas = $this->get_databox()->get_connection();
 
-        $sql = 'SELECT name FROM record r, subdef s
-            WHERE s.record_id = r.record_id AND r.record_id = :record_id';
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->get_record_id()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $connbas->fetchAll(
+            'SELECT name FROM subdef s LEFT JOIN record r ON s.record_id = r.record_id WHERE r.record_id = :record_id',
+            ['record_id' => $this->get_record_id()]
+        );
 
         $subdefs = ['preview', 'thumbnail'];
 
         foreach ($rs as $row) {
             $subdefs[] = $row['name'];
         }
+
         $subdefs = array_unique($subdefs);
         $this->set_data_to_cache($subdefs, self::CACHE_SUBDEFS);
 
@@ -633,7 +574,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_collection_logo()
@@ -642,51 +582,31 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * Return a Technical data set or a specific technical data or false when not found
      *
      * @param  string $data
-     * @return Array
+     * @return TechnicalDataSet|TechnicalData|false
      */
-    public function get_technical_infos($data = false)
+    public function get_technical_infos($data = '')
     {
-        if (!$this->technical_datas) {
-            try {
-                $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
-            } catch (\Exception $e) {
-                $this->technical_datas = [];
-                $connbas = $this->get_databox()->get_connection();
-                $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute([':record_id' => $this->get_record_id()]);
-                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+        if (!$this->technical_data && !$this->mapTechnicalDataFromCache()) {
+            $this->technical_data = [];
+            $rs = $this->fetchTechnicalDataFromDb();
 
-                foreach ($rs as $row) {
-                    switch (true) {
-                        case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
-                            $this->technical_datas[$row['name']] = (float) $row['value'];
-                            break;
-                        case ctype_digit($row['value']):
-                            $this->technical_datas[$row['name']] = (int) $row['value'];
-                            break;
-                        default:
-                            $this->technical_datas[$row['name']] = $row['value'];
-                            break;
-                    }
-                }
-                $this->set_data_to_cache($this->technical_datas, self::CACHE_TECHNICAL_DATAS);
-                unset($e);
-            }
+            $this->mapTechnicalDataFromDb($rs);
+
+            $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATA);
         }
 
         if ($data) {
-            if (isset($this->technical_datas[$data])) {
-                return $this->technical_datas[$data];
+            if (isset($this->technical_data[$data])) {
+                return $this->technical_data[$data];
             } else {
                 return false;
             }
         }
 
-        return $this->technical_datas;
+        return $this->technical_data;
     }
 
     /**
@@ -722,16 +642,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
+     * @param bool $removeExtension
      * @return string
      */
     public function get_original_name($removeExtension = null)
     {
         if ($removeExtension) {
             return pathinfo($this->original_name, PATHINFO_FILENAME);
-        } else {
-            return $this->original_name;
         }
+
+        return $this->original_name;
     }
 
     public function set_original_name($original_name)
@@ -746,42 +666,30 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 continue;
             }
 
-            /**
-             * Replacing original name in multi values is non sense
-             */
-            if (!$data_field->is_multi()) {
+            // Replacing original name in multi values is non sense
+            if ($data_field->is_multi()) {
                 continue;
             }
 
             try {
-                $field = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
+                $field = $this->get_caption()->get_field($data_field->get_name());
                 $values = $field->get_values();
-                $value = array_pop($values);
-                $meta_id = $value->getId();
+                $value = end($values);
+
+                $this->set_metadatas([[
+                    'meta_struct_id' => $field->get_meta_struct_id(),
+                    'meta_id' => $value->getId(),
+                    'value' => $original_name,
+                ]], true);
             } catch (\Exception $e) {
-                $meta_id = null;
+                // Caption is not setup, ignore error
             }
-
-            $metas = [
-                'meta_struct_id' => $field->get_meta_struct_id()
-                , 'meta_id'        => $meta_id
-                , 'value'          => $original_name
-            ];
-
-            $this->set_metadatas($metas, true);
         }
 
-        $sql = 'UPDATE record
-            SET originalname = :originalname WHERE record_id = :record_id';
-
-        $params = [
-            ':originalname' => $original_name
-            , ':record_id'    => $this->get_record_id()
-        ];
-
-        $stmt = $this->get_databox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $this->get_databox()->get_connection()->executeUpdate(
+            'UPDATE record SET originalname = :originalname WHERE record_id = :record_id',
+            ['originalname' => $original_name, 'record_id' => $this->get_record_id()]
+        );
 
         $this->delete_data_from_cache();
 
@@ -791,7 +699,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
+     * @param bool                  $highlight
+     * @param SearchEngineInterface $searchEngine
+     * @param null                  $removeExtension
+     * @param SearchEngineOptions   $options
      * @return string
      */
     public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null, SearchEngineOptions $options = null)
@@ -843,7 +754,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return media_subdef
      */
     public function get_preview()
@@ -852,14 +762,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function has_preview()
     {
         try {
-            $this->get_subdef('preview');
-
             return $this->get_subdef('preview')->is_physically_present();
         } catch (\Exception $e) {
             unset($e);
@@ -869,7 +776,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_serialize_key()
@@ -960,7 +866,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param  DOMDocument    $dom_doc
      * @return record_adapter
      */
@@ -981,10 +886,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @todo move this function to caption_record
-     * @param  Array          $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
+     * @param  Array  $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
+     * @param databox $databox
      * @return record_adapter
+     * @throws Exception
+     * @throws Exception_InvalidArgument
      */
     protected function set_metadata(Array $params, databox $databox)
     {
@@ -1034,8 +941,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $caption_field_value = caption_Field_Value::create($this->app, $databox_field, $this, $params['value'], $vocab, $vocab_id);
         }
 
-        $this->caption_record = null;
-
         return $this;
     }
 
@@ -1065,9 +970,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->set_metadata($param, $this->databox);
         }
 
-        $this->xml = null;
-        $this->caption_record = null;
-
         $xml = new DOMDocument();
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
 
@@ -1080,7 +982,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function rebuild_subdefs()
@@ -1111,16 +1012,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $record = $this;
-        $wanted_subdefs = array_map(function($subDef) {
+        $wanted_subdefs = array_map(function(media_subdef $subDef) {
            return  $subDef->get_name();
-        }, array_filter($subDefDefinitions, function($subDef) use ($record) {
+        }, array_filter($subDefDefinitions, function(media_subdef $subDef) use ($record) {
             return !$record->has_subdef($subDef->get_name());
         }));
 
 
-        $missing_subdefs = array_map(function($subDef) {
+        $missing_subdefs = array_map(function(media_subdef $subDef) {
             return $subDef->get_name();
-        }, array_filter($this->get_subdefs(), function($subdef) {
+        }, array_filter($this->get_subdefs(), function(media_subdef $subdef) {
             return !$subdef->is_physically_present();
         }));
 
@@ -1128,41 +1029,34 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function write_metas()
     {
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
-        $connbas = $databox->get_connection();
-        $sql = 'UPDATE record
-            SET jeton = jeton | (' . (PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF) . ')
-            WHERE record_id= :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->record_id]);
-        $stmt->closeCursor();
+        $tokenMask = PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF;
+        $this->databox->get_connection()->executeUpdate(
+            'UPDATE record SET jeton = jeton | :tokenMask WHERE record_id= :record_id',
+            ['tokenMask' => $tokenMask, 'record_id' => $this->record_id]
+        );
 
         return $this;
     }
 
     /**
-     *
      * @param  string         $status
      * @return record_adapter
      */
     public function set_binary_status($status)
     {
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
-        $connbas = $databox->get_connection();
+        $connection = $this->databox->get_connection();
 
-        $sql = 'UPDATE record SET status = 0b' . $status . '
-            WHERE record_id= :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->record_id]);
-        $stmt->closeCursor();
+        $connection->executeUpdate(
+            'UPDATE record SET status = :status WHERE record_id= :record_id',
+            ['status' => bindec($status), 'record_id' => $this->record_id]
+        );
 
         $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
-        $stmt = $connbas->prepare($sql);
+        $stmt = $connection->prepare($sql);
 
         $status = strrev($status);
         $length = strlen($status);
@@ -1196,17 +1090,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public static function createStory(Application $app, \collection $collection)
     {
-        $databox = $collection->get_databox();
+        $connection = $collection->get_databox()->get_connection();
 
-        $sql = 'INSERT INTO record
-              (coll_id, record_id, parent_record_id, moddate, credate
-                , type, sha256, uuid, originalname, mime)
-            VALUES
-              (:coll_id, null, :parent_record_id, NOW(), NOW()
-              , :type, :sha256, :uuid
-              , :originalname, :mime)';
+        $sql = 'INSERT INTO record (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)'
+            .' VALUES (:coll_id, NULL, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid , :originalname, :mime)';
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $connection->prepare($sql);
 
         $stmt->execute([
             ':coll_id'          => $collection->get_coll_id(),
@@ -1219,17 +1108,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         ]);
         $stmt->closeCursor();
 
-        $story_id = $databox->get_connection()->lastInsertId();
+        $story_id = $connection->lastInsertId();
 
-        $story = new self($app, $databox->get_sbas_id(), $story_id);
+        $story = new self($app, $collection->get_databox()->get_sbas_id(), $story_id);
 
         try {
-            $log_id = $app['phraseanet.logger']($databox)->get_id();
+            $log_id = $app['phraseanet.logger']($collection->get_databox())->get_id();
 
-            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
-            VALUES (null, :log_id, now(),
-              :record_id, "add", :coll_id,"")';
-            $stmt = $databox->get_connection()->prepare($sql);
+            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)'
+                . ' VALUES (null, :log_id, now(), :record_id, "add", :coll_id,"")';
+            $stmt = $connection->prepare($sql);
             $stmt->execute([
                 ':log_id'    => $log_id,
                 ':record_id' => $story_id,
@@ -1240,7 +1128,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        self::dispatchCreatedEvent($app, $story);
+        $story->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($story));
 
         return $story;
     }
@@ -1310,14 +1198,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $record->insertTechnicalDatas($app['mediavorus']);
 
-        self::dispatchCreatedEvent($app, $record);
+        $record->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
 
         return $record;
-    }
-
-    private static function dispatchCreatedEvent(Application $app, RecordInterface $record)
-    {
-        $app['dispatcher']->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
     }
 
     /**
@@ -1363,13 +1246,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $stmt->closeCursor();
 
-        $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATAS);
+        $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
 
         return $this;
     }
 
     /**
-     *
      * @param  Application    $app
      * @param  integer        $sbas_id
      * @param  string         $sha256
@@ -1444,7 +1326,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return \Symfony\Component\HttpFoundation\File\File|null
      */
     public function get_hd_file()
@@ -1459,7 +1340,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return Array : list of deleted files;
      */
     public function delete()
@@ -1571,8 +1451,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  string $option optionnal cache name
+     * @param  string $option optional cache name
      * @return string
      */
     public function get_cache_key($option = null)
@@ -1596,8 +1475,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  string $option optionnal cache name
+     * @param  string $option optional cache name
      * @return mixed
      */
     public function get_data_from_cache($option = null)
@@ -1654,7 +1532,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @var Array
      */
     protected $container_basket;
@@ -1671,12 +1548,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param databox $databox
-     * @param integer $original_name
-     * @param integer $caseSensitive
-     * @param integer $offset_start
-     * @param integer $how_many
+     * @param int     $original_name
+     * @param bool    $caseSensitive
+     * @param int     $offset_start
+     * @param int     $how_many
      *
      * @return array
      */
@@ -1705,8 +1581,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return set_selection
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function get_children()
     {
@@ -1761,7 +1638,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return set_selection
      */
     public function get_grouping_parents()
@@ -1980,11 +1856,160 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** {@inheritdoc} */
     public function getExif()
     {
-        return $this->get_technical_infos();
+        return $this->get_technical_infos()->getValues();
     }
 
     public function getStatusStructure()
     {
         return $this->databox->getStatusStructure();
+    }
+
+    /**
+     * Try to map data from cache.
+     *
+     * @return bool true when cache hit.
+     *              false when cache miss.
+     */
+    protected function mapFromCache()
+    {
+        try {
+            $data = $this->get_data_from_cache();
+        } catch (Exception $exception) {
+            $data = false;
+        };
+
+        if (false === $data) {
+            return false;
+        }
+
+        $this->mime = $data['mime'];
+        $this->sha256 = $data['sha256'];
+        $this->original_name = $data['original_name'];
+        $this->type = $data['type'];
+        $this->grouping = $data['grouping'];
+        $this->uuid = $data['uuid'];
+        $this->modification_date = $data['modification_date'];
+        $this->creation_date = $data['creation_date'];
+        $this->base_id = $data['base_id'];
+        $this->collection_id = $data['collection_id'];
+
+        return true;
+    }
+
+    protected function putInCache()
+    {
+        $data = [
+            'mime'              => $this->mime,
+            'sha256'            => $this->sha256,
+            'original_name'     => $this->original_name,
+            'type'              => $this->type,
+            'grouping'          => $this->grouping,
+            'uuid'              => $this->uuid,
+            'modification_date' => $this->modification_date,
+            'creation_date'     => $this->creation_date,
+            'base_id'           => $this->base_id,
+            'collection_id'     => $this->collection_id,
+        ];
+
+        $this->set_data_to_cache($data);
+    }
+
+    /**
+     * @param array $row
+     */
+    protected function mapFromDbData(array $row)
+    {
+        $this->collection_id = (int)$row['coll_id'];
+        $this->base_id = (int)phrasea::baseFromColl($this->get_sbas_id(), $this->collection_id, $this->app);
+        $this->creation_date = new DateTime($row['credate']);
+        $this->modification_date = new DateTime($row['moddate']);
+        $this->uuid = $row['uuid'];
+
+        $this->grouping = ($row['parent_record_id'] == '1');
+        $this->type = $row['type'];
+        $this->original_name = $row['originalname'];
+        $this->sha256 = $row['sha256'];
+        $this->mime = $row['mime'];
+    }
+
+    /**
+     * @return false|array
+     */
+    protected function fetchDataFromDb()
+    {
+        static $sql;
+
+        $connection = $this->databox->get_connection();
+        if (!$sql) {
+            $sql = $connection->createQueryBuilder()
+                ->select(
+                    'coll_id',
+                    'record_id',
+                    'credate',
+                    'uuid',
+                    'moddate',
+                    'parent_record_id',
+                    $connection->quoteIdentifier('type'),
+                    'originalname',
+                    'sha256',
+                    'mime'
+                )->from('record', 'r')
+                ->where('record_id = :record_id')
+                ->getSQL();
+        }
+
+        return $connection->fetchAssoc($sql, [':record_id' => $this->record_id]);
+    }
+
+    /**
+     * @return bool
+     */
+    private function mapTechnicalDataFromCache()
+    {
+        try {
+            $technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATA);
+        } catch (Exception $e) {
+            $technical_data = false;
+        }
+
+        if (false === $technical_data) {
+            return false;
+        }
+
+        $this->technical_data = $technical_data;
+
+        return true;
+    }
+
+    /**
+     * @return false|array
+     */
+    private function fetchTechnicalDataFromDb()
+    {
+        $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
+
+        return $this->get_databox()->get_connection()
+            ->fetchAll($sql, ['record_id' => $this->get_record_id()]);
+    }
+
+    /**
+     * @param array $rows
+     */
+    private function mapTechnicalDataFromDb(array $rows)
+    {
+        $this->technical_data = new ArrayTechnicalDataSet();
+
+        foreach ($rows as $row) {
+            switch (true) {
+                case ctype_digit($row['value']):
+                    $this->technical_data[] = new IntegerTechnicalData($row['name'], $row['value']);
+                    break;
+                case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
+                    $this->technical_data[] = new FloatTechnicalData($row['name'], $row['value']);
+                    break;
+                default:
+                    $this->technical_data[] = new StringTechnicalData($row['name'], $row['value']);
+            }
+        }
     }
 }

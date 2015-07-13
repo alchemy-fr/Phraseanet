@@ -73,22 +73,25 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/stories';
 
-        $story['base_id'] = self::$DI['collection']->get_base_id();
+        $collection = $this->getCollection();
+        $story['base_id'] = $collection->get_base_id();
         $story['title'] = uniqid('story');
 
+        $app = $this->getApplication();
         $file = new File(
-            self::$DI['app'],
-            self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/p4logo.jpg'),
-            self::$DI['collection']
+            $app,
+            $app['mediavorus']->guess(__DIR__ . '/../../../../../files/p4logo.jpg'),
+            $collection
         );
-        $record = \record_adapter::createFromFile($file, self::$DI['app']);
+        $record = \record_adapter::createFromFile($file, $app);
 
         $story['story_records'] = array(array(
             'databox_id' => $record->get_sbas_id(),
             'record_id' => $record->get_record_id()
         ));
 
-        self::$DI['client']->request(
+        $client = $this->getClient();
+        $client->request(
             'POST',
             $route,
             $this->getParameters(),
@@ -99,16 +102,16 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             ],
             json_encode(array('stories' => array($story)))
         );
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $content = $this->unserialize($client->getResponse()->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($client->getResponse());
         $this->evaluateMeta200($content);
         $data = $content['response'];
 
         $this->assertArrayHasKey('stories', $data);
         $this->assertCount(1, $data['stories']);
         list($empty, $path, $databox_id, $story_id) = explode('/', current($data['stories']));
-        $databox = self::$DI['app']->findDataboxById($databox_id);
+        $databox = $app->findDataboxById($databox_id);
         $story = $databox->get_record($story_id);
         $story->delete();
         $record->delete();
@@ -539,12 +542,15 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/';
-        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $record_1 = $this->getRecord1();
+        $client = $this->getClient();
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $route = '/api/v1/records/' . $record_1->get_sbas_id() . '/' . $record_1->get_record_id() . '/';
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
+
+        $this->evaluateResponse200($client->getResponse());
         $this->evaluateMeta200($content);
 
         $this->evaluateGoodRecord($content['response']['record']);

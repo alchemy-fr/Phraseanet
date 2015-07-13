@@ -50,3 +50,6 @@ alias rm='rm -i'
 alias mv='mv -iv'
 alias grep='grep --color=auto -in'
 alias ..='cd ..'
+
+alias blackfire-disable='sudo rm -f /etc/php5/fpm/conf.d/20-blackfire.ini && sudo ln -sf ../../mods-available/xdebug.ini /etc/php5/fpm/conf.d/20-xdebug.ini && sudo service php5-fpm restart'
+alias blackfire-enable='sudo rm -f /etc/php5/fpm/conf.d/20-xdebug.ini && sudo ln -sf ../../mods-available/blackfire.ini /etc/php5/fpm/conf.d/20-blackfire.ini && sudo service php5-fpm restart'

@@ -49,8 +49,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $this->sbas_id = $record->get_sbas_id();
         $this->record = $record;
         $this->databox = $databox;
-
-        return $this;
     }
 
     public function get_record()
@@ -126,8 +124,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  type           $fieldname
+     * @param  string $fieldname
      * @return \caption_field
      * @throws \Exception
      */
