@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Utilities\StringHelper;
 use Alchemy\Phrasea\Vocabulary;
 
 class caption_Field_Value implements cache_cacheableInterface
@@ -87,15 +88,14 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $connbas = $this->databox_field->get_databox()->get_connection();
 
-        $sql = 'SELECT record_id, value, VocabularyType, VocabularyId
-            FROM metadatas WHERE id = :id';
+        $sql = 'SELECT record_id, value, VocabularyType, VocabularyId FROM metadatas WHERE id = :id';
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute([':id' => $this->id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $this->value = $row ? $row['value'] : null;
+        $this->value = $row ? StringHelper::crlfNormalize($row['value']) : null;
 
         try {
             $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($this->app, $row['VocabularyType']) : null;
@@ -204,9 +204,9 @@ class caption_Field_Value implements cache_cacheableInterface
             , ':meta_id'      => $this->getId()
         ];
 
-        $sql_up = 'UPDATE metadatas
-              SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
-              WHERE id = :meta_id';
+        $sql_up = 'UPDATE metadatas'
+              . ' SET VocabularyType = :VocabType, VocabularyId = :VocabularyId'
+              . ' WHERE id = :meta_id';
         $stmt_up = $connbas->prepare($sql_up);
         $stmt_up->execute($params);
         $stmt_up->closeCursor();
@@ -228,9 +228,9 @@ class caption_Field_Value implements cache_cacheableInterface
             , ':meta_id'      => $this->getId()
         ];
 
-        $sql_up = 'UPDATE metadatas
-              SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
-              WHERE id = :meta_id';
+        $sql_up = 'UPDATE metadatas'
+              . ' SET VocabularyType = :VocabType, VocabularyId = :VocabularyId'
+              . ' WHERE id = :meta_id';
         $stmt_up = $connbas->prepare($sql_up);
         $stmt_up->execute($params);
         $stmt_up->closeCursor();
@@ -302,10 +302,8 @@ class caption_Field_Value implements cache_cacheableInterface
             }
         }
 
-        $sql_ins = 'INSERT INTO metadatas
-      (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
-      VALUES
-      (null, :record_id, :field, :value, :VocabType, :VocabId)';
+        $sql_ins = 'INSERT INTO metadatas (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)'
+                . ' VALUES (null, :record_id, :field, :value, :VocabType, :VocabId)';
 
         $params = [
             ':record_id' => $record->get_record_id(),

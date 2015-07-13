@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Utilities\String;
 
-use Alchemy\Phrasea\Utilities\String\Camelizer;
+use Alchemy\Phrasea\Utilities\StringHelper;
 
 /**
  * @group functional
@@ -12,12 +12,11 @@ class CamelizerTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideStrings
-     * @covers Alchemy\Phrasea\Utilities\String\Camelizer::camelize
+     * @covers Alchemy\Phrasea\Utilities\StringHelper::camelize
      */
     public function testCamelize($string, $separator, $expected, $pascalize)
     {
-        $camelizer = new Camelizer();
-        $result = $camelizer->camelize($string, $separator, $pascalize);
+        $result = StringHelper::camelize($string, $separator, $pascalize);
 
         $this->assertEquals($expected, $result);
     }
