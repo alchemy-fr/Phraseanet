@@ -284,8 +284,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_title()
     {
-        $this->markTestSkipped('Unable to test title');
-
+        // Test was marked skipped for unknown reason
         $this->assertEquals('test001.jpg', $this->getRecord1()->get_title());
     }
 
