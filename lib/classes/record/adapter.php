@@ -248,8 +248,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Return base_id of the record
      *
      * @return int
+     * @deprecated use {@link self::getBaseId} instead.
      */
     public function get_base_id()
+    {
+        return $this->getBaseId();
+    }
+
+    public function getBaseId()
     {
         return $this->base_id;
     }
@@ -1778,12 +1784,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
-    }
-
-    /** {@inheritdoc} */
-    public function getBaseId()
-    {
-        return $this->get_base_id();
     }
 
     /** {@inheritdoc} */
