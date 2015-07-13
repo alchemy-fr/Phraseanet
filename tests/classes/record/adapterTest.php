@@ -14,14 +14,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     private static $thumbtitled = false;
+    private $originalName;
 
     public function setUp()
     {
         parent::setUp();
 
-        /**
-         * Reset thumbtitle in order to have consistent tests (testGet_title)
-         */
+        // Reset thumbtitle in order to have consistent tests (testGet_title)
         if (!self::$thumbtitled) {
             foreach ($this->getRecord1()->get_databox()->get_meta_structure() as $databox_field) {
                 $databox_field->set_thumbtitle(false)->save();
@@ -29,6 +28,16 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             self::$thumbtitled = true;
         }
     }
+
+    public function tearDown()
+    {
+        if ($this->originalName && $this->originalName !== $this->getRecord1()->get_original_name()) {
+            $this->getRecord1()->set_original_name($this->originalName);
+        }
+
+        parent::tearDown();
+    }
+
 
     public static function tearDownAfterClass()
     {
@@ -267,19 +276,22 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testSetOriginalName()
     {
         $record_1 = $this->getRecord1();
-        $originalName = $record_1->get_original_name();
+        $this->originalName = $record_1->get_original_name();
 
         $record_1->set_original_name('test001-renamed.jpg');
 
         $this->assertEquals('test001-renamed.jpg', $record_1->get_original_name());
 
-        $values = $record_1->get_caption()->get_field('FileName')->get_values();
+        // Retrieve filename whatever template locale selected
+        $values = null;
+        foreach ($record_1->get_caption()->get_fields(['FileName', 'NomDeFichier'], true) as $value) {
+            $values = $value->get_values();
+        }
+
         $this->assertCount(1, $values);
         foreach ($values as $value) {
             $this->assertEquals('test001-renamed.jpg', $value->getValue());
         }
-
-        $record_1->set_original_name($originalName);
     }
 
     public function testGet_title()
