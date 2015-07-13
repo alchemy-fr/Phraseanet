@@ -207,7 +207,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @param string $mime
+     * @return $this
+     * @deprecated use {@link self::setMimeType} instead.
+     */
     public function set_mime($mime)
+    {
+        return $this->setMimeType($mime);
+    }
+
+    public function setMimeType($mime)
     {
         // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
         if (!preg_match("/^[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+\\/[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+$/", $mime)) {
@@ -226,6 +236,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->mime = $mime;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     * @deprecated use {@link getMimeType} instead.
+     */
+    public function get_mime()
+    {
+        return $this->getMimeType();
+    }
+
+    public function getMimeType()
+    {
+        return $this->mime;
     }
 
     /**
@@ -420,14 +444,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_sha256()
     {
         return $this->sha256;
-    }
-
-    /**
-     * @return string
-     */
-    public function get_mime()
-    {
-        return $this->mime;
     }
 
     /**
@@ -1802,12 +1818,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getDataboxId()
     {
         return $this->get_databox()->get_sbas_id();
-    }
-
-    /** {@inheritdoc} */
-    public function getMimeType()
-    {
-        return $this->get_mime();
     }
 
     /** {@inheritdoc} */
