@@ -179,32 +179,58 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return $this
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
+     * @deprecated use {@link self::setType} instead.
      */
     public function set_type($type)
     {
+        return $this->setType($type);
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function setType($type)
+    {
         $type = strtolower($type);
 
-        $old_type = $this->get_type();
+        $old_type = $this->getType();
 
         if (!in_array($type, ['document', 'audio', 'video', 'image', 'flash', 'map'])) {
             throw new Exception('unrecognized document type');
         }
 
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
-        $connbas = $databox->get_connection();
+        $connbas = $this->databox->get_connection();
 
         $sql = 'UPDATE record SET type = :type WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':type'      => $type, ':record_id' => $this->get_record_id()]);
-        $stmt->closeCursor();
+        $connbas->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
-        if ($old_type !== $type)
+        if ($old_type !== $type) {
             $this->rebuild_subdefs();
+        }
 
         $this->type = $type;
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /**
+     * Returns the type of the document
+     *
+     * @return string
+     * @deprecated use {@link self::getType} instead.
+     */
+    public function get_type()
+    {
+        return $this->getType();
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -350,16 +376,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_embedable_medias($devices = null, $mimes = null)
     {
         return $this->getSubdfefByDeviceAndMime($devices, $mimes);
-    }
-
-    /**
-     * Returns the type of the document
-     *
-     * @return string
-     */
-    public function get_type()
-    {
-        return $this->type;
     }
 
     /**
@@ -1836,12 +1852,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getSha256()
     {
         return $this->get_sha256();
-    }
-
-    /** {@inheritdoc} */
-    public function getType()
-    {
-        return $this->get_type();
     }
 
     /** {@inheritdoc} */
