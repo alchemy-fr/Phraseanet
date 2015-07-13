@@ -60,7 +60,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $subdefs;
     private $type;
     private $sha256;
-    private $grouping;
+    private $isStory;
     private $duration;
     /** @var databox */
     private $databox;
@@ -232,10 +232,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Return true if the record is a grouping
      *
      * @return bool
+     * @deprecated use {@link self::isStory} instead
      */
     public function is_grouping()
     {
-        return $this->grouping;
+        return $this->isStory();
+    }
+
+    public function isStory()
+    {
+        return $this->isStory;
     }
 
     /**
@@ -506,7 +512,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
 
-        $type = $this->is_grouping() ? 'image' : $this->get_type();
+        $type = $this->isStory() ? 'image' : $this->get_type();
 
         foreach ($this->databox->get_subdef_structure() as $group => $databoxSubdefs) {
 
@@ -828,7 +834,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $meta_writable = true;
         } else {
-            $type = $this->is_grouping() ? 'image' : $this->get_type();
+            $type = $this->isStory() ? 'image' : $this->get_type();
 
             $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($type, $name);
 
@@ -1605,7 +1611,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_children()
     {
-        if (!$this->is_grouping()) {
+        if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');
         }
 
@@ -1697,7 +1703,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function appendChild(\record_adapter $record)
     {
-        if (!$this->is_grouping()) {
+        if (!$this->isStory()) {
             throw new \Exception('Only stories can append children');
         }
 
@@ -1746,7 +1752,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function removeChild(\record_adapter $record)
     {
-        if (!$this->is_grouping()) {
+        if (!$this->isStory()) {
             throw new \Exception('Only stories can append children');
         }
 
@@ -1790,12 +1796,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getDataboxId()
     {
         return $this->get_databox()->get_sbas_id();
-    }
-
-    /** {@inheritdoc} */
-    public function isStory()
-    {
-        return $this->is_grouping();
     }
 
     /** {@inheritdoc} */
@@ -1886,7 +1886,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->sha256 = $data['sha256'];
         $this->original_name = $data['original_name'];
         $this->type = $data['type'];
-        $this->grouping = $data['grouping'];
+        $this->isStory = $data['grouping'];
         $this->uuid = $data['uuid'];
         $this->updated = $data['modification_date'];
         $this->created = $data['creation_date'];
@@ -1903,7 +1903,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             'sha256'            => $this->sha256,
             'original_name'     => $this->original_name,
             'type'              => $this->type,
-            'grouping'          => $this->grouping,
+            'grouping'          => $this->isStory,
             'uuid'              => $this->uuid,
             'modification_date' => $this->updated,
             'creation_date'     => $this->created,
@@ -1925,7 +1925,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->updated = new DateTime($row['moddate']);
         $this->uuid = $row['uuid'];
 
-        $this->grouping = ($row['parent_record_id'] == '1');
+        $this->isStory = ($row['parent_record_id'] == '1');
         $this->type = $row['type'];
         $this->original_name = $row['originalname'];
         $this->sha256 = $row['sha256'];

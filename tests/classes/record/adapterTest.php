@@ -152,8 +152,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testIs_grouping()
     {
-        $this->assertFalse($this->getRecord1()->is_grouping());
-        $this->assertTrue($this->getRecordStory1()->is_grouping());
+        $this->assertFalse($this->getRecord1()->isStory());
+        $this->assertTrue($this->getRecordStory1()->isStory());
     }
 
     public function testGet_base_id()

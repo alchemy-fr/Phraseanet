@@ -1034,7 +1034,7 @@ class V1Controller extends Controller
             }
 
 
-            if ($record->is_grouping()) {
+            if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {
                 $ret['results']['records'][] = $this->listRecord($request, $record);
@@ -1190,7 +1190,7 @@ class V1Controller extends Controller
      */
     public function listStory(Request $request, \record_adapter $story)
     {
-        if (!$story->is_grouping()) {
+        if (!$story->isStory()) {
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 

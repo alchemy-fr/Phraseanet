@@ -42,7 +42,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
 
     private function updateRecord($record, $field)
     {
-        if (false === $record->is_grouping()) {
+        if (false === $record->isStory()) {
             foreach ($record->get_grouping_parents() as $story) {
                 $this->updateEditField($story, $field);
             }

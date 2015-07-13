@@ -69,7 +69,7 @@ class ESRecordSerializer extends AbstractSerializer
             'sha256'                 => $record->get_sha256(),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
-            'type'                   => $record->is_grouping() ? 'story' : 'record',
+            'type'                   => $record->isStory() ? 'story' : 'record',
             'uuid'                   => $record->getUuid(),
             'caption'                => $caption,
             'status'                 => $status,

@@ -128,7 +128,7 @@ class set_selection extends set_abstract
                 } catch (\Exception $e) {
                     continue;
                 }
-                if ($record->is_grouping() && $flatten_groupings === true) {
+                if ($record->isStory() && $flatten_groupings === true) {
                     foreach ($record->get_children() as $rec) {
                         $this->add_element($rec);
                     }

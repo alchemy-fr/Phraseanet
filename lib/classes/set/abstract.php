@@ -119,7 +119,7 @@ abstract class set_abstract implements IteratorAggregate
     {
         $n = 0;
         foreach ($this->elements as $record) {
-            if ($record->is_grouping())
+            if ($record->isStory())
                 $n ++;
         }
 
