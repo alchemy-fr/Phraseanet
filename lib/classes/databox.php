@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
+use Alchemy\Phrasea\Databox\Record\RecordRepository;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Status\StatusStructure;
@@ -61,6 +62,8 @@ class databox extends base implements ThumbnailedElement
     /** @var databox_subdefsStructure */
     protected $subdef_struct;
 
+    /** @var RecordRepository */
+    private $recordRepository;
     /** @var string[]  */
     private $labels = [];
     private $ord;
@@ -100,6 +103,18 @@ class databox extends base implements ThumbnailedElement
         parent::__construct($app, $connection, $connectionSettings, $versionRepository);
 
         $this->loadFromRow($row);
+    }
+
+    /**
+     * @return RecordRepository
+     */
+    public function getRecordRepository()
+    {
+        if (null === $this->recordRepository) {
+            $this->recordRepository = $this->app['repo.records.factory']($this);
+        }
+
+        return $this->recordRepository;
     }
 
     public function get_viewname()

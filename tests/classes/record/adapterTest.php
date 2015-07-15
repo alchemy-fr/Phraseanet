@@ -483,8 +483,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_record_by_sha()
     {
         $record_1 = $this->getRecord1();
-        $app = $this->getApplication();
-        $tmp_records = record_adapter::get_record_by_sha($app, $record_1->get_sbas_id(), $record_1->get_sha256());
+        $tmp_records = record_adapter::get_record_by_sha($record_1->getDatabox(), $record_1->get_sha256());
         $this->assertTrue(is_array($tmp_records));
 
         foreach ($tmp_records as $tmp_record) {
@@ -492,7 +491,11 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             $this->assertEquals($record_1->get_sha256(), $tmp_record->get_sha256());
         }
 
-        $tmp_records = record_adapter::get_record_by_sha($app, $record_1->get_sbas_id(), $record_1->get_sha256(), $record_1->get_record_id());
+        $tmp_records = record_adapter::get_record_by_sha(
+            $record_1->getDatabox(),
+            $record_1->get_sha256(),
+            $record_1->get_record_id()
+        );
         $this->assertTrue(is_array($tmp_records));
         $this->assertTrue(count($tmp_records) === 1);
 

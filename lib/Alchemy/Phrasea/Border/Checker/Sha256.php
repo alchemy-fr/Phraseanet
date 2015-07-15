@@ -33,9 +33,7 @@ class Sha256 extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = ! count(\record_adapter::get_record_by_sha(
-                    $this->app, $file->getCollection()->get_databox()->get_sbas_id(), $file->getSha256()
-                ));
+        $boolean = ! count($file->getCollection()->get_databox()->getRecordRepository()->findBySha256($file->getSha256()));
 
         return new Response($boolean, $this);
     }
