@@ -11,10 +11,6 @@
 
 namespace Alchemy\Phrasea\Utilities;
 
-/**
- * Class CrLfNormalizer
- * @package Alchemy\Phrasea\Utilities\String
- */
 class StringHelper
 {
     /**
@@ -23,7 +19,7 @@ class StringHelper
      */
     public static function crlfNormalize($str)
     {
-        return preg_replace("/\r\n|\r|\n/", "\n", $str);
+        return str_replace(["\r\n", "\r"], "\n", $str);
     }
 
     /**
