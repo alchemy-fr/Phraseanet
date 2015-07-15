@@ -116,6 +116,11 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         ))->get_response();
     });
 
+    // Fake route required to send emails. Sorry.
+    $app->get('/', function () {
+        return '';
+    })->bind('root');
+
     $app->mount('/api/oauthv2', new Oauth2());
     $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
