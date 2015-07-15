@@ -135,7 +135,9 @@ class CLI extends Application
         parent::loadPlugins();
 
         call_user_func(function ($cli) {
-            require $cli['plugin.path'] . '/commands.php';
+            if (file_exists($cli['plugin.path'] . '/commands.php')) {
+                require $cli['plugin.path'] . '/commands.php';
+            }
         }, $this);
     }
 }
