@@ -46,10 +46,10 @@ class CrLfNormalizerTest extends \PhraseanetTestCase
     public function provideStringsForCrLfNormalize()
     {
         return [
-            ['ABC\rDEF', 'ABC\nDEF'],
-            ['ABC\nDEF', 'ABC\nDEF'],
-            ['ABC\r\nDEF', 'ABC\nDEF'],
-            ['ABC\n\rDEF', 'ABC\n\nDEF'],
+            ["ABC\rDEF", "ABC\nDEF"],
+            ["ABC\nDEF", "ABC\nDEF"],
+            ["ABC\r\nDEF", "ABC\nDEF"],
+            ["ABC\n\rDEF", "ABC\n\nDEF"],
         ];
     }
 }
