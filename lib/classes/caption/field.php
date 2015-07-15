@@ -15,20 +15,17 @@ use Doctrine\DBAL\Driver\Statement;
 class caption_field implements cache_cacheableInterface
 {
     /**
-     *
      * @var databox_field
      */
     protected $databox_field;
 
     /**
-     *
      * @var caption_Field_Value[]
      */
     protected $values;
 
     /**
-     *
-     * @var record
+     * @var \record_adapter
      */
     protected $record;
     protected $app;
@@ -36,7 +33,6 @@ class caption_field implements cache_cacheableInterface
     protected static $localCache = [];
 
     /**
-     *
      * @param Application      $app
      * @param databox_field    $databox_field
      * @param record_adapter $record
@@ -55,9 +51,7 @@ class caption_field implements cache_cacheableInterface
         foreach ($rs as $row) {
             $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
 
-            /**
-             * Inconsistent, should not happen
-             */
+            // Inconsistent, should not happen
             if ( ! $databox_field->is_multi()) {
                 break;
             }
@@ -94,7 +88,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function get_record()
@@ -103,8 +96,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_required()
     {
@@ -112,8 +104,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_multi()
     {
@@ -121,8 +112,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_readonly()
     {
@@ -130,7 +120,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return caption_field
      */
     public function delete()
@@ -144,7 +133,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  array  $values
      * @param  string $separator
      * @return string
@@ -172,7 +160,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return \caption_Field_Value[]
      */
     public function get_values()
@@ -181,7 +168,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  int   $meta_id
      * @return \caption_Field_Value
      */
@@ -220,7 +206,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_name()
@@ -229,7 +214,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_meta_struct_id()
@@ -238,8 +222,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_indexable()
     {
@@ -247,7 +230,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return databox_field
      */
     public function get_databox_field()
@@ -256,7 +238,6 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  string $serialized_value
      * @param  string $separator
      * @return array

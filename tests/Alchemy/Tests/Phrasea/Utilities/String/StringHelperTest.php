@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Utilities\StringHelper;
 /**
  * @group unit
  */
-class CrLfNormalizerTest extends \PhraseanetTestCase
+class StringHelperTest extends \PhraseanetTestCase
 {
     /**
      * @dataProvider provideStringsForCamelize
