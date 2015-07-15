@@ -195,16 +195,6 @@ abstract class base implements cache_cacheableInterface
         }
     }
 
-    /**
-     * @param mixed $option
-     * @throws Exception
-     * @return string
-     */
-    public function get_cache_key($option = null)
-    {
-        throw new Exception(__METHOD__ . ' must be defined in extended class');
-    }
-
     public function get_version()
     {
         if (! $this->version) {
