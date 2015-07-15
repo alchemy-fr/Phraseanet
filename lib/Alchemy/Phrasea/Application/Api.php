@@ -117,10 +117,14 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         ))->get_response();
     });
 
-    // Fake route required to send emails. Sorry.
-    $app->get('/', function () {
-        return '';
-    })->bind('root');
+    // Fake routes required to send emails. Sorry.
+    $routes = array('root' => '/', 'admin' => '/admin/');
+
+    foreach ($routes as $name => $route) {
+        $app->get($route, function () {
+            return '';
+        })->bind($name);
+    }
 
     $app->mount('/api/oauthv2', new Oauth2());
     $app->mount('/datafiles/', new Datafiles());
