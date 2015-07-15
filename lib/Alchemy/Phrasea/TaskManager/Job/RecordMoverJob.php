@@ -106,7 +106,7 @@ class RecordMoverJob extends AbstractJob
                 break;
 
             case 'DELETE':
-                if ($row['deletechildren'] && $rec->is_grouping()) {
+                if ($row['deletechildren'] && $rec->isStory()) {
                     /** @var record_adapter $child */
                     foreach ($rec->get_children() as $child) {
                         $child->delete();
@@ -175,7 +175,7 @@ class RecordMoverJob extends AbstractJob
                         break;
                     case 'DELETE':
                         $tmp['deletechildren'] = false;
-                        if ($sxtask['deletechildren'] && $rec->is_grouping()) {
+                        if ($sxtask['deletechildren'] && $rec->isStory()) {
                             $tmp['deletechildren'] = true;
                         }
                         $ret[] = $tmp;

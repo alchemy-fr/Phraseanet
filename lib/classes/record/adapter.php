@@ -60,12 +60,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $subdefs;
     private $type;
     private $sha256;
-    private $grouping;
+    private $isStory;
     private $duration;
     /** @var databox */
     private $databox;
     /** @var DateTime */
-    private $creation_date;
+    private $created;
     /** @var string */
     private $original_name;
     /** @var TechnicalDataSet */
@@ -73,7 +73,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** @var string */
     private $uuid;
     /** @var DateTime */
-    private $modification_date;
+    private $updated;
     /** @var Application */
     protected $app;
 
@@ -98,47 +98,76 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     protected function load()
     {
-        if ($this->mapFromCache()) {
-            return;
-        }
-
-        $row = $this->fetchDataFromDb();
-        if (!$row) {
+        if (null === $record = $this->getDatabox()->getRecordRepository()->find($this->record_id)) {
             throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->get_sbas_id() . ' not found ');
         }
 
-        $this->mapFromDbData($row);
-        $this->putInCache();
+        $this->mirror($record);
+    }
+
+    /**
+     * @param record_adapter $record
+     */
+    private function mirror(record_adapter $record)
+    {
+        $this->mime = $record->getMimeType();
+        $this->sha256 = $record->getSha256();
+        $this->original_name = $record->getOriginalName();
+        $this->type = $record->getType();
+        $this->isStory = $record->isStory();
+        $this->uuid = $record->getUuid();
+        $this->updated = $record->getUpdated();
+        $this->created = $record->getCreated();
+        $this->base_id = $record->getBaseId();
+        $this->collection_id = $record->getCollectionId();
     }
 
     /**
      * @return DateTime
+     * @deprecated {@link self::getCreated}
      */
     public function get_creation_date()
     {
-        return $this->creation_date;
+        return $this->getCreated();
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
     }
 
     /**
      * @return string
+     * @deprecated use {@link getUuid} instead.
      */
     public function get_uuid()
+    {
+        return $this->getUuid();
+    }
+
+    public function getUuid()
     {
         return $this->uuid;
     }
 
     /**
      * @return DateTime
+     * @deprecated use {@link self::getUpdated} instead
      */
     public function get_modification_date()
     {
-        return $this->modification_date;
+        return $this->getUpdated();
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
     }
 
     /**
      * @return int
      */
-    public function get_number()
+    public function getNumber()
     {
         return $this->number;
     }
@@ -146,10 +175,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Set a relative number (order) for the current in its set
      *
-     * @param  int            $number
-     * @return record_adapter
+     * @param  int $number
+     * @return $this
      */
-    public function set_number($number)
+    public function setNumber($number)
     {
         $this->number = (int) $number;
 
@@ -161,27 +190,37 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return $this
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
+     * @deprecated use {@link self::setType} instead.
      */
     public function set_type($type)
     {
+        return $this->setType($type);
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function setType($type)
+    {
         $type = strtolower($type);
 
-        $old_type = $this->get_type();
+        $old_type = $this->getType();
 
         if (!in_array($type, ['document', 'audio', 'video', 'image', 'flash', 'map'])) {
             throw new Exception('unrecognized document type');
         }
 
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
-        $connbas = $databox->get_connection();
+        $connbas = $this->databox->get_connection();
 
         $sql = 'UPDATE record SET type = :type WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':type'      => $type, ':record_id' => $this->get_record_id()]);
-        $stmt->closeCursor();
+        $connbas->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
-        if ($old_type !== $type)
+        if ($old_type !== $type) {
             $this->rebuild_subdefs();
+        }
 
         $this->type = $type;
         $this->delete_data_from_cache();
@@ -189,7 +228,33 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * Returns the type of the document
+     *
+     * @return string
+     * @deprecated use {@link self::getType} instead.
+     */
+    public function get_type()
+    {
+        return $this->getType();
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $mime
+     * @return $this
+     * @deprecated use {@link self::setMimeType} instead.
+     */
     public function set_mime($mime)
+    {
+        return $this->setMimeType($mime);
+    }
+
+    public function setMimeType($mime)
     {
         // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
         if (!preg_match("/^[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+\\/[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+$/", $mime)) {
@@ -211,21 +276,47 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @return string
+     * @deprecated use {@link self::getMimeType} instead.
+     */
+    public function get_mime()
+    {
+        return $this->getMimeType();
+    }
+
+    public function getMimeType()
+    {
+        return $this->mime;
+    }
+
+    /**
      * Return true if the record is a grouping
      *
      * @return bool
+     * @deprecated use {@link self::isStory} instead
      */
     public function is_grouping()
     {
-        return $this->grouping;
+        return $this->isStory();
+    }
+
+    public function isStory()
+    {
+        return $this->isStory;
     }
 
     /**
      * Return base_id of the record
      *
      * @return int
+     * @deprecated use {@link self::getBaseId} instead.
      */
     public function get_base_id()
+    {
+        return $this->getBaseId();
+    }
+
+    public function getBaseId()
     {
         return $this->base_id;
     }
@@ -234,8 +325,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Return collection_id of the record
      *
      * @return int
+     * @deprecated use {@link self::getCollectionId} instead.
      */
     public function get_collection_id()
+    {
+        return $this->getCollectionId();
+    }
+
+    public function getCollectionId()
     {
         return $this->collection_id;
     }
@@ -254,16 +351,31 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Returns record_id of the record
      *
      * @return int
+     * @deprecated use {@link self::getRecordId} instead.
      */
     public function get_record_id()
+    {
+        return $this->getRecordId();
+    }
+
+    public function getRecordId()
     {
         return $this->record_id;
     }
 
     /**
      * @return databox
+     * @deprecated use {@link self::getDatabox} instead.
      */
     public function get_databox()
+    {
+        return $this->getDatabox();
+    }
+
+    /**
+     * @return databox
+     */
+    public function getDatabox()
     {
         return $this->databox;
     }
@@ -284,16 +396,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_embedable_medias($devices = null, $mimes = null)
     {
         return $this->getSubdfefByDeviceAndMime($devices, $mimes);
-    }
-
-    /**
-     * Returns the type of the document
-     *
-     * @return string
-     */
-    public function get_type()
-    {
-        return $this->type;
     }
 
     /**
@@ -374,18 +476,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @return string
+     * @deprecated use {self::getSha256} instead.
      */
     public function get_sha256()
     {
-        return $this->sha256;
+        return $this->getSha256();
     }
 
-    /**
-     * @return string
-     */
-    public function get_mime()
+    public function getSha256()
     {
-        return $this->mime;
+        return $this->sha256;
     }
 
     /**
@@ -488,7 +588,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
 
-        $type = $this->is_grouping() ? 'image' : $this->get_type();
+        $type = $this->isStory() ? 'image' : $this->get_type();
 
         foreach ($this->databox->get_subdef_structure() as $group => $databoxSubdefs) {
 
@@ -784,8 +884,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
+     * @deprecated use {@link self::getDatabox} instead
      */
     public function get_sbas_id()
     {
@@ -810,7 +910,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $meta_writable = true;
         } else {
-            $type = $this->is_grouping() ? 'image' : $this->get_type();
+            $type = $this->isStory() ? 'image' : $this->get_type();
 
             $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($type, $name);
 
@@ -1252,38 +1352,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @param  Application    $app
-     * @param  integer        $sbas_id
-     * @param  string         $sha256
-     * @param  integer        $record_id
-     * @return record_adapter
+     * @param databox $databox
+     * @param string     $sha256
+     * @param integer    $record_id
+     * @return record_adapter[]
+     * @deprecated use {@link databox::getRecordRepository} instead.
      */
-    public static function get_record_by_sha(Application $app, $sbas_id, $sha256, $record_id = null)
+    public static function get_record_by_sha(\databox $databox, $sha256, $record_id = null)
     {
-        $databox = $app->findDataboxById($sbas_id);
-        $conn = $databox->get_connection();
-
-        $sql = "SELECT record_id
-            FROM record r
-            WHERE sha256 IS NOT NULL
-              AND sha256 = :sha256";
-
-        $params = [':sha256' => $sha256];
+        $records = $databox->getRecordRepository()->findBySha256($sha256);
 
         if (!is_null($record_id)) {
-            $sql .= ' AND record_id = :record_id';
-            $params[':record_id'] = $record_id;
-        }
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $records = [];
-
-        foreach ($rs as $row) {
-            $records[] = new record_adapter($app, $sbas_id, $row['record_id']);
+            $records = array_filter($records, function (record_adapter $record) use ($record_id) {
+                return $record->getRecordId() == $record_id;
+            });
         }
 
         return $records;
@@ -1292,34 +1374,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Search for a record on a databox by UUID
      *
-     * @param Application $app
-     * @param \databox    $databox
-     * @param string      $uuid
-     * @param int         $record_id Restrict check on a record_id
-     *
-     * @return \record_adapter
+     * @param \databox $databox
+     * @param string   $uuid
+     * @param int      $record_id Restrict check on a record_id
+     * @return record_adapter[]
+     * @deprecated use {@link databox::getRecordRepository} instead.
      */
-    public static function get_record_by_uuid(Application $app, \databox $databox, $uuid, $record_id = null)
+    public static function get_record_by_uuid(\databox $databox, $uuid, $record_id = null)
     {
-        $sql = "SELECT record_id FROM record r
-                WHERE uuid IS NOT NULL AND uuid = :uuid";
-
-        $params = [':uuid' => $uuid];
+        $records = $databox->getRecordRepository()->findByUuid($uuid);
 
         if (!is_null($record_id)) {
-            $sql .= ' AND record_id = :record_id';
-            $params[':record_id'] = $record_id;
-        }
-
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $records = [];
-
-        foreach ($rs as $row) {
-            $records[] = new record_adapter($app, $databox->get_sbas_id(), $row['record_id']);
+            $records = array_filter($records, function (record_adapter $record) use ($record_id) {
+                return $record->getRecordId() == $record_id;
+            });
         }
 
         return $records;
@@ -1587,7 +1655,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_children()
     {
-        if (!$this->is_grouping()) {
+        if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');
         }
 
@@ -1679,7 +1747,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function appendChild(\record_adapter $record)
     {
-        if (!$this->is_grouping()) {
+        if (!$this->isStory()) {
             throw new \Exception('Only stories can append children');
         }
 
@@ -1728,7 +1796,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function removeChild(\record_adapter $record)
     {
-        if (!$this->is_grouping()) {
+        if (!$this->isStory()) {
             throw new \Exception('Only stories can append children');
         }
 
@@ -1757,39 +1825,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /** {@inheritdoc} */
-    public function getBaseId()
-    {
-        return $this->get_base_id();
-    }
-
-    /** {@inheritdoc} */
-    public function getCollectionId()
-    {
-        return $this->get_collection()->get_coll_id();
-    }
-
-    /** {@inheritdoc} */
-    public function getCreated()
-    {
-        return $this->get_creation_date();
-    }
-
-    /** {@inheritdoc} */
     public function getDataboxId()
     {
         return $this->get_databox()->get_sbas_id();
-    }
-
-    /** {@inheritdoc} */
-    public function isStory()
-    {
-        return $this->is_grouping();
-    }
-
-    /** {@inheritdoc} */
-    public function getMimeType()
-    {
-        return $this->get_mime();
     }
 
     /** {@inheritdoc} */
@@ -1802,36 +1840,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function setOriginalName($originalName)
     {
         $this->set_original_name($originalName);
-    }
-
-    /** {@inheritdoc} */
-    public function getRecordId()
-    {
-        return $this->get_record_id();
-    }
-
-    /** {@inheritdoc} */
-    public function getSha256()
-    {
-        return $this->get_sha256();
-    }
-
-    /** {@inheritdoc} */
-    public function getType()
-    {
-        return $this->get_type();
-    }
-
-    /** {@inheritdoc} */
-    public function getUpdated()
-    {
-        return $this->get_modification_date();
-    }
-
-    /** {@inheritdoc} */
-    public function getUuid()
-    {
-        return $this->get_uuid();
     }
 
     /** {@inheritdoc} */
@@ -1864,51 +1872,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->databox->getStatusStructure();
     }
 
-    /**
-     * Try to map data from cache.
-     *
-     * @return bool true when cache hit.
-     *              false when cache miss.
-     */
-    protected function mapFromCache()
-    {
-        try {
-            $data = $this->get_data_from_cache();
-        } catch (Exception $exception) {
-            $data = false;
-        };
-
-        if (false === $data) {
-            return false;
-        }
-
-        $this->mime = $data['mime'];
-        $this->sha256 = $data['sha256'];
-        $this->original_name = $data['original_name'];
-        $this->type = $data['type'];
-        $this->grouping = $data['grouping'];
-        $this->uuid = $data['uuid'];
-        $this->modification_date = $data['modification_date'];
-        $this->creation_date = $data['creation_date'];
-        $this->base_id = $data['base_id'];
-        $this->collection_id = $data['collection_id'];
-
-        return true;
-    }
-
-    protected function putInCache()
+    public function putInCache()
     {
         $data = [
-            'mime'              => $this->mime,
-            'sha256'            => $this->sha256,
-            'original_name'     => $this->original_name,
-            'type'              => $this->type,
-            'grouping'          => $this->grouping,
-            'uuid'              => $this->uuid,
-            'modification_date' => $this->modification_date,
-            'creation_date'     => $this->creation_date,
-            'base_id'           => $this->base_id,
-            'collection_id'     => $this->collection_id,
+            'mime'          => $this->mime,
+            'sha256'        => $this->sha256,
+            'originalName'  => $this->original_name,
+            'type'          => $this->type,
+            'isStory'       => $this->isStory,
+            'uuid'          => $this->uuid,
+            'updated'       => $this->updated->format(DATE_ISO8601),
+            'created'       => $this->created->format(DATE_ISO8601),
+            'base_id'       => $this->base_id,
+            'collection_id' => $this->collection_id,
         ];
 
         $this->set_data_to_cache($data);
@@ -1917,48 +1893,23 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @param array $row
      */
-    protected function mapFromDbData(array $row)
+    public function mapFromData(array $row)
     {
-        $this->collection_id = (int)$row['coll_id'];
-        $this->base_id = (int)phrasea::baseFromColl($this->get_sbas_id(), $this->collection_id, $this->app);
-        $this->creation_date = new DateTime($row['credate']);
-        $this->modification_date = new DateTime($row['moddate']);
-        $this->uuid = $row['uuid'];
-
-        $this->grouping = ($row['parent_record_id'] == '1');
-        $this->type = $row['type'];
-        $this->original_name = $row['originalname'];
-        $this->sha256 = $row['sha256'];
-        $this->mime = $row['mime'];
-    }
-
-    /**
-     * @return false|array
-     */
-    protected function fetchDataFromDb()
-    {
-        static $sql;
-
-        $connection = $this->databox->get_connection();
-        if (!$sql) {
-            $sql = $connection->createQueryBuilder()
-                ->select(
-                    'coll_id',
-                    'record_id',
-                    'credate',
-                    'uuid',
-                    'moddate',
-                    'parent_record_id',
-                    $connection->quoteIdentifier('type'),
-                    'originalname',
-                    'sha256',
-                    'mime'
-                )->from('record', 'r')
-                ->where('record_id = :record_id')
-                ->getSQL();
+        if (!isset($row['base_id'])) {
+            $row['base_id'] = phrasea::baseFromColl($this->get_sbas_id(), $row['collection_id'], $this->app);
         }
 
-        return $connection->fetchAssoc($sql, [':record_id' => $this->record_id]);
+        $this->collection_id = (int)$row['collection_id'];
+        $this->base_id = (int)$row['base_id'];
+        $this->created = new DateTime($row['created']);
+        $this->updated = new DateTime($row['updated']);
+        $this->uuid = $row['uuid'];
+
+        $this->isStory = ($row['isStory'] == '1');
+        $this->type = $row['type'];
+        $this->original_name = $row['originalName'];
+        $this->sha256 = $row['sha256'];
+        $this->mime = $row['mime'];
     }
 
     /**

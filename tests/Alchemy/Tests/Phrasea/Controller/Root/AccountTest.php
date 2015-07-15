@@ -21,9 +21,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetAccount()
     {
-        $crawler = self::$DI['client']->request('GET', '/account/');
+        $client = $this->getClient();
+        $crawler = $client->request('GET', '/account/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
 
@@ -39,10 +40,12 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetAccountNotice($type, $message)
     {
-        self::$DI['app']->addFlash($type, $message);
-        $crawler = self::$DI['client']->request('GET', '/account/');
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $app->addFlash($type, $message);
+        $crawler = $client->request('GET', '/account/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
 
@@ -144,17 +147,19 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             ]
         ];
 
+        $app = $this->getApplication();
+        $client = $this->getClient();
         $service = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\RegistrationManager')
-            ->setConstructorArgs([self::$DI['app']['phraseanet.appbox'], self::$DI['app']['repo.registrations'], self::$DI['app']['locale']])
+            ->setConstructorArgs([$app['phraseanet.appbox'], $app['repo.registrations'], $app['locale']])
             ->setMethods(['getRegistrationSummary'])
             ->getMock();
 
         $service->expects($this->once())->method('getRegistrationSummary')->will($this->returnValue($data));
 
-        self::$DI['app']['registration.manager'] = $service;
-        self::$DI['client']->request('GET', '/account/access/');
+        $app['registration.manager'] = $service;
+        $client->request('GET', '/account/access/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertTrue($response->isOk());
     }
 
@@ -163,19 +168,21 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailWithToken()
     {
-        $tokenValue = self::$DI['app']['manipulator.token']->createResetEmailToken(self::$DI['user'], 'new_email@email.com')->getValue();
-        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => $tokenValue]);
-        $response = self::$DI['client']->getResponse();
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $tokenValue = $app['manipulator.token']->createResetEmailToken(self::$DI['user'], 'new_email@email.com')->getValue();
+        $client->request('GET', '/account/reset-email/', ['token'   => $tokenValue]);
+        $response = $client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
         $this->assertEquals('new_email@email.com', self::$DI['user']->getEmail());
         self::$DI['user']->setEmail('noone@example.com');
-        if (null !== self::$DI['app']['repo.tokens']->find($tokenValue)) {
+        if (null !== $app['repo.tokens']->find($tokenValue)) {
             $this->fail('Token has not been removed');
         }
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'success', 1);
+        $this->assertFlashMessagePopulated($app, 'success', 1);
     }
 
     /**
@@ -183,12 +190,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailWithBadToken()
     {
-        self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => '134dT0k3n']);
-        $response = self::$DI['client']->getResponse();
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $client->request('GET', '/account/reset-email/', ['token'   => '134dT0k3n']);
+        $response = $client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
     /**
@@ -196,9 +205,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailBadRequest()
     {
-        self::$DI['client']->request('POST', '/account/reset-email/');
+        $client = $this->getClient();
+        $client->request('POST', '/account/reset-email/');
 
-        $this->assertBadResponse(self::$DI['client']->getResponse());
+        $this->assertBadResponse($client->getResponse());
     }
 
     /**
@@ -206,17 +216,19 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailBadPassword()
     {
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $client->request('POST', '/account/reset-email/', [
             'form_password'      => 'changeme',
             'form_email'         => 'new@email.com',
             'form_email_confirm' => 'new@email.com',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/', $response->headers->get('location'));
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
     /**
@@ -224,19 +236,21 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailBadEmail()
     {
-        $password = self::$DI['app']['random.low']->generateString(8);
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $password = $app['random.low']->generateString(8);
+        $app['manipulator.user']->setPassword($app->getAuthenticatedUser(), $password);
+        $client->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
             'form_email_confirm' => 'invalid#!&&@@email.x',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/', $response->headers->get('location'));
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
     /**
@@ -244,19 +258,21 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailEmailNotIdentical()
     {
-        $password = self::$DI['app']['random.low']->generateString(8);
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $password = $app['random.low']->generateString(8);
+        $app['manipulator.user']->setPassword($app->getAuthenticatedUser(), $password);
+        $client->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email2@email.com',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/', $response->headers->get('location'));
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
     /**
@@ -266,23 +282,25 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
 
-        $password = self::$DI['app']['random.low']->generateString(8);
-        self::$DI['app']['manipulator.user']->setPassword(
-            self::$DI['app']->getAuthenticatedUser(),
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $password = $app['random.low']->generateString(8);
+        $app['manipulator.user']->setPassword(
+            $app->getAuthenticatedUser(),
             $password
         );
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        $client->request('POST', '/account/reset-email/', [
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email1@email.com',
         ]);
 
-        self::$DI['client']->followRedirects();
-        $response = self::$DI['client']->getResponse();
+        $client->followRedirects();
+        $response = $client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
+        $this->assertFlashMessagePopulated($app, 'info', 1);
     }
 
     /**
@@ -290,11 +308,13 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailNotice($type, $message)
     {
-        self::$DI['app']->addFlash($type, $message);
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $app->addFlash($type, $message);
 
-        $crawler = self::$DI['client']->request('GET', '/account/reset-email/');
+        $crawler = $client->request('GET', '/account/reset-email/');
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $this->assertTrue($client->getResponse()->isOk());
 
         $this->assertFlashMessage($crawler, $type, 1, $message);
     }
@@ -304,9 +324,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetAccountSecuritySessions()
     {
-        self::$DI['client']->request('GET', '/account/security/sessions/');
+        $client = $this->getClient();
+        $client->request('GET', '/account/security/sessions/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -316,9 +337,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetAccountSecurityApplications()
     {
-        self::$DI['client']->request('GET', '/account/security/applications/');
+        $client = $this->getClient();
+        $client->request('GET', '/account/security/applications/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -328,9 +350,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetPassword()
     {
-        self::$DI['client']->request('GET', '/account/reset-password/');
+        $client = $this->getClient();
+        $client->request('GET', '/account/reset-password/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -340,11 +363,13 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetPasswordPassError($type, $message)
     {
-        self::$DI['app']->addFlash($type, $message);
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $app->addFlash($type, $message);
 
-        $crawler = self::$DI['client']->request('GET', '/account/reset-password/');
+        $crawler = $client->request('GET', '/account/reset-password/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
 
@@ -356,9 +381,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdateAccount()
     {
+        $app = $this->getApplication();
+        $client = $this->getClient();
         $bases = $notifs = [];
 
-        foreach (self::$DI['app']->getDataboxes() as $databox) {
+        foreach ($app->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $bases[] = $collection->get_base_id();
             }
@@ -368,7 +395,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             $this->markTestSkipped('No collections');
         }
 
-        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']->getAuthenticatedUser()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app->getAuthenticatedUser()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -376,7 +403,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         array_shift($notifs);
 
-        self::$DI['client']->request('POST', '/account/', [
+        $client->request('POST', '/account/', [
             'registrations'        => $bases,
             'form_gender'          => User::GENDER_MR,
             'form_firstname'       => 'gros',
@@ -400,13 +427,13 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             'mail_notifications' => '1'
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', self::$DI['app']->getAuthenticatedUser()->getLastName());
+        $this->assertEquals('minet', $app->getAuthenticatedUser()->getLastName());
 
-        $rs = self::$DI['app']['orm.em']->getRepository('Phraseanet:Registration')->findBy([
-            'user' => self::$DI['app']->getAuthenticatedUser()->getId(),
+        $rs = $app['orm.em']->getRepository('Phraseanet:Registration')->findBy([
+            'user' => $app->getAuthenticatedUser()->getId(),
             'pending' => true
         ]);
 
@@ -415,14 +442,16 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAUthorizedAppGrantAccessBadRequest()
     {
-        self::$DI['client']->request('GET', '/account/security/application/3/grant/');
-        $this->assertBadResponse(self::$DI['client']->getResponse());
+        $client = $this->getClient();
+        $client->request('GET', '/account/security/application/3/grant/');
+        $this->assertBadResponse($client->getResponse());
     }
 
     public function testAUthorizedAppGrantAccessNotSuccessfull()
     {
-        self::$DI['client']->request('GET', '/account/security/application/0/grant/', [], [], ['HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest']);
-        $response = self::$DI['client']->getResponse();
+        $client = $this->getClient();
+        $client->request('GET', '/account/security/application/0/grant/', [], [], ['HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
@@ -436,21 +465,23 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAUthorizedAppGrantAccessSuccessfull($revoke, $expected)
     {
-        self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->getId() . '/grant/', [
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $client->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->getId() . '/grant/', [
             'revoke' => $revoke
             ], [], [
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
         $this->assertInstanceOf('StdClass', $json);
         $this->assertObjectHasAttribute('success', $json);
         $this->assertTrue($json->success);
 
-        $account = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
+        $account = $app['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
 
         $this->assertEquals($expected, $account->isRevoked());
     }
@@ -470,9 +501,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm)
     {
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $oldPassword);
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $app['manipulator.user']->setPassword($app->getAuthenticatedUser(), $oldPassword);
 
-        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
+        $crawler = $client->request('POST', '/account/reset-password/', [
             'password' => [
                 'password' => $password,
                 'confirm'  => $passwordConfirm
@@ -481,7 +514,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             '_token'          => 'token',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertFalse($response->isRedirect());
         $this->assertFormOrFlashError($crawler, 1);
@@ -489,7 +522,8 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRenewPasswordBadOldPassword()
     {
-        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
+        $client = $this->getClient();
+        $crawler = $client->request('POST', '/account/reset-password/', [
             'password' => [
                 'password' => 'password',
                 'confirm'  => 'password'
@@ -498,18 +532,20 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             '_token'          => 'token',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertFalse($response->isRedirect());
         $this->assertFlashMessage($crawler, 'error', 1);
     }
 
     public function testPostRenewPasswordNoToken()
     {
-        $password = self::$DI['app']['random.low']->generateString(8);
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $password = $app['random.low']->generateString(8);
 
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
+        $app['manipulator.user']->setPassword($app->getAuthenticatedUser(), $password);
 
-        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
+        $crawler = $client->request('POST', '/account/reset-password/', [
             'password' => [
                 'password' => 'password',
                 'confirm'  => 'password'
@@ -517,7 +553,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             'oldPassword'     => $password,
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertFalse($response->isRedirect());
         $this->assertFormError($crawler, 1);
@@ -525,11 +561,13 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRenewPassword()
     {
-        $password = self::$DI['app']['random.low']->generateString(8);
+        $app = $this->getApplication();
+        $client = $this->getClient();
+        $password = $app['random.low']->generateString(8);
 
-        self::$DI['app']['manipulator.user']->setPassword(self::$DI['app']->getAuthenticatedUser(), $password);
+        $app['manipulator.user']->setPassword($app->getAuthenticatedUser(), $password);
 
-        self::$DI['client']->request('POST', '/account/reset-password/', [
+        $client->request('POST', '/account/reset-password/', [
             'password' => [
                 'password' => 'password',
                 'confirm'  => 'password'
@@ -538,12 +576,12 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             '_token'          => 'token',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'success', 1);
+        $this->assertFlashMessagePopulated($app, 'success', 1);
     }
 
     public function passwordProvider()

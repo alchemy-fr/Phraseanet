@@ -1034,7 +1034,7 @@ class V1Controller extends Controller
             }
 
 
-            if ($record->is_grouping()) {
+            if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {
                 $ret['results']['records'][] = $this->listRecord($request, $record);
@@ -1139,15 +1139,15 @@ class V1Controller extends Controller
             'mime_type'              => $record->get_mime(),
             'title'                  => $record->get_title(),
             'original_name'          => $record->get_original_name(),
-            'updated_on'             => $record->get_modification_date()->format(DATE_ATOM),
-            'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
+            'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
+            'created_on'             => $record->getCreated()->format(DATE_ATOM),
             'collection_id'          => $record->get_collection_id(),
             'base_id'                => $record->get_base_id(),
             'sha256'                 => $record->get_sha256(),
             'thumbnail'              => $this->listEmbeddableMedia($request, $record, $record->get_thumbnail()),
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
-            'uuid'                   => $record->get_uuid(),
+            'uuid'                   => $record->getUuid(),
         ];
 
         if ($request->attributes->get('_extended', false)) {
@@ -1190,7 +1190,7 @@ class V1Controller extends Controller
      */
     public function listStory(Request $request, \record_adapter $story)
     {
-        if (!$story->is_grouping()) {
+        if (!$story->isStory()) {
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
@@ -1215,11 +1215,11 @@ class V1Controller extends Controller
             '@entity@'      => self::OBJECT_TYPE_STORY,
             'databox_id'    => $story->get_sbas_id(),
             'story_id'      => $story->get_record_id(),
-            'updated_on'    => $story->get_modification_date()->format(DATE_ATOM),
-            'created_on'    => $story->get_creation_date()->format(DATE_ATOM),
+            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
+            'created_on'    => $story->getCreated()->format(DATE_ATOM),
             'collection_id' => \phrasea::collFromBas($this->app, $story->get_base_id()),
             'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->get_uuid(),
+            'uuid'          => $story->getUuid(),
             'metadatas'     => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),

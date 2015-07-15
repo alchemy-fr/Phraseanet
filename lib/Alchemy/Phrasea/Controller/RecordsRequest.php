@@ -42,12 +42,12 @@ class RecordsRequest extends ArrayCollection
         parent::__construct($elements);
         $this->received = $received;
         $this->basket = $basket;
-        $this->isSingleStory = ($flatten !== self::FLATTEN_YES && 1 === count($this) && $this->first()->is_grouping());
+        $this->isSingleStory = ($flatten !== self::FLATTEN_YES && 1 === count($this) && $this->first()->isStory());
 
         if (self::FLATTEN_NO !== $flatten) {
             $to_remove = [];
             foreach ($this as $key => $record) {
-                if ($record->is_grouping()) {
+                if ($record->isStory()) {
                     if (self::FLATTEN_YES === $flatten) {
                         $to_remove[] = $key;
                     }
@@ -65,7 +65,7 @@ class RecordsRequest extends ArrayCollection
         $i = 0;
         $records = $this->toArray();
         array_walk($records, function ($record) use (&$i) {
-            $record->set_number($i++);
+            $record->setNumber($i++);
         });
     }
 
@@ -143,7 +143,7 @@ class RecordsRequest extends ArrayCollection
     {
         return new ArrayCollection(
                 array_filter($this->toArray(), function (\record_adapter $record) {
-                        return $record->is_grouping();
+                        return $record->isStory();
                     })
         );
     }

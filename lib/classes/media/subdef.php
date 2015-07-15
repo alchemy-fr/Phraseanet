@@ -274,7 +274,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function find_substitute_file()
     {
-        if ($this->record->is_grouping()) {
+        if ($this->record->isStory()) {
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;

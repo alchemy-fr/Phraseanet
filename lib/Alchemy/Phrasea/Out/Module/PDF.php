@@ -75,7 +75,7 @@ class PDF
                     break;
             }
 
-            $record->set_number(count($list) + 1);
+            $record->setNumber(count($list) + 1);
 
             $list[] = $record;
         }
@@ -194,7 +194,7 @@ class PDF
 
                 if ($links) {
                     $lk = $this->pdf->AddLink();
-                    $this->pdf->SetLink($lk, 0, $npages + $rec->get_number());
+                    $this->pdf->SetLink($lk, 0, $npages + $rec->getNumber());
                     $this->pdf->Image(
                         $fimg
                         , $x + (($DiapoW - $wimg) / 2)
@@ -327,7 +327,7 @@ class PDF
             $this->pdf->AddPage();
 
             if ($withtdm === "CALCPAGES") {
-                $rec->set_number($this->pdf->PageNo());
+                $rec->setNumber($this->pdf->PageNo());
             }
             $lmargin = $this->pdf->GetX();
             $himg = 0;

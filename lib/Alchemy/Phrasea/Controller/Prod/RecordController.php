@@ -104,7 +104,7 @@ class RecordController extends Controller
             "tools"         => $this->render('prod/preview/tools.html.twig', [
                 'record'        => $record,
             ]),
-            "pos"           => $record->get_number(),
+            "pos"           => $record->getNumber(),
             "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
             "collection_name" => $record->get_collection()->get_name(),
             "collection_logo" => $record->get_collection()->getLogo($record->get_base_id(), $this->app),

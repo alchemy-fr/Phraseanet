@@ -8,7 +8,7 @@
         {% set cont_height = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') %}
     {% endif %}
 
-    {% set i = record.get_number() %}
+    {% set i = record.getNumber() %}
     {% set thumbnail = record.get_thumbnail().get_url() %}
     {% set ratio = 80 %}
     {% set width = record.get_thumbnail().get_width() %}

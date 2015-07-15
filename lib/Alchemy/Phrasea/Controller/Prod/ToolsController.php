@@ -40,7 +40,7 @@ class ToolsController extends Controller
 
         if (count($records) == 1) {
             $record = $records->first();
-            if (!$record->is_grouping()) {
+            if (!$record->isStory()) {
                 try {
                     $metadata = $this->getExifToolReader()
                         ->files($record->get_subdef('document')->get_pathfile())

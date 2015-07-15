@@ -94,49 +94,44 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->assertTrue($triggered);
     }
 
-    public function testGet_creation_date()
+    public function testGetCreated()
     {
         $date_obj = new DateTime();
         $record_1 = $this->getRecord1();
-        $this->assertTrue($record_1->get_creation_date() instanceof DateTime);
+        $this->assertTrue($record_1->getCreated() instanceof DateTime);
         $this->assertTrue(
-            $record_1->get_creation_date() <= $date_obj,
-            sprintf('Asserting that %s is before %s', $record_1->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+            $record_1->getCreated() <= $date_obj,
+            sprintf('Asserting that %s is before %s', $record_1->getCreated()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
         );
     }
 
     public function testGet_uuid()
     {
-        $this->assertTrue(Uuid::isValid($this->getRecord1()->get_uuid()));
+        $this->assertTrue(Uuid::isValid($this->getRecord1()->getUuid()));
     }
 
-    public function testGet_modification_date()
+    public function testGetUpdated()
     {
         $date_obj = new DateTime();
         $record_1 = $this->getRecord1();
-        $this->assertTrue(($record_1->get_creation_date() instanceof DateTime));
+        $this->assertTrue(($record_1->getUpdated() instanceof DateTime));
         $this->assertTrue(
-            $record_1->get_creation_date() <= $date_obj,
-            sprintf('Asserting that %s is before %s', $record_1->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+            $record_1->getCreated() <= $date_obj,
+            sprintf('Asserting that %s is before %s', $record_1->getUpdated()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
         );
     }
 
-    public function testGet_number()
+    public function testNumber()
     {
         $record_1 = $this->getRecord1();
-        $record_1->set_number(24);
-        $this->assertEquals(24, $record_1->get_number());
-        $record_1->set_number(42);
-        $this->assertEquals(42, $record_1->get_number());
-        $record_1->set_number(0);
-        $this->assertEquals(0, $record_1->get_number());
-        $record_1->set_number(null);
-        $this->assertEquals(0, $record_1->get_number());
-    }
-
-    public function testSet_number()
-    {
-        $this->testGet_number();
+        $record_1->setNumber(24);
+        $this->assertEquals(24, $record_1->getNumber());
+        $record_1->setNumber(42);
+        $this->assertEquals(42, $record_1->getNumber());
+        $record_1->setNumber(0);
+        $this->assertEquals(0, $record_1->getNumber());
+        $record_1->setNumber(null);
+        $this->assertEquals(0, $record_1->getNumber());
     }
 
     public function testSet_type()
@@ -157,8 +152,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testIs_grouping()
     {
-        $this->assertFalse($this->getRecord1()->is_grouping());
-        $this->assertTrue($this->getRecordStory1()->is_grouping());
+        $this->assertFalse($this->getRecord1()->isStory());
+        $this->assertTrue($this->getRecordStory1()->isStory());
     }
 
     public function testGet_base_id()
@@ -488,8 +483,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_record_by_sha()
     {
         $record_1 = $this->getRecord1();
-        $app = $this->getApplication();
-        $tmp_records = record_adapter::get_record_by_sha($app, $record_1->get_sbas_id(), $record_1->get_sha256());
+        $tmp_records = record_adapter::get_record_by_sha($record_1->getDatabox(), $record_1->get_sha256());
         $this->assertTrue(is_array($tmp_records));
 
         foreach ($tmp_records as $tmp_record) {
@@ -497,7 +491,11 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             $this->assertEquals($record_1->get_sha256(), $tmp_record->get_sha256());
         }
 
-        $tmp_records = record_adapter::get_record_by_sha($app, $record_1->get_sbas_id(), $record_1->get_sha256(), $record_1->get_record_id());
+        $tmp_records = record_adapter::get_record_by_sha(
+            $record_1->getDatabox(),
+            $record_1->get_sha256(),
+            $record_1->get_record_id()
+        );
         $this->assertTrue(is_array($tmp_records));
         $this->assertTrue(count($tmp_records) === 1);
 

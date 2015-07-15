@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Alchemy\Phrasea\Databox\Field\DataboxFieldFactory;
 use Alchemy\Phrasea\Databox\Field\DbalDataboxFieldRepository;
+use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -24,6 +25,10 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        if (!$app instanceof PhraseaApplication) {
+            throw new \LogicException('Expects $app to be an instance of Phraseanet application');
+        }
+
         $app['repo.users'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:User');
         });
@@ -137,6 +142,10 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
 
         $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {
             return new DbalDataboxFieldRepository($databox->get_connection(), new DataboxFieldFactory($app, $databox));
+        });
+
+        $app['repo.records.factory'] = $app->protect(function (\databox $databox) use ($app) {
+            return new LegacyRecordRepository($app, $databox);
         });
     }
 

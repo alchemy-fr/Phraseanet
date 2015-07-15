@@ -29,7 +29,7 @@
             )
         %}
 
-    <li class="{% if record.get_number == element.ord %}selected{% endif %} prevTrainCurrent">
+    <li class="{% if record.getNumber == element.ord %}selected{% endif %} prevTrainCurrent">
         <img {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}
             tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record_item.databoxId, 'record_id' : record_item.recordId, 'context' : 'basket' }) }}"
         {% endif %}

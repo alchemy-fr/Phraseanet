@@ -127,7 +127,7 @@ class PropertyController extends Controller
             }
 
             //update children if current record is a story
-            if (isset($applyStatusToChildren[$sbasId]) && $record->is_grouping()) {
+            if (isset($applyStatusToChildren[$sbasId]) && $record->isStory()) {
                 foreach ($record->get_children() as $child) {
                     if (null !== $updatedStatus = $this->updateRecordStatus($child, $postStatus)) {
                         $updated[$record->get_serialize_key()] = $updatedStatus;

@@ -100,7 +100,7 @@ class set_export extends set_abstract
                     continue;
                 }
 
-                if ($record->is_grouping()) {
+                if ($record->isStory()) {
                     foreach ($record->get_children() as $child_basrec) {
                         $base_id = $child_basrec->get_base_id();
                         $record_id = $child_basrec->get_record_id();

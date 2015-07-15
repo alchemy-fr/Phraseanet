@@ -96,7 +96,7 @@ class WorkzoneController extends Controller
             $element = explode('_', $element);
             $story = new \record_adapter($this->app, $element[0], $element[1]);
 
-            if (!$story->is_grouping()) {
+            if (!$story->isStory()) {
                 throw new \Exception('You can only attach stories');
             }
 

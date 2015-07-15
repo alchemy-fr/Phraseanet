@@ -32,9 +32,7 @@ class UUID extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = ! count(\record_adapter::get_record_by_uuid(
-                    $this->app, $file->getCollection()->get_databox(), $file->getUUID()
-                ));
+        $boolean = ! count($file->getCollection()->get_databox()->getRecordRepository()->findByUuid($file->getUUID()));
 
         return new Response($boolean, $this);
     }

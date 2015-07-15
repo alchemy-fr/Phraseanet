@@ -427,13 +427,9 @@ class LazaretFile
     {
         $ret = [];
 
-        $shaRecords = \record_adapter::get_record_by_sha(
-                $app, $this->getCollection($app)->get_sbas_id(), $this->getSha256()
-        );
-
-        $uuidRecords = \record_adapter::get_record_by_uuid(
-                $app, $this->getCollection($app)->get_databox(), $this->getUuid()
-        );
+        $repository = $this->getCollection($app)->get_databox()->getRecordRepository();
+        $shaRecords = $repository->findBySha256($this->getSha256());
+        $uuidRecords = $repository->findByUuid($this->getUuid());
 
         $merged = array_merge($uuidRecords, $shaRecords);
 

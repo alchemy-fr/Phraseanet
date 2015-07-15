@@ -158,10 +158,10 @@
                                         {% endif %}
                                     {% endif %}
 
-                                    {% if record.is_grouping %}
+                                    {% if record.isStory %}
                                         {% set on_click_html = "openPreview('REG',0, '" ~ record.get_serialize_key() ~ "');" %}
                                     {% else %}
-                                        {% set on_click_html = "openPreview('RESULT','" ~ record.get_number() ~ "');" %}
+                                        {% set on_click_html = "openPreview('RESULT','" ~ record.getNumber() ~ "');" %}
                                     {% endif %}
 
                                     {% if mod_col == 1 %}

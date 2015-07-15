@@ -54,7 +54,7 @@ class SubdefSubstituer
             $subdefFile = $pathhd . $filehd;
             $meta_writable = true;
         } else {
-            $type = $record->is_grouping() ? 'image' : $record->get_type();
+            $type = $record->isStory() ? 'image' : $record->get_type();
             $subdef_def = $record->get_databox()->get_subdef_structure()->get_subdef($type, $name);
 
             if ($record->has_subdef($name) && $record->get_subdef($name)->is_physically_present()) {

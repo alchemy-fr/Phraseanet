@@ -170,7 +170,7 @@ class StoryController extends Controller
     {
         $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        if (!$story->is_grouping()) {
+        if (!$story->isStory()) {
             throw new \Exception('This is not a story');
         }
 
@@ -184,7 +184,7 @@ class StoryController extends Controller
         try {
             $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-            if (!$story->is_grouping()) {
+            if (!$story->isStory()) {
                 throw new \Exception('This is not a story');
             }
 

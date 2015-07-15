@@ -338,7 +338,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $id = explode('_', $datas['id']);
         $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
-        $this->assertFalse($record->is_grouping());
+        $this->assertFalse($record->isStory());
         $this->assertEquals([], $datas['reasons']);
     }
 
@@ -375,7 +375,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $id = explode('_', $datas['id']);
         $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
-        $this->assertFalse($record->is_grouping());
+        $this->assertFalse($record->isStory());
         $this->assertEquals(1, substr(strrev($record->get_status()), 4, 1));
         $this->assertEquals([], $datas['reasons']);
     }
