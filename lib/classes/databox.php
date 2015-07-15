@@ -97,8 +97,7 @@ class databox extends base
     const PIC_PDF = 'logopdf';
 
     protected $cache;
-    protected $connection;
-    protected $app;
+
     private $labels = array();
     private $ord;
     private $viewname;

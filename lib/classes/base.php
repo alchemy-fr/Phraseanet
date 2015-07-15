@@ -15,6 +15,9 @@ use vierbergenlars\SemVer\version;
 
 abstract class base implements cache_cacheableInterface
 {
+    /**
+     * @var string
+     */
     protected $version;
 
     /**
@@ -25,40 +28,50 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @var string
+     * @var SimpleXMLElement
      */
     protected $schema;
 
     /**
      *
-     * @var <type>
+     * @var string
      */
     protected $dbname;
 
     /**
      *
-     * @var <type>
+     * @var string
      */
     protected $passwd;
 
     /**
      * Database Username
      *
-     * @var <type>
+     * @var string
      */
     protected $user;
 
     /**
      *
-     * @var <type>
+     * @var int
      */
     protected $port;
 
     /**
      *
-     * @var <type>
+     * @var string
      */
     protected $host;
+
+    /**
+     * @var \connection_pdo
+     */
+    protected $connection;
+
+    /**
+     * @var Application
+     */
+    protected $app;
 
     /**
      *
@@ -76,7 +89,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return <type>
+     * @return SimpleXMLElement
      */
     public function get_schema()
     {
@@ -91,7 +104,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function get_dbname()
     {
@@ -100,7 +113,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function get_passwd()
     {
@@ -109,7 +122,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function get_user()
     {
@@ -118,7 +131,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return <type>
+     * @return int
      */
     public function get_port()
     {
@@ -127,7 +140,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function get_host()
     {
@@ -136,7 +149,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return connection_pdo
+     * @return PDO
      */
     public function get_connection()
     {
@@ -189,6 +202,7 @@ abstract class base implements cache_cacheableInterface
     public function delete_data_from_cache($option = null)
     {
         $appbox = $this->get_base_type() == self::APPLICATION_BOX ? $this : $this->get_appbox();
+
         if ($option === appbox::CACHE_LIST_BASES) {
             $keys = array($this->get_cache_key(appbox::CACHE_LIST_BASES));
             phrasea::reset_sbasDatas($appbox);
@@ -209,10 +223,11 @@ abstract class base implements cache_cacheableInterface
         }
     }
 
-    public function get_cache_key($option = null)
-    {
-        throw new Exception(__METHOD__ . ' must be defined in extended class');
-    }
+    /**
+     * @param string|null $option
+     * @return string
+     */
+    public abstract function get_cache_key($option = null);
 
     public function get_version()
     {
