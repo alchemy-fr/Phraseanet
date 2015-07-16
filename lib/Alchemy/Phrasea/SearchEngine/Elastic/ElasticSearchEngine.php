@@ -262,7 +262,10 @@ class ElasticSearchEngine implements SearchEngineInterface
             'pre_tags' =>  ['[[em]]'],
             'post_tags' =>  ['[[/em]]'],
             'order' => 'score',
-            'fields' => ['caption.*' => new \stdClass()]
+            'fields' => [
+                'caption.*' => new \stdClass(),
+                'private_caption.*' => new \stdClass()
+            ]
         ];
 
         if ($aggs = $this->getAggregationQueryParams($options)) {
