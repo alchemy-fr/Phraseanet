@@ -159,6 +159,48 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $record->delete();
     }
 
+    public function testDelRecordFromStory()
+    {
+        $this->setToken($this->userAccessToken);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+
+        $file = new File(
+            self::$DI['app'],
+            self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/extractfile.jpg'),
+            self::$DI['collection']
+        );
+        $record = \record_adapter::createFromFile($file, self::$DI['app']);
+        $story->appendChild($record);
+
+        $route = sprintf('/api/v1/stories/%s/%s/delrecords', $story->getDataboxId(), $story->getRecordId());
+        $records = array(
+            'databox_id' => $record->getDataboxId(),
+            'record_id' => $record->getRecordId()
+        );
+
+        self::$DI['client']->request(
+            'DELETE',
+            $route,
+            $this->getParameters(),
+            $this->getAddRecordFile(),
+            [
+                'HTTP_ACCEPT' => $this->getAcceptMimeType(),
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            json_encode(array('story_records' => array($records)))
+        );
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+        $data = $content['response'];
+
+        $this->assertArrayHasKey('records', $data);
+        $this->assertCount(1, $data['records']);
+        $story->delete();
+        $record->delete();
+    }
+
     /**
      * @dataProvider provideEventNames
      */

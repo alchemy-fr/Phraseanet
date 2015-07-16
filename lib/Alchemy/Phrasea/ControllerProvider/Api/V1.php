@@ -235,6 +235,11 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('databox_id', '\d+')
             ->assert('story_id', '\d+');
 
+        $controllers->delete('/stories/{databox_id}/{story_id}/delrecords', 'controller.api.v1:delRecordsFromStoryAction')
+            ->before('controller.api.v1:ensureJsonContentType')
+            ->assert('databox_id', '\d+')
+            ->assert('story_id', '\d+');
+
         $controllers->post('/stories/{databox_id}/{story_id}/setcover', 'controller.api.v1:setStoryCoverAction')
             ->before('controller.api.v1:ensureJsonContentType')
             ->assert('databox_id', '\d+')

@@ -19,7 +19,6 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
@@ -37,7 +36,6 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use Alchemy\Phrasea\Model\Entities\Secret;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
@@ -58,10 +56,8 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
-use MediaVorus\MediaVorus;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -857,7 +853,7 @@ class V1Controller extends Controller
 
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
-            $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
+            $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
             $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
         }
         if ($output instanceof LazaretFile) {
@@ -895,7 +891,7 @@ class V1Controller extends Controller
 
         $media = $this->app->getMediaFromUri($file->getPathname());
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
-        $base_id = $record->get_base_id();
+        $base_id = $record->getBaseId();
         $collection = \collection::get_from_base_id($this->app, $base_id);
         if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
             return Result::create($request, 403, sprintf(
@@ -929,7 +925,7 @@ class V1Controller extends Controller
                 return null;
             }
             if ($media->get_name() === 'document'
-                && !$acl->has_right_on_base($record->get_base_id(), 'candwnldhd')
+                && !$acl->has_right_on_base($record->getBaseId(), 'candwnldhd')
                 && !$acl->has_hd_grant($record)
             ) {
                 return null;
@@ -1134,19 +1130,19 @@ class V1Controller extends Controller
         }
 
         $data = [
-            'databox_id'             => $record->get_sbas_id(),
-            'record_id'              => $record->get_record_id(),
-            'mime_type'              => $record->get_mime(),
+            'databox_id'             => $record->getDataboxId(),
+            'record_id'              => $record->getRecordId(),
+            'mime_type'              => $record->getMimeType(),
             'title'                  => $record->get_title(),
             'original_name'          => $record->get_original_name(),
             'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
             'created_on'             => $record->getCreated()->format(DATE_ATOM),
-            'collection_id'          => $record->get_collection_id(),
-            'base_id'                => $record->get_base_id(),
-            'sha256'                 => $record->get_sha256(),
+            'collection_id'          => $record->getCollectionId(),
+            'base_id'                => $record->getBaseId(),
+            'sha256'                 => $record->getSha256(),
             'thumbnail'              => $this->listEmbeddableMedia($request, $record, $record->get_thumbnail()),
             'technical_informations' => $technicalInformation,
-            'phrasea_type'           => $record->get_type(),
+            'phrasea_type'           => $record->getType(),
             'uuid'                   => $record->getUuid(),
         ];
 
@@ -1213,11 +1209,11 @@ class V1Controller extends Controller
 
         return [
             '@entity@'      => self::OBJECT_TYPE_STORY,
-            'databox_id'    => $story->get_sbas_id(),
-            'story_id'      => $story->get_record_id(),
+            'databox_id'    => $story->getDataboxId(),
+            'story_id'      => $story->getRecordId(),
             'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
             'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => \phrasea::collFromBas($this->app, $story->get_base_id()),
+            'collection_id' => \phrasea::collFromBas($this->app, $story->getBaseId()),
             'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
             'uuid'          => $story->getUuid(),
             'metadatas'     => [
@@ -2041,7 +2037,7 @@ class V1Controller extends Controller
         }
 
         $result = Result::create($request, array('stories' => array_map(function(\record_adapter $story) {
-            return sprintf('/stories/%s/%s/', $story->get_sbas_id(), $story->get_record_id());
+            return sprintf('/stories/%s/%s/', $story->getDataboxId(), $story->getRecordId());
         }, $stories)));
 
         return $result->createResponse();
@@ -2120,14 +2116,14 @@ class V1Controller extends Controller
         if (isset($data->{'story_records'})) {
             $recordsData = (array) $data->{'story_records'};
             foreach ($recordsData as $data) {
-                $this->addRecordToStory($story, $data, $schemaRecordStory);
+                $this->addOrDelStoryRecord($story, $data, $schemaRecordStory, 'ADD');
             }
         }
 
         return $story;
     }
 
-    protected function addRecordToStory(\record_adapter $story, $data, $jsonSchema)
+    private function addOrDelStoryRecord(\record_adapter $story, $data, $jsonSchema, $action)
     {
         $validator = $this->getJsonSchemaValidator();
         $validator->check($data, $jsonSchema);
@@ -2139,20 +2135,32 @@ class V1Controller extends Controller
         $databox_id = $data->{'databox_id'};
         $record_id = $data->{'record_id'};
 
+        if($story->getDataboxId() !== $databox_id) {
+            $this->app->abort(409, sprintf('The databox_id %s (for record_id %s) must match the databox_id %s of the story'
+                , $databox_id
+                , $record_id
+                , $story->getDataboxId())
+            );
+        }
+
         try {
             $record = new \record_adapter($this->app, $databox_id, $record_id);
         } catch (\Exception_Record_AdapterNotFound $e) {
+            $record = null;
             $this->app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
         }
 
-        if (!$story->hasChild($record)) {
+        if ($action === 'ADD' && !$story->hasChild($record)) {
             $story->appendChild($record);
+        }
+        elseif ($action === 'DEL' && $story->hasChild($record)) {
+            $story->removeChild($record);
         }
 
         return $record->get_serialize_key();
     }
 
-    public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
+    private function addOrDelStoryRecords(Request $request, $databox_id, $story_id, $action)
     {
         $content = $request->getContent();
 
@@ -2179,13 +2187,23 @@ class V1Controller extends Controller
 
         $records = array();
         foreach ($recordsData as $data) {
-            $records[] = $this->addRecordToStory($story, $data, $schema);
+            $records[] = $this->addOrDelStoryRecord($story, $data, $schema, $action);
         }
 
         $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
         $result = Result::create($request, array('records' => $records));
         return $result->createResponse();
+    }
+
+    public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
+    {
+        $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'ADD');
+    }
+
+    public function delRecordsFromStoryAction(Request $request, $databox_id, $story_id)
+    {
+        $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'DEL');
     }
 
     public function setStoryCoverAction(Request $request, $databox_id, $story_id)
@@ -2220,21 +2238,22 @@ class V1Controller extends Controller
     protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false)
     {
         try {
-            $record = new \record_adapter($this->app, $story->get_sbas_id(), $record_id);
+            $record = new \record_adapter($this->app, $story->getDataboxId(), $record_id);
         } catch (\Exception_Record_AdapterNotFound $e) {
-            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->get_sbas_id(), $record_id));
+            $record = null;
+            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->getDataboxId(), $record_id));
         }
 
         if (!$story->hasChild($record)) {
-            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->get_sbas_id(), $record_id));
+            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->getDataboxId(), $record_id));
         }
 
-        if ($record->get_type() !== 'image') {
+        if ($record->getType() !== 'image') {
             // this can fail so we can loop on many records during story creation...
             if($can_fail) {
                 return false;
             }
-            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image', $story->get_sbas_id(), $record_id));
+            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image', $story->getDataboxId(), $record_id));
         }
 
         foreach ($record->get_subdefs() as $name => $value) {
@@ -2243,7 +2262,7 @@ class V1Controller extends Controller
             }
             $media = $this->app->getMediaFromUri($value->get_pathfile());
             $story->substitute_subdef($name, $media, $this->app);
-            $this->getDataboxLogger($story->get_databox())->log(
+            $this->getDataboxLogger($story->getDatabox())->log(
                 $story,
                 \Session_Logger::EVENT_SUBSTITUTE,
                 $name == 'document' ? 'HD' : $name,
@@ -2314,7 +2333,7 @@ class V1Controller extends Controller
         $user = $this->getApiAuthenticatedUser();
         $record = $this->findDataboxById($request->attributes->get('databox_id'))
             ->get_record($request->attributes->get('record_id'));
-        if (!$this->getAclForUser($user)->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+        if (!$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), 'chgstatus')) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 
@@ -2340,7 +2359,7 @@ class V1Controller extends Controller
         // TODO: Check comparison. seems to be a mismatch
         if ((!$this->getAclForUser($user)->has_right('addrecord')
                 && !$this->getAclForUser($user)->has_right('deleterecord'))
-            || !$this->getAclForUser($user)->has_right_on_base($record->get_base_id(), 'candeleterecord')
+            || !$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), 'candeleterecord')
         ) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
