@@ -47,7 +47,9 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
             ];
         };
 
-        $query = $query_builder($context->getLocalizedFields());
+        $fields = $context->getLocalizedFields();
+        $query = count($fields) ? $query_builder($fields) : null;
+
         foreach (QueryHelper::buildPrivateFieldQueries($context, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }

@@ -86,10 +86,18 @@ class QueryHelper
      * @param  array  $sub_query Clause query
      * @return array             Resulting query
      */
-    public static function applyBooleanClause(array $query, $type, array $clause)
+    public static function applyBooleanClause($query, $type, array $clause)
     {
         if (!in_array($type, ['must', 'should'])) {
             throw new \InvalidArgumentException(sprintf('Type must be either "must" or "should", "%s" given', $type));
+        }
+
+        if ($query === null) {
+            return $clause;
+        }
+
+        if (!is_array($query)) {
+            throw new \InvalidArgumentException(sprintf('Query must be either an array or null, "%s" given', gettype($query)));
         }
 
         if (!isset($query['bool'])) {
