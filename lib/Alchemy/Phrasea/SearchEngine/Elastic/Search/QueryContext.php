@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 /**
@@ -91,6 +92,18 @@ class QueryContext
         return array_values($fields);
     }
 
+    public function get($name)
+    {
+        if ($name instanceof ASTField) {
+            $name = $name->getValue();
+        }
+        $field = $this->structure->get($name);
+        if (!$field) {
+            return null;
+        }
+        return $field;
+    }
+
     /**
      * @todo Maybe we should put this logic in Field class?
      */
@@ -110,23 +123,6 @@ class QueryContext
         $fields[] = sprintf('%s.light^10', $field);
 
         return $fields;
-    }
-
-    /**
-     * Returns normalized name or null
-     *
-     * @param string $name
-     * @return null|string
-     * @deprecated Use getIndexField() on Field instance
-     */
-    public function normalizeField($name)
-    {
-        $field = $this->structure->get($name);
-        if (!$field) {
-            return null;
-        }
-        // TODO Field label dereferencing (we only want names)
-        return $field->getIndexField();
     }
 
     public function getFields()

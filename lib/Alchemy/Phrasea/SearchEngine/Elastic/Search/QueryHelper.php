@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+
 class QueryHelper
 {
     private function __construct() {}
@@ -28,13 +30,30 @@ class QueryHelper
         foreach ($fields_map as $hash => $fields) {
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
-            $query = [];
-            $query['bool']['must'][0]['terms']['base_id'] = $collections_map[$hash];
-            $query['bool']['must'][1] = $matcher_callback->__invoke($fields);
-            $queries[] = $query;
+            $queries[] = self::restrictQueryToCollections(
+                $matcher_callback->__invoke($fields),
+                $collections_map[$hash]
+            );
         }
 
         return $queries;
+    }
+
+    public static function wrapPrivateFieldQuery(Field $field, array $query)
+    {
+        if ($field->isPrivate()) {
+            return self::restrictQueryToCollections($query, $field->getDependantCollections());
+        } else {
+            return $query;
+        }
+    }
+
+    private static function restrictQueryToCollections(array $query, array $collections)
+    {
+        $wrapper = [];
+        $wrapper['bool']['must'][0]['terms']['base_id'] = $collections;
+        $wrapper['bool']['must'][1] = $query;
+        return $wrapper;
     }
 
     private static function hashCollections(array $collections)

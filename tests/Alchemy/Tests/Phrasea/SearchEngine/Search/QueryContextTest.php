@@ -22,19 +22,6 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['some_field'], $narrowed->getFields());
     }
 
-    public function testFieldNormalization()
-    {
-        $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
-        $restricted_field = new Field('bar', Mapping::TYPE_STRING, ['private' => true]);
-        $structure = $this->prophesize(Structure::class);
-        $structure->get('foo')->willReturn($public_field);
-        $structure->get('bar')->willReturn($restricted_field);
-
-        $context = new QueryContext($structure->reveal(), [], 'fr');
-        $this->assertEquals('caption.foo', $context->normalizeField('foo'));
-        $this->assertEquals('private_caption.bar', $context->normalizeField('bar'));
-    }
-
     public function testGetUnrestrictedFields()
     {
         $foo_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
