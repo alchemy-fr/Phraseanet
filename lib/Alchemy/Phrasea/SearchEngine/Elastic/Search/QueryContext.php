@@ -48,7 +48,7 @@ class QueryContext
         }
 
         $fields = array();
-        foreach ($this->getUnrestrictedFields() as $name => $field) {
+        foreach ($this->getUnrestrictedFields() as $field) {
             $fields[] = $field->getIndexField(true);
         }
 
@@ -62,7 +62,7 @@ class QueryContext
         }
 
         $fields = array();
-        foreach ($this->getUnrestrictedFields() as $_ => $field) {
+        foreach ($this->getUnrestrictedFields() as $field) {
             foreach ($this->localizeField($field) as $fields[]);
         }
 
@@ -73,20 +73,22 @@ class QueryContext
     {
         // TODO Restore search optimization by using "caption_all" field
         // (only when $this->fields is null)
-        return array_intersect_key(
-            $this->structure->getUnrestrictedFields(),
-            array_flip($this->fields)
-        );
+        $fields = $this->structure->getUnrestrictedFields();
+        if ($this->fields !== null) {
+            $fields = array_intersect_key($fields, array_flip($this->fields));
+        }
+
+        return array_values($fields);
     }
 
     public function getPrivateFields()
     {
-        $private_fields = $this->structure->getPrivateFields();
-        if ($this->fields === null) {
-            return $private_fields;
-        } else {
-            return array_intersect_key($private_fields, array_flip($this->fields));
+        $fields = $this->structure->getPrivateFields();
+        if ($this->fields !== null) {
+            $fields = array_intersect_key($fields, array_flip($this->fields));
         }
+
+        return array_values($fields);
     }
 
     /**
