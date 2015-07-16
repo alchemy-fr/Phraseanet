@@ -2198,12 +2198,12 @@ class V1Controller extends Controller
 
     public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
     {
-        $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'ADD');
+        return $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'ADD');
     }
 
     public function delRecordsFromStoryAction(Request $request, $databox_id, $story_id)
     {
-        $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'DEL');
+        return $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'DEL');
     }
 
     public function setStoryCoverAction(Request $request, $databox_id, $story_id)
