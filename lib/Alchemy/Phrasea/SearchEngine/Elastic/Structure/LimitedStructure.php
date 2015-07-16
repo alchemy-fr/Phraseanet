@@ -74,12 +74,7 @@ final class LimitedStructure implements Structure
 
     private function limit(array $fields)
     {
-        // Get all collections (base_id) with allowed private field access (user rights are computed in options object)
-        $allowed_collections = [];
-        foreach ($this->search_options->getBusinessFieldsOn() as $collection) {
-            $allowed_collections[] = $collection->get_base_id();
-        }
-
+        $allowed_collections = $this->allowedCollections();
         // Filter private field collections (base_id) on which access is restricted.
         $limited_fields = [];
         foreach ($fields as $name => $field) {
@@ -95,8 +90,12 @@ final class LimitedStructure implements Structure
         return $limited_fields;
     }
 
-    private function limitField(Field $field, array $allowed_collections)
+    private function limitField(Field $field, array $allowed_collections = null)
     {
+        if ($allowed_collections === null) {
+            $allowed_collections = $this->allowedCollections();
+        }
+
         $collections = array_values(array_intersect(
             $field->getDependantCollections(),
             $allowed_collections
@@ -105,5 +104,15 @@ final class LimitedStructure implements Structure
         return $field->withOptions([
             'used_by_collections' => $collections
         ]);
+    }
+
+    private function allowedCollections()
+    {
+        // Get all collections (base_id) with allowed private field access (user rights are computed in options object)
+        $allowed_collections = [];
+        foreach ($this->search_options->getBusinessFieldsOn() as $collection) {
+            $allowed_collections[] = $collection->get_base_id();
+        }
+        return $allowed_collections;
     }
 }
