@@ -543,6 +543,22 @@ class V1 implements ControllerProviderInterface
         });
 
         /**
+         * Route : /stories/{databox_id}/{story_id}/delrecords
+         *
+         * Method : DELETE
+         *
+         * Parameters :
+         *
+         */
+        $controllers->delete('/stories/{databox_id}/{story_id}/delrecords', function (SilexApplication $app, Request $request, $databox_id, $story_id) {
+            return $app['api']->del_records_from_story($app, $request, $databox_id, $story_id)->get_response();
+        })->before(function(Request $request, SilexApplication $app) {
+            if($request->getContentType() != 'json') {
+                $app->abort(406, 'Invalid Content Type given.');
+            }
+        });
+
+        /**
          * Route : /stories/{databox_id}/{story_id}/setcover
          *
          * Method : POST
