@@ -511,11 +511,11 @@ class Users implements ControllerProviderInterface
                         $user->ACL()->give_access_to_sbas(array(\phrasea::sbasFromBas($app, $bas)));
 
                         $rights = array(
-                            'canputinalbum'   => '1'
-                            , 'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0')
-                            , 'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1')
-                            , 'candwnldpreview' => '1'
-                            , 'actif'           => '1'
+                            'canputinalbum'   => '1',
+                            'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0'),
+                            'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1'),
+                            'candwnldpreview' => '1',
+                            'actif'           => '1',
                         );
 
                         $user->ACL()->give_access_to_base(array($bas));
@@ -550,20 +550,37 @@ class Users implements ControllerProviderInterface
 
                     $acceptColl = $denyColl = array();
 
+                    $hookType = \API_Webhook::USER_REGISTRATION_REJECTED;
+                    $hookData = array(
+                        'user_id' => $usr,
+                        'granted' => array(),
+                        'rejected' => array()
+                    );
+
+                    foreach ($bases as $bas => $isok) {
+                        $label = \phrasea::bas_labels($bas, $app);
+
+                        if ($isok) {
+                            $hookType = \API_Webhook::USER_REGISTRATION_GRANTED;
+                            $acceptColl[] = $label;
+                            $hookData['granted'][$bas] = $label;
+                        } else {
+                            $denyColl[] = $label;
+                            $hookData['granted'][$bas] = $label;
+                        }
+                    }
+
+                    \API_Webhook::create($app['phraseanet.appbox'], $hookType, $hookData);
+
                     if ($row) {
                         if (\Swift_Validate::email($row['usr_mail'])) {
-                            foreach ($bases as $bas => $isok) {
-                                if ($isok) {
-                                    $acceptColl[] = \phrasea::bas_labels($bas, $app);
-                                } else {
-                                    $denyColl[] = \phrasea::bas_labels($bas, $app);
-                                }
-                            }
                             if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
                                 $message = '';
+
                                 if (0 !== count($acceptColl)) {
                                     $message .= "\n" . _('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $acceptColl). "\n";
                                 }
+
                                 if (0 !== count($denyColl)) {
                                     $message .= "\n" . _('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $denyColl) . "\n";
                                 }

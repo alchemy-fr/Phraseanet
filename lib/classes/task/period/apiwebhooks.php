@@ -25,7 +25,7 @@ class task_period_apiwebhooks extends task_appboxAbstract
 
     protected function retrieveContent(appbox $appbox)
     {
-        $stmt = $appbox->get_connection()->prepare('SELECT id, `type`, `data` FROM api_webhooks');
+        $stmt = $appbox->get_connection()->prepare('SELECT w.id, w.type, w.data FROM api_webhooks w');
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -39,11 +39,17 @@ class task_period_apiwebhooks extends task_appboxAbstract
         switch ($row['type']) {
             case \API_Webhook::NEW_FEED_ENTRY:
                 $data = $this->processNewFeedEntry($row);
+                break;
+            case \API_Webhook::USER_REGISTRATION_GRANTED:
+            case \API_Webhook::USER_REGISTRATION_REJECTED:
+                $data = $this->processUserRegistrationEntry($row);
+                break;
         }
 
         if (null === $data) {
             return;
         }
+
         $urls = $this->getApplicationHookUrls($appbox);
         $this->sendData($urls, $data);
     }
@@ -89,11 +95,13 @@ class task_period_apiwebhooks extends task_appboxAbstract
     protected function processNewFeedEntry(array $row)
     {
         $data = json_decode($row['data']);
-        if (!isset($data->{"feed_id"}) || !isset($data->{"entry_id"})) {
+
+        if (!isset($data->feed_id) || !isset($data->entry_id)) {
             return;
         }
-        $feed = new Feed_Adapter($this->dependencyContainer, $data->{"feed_id"});
-        $entry = new \Feed_Entry_Adapter($this->dependencyContainer, $feed, $data->{"entry_id"});
+
+        $feed = new Feed_Adapter($this->dependencyContainer, $data->feed_id);
+        $entry = new \Feed_Entry_Adapter($this->dependencyContainer, $feed, $data->entry_id);
         $query = new \User_Query($this->dependencyContainer);
 
         $query->include_phantoms(true)
@@ -139,6 +147,27 @@ class task_period_apiwebhooks extends task_appboxAbstract
                 'description' => $entry->get_subtitle() ?: null,
             ),
             'users' => $users
+        );
+    }
+
+    protected function processUserRegistrationEntry(array $row)
+    {
+        $data = json_decode($row['data'], true);
+
+        if (! isset($data['user_id'])) {
+            return null;
+        }
+
+        $user = new \User_Adapter($data['user_id'], $this->dependencyContainer);
+
+        return array(
+            'event' => $row['type'],
+            'user' => array(
+                'id' => $user->get_id(),
+                'email' => $user->get_email()
+            ),
+            'granted' => $data['granted'],
+            'rejected' => $data['rejected']
         );
     }
 }
