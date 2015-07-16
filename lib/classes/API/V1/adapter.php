@@ -2271,6 +2271,44 @@ class API_V1_adapter extends API_V1_Abstract
      * @param $story_id
      * @return API_V1_result
      *
+     * called by the route [DELETE] /stories/{databox_id}/{story_id}/delrecords
+     */
+    public function del_records_from_story(Application $app, Request $request, $databox_id, $story_id)
+    {
+        $content = $request->getContent();
+
+        $data = @json_decode($content);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
+        }
+
+        if (!isset($data->{'story_records'})) {
+            $app->abort(400, 'Missing "story_records" property');
+        }
+
+        $schemaStoryRecord = $app['json-schema.retriever']->retrieve('file://'.$app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+
+        $recordsData = $data->{'story_records'};
+        $story = new \record_adapter($app, $databox_id, $story_id);
+
+        $records = $this->_del_records_from_story($app, $story, $recordsData, $schemaStoryRecord);
+
+        $result = new API_V1_result($this->app, $request, $this);
+
+        $result->set_datas(array('records' => $records));
+
+        return $result;
+    }
+
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param $databox_id
+     * @param $story_id
+     * @return API_V1_result
+     *
      * called by route [POST] /stories/{databox_id}/{story_id}/setcover
      */
     public function set_story_cover(Application $app, Request $request, $databox_id, $story_id)
@@ -2393,6 +2431,22 @@ class API_V1_adapter extends API_V1_Abstract
         return $records;
     }
 
+    protected function _del_records_from_story(Application $app, \record_adapter $story, $recordsData, $schemaStoryRecord)
+    {
+        if (!is_array($recordsData)) {
+            $recordsData = array($recordsData);
+        }
+
+        $records = array();
+        foreach ($recordsData as $data) {
+            $records[] = $this->_del_record_from_story($app, $story, $data, $schemaStoryRecord);
+        }
+
+        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        return $records;
+    }
+
     protected function _add_record_to_story(Application $app, record_adapter $story, $data, $schemaStoryRecord)
     {
         $app['json-schema.validator']->check($data, $schemaStoryRecord);
@@ -2412,6 +2466,30 @@ class API_V1_adapter extends API_V1_Abstract
 
         if (!$story->hasChild($record)) {
             $story->appendChild($record);
+        }
+
+        return $record->get_serialize_key();
+    }
+
+    protected function _del_record_from_story(Application $app, record_adapter $story, $data, $schemaStoryRecord)
+    {
+        $app['json-schema.validator']->check($data, $schemaStoryRecord);
+
+        if (false === $app['json-schema.validator']->isValid()) {
+            $app->abort(400, 'Request body contains not a valid "record story" object');
+        }
+
+        $databox_id = $data->{'databox_id'};
+        $record_id = $data->{'record_id'};
+
+        try {
+            $record = new \record_adapter($app, $databox_id, $record_id);
+        } catch (Exception_Record_AdapterNotFound $e) {
+            $app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
+        }
+
+        if ($story->hasChild($record)) {
+            $story->removeChild($record);
         }
 
         return $record->get_serialize_key();
