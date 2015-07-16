@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Form\Login;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Form\Constraint\NewEmail;
-use Alchemy\Phrasea\Utilities\String\Camelizer;
+use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,14 +23,12 @@ class PhraseaRegisterForm extends AbstractType
 {
     private $available;
     private $params;
-    private $camelizer;
 
-    public function __construct(Application $app, array $available, array $params = [], Camelizer $camelizer = null)
+    public function __construct(Application $app, array $available, array $params = [])
     {
         $this->app = $app;
         $this->available = $available;
         $this->params = $params;
-        $this->camelizer = $camelizer ?: new Camelizer();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -115,7 +113,7 @@ class PhraseaRegisterForm extends AbstractType
 
                 $builder->add(
                     // angular does not support hyphens
-                    $this->camelizer->camelize($name, '-'),
+                    StringHelper::camelize($name, '-'),
                     $this->getType($name),
                     $options
                 );

@@ -20,12 +20,12 @@ class caption_field implements cache_cacheableInterface
     protected $databox_field;
 
     /**
-     * @var string
+     * @var caption_Field_Value[]
      */
     protected $values;
 
     /**
-     * @var record_adapter
+     * @var \record_adapter
      */
     protected $record;
     protected $app;
@@ -37,7 +37,7 @@ class caption_field implements cache_cacheableInterface
      * @param databox_field    $databox_field
      * @param record_adapter $record
      *
-     * @return $this
+     * @return caption_field
      */
     public function __construct(Application $app, databox_field $databox_field, \record_adapter $record)
     {
@@ -52,10 +52,12 @@ class caption_field implements cache_cacheableInterface
             $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
 
             // Inconsistent, should not happen
-            if (! $databox_field->is_multi()) {
+            if ( ! $databox_field->is_multi()) {
                 break;
             }
         }
+
+        return $this;
     }
 
     protected function get_metadatas_ids()
@@ -71,8 +73,8 @@ class caption_field implements cache_cacheableInterface
         $sql = 'SELECT id FROM metadatas WHERE record_id = :record_id AND meta_struct_id = :meta_struct_id';
 
         $params = [
-            ':record_id'      => $this->record->get_record_id(),
-            ':meta_struct_id' => $this->databox_field->get_id(),
+            ':record_id'      => $this->record->get_record_id()
+            , ':meta_struct_id' => $this->databox_field->get_id()
         ];
 
         $stmt = $connbas->prepare($sql);
@@ -118,7 +120,7 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     * @return $this
+     * @return caption_field
      */
     public function delete()
     {
@@ -167,7 +169,7 @@ class caption_field implements cache_cacheableInterface
 
     /**
      * @param  int   $meta_id
-     * @return array
+     * @return \caption_Field_Value
      */
     public function get_value($meta_id)
     {
@@ -175,8 +177,8 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     * @param bool|string $custom_separator
-     * @param bool        $highlight
+     * @param String  $custom_separator
+     * @param Boolean $highlightTheso
      *
      * @return mixed
      */
@@ -389,7 +391,7 @@ class caption_field implements cache_cacheableInterface
      * @param  mixed         $value
      * @param  string        $option
      * @param  int           $duration
-     * @return $this
+     * @return caption_field
      */
     public function set_data_to_cache($value, $option = null, $duration = 360000)
     {
@@ -400,7 +402,7 @@ class caption_field implements cache_cacheableInterface
      * Part of the cache_cacheableInterface
      *
      * @param  string        $option
-     * @return $this
+     * @return caption_field
      */
     public function delete_data_from_cache($option = null)
     {

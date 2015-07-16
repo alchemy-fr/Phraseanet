@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Form\Login;
 
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
-use Alchemy\Phrasea\Utilities\String\Camelizer;
 
 /**
  * @group functional
@@ -27,7 +26,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             ]
         ];
 
-        return new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
+        return new PhraseaRegisterForm(self::$DI['app'], $available, $params);
     }
 
     public function testFormDoesRegisterValidFields()
@@ -63,7 +62,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             $expected[] = 'collections';
         }
 
-        $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
+        $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params);
 
         foreach (array_keys(self::$DI['app']->form($form)->createView()->vars['form']->children) as $name) {
             $this->assertContains($name, $expected);
@@ -99,7 +98,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             $expected[] = 'collections';
         }
 
-        $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
+        $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params);
 
         foreach (array_keys(self::$DI['app']->form($form)->createView()->vars['form']->children) as $name) {
             $this->assertContains($name, $expected);

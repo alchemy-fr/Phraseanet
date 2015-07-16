@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,6 +32,9 @@ class QueryController extends Controller
     public function query(Request $request)
     {
         $query = (string) $request->request->get('qry');
+
+        // since the query comes from a submited form, normalize crlf,cr,lf ...
+        $query = StringHelper::crlfNormalize($query);
 
         $json = [];
 

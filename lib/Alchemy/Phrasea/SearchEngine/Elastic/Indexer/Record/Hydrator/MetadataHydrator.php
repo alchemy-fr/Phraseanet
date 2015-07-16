@@ -15,6 +15,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\Utilities\StringHelper;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use DomainException;
@@ -74,6 +75,7 @@ SQL;
             switch ($metadata['type']) {
                 case 'caption':
                     // Sanitize fields
+                    $value = StringHelper::crlfNormalize($value);
                     switch ($this->structure->typeOf($key)) {
                         case Mapping::TYPE_DATE:
                             $value = $this->helper->sanitizeDate($value);

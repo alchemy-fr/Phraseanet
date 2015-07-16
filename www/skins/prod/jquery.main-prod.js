@@ -340,7 +340,7 @@ function newSearch(query) {
     p4.Results.Selection.empty();
 
     clearAnswers();
-    $('#searchForm input[name="qry"]').val(query);
+    $('#SENT_query').val(query);
     var histo = $('#history-queries ul');
 
     histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
@@ -612,9 +612,7 @@ function getFacetsTree() {
 }
 
 function facetCombinedSearch() {
-
     var q = $("#EDIT_query").val();
-    console.debug(selectedFacetValues);
     var q_facet = "";
     _.each(_.values(selectedFacetValues), function(facetValue) {
         q_facet += (q_facet ? " AND " : "") + '(' + facetValue.query + ')';

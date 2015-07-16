@@ -11,20 +11,10 @@
 
 namespace Alchemy\Phrasea\Twig;
 
-use Alchemy\Phrasea\Utilities\String\Camelizer;
+use Alchemy\Phrasea\Utilities\StringHelper;
 
 class Camelize extends \Twig_Extension
 {
-    /**
-     * @var Camelizer
-     */
-    private $camelizer;
-
-    public function __construct(Camelizer $camelizer = null)
-    {
-        $this->camelizer = $camelizer ?: new Camelizer();
-    }
-
     /**
      *
      * @return string
@@ -47,6 +37,6 @@ class Camelize extends \Twig_Extension
 
     public function toCamelCase($str, $separator = '-', $pascalCase = false)
     {
-        return $this->camelizer->camelize($str, $separator, $pascalCase);
+        return StringHelper::camelize($str, $separator, $pascalCase);
     }
 }
