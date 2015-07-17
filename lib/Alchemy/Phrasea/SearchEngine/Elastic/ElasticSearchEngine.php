@@ -15,9 +15,11 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\LimitedStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -106,6 +108,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getAvailableDateFields()
     {
+        // TODO Use limited structure
         return array_keys($this->structure->getDateFields());
     }
 
@@ -260,7 +263,10 @@ class ElasticSearchEngine implements SearchEngineInterface
             'pre_tags' =>  ['[[em]]'],
             'post_tags' =>  ['[[/em]]'],
             'order' => 'score',
-            'fields' => ['caption.*' => new \stdClass()]
+            'fields' => [
+                'caption.*' => new \stdClass(),
+                'private_caption.*' => new \stdClass()
+            ]
         ];
 
         if ($aggs = $this->getAggregationQueryParams($options)) {
@@ -300,45 +306,21 @@ class ElasticSearchEngine implements SearchEngineInterface
         );
     }
 
+    /**
+     * @todo Move in search engine service provider
+     */
     private function createQueryContext(SearchEngineOptions $options)
     {
-        // TODO handle $user when null
-        $queryContext = new QueryContext(
-            $this->structure,
-            $this->getAllowedPrivateFields($options),
+        return new QueryContext(
+            $this->getLimitedStructure($options),
             $this->locales,
             $this->app['locale']
         );
-
-        return $queryContext;
     }
 
-    /**
-     * Returns an array of allowed collection base_id indexed by field name.
-     *
-     * [
-     *     "FieldName" => [1, 4, 5],
-     *     "OtherFieldName" => [4],
-     * ]
-     *
-     * @param SearchEngineOptions $options
-     * @return array
-     */
-    private function getAllowedPrivateFields(SearchEngineOptions $options)
+    private function getLimitedStructure(SearchEngineOptions $options)
     {
-        // Get structure data and cross it with user rights (from options object)
-        $allowed_collections = [];
-        foreach ($options->getBusinessFieldsOn() as $collection) {
-            $allowed_collections[] = $collection->get_base_id();
-        }
-
-        $map = $this->structure->getCollectionsUsedByPrivateFields();
-        // Remove collections base_id which access is restricted.
-        foreach ($map as $_ => &$collections) {
-            $collections = array_intersect($collections, $allowed_collections);
-        }
-
-        return $map;
+        return new LimitedStructure($this->structure, $options);
     }
 
     /**
@@ -422,12 +404,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $base_facet_agg['terms']['field'] = 'databox_name';
         $aggs['Base'] = $base_facet_agg;
 
-        foreach ($this->structure->getFacetFields() as $name => $field) {
+        $structure = $this->getLimitedStructure($options);
+        foreach ($structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $field_name = $field->getIndexFieldName();
-            $aggs[$name]['terms']['field'] = sprintf('%s.raw', $field_name);
+            $agg = [];
+            $agg['terms']['field'] = $field->getIndexField(true);
+            $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
         }
 
         return $aggs;

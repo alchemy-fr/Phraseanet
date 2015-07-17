@@ -17,21 +17,42 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
     {
         $structure = $this->prophesize(Structure::class)->reveal();
         $available_locales = ['ab', 'cd', 'ef'];
-        $context = new QueryContext($structure, [], $available_locales, 'fr');
+        $context = new QueryContext($structure, $available_locales, 'fr');
         $narrowed = $context->narrowToFields(['some_field']);
         $this->assertEquals(['some_field'], $narrowed->getFields());
     }
 
-    public function testFieldNormalization()
+    public function testGetUnrestrictedFields()
     {
-        $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
-        $restricted_field = new Field('bar', Mapping::TYPE_STRING, ['private' => true]);
+        $foo_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $bar_field = new Field('bar', Mapping::TYPE_STRING, ['private' => false]);
         $structure = $this->prophesize(Structure::class);
-        $structure->get('foo')->willReturn($public_field);
-        $structure->get('bar')->willReturn($restricted_field);
+        $structure->getUnrestrictedFields()->willReturn([
+            'foo' => $foo_field,
+            'bar' => $bar_field
+        ]);
 
-        $context = new QueryContext($structure->reveal(), [], [], 'fr');
-        $this->assertEquals('caption.foo', $context->normalizeField('foo'));
-        $this->assertEquals('private_caption.bar', $context->normalizeField('bar'));
+        $context = new QueryContext($structure->reveal(), [], 'fr');
+        $this->assertEquals([$foo_field, $bar_field], $context->getUnrestrictedFields());
+
+        $narrowed_context = new QueryContext($structure->reveal(), [], 'fr', ['foo']);
+        $this->assertEquals([$foo_field], $narrowed_context->getUnrestrictedFields());
+    }
+
+    public function testGetPrivateFields()
+    {
+        $foo_field = new Field('foo', Mapping::TYPE_STRING, ['private' => true]);
+        $bar_field = new Field('bar', Mapping::TYPE_STRING, ['private' => true]);
+        $structure = $this->prophesize(Structure::class);
+        $structure->getPrivateFields()->willReturn([
+            'foo' => $foo_field,
+            'bar' => $bar_field
+        ]);
+
+        $context = new QueryContext($structure->reveal(), [], 'fr');
+        $this->assertEquals([$foo_field, $bar_field], $context->getPrivateFields());
+
+        $narrowed_context = new QueryContext($structure->reveal(), [], 'fr', ['foo']);
+        $this->assertEquals([$foo_field], $narrowed_context->getPrivateFields());
     }
 }

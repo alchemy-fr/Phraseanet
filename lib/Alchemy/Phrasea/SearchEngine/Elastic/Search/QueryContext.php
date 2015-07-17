@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 /**
@@ -18,13 +20,10 @@ class QueryContext
     private $queryLocale;
     /** @var array */
     private $fields;
-    /** @var array */
-    private $privateCollectionMap;
 
-    public function __construct(Structure $structure, array $privateCollectionMap, array $locales, $queryLocale, array $fields = null)
+    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
-        $this->privateCollectionMap = $privateCollectionMap;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
@@ -40,24 +39,18 @@ class QueryContext
             }
         }
 
-        return new static($this->structure, $this->privateCollectionMap, $this->locales, $this->queryLocale, $fields);
+        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
     public function getRawFields()
     {
         if ($this->fields === null) {
-            return array(
-                'caption_all.raw',
-                'private_caption_all.raw'
-            );
+            return array('caption_all.raw');
         }
 
         $fields = array();
-        foreach ($this->fields as $name) {
-            $field = $this->normalizeField($name);
-            if ($field) {
-                $fields[] = sprintf('%s.raw', $field);
-            }
+        foreach ($this->getUnrestrictedFields() as $field) {
+            $fields[] = $field->getIndexField(true);
         }
 
         return $fields;
@@ -66,22 +59,60 @@ class QueryContext
     public function getLocalizedFields()
     {
         if ($this->fields === null) {
-            return array_merge(
-                $this->localizeField('caption_all'),
-                $this->localizeField('private_caption_all')
-            );
+            return $this->localizeFieldName('caption_all');
         }
 
         $fields = array();
-        foreach ($this->fields as $field) {
-            $normalized = $this->normalizeField($field);
-            foreach ($this->localizeField($normalized) as $fields[]);
+        foreach ($this->getUnrestrictedFields() as $field) {
+            foreach ($this->localizeField($field) as $fields[]);
         }
 
         return $fields;
     }
 
-    private function localizeField($field)
+    public function getUnrestrictedFields()
+    {
+        // TODO Restore search optimization by using "caption_all" field
+        // (only when $this->fields is null)
+        $fields = $this->structure->getUnrestrictedFields();
+        if ($this->fields !== null) {
+            $fields = array_intersect_key($fields, array_flip($this->fields));
+        }
+
+        return array_values($fields);
+    }
+
+    public function getPrivateFields()
+    {
+        $fields = $this->structure->getPrivateFields();
+        if ($this->fields !== null) {
+            $fields = array_intersect_key($fields, array_flip($this->fields));
+        }
+
+        return array_values($fields);
+    }
+
+    public function get($name)
+    {
+        if ($name instanceof ASTField) {
+            $name = $name->getValue();
+        }
+        $field = $this->structure->get($name);
+        if (!$field) {
+            return null;
+        }
+        return $field;
+    }
+
+    /**
+     * @todo Maybe we should put this logic in Field class?
+     */
+    public function localizeField(Field $field)
+    {
+        return $this->localizeFieldName($field->getIndexField());
+    }
+
+    private function localizeFieldName($field)
     {
         $fields = array();
         foreach ($this->locales as $locale) {
@@ -92,22 +123,6 @@ class QueryContext
         $fields[] = sprintf('%s.light^10', $field);
 
         return $fields;
-    }
-
-    /**
-     * Returns normalized name or null
-     *
-     * @param string $name
-     * @return null|string
-     */
-    public function normalizeField($name)
-    {
-        $field = $this->structure->get($name);
-        if (!$field) {
-            return null;
-        }
-        // TODO Field label dereferencing (we only want names)
-        return $field->getIndexFieldName();
     }
 
     public function getFields()

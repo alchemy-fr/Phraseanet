@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 
 class RangeExpression extends Node
 {
@@ -59,11 +61,15 @@ class RangeExpression extends Node
             }
         }
 
-        $field = $context->normalizeField($this->field->getValue());
-        $query = array();
-        $query['range'][$field] = $params;
+        $structure_field = $context->get($this->field);
+        if (!$structure_field) {
+            throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
+        }
 
-        return $query;
+        $query = [];
+        $query['range'][$structure_field->getIndexField()] = $params;
+
+        return QueryHelper::wrapPrivateFieldQuery($structure_field, $query);
     }
 
     public function getTermNodes()

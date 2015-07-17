@@ -64,6 +64,6 @@ class Concept
             }
         }
 
-        return $concepts;
+        return array_values($concepts);
     }
 }

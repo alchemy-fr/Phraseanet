@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 
 class TextNode extends AbstractTermNode implements ContextAbleInterface
@@ -36,19 +37,25 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
 
     public function buildQuery(QueryContext $context)
     {
-        $query = array(
-            'multi_match' => array(
-                'fields'   => $context->getLocalizedFields(),
-                'query'    => $this->text,
-                'operator' => 'and',
-            )
-        );
+        $query_builder = function (array $fields) {
+            return [
+                'multi_match' => [
+                    'fields'   => $fields,
+                    'query'    => $this->text,
+                    'operator' => 'and',
+                ]
+            ];
+        };
 
-        if ($conceptQueries = $this->buildConceptQueries($context)) {
-            $textQuery = $query;
-            $query = array();
-            $query['bool']['should'] = $conceptQueries;
-            $query['bool']['should'][] = $textQuery;
+        $fields = $context->getLocalizedFields();
+        $query = count($fields) ? $query_builder($fields) : null;
+
+        foreach (QueryHelper::buildPrivateFieldQueries($context, $query_builder) as $private_field_query) {
+            $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
+        }
+
+        foreach ($this->buildConceptQueries($context) as $concept_query) {
+            $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
         }
 
         return $query;

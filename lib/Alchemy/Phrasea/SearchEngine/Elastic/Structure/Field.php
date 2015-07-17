@@ -79,18 +79,45 @@ class Field
         Assertion::allScalar($this->used_by_collections);
     }
 
+    public function withOptions(array $options)
+    {
+        return new self($this->name, $this->type, $options + [
+            'searchable' => $this->is_searchable,
+            'private' => $this->is_private,
+            'facet' => $this->is_facet,
+            'thesaurus_roots' => $this->thesaurus_roots,
+            'used_by_collections' => $this->used_by_collections
+        ]);
+    }
+
     public function getName()
     {
         return $this->name;
     }
 
-    public function getIndexFieldName()
+    public function getIndexField($raw = false)
     {
         return sprintf(
-            '%scaption.%s',
+            '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
-            $this->name
+            $this->name,
+            $raw ? '.raw' : ''
         );
+    }
+
+    public static function toConceptPathIndexFieldArray(array $fields)
+    {
+        $index_fields = [];
+        foreach ($fields as $field) {
+            // TODO Skip fields without inference enabled?
+            $index_fields[] = $field->getConceptPathIndexField();
+        }
+        return $index_fields;
+    }
+
+    public function getConceptPathIndexField()
+    {
+        return sprintf('concept_path.%s', $this->name);
     }
 
     public function getType()
@@ -179,10 +206,7 @@ class Field
             )
         );
 
-        return new self($this->name, $this->type, [
-            'searchable' => $this->is_searchable,
-            'private' => $this->is_private,
-            'facet' => $this->is_facet,
+        return $this->withOptions([
             'thesaurus_roots' => $thesaurus_roots,
             'used_by_collections' => $used_by_collections
         ]);

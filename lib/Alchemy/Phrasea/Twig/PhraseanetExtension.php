@@ -48,14 +48,12 @@ class PhraseanetExtension extends \Twig_Extension
     public function getCaptionField(RecordInterface $record, $field, $value)
     {
         if ($record instanceof ElasticsearchRecord) {
-            $highlightKey = sprintf('caption.%s', $field);
-
             $highlights = $record->getHighlight();
-            if (false === isset($highlights[$highlightKey])) {
+            if (false === isset($highlights[$field])) {
                 return implode('; ', (array) $value);
             }
 
-            $highlightValue = $highlights[$highlightKey];
+            $highlightValue = $highlights[$field];
 
             // if field is multivalued, merge highlighted values with captions ones
             if (is_array($value)) {

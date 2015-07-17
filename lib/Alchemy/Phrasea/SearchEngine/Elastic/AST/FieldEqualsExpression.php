@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 
 class FieldEqualsExpression extends Node
 {
@@ -17,11 +19,15 @@ class FieldEqualsExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        $field = $context->normalizeField($this->field->getValue());
-        $query = array();
-        $query['term'][$field] = $this->value;
+        $structure_field = $context->get($this->field);
+        if (!$structure_field) {
+            throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
+        }
 
-        return $query;
+        $query = [];
+        $query['term'][$structure_field->getIndexField()] = $this->value;
+
+        return QueryHelper::wrapPrivateFieldQuery($structure_field, $query);
     }
 
     public function getTermNodes()

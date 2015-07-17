@@ -25,7 +25,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Elasticsearch\Client;
 use Hoa\Compiler;
@@ -69,7 +69,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['search_engine.structure'] = $app->share(function ($app) {
             $databoxes = $app->getDataboxes();
-            return Structure::createFromDataboxes($databoxes);
+            return GlobalStructure::createFromDataboxes($databoxes);
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {

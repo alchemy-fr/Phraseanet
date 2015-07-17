@@ -21,6 +21,20 @@ class ElasticsearchRecordHydrator
         $data = $hit['_source'];
         $highlight = isset($hit['highlight']) ? $hit['highlight'] : [];
 
+        // Strip field prefix
+        $private_prefix = 'private_';
+        $prefix = 'caption.';
+        foreach ($highlight as $key => $value) {
+            unset($highlight[$key]);
+            if (substr($key, 0, strlen($private_prefix)) === $private_prefix) {
+                $key = substr($key, strlen($private_prefix));
+            }
+            if (substr($key, 0, strlen($prefix)) == $prefix) {
+                $key = substr($key, strlen($prefix));
+            }
+            $highlight[$key] = $value;
+        }
+
         $record = new ElasticsearchRecord();
 
         $record->setPosition($position);
