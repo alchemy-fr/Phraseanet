@@ -20,6 +20,7 @@ class FacetsResponse implements JsonSerializable
             return;
         }
         foreach ($response['aggregations'] as $name => $aggregation) {
+            $aggregation = AggregationHelper::unwrapPrivateFieldAggregation($aggregation);
             if (!isset($aggregation['buckets'])) {
                 $this->throwAggregationResponseError();
             }

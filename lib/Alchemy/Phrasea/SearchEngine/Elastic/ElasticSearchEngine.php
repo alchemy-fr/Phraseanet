@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
@@ -311,10 +312,15 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createQueryContext(SearchEngineOptions $options)
     {
         return new QueryContext(
-            new LimitedStructure($this->structure, $options),
+            $this->getLimitedStructure($options),
             $this->locales,
             $this->app['locale']
         );
+    }
+
+    private function getLimitedStructure(SearchEngineOptions $options)
+    {
+        return new LimitedStructure($this->structure, $options);
     }
 
     /**
@@ -398,12 +404,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $base_facet_agg['terms']['field'] = 'databox_name';
         $aggs['Base'] = $base_facet_agg;
 
-        // TODO Use limited structure
-        foreach ($this->structure->getFacetFields() as $name => $field) {
+        $structure = $this->getLimitedStructure($options);
+        foreach ($structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $aggs[$name]['terms']['field'] = $field->getIndexField(true);
+            $agg = [];
+            $agg['terms']['field'] = $field->getIndexField(true);
+            $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
         }
 
         return $aggs;
