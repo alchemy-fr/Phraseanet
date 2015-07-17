@@ -20,6 +20,7 @@ class RegistrationService
         'firstname' => 'set_firstname',
         'lastname'  => 'set_lastname',
         'address'   => 'set_address',
+        'city'      => 'set_city',
         'zipcode'   => 'set_zip',
         'tel'       => 'set_tel',
         'fax'       => 'set_fax',
@@ -27,6 +28,7 @@ class RegistrationService
         'company'   => 'set_company',
         'position'  => 'set_position',
         'geonameid' => 'set_geonameid',
+        'notifications' => 'set_mail_notifications'
     );
 
     /**
