@@ -38,43 +38,6 @@ class ORMServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         /**
-         * Provide configuration for DoctrineServiceProvider.
-         */
-        $app['dbs.service.conf'] = $app->share(function() use ($app) {
-            return array(
-                'dbs.options' => $app['dbs.options']
-            );
-        });
-
-        /**
-         * Provide configuration for DoctrineORMServiceProvider.
-         */
-        $app['orm.service.conf'] = $app->share(function() use ($app) {
-            return array(
-                // Override "orm.cache.configurer" service provided for benefiting
-                // of "phraseanet.cache-service"
-                "orm.cache.configurer" => $app->protect(function($name, ORMConfig $config, $options) use ($app)  {
-                    $config->setMetadataCacheImpl($app['phraseanet.cache-service']->factory(
-                        'ORM_metadata', $app['orm.cache.driver'], $app['orm.cache.options']
-                    ));
-                    $config->setQueryCacheImpl($app['phraseanet.cache-service']->factory(
-                        'ORM_query', $app['orm.cache.driver'], $app['orm.cache.options']
-                    ));
-                    $config->setResultCacheImpl($app['phraseanet.cache-service']->factory(
-                        'ORM_result', $app['orm.cache.driver'], $app['orm.cache.options']
-                    ));
-                    $config->setHydrationCacheImpl($app['phraseanet.cache-service']->factory(
-                        'ORM_hydration', $app['orm.cache.driver'], $app['orm.cache.options']
-                    ));
-                }),
-                "orm.proxies_dir" => $app['root.path'].'/resources/proxies',
-                "orm.auto_generate_proxies" => $app['debug'],
-                "orm.proxies_namespace" => 'Alchemy\Phrasea\Model\Proxies',
-                "orm.em.options" => $app['orm.ems.options']
-            );
-        });
-
-        /**
          * Provides DSN string using database information
          */
         $app['db.dsn'] = $app->protect(function(array $params) use ($app) {
@@ -321,11 +284,21 @@ SQL;
             return $key;
         });
 
-        $app['dbal.evm.register.listeners'] = $app->protect(function($evm) use($app) {
-            $evm->addEventSubscriber(new TimestampableListener());
+        // Listeners should be attached with their events as info.
+        $app['dbal.evm.listeners'] = $app->share(function () {
+            return new \SplObjectStorage();
         });
 
-        $app['dbal.config.register.loggers'] = $app->protect(function($config) use($app) {
+        $app['dbal.evm.register.listeners'] = $app->protect(function(EventManager $evm) use ($app) {
+            $evm->addEventSubscriber(new TimestampableListener());
+            /** @var \SplObjectStorage $listeners */
+            $listeners = $app['dbal.evm.listeners'];
+            foreach ($listeners as $listener) {
+                $evm->addEventListener($listeners[$listener], $listener);
+            }
+        });
+
+        $app['dbal.config.register.loggers'] = $app->protect(function(Configuration $config) use ($app) {
             if ($app->getEnvironment() === PhraseaApplication::ENV_DEV) {
                 $config->setSQLLogger($app['orm.query.logger']);
             }
@@ -523,21 +496,23 @@ SQL;
             return $options;
         });
 
-        /**
-         * Return orm configuration for a connection given its unique id
-         */
+        $app['orm.options.mappings'] = $app->share(function (PhraseaApplication $app) {
+            return array(
+                array(
+                    "type" => "annotation",
+                    "alias" => "Phraseanet",
+                    "use_simple_annotation_reader" => false,
+                    "namespace" => 'Alchemy\Phrasea\Model\Entities',
+                    "path" => $app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities',
+                )
+            );
+        });
+
+        // Return orm configuration for a connection given its unique id
         $app['orm.options'] = $app->protect(function($connection) use ($app) {
             return array(
                 "connection" => $connection,
-                "mappings" => array(
-                    array(
-                        "type" => "annotation",
-                        "alias" => "Phraseanet",
-                        "use_simple_annotation_reader" => false,
-                        "namespace" => 'Alchemy\Phrasea\Model\Entities',
-                        "path" => $app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities',
-                    )
-                ),
+                "mappings" => $app['orm.options.mappings'],
                 "types" => array(
                     'blob' => 'Alchemy\Phrasea\Model\Types\Blob',
                     'enum' => 'Alchemy\Phrasea\Model\Types\Enum',

@@ -15,6 +15,8 @@ use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
+use Alchemy\Phrasea\Cache\Factory;
+use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
@@ -78,6 +80,7 @@ use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
+use Doctrine\ORM\Configuration;
 use FFMpeg\FFMpegServiceProvider;
 use Gedmo\DoctrineExtensions as GedmoExtension;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
@@ -175,11 +178,11 @@ class Application extends SilexApplication
         $this->register(new CacheConnectionServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider());
-        $this->register(new ORMServiceProvider());
-        $this->register(new DoctrineServiceProvider(), $this['dbs.service.conf']);
+        $this->register(new DoctrineServiceProvider());
         $this->setupDBAL();
-        $this->register(new DoctrineOrmServiceProvider(), $this['orm.service.conf']);
+        $this->register(new DoctrineOrmServiceProvider());
         $this->setupOrms();
+        $this->register(new ORMServiceProvider());
         $this->register(new BasketMiddlewareProvider());
         $this->register(new TokenMiddlewareProvider());
         $this->register(new AccountServiceProvider());
@@ -880,6 +883,30 @@ class Application extends SilexApplication
 
     private function setupOrms()
     {
+        $app = $this;
+
+        // Override "orm.cache.configurer" service provided for benefiting
+        // of "phraseanet.cache-service"
+        $app['orm.cache.configurer'] = $app->protect(function($name, Configuration $config, $options) use ($app)  {
+            /** @var Manager $service */
+            $service = $app['phraseanet.cache-service'];
+            $config->setMetadataCacheImpl(
+                $service->factory('ORM_metadata', $app['orm.cache.driver'], $app['orm.cache.options'])
+            );
+            $config->setQueryCacheImpl(
+                $service->factory('ORM_query', $app['orm.cache.driver'], $app['orm.cache.options'])
+            );
+            $config->setResultCacheImpl(
+                $service->factory('ORM_result', $app['orm.cache.driver'], $app['orm.cache.options'])
+            );
+            $config->setHydrationCacheImpl(
+                $service->factory('ORM_hydration', $app['orm.cache.driver'], $app['orm.cache.options'])
+            );
+        });
+        $app['orm.proxies_dir'] = $app['root.path'].'/resources/proxies';
+        $app['orm.auto_generate_proxies'] = $app['debug'];
+        $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
+
         $this['orm.ems'] = $this->share($this->extend('orm.ems', function ($ems, $app) {
             GedmoExtension::registerAnnotations();
 

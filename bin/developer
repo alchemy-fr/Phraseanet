@@ -69,6 +69,7 @@ $cli = new CLI("
             . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
 
 if ($cli['configuration.store']->isSetup()) {
+    $cli->loadPlugins();
     $helpers = [
         'db' => new ConnectionHelper($cli['orm.em']->getConnection()),
         'em' => new EntityManagerHelper($cli['orm.em'])
