@@ -541,7 +541,7 @@ class Users implements ControllerProviderInterface
                 }
 
                 foreach ($done as $usr => $bases) {
-                    $sql = 'SELECT usr_mail FROM usr WHERE usr_id = :usr_id';
+                    $sql = 'SELECT usr_mail, mail_notifications FROM usr WHERE usr_id = :usr_id';
 
                     $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                     $stmt->execute(array(':usr_id' => $usr));
@@ -573,7 +573,7 @@ class Users implements ControllerProviderInterface
                     \API_Webhook::create($app['phraseanet.appbox'], $hookType, $hookData);
 
                     if ($row) {
-                        if (\Swift_Validate::email($row['usr_mail'])) {
+                        if (\Swift_Validate::email($row['usr_mail']) && $row['mail_notifications'] != 0) {
                             if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
                                 $message = '';
 
