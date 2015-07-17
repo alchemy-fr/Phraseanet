@@ -15,7 +15,7 @@ abstract class eventsmanager_eventAbstract
 
     /**
      *
-     * @var eventsmanager
+     * @var eventsmanager_broker
      */
     protected $broker;
 

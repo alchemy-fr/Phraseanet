@@ -94,10 +94,10 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     $readyToSend = false;
                     try {
                         $token = $this->app['tokens']->getUrlToken(
-                                \random::TYPE_FEED_ENTRY
-                                , $user_to_notif->get_id()
-                                , null
-                                , $entry->get_id()
+                                \random::TYPE_FEED_ENTRY,
+                                $user_to_notif->get_id(),
+                                null,
+                                $entry->get_id()
                         );
 
                         $url = $this->app->url('lightbox', array('LOG' => $token));
