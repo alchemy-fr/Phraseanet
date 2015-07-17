@@ -83,7 +83,7 @@ class API_Webhook
 
     public function delete()
     {
-        $sql = 'DELETE FROM api_webhooks w WHERE w.id = :id';
+        $sql = 'DELETE FROM api_webhooks WHERE id = :id';
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
