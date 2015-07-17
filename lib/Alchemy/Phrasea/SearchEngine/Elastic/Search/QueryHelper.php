@@ -8,8 +8,14 @@ class QueryHelper
 {
     private function __construct() {}
 
-    public static function buildPrivateFieldQueries(QueryContext $context, \Closure $matcher_callback)
+    public static function buildPrivateFieldQueries(QueryContext $context, \Closure $matcher_callback, \Closure $index_fields_callback = null)
     {
+        if ($index_fields_callback === null) {
+            $index_fields_callback = function (Field $field) use ($context) {
+                return $context->localizeField($field);
+            };
+        }
+
         // We make a boolean clause for each collection set to shrink query size
         // (instead of a clause for each field, with his collection set)
         $fields_map = [];
@@ -22,7 +28,7 @@ class QueryHelper
                 $fields_map[$hash] = [];
             }
             // Merge fields with others having the same collections
-            $fields = $context->localizeField($field);
+            $fields = (array) $index_fields_callback($field);
             foreach ($fields as $fields_map[$hash][]);
         }
 
@@ -31,7 +37,7 @@ class QueryHelper
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
             $queries[] = self::restrictQueryToCollections(
-                $matcher_callback->__invoke($fields),
+                $matcher_callback($fields),
                 $collections_map[$hash]
             );
         }
@@ -88,7 +94,7 @@ class QueryHelper
             // Here we make sure we can only match on allowed collections
             $query = [];
             $query['bool']['must'][0]['terms']['base_id'] = $collections_map[$hash];
-            foreach ($matchers_callback->__invoke($fields) as $concept_query) {
+            foreach ($matchers_callback($fields) as $concept_query) {
                 $query = self::applyBooleanClause($query, 'should', $concept_query);
             }
             $queries[] = $query;
