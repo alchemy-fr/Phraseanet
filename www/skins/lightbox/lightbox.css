@@ -11,6 +11,10 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+#mainContent {
+    top: 30px;
+}
+
 #mainMenu .title, #mainMenu a, #mainMenu b, #mainMenu span {
     color: #212121;
 }
