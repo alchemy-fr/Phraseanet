@@ -885,7 +885,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @return int
-     * @deprecated use {@link self::getDatabox} instead
+     * @deprecated use {@link self::getDataboxId} instead
      */
     public function get_sbas_id()
     {
