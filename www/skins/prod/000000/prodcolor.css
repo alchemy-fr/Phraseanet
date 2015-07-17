@@ -1583,8 +1583,17 @@ form.phrasea_query input.query {
     background-image: url('/skins/icons/push16.png');
     background-repeat: no-repeat;
     background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
+    background-size: 32px 32px;
+    padding-left: 40px;
+    min-height: 32px;
+}
+@media  (-o-min-device-pixel-ratio: 2),
+        (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 2dppx) {
+    .history-validate, .history-push {
+        background-image: url('/skins/icons/push16.png');
+        background-size: 32px 32px;
+    }
 }
 
 .history-validate {
