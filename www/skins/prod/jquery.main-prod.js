@@ -575,9 +575,10 @@ function getFacetsTree() {
 
                     var length = 15;
                     var facetFilterString = facetFilter;
-                    var facetFilterTruncatedString = facetFilterString.substring(0,length);
-
-                    s_label.appendChild(document.createTextNode(facetFilterTruncatedString + "…"));
+                    if( facetFilterString.length > length) {
+                        facetFilterString = facetFilterString.substring(0,length) + '…';
+                    }
+                    s_label.appendChild(document.createTextNode(facetFilterString));
 
                     var s_closer = document.createElement("A");
                     s_closer.setAttribute("class", "facetFilter-closer");
