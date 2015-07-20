@@ -100,7 +100,7 @@ class task_period_apiwebhooks extends task_appboxAbstract
             return;
         }
 
-        $feed = new Feed_Adapter($this->dependencyContainer, $data->feed_id);
+        $feed = new \Feed_Adapter($this->dependencyContainer, $data->feed_id);
         $entry = new \Feed_Entry_Adapter($this->dependencyContainer, $feed, $data->entry_id);
         $query = new \User_Query($this->dependencyContainer);
 
