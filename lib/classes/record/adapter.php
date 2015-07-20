@@ -223,6 +223,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             'mime' => $this->mime,
             'sha256' => $this->sha256,
             'original_name' => $this->original_name,
+            'bitly' => $this->bitly_link,
             'type' => $this->type,
             'grouping' => $this->grouping,
             'uuid' => $this->uuid,
