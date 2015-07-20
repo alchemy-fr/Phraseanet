@@ -157,6 +157,11 @@
 {% block javascript %}
     <script src="{{ path('minifier', { 'f' : 'assets/fancytree/dist/jquery.fancytree-all.js'}) }}" type="text/javascript"></script>
     {% include "common/templates.html.twig" %}
+    <script>
+        $(function() {
+            $("#plugins").accordion();
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -183,6 +188,12 @@
                     {% block tabs_panel %}
                         <div id="retractableButton"></div>
                         {% include 'prod/tab_headers.html.twig' %}
+                        <div id="plugins" class="PNB" style="top:52px;">
+                            {% set workzone_plugins = app['plugin.workzone'] %}
+                            {% for plugin in workzone_plugins.keys() %}
+                                {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
+                            {% endfor %}
+                        </div>
                         <div id="baskets" class="PNB">
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                             {{WorkZoneMacros.make_bloc(app, WorkZone)}}

@@ -433,6 +433,9 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Core());
                 $twig->addExtension(new \Twig_Extension_Optimizer());
                 $twig->addExtension(new \Twig_Extension_Escaper());
+                if ($app['debug']) {
+                    $twig->addExtension(new \Twig_Extension_Debug());
+                }
 
                 // add filter trans
                 $twig->addExtension(new TranslationExtension($app['translator']));
