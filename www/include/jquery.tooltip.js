@@ -40,6 +40,7 @@
             fade: true,
             showURL: true,
             outside: true,
+            isBrowsable: false,
             extraClass: "",
             top: 15,
             left: 15,
@@ -199,7 +200,8 @@
             helper.url.hide();
 
         // add an optional class for this tip
-        //		helper.parent.addClass(settings(this).extraClass);
+        helper.parent.removeClass();
+        helper.parent.addClass(settings(this).extraClass);
         if (this.ajaxLoad) {
             clearTimeout($.tooltip.ajaxTimeout);
             $.tooltip.ajaxTimeout = setTimeout("$.tooltip.delayAjax()", 300);
@@ -470,6 +472,20 @@
         } else {
             helper.parent.show();
         }
+
+
+        $(helper.parent[0])
+            .unbind('mouseleave')
+            .mouseleave(function () {
+                if (settings($.tooltip.current).isBrowsable) {
+                    // if tooltip has scrollable content or selectionnable text - should be closed on mouseleave:
+                    $.tooltip.currentHover = false;
+                    helper.parent.hide();
+                } else {
+                    console.log('ok owned')
+                }
+            });
+
         update();
     }
 
@@ -510,11 +526,13 @@
         // stop updating when tracking is disabled and the tooltip is visible
         if (!track && helper.parent.is(":visible")) {
             $(document.body).unbind('mousemove', update);
+            $.tooltip.currentHover = true;
         }
 
         // if no current element is available, remove this listener
         if ($.tooltip.current === null) {
             $(document.body).unbind('mousemove', update);
+            $.tooltip.currentHover = false;
             return;
         }
 
@@ -573,8 +591,16 @@
 
     // hide helper and restore added classes and the title
     function hide(event) {
+        if( $.tooltip.currentHover && settings($.tooltip.current).isBrowsable ) {
+            return;
+        }
+
         if ($.tooltip.blocked || !$.tooltip.current)
             return;
+
+        $(helper.parent[0])
+            .unbind('mouseleave');
+
         // clear timeout if possible
         if (tID)
             clearTimeout(tID);
