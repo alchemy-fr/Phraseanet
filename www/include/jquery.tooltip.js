@@ -481,8 +481,6 @@
                     // if tooltip has scrollable content or selectionnable text - should be closed on mouseleave:
                     $.tooltip.currentHover = false;
                     helper.parent.hide();
-                } else {
-                    console.log('ok owned')
                 }
             });
 
