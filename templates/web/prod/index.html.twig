@@ -140,6 +140,11 @@
 
 {% block javascript %}
     {% include "common/templates.html.twig" %}
+    <script>
+        $(function() {
+            $("#plugins").accordion();
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -182,12 +187,25 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% if app['plugin.workzone'].keys() is not empty %}
+                        <li>
+                            <a href="#plugins" class="WZplugins">
+                                <img src="/skins/icons/disktt_0.gif" title="{% trans 'phraseanet:: plugin.workzone' %}"/>
+                            </a>
+                        </li>
+                        {% endif %}
                         <li style="float:right;">
                             <a href="#" class="escamote" style="margin:8px 0;">
                                 <img src="/skins/icons/workzoneEscamote.png" title="{% trans 'Close the WorkZone' %}"/>
                             </a>
                         </li>
                     </ul>
+                    <div id="plugins" class="PNB" style="top:52px;">
+                        {% set workzone_plugins = app['plugin.workzone'] %}
+                        {% for plugin in workzone_plugins.keys() %}
+                            {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
+                        {% endfor %}
+                    </div>
                     <div id="baskets" class="PNB" style="top:52px;">
                         {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                         {{WorkZoneMacros.make_bloc(app, WorkZone)}}

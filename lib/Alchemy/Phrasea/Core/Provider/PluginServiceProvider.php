@@ -18,12 +18,15 @@ class PluginServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['plugin.workzone'] = $app->share(function () {
+            return new \Pimple();
+        });
     }
 
     public function boot(Application $app)
     {
         $app['twig'] = $app->share(
-            $app->extend('twig', function ($twig, Application $app) {
+            $app->extend('twig', function (\Twig_Environment $twig) {
                 $function = new \Twig_SimpleFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
                 $twig->addFunction($function);
 

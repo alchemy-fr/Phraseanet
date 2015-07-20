@@ -534,7 +534,7 @@ class Application extends SilexApplication
     public function setupTwig()
     {
         $this['twig'] = $this->share(
-            $this->extend('twig', function ($twig, $app) {
+            $this->extend('twig', function (\Twig_Environment $twig, $app) {
                 $paths = require $app['plugins.directory'] . '/twig-paths.php';
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
@@ -562,6 +562,9 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Core());
                 $twig->addExtension(new \Twig_Extension_Optimizer());
                 $twig->addExtension(new \Twig_Extension_Escaper());
+                if ($app['debug']) {
+                    $twig->addExtension(new \Twig_Extension_Debug());
+                }
 
                 // add filter trans
                 $twig->addExtension(new \Twig_Extensions_Extension_I18n());
