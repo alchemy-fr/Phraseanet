@@ -907,7 +907,7 @@ class Application extends SilexApplication
         $app['orm.auto_generate_proxies'] = $app['debug'];
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
 
-        $this['orm.ems'] = $this->share($this->extend('orm.ems', function ($ems, $app) {
+        $this['orm.ems'] = $this->share($this->extend('orm.ems', function (\Pimple $ems, $app) {
             GedmoExtension::registerAnnotations();
 
             foreach ($ems->keys() as $key) {
