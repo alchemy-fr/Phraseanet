@@ -390,7 +390,12 @@ function afterSearch() {
 
     answAjaxrunning = false;
     $('#answers').removeClass('loading');
-    $('.captionTips, .captionRolloverTips, .infoTips').tooltip({
+    $('.captionTips, .captionRolloverTips').tooltip({
+        delay: 0,
+        isBrowsable: true,
+        extraClass: 'caption-tooltip-container'
+    });
+    $('.infoTips').tooltip({
         delay: 0
     });
     $('.previewTips').tooltip({
@@ -570,9 +575,10 @@ function getFacetsTree() {
 
                     var length = 15;
                     var facetFilterString = facetFilter;
-                    var facetFilterTruncatedString = facetFilterString.substring(0,length);
-
-                    s_label.appendChild(document.createTextNode(facetFilterTruncatedString + "…"));
+                    if( facetFilterString.length > length) {
+                        facetFilterString = facetFilterString.substring(0,length) + '…';
+                    }
+                    s_label.appendChild(document.createTextNode(facetFilterString));
 
                     var s_closer = document.createElement("A");
                     s_closer.setAttribute("class", "facetFilter-closer");
@@ -591,7 +597,6 @@ function getFacetsTree() {
 
                     s_closer.click(
                         function(event) {
-                            console.debug(this);
                             event.stopPropagation();
                             var facetTitle = $(this).data("facetTitle");
                             delete selectedFacetValues[facetTitle];
