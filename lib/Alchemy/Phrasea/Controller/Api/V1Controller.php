@@ -854,7 +854,7 @@ class V1Controller extends Controller
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
-            $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
+            $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -1524,7 +1524,7 @@ class V1Controller extends Controller
         $record->set_binary_status(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         $ret = ["status" => $this->listRecordStatus($record)];
 
@@ -2146,12 +2146,12 @@ class V1Controller extends Controller
         $records = $this->addOrDelStoryRecordsFromData($story, $recordsData, $action);
         $result = Result::create($request, array('records' => $records));
 
-        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
         return $result->createResponse();
     }
 
-    private function addOrDelStoryRecordsFromData(\record_adapter $story, Array $recordsData, $action)
+    private function addOrDelStoryRecordsFromData(\record_adapter $story, array $recordsData, $action)
     {
         $records = array();
         $schema = $this->getJsonSchemaRetriever()
@@ -2160,7 +2160,7 @@ class V1Controller extends Controller
 
         foreach ($recordsData as $data) {
             $records[] = $this->addOrDelStoryRecord($story, $data, $schema, $action);
-            if($action === 'ADD' && !$cover_set && $data->{'use_as_cover'} === true) {
+            if($action === 'ADD' && !$cover_set && isset($data->{'use_as_cover'}) && $data->{'use_as_cover'} === true) {
                 // because we can try many records as cover source, we let it fail
                 $cover_set = ($this->setStoryCover($story, $data->{'record_id'}, true) !== false);
             }
@@ -2280,7 +2280,7 @@ class V1Controller extends Controller
             );
         }
 
-        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
         return $record->get_serialize_key();
     }
