@@ -854,7 +854,7 @@ class V1Controller extends Controller
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
-            $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
+            $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -1524,7 +1524,7 @@ class V1Controller extends Controller
         $record->set_binary_status(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         $ret = ["status" => $this->listRecordStatus($record)];
 
@@ -2115,12 +2115,58 @@ class V1Controller extends Controller
 
         if (isset($data->{'story_records'})) {
             $recordsData = (array) $data->{'story_records'};
-            foreach ($recordsData as $data) {
-                $this->addOrDelStoryRecord($story, $data, $schemaRecordStory, 'ADD');
-            }
+            $this->addOrDelStoryRecordsFromData($story, $recordsData, 'ADD');
         }
 
         return $story;
+    }
+
+    private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
+    {
+        $content = $request->getContent();
+
+        $data = @json_decode($content);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
+        }
+
+        if (!isset($data->{'story_records'})) {
+            $this->app->abort(400, 'Missing "story_records" property');
+        }
+
+        $recordsData = $data->{'story_records'};
+
+        if (!is_array($recordsData)) {
+            $recordsData = array($recordsData);
+        }
+
+        $story = new \record_adapter($this->app, $databox_id, $story_id);
+
+        $records = $this->addOrDelStoryRecordsFromData($story, $recordsData, $action);
+        $result = Result::create($request, array('records' => $records));
+
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        return $result->createResponse();
+    }
+
+    private function addOrDelStoryRecordsFromData(\record_adapter $story, array $recordsData, $action)
+    {
+        $records = array();
+        $schema = $this->getJsonSchemaRetriever()
+            ->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+        $cover_set = false;
+
+        foreach ($recordsData as $data) {
+            $records[] = $this->addOrDelStoryRecord($story, $data, $schema, $action);
+            if($action === 'ADD' && !$cover_set && isset($data->{'use_as_cover'}) && $data->{'use_as_cover'} === true) {
+                // because we can try many records as cover source, we let it fail
+                $cover_set = ($this->setStoryCover($story, $data->{'record_id'}, true) !== false);
+            }
+        }
+
+        return $records;
     }
 
     private function addOrDelStoryRecord(\record_adapter $story, $data, $jsonSchema, $action)
@@ -2160,50 +2206,14 @@ class V1Controller extends Controller
         return $record->get_serialize_key();
     }
 
-    private function addOrDelStoryRecords(Request $request, $databox_id, $story_id, $action)
-    {
-        $content = $request->getContent();
-
-        $data = @json_decode($content);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
-        }
-
-        if (!isset($data->{'story_records'})) {
-            $this->app->abort(400, 'Missing "story_records" property');
-        }
-
-        $recordsData = $data->{'story_records'};
-
-        if (!is_array($recordsData)) {
-            $recordsData = array($recordsData);
-        }
-
-        $story = new \record_adapter($this->app, $databox_id, $story_id);
-
-        $schema = $this->getJsonSchemaRetriever()
-            ->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_record.json');
-
-        $records = array();
-        foreach ($recordsData as $data) {
-            $records[] = $this->addOrDelStoryRecord($story, $data, $schema, $action);
-        }
-
-        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
-
-        $result = Result::create($request, array('records' => $records));
-        return $result->createResponse();
-    }
-
     public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
     {
-        return $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'ADD');
+        return $this->addOrDelStoryRecordsFromRequest($request, $databox_id, $story_id, 'ADD');
     }
 
     public function delRecordsFromStoryAction(Request $request, $databox_id, $story_id)
     {
-        return $this->addOrDelStoryRecords($request, $databox_id, $story_id, 'DEL');
+        return $this->addOrDelStoryRecordsFromRequest($request, $databox_id, $story_id, 'DEL');
     }
 
     public function setStoryCoverAction(Request $request, $databox_id, $story_id)
@@ -2228,7 +2238,7 @@ class V1Controller extends Controller
 
         $story = new \record_adapter($this->app, $databox_id, $story_id);
 
-        // we do NOT let "set_story_cover()" fail : pass false as last arg
+        // we do NOT let "setStoryCover()" fail : pass false as last arg
         $record_key = $this->setStoryCover($story, $data->{'record_id'}, false);
 
         $result = Result::create($request, array($record_key));
@@ -2270,7 +2280,7 @@ class V1Controller extends Controller
             );
         }
 
-        $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
         return $record->get_serialize_key();
     }
