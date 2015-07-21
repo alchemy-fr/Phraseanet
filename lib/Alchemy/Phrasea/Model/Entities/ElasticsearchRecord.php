@@ -118,7 +118,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setMimeType($mimeType)
     {
         if (null === $mimeType || '' === $mimeType) {
-            $mimeType = $this->isStory() ? 'regroup_doc' : 'application/octet-stream';
+            $mimeType = 'application/octet-stream';
         }
         $this->mimeType = $mimeType;
     }
