@@ -42,10 +42,17 @@ class PluginServiceProvider implements ServiceProviderInterface
         $app['plugin.workzone'] = $app->share(function () {
             return new \Pimple();
         });
+
+        $app['plugin.locale.textdomains'] = array();
     }
 
     public function boot(Application $app)
     {
+        foreach ($app['plugin.locale.textdomains'] as $textdomain => $dir) {
+            bind_textdomain_codeset($textdomain, 'UTF-8');
+            bindtextdomain($textdomain, $dir);
+        }
+
         $app['twig'] = $app->share(
             $app->extend('twig', function (\Twig_Environment $twig) {
                 $function = new \Twig_SimpleFunction('plugin_asset', ['Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset']);

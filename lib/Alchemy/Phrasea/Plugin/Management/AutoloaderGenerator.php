@@ -36,6 +36,10 @@ class AutoloaderGenerator
         return $this;
     }
 
+    /**
+     * @param Manifest[] $manifests
+     * @return string
+     */
     private function createLoginLess($manifests)
     {
         $buffer = <<<EOF
@@ -56,6 +60,10 @@ EOF;
         return $buffer;
     }
 
+    /**
+     * @param Manifest[] $manifests
+     * @return string
+     */
     private function createAccountLess($manifests)
     {
         $buffer = <<<EOF
@@ -85,6 +93,10 @@ EOF;
         return $this;
     }
 
+    /**
+     * @param Manifest[] $manifests
+     * @return string
+     */
     private function createLoader($manifests)
     {
         $buffer = <<<EOF
@@ -117,6 +129,10 @@ EOF;
         return $buffer;
     }
 
+    /**
+     * @param Manifest[] $manifests
+     * @return string
+     */
     private function createServices($manifests)
     {
         $buffer = <<<EOF
@@ -128,11 +144,27 @@ EOF;
 use Alchemy\Phrasea\Application;
 
 return call_user_func(function (Application \$app) {
+    \$textdomains =& \$app['plugin.locale.textdomains'];
 
 EOF;
 
         foreach ($manifests as $manifest) {
             $pluginBuffer = '';
+
+            $localePath = $this->getPluginBaseDir($manifest) . DIRECTORY_SEPARATOR . 'locale';
+            $textdomain = 'plugin-' . $manifest->getName();
+
+            if (is_dir($this->pluginDirectory . $localePath)) {
+                $quotedName = $this->quote($manifest->getName());
+                $quotedPath = $this->quote($localePath);
+                $pluginBuffer .= <<<EOF
+
+        // Plugin $quotedName
+        \$textdomains['$textdomain'] = __DIR__ . $quotedPath;
+
+EOF;
+            }
+
             foreach ($manifest->getServices() as $service) {
                 $class = $service['class'];
                 $pluginBuffer .= <<<EOF
@@ -163,6 +195,10 @@ EOF;
         return "    if (\$app['plugins.manager']->isEnabled('$name')) {\n" . $wrapped . "    }\n";
     }
 
+    /**
+     * @param Manifest[] $manifests
+     * @return string
+     */
     private function createCommands($manifests)
     {
         $buffer = <<<EOF
@@ -183,6 +219,7 @@ EOF;
                 $class = $command['class'];
                 $pluginBuffer .= <<<EOF
     \$cli->command($class::create());
+
 EOF;
             }
             $buffer .= $this->wrapWithConditionnal($manifest, $pluginBuffer);
@@ -247,5 +284,14 @@ EOF;
     private function quote($string)
     {
         return "'".str_replace("'", "\\'", $string)."'";
+    }
+
+    /**
+     * @param Manifest $manifest
+     * @return string
+     */
+    private function getPluginBaseDir(Manifest $manifest)
+    {
+        return DIRECTORY_SEPARATOR . $manifest->getName();
     }
 }
