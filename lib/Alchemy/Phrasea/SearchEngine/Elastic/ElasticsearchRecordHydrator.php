@@ -44,7 +44,7 @@ class ElasticsearchRecordHydrator
         $createdOn = igorw\get_in($data, ['created_on']);
         $record->setCreated($createdOn ? new \DateTime($createdOn) : $createdOn);
         $record->setDataboxId(igorw\get_in($data, ['databox_id'], 0));
-        $record->setIsStory(igorw\get_in($data, ['type']) === 'story');
+        $record->setIsStory(igorw\get_in($data, ['record_type']) === 'story');
         $record->setMimeType(igorw\get_in($data, ['mime'], 'application/octet-stream'));
         $record->setOriginalName(igorw\get_in($data, ['original_name'], ''));
         $record->setRecordId(igorw\get_in($data, ['record_id'], 0));

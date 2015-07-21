@@ -51,7 +51,7 @@ class CoreHydrator implements HydratorInterface
         unset($record['parent_record_id']);
 
         if (!$record['mime']) {
-            $record['mime'] = 'application/octet-stream';
+            $record['mime'] = '';
         }
 
         return $record;
