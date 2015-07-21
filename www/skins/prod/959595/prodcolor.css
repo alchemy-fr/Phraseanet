@@ -1573,76 +1573,49 @@ form.phrasea_query input.query {
     width: 600px;
 }
 
+.history-collection {
+    background-image: url('/skins/icons/chgcoll_history.png');
+}
+
+.history-status {
+    background-image: url('/skins/icons/chgstatus_history.png');
+}
+
+.history-print {
+    background-image: url('/skins/icons/print_history.png');
+}
+
+.history-substit, .history-publish {
+    background-image: url('/skins/icons/imgtools_history.png');
+}
+
+.history-download, .history-mail, .history-ftp {
+    background-image: url('/skins/icons/disktt_history.png');
+}
+.history-edit {
+    background-image: url('/skins/icons/ppen_history.png');
+}
+
 .history-validate, .history-push {
     background-image: url('/skins/icons/push16.png');
+}
+
+.history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push {
     background-repeat: no-repeat;
     background-position: center left;
-    background-size: 32px 32px;
-    padding-left: 40px;
-    min-height: 32px;
+    background-size: 16px 16px;
+    padding-left: 24px;
+    min-height: 16px;
 }
+
 @media	only screen and (-webkit-min-device-pixel-ratio: 1.3),
 only screen and (-o-min-device-pixel-ratio: 13/10),
 only screen and (min-resolution: 120dpi)
 {
-    .history-validate, .history-push {
-        background-image: url('/skins/icons/push16.png');
-        background-size: 32px 32px;
+    .history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push {
+        background-size: 16px 16px;
     }
 }
-
-.history-validate {
-    background-image: url('/skins/icons/push16.png');
-}
-
-.history-edit {
-    background-image: url('images/ppen_history.gif');
-    background-repeat: no-repeat;
-    background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
-}
-
-.history-collection {
-    background-image: url('images/chgcoll_history.gif');
-    background-repeat: no-repeat;
-    background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
-}
-
-.history-status {
-    background-image: url('images/chgstatus_history.gif');
-    background-repeat: no-repeat;
-    background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
-}
-
-.history-print {
-    background-image: url('images/print_history.gif');
-    background-repeat: no-repeat;
-    background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
-}
-
-.history-substit,.history-publish {
-    background-image: url('images/imgtools_history.gif');
-    background-repeat: no-repeat;
-    background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
-}
-
-.history-download, .history-mail, .history-ftp {
-    background-image: url('images/disktt_history.gif');
-    background-repeat: no-repeat;
-    background-position: center left;
-    padding-left: 30px;
-    min-height: 20px;
-}
-
 /******* ACTIONS **************************************************************/
 
 .toolbutton {
