@@ -622,7 +622,7 @@ class V1Controller extends Controller
     public function listQuarantineAction(Request $request)
     {
         $offset_start = max($request->get('offset_start', 0), 0);
-        $per_page = min(max($request->get('per_page', 10), 1), 20);
+        $per_page = min(max($request->get('per_page', 10), 1), 1000);
 
         $baseIds = array_keys($this->getAclForUser()->get_granted_base(['canaddrecord']));
 
