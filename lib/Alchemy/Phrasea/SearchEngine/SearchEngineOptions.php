@@ -324,19 +324,23 @@ class SearchEngineOptions
         $tmp = array();
         foreach ($status as $n => $options) {
             if (isset($options['on'])) {
-                foreach ($options['on'] as $sbas_id) {
-                    if(!isset($tmp[$n][$sbas_id])) {
-                        $tmp[$n][$sbas_id] = array();
+                foreach ($options['on'] as $list_sbas_id) {
+                    foreach(explode(',',  $list_sbas_id) as $sbas_id) {
+                        if (!isset($tmp[$n][$sbas_id])) {
+                            $tmp[$n][$sbas_id] = array();
+                        }
+                        $tmp[$n][$sbas_id][] = 1;
                     }
-                    $tmp[$n][$sbas_id][] = 1;
                 }
             }
             if (isset($options['off'])) {
-                foreach ($options['off'] as $sbas_id) {
-                    if(!isset($tmp[$n][$sbas_id])) {
-                        $tmp[$n][$sbas_id] = array();
+                foreach ($options['off'] as $list_sbas_id) {
+                    foreach(explode(',',  $list_sbas_id) as $sbas_id) {
+                        if (!isset($tmp[$n][$sbas_id])) {
+                            $tmp[$n][$sbas_id] = array();
+                        }
+                        $tmp[$n][$sbas_id][] = 0;
                     }
-                    $tmp[$n][$sbas_id][] = 0;
                 }
             }
         }
