@@ -429,7 +429,10 @@ class Application extends SilexApplication
     public function loadPlugins()
     {
         call_user_func(function ($app) {
-            require $app['plugins.directory'] . '/services.php';
+            $serviceFile = $app['plugins.directory'] . '/services.php';
+            if (file_exists($serviceFile)) {
+                require $serviceFile;
+            }
         }, $this);
     }
 

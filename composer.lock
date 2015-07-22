@@ -1,17 +1,17 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "391d231995cb07033a6f3a3e93077507",
+    "hash": "2b61222198d137bf8fcab7739d376e1e",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
             "version": "6.0.039",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/tcpdf-clone",
+                "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
             },
             "require": {
@@ -919,12 +919,12 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/igorw/evenement",
+                "url": "https://github.com/igorw/evenement.git",
                 "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/igorw/evenement/zipball/v1.0.0",
+                "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
                 "reference": "v1.0.0",
                 "shasum": ""
             },
@@ -959,12 +959,12 @@
             "version": "v3.2.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/facebook/facebook-php-sdk.git",
+                "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
                 "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/facebook-php-sdk/zipball/6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
+                "url": "https://api.github.com/repos/facebookarchive/facebook-php-sdk/zipball/6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
                 "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
                 "shasum": ""
             },
@@ -1090,7 +1090,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goodby/csv/zipball/b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
+                "url": "https://api.github.com/repos/goodby/csv/zipball/e71217b8d6110f3d1ac3784ef9b8a2383c3398b9",
                 "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
                 "shasum": ""
             },
@@ -1846,7 +1846,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.2",
+                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
                 "reference": "0.1.2",
                 "shasum": ""
             },
@@ -2283,7 +2283,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/9a1ec0c98d5a3903411c554a7274b3163705b5b2",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/a83c39a04adb33c1a562f60d5b4d4f391cff212f",
                 "reference": "9a1ec0c98d5a3903411c554a7274b3163705b5b2",
                 "shasum": ""
             },
@@ -2903,25 +2903,25 @@
         },
         {
             "name": "twig/extensions",
-            "version": "v1.1.0",
+            "version": "dev-improved-i18n",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twigphp/Twig-extensions.git",
-                "reference": "c0ab818595338dd5569369bfce2552d02cec5d50"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/c0ab818595338dd5569369bfce2552d02cec5d50",
-                "reference": "c0ab818595338dd5569369bfce2552d02cec5d50",
-                "shasum": ""
+                "url": "https://github.com/bburnichon/Twig-extensions",
+                "reference": "d368f6417910ad54b226312e8d8657bcdf3f1778"
             },
             "require": {
                 "twig/twig": "~1.12"
             },
+            "require-dev": {
+                "symfony/translation": "~2.3"
+            },
+            "suggest": {
+                "symfony/translation": "Allow the time_diff output to be translated"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -2929,7 +2929,6 @@
                     "Twig_Extensions_": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2940,12 +2939,12 @@
                 }
             ],
             "description": "Common additional features for Twig that do not directly belong in core",
-            "homepage": "https://github.com/fabpot/Twig-extensions",
+            "homepage": "http://twig.sensiolabs.org/doc/extensions/index.html",
             "keywords": [
                 "i18n",
                 "text"
             ],
-            "time": "2014-07-05 10:01:35"
+            "time": "2015-07-21 18:20:18"
         },
         {
             "name": "twig/twig",
@@ -4091,7 +4090,8 @@
     "stability-flags": {
         "goodby/csv": 20,
         "imagine/imagine": 20,
-        "phpexiftool/phpexiftool": 20
+        "phpexiftool/phpexiftool": 20,
+        "twig/extensions": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

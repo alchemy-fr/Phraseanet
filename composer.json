@@ -17,6 +17,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/alchemy-fr/phpexiftool"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/bburnichon/Twig-extensions"
         }
     ],
     "require": {
@@ -54,7 +58,7 @@
         "alchemy-fr/tcpdf-clone"           : "~6.0",
         "themattharris/tmhoauth"           : "~0.7",
         "twig/twig"                        : "~1.14, >=1.14.2",
-        "twig/extensions"                  : "~1.0",
+        "twig/extensions"                  : "dev-improved-i18n",
         "vierbergenlars/php-semver"        : "~2.1",
         "zend/gdata"                       : "~1.12.1",
         "willdurand/negotiation"           : "~1.3"
