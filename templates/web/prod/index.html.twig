@@ -431,7 +431,7 @@
                                                                         <img src="{{s['imgoff']}}" title="{{s['labels_off_i18n'][app['locale.I18n']]}}" />
                                                                     {% endif %}
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
+                                                                        type="checkbox" value="{{s['sbas']|join(',')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
                                                                         {{s['labels_off_i18n'][app['locale.I18n']]}}
                                                                     </label>
@@ -442,7 +442,7 @@
                                                                         <img src="{{s['imgon']}}" title="{{s['labels_on_i18n'][app['locale.I18n']]}}" />
                                                                     {% endif %}
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join(' field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
+                                                                        type="checkbox" value="{{s['sbas']|join(',')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
                                                                         {{s['labels_on_i18n'][app['locale.I18n']]}}
                                                                     </label>
