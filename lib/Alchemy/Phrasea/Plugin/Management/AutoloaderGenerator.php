@@ -144,7 +144,7 @@ EOF;
 use Alchemy\Phrasea\Application;
 
 return call_user_func(function (Application \$app) {
-    \$textdomains =& \$app['plugin.locale.textdomains'];
+    \$textdomains = \$app['plugin.locale.textdomains'];
 
 EOF;
 
