@@ -43,7 +43,7 @@ class PluginServiceProvider implements ServiceProviderInterface
             return new \Pimple();
         });
 
-        $app['plugin.locale.textdomains'] = array();
+        $app['plugin.locale.textdomains'] = new \ArrayObject();
     }
 
     public function boot(Application $app)

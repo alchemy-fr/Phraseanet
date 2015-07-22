@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "38d3c53332f97c2b8c434b28cd18402f",
+    "hash": "d463b8379eb7ddd0bc5d3fdb878a0c37",
+    "content-hash": "6d1bf999a101d0bbdcd5a8d3b94f4af4",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -13,12 +14,6 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/tcpdf-clone/zipball/2ba0248a7187f1626df6c128750650416267f0e7",
-                "reference": "2ba0248a7187f1626df6c128750650416267f0e7",
-                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -66,10 +61,6 @@
                 "qrcode",
                 "tcpdf"
             ],
-            "support": {
-                "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
-                "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
-            },
             "time": "2013-10-13 16:11:17"
         },
         {
@@ -113,7 +104,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "nlegoff",
+                    "name": "Nicolas Le Goff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -376,7 +367,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Zippy/zipball/16285231eb37587c6c32b86fa483c35853cd7515",
+                "url": "https://api.github.com/repos/alchemy-fr/Zippy/zipball/660c14d630d69a62d15a5fa977f68027f8df39f9",
                 "reference": "16285231eb37587c6c32b86fa483c35853cd7515",
                 "shasum": ""
             },
@@ -1260,12 +1251,12 @@
             "version": "v1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/elasticsearch/elasticsearch-php.git",
+                "url": "https://github.com/elastic/elasticsearch-php.git",
                 "reference": "fd304b1c12778c9eab9b1c1a9e07d791f40bd56d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elasticsearch/elasticsearch-php/zipball/fd304b1c12778c9eab9b1c1a9e07d791f40bd56d",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/fd304b1c12778c9eab9b1c1a9e07d791f40bd56d",
                 "reference": "fd304b1c12778c9eab9b1c1a9e07d791f40bd56d",
                 "shasum": ""
             },
@@ -1318,12 +1309,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/igorw/evenement.git",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d"
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -1350,7 +1341,7 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 15:01:08"
+            "time": "2012-05-30 08:01:08"
         },
         {
             "name": "facebook/php-sdk",
@@ -1396,7 +1387,6 @@
                 "facebook",
                 "sdk"
             ],
-            "abandoned": "facebook/php-sdk-v4",
             "time": "2013-11-19 23:11:14"
         },
         {
@@ -3141,7 +3131,7 @@
             ],
             "authors": [
                 {
-                    "name": "Steve Clay",
+                    "name": "Stephen Clay",
                     "email": "steve@mrclay.org",
                     "homepage": "http://www.mrclay.org/",
                     "role": "Developer"
@@ -3327,21 +3317,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084"
+                "reference": "0.1.2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084",
+                "reference": "0.1.2",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": "~1.0"
+                "silex/silex": ">=1.0,<2.0"
             },
             "require-dev": {
-                "symfony/browser-kit": "~2.0"
+                "symfony/browser-kit": ">=2.0,<3.0"
             },
             "type": "library",
             "autoload": {
@@ -3955,12 +3945,12 @@
             "version": "2.8.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ramsey/uuid.git",
+                "url": "https://github.com/ramsey/rhumsaa-uuid.git",
                 "reference": "cca98c652cac412c9c2f109c69e5532f313435fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/cca98c652cac412c9c2f109c69e5532f313435fc",
+                "url": "https://api.github.com/repos/ramsey/rhumsaa-uuid/zipball/cca98c652cac412c9c2f109c69e5532f313435fc",
                 "reference": "cca98c652cac412c9c2f109c69e5532f313435fc",
                 "shasum": ""
             },
@@ -4014,6 +4004,7 @@
                 "identifier",
                 "uuid"
             ],
+            "abandoned": "ramsey/uuid",
             "time": "2014-11-09 18:42:56"
         },
         {
@@ -4026,7 +4017,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4f1925fc351a2f058bb56117203a85c5da8852cc",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/43ac5a3afcae6ab9ec1a4cb193c9c9a995d9e1df",
                 "reference": "4f1925fc351a2f058bb56117203a85c5da8852cc",
                 "shasum": ""
             },
@@ -4319,7 +4310,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -4549,17 +4540,11 @@
         },
         {
             "name": "twig/extensions",
-            "version": "v1.2.0",
+            "version": "dev-improved-i18n",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twigphp/Twig-extensions.git",
-                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
-                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
-                "shasum": ""
+                "url": "https://github.com/bburnichon/Twig-extensions",
+                "reference": "a1fbd480ebe9a58dded8e3bfcbbbb565dc0eded4"
             },
             "require": {
                 "twig/twig": "~1.12"
@@ -4581,7 +4566,6 @@
                     "Twig_Extensions_": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -4597,7 +4581,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2014-10-30 14:30:03"
+            "time": "2015-07-21 19:39:26"
         },
         {
             "name": "twig/twig",
@@ -5774,7 +5758,8 @@
         "jms/translation-bundle": 20,
         "neutron/process-manager": 20,
         "phpexiftool/phpexiftool": 20,
-        "roave/security-advisories": 20
+        "roave/security-advisories": 20,
+        "twig/extensions": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
