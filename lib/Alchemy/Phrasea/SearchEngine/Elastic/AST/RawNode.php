@@ -34,12 +34,12 @@ class RawNode extends Node
             foreach ($fields as $field) {
                 $index_fields[] = $field->getIndexField(true);
             }
-            $query = [];
+            $query = null;
             if (count($index_fields) > 1) {
                 $query['multi_match']['query'] = $this->text;
                 $query['multi_match']['fields'] = $index_fields;
                 $query['multi_match']['analyzer'] = 'keyword';
-            } else {
+            } elseif (count($index_fields) === 1) {
                 $index_field = reset($index_fields);
                 $query['term'][$index_field] = $this->text;
             }

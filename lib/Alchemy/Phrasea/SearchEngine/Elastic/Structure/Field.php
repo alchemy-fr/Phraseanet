@@ -101,7 +101,7 @@ class Field
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw ? '.raw' : ''
+            $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
         );
     }
 

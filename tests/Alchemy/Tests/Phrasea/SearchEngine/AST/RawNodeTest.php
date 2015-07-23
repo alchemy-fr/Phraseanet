@@ -20,4 +20,53 @@ class RawNodeTest extends \PHPUnit_Framework_TestCase
         $node = new RawNode('foo');
         $this->assertEquals('<raw:"foo">', (string) $node);
     }
+
+    public function testQueryBuildOnSingleField()
+    {
+        $field = $this->prophesize(Field::class);
+        $field->getIndexField(true)->willReturn('foo.raw');
+
+        $query_context = $this->prophesize(QueryContext::class);
+        $query_context->getUnrestrictedFields()->willReturn([$field->reveal()]);
+        $query_context->getPrivateFields()->willReturn([]);
+
+        $node = new RawNode('bar');
+        $query = $node->buildQuery($query_context->reveal());
+
+        $expected = '{
+            "term": {
+                "foo.raw": "bar"
+            }
+        }';
+
+        $this->assertEquals(json_decode($expected, true), $query);
+    }
+
+    public function testQueryBuildOnMultipleFields()
+    {
+        $field_a = $this->prophesize(Field::class);
+        $field_a->getIndexField(true)->willReturn('foo.raw');
+        $field_b = $this->prophesize(Field::class);
+        $field_b->getIndexField(true)->willReturn('bar.raw');
+
+        $query_context = $this->prophesize(QueryContext::class);
+        $query_context->getUnrestrictedFields()->willReturn([
+            $field_a->reveal(),
+            $field_b->reveal()
+        ]);
+        $query_context->getPrivateFields()->willReturn([]);
+
+        $node = new RawNode('baz');
+        $query = $node->buildQuery($query_context->reveal());
+
+        $expected = '{
+            "multi_match": {
+                "query": "baz",
+                "fields": ["foo.raw", "bar.raw"],
+                "analyzer": "keyword"
+            }
+        }';
+
+        $this->assertEquals(json_decode($expected, true), $query);
+    }
 }
