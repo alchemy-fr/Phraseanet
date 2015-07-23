@@ -25,7 +25,13 @@ class Query
 
     public function build(QueryContext $context)
     {
-        return $this->root->buildQuery($context);
+        $query = $this->root->buildQuery($context);
+        if ($query === null) {
+            $query = [];
+            $query['bool']['must'] = [];
+        }
+
+        return $query;
     }
 
     public function dump()
