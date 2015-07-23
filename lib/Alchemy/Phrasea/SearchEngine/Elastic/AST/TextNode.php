@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\TextQueryHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 
 class TextNode extends AbstractTermNode implements ContextAbleInterface
@@ -37,25 +38,35 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
 
     public function buildQuery(QueryContext $context)
     {
-        $query_builder = function (array $fields) {
+        $query_builder = function (array $fields) use ($context) {
+            $index_fields = [];
+            foreach ($fields as $field) {
+                foreach ($context->localizeField($field) as $index_fields[]);
+            }
+            if (!$index_fields) {
+                return null;
+            }
             return [
                 'multi_match' => [
-                    'fields'   => $fields,
+                    'fields'   => $index_fields,
                     'query'    => $this->text,
                     'operator' => 'and',
                 ]
             ];
         };
 
-        $fields = $context->getLocalizedFields();
-        $query = count($fields) ? $query_builder($fields) : null;
+        $query = $query_builder($context->getUnrestrictedFields());
 
-        foreach (QueryHelper::buildPrivateFieldQueries($context, $query_builder) as $private_field_query) {
+        $private_fields = $context->getPrivateFields();
+        $private_fields = TextQueryHelper::filterCompatibleFields($private_fields, $this->text);
+
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 
-        foreach ($this->buildConceptQueries($context) as $concept_query) {
-            $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
+        $concept_query = $this->buildConceptQuery($context);
+        if ($concept_query !== null) {
+            $query = QueryHelper::applyBooleanClause($query, 'should', $this->buildConceptQuery($context));
         }
 
         return $query;

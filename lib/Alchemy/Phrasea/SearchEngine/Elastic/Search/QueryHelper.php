@@ -8,19 +8,13 @@ class QueryHelper
 {
     private function __construct() {}
 
-    public static function buildPrivateFieldQueries(QueryContext $context, \Closure $matcher_callback, \Closure $index_fields_callback = null)
+    public static function wrapPrivateFieldQueries(array $fields, \Closure $query_builder)
     {
-        if ($index_fields_callback === null) {
-            $index_fields_callback = function (Field $field) use ($context) {
-                return $context->localizeField($field);
-            };
-        }
-
         // We make a boolean clause for each collection set to shrink query size
         // (instead of a clause for each field, with his collection set)
         $fields_map = [];
         $collections_map = [];
-        foreach ($context->getPrivateFields() as $field) {
+        foreach ($fields as $field) {
             $collections = $field->getDependantCollections();
             $hash = self::hashCollections($collections);
             $collections_map[$hash] = $collections;
@@ -28,8 +22,7 @@ class QueryHelper
                 $fields_map[$hash] = [];
             }
             // Merge fields with others having the same collections
-            $fields = (array) $index_fields_callback($field);
-            foreach ($fields as $fields_map[$hash][]);
+            $fields_map[$hash][] = $field;
         }
 
         $queries = [];
@@ -37,7 +30,7 @@ class QueryHelper
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
             $queries[] = self::restrictQueryToCollections(
-                $matcher_callback($fields),
+                $query_builder($fields),
                 $collections_map[$hash]
             );
         }
@@ -69,15 +62,15 @@ class QueryHelper
     }
 
     /**
-     * @todo Factor with buildPrivateFieldQueries()
+     * @todo Factor with wrapPrivateFieldQueries()
      */
-    public static function buildPrivateFieldConceptQueries(QueryContext $context, \Closure $matchers_callback)
+    public static function wrapPrivateFieldConceptQueries(array $fields, \Closure $query_builder)
     {
         // We make a boolean clause for each collection set to shrink query size
         // (instead of a clause for each field, with his collection set)
         $fields_map = [];
         $collections_map = [];
-        foreach ($context->getPrivateFields() as $field) {
+        foreach ($fields as $field) {
             $collections = $field->getDependantCollections();
             $hash = self::hashCollections($collections);
             $collections_map[$hash] = $collections;
@@ -85,18 +78,17 @@ class QueryHelper
                 $fields_map[$hash] = [];
             }
             // Merge fields with others having the same collections
-            $fields_map[$hash][] = $field->getConceptPathIndexField();
+            $fields_map[$hash][] = $field;
         }
 
         $queries = [];
         foreach ($fields_map as $hash => $fields) {
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
-            $query = [];
-            $query['bool']['must'][0]['terms']['base_id'] = $collections_map[$hash];
-            foreach ($matchers_callback($fields) as $concept_query) {
-                $query = self::applyBooleanClause($query, 'should', $concept_query);
-            }
+            $query = $query_builder($fields);
+            $collection_query = [];
+            $collection_query['terms']['base_id'] = $collections_map[$hash];
+            $query = self::applyBooleanClause($query, 'must', $collection_query);
             $queries[] = $query;
         }
 

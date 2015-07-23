@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\TextQueryHelper;
 
 class QuotedTextNode extends Node
 {
@@ -16,20 +17,27 @@ class QuotedTextNode extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        $query_builder = function (array $fields) {
+        $query_builder = function (array $fields) use ($context) {
+            $index_fields = [];
+            foreach ($fields as $field) {
+                foreach ($context->localizeField($field) as $index_fields[]);
+            }
+            if (!$index_fields) {
+                return null;
+            }
             return [
                 'multi_match' => [
                     'type'   => 'phrase',
-                    'fields' => $fields,
+                    'fields' => $index_fields,
                     'query'  => $this->text,
                 ]
             ];
         };
 
-        $fields = $context->getLocalizedFields();
-        $query = $fields ? $query_builder($fields) : null;
-
-        foreach (QueryHelper::buildPrivateFieldQueries($context, $query_builder) as $private_field_query) {
+        $query = $query_builder($context->getUnrestrictedFields());
+        $private_fields = $context->getPrivateFields();
+        $private_fields = TextQueryHelper::filterCompatibleFields($private_fields, $this->text);
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 

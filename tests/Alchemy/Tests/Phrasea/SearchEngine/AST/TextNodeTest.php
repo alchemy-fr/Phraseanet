@@ -42,9 +42,11 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
+        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
-        $query_context->getLocalizedFields()->willReturn(['foo.fr', 'foo.en']);
+        $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
+        $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
 
         $node = new TextNode('bar', new Context('baz'));
         $query = $node->buildQuery($query_context->reveal());
@@ -70,7 +72,10 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
-            ->getLocalizedFields()
+            ->getUnrestrictedFields()
+            ->willReturn([$public_field]);
+        $query_context
+            ->localizeField($public_field)
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
             ->getPrivateFields()
@@ -115,15 +120,9 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
     {
         $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
-        $query_context
-            ->getUnrestrictedFields()
-            ->willReturn([$field]);
-        $query_context
-            ->getPrivateFields()
-            ->willReturn([]);
-        $query_context
-            ->getLocalizedFields()
-            ->willReturn(['foo.fr', 'foo.en']);
+        $query_context->getUnrestrictedFields()->willReturn([$field]);
+        $query_context->getPrivateFields()->willReturn([]);
+        $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
 
         $node = new TextNode('bar');
         $node->setConcepts([
