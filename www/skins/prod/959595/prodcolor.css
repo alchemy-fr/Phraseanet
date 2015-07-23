@@ -945,14 +945,13 @@ div.diapo {
 
 #answers_status .infos .infoDialog {
     float: left;
-    color: #949494;
-    height: 60px;
     background: #999;
     color: #fff;
     padding: 0 25px;
     font-size: 11px;
     padding-top: 24px;
     margin-right: 10px;
+    height: 36px;
 }
  
 #answers_status .infos .infoDialog span {
