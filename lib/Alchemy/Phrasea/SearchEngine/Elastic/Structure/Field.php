@@ -101,18 +101,8 @@ class Field
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw ? '.raw' : ''
+            $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
         );
-    }
-
-    public static function toConceptPathIndexFieldArray(array $fields)
-    {
-        $index_fields = [];
-        foreach ($fields as $field) {
-            // TODO Skip fields without inference enabled?
-            $index_fields[] = $field->getConceptPathIndexField();
-        }
-        return $index_fields;
     }
 
     public function getConceptPathIndexField()

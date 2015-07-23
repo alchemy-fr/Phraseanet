@@ -25,33 +25,38 @@ abstract class AbstractTermNode extends Node implements TermInterface
         $this->concepts = $concepts;
     }
 
-    protected function buildConceptQueries(QueryContext $context)
+    protected function buildConceptQuery(QueryContext $context)
     {
         $concepts = Concept::pruneNarrowConcepts($this->concepts);
         if (!$concepts) {
-            return [];
+            return null;
         }
 
-        $queries_builder = function (array $index_fields) use ($concepts) {
-            $queries = [];
+        $query_builder = function (array $fields) use ($concepts) {
+            $index_fields = [];
+            foreach ($fields as $field) {
+                $index_fields[] = $field->getConceptPathIndexField();
+            }
+            $query = null;
             foreach ($concepts as $concept) {
-                $queries[] = [
+                $concept_query = [
                     'multi_match' => [
                         'fields'   => $index_fields,
                         'query'    => $concept->getPath()
                     ]
                 ];
+                $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
             }
-            return $queries;
+            return $query;
         };
 
-        $fields = $context->getUnrestrictedFields();
-        $index_fields = Field::toConceptPathIndexFieldArray($fields);
+        $query = $query_builder($context->getUnrestrictedFields());
+        $private_fields = $context->getPrivateFields();
+        foreach (QueryHelper::wrapPrivateFieldConceptQueries($private_fields, $query_builder) as $private_field_query) {
+            $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
+        }
 
-        $queries = $queries_builder($index_fields);
-        foreach (QueryHelper::buildPrivateFieldConceptQueries($context, $queries_builder) as $queries[]);
-
-        return $queries;
+        return $query;
     }
 
     public function getValue()

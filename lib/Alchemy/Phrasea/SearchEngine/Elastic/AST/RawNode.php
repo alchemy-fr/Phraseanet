@@ -30,38 +30,30 @@ class RawNode extends Node
     public function buildQuery(QueryContext $context)
     {
         $query_builder = function (array $fields) {
-            $query = [];
-            if (count($fields) > 1) {
+            $index_fields = [];
+            foreach ($fields as $field) {
+                $index_fields[] = $field->getIndexField(true);
+            }
+            $query = null;
+            if (count($index_fields) > 1) {
                 $query['multi_match']['query'] = $this->text;
-                $query['multi_match']['fields'] = $fields;
+                $query['multi_match']['fields'] = $index_fields;
                 $query['multi_match']['analyzer'] = 'keyword';
-            } else {
-                $field = reset($fields);
-                $query['term'][$field] = $this->text;
+            } elseif (count($index_fields) === 1) {
+                $index_field = reset($index_fields);
+                $query['term'][$index_field] = $this->text;
             }
 
             return $query;
         };
 
-        $fields = $context->getRawFields();
-        $query = count($fields) ? $query_builder($fields) : null;
-
-        foreach (QueryHelper::buildPrivateFieldQueries($context, $query_builder, $this->getIndexFieldsCallback()) as $private_field_query) {
+        $query = $query_builder($context->getUnrestrictedFields());
+        $private_fields = $context->getPrivateFields();
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 
         return $query;
-    }
-
-    private function getIndexFieldsCallback()
-    {
-        if ($this->index_fields_callback === null) {
-            $this->index_fields_callback = function (StructureField $field) {
-                return $field->getIndexField(true);
-            };
-        }
-
-        return $this->index_fields_callback;
     }
 
     public function getTermNodes()

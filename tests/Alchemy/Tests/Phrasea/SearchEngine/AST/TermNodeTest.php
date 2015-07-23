@@ -35,9 +35,6 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
         $query_context
             ->getPrivateFields()
             ->willReturn([]);
-        $query_context
-            ->getLocalizedFields()
-            ->willReturn(['foo.fr', 'foo.en']);
 
         $node = new TermNode('bar');
         $node->setConcepts([
@@ -59,6 +56,29 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                         "query": "/qux"
                     }
                 }]
+            }
+        }';
+
+        $this->assertEquals(json_decode($expected, true), $query);
+    }
+
+    public function testQueryBuildWithZeroConcept()
+    {
+        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $query_context = $this->prophesize(QueryContext::class);
+        $query_context
+            ->getUnrestrictedFields()
+            ->willReturn([$field]);
+        $query_context
+            ->getPrivateFields()
+            ->willReturn([]);
+
+        $node = new TermNode('bar');
+        $query = $node->buildQuery($query_context->reveal());
+
+        $expected = '{
+            "bool": {
+                "should": []
             }
         }';
 

@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
@@ -56,20 +57,6 @@ class QueryContext
         return $fields;
     }
 
-    public function getLocalizedFields()
-    {
-        if ($this->fields === null) {
-            return $this->localizeFieldName('caption_all');
-        }
-
-        $fields = array();
-        foreach ($this->getUnrestrictedFields() as $field) {
-            foreach ($this->localizeField($field) as $fields[]);
-        }
-
-        return $fields;
-    }
-
     public function getUnrestrictedFields()
     {
         // TODO Restore search optimization by using "caption_all" field
@@ -109,7 +96,12 @@ class QueryContext
      */
     public function localizeField(Field $field)
     {
-        return $this->localizeFieldName($field->getIndexField());
+        $index_field = $field->getIndexField();
+        if ($field->getType() === Mapping::TYPE_STRING) {
+            return $this->localizeFieldName($index_field);
+        } else {
+            return [$index_field];
+        }
     }
 
     private function localizeFieldName($field)

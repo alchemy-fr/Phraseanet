@@ -23,9 +23,11 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
+        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
-        $query_context->getLocalizedFields()->willReturn(['foo.fr', 'foo.en']);
+        $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
+        $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
 
         $node = new QuotedTextNode('bar');
         $query = $node->buildQuery($query_context->reveal());
@@ -51,10 +53,13 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
 
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
+            ->getUnrestrictedFields()
+            ->willReturn([$public_field]);
+        $query_context
             ->getPrivateFields()
             ->willReturn([$private_field]);
         $query_context
-            ->getLocalizedFields()
+            ->localizeField($public_field)
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
             ->localizeField($private_field)
