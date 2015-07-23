@@ -92,6 +92,17 @@
             })
                 .mouseover(save)
                 .mouseout(hide)
+                .mouseleave(function () {
+                    if (settings.isBrowsable) {
+                        $.tooltip.currentHover = false;
+                        // close caption container after a small delay
+                        // (safe travel delay of the mouse between thumbnail and caption / allow user to cross
+                        // boundaries without unexpected closing of the catpion)
+                        setTimeout(function () {
+                            hide();
+                        }, 500);
+                    }
+                })
                 .mousedown(fix);
         },
         fixPNG: IE ? function () {
@@ -282,6 +293,23 @@
             });
 
             if (event) {
+                var $origEventTarget = $(event.target);
+
+                // since event target can have different positionning, try to get common closest parent:
+                var $eventTarget = $origEventTarget.closest('.diapo'),
+                    topOffset = 20,
+                    leftOffset = 20;
+
+                if( $eventTarget ) {
+                    // change offsets:
+                    topOffset = -8;
+                    leftOffset = -8;
+                } else {
+                    // fallback on original target if nothing found:
+                    $eventTarget = $origEventTarget;
+                }
+
+
 
                 var vert, vertS, hor, horS, top, left, ratioH, ratioV;
                 //			ratio = $(h).width()/$(h).height();
@@ -290,29 +318,29 @@
                 var ratioImage = $(h).width() / $(h).height();
 
                 //position de l'image
-                if ($(event.target).offset().left > (v.x - $(event.target).offset().left - $(event.target).width())) {
+                if ($eventTarget.offset().left > (v.x - $eventTarget.offset().left - $eventTarget.width())) {
                     hor = 'gauche';
-                    wiH = $(event.target).offset().left;
+                    wiH = $eventTarget.offset().left;
 
                     horS = wiH * v.y;
                     ratioSurfaceH = wiH / v.y;
                 }
                 else {
                     hor = 'droite';
-                    wiH = (v.x - $(event.target).offset().left - $(event.target).width());
+                    wiH = (v.x - $eventTarget.offset().left - $eventTarget.width());
                     horS = wiH * v.y;
                     ratioSurfaceH = wiH / v.y;
 
                 }
-                if ($(event.target).offset().top > (v.y - $(event.target).offset().top - $(event.target).height())) {
+                if ($eventTarget.offset().top > (v.y - $eventTarget.offset().top - $eventTarget.height())) {
                     vert = 'haut';
-                    heV = $(event.target).offset().top;
+                    heV = $eventTarget.offset().top;
                     vertS = heV * v.x;
                     ratioSurfaceV = v.x / heV;
                 }
                 else {
                     vert = 'bas';
-                    heV = (v.y - $(event.target).offset().top - $(event.target).height());
+                    heV = (v.y - $eventTarget.offset().top - $eventTarget.height());
                     vertS = heV * v.x;
                     ratioSurfaceV = v.x / heV;
                 }
@@ -341,17 +369,18 @@
                     var zL = event.pageX;
                     var zW = $(h).width();
                     zH = $(h).height();
-                    var ETOT = $(event.target).offset().top;
-                    var ETH = $(event.target).height();
+                    var ETOT = $eventTarget.offset().top;
+                    var ETH = $eventTarget.height();
                     left = (zL - zW / 2) < 20 ? 20 : (((zL + zW / 2 + 20) > v.x) ? (v.x - zW - 20) : (zL - zW / 2));
+
                     switch (vert) {
                         case 'haut':
                             height = (zH > (ETOT - 40)) ? (ETOT - 40) : zH;
-                            top = ETOT - height - 20;
+                            top = ETOT - height - topOffset;
                             break;
                         case 'bas':
                             height = ((v.y - ETH - ETOT - 40) > zH) ? zH : (v.y - ETH - ETOT - 40);
-                            top = ETOT + ETH + 20;
+                            top = ETOT + ETH + topOffset;
                             break;
                         default:
                             break;
@@ -361,18 +390,18 @@
                     //				height = ($(h).height()>(v.y-40))?(v.y-40):$(h).height();
                     zH = $(h).height();
                     var zT = event.pageY;
-                    var EOTL = $(event.target).offset().left;
-                    var ETW = $(event.target).width();
+                    var EOTL = $eventTarget.offset().left;
+                    var ETW = $eventTarget.width();
                     var zw = $(h).width();
                     top = (zT - zH / 2) < 20 ? 20 : (((zT + zH / 2 + 20) > v.y) ? (v.y - zH - 20) : (zT - zH / 2));
                     switch (hor) {
                         case 'gauche':
                             width = (zw > (EOTL - 40)) ? (EOTL - 40) : zw;
-                            left = EOTL - width - 20;
+                            left = EOTL - width - leftOffset;
                             break;
                         case 'droite':
                             width = ((v.x - ETW - EOTL - 40) > zw) ? zw : (v.x - ETW - EOTL - 40);
-                            left = EOTL + ETW + 20;
+                            left = EOTL + ETW + leftOffset;
                             break;
                         default:
                             break;
@@ -473,9 +502,14 @@
             helper.parent.show();
         }
 
-
         $(helper.parent[0])
+            .unbind('mouseenter')
             .unbind('mouseleave')
+            .mouseenter(function(){
+                if (settings($.tooltip.current).isBrowsable) {
+                    $.tooltip.currentHover = true;
+                }
+            })
             .mouseleave(function () {
                 if (settings($.tooltip.current).isBrowsable) {
                     // if tooltip has scrollable content or selectionnable text - should be closed on mouseleave:
@@ -589,6 +623,7 @@
 
     // hide helper and restore added classes and the title
     function hide(event) {
+
         if( $.tooltip.currentHover && settings($.tooltip.current).isBrowsable ) {
             return;
         }
@@ -597,6 +632,7 @@
             return;
 
         $(helper.parent[0])
+            .unbind('mouseenter')
             .unbind('mouseleave');
 
         // clear timeout if possible

@@ -117,12 +117,12 @@
 {% endmacro %}
 
 {% macro caption(record, can_see_business, display_exif) %}
+    <dl class="dl-horizontal">
     {% for name, value in record.getCaption(caption_field_order(record, can_see_business)) %}
-        <div class="desc">
-            <b>{{ name }}</b> :
-            {{ caption_field(record, name, value)|e|highlight }}
-        </div>
+        <dt>{{ name }}</dt>
+        <dd>{{ caption_field(record, name, value)|e|highlight }}</dd>
     {% endfor %}
+    </dl>
     {% if display_exif|default(true) and app.getAuthenticator().user is not none and user_setting('technical_display') == 'group' %}
         <hr/>
         {% include 'common/technical_datas.html.twig' %}

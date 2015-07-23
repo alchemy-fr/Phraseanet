@@ -1,145 +1,135 @@
+<dl class="dl-horizontal">
 {% if record.story %}
-  {{ 'Story_id' | trans }} : {{ record.recordId }}<br/>
+  <dt>{{ 'Story_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
 {% else %}
-  {{ 'Record_id' | trans }} : {{ record.recordId }}<br/>
+    <dt>{{ 'Record_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
 {% endif %}
 
 {% if not record.story %}
     {% block td_original_name %}
-        {{ 'Nom Original' | trans }} : {{ record.originalName }}
+        <dt>{{ 'Nom Original' | trans }}</dt><dd class="break-word">{{ record.originalName }}</dd>
     {% endblock %}
 
     {%  block td_mime %}
-        {{ record.mimeType }}
+        <dt>{{ 'Mime type' | trans }}</dt><dd>{{ record.mimeType }}</dd>
     {% endblock %}
 
     {% block td_weight %}
         {# @todo we should index document weight as well #}
     {% endblock %}
-    <br/>
 
     {% block td_size %}
-        {% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default(null) %}
+        <dt>{{ 'Size' | trans }}</dt><dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
+        (null) %}
         {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
         {% if width is not none and height is not none %}
             {{ width ~ " x " ~ height }}
-        {% endif %}
+        {% endif %}</dd>
     {%  endblock %}
+    </dl>
         <hr/>
+    <dl class="dl-horizontal">
     {% block td_camera_model %}
         {% if record.exif[constant('media_subdef::TC_DATA_CAMERAMODEL')] is defined %}
-          {{ 'Camera Model' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_CAMERAMODEL')] }}
-          <br />
+            <dt>{{ 'Camera Model' | trans }}</dt>
+            <dd>{{ record.exif[constant('media_subdef::TC_DATA_CAMERAMODEL')] }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_color_space %}
         {% if record.exif[constant('media_subdef::TC_DATA_COLORSPACE')] is defined %}
-          {{ 'Color space' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_COLORSPACE')] }}
-          <br />
+          <dt>{{ 'Color space' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_COLORSPACE')] }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_channels %}
         {% if record.exif[constant('media_subdef::TC_DATA_CHANNELS')] is defined %}
-          {{ 'Channels' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_CHANNELS')] }}
+          <dt>{{ 'Channels' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_CHANNELS')] }}</dd>
           <br />
         {% endif %}
     {% endblock %}
     {% block td_color_depth %}
         {% if record.exif[constant('media_subdef::TC_DATA_COLORDEPTH')] is defined %}
-          {{ 'Color Depth' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_COLORDEPTH')] }} bits
-          <br />
+          <dt>{{ 'Color Depth' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_COLORDEPTH')] }} bits</dd>
         {% endif %}
     {% endblock %}
     {% block td_iso_sensibility %}
         {% if record.exif[constant('media_subdef::TC_DATA_ISO')] is defined %}
-          {{ 'ISO sensibility' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_ISO')] }}
-          <br />
+          <dt>{{ 'ISO sensibility' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_ISO')] }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_flash %}
         {% if record.exif[constant('media_subdef::TC_DATA_FLASHFIRED')] is defined %}
-          {{ 'Flash' | trans }} :
-          {% if record.exif[constant('media_subdef::TC_DATA_FLASHFIRED')] %}
+          <dt>{{ 'Flash' | trans }}</dt>
+          <dd>{% if record.exif[constant('media_subdef::TC_DATA_FLASHFIRED')] %}
             {{ 'yes' | trans }}
           {% else %}
             {{ 'no' | trans }}
           {% endif %}
-          <br />
+          </dd>
         {% endif %}
     {% endblock %}
     {% block td_shutter_speed %}
         {% if record.exif[constant('media_subdef::TC_DATA_SHUTTERSPEED')] is defined %}
-            {{ 'Shutter speed' | trans }} :
-            {{ record.exif[constant('media_subdef::TC_DATA_SHUTTERSPEED')] }} s.
-            <br />
+            <dt>{{ 'Shutter speed' | trans }}</dt>
+            <dd>{{ record.exif[constant('media_subdef::TC_DATA_SHUTTERSPEED')] }} s.</dd>
         {% endif %}
     {% endblock %}
     {% block td_apeture %}
         {% if record.exif[constant('media_subdef::TC_DATA_APERTURE')] is defined %}
-          {{ 'Aperture' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_APERTURE')] | round(2) }}
-          <br />
+          <dt>{{ 'Aperture' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_APERTURE')] | round(2) }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_focal_length %}
         {% if record.exif[constant('media_subdef::TC_DATA_FOCALLENGTH')] is defined %}
-            {{ 'Focal length' | trans }} :
-            {{ record.exif[constant('media_subdef::TC_DATA_FOCALLENGTH')] }} mm
-            <br />
+            <dt>{{ 'Focal length' | trans }}</dt>
+            <dd>{{ record.exif[constant('media_subdef::TC_DATA_FOCALLENGTH')] }} mm</dd>
         {% endif %}
     {% endblock %}
     {% block td_hyperfocal_distance %}
         {% if record.exif[constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')] is defined %}
-          {{ 'Hyperfocal distance' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')] | round(2) }} mm
-          <br />
+          <dt>{{ 'Hyperfocal distance' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')] | round(2) }} mm</dd>
         {% endif %}
     {% endblock %}
     {% block td_light_value %}
         {% if record.exif[constant('media_subdef::TC_DATA_LIGHTVALUE')] is defined %}
-          {{ 'Light Value' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_LIGHTVALUE')] | round(2) }}
-          <br />
+          <dt>{{ 'Light Value' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_LIGHTVALUE')] | round(2) }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_duration %}
         {% if record.exif[constant('media_subdef::TC_DATA_DURATION')] is defined %}
-          {{ 'Duree' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_DURATION')] }}
-          <br />
+          <dt>{{ 'Duree' | trans }} :
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_DURATION')] }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_framerate %}
         {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
-          {{ 'Images par secondes' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }} ips
-          <br />
+          <dt>{{ 'Images par secondes' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }} ips</dd>
         {% endif %}
     {% endblock %}
     {% block td_codec_audio %}
         {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
-          {{ 'Codec Audio' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}
-          <br />
+          <dt>{{ 'Codec Audio' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_codec_video %}
         {% if record.exif[constant('media_subdef::TC_DATA_VIDEOCODEC')] is defined %}
-          {{ 'Codec Video' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_VIDEOCODEC')] }}
-          <br />
+          <dt>{{ 'Codec Video' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_VIDEOCODEC')] }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_audio_rate %}
         {% if record.exif[constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')] is defined %}
-          {{ 'Frequence d\'echantillonage' | trans }} :
-          {{ record.exif[constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')] | round(2) }} kHz
-          <br />
+          <dt>{{ 'Frequence d\'echantillonage' | trans }}</dt>
+          <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')] | round(2) }} kHz</dd>
         {% endif %}
     {% endblock %}
 {% endif %}
+</dl>

@@ -23,3 +23,36 @@
     overflow: auto;
     overflow-x: hidden;
 }
+
+.popover-inner .popover-content dl.dl-horizontal  {
+    margin-top: 0;
+    margin-bottom: 0;
+
+}
+
+.popover-inner .popover-content dl.dl-horizontal:first-child{
+    border-top: none;
+}
+
+.popover-inner .popover-content .dl-horizontal dt {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    color: #808080;
+    text-align: left;
+    width: 100px ;
+    /*border-bottom: 1px solid #333;*/
+}
+
+.popover-inner .popover-content .dl-horizontal dd {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-left: 120px;
+}
+
+.break-word {
+    word-wrap: break-word;
+}
+
+.ui-button:focus, .ui-button-text:focus {
+    outline: none;
+}
