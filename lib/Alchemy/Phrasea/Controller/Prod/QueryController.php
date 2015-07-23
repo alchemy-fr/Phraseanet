@@ -143,7 +143,7 @@ class QueryController extends Controller
         }
 
         $explain .= " </b></span>";
-        $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
+        $explain .= '<br><div>' . ($result->getDuration() / 1000) . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
         $infoResult = '<div id="docInfo">'
