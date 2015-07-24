@@ -74,7 +74,7 @@ class RecordHelper
         return StringUtils::slugify($key, '_');
     }
 
-    public function sanitizeDate($value)
+    public static function sanitizeDate($value)
     {
         // introduced in https://github.com/alchemy-fr/Phraseanet/commit/775ce804e0257d3a06e4e068bd17330a79eb8370#diff-bee690ed259e0cf73a31dee5295d2edcR286
         // not sure if it's really needed

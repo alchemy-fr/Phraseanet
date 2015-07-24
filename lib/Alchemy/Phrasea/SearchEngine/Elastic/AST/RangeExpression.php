@@ -65,6 +65,10 @@ class RangeExpression extends Node
         if (!$structure_field) {
             throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
         }
+        if (!$structure_field->isValueCompatible($this->lower_bound) ||
+            !$structure_field->isValueCompatible($this->higher_bound)) {
+            return null;
+        }
 
         $query = [];
         $query['range'][$structure_field->getIndexField()] = $params;

@@ -23,6 +23,9 @@ class FieldEqualsExpression extends Node
         if (!$structure_field) {
             throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
         }
+        if (!$structure_field->isValueCompatible($this->value)) {
+            return null;
+        }
 
         $query = [];
         $query['term'][$structure_field->getIndexField()] = $this->value;

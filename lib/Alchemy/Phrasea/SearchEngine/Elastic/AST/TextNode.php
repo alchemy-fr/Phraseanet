@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\TextQueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 
 class TextNode extends AbstractTermNode implements ContextAbleInterface
@@ -55,11 +55,12 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
             ];
         };
 
-        $query = $query_builder($context->getUnrestrictedFields());
+        $unrestricted_fields = $context->getUnrestrictedFields();
+        $unrestricted_fields = Field::filterByValueCompatibility($unrestricted_fields, $this->text);
+        $query = $query_builder($unrestricted_fields);
 
         $private_fields = $context->getPrivateFields();
-        $private_fields = TextQueryHelper::filterCompatibleFields($private_fields, $this->text);
-
+        $private_fields = Field::filterByValueCompatibility($private_fields, $this->text);
         foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }

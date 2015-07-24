@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
 class RawNode extends Node
 {
@@ -47,8 +47,12 @@ class RawNode extends Node
             return $query;
         };
 
-        $query = $query_builder($context->getUnrestrictedFields());
+        $unrestricted_fields = $context->getUnrestrictedFields();
+        $unrestricted_fields = Field::filterByValueCompatibility($unrestricted_fields, $this->text);
+        $query = $query_builder($unrestricted_fields);
+
         $private_fields = $context->getPrivateFields();
+        $private_fields = Field::filterByValueCompatibility($private_fields, $this->text);
         foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
