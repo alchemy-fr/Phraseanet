@@ -34,7 +34,7 @@
     border-top: none;
 }
 
-.popover-inner .popover-content .dl-horizontal dt {
+.dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
     padding-top: 6px;
     padding-bottom: 6px;
     color: #808080;
@@ -43,7 +43,7 @@
     /*border-bottom: 1px solid #333;*/
 }
 
-.popover-inner .popover-content .dl-horizontal dd {
+.dl-horizontal dd, .popover-inner .popover-content .dl-horizontal dd {
     padding-top: 6px;
     padding-bottom: 6px;
     margin-left: 120px;
@@ -55,4 +55,14 @@
 
 .ui-button:focus, .ui-button-text:focus {
     outline: none;
+}
+
+.descBoxes .dl-horizontal dt{
+    float: none;
+    width: 100%;
+    padding: 0;
+}
+.descBoxes .dl-horizontal dd{
+    padding-top: 0;
+    margin-left: 10px;
 }
