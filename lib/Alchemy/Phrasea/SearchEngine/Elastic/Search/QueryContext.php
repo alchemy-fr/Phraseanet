@@ -43,20 +43,6 @@ class QueryContext
         return new static($this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
-    public function getRawFields()
-    {
-        if ($this->fields === null) {
-            return array('caption_all.raw');
-        }
-
-        $fields = array();
-        foreach ($this->getUnrestrictedFields() as $field) {
-            $fields[] = $field->getIndexField(true);
-        }
-
-        return $fields;
-    }
-
     public function getUnrestrictedFields()
     {
         // TODO Restore search optimization by using "caption_all" field
