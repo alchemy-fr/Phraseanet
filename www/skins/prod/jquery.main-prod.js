@@ -392,7 +392,7 @@ function afterSearch() {
     $('#answers').removeClass('loading');
     $('.captionTips, .captionRolloverTips').tooltip({
         delay: 0,
-        isBrowsable: true,
+        isBrowsable: false,
         extraClass: 'caption-tooltip-container'
     });
     $('.infoTips').tooltip({
