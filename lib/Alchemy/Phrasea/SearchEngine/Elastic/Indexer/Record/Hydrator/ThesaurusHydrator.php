@@ -37,17 +37,19 @@ class ThesaurusHydrator implements HydratorInterface
     {
         // Fields with concept inference enabled
         $structure = $this->structure->getThesaurusEnabledFields();
-        $fields = array();
+        $fields = [];
+        $index_fields = [];
         foreach ($structure as $name => $field) {
             $fields[$name] = $field->getThesaurusRoots();
+            $index_fields[$name] = $field->getIndexField();
         }
         // Hydrate records with concepts
         foreach ($records as &$record) {
-            $this->hydrate($record, $fields);
+            $this->hydrate($record, $fields, $index_fields);
         }
     }
 
-    private function hydrate(array &$record, array $fields)
+    private function hydrate(array &$record, array $fields, array $index_fields)
     {
         if (!isset($record['databox_id'])) {
             throw new Exception('Expected a record with the "databox_id" key set.');
@@ -59,13 +61,14 @@ class ThesaurusHydrator implements HydratorInterface
         $field_names = array();
         foreach ($fields as $name => $root_concepts) {
             // Loop through all values to prepare bulk query
-            if (isset($record['caption'][$name])) {
+            $field_values = \igorw\get_in($record, explode('.', $index_fields[$name]));
+            if ($field_values !== null) {
                 // Concepts are databox's specific, but when no root concepts are
                 // given we need to make sure we only match in the right databox.
                 $filter = $root_concepts
                     ? Filter::childOfConcepts($root_concepts)
                     : Filter::byDatabox($record['databox_id']);
-                foreach ($record['caption'][$name] as $value) {
+                foreach ($field_values as $value) {
                     $values[] = $value;
                     $terms[] = Term::parse($value);
                     $filters[] = $filter;
