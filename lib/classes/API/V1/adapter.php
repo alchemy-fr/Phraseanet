@@ -1926,8 +1926,13 @@ class API_V1_adapter extends API_V1_Abstract
     {
         /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
         $service = $this->app['authentication.registration_service'];
+        $collections = null;
 
-        $user = $service->registerUser($data);
+        if (isset($data['collections'])) {
+            $collections = $data['collections'];
+        }
+
+        $user = $service->registerUser($data, $collections);
         $token = $service->getAccountUnlockToken($user);
 
         $result = new API_V1_result($this->app, $this->app['request'], $this);
