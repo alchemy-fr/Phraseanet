@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Account\AccountService;
+use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
+use Alchemy\Phrasea\Account\Command\UpdateFtpSettingsCommand;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -387,34 +390,44 @@ class Account implements ControllerProviderInterface
             }
 
             try {
-                $app['phraseanet.appbox']->get_connection()->beginTransaction();
+                /** @var AccountService $service */
+                $service = $app['accounts.service'];
 
-                $app['authentication']->getUser()->set_gender($request->request->get("form_gender"))
-                    ->set_firstname($request->request->get("form_firstname"))
-                    ->set_lastname($request->request->get("form_lastname"))
-                    ->set_address($request->request->get("form_address"))
-                    ->set_zip($request->request->get("form_zip"))
-                    ->set_tel($request->request->get("form_phone"))
-                    ->set_fax($request->request->get("form_fax"))
-                    ->set_job($request->request->get("form_activity"))
-                    ->set_company($request->request->get("form_company"))
-                    ->set_position($request->request->get("form_function"))
-                    ->set_geonameid($request->request->get("form_geonameid"))
-                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"))
-                    ->set_activeftp($request->request->get("form_activeFTP"))
-                    ->set_ftp_address($request->request->get("form_addrFTP"))
-                    ->set_ftp_login($request->request->get("form_loginFTP"))
-                    ->set_ftp_password($request->request->get("form_pwdFTP"))
-                    ->set_ftp_passif($request->request->get("form_passifFTP"))
-                    ->set_ftp_dir($request->request->get("form_destFTP"))
-                    ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
-                    ->set_defaultftpdatas($defaultDatas);
+                $requestBag = $request->request;
+
+                $command = new UpdateAccountCommand();
+                $command
+                    ->setGender($requestBag->get('form_gender'))
+                    ->setFirstName($requestBag->get('form_firstname'))
+                    ->setLastName($requestBag->get('form_lastname'))
+                    ->setAddress($requestBag->get('form_address'))
+                    ->setZipCode($requestBag->get('form_zip'))
+                    ->setPhone($requestBag->get('form_phone'))
+                    ->setFax($requestBag->get('form_fax'))
+                    ->setJob($requestBag->get('form_activity'))
+                    ->setCompany($requestBag->get('form_company'))
+                    ->setPosition($requestBag->get('form_function'))
+                    ->setGeonameId($requestBag->get('form_geonameid'))
+                    ->setNotifications($requestBag->get('mail_notifications'));
+
+                $ftpCommand = new UpdateFtpSettingsCommand();
+                $ftpCommand
+                    ->setEnabled($requestBag->get('form_activeFTP'))
+                    ->setAddress($requestBag->get('form_addrFTP'))
+                    ->setLogin($requestBag->get('form_loginFTP'))
+                    ->setPassword($requestBag->get('form_pwdFTP'))
+                    ->setPassiveMode($requestBag->get('form_passifFTP'))
+                    ->setFolder($requestBag->get('form_destFTP'))
+                    ->setFolderPrefix($requestBag->get('form_prefixFTPfolder'))
+                    ->setDefaultData($defaultDatas);
+
+                // @todo Command batch processing
+                $service->updateAccount($command);
+                $service->updateFtpSettings($ftpCommand);
 
                 $app->addFlash('success', _('login::notification: Changements enregistres'));
-                $app['phraseanet.appbox']->get_connection()->commit();
             } catch (\Exception $e) {
                 $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
-                $app['phraseanet.appbox']->get_connection()->rollBack();
             }
         }
 

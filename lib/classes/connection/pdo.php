@@ -9,6 +9,13 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * Class connection_pdo
+ *
+ * @method beginTransaction()
+ * @method commit()
+ * @method rollback()
+ */
 class connection_pdo extends connection_abstract implements connection_interface
 {
     protected $debug;

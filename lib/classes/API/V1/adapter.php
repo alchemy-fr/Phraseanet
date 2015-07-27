@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Account\AccountException;
+use Alchemy\Phrasea\Account\AccountService;
+use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Application;
@@ -1941,6 +1944,36 @@ class API_V1_adapter extends API_V1_Abstract
             'user' => $this->list_user($user),
             'token' => $token
         ));
+
+        return $result;
+    }
+
+    public function update_account($email, array $data)
+    {
+        /** @var AccountService $service */
+        $service = $this->app['accounts.service'];
+
+        $command = new UpdateAccountCommand();
+        $command
+            ->setGender($data['gender'])
+            ->setFirstName($data['firstname'])
+            ->setLastName($data['lastname'])
+            ->setZipCode($data['zip_code'])
+            ->setCity($data['city'])
+            ->setPhone($data['tel'])
+            ->setCompany($data['company'])
+            ->setJob($data['job'])
+            ->setNotifications($data['notifications']);
+
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+
+        try {
+            $service->updateAccount($command);
+            $result->set_datas([ 'success' => true ]);
+        }
+        catch (AccountException $exception) {
+            $result->set_datas([ 'success' => false ]);
+        }
 
         return $result;
     }
