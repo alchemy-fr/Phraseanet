@@ -407,29 +407,34 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  type         $pasword
+     * @param  string $password
      * @return User_Adapter
      */
-    public function set_password($pasword)
+    public function set_password($password)
+    {
+        $password = $this->app['auth.password-encoder']->encodePassword($password, $this->get_nonce());
+
+        return $this->setEncodedPassword($password);
+    }
+
+    public function setEncodedPassword($passwordHash)
     {
         $sql = 'UPDATE usr SET usr_password = :password, salted_password = "1"
             WHERE usr_id = :usr_id';
 
-        $password = $this->app['auth.password-encoder']->encodePassword($pasword, $this->get_nonce());
-
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':password' => $password, ':usr_id'   => $this->get_id()));
+        $stmt->execute(array(':password' => $passwordHash, ':usr_id'   => $this->get_id()));
         $stmt->closeCursor();
 
-        $this->password = $password;
+        $this->password = $passwordHash;
 
         return $this;
     }
 
     /**
-     *
-     * @param  string       $email
+     * @param  string $email
      * @return User_Adapter
+     * @throws Exception_InvalidArgument
      */
     public function set_email($email)
     {

@@ -12,9 +12,11 @@
 namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdateFtpSettingsCommand;
+use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -81,27 +83,30 @@ class Account implements ControllerProviderInterface
     /**
      * Reset Password
      *
-     * @param  Application $app
+     * @param  PhraseaApplication $app
      * @param  Request     $request
      * @return Response
      */
-    public function resetPassword(Application $app, Request $request)
+    public function resetPassword(PhraseaApplication $app, Request $request)
     {
-        $form = $app->form(new PhraseaRenewPasswordForm());
+        $command = new UpdatePasswordCommand();
+        $form = $app->form(new PhraseaRenewPasswordForm(), $command);
 
         if ('POST' === $request->getMethod()) {
-            $form->bind($request);
+            $form->submit($request);
 
             if ($form->isValid()) {
-                $data = $form->getData();
-                $user = $app['authentication']->getUser();
+                /** @var AccountService $service */
+                $service = $app['accounts.service'];
 
-                if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
-                    $user->set_password($data['password']);
+                try {
+                    $service->updatePassword($command);
+
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');
-                } else {
+                }
+                catch (AccountException $exception) {
                     $app->addFlash('error', _('Invalid password provided'));
                 }
             }
@@ -116,7 +121,7 @@ class Account implements ControllerProviderInterface
     /**
      * Reset Email
      *
-     * @param  Application      $app
+     * @param  PhraseaApplication      $app
      * @param  Request          $request
      * @return RedirectResponse
      */
