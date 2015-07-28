@@ -44,7 +44,7 @@ class AccountService
         'getCompany' => 'set_company',
         'getPosition' => 'set_position',
         'getGeonameId' => 'set_geonameid',
-        'getNotifications' => 'set_notifications'
+        'getNotifications' => 'set_mail_notifications'
     ];
 
     private $updateFtpSettingsMap = [
