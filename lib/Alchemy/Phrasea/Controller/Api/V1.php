@@ -975,6 +975,14 @@ class V1 implements ControllerProviderInterface
             return $result->get_response();
         });
 
+        $controllers->post('/accounts/update-account/{email}', function ($email, Request $request) use ($app) {
+            $data = json_decode($request->getContent(false), true);
+            $result = $app['api']->update_account($email, $data);
+
+            return $result->get_response();
+
+        })->before($requirePasswordGrant);
+
         /**
          * Route : /accounts/reset-password/{email}/
          *

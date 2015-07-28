@@ -38,6 +38,9 @@ class Authenticator
         $this->reinitUser();
     }
 
+    /**
+     * @return \User_Adapter
+     */
     public function getUser()
     {
         return $this->user;
