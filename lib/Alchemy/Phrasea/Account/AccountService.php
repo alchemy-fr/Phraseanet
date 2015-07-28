@@ -4,10 +4,15 @@ namespace Alchemy\Phrasea\Account;
 
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdateFtpSettingsCommand;
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 
 class AccountService
 {
+    /**
+     * @var Application
+     */
+    private $application;
 
     /**
      * @var \connection_pdo
@@ -46,18 +51,29 @@ class AccountService
         'getDefaultData' => 'set_defaultftpdatas'
     ];
 
-    public function __construct(\connection_pdo $appboxConnection, Authenticator $authenticator)
+    public function __construct(Application $application, \connection_pdo $appboxConnection, Authenticator $authenticator)
     {
+        $this->application = $application;
         $this->authenticationService = $authenticator;
         $this->connection = $appboxConnection;
     }
 
-    public function updateAccount(UpdateAccountCommand $command)
+    public function updateAccount(UpdateAccountCommand $command, $email = null)
     {
         $this->connection->beginTransaction();
 
         try {
-            $user = $this->authenticationService->getUser();
+            if ($email !== null) {
+                $userId = \User_Adapter::get_usr_id_from_email($this->application, $email);
+
+                if ($userId === false) {
+                    throw new AccountException('User not found');
+                }
+
+                $user = new \User_Adapter($userId, $this->application);
+            } else {
+                $user = $this->authenticationService->getUser();
+            }
 
             foreach ($this->updateAccountMethodMap as $getter => $setter) {
                 $value = call_user_func([$command, $getter]);

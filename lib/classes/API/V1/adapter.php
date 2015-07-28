@@ -1955,20 +1955,20 @@ class API_V1_adapter extends API_V1_Abstract
 
         $command = new UpdateAccountCommand();
         $command
-            ->setGender($data['gender'])
-            ->setFirstName($data['firstname'])
-            ->setLastName($data['lastname'])
-            ->setZipCode($data['zip_code'])
-            ->setCity($data['city'])
-            ->setPhone($data['tel'])
-            ->setCompany($data['company'])
-            ->setJob($data['job'])
-            ->setNotifications($data['notifications']);
+            ->setGender(isset($data['gender']) ? $data['gender'] : null)
+            ->setFirstName(isset($data['firstname']) ? $data['firstname'] : null)
+            ->setLastName(isset($data['lastname']) ? $data['lastname'] : null)
+            ->setZipCode(isset($data['zip_code']) ? $data['zip_code'] : null)
+            ->setCity(isset($data['city']) ? $data['city'] : null)
+            ->setPhone(isset($data['tel']) ? $data['tel'] : null)
+            ->setCompany(isset($data['company']) ? $data['company'] : null)
+            ->setJob(isset($data['job']) ? $data['job'] : null)
+            ->setNotifications(isset($data['notifications']) ? $data['notifications'] : null);
 
         $result = new API_V1_result($this->app, $this->app['request'], $this);
 
         try {
-            $service->updateAccount($command);
+            $service->updateAccount($command, $email);
             $result->set_datas([ 'success' => true ]);
         }
         catch (AccountException $exception) {
