@@ -20,7 +20,12 @@ class AccountServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['accounts.service'] = $app->share(function () use ($app) {
-            return new AccountService($app, $app['phraseanet.appbox']->get_connection(), $app['authentication']);
+            return new AccountService(
+                $app,
+                $app['phraseanet.appbox']->get_connection(),
+                $app['authentication'],
+                $app['auth.password-encoder']
+            );
         });
     }
 

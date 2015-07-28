@@ -12,6 +12,8 @@
 use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
+use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
+use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Application;
@@ -1972,7 +1974,34 @@ class API_V1_adapter extends API_V1_Abstract
             $result->set_datas([ 'success' => true ]);
         }
         catch (AccountException $exception) {
-            $result->set_datas([ 'success' => false ]);
+            $result->set_datas([ 'success' => false, 'message' => _($exception->getMessage()) ]);
+        }
+
+        return $result;
+    }
+
+    public function update_password($email, array $data)
+    {
+        /** @var AccountService $service */
+        $service = $this->app['accounts.service'];
+        $command = new UpdatePasswordCommand();
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+            'csrf_protection' => false
+        ]);
+
+        $form->submit($data);
+        $result->set_datas([ 'success' => false ]);
+
+        if ($form->isValid()) {
+            try {
+                $service->updatePassword($command, $email);
+                $result->set_datas(['success' => true]);
+            } catch (AccountException $exception) {
+                $result->set_datas([ 'success' => false, 'message' => _($exception->getMessage()) ]);
+            }
+        } else {
+            $result->set_datas([ 'success' => false, 'message' => (string) $form->getErrorsAsString() ]);
         }
 
         return $result;
@@ -2013,7 +2042,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function update_password($token, $password)
+    public function set_new_password($token, $password)
     {
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
         $service = $this->app['authentication.recovery_service'];

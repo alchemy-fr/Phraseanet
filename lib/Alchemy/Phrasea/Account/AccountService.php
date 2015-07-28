@@ -4,8 +4,10 @@ namespace Alchemy\Phrasea\Account;
 
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdateFtpSettingsCommand;
+use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class AccountService
 {
@@ -23,6 +25,11 @@ class AccountService
      * @var Authenticator
      */
     private $authenticationService;
+
+    /**
+     * @var PasswordEncoderInterface
+     */
+    private $passwordEncoder;
 
     private $updateAccountMethodMap = [
         'getGender' => 'set_gender',
@@ -51,11 +58,35 @@ class AccountService
         'getDefaultData' => 'set_defaultftpdatas'
     ];
 
-    public function __construct(Application $application, \connection_pdo $appboxConnection, Authenticator $authenticator)
-    {
+    public function __construct(
+        Application $application,
+        \connection_pdo $appboxConnection,
+        Authenticator $authenticator,
+        PasswordEncoderInterface $passwordEncoder
+    ) {
         $this->application = $application;
         $this->authenticationService = $authenticator;
         $this->connection = $appboxConnection;
+        $this->passwordEncoder = $passwordEncoder;
+    }
+
+    public function updatePassword(UpdatePasswordCommand $command, $email = null)
+    {
+        $user = $this->authenticationService->getUser();
+        $passwordIsValid = $this->passwordEncoder->isPasswordValid(
+            $user->get_password(),
+            $command->getOldPassword(),
+            $user->get_nonce()
+        );
+
+        if (! $passwordIsValid) {
+            throw new AccountException('Invalid password provided');
+        }
+
+        $user = $this->getUserOrCurrentUser($email);
+        $encodedPassword = $this->passwordEncoder->encodePassword($command->getPassword(), $user->get_nonce());
+
+        $user->setEncodedPassword($encodedPassword);
     }
 
     public function updateAccount(UpdateAccountCommand $command, $email = null)
@@ -63,17 +94,7 @@ class AccountService
         $this->connection->beginTransaction();
 
         try {
-            if ($email !== null) {
-                $userId = \User_Adapter::get_usr_id_from_email($this->application, $email);
-
-                if ($userId === false) {
-                    throw new AccountException('User not found');
-                }
-
-                $user = new \User_Adapter($userId, $this->application);
-            } else {
-                $user = $this->authenticationService->getUser();
-            }
+            $user = $this->getUserOrCurrentUser($email);
 
             foreach ($this->updateAccountMethodMap as $getter => $setter) {
                 $value = call_user_func([$command, $getter]);
@@ -84,8 +105,7 @@ class AccountService
             }
 
             $this->connection->commit();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->connection->rollback();
 
             throw new AccountException('Account update failed', 0, $e);
@@ -108,11 +128,31 @@ class AccountService
             }
 
             $this->connection->commit();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->connection->rollback();
 
             throw new AccountException('Account FTP settings update failed', 0, $e);
         }
+    }
+
+    /**
+     * @param $email
+     * @return \User_Adapter
+     */
+    private function getUserOrCurrentUser($email = null)
+    {
+        if ($email !== null) {
+            $userId = \User_Adapter::get_usr_id_from_email($this->application, $email);
+
+            if ($userId === false) {
+                throw new AccountException('User not found');
+            }
+
+            $user = new \User_Adapter($userId, $this->application);
+        } else {
+            $user = $this->authenticationService->getUser();
+        }
+
+        return $user;
     }
 }

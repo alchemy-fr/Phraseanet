@@ -980,7 +980,13 @@ class V1 implements ControllerProviderInterface
             $result = $app['api']->update_account($email, $data);
 
             return $result->get_response();
+        })->before($requirePasswordGrant);
 
+        $controllers->post('/accounts/change-password/{email}', function ($email, Request $request) use ($app) {
+            $data = json_decode($request->getContent(false), true);
+            $result = $app['api']->update_password($email, $data);
+
+            return $result->get_response();
         })->before($requirePasswordGrant);
 
         /**
@@ -1006,7 +1012,7 @@ class V1 implements ControllerProviderInterface
          *  token : required STRING
          */
         $controllers->post('/accounts/update-password/{token}/', function (Request $request, $token) use ($app) {
-            $result = $app['api']->update_password($token, $request->request->get('password', null));
+            $result = $app['api']->set_new_password($token, $request->request->get('password', null));
 
             return $result->get_response();
         })->before($requirePasswordGrant);
