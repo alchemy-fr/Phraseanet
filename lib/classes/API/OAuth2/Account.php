@@ -72,7 +72,7 @@ class API_OAuth2_Account
     /**
      * @var bool
      */
-    protected $deleted;
+    protected $deleted = false;
 
     public function __construct(Application $app, $account_id, $allow_deleted = false)
     {
@@ -104,7 +104,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return int
      */
     public function get_id()
@@ -113,7 +112,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return User_Adapter
      */
     public function get_user()
@@ -122,7 +120,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return string
      */
     public function get_api_version()
@@ -131,7 +128,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return boolean
      */
     public function is_revoked()
@@ -139,14 +135,18 @@ class API_OAuth2_Account
         return $this->revoked;
     }
 
+    public function is_deleted()
+    {
+        return $this->deleted;
+    }
+
     /**
-     *
-     * @param  boolean            $boolean
+     * @param  boolean $boolean
      * @return API_OAuth2_Account
      */
     public function set_revoked($boolean)
     {
-        $this->revoked = ! ! $boolean;
+        $this->revoked = (bool) $boolean;
 
         $sql = 'UPDATE api_accounts SET revoked = :revoked
             WHERE api_account_id = :account_id';
@@ -164,7 +164,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_created_on()
@@ -173,7 +172,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return API_OAuth2_Token
      */
     public function get_token()
@@ -190,7 +188,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return API_OAuth2_Application
      */
     public function get_application()
@@ -202,7 +199,6 @@ class API_OAuth2_Account
     }
 
     /**
-     *
      * @return void
      */
     public function delete()
@@ -225,6 +221,12 @@ class API_OAuth2_Account
         return;
     }
 
+    /**
+     * @param Application $app
+     * @param User_Adapter $user
+     * @param API_OAuth2_Application $application
+     * @return API_OAuth2_Account
+     */
     public static function create(Application $app, User_Adapter $user, API_OAuth2_Application $application)
     {
         $sql = 'INSERT INTO api_accounts
@@ -249,6 +251,12 @@ class API_OAuth2_Account
         return new self($app, $account_id);
     }
 
+    /**
+     * @param Application $app
+     * @param API_OAuth2_Application $application
+     * @param User_Adapter $user
+     * @return API_OAuth2_Account
+     */
     public static function load_with_user(Application $app, API_OAuth2_Application $application, User_Adapter $user)
     {
         $sql = 'SELECT api_account_id FROM api_accounts
