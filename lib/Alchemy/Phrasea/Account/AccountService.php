@@ -7,6 +7,10 @@ use Alchemy\Phrasea\Account\Command\UpdateFtpSettingsCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Core\Event\AccountDeletedEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class AccountService
@@ -30,6 +34,11 @@ class AccountService
      * @var PasswordEncoderInterface
      */
     private $passwordEncoder;
+
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
 
     private $updateAccountMethodMap = [
         'getGender' => 'set_gender',
@@ -62,12 +71,14 @@ class AccountService
         Application $application,
         \connection_pdo $appboxConnection,
         Authenticator $authenticator,
-        PasswordEncoderInterface $passwordEncoder
+        PasswordEncoderInterface $passwordEncoder,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->application = $application;
         $this->authenticationService = $authenticator;
         $this->connection = $appboxConnection;
         $this->passwordEncoder = $passwordEncoder;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function updatePassword(UpdatePasswordCommand $command, $email = null)
@@ -138,15 +149,11 @@ class AccountService
     public function deleteAccount($email = null)
     {
         $user = $this->getUserOrCurrentUser($email);
-
-        $eventParams = array(
-            'usr_id' => $user->get_id(),
-            'email' => $user->get_email()
-        );
+        $event = new AccountDeletedEvent($user->get_id(), $user->get_email());
 
         $user->delete();
 
-        $this->application['events-manager']->trigger('__ACCOUNT_DELETED__', $eventParams);
+        $this->eventDispatcher->dispatch(PhraseaEvents::ACCOUNT_DELETED, $event);
     }
 
     /**
