@@ -24,7 +24,8 @@ class AccountServiceProvider implements ServiceProviderInterface
                 $app,
                 $app['phraseanet.appbox']->get_connection(),
                 $app['authentication'],
-                $app['auth.password-encoder']
+                $app['auth.password-encoder'],
+                $app['dispatcher']
             );
         });
     }

@@ -38,103 +38,91 @@ class API_OAuth2_Application
     const NATIVE_APP_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 
     /**
-     *
      * @var Application
      */
     protected $app;
 
     /**
-     *
      * @var int
      */
     protected $id;
 
     /**
-     *
      * @var User_Adapter
      */
     protected $creator;
 
     /**
-     *
      * @var string
      */
     protected $type;
 
     /**
-     *
      * @var string
      */
     protected $name;
 
     /**
-     *
      * @var string
      */
     protected $nonce;
 
     /**
-     *
      * @var string
      */
     protected $description;
 
     /**
-     *
      * @var string
      */
     protected $website;
 
     /**
-     *
      * @var DateTime
      */
     protected $created_on;
 
     /**
-     *
      * @var DateTime
      */
     protected $last_modified;
 
     /**
-     *
      * @var string
      */
     protected $client_id;
 
     /**
-     *
      * @var string
      */
     protected $client_secret;
 
     /**
-     *
      * @var string
      */
     protected $redirect_uri;
 
     /**
-     *
      * @var boolean
      */
     protected $activated;
 
     /**
-     *
      * @var boolean
      */
     protected $grant_password;
 
     /**
-     *
      * @var string
      */
     protected $webhook;
 
     /**
-     *
+     * @var bool
+     */
+    protected $deleted = false;
+
+    /**
      * @param  Application            $app
      * @param  int                    $application_id
      * @return API_OAuth2_Application
@@ -148,7 +136,7 @@ class API_OAuth2_Application
             SELECT
                 application_id, creator, type, name, description, website
               , created_on, last_modified, client_id, client_secret, nonce
-              , redirect_uri, activated, grant_password, webhook_url
+              , redirect_uri, activated, grant_password, webhook_url, deleted
             FROM api_applications
             WHERE application_id = :application_id AND deleted = 0';
 
@@ -175,12 +163,12 @@ class API_OAuth2_Application
         $this->activated = ! ! $row['activated'];
         $this->grant_password = ! ! $row['grant_password'];
         $this->webhook = $row['webhook_url'];
+        $this->deleted = (bool) $row['deleted'];
 
         return $this;
     }
 
     /**
-     *
      * @return int
      */
     public function get_id()
@@ -189,7 +177,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return User_Adapter
      */
     public function get_creator()
@@ -198,7 +185,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function getWebhook()
@@ -207,7 +193,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function get_type()
@@ -216,7 +201,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function get_nonce()
@@ -225,9 +209,9 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  string                 $type
+     * @param  string $type
      * @return API_OAuth2_Application
+     * @throws Exception_InvalidArgument
      */
     public function set_type($type)
     {
@@ -255,7 +239,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function get_name()
@@ -264,7 +247,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @param  string $name
      * @return API_OAuth2_Application
      */
@@ -288,7 +270,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function get_description()
@@ -297,8 +278,7 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  string                 $description
+     * @param  string $description
      * @return API_OAuth2_Application
      */
     public function set_description($description)
@@ -376,7 +356,7 @@ class API_OAuth2_Application
     }
 
     /**
-     * Tell wether application is activated
+     * Tell whether application is activated
      * @return boolean
      */
     public function is_activated()
@@ -385,8 +365,15 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  boolean                $activated
+     * @return bool
+     */
+    public function is_deleted()
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * @param  boolean $activated
      * @return API_OAuth2_Application
      */
     public function set_activated($activated)
@@ -410,7 +397,7 @@ class API_OAuth2_Application
     }
 
     /**
-     * Tell wether application authorize password grant type
+     * Tell whether application authorize password grant type
      * @return boolean
      */
     public function is_password_granted()
@@ -444,7 +431,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_created_on()
@@ -453,7 +439,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_last_modified()
@@ -462,7 +447,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return int
      */
     public function get_client_id()
@@ -471,8 +455,7 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  int                    $client_id
+     * @param  int $client_id
      * @return API_OAuth2_Application
      */
     public function set_client_id($client_id)
@@ -496,7 +479,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function get_client_secret()
@@ -505,8 +487,7 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  string                 $client_secret
+     * @param  string $client_secret
      * @return API_OAuth2_Application
      */
     public function set_client_secret($client_secret)
@@ -530,7 +511,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return string
      */
     public function get_redirect_uri()
@@ -539,8 +519,7 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  string                 $redirect_uri
+     * @param  string $redirect_uri
      * @return API_OAuth2_Application
      */
     public function set_redirect_uri($redirect_uri)
@@ -563,8 +542,7 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  User_Adapter       $user
+     * @param  User_Adapter $user
      * @return API_OAuth2_Account
      */
     public function get_user_account(user_adapter $user)
@@ -589,7 +567,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return void
      */
     public function delete()
@@ -609,7 +586,6 @@ class API_OAuth2_Application
     }
 
     /**
-     *
      * @return array
      */
     protected function get_related_accounts()
@@ -632,10 +608,9 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  Application            $app
-     * @param  User_Adapter           $user
-     * @param  type                   $name
+     * @param  Application $app
+     * @param  User_Adapter $user
+     * @param  string $name
      * @return API_OAuth2_Application
      */
     public static function create(Application $app, User_Adapter $user = null, $name)
@@ -680,9 +655,8 @@ class API_OAuth2_Application
     }
 
     /**
-     *
-     * @param  Application            $app
-     * @param  type                   $client_id
+     * @param  Application $app
+     * @param  string $client_id
      * @return API_OAuth2_Application
      */
     public static function load_from_client_id(Application $app, $client_id)
@@ -726,6 +700,11 @@ class API_OAuth2_Application
         return $apps;
     }
 
+    /**
+     * @param Application $app
+     * @param user_adapter $user
+     * @return API_OAuth2_Application[]
+     */
     public static function load_app_by_user(Application $app, user_adapter $user)
     {
         $sql = 'SELECT a.application_id
@@ -745,6 +724,11 @@ class API_OAuth2_Application
         return $apps;
     }
 
+    /**
+     * @param Application $app
+     * @param user_adapter $user
+     * @return API_OAuth2_Application[]
+     */
     public static function load_authorized_app_by_user(Application $app, user_adapter $user)
     {
         $sql = '

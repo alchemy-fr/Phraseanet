@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\AccountDeletedEventSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
@@ -45,6 +46,9 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
         });
         $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
             return new RecordEditSubscriber();
+        });
+        $app['phraseanet.account-deleted-subscriber'] = $app->share(function (Application $app) {
+            return new AccountDeletedEventSubscriber($app);
         });
     }
 
