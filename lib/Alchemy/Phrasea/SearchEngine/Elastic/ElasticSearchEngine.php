@@ -253,7 +253,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         $context = $this->createQueryContext($options);
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d)\n%s\n", __FILE__, __LINE__, var_export($string, true)), FILE_APPEND);
         $recordQuery = $query_compiler->compile($string, $context);
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d)\n%s\n", __FILE__, __LINE__, var_export($recordQuery, true)), FILE_APPEND);
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
 
@@ -272,8 +274,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($aggs = $this->getAggregationQueryParams($options)) {
             $params['body']['aggs'] = $aggs;
         }
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d)\n%s\n", __FILE__, __LINE__, var_export($params, true)), FILE_APPEND);
 
         $res = $this->client->search($params);
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d)\n%s\n", __FILE__, __LINE__, var_export($res, true)), FILE_APPEND);
 
         $results = new ArrayCollection();
 
@@ -289,7 +293,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
-
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d)\n%s\n", __FILE__, __LINE__, var_export($query['query_string'], true)), FILE_APPEND);
         return new SearchEngineResult(
             $results,   // ArrayCollection of results
             json_encode($query),

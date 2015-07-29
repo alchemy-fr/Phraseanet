@@ -53,19 +53,17 @@ class Prod extends Helper
                 $data = array('sbas' => array($sbasId), 'fieldname' => $name, 'type' => $type, 'id' => $id);
 
                 if ($fieldMeta->get_type() === \databox_field::TYPE_DATE) {
-                    if (isset($dates[$id])) {
-                        $dates[$id]['sbas'][] = $sbasId;
-                    } else {
-                        $dates[$id] = $data;
+                    if (!array_key_exists($name, $dates)) {
+                        $dates[$name] = array('sbas' => array());
                     }
+                    $dates[$name]['sbas'][] = $sbasId;
                 }
 
                 if ($fieldMeta->get_type() == \databox_field::TYPE_NUMBER || $fieldMeta->get_type() === \databox_field::TYPE_DATE) {
-                    if (isset($sort[$id])) {
-                        $sort[$id]['sbas'][] = $sbasId;
-                    } else {
-                        $sort[$id] = $data;
+                    if (!array_key_exists($name, $sort)) {
+                        $sort[$name] = array('sbas' => array());
                     }
+                    $sort[$name]['sbas'][] = $sbasId;
                 }
 
                 if (isset($fields[$name])) {

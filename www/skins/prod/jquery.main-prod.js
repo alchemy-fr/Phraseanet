@@ -177,34 +177,49 @@ function checkFilters(save) {
     var danger = false;
     var search = {
         bases: {},
-        fields: {},
+        fields: [],
         dates: {},
-        status: {}
+        status: []
     };
 
     var adv_box = $('form.phrasea_query .adv_options');
-    var container = $("#sbasfiltercont");
-    var fieldsSelect = $('.field_filter select', container);
-    var filters = $('.field_filter, .status_filter, .date_filter', adv_box);
+    var container = $("#ADVSRCH_OPTIONS_ZONE");
+    var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
+    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
+    var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
     var switches = $('.field_switch', container);
-
+/*
     switches.filter('.was').removeClass('was');
     switches.filter('option:selected, input:checked').addClass('was');
 
-    $('select option.field_switch', container).addClass("hidden");
-    $('input.field_switch:checked', container).removeAttr('checked');
-    $('input.field_switch:checkbox', container).parent().hide();
+//    $('select option.field_switch', container).addClass("hidden");
+//    $('input.field_switch:checked', container).removeAttr('checked');
+//    $('input.field_switch:checkbox', container).parent().hide();
 
-    filters.removeClass('danger');
+//    filters.removeClass('danger');
+
+
+    // mark the selected options in the "fields" select
+*/
+    // hide all the fields in the "fields" select, so only the relevant ones will be shown again
+    $("option:gt(0)", fieldsSelect).prop("disabled", true);     // option[0] is "all fields"
+    $("option:gt(0)", fieldsSelect).hide();                     // option[0] is "all fields"
+
+    // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
+    $("option.dbx", fieldsSort).prop("disabled", true);         // dbx is for "field of databases"
+    $("option.dbx", fieldsSort).hide();
+
+    // hide all the fields in the "date field" select, so only the relevant ones will be shown again
+    $("option.dbx", dateFilterSelect).prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
+    $("option.dbx", dateFilterSelect).hide();
 
     var nbSelectedColls = 0;
-
     $.each($('.sbascont', adv_box), function () {
         var $this = $(this);
 
         var sbas_id = $this.parent().find('input[name="reference"]').val();
-        search.bases[sbas_id] = new Array();
+        search.bases[sbas_id] = [];
 
         var bas_ckbox = $this.find('.checkbas');
         if (bas_ckbox.filter(':not(:checked)').length > 0) {
@@ -212,58 +227,140 @@ function checkFilters(save) {
         }
 
         var checked = bas_ckbox.filter(':checked');
-
+/*
         if (checked.length > 0) {
             var sbas_fields = $('.field_' + sbas_id, container).removeClass("hidden");
             sbas_fields.filter('option').show().filter('.was').removeClass('was').attr('selected', 'selected').selected(true);
             sbas_fields.filter(':checkbox').parent().show().find('.was').attr('checked', 'checked').removeClass('was');
         }
-
+*/
+        var nbSelectedCollsForSBas = 0;
         checked.each(function () {
+            nbSelectedCollsForSBas++;
             nbSelectedColls++;
             search.bases[sbas_id].push($(this).val());
         });
+
+        if(nbSelectedCollsForSBas == 0) {
+            // no collections checked for this databox
+            // hide the status bits
+            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).hide();
+            // uncheck
+            $("#ADVSRCH_SB_ZONE_"+sbas_id+" input:checkbox", container).prop("checked", false);
+        }
+        else {
+            // at least one coll checked for this databox
+            // show again the relevant fields in "sort by" select
+            $(".db_"+sbas_id, fieldsSort).prop("disabled", false);
+            $(".db_"+sbas_id, fieldsSort).show();
+            // show again the relevant fields in "from fields" select
+            $(".field_"+sbas_id, fieldsSelect).prop("disabled", false);
+            $(".field_"+sbas_id, fieldsSelect).show();
+            // show the sb
+            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
+            // show again the relevant fields in "date field" select
+            $(".db_"+sbas_id, dateFilterSelect).prop("disabled", false);
+            $(".db_"+sbas_id, dateFilterSelect).show();
+        }
     });
 
     if (nbSelectedColls === 0) {
-        filters.addClass("danger");
+        // no collections checked at all
+        // filters.addClass("danger");
+        // hide irrelevant filters
+        $("#ADVSRCH_OPTIONS_ZONE").hide();
+    }
+    else {
+        // at least one collection checked
+        // show relevant filters
+        $("#ADVSRCH_OPTIONS_ZONE").show();
     }
 
-    search.fields = (search.fields = fieldsSelect.val()) !== null ? search.fields : new Array;
+    // --------- sort  --------
 
-    var reset_field = false;
-
-    $.each(search.fields, function (i, n) {
-        if (n === 'phraseanet--all--fields')
-            reset_field = true;
-    });
-
-    if (reset_field) {
-        $('select[name="fields[]"] option:selected', container).removeAttr('selected').selected(false);
-        search.fields = new Array;
+    // if no field is selected for sort, select the first option
+    if($("option.dbx:selected:visible:enabled", fieldsSort).length == 0) {
+        $("option:eq(0)", fieldsSort).prop("selected", true);
     }
 
-    if (!reset_field && search.fields.length > 0) {
-        danger = true;
-        $('.field_filter', adv_box).addClass('danger');
+    //--------- from fields filter ---------
+
+    // unselect the unavailable fields (or all fields if "all" is selected)
+    var optAllSelected = false;
+    $("option", fieldsSelect).each(
+        function(idx, opt) {
+            if(idx == 0) {
+                // nb: unselect the "all" field, so it acts as a button
+                optAllSelected = $(opt).is(":selected");
+            }
+            if(idx == 0 || optAllSelected || $(opt).is(":disabled") || !$(opt).is(":visible") ) {
+                $(opt).prop("selected", false);
+            }
+        }
+    );
+
+    // here only the relevant fields are selected
+    search.fields = fieldsSelect.val();
+    if(search.fields == null || search.fields.length == 0) {
+        $('#ADVSRCH_FIELDS_ZONE', container).removeClass('danger');
+        search.fields = [];
+    }
+    else {
+        $('#ADVSRCH_FIELDS_ZONE', container).addClass('danger');
     }
 
-    $('.status_filter :checkbox[checked]').each(function () {
+    //--------- status bits filter ---------
 
+    // here only the relevant sb are checked
+    for(sbas_id in search.bases) {
+        var nchecked = 0;
+        $("#ADVSRCH_SB_ZONE_"+sbas_id+" :checkbox[checked]", container).each(function () {
+            var n = $(this).attr('n');
+            search.status[n] = $(this).val().split('_');
+            nchecked++;
+        });
+        if(nchecked == 0) {
+            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
+        }
+        else {
+            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).addClass('danger');
+        }
+    }
+/*
+    $('#ADVSRCH_SB_ZONE :checkbox[checked]').each(function () {
         var n = $(this).attr('n');
         search.status[n] = $(this).val().split('_');
-        danger = true;
-        $('.status_filter', adv_box).addClass('danger');
     });
+    if(search.status.length == 0) {
+        $('#ADVSRCH_SB_ZONE', container).removeClass('danger');
+    }
+    else {
+        $('#ADVSRCH_SB_ZONE', container).addClass('danger');
+    }
+*/
+    //--------- dates filter ---------
 
-    search.dates.minbound = $('.date_filter input[name=date_min]', adv_box).val();
-    search.dates.maxbound = $('.date_filter input[name=date_max]', adv_box).val();
-    search.dates.field = $('.date_filter select[name=date_field]', adv_box).val();
+    // if no date field is selected for filter, select the first option
+    if($("option.dbx:selected:visible:enabled", dateFilterSelect).length == 0) {
+        $("option:eq(0)", dateFilterSelect).prop("selected", true);
+    }
+
+
+
+
+
+
+
+    search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
+    search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
+    search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
 
     if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
         danger = true;
-        $('.date_filter', adv_box).addClass('danger');
+        $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
     }
+
+
 
     fieldsSelect.scrollTop(scroll);
 
@@ -275,13 +372,14 @@ function checkFilters(save) {
     else
         $('#EDIT_query').removeClass('danger');
 }
+
 function toggleFilter(filter, ele) {
     var el = $('#' + filter);
     if (el.is(':hidden'))
         $(ele).parent().addClass('open');
     else
         $(ele).parent().removeClass('open');
-    $('#' + filter).slideToggle('fast');
+    el.slideToggle('fast');
 }
 
 
@@ -290,11 +388,11 @@ function setVisible(el) {
 }
 
 function resize() {
-    bodySize.y = $('#mainContainer').height();
-    bodySize.x = $('#mainContainer').width();
+    var body = $('#mainContainer');
+    bodySize.y = body.height();
+    bodySize.x = body.width();
 
-    if (false)
-        $('.overlay').height(bodySize.y).width(bodySize.x);
+    $('.overlay').height(bodySize.y).width(bodySize.x);
 
     var headBlockH = $('#headBlock').outerHeight();
     var bodyY = bodySize.y - headBlockH - 2;
@@ -323,9 +421,9 @@ function clearAnswers() {
 }
 
 function reset_adv_search() {
-    $('#sbasfiltercont select[name="sort"]').val($('#sbasfiltercont select[name="sort"] option.default-selection').attr('value'));
-    $('#sbasfiltercont input:checkbox.field_switch').removeAttr('checked');
-    $('#sbasfiltercont .datepicker').val('');
+    $('#ADVSRCH_OPTIONS_ZONE select[name="sort"]').val($('#ADVSRCH_OPTIONS_ZONE select[name="sort"] option.default-selection').attr('value'));
+    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').removeAttr('checked');
+    $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
     $('form.adv_search_bind input:text').val('');
     checkBases(true);
 }
@@ -639,6 +737,8 @@ function facetCombinedSearch() {
 
 $(document).ready(function() {
 });
+
+
 
 function answerSizer() {
     var el = $('#idFrameC').outerWidth();
@@ -2636,6 +2736,18 @@ function deleteBasket(item) {
             return;
         }
     });
+}
+
+function deploy(deployer, todeploy_selector)
+{
+    if($(deployer).hasClass("deployer_opened")) {
+        $(deployer).removeClass("deployer_opened").addClass("deployer_closed");
+        $(todeploy_selector).hide();
+    }
+    else {
+        $(deployer).removeClass("deployer_closed").addClass("deployer_opened");
+        $(todeploy_selector).show();
+    }
 }
 
 function clksbas(num, el) {

@@ -728,11 +728,11 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     * Return an array of sbas_id which are granted, with
+     * Return an array of databox (key=sbas_id) which are granted, with
      * optionnal filter by rights
      *
      * @param  Array $rights
-     * @return Array
+     * @return \databox[]
      */
     public function get_granted_sbas($rights = [])
     {

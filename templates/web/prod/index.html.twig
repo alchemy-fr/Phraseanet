@@ -3,9 +3,10 @@
     {% for base in search_datas['bases'] %}
         {% set sbas_id = base['sbas_id'] %}
         <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
-            <input type="hidden" name="reference" value="{{sbas_id}}"/>
-            <div class="clksbas" style="text-align: center;">
-                <label class="checkbox" for="sbasChkr_{{sbas_id}}_{{unique_id}}" onclick="clksbas({{sbas_id}}, $('#sbasChkr_{{sbas_id}}_{{unique_id}}')); return false;">
+            <input type="checkbox" name="reference" value="{{sbas_id}}"/>
+            <div class="clksbas">
+                <span  onclick="deploy(this, '.sbascont_{{sbas_id}}' );return false;" class="deployer_opened" ></span>
+                <label style="display: inline" class="checkbox" for="sbasChkr_{{sbas_id}}_{{unique_id}}" onclick="clksbas({{sbas_id}}, $('#sbasChkr_{{sbas_id}}_{{unique_id}}')); return false;">
                     <span>{{sbas_id|sbas_labels(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
                         {{base["collections"]|length}}/{{base['collections']|length}}
@@ -25,7 +26,7 @@
                                             onclick="cancelEvent(event);return false;"
                                             onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
                                             id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                            name="bases[{{ collection["base_id"] }}]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                            name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
                                     <td>
                                         <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
@@ -74,6 +75,15 @@
         .disable {
             display: none;
         }
+
+        .deployer_opened::before {
+            content: "\25BC";
+        }
+
+        .deployer_closed::before {
+            content: "\25B6";
+        }
+
     </style>
     <style type="text/css">
         /* Vertical Tabs */
@@ -285,11 +295,12 @@
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                         <input type="hidden" name="sel" value="">
 
+
                         <div class="adv_options" style="display:none;">
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
-                                        <div class="sbasglob">
+                                        <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
                                             <div class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button"
                                                     value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="checkBases(true);" />
@@ -304,99 +315,102 @@
                                             <div  class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="reset_adv_search();" />
                                             </div>
+                                            <div id="ADVSRCH_OPTIONS_ZONE">
+                                                <div class="ADVSRCH_SORT_ZONE">
+                                                    <span>{{ 'Trier par' | trans }}</span>
+                                                    <select name="sort" class="input-medium">
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
+                                                        <optgroup label="{{ 'By field'|trans }}">
+                                                        {% for fieldname, sort in search_datas['sort'] %}
+                                                            <option value="{{ fieldname }}"
+                                                                    {% if fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected"{% endif %}
+                                                                    class="{% if fieldname == app['phraseanet.SE'].getDefaultSort() %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                                    >{{ fieldname }}</option>
+                                                        {% endfor %}
+                                                        </optgroup>
+                                                    </select>
+                                                    <select name="ord" class="input-medium">
+                                                        {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
+                                                        <option value="{{ ord }}">{{ ord_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
 
-                                            <span>{{ 'Trier par' | trans }}</span>
-                                            <select name="sort" class="input-medium">
-                                                <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
-                                                <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
-                                                <optgroup label="{{ 'By field'|trans }}">
-                                                {% for sort in search_datas['sort'] %}
-                                                    <option value="{{ sort.fieldname }}" {% if sort.fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort.fieldname }}</option>
-                                                {% endfor %}
-                                                </optgroup>
-                                            </select>
-                                            <select name="ord" class="input-medium">
-                                                {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
-                                                <option value="{{ ord }}">{{ ord_name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            {% if app['phraseanet.SE'].hasStemming() and app['phraseanet.SE'].isStemmingEnabled() %}
-                                            <div>
-                                                <label class="checkbox">
-                                                     <input type="checkbox" checked="checked" name="stemme" /> {{ 'rechercher par stemme' | trans }}
-                                                </label>
-                                            </div>
-                                            {% endif %}
-                                            <div class="field_filter">
-                                                <span>{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
-                                                <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
-                                                    <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
-                                                    {% for field_id, field in search_datas['fields'] %}
-                                                        {% if field['type'] != 'date' %}
-                                                            <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
+                                                <div id="ADVSRCH_FIELDS_ZONE" class="danger_indicator">
+                                                    <span>{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
+                                                    <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
+                                                        <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
+                                                        {% for field_id, field in search_datas['fields'] %}
+                                                            {% if field['type'] != 'date' %}
+                                                                <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
 
-                                            {% set status_length = search_status|length %}
-                                            {% if status_length > 0 %}
-                                                <hr />
-                                                <div class="status_filter">
+                                                <div id="ADVSRCH_SB_ZONE">
+                                                {% set status_length = search_status|length %}
+                                                {% if status_length > 0 %}
+                                                    <hr />
                                                     <span>{{ 'Status des documents a rechercher' | trans }}</span>
-                                                    <table style="width: 100%;">
-                                                        {% for status_key, flag in search_status %}
-                                                            {% for databox_id in flag.sbas %}
+                                                    {% for databox_id, databox in search_status %}
+                                                    <table style="width: 100%;" id="ADVSRCH_SB_ZONE_{{databox_id}}" class="field_{{databox_id}}">
+                                                        <thead>
+                                                            <tr>
+                                                                <td colspan="2">
+                                                                    <span onclick="deploy(this, '#ADVSRCH_SB_{{databox_id}}' );return false;" class="deployer_opened" ></span>
+                                                                    <span class="danger_indicator">{{ databox['name'] }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="ADVSRCH_SB_{{databox_id}}">
+                                                            {% for status_bit, status in databox.status %}
                                                             <tr>
                                                                 <td>
                                                                     <label class="checkbox inline">
-                                                                        {% if flag['img_off'] %}
-                                                                            <img src="{{flag['img_off']}}" title="{{flag['labels_off_i18n'][app['locale']]}}" />
+                                                                        {% if status['img_off'] %}
+                                                                            <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
                                                                         type="checkbox" value="0"
-                                                                        n="{{flag['bit']}}" name="status[{{databox_id}}][{{flag['bit']}}]" />
-                                                                        {{flag['labels_off_i18n'][app['locale']]}}
+                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
+                                                                        {{status['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
                                                                     <label class="checkbox inline">
-                                                                        {% if flag['img_on'] %}
-                                                                            <img src="{{flag['img_on']}}" title="{{flag['labels_on_i18n'][app['locale']]}}" />
+                                                                        {% if status['img_on'] %}
+                                                                            <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
                                                                         <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
                                                                         type="checkbox" value="1"
-                                                                        n="{{flag['bit']}}" name="status[{{databox_id}}][{{flag['bit']}}]"/>
-                                                                        {{flag['labels_on_i18n'][app['locale']]}}
+                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
+                                                                        {{status['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                             </tr>
                                                             {% endfor %}
-                                                        {% endfor %}
+                                                        </tbody>
                                                     </table>
+                                                    {% endfor %}
+                                                {% endif %}
                                                 </div>
-                                            {% endif %}
 
-                                            {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
-                                                <hr />
-                                                <div class="date_filter">
+                                                <div id="ADVSRCH_DATE_ZONE">
+                                                    {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
+                                                    <hr />
                                                     <table>
                                                         <tr>
                                                             <td colspan="2">{{ 'Rechercher dans un champ date' | trans }}</td>
                                                             <td colspan="2">
                                                                 <select name="date_field" class="input-medium">
-                                                                    {% for date in search_datas['dates'] %}
+                                                                    <option onchange="checkFilters(true);" selected="selected"
+                                                                            value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                                    {% for fieldname, date in search_datas['dates'] %}
                                                                         <option onchange="checkFilters(true);"
-                                                                            class="" value="{{ date.fieldname }}">{{ date.fieldname }}</option>
+                                                                            class="db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
                                                                     {% endfor %}
-
-                                                                    {% set date_field_names = [] %}
-                                                                    {% for field in search_datas['dates'] %}
-                                                                        {% set date_field_names = date_field_names|merge([field.fieldname]) %}
-                                                                    {% endfor %}
-                                                                    <option value="{{ date_field_names|join('|') }}" selected="selected">
-                                                                        {{ 'rechercher dans tous les champs'| trans }}
-                                                                    </option>
                                                                 </select>
                                                             </td>
                                                         </tr>
@@ -417,8 +431,9 @@
                                                             </td>
                                                         </tr>
                                                     </table>
+                                                    {% endif %}
                                                 </div>
-                                            {% endif %}
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>

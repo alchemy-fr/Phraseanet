@@ -131,7 +131,6 @@ class RootController extends Controller
             'thesau_languages'     => $this->app['locales.available'],
         ]);
     }
-
     /**
      * @return DisplaySettingService
      */

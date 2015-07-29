@@ -1557,18 +1557,13 @@ form.phrasea_query input.query {
     text-decoration: underline;
 }
 
-.phrasea_query input.danger,
-.phrasea_query .date_filter.danger,
-.phrasea_query .field_filter.danger,
-.phrasea_query .status_filter.danger {
+#searchForm .danger .danger_indicator,
+#searchForm .danger.danger_indicator {
     border-color: #c9c900;
     background-color: #FCEC98;
     color: #000000;
 }
 
-#searchForm .danger label {
-    color: #000000;
-}
 
 #adv_search table.colllist {
     width: 290px;
