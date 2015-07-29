@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 
 class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Interface

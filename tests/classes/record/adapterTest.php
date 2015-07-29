@@ -1,10 +1,9 @@
 <?php
 
-use Alchemy\Phrasea\Media\TechnicalDataSet;
-use Rhumsaa\Uuid\Uuid;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Symfony\Component\EventDispatcher\Event;
 use Doctrine\Common\Collections\ArrayCollection;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * @group functional

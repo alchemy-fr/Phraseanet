@@ -3,11 +3,10 @@
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
-use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
@@ -15,9 +14,9 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
-use Rhumsaa\Uuid\Uuid;
-use Symfony\Component\HttpKernel\Client;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Client;
 
 abstract class ApiTestCase extends \PhraseanetWebTestCase
 {

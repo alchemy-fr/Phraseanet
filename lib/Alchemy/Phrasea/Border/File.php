@@ -12,20 +12,20 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Media\Type\Audio;
 use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
-use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Metadata\TagFactory;
-use MediaVorus\Media\MediaInterface;
 use MediaVorus\Exception\FileNotFoundException;
+use MediaVorus\Media\MediaInterface;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Phraseanet candidate File package

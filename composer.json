@@ -76,7 +76,7 @@
         "php-ffmpeg/php-ffmpeg":                 "~0.5.0",
         "php-xpdf/php-xpdf":                     "~0.2.1",
         "phpexiftool/phpexiftool":               "dev-0.4.1-mwg-metadata-copy as 0.4.1",
-        "rhumsaa/uuid":                          "~2.7",
+        "ramsey/uuid":                           "^3.0",
         "roave/security-advisories":             "dev-master",
         "silex/silex":                           "~1.2",
         "silex/web-profiler":                    "~1.0",
