@@ -138,6 +138,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/permalink/', new Permalink());
     $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
     $app->mount('/include/minify/', new Minifier());
+    $app->bindPluginRoutes('plugin.controller_providers.api');
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
         $app->register($p = new WebProfilerServiceProvider(), [

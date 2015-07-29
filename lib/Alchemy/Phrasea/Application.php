@@ -100,6 +100,7 @@ use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
+use Silex\ControllerProviderInterface;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\HttpFragmentServiceProvider;
@@ -703,6 +704,8 @@ class Application extends SilexApplication
         foreach ($providers as $prefix => $class) {
             $this->mount($prefix, new $class);
         }
+
+        $this->bindPluginRoutes('plugin.controller_providers.root');
     }
 
     /**
@@ -1144,5 +1147,37 @@ class Application extends SilexApplication
     {
         $this['charset'] = 'UTF-8';
         mb_internal_encoding($this['charset']);
+    }
+
+    /**
+     * @param $routeParameter
+     */
+    public function bindPluginRoutes($routeParameter)
+    {
+        foreach ($this[$routeParameter] as $provider) {
+            $prefix = '';
+
+            if (is_array($provider)) {
+                $providerDefinition = $provider;
+                list($prefix, $provider) = $providerDefinition;
+            }
+
+            if (!is_string($prefix) || !is_string($provider)) {
+                continue;
+            }
+
+            $prefix = '/' . ltrim($prefix, '/');
+            if (!isset($this[$provider])) {
+                continue;
+            }
+
+            $provider = $this[$provider];
+
+            if (!$provider instanceof ControllerProviderInterface) {
+                continue;
+            }
+
+            $this->mount($prefix, $provider);
+        }
     }
 }
