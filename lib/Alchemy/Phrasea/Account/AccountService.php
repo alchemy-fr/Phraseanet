@@ -149,11 +149,8 @@ class AccountService
     public function deleteAccount($email = null)
     {
         $user = $this->getUserOrCurrentUser($email);
-        $event = new AccountDeletedEvent($user->get_id(), $user->get_email());
 
         $user->delete();
-
-        $this->eventDispatcher->dispatch(PhraseaEvents::ACCOUNT_DELETED, $event);
     }
 
     /**

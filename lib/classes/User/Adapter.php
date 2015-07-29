@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Core\Event\AccountDeletedEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 
@@ -979,6 +981,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function delete()
     {
         $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
+        $event = new AccountDeletedEvent($this->get_id(), $this->get_email());
 
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
@@ -1063,6 +1066,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
 
         unset(self::$_instance[$this->get_id()]);
+
+        $this->app['dispatcher']->dispatch(PhraseaEvents::ACCOUNT_DELETED, $event);
 
         return;
     }
