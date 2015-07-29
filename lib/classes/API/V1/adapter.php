@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
+use Alchemy\Phrasea\Account\CollectionRequestMapper;
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -1930,57 +1931,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     private function list_user_demands(\User_Adapter $user)
     {
-        require_once $this->app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
-
-        $databoxStatuses = giveMeBases($this->app, $user->get_id());
-
-        $demands = array();
-
-        foreach ($databoxStatuses as $databoxId => $data) {
-            foreach ($data['CollsWait'] as $collectionId => $waiting) {
-                $baseId = \phrasea::baseFromColl($databoxId, $collectionId, $this->app);
-                $demands[] = array(
-                    "databox_id" => $databoxId,
-                    "base_id" => $baseId,
-                    "collection_id" => $collectionId,
-                    "status" => "pending"
-                );
-            }
-
-            foreach ($data['CollsRefuse'] as $collectionId => $waiting) {
-                $baseId = \phrasea::baseFromColl($databoxId, $collectionId, $this->app);
-                $demands[] = array(
-                    "databox_id" => $databoxId,
-                    "base_id" => $baseId,
-                    "collection_id" => $collectionId,
-                    "status" => "rejected"
-                );
-            }
-
-            foreach ($data['CollsRegistered'] as $collectionId => $waiting) {
-                $baseId = \phrasea::baseFromColl($databoxId, $collectionId, $this->app);
-                $demands[] = array(
-                    "databox_id" => $databoxId,
-                    "base_id" => $baseId,
-                    "collection_id" => $collectionId,
-                    "status" => "accepted"
-                );
-            }
-        }
-
-        usort($demands, function ($lhs, $rhs) {
-            if ($lhs['base_id'] < $rhs['base_id']) {
-                return -1;
-            }
-
-            if ($lhs['base_id'] > $rhs['base_id']) {
-                return 1;
-            }
-
-            return 0;
-        });
-
-        return $demands;
+        return (new CollectionRequestMapper($this->app))->getUserRequests($user);
     }
 
     public function create_account(array $data)
