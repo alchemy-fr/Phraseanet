@@ -3,15 +3,16 @@
     {% for base in search_datas['bases'] %}
         {% set sbas_id = base['sbas_id'] %}
         <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
-            <input type="checkbox" name="reference" value="{{sbas_id}}"/>
+            <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas">
-                <span  onclick="deploy(this, '.sbascont_{{sbas_id}}' );return false;" class="deployer_opened" ></span>
-                <label style="display: inline" class="checkbox" for="sbasChkr_{{sbas_id}}_{{unique_id}}" onclick="clksbas({{sbas_id}}, $('#sbasChkr_{{sbas_id}}_{{unique_id}}')); return false;">
+                <span  onclick="deploy(this, '.sbascont_{{sbas_id}}' );" class="deployer_opened" ></span>
+                <input type="checkbox" checked xstyle="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
+                       onchange="clksbas(this, {{sbas_id}});" />
+                <label style="display: inline" class="checkbox" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <span>{{sbas_id|sbas_labels(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
                         {{base["collections"]|length}}/{{base['collections']|length}}
                     </span>
-                    <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}" />
                 </label>
             </div>
             <div class="sbascont sbascont_{{sbas_id}}" style="-moz-column-width:150px; -webkit-column-width: 150px; -moz-column-gap: 20px; -webkit-column-gap: 20px;">
@@ -23,13 +24,12 @@
                                 <tr>
                                     <td>
                                         <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
-                                            onclick="cancelEvent(event);return false;"
-                                            onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
+                                            onchange="infoSbas(this, {{sbas_id}});checkFilters(true);"
                                             id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
                                             name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
                                     <td>
-                                        <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
+                                        <label style="line-height: 18px;"
                                             for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline">
                                             {{base_id|get_collection_logo(app)|raw}} {{base_id|bas_labels(app)}}
                                         </label>

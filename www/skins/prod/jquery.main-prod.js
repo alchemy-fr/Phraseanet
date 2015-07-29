@@ -156,12 +156,12 @@ function is_shift_key(event) {
 function checkBases(bool) {
     $('form.phrasea_query .sbas_list').each(function () {
 
-        var id = $(this).find('input[name=reference]:first').val();
+        var sbas_id = $(this).find('input[name=reference]:first').val();
         if (bool)
             $(this).find(':checkbox').attr('checked', 'checked');
         else
             $(this).find(':checkbox').removeAttr('checked');
-        infoSbas(false, id, true, false);
+        infoSbas(null, sbas_id);
 
     });
     if (bool) {
@@ -2750,58 +2750,34 @@ function deploy(deployer, todeploy_selector)
     }
 }
 
-function clksbas(num, el) {
-    var bool = true;
+function clksbas(el, sbas_id) {
+    var bool = $(el).attr('checked');
 
-    if (el.attr('checked')) {
-        bool = false;
-        $('.sbasChkr_' + num).removeAttr('checked');
-    }
-    else {
-        $('.sbasChkr_' + num).attr('checked', 'checked');
-    }
-
-    $.each($('.sbascont_' + num + ' :checkbox'), function () {
+    $.each($('.sbascont_' + sbas_id + ' :checkbox'), function () {
         this.checked = bool;
     });
     if (bool) {
-        $('.sbascont_' + num + ' label').addClass('selected');
+        $('.sbascont_' + sbas_id + ' label').addClass('selected');
     }
     else {
-        $('.sbascont_' + num + ' label').removeClass('selected');
+        $('.sbascont_' + sbas_id + ' label').removeClass('selected');
     }
 
-    infoSbas(false, num, false, false);
-}
-function cancelEvent(event) {
-    if (event.stopPropagation)
-        event.stopPropagation();
-    if (event.preventDefault)
-        event.preventDefault();
-    event.cancelBubble = true;
-    return false;
+    infoSbas(null, sbas_id);
+    checkFilters(true);
 }
 
-function infoSbas(el, num, donotfilter, event) {
-    if (event)
-        cancelEvent(event);
+function infoSbas(el, sbas_id) {
     if (el) {
-        var item = $('input.ck_' + $(el).val());
         var label = $('label.ck_' + $(el).val());
-
         if ($(el).attr('checked')) {
-            label.removeClass('selected');
-            item.removeAttr('checked');
+            label.addClass('selected');
         }
         else {
-            label.addClass('selected');
-            item.attr('checked', 'checked');
+            label.removeClass('selected');
         }
     }
-    $('.infos_sbas_' + num).empty().append($('.basChild_' + num + ':first .checkbas:checked').length + '/' + $('.basChild_' + num + ':first .checkbas').length);
-
-    if (donotfilter !== true)
-        checkFilters(true);
+    $('.infos_sbas_' + sbas_id).empty().append($('.basChild_' + sbas_id + ':first .checkbas:checked').length + '/' + $('.basChild_' + sbas_id + ':first .checkbas').length);
 }
 
 function advSearch(event) {
