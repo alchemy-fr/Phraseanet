@@ -989,6 +989,13 @@ class V1 implements ControllerProviderInterface
             return $result->get_response();
         });
 
+        $controllers->post('/me/request-collections/', function (Request $request) use ($app) {
+            $data = json_decode($request->getContent(false), true);
+            $result = $app['api']->create_collection_requests($data);
+
+            return $result->get_response();
+        });
+
         /**
          * Route : /accounts/reset-password/{email}/
          *

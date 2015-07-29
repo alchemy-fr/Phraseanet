@@ -130,6 +130,16 @@ class RegistrationService
         return $user;
     }
 
+    public function createCollectionRequests(\User_Adapter $user, array $collections)
+    {
+        require_once $this->app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
+
+        $inscriptions = giveMeBases($this->app);
+        $authorizedCollections = $this->getAuthorizedCollections($collections, $inscriptions);
+
+        $this->createCollectionAccessDemands($user, $authorizedCollections);
+    }
+
     public function getAccountUnlockToken(\User_Adapter $user)
     {
         $expire = new \DateTime('+3 days');

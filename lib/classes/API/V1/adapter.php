@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
+use Alchemy\Phrasea\Account\CollectionRequestMapper;
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -1852,6 +1853,7 @@ class API_V1_adapter extends API_V1_Abstract
         $result->set_datas(array(
             'user' => $this->list_user($app['authentication']->getUser()),
             'collections' => $this->list_user_collections($app['authentication']->getUser()),
+            'demands' => $this->list_user_demands($app['authentication']->getUser())
         ));
 
         return $result;
@@ -1925,6 +1927,26 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         return $grants;
+    }
+
+    private function list_user_demands(\User_Adapter $user)
+    {
+        return (new CollectionRequestMapper($this->app))->getUserRequests($user);
+    }
+
+    public function create_collection_requests(array $data)
+    {
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+        /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
+        $service = $this->app['authentication.registration_service'];
+        $user = $this->app['authentication']->getUser();
+
+        $service->createCollectionRequests($user, $data);
+        $result->set_datas(array(
+            'demands' => $this->list_user_demands($user)
+        ));
+
+        return $result;
     }
 
     public function create_account(array $data)
