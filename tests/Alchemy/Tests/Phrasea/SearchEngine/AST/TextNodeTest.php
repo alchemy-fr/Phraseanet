@@ -55,7 +55,8 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
             "multi_match": {
                 "fields": ["foo.fr", "foo.en"],
                 "query": "bar",
-                "operator": "and"
+                "operator": "and",
+                "lenient": true
             }
         }';
 
@@ -93,7 +94,8 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "fields": ["foo.fr", "foo.en"],
                         "query": "baz",
-                        "operator": "and"
+                        "operator": "and",
+                        "lenient": true
                     }
                 }, {
                     "bool": {
@@ -105,7 +107,8 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                             "multi_match": {
                                 "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
                                 "query": "baz",
-                                "operator": "and"
+                                "operator": "and",
+                                "lenient": true
                             }
                         }]
                     }
@@ -136,7 +139,8 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "fields": ["foo.fr", "foo.en"],
                         "query": "bar",
-                        "operator": "and"
+                        "operator": "and",
+                        "lenient": true
                     }
                 }, {
                     "multi_match": {
