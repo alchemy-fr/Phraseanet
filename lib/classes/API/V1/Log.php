@@ -113,7 +113,7 @@ class API_V1_Log
         $stmt->closeCursor();
 
         $this->account_id = $row['api_account_id'];
-        $this->account = new API_OAuth2_Account($this->app, (int)$row['api_account_id']);
+        $this->account = new API_OAuth2_Account($this->app, (int)$row['api_account_id'], true);
         $this->aspect = $row['api_log_aspect'];
         $this->date = new DateTime($row['api_log_date']);
         $this->format = $row['api_log_format'];
