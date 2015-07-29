@@ -28,4 +28,6 @@ final class PhraseaEvents
 
     const RECORD_EDIT = 'record.edit';
     const RECORD_UPLOAD = 'record.upload';
+
+    const ACCOUNT_DELETED = 'account.deleted';
 }

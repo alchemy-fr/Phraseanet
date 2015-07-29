@@ -139,7 +139,14 @@ class AccountService
     {
         $user = $this->getUserOrCurrentUser($email);
 
+        $eventParams = array(
+            'usr_id' => $user->get_id(),
+            'email' => $user->get_email()
+        );
+
         $user->delete();
+
+        $this->application['events-manager']->trigger('__ACCOUNT_DELETED__', $eventParams);
     }
 
     /**

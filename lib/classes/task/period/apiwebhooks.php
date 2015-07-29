@@ -44,6 +44,9 @@ class task_period_apiwebhooks extends task_appboxAbstract
             case \API_Webhook::USER_REGISTRATION_REJECTED:
                 $data = $this->processUserRegistrationEntry($row);
                 break;
+            case \API_Webhook::USER_DELETED:
+                $data = $this->processAccountDeletedEntry($row);
+                break;
         }
 
         if (null === $data) {
@@ -168,6 +171,23 @@ class task_period_apiwebhooks extends task_appboxAbstract
             ),
             'granted' => $data['granted'],
             'rejected' => $data['rejected']
+        );
+    }
+
+    protected function processAccountDeletedEntry(array $row)
+    {
+        $data = json_decode($row['data'], true);
+
+        if (! isset($data['user_id'])) {
+            return null;
+        }
+
+        return array(
+            'event' => $row['type'],
+            'user' => array(
+                'id' => $data['user_id'],
+                'email' => $data['email']
+            )
         );
     }
 }
