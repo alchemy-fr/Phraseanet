@@ -114,6 +114,7 @@ use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
+use Silex\ControllerProviderInterface;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
@@ -833,6 +834,8 @@ class Application extends SilexApplication
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
+
+        $this->bindPluginRoutes('plugin.controller_providers.root');
     }
 
     /**
@@ -853,5 +856,37 @@ class Application extends SilexApplication
     public static function getAvailableFlashTypes()
     {
         return static::$flashTypes;
+    }
+
+    /**
+     * @param $routeParameter
+     */
+    public function bindPluginRoutes($routeParameter)
+    {
+        foreach ($this[$routeParameter] as $provider) {
+            $prefix = '';
+
+            if (is_array($provider)) {
+                $providerDefinition = $provider;
+                list($prefix, $provider) = $providerDefinition;
+            }
+
+            if (!is_string($prefix) || !is_string($provider)) {
+                continue;
+            }
+
+            $prefix = '/' . ltrim($prefix, '/');
+            if (!isset($this[$provider])) {
+                continue;
+            }
+
+            $provider = $this[$provider];
+
+            if (!$provider instanceof ControllerProviderInterface) {
+                continue;
+            }
+
+            $this->mount($prefix, $provider);
+        }
     }
 }

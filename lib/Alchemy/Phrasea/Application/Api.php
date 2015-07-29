@@ -129,6 +129,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/api/oauthv2', new Oauth2());
     $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
+    $app->bindPluginRoutes('plugin.controller_providers.api');
 
     $app['dispatcher']->addSubscriber(new ApiOauth2ErrorsSubscriber($app['phraseanet.exception_handler']));
     $app['dispatcher']->addSubscriber(new ApiCorsSubscriber($app));
