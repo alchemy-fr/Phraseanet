@@ -171,19 +171,21 @@ class V1 implements ControllerProviderInterface
             if (false !== stripos($request->headers->get('user-agent', ''), 'Phraseanet SDK Player')) {
                 return;
             }
+
             $account = $app['token']->get_account();
             $pathInfo = $request->getPathInfo();
             $route = $parseRoute($pathInfo, $response);
+
             \API_V1_Log::create(
-                $app
-                , $account
-                , $request->getMethod() . " " . $pathInfo
-                , $response->getStatusCode()
-                , $response->headers->get('content-type')
-                , $route['ressource']
-                , $route['general']
-                , $route['aspect']
-                , $route['action']
+                $app,
+                $account,
+                $request->getMethod() . " " . $pathInfo,
+                $response->getStatusCode(),
+                $response->headers->get('content-type'),
+                $route['ressource'],
+                $route['general'],
+                $route['aspect'],
+                $route['action']
             );
         });
 
@@ -971,6 +973,12 @@ class V1 implements ControllerProviderInterface
          */
         $controllers->get('/me/', function (SilexApplication $app, Request $request) {
             $result = $app['api']->get_current_user($app, $request);
+
+            return $result->get_response();
+        });
+
+        $controllers->delete('/me/',function (SilexApplication $app, Request $request) {
+            $result = $app['api']->delete_account(null);
 
             return $result->get_response();
         });

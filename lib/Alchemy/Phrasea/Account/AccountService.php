@@ -135,6 +135,13 @@ class AccountService
         }
     }
 
+    public function deleteAccount($email = null)
+    {
+        $user = $this->getUserOrCurrentUser($email);
+
+        $user->delete();
+    }
+
     /**
      * @param $email
      * @return \User_Adapter

@@ -265,7 +265,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  string                 $name
+     * @param  string $name
      * @return API_OAuth2_Application
      */
     public function set_name($name)
