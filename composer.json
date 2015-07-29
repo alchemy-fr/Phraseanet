@@ -61,7 +61,8 @@
         "twig/extensions"                  : "dev-improved-i18n",
         "vierbergenlars/php-semver"        : "~2.1",
         "zend/gdata"                       : "~1.12.1",
-        "willdurand/negotiation"           : "~1.3"
+        "willdurand/negotiation"           : "~1.3",
+        "ramsey/uuid": "^2.8"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "~1.0.0",
@@ -85,10 +86,5 @@
             "PhraseaFixture" : "lib/conf.d"
         }
     },
-    "include-path": ["vendor/zend/gdata/library"],
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.8-dev"
-        }
-    }
+    "include-path": ["vendor/zend/gdata/library"]
 }
