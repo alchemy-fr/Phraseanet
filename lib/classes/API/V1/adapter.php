@@ -1934,6 +1934,21 @@ class API_V1_adapter extends API_V1_Abstract
         return (new CollectionRequestMapper($this->app))->getUserRequests($user);
     }
 
+    public function create_collection_requests(array $data)
+    {
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+        /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
+        $service = $this->app['authentication.registration_service'];
+        $user = $this->app['authentication']->getUser();
+
+        $service->createCollectionRequests($user, $data);
+        $result->set_datas(array(
+            'demands' => $this->list_user_demands($user)
+        ));
+
+        return $result;
+    }
+
     public function create_account(array $data)
     {
         /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
