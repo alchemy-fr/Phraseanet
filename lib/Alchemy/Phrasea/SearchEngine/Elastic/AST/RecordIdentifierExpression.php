@@ -15,10 +15,11 @@ class RecordIdentifierExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        $query = array();
-        $query['term']['record_id'] = $this->record_id;
-
-        return $query;
+        return [
+            'term' => [
+                'record_id' => $this->record_id
+            ]
+        ];
     }
 
     public function getTermNodes()

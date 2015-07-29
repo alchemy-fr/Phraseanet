@@ -36,7 +36,8 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
             "multi_match": {
                 "type": "phrase",
                 "fields": ["foo.fr", "foo.en"],
-                "query": "bar"
+                "query": "bar",
+                "lenient": true
             }
         }';
 
@@ -74,7 +75,8 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "type": "phrase",
                         "fields": ["foo.fr", "foo.en"],
-                        "query": "baz"
+                        "query": "baz",
+                        "lenient": true
                     }
                 }, {
                     "bool": {
@@ -86,7 +88,8 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                             "multi_match": {
                                 "type": "phrase",
                                 "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
-                                "query": "baz"
+                                "query": "baz",
+                                "lenient": true
                             }
                         }]
                     }

@@ -15,10 +15,11 @@ class DatabaseExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        $query = array();
-        $query['term']['databox_name'] = $this->database;
-
-        return $query;
+        return [
+            'term' => [
+                'databox_name' => $this->database
+            ]
+        ];
     }
 
     public function getTermNodes()

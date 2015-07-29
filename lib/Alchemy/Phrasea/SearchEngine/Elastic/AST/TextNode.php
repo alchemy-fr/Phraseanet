@@ -51,6 +51,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
                     'fields'   => $index_fields,
                     'query'    => $this->text,
                     'operator' => 'and',
+                    'lenient'  => true,
                 ]
             ];
         };

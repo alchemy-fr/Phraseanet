@@ -13,11 +13,11 @@ class ExceptExpression extends BinaryOperator
         $left  = $this->left->buildQuery($context);
         $right = $this->right->buildQuery($context);
 
-        return array(
-            'bool' => array(
+        return [
+            'bool' => [
                 'must' => $left,
                 'must_not' => $right
-            )
-        );
+            ]
+        ];
     }
 }

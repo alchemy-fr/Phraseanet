@@ -27,8 +27,11 @@ class FieldEqualsExpression extends Node
             return null;
         }
 
-        $query = [];
-        $query['term'][$structure_field->getIndexField()] = $this->value;
+        $query = [
+            'term' => [
+                $structure_field->getIndexField() => $this->value
+            ]
+        ];
 
         return QueryHelper::wrapPrivateFieldQuery($structure_field, $query);
     }

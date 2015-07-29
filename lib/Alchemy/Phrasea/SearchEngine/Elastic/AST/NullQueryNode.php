@@ -13,7 +13,7 @@ class NullQueryNode extends Node
 
     public function getTermNodes()
     {
-        return array();
+        return [];
     }
 
     public function __toString()

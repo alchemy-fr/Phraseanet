@@ -13,10 +13,10 @@ class AndExpression extends BinaryOperator
         $left  = $this->left->buildQuery($context);
         $right = $this->right->buildQuery($context);
 
-        return array(
-            'bool' => array(
-                'must' => array($left, $right)
-            )
-        );
+        return [
+            'bool' => [
+                'must' => [$left, $right]
+            ]
+        ];
     }
 }
