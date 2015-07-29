@@ -2440,13 +2440,8 @@ H4 {
 }
 
 #searchForm .clkbas label {
-    color: #AAAAAA;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-#searchForm .clkbas label.selected {
-    color: #FFFFFF;
 }
 
 .clkbas img {

@@ -152,7 +152,11 @@ function is_shift_key(event) {
     return false;
 }
 
-
+/**
+ * adv search : check/uncheck all the collections (called by the buttons "all"/"none")
+ *
+ * @param bool
+ */
 function checkBases(bool) {
     $('form.phrasea_query .sbas_list').each(function () {
 
@@ -161,15 +165,8 @@ function checkBases(bool) {
             $(this).find(':checkbox').attr('checked', 'checked');
         else
             $(this).find(':checkbox').removeAttr('checked');
-        infoSbas(null, sbas_id);
-
     });
-    if (bool) {
-        $('.sbascont label').addClass('selected');
-    }
-    else {
-        $('.sbascont label').removeClass('selected');
-    }
+
     checkFilters(true);
 }
 
@@ -214,34 +211,38 @@ function checkFilters(save) {
     $("option.dbx", dateFilterSelect).prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
     $("option.dbx", dateFilterSelect).hide();
 
-    var nbSelectedColls = 0;
+    var nbTotalSelectedColls = 0;
     $.each($('.sbascont', adv_box), function () {
         var $this = $(this);
 
         var sbas_id = $this.parent().find('input[name="reference"]').val();
         search.bases[sbas_id] = [];
 
-        var bas_ckbox = $this.find('.checkbas');
-        if (bas_ckbox.filter(':not(:checked)').length > 0) {
-            danger = 'medium';
-        }
-
-        var checked = bas_ckbox.filter(':checked');
-/*
-        if (checked.length > 0) {
-            var sbas_fields = $('.field_' + sbas_id, container).removeClass("hidden");
-            sbas_fields.filter('option').show().filter('.was').removeClass('was').attr('selected', 'selected').selected(true);
-            sbas_fields.filter(':checkbox').parent().show().find('.was').attr('checked', 'checked').removeClass('was');
-        }
-*/
-        var nbSelectedCollsForSBas = 0;
-        checked.each(function () {
-            nbSelectedCollsForSBas++;
-            nbSelectedColls++;
-            search.bases[sbas_id].push($(this).val());
+        var nbCols = 0;
+        var nbSelectedColls = 0;
+        $this.find('.checkbas').each(function (idx, el) {
+            nbCols++;
+            if($(this).attr("checked")) {
+                nbSelectedColls++;
+                nbTotalSelectedColls++;
+                search.bases[sbas_id].push($(this).val());
+            }
         });
 
-        if(nbSelectedCollsForSBas == 0) {
+        // display the number of selected colls for the databox
+        $('.infos_sbas_' + sbas_id).empty().append(nbSelectedColls + '/' + nbCols);
+
+        // if one coll is not checked, show danger
+        if(nbSelectedColls != nbCols) {
+            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).addClass("danger");
+            danger = true;
+        }
+        else {
+            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).removeClass("danger");
+        }
+
+
+        if(nbSelectedColls == 0) {
             // no collections checked for this databox
             // hide the status bits
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).hide();
@@ -264,7 +265,7 @@ function checkFilters(save) {
         }
     });
 
-    if (nbSelectedColls === 0) {
+    if (nbTotalSelectedColls == 0) {
         // no collections checked at all
         // filters.addClass("danger");
         // hide irrelevant filters
@@ -307,6 +308,7 @@ function checkFilters(save) {
     }
     else {
         $('#ADVSRCH_FIELDS_ZONE', container).addClass('danger');
+        danger = true;
     }
 
     //--------- status bits filter ---------
@@ -324,6 +326,7 @@ function checkFilters(save) {
         }
         else {
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).addClass('danger');
+            danger = true;
         }
     }
 /*
@@ -364,13 +367,17 @@ function checkFilters(save) {
 
     fieldsSelect.scrollTop(scroll);
 
-    if (save === true)
-        setPref('search', JSON.stringify(search));
-
-    if (danger === true || danger === 'medium')
+    // if one filter shows danger, show it on the query
+    if (danger) {
         $('#EDIT_query').addClass('danger');
-    else
+    }
+    else {
         $('#EDIT_query').removeClass('danger');
+    }
+
+    if (save === true) {
+        setPref('search', JSON.stringify(search));
+    }
 }
 
 function toggleFilter(filter, ele) {
@@ -422,6 +429,7 @@ function clearAnswers() {
 
 function reset_adv_search() {
     $('#ADVSRCH_OPTIONS_ZONE select[name="sort"]').val($('#ADVSRCH_OPTIONS_ZONE select[name="sort"] option.default-selection').attr('value'));
+    $('#ADVSRCH_FIELDS_ZONE option').removeAttr("selected");
     $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').removeAttr('checked');
     $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
     $('form.adv_search_bind input:text').val('');
@@ -2756,29 +2764,10 @@ function clksbas(el, sbas_id) {
     $.each($('.sbascont_' + sbas_id + ' :checkbox'), function () {
         this.checked = bool;
     });
-    if (bool) {
-        $('.sbascont_' + sbas_id + ' label').addClass('selected');
-    }
-    else {
-        $('.sbascont_' + sbas_id + ' label').removeClass('selected');
-    }
 
-    infoSbas(null, sbas_id);
     checkFilters(true);
 }
 
-function infoSbas(el, sbas_id) {
-    if (el) {
-        var label = $('label.ck_' + $(el).val());
-        if ($(el).attr('checked')) {
-            label.addClass('selected');
-        }
-        else {
-            label.removeClass('selected');
-        }
-    }
-    $('.infos_sbas_' + sbas_id).empty().append($('.basChild_' + sbas_id + ':first .checkbas:checked').length + '/' + $('.basChild_' + sbas_id + ':first .checkbas').length);
-}
 
 function advSearch(event) {
     event.cancelBubble = true;
