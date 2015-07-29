@@ -79,7 +79,7 @@ class API_OAuth2_Account
         $this->app = $app;
         $this->id = (int) $account_id;
         $sql = 'SELECT api_account_id, usr_id, api_version, revoked
-              , application_id, created
+              , application_id, created, deleted
             FROM api_accounts
             WHERE api_account_id = :api_account_id';
 
@@ -98,6 +98,7 @@ class API_OAuth2_Account
         $this->api_version = $row['api_version'];
         $this->revoked = ! ! $row['revoked'];
         $this->created_on = new DateTime($row['created']);
+        $this->deleted = (bool) $row['deleted'];
 
         return $this;
     }
