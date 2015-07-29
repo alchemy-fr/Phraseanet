@@ -1972,6 +1972,17 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
+    public function delete_account($email)
+    {
+        /** @var AccountService $service */
+        $service = $this->app['accounts.service'];
+        $result = new API_V1_result($this->app, $this->app['request'], $this);
+
+        $service->deleteAccount($email);
+
+        return $result;
+    }
+
     public function update_account($email, array $data)
     {
         /** @var AccountService $service */

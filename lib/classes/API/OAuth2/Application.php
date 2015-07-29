@@ -150,7 +150,7 @@ class API_OAuth2_Application
               , created_on, last_modified, client_id, client_secret, nonce
               , redirect_uri, activated, grant_password, webhook_url
             FROM api_applications
-            WHERE application_id = :application_id';
+            WHERE application_id = :application_id AND deleted = 0';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':application_id' => $this->id));
@@ -265,7 +265,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  string                 $name
+     * @param  string $name
      * @return API_OAuth2_Application
      */
     public function set_name($name)
@@ -598,7 +598,7 @@ class API_OAuth2_Application
             $account->delete();
         }
 
-        $sql = 'DELETE FROM api_applications
+        $sql = 'UPDATE api_applications SET deleted = 1
             WHERE application_id = :application_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -688,7 +688,7 @@ class API_OAuth2_Application
     public static function load_from_client_id(Application $app, $client_id)
     {
         $sql = 'SELECT application_id FROM api_applications
-              WHERE client_id = :client_id';
+              WHERE client_id = :client_id AND deleted = 0';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':client_id' => $client_id));
@@ -701,12 +701,17 @@ class API_OAuth2_Application
         return new self($app, $row['application_id']);
     }
 
+    /**
+     * @param Application $app
+     * @param User_Adapter $user
+     * @return API_OAuth2_Application[]
+     */
     public static function load_dev_app_by_user(Application $app, User_Adapter $user)
     {
         $sql = 'SELECT a.application_id
                 FROM api_applications a
                 INNER JOIN api_accounts b ON a.application_id = b.application_id
-                WHERE a.creator = :usr_id AND b.usr_id = :usr_id';
+                WHERE a.creator = :usr_id AND b.usr_id = :usr_id AND a.deleted = 0 AND b.deleted = 0';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
@@ -725,7 +730,7 @@ class API_OAuth2_Application
     {
         $sql = 'SELECT a.application_id
         FROM api_accounts a, api_applications c
-        WHERE usr_id = :usr_id AND c.application_id = a.application_id';
+        WHERE usr_id = :usr_id AND c.application_id = a.application_id AND a.deleted = 0 AND c.deleted = 0';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
@@ -746,7 +751,7 @@ class API_OAuth2_Application
         SELECT a.application_id
         FROM api_accounts a, api_applications c
         WHERE usr_id = :usr_id AND c.application_id = a.application_id
-        AND revoked = 0';
+        AND revoked = 0 AND a.deleted = 0 AND c.deleted = 0';
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));

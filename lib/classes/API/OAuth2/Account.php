@@ -25,60 +25,56 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class API_OAuth2_Account
 {
     /**
-     *
      * @var Application
      */
     protected $app;
 
     /**
-     *
      * @var int
      */
     protected $id;
 
     /**
-     *
      * @var User_Adapter
      */
     protected $user;
 
     /**
-     *
      * @var API_OAuth2_Application
      */
     protected $application;
 
     /**
-     *
      * @var int
      */
     protected $application_id;
 
     /**
-     *
      * @var string
      */
     protected $api_version;
 
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     protected $revoked;
 
     /**
-     *
      * @var DateTime
      */
     protected $created_on;
 
     /**
-     *
      * @var string
      */
     protected $token;
 
-    public function __construct(Application $app, $account_id)
+    /**
+     * @var bool
+     */
+    protected $deleted;
+
+    public function __construct(Application $app, $account_id, $allow_deleted = false)
     {
         $this->app = $app;
         $this->id = (int) $account_id;
@@ -86,6 +82,10 @@ class API_OAuth2_Account
               , application_id, created
             FROM api_accounts
             WHERE api_account_id = :api_account_id';
+
+        if (! $allow_deleted) {
+            $sql .= ' AND deleted = 0';
+        }
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':api_account_id' => $this->id));
@@ -151,8 +151,8 @@ class API_OAuth2_Account
             WHERE api_account_id = :account_id';
 
         $params = array(
-            ':revoked'   => ($boolean ? '1' : '0')
-            , 'account_id' => $this->id
+            ':revoked'   => ($boolean ? '1' : '0'),
+            ':account_id' => $this->id
         );
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -215,7 +215,7 @@ class API_OAuth2_Account
             $token->delete();
         }
 
-        $sql = 'DELETE FROM api_accounts WHERE api_account_id = :account_id';
+        $sql = 'UPDATE api_accounts SET deleted = 0 WHERE api_account_id = :account_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array('account_id' => $this->id));
@@ -232,11 +232,11 @@ class API_OAuth2_Account
 
         $datetime = new Datetime();
         $params = array(
-            ':usr_id'         => $user->get_id()
-            , ':application_id' => $application->get_id()
-            , ':api_version'    => API_OAuth2_Adapter::API_VERSION
-            , ':revoked'        => 0
-            , ':created'        => $datetime->format("Y-m-d H:i:s")
+            ':usr_id'         => $user->get_id(),
+            ':application_id' => $application->get_id(),
+            ':api_version'    => API_OAuth2_Adapter::API_VERSION,
+            ':revoked'        => 0,
+            ':created'        => $datetime->format("Y-m-d H:i:s")
         );
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -251,7 +251,7 @@ class API_OAuth2_Account
     public static function load_with_user(Application $app, API_OAuth2_Application $application, User_Adapter $user)
     {
         $sql = 'SELECT api_account_id FROM api_accounts
-            WHERE usr_id = :usr_id AND application_id = :application_id';
+            WHERE usr_id = :usr_id AND application_id = :application_id AND deleted = 0';
 
         $params = array(
             ":usr_id"         => $user->get_id(),
