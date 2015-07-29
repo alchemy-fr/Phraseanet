@@ -15,13 +15,13 @@ class PrefixNode extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        return array(
-            'multi_match' => array(
+        return [
+            'multi_match' => [
                 'fields'    => $context->getLocalizedFields(),
                 'query'     => $this->prefix,
                 'type'      => 'phrase_prefix'
-            )
-        );
+            ]
+        ];
     }
 
     public function __toString()

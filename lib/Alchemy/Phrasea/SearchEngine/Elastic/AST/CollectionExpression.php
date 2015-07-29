@@ -15,10 +15,11 @@ class CollectionExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        $query = array();
-        $query['term']['collection_name'] = $this->collectionName;
-
-        return $query;
+        return [
+            'term' => [
+                'collection_name' => $this->collectionName
+            ]
+        ];
     }
 
     public function getTermNodes()

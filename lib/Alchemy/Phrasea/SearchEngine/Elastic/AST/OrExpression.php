@@ -13,10 +13,10 @@ class OrExpression extends BinaryOperator
         $left  = $this->left->buildQuery($context);
         $right = $this->right->buildQuery($context);
 
-        return array(
-            'bool' => array(
+        return [
+            'bool' => [
                 'should' => array($left, $right)
-            )
-        );
+            ]
+        ];
     }
 }

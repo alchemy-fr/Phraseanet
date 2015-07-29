@@ -13,7 +13,11 @@ class TermNode extends AbstractTermNode
 
         // Should not match anything if no concept is defined
         if ($query === null) {
-            $query['bool']['should'] = [];
+            $query = [
+                'bool' => [
+                    'should' => []
+                ]
+            ];
         }
 
         return $query;

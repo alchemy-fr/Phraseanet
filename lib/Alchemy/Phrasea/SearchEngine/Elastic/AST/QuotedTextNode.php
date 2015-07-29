@@ -30,6 +30,7 @@ class QuotedTextNode extends Node
                     'type'   => 'phrase',
                     'fields' => $index_fields,
                     'query'  => $this->text,
+                    'lenient'=> true,
                 ]
             ];
         };
