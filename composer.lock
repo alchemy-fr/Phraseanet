@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7d9ab9ff4c9c0fecf882d499173503b0",
-    "content-hash": "227f7ac4b6e8fef6249111662d317932",
+    "hash": "46145dca88c4931c93137fce4655ee33",
+    "content-hash": "4c6d1db13d08074867c134e20871d484",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -4228,6 +4228,56 @@
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
             "time": "2015-06-04 14:27:33"
+        },
+        {
+            "name": "simple-bus/message-bus",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/MessageBus.git",
+                "reference": "757e1027c60d86cdf031200da7755d6015ad9c64"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/MessageBus/zipball/757e1027c60d86cdf031200da7755d6015ad9c64",
+                "reference": "757e1027c60d86cdf031200da7755d6015ad9c64",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "php": ">=5.4",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\Message\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Generic classes and interfaces for messages and message buses",
+            "homepage": "http://github.com/SimpleBus/MessageBus",
+            "keywords": [
+                "command bus",
+                "event bus",
+                "message",
+                "message bus"
+            ],
+            "time": "2015-07-29 09:33:21"
         },
         {
             "name": "sorien/silex-dbal-profiler",
