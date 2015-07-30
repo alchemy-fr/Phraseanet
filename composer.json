@@ -62,7 +62,8 @@
         "vierbergenlars/php-semver"        : "~2.1",
         "zend/gdata"                       : "~1.12.1",
         "willdurand/negotiation"           : "~1.3",
-        "ramsey/uuid": "^2.8"
+        "ramsey/uuid": "^2.8",
+        "simple-bus/message-bus": "^2.1"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "~1.0.0",
