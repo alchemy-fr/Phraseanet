@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "php"                              : ">=5.3.3",
+        "php"                              : ">=5.4",
         "alchemy/oauth2php"                : "1.0.0",
         "alchemy/phlickr"                  : "0.2.9",
         "dailymotion/sdk"                  : "~1.5",
