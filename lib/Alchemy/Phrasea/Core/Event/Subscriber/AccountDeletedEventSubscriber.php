@@ -25,7 +25,8 @@ class AccountDeletedEventSubscriber implements EventSubscriberInterface
 
         \API_Webhook::create($appbox, \API_Webhook::USER_DELETED, array(
             'user_id' => $event->getUserId(),
-            'email' => $event->getEmailAddress()
+            'email' => $event->getEmailAddress(),
+            'login' => $event->getLogin()
         ));
     }
 
