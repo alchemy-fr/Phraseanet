@@ -167,6 +167,7 @@ class task_period_apiwebhooks extends task_appboxAbstract
             'event' => $row['type'],
             'user' => array(
                 'id' => $user->get_id(),
+                'login' => $user->get_login(),
                 'email' => $user->get_email()
             ),
             'granted' => $data['granted'],
@@ -186,7 +187,8 @@ class task_period_apiwebhooks extends task_appboxAbstract
             'event' => $row['type'],
             'user' => array(
                 'id' => $data['user_id'],
-                'email' => $data['email']
+                'email' => $data['email'],
+                'login' => $data['login']
             )
         );
     }
