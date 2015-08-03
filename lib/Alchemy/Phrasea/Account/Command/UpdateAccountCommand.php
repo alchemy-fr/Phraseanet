@@ -5,6 +5,8 @@ namespace Alchemy\Phrasea\Account\Command;
 class UpdateAccountCommand 
 {
 
+    private $email = null;
+
     private $gender = null;
 
     private $firstName = null;
@@ -30,6 +32,25 @@ class UpdateAccountCommand
     private $geonameId = null;
 
     private $notifications = null;
+
+    /**
+     * @return string|null
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param $email
+     * @return $this
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
 
     /**
      * @return mixed

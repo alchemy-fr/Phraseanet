@@ -1972,24 +1972,25 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function delete_account($email)
+    public function delete_account($login)
     {
         /** @var AccountService $service */
         $service = $this->app['accounts.service'];
         $result = new API_V1_result($this->app, $this->app['request'], $this);
 
-        $service->deleteAccount($email);
+        $service->deleteAccount($login);
 
         return $result;
     }
 
-    public function update_account($email, array $data)
+    public function update_account($login, array $data)
     {
         /** @var AccountService $service */
         $service = $this->app['accounts.service'];
 
         $command = new UpdateAccountCommand();
         $command
+            ->setEmail(isset($data['email']) ? $data['email'] : null)
             ->setGender(isset($data['gender']) ? $data['gender'] : null)
             ->setFirstName(isset($data['firstname']) ? $data['firstname'] : null)
             ->setLastName(isset($data['lastname']) ? $data['lastname'] : null)
@@ -2003,7 +2004,7 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($this->app, $this->app['request'], $this);
 
         try {
-            $service->updateAccount($command, $email);
+            $service->updateAccount($command, $login);
             $result->set_datas([ 'success' => true ]);
         }
         catch (AccountException $exception) {
@@ -2013,7 +2014,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function update_password($email, array $data)
+    public function update_password($login, array $data)
     {
         /** @var AccountService $service */
         $service = $this->app['accounts.service'];
@@ -2028,7 +2029,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($form->isValid()) {
             try {
-                $service->updatePassword($command, $email);
+                $service->updatePassword($command, $login);
                 $result->set_datas(['success' => true]);
             } catch (AccountException $exception) {
                 $result->set_datas([ 'success' => false, 'message' => _($exception->getMessage()) ]);
@@ -2062,13 +2063,13 @@ class API_V1_adapter extends API_V1_Abstract
      * @param $email
      * @return API_V1_result
      */
-    public function reset_password($email)
+    public function reset_password($login)
     {
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
         $service = $this->app['authentication.recovery_service'];
 
         $result = new API_V1_result($this->app, $this->app['request'], $this);
-        $token = $service->requestPasswordResetToken($email, false);
+        $token = $service->requestPasswordResetToken($login, false);
 
         $result->set_datas(array('reset_token' => $token));
 

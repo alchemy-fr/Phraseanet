@@ -1005,15 +1005,15 @@ class V1 implements ControllerProviderInterface
         });
 
         /**
-         * Route : /accounts/reset-password/{email}/
+         * Route : /accounts/reset-password/{login}/
          *
          * Method : POST
          *
          * Parameters :
          *      email : required STRING
          */
-        $controllers->post('/accounts/reset-password/{email}/', function ($email) use ($app) {
-            $result = $app['api']->reset_password($email);
+        $controllers->post('/accounts/reset-password/{login}/', function ($login) use ($app) {
+            $result = $app['api']->reset_password($login);
 
             return $result->get_response();
         })->before($requirePasswordGrant);
