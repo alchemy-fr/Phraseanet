@@ -62,6 +62,13 @@ class patch_387alpha2a implements patchInterface
 
         $stmt->closeCursor();
 
+        $sql = 'ALTER TABLE api_applications MODIFY webhook_url VARCHAR(4096);';
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+
+        $stmt->closeCursor();
+
+
         return true;
     }
 }
