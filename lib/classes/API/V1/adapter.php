@@ -2063,13 +2063,19 @@ class API_V1_adapter extends API_V1_Abstract
      * @param $email
      * @return API_V1_result
      */
-    public function reset_password($login)
+    public function reset_password($email)
     {
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
         $service = $this->app['authentication.recovery_service'];
 
         $result = new API_V1_result($this->app, $this->app['request'], $this);
-        $token = $service->requestPasswordResetToken($login, false);
+
+        try {
+            $token = $service->requestPasswordResetToken($email, false);
+        }
+        catch (\Exception $exception) {
+            $token = $service->requestPasswordResetTokenByLogin($email, false);
+        }
 
         $result->set_datas(array('reset_token' => $token));
 
