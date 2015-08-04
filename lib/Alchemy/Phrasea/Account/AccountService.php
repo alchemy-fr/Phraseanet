@@ -41,6 +41,7 @@ class AccountService
     private $eventDispatcher;
 
     private $updateAccountMethodMap = [
+        'getEmail' => 'set_email',
         'getGender' => 'set_gender',
         'getFirstName' => 'set_firstname',
         'getLastName' => 'set_lastname',
@@ -81,7 +82,7 @@ class AccountService
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function updatePassword(UpdatePasswordCommand $command, $email = null)
+    public function updatePassword(UpdatePasswordCommand $command, $login = null)
     {
         $user = $this->authenticationService->getUser();
         $passwordIsValid = $this->passwordEncoder->isPasswordValid(
@@ -94,18 +95,18 @@ class AccountService
             throw new AccountException('Invalid password provided');
         }
 
-        $user = $this->getUserOrCurrentUser($email);
+        $user = $this->getUserOrCurrentUser($login);
         $encodedPassword = $this->passwordEncoder->encodePassword($command->getPassword(), $user->get_nonce());
 
         $user->setEncodedPassword($encodedPassword);
     }
 
-    public function updateAccount(UpdateAccountCommand $command, $email = null)
+    public function updateAccount(UpdateAccountCommand $command, $login = null)
     {
         $this->connection->beginTransaction();
 
         try {
-            $user = $this->getUserOrCurrentUser($email);
+            $user = $this->getUserOrCurrentUser($login);
 
             foreach ($this->updateAccountMethodMap as $getter => $setter) {
                 $value = call_user_func([$command, $getter]);
@@ -146,21 +147,21 @@ class AccountService
         }
     }
 
-    public function deleteAccount($email = null)
+    public function deleteAccount($login = null)
     {
-        $user = $this->getUserOrCurrentUser($email);
+        $user = $this->getUserOrCurrentUser($login);
 
         $user->delete();
     }
 
     /**
-     * @param $email
+     * @param $login
      * @return \User_Adapter
      */
-    private function getUserOrCurrentUser($email = null)
+    private function getUserOrCurrentUser($login = null)
     {
-        if ($email !== null) {
-            $userId = \User_Adapter::get_usr_id_from_email($this->application, $email);
+        if ($login !== null) {
+            $userId = \User_Adapter::get_usr_id_from_login($this->application, $login);
 
             if ($userId === false) {
                 throw new AccountException('User not found');

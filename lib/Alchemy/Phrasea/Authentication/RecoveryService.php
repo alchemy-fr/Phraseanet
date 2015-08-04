@@ -56,23 +56,29 @@ class RecoveryService
     {
         try {
             $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($this->app, $email), $this->app);
-            $expirationDate = new \DateTime('+1 day');
-            $token = $this->tokenGenerator->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expirationDate);
-        } catch (\Exception_InvalidArgument $e) {
-            throw new RecoveryException('Unable to generate a token.');
         } catch (\Exception $e) {
             throw new InvalidArgumentException('phraseanet::erreur: Le compte n\'a pas ete trouve', 0, $e);
         }
 
-        if (!$token) {
-            throw new RecoveryException('Unable to generate a token.');
+        return $this->requestPasswordReset($notifyUser, $user);
+    }
+
+    /**
+     * @param $email
+     * @param bool $notifyUser
+     * @return bool
+     * @throws RecoveryException
+     * @throws InvalidArgumentException
+     */
+    public function requestPasswordResetTokenByLogin($email, $notifyUser = true)
+    {
+        try {
+            $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_login($this->app, $email), $this->app);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException('phraseanet::erreur: Le compte n\'a pas ete trouve', 0, $e);
         }
 
-        if ($notifyUser) {
-            $this->notifyPasswordRequestProcessed($user, $expirationDate, $token);
-        }
-
-        return $token;
+        return $this->requestPasswordReset($notifyUser, $user);
     }
 
     private function notifyPasswordRequestProcessed(\User_Adapter $user, \DateTime $expirationDate, $token)
@@ -110,5 +116,30 @@ class RecoveryService
         $user->set_password($newPassword);
 
         $this->tokenGenerator->removeToken($resetToken);
+    }
+
+    /**
+     * @param $notifyUser
+     * @param $user
+     * @return bool
+     */
+    private function requestPasswordReset($notifyUser, $user)
+    {
+        try {
+            $expirationDate = new \DateTime('+1 day');
+            $token = $this->tokenGenerator->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expirationDate);
+        } catch (\Exception_InvalidArgument $e) {
+            throw new RecoveryException('Unable to generate a token.');
+        }
+
+        if (!$token) {
+            throw new RecoveryException('Unable to generate a token.');
+        }
+
+        if ($notifyUser) {
+            $this->notifyPasswordRequestProcessed($user, $expirationDate, $token);
+        }
+
+        return $token;
     }
 }

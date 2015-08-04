@@ -444,7 +444,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $email = null;
         }
 
-        $test_user = User_Adapter::get_usr_id_from_email($this->app, $email);
+        $test_user = User_Adapter::get_usr_id_from_email_or_login($this->app, $email);
 
         if ($test_user && $test_user != $this->get_id()) {
             throw new Exception_InvalidArgument(sprintf(_('A user already exists with email addres %s'), $email));
@@ -963,6 +963,27 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $conn = connection::getPDOConnection($app);
         $sql = 'SELECT usr_id FROM usr
             WHERE usr_mail = :email
+              AND usr_login NOT LIKE "(#deleted_%"
+              AND invite="0" AND usr_login != "autoregister"';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':email' => trim($email)));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $usr_id = $row ? $row['usr_id'] : false;
+
+        return $usr_id;
+    }
+
+    public static function get_usr_id_from_email_or_login(Application $app, $email)
+    {
+        if (is_null($email)) {
+            return false;
+        }
+
+        $conn = connection::getPDOConnection($app);
+        $sql = 'SELECT usr_id FROM usr
+            WHERE (usr_mail = :email OR usr_login = :email)
               AND usr_login NOT LIKE "(#deleted_%"
               AND invite="0" AND usr_login != "autoregister"';
         $stmt = $conn->prepare($sql);
