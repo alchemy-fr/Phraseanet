@@ -29,7 +29,11 @@ class PluginServiceProvider implements ServiceProviderInterface
             return new Pimple();
         });
 
-        $app['plugin.locale.textdomains'] = new ArrayObject();
+        $app['plugin.actionbar'] = $app->share(function () {
+            return new \Pimple();
+        });
+
+        $app['plugin.locale.textdomains'] = new \ArrayObject();
 
         // Routes will be bound after all others
         // Add a new controller provider can be added as follows
@@ -38,8 +42,7 @@ class PluginServiceProvider implements ServiceProviderInterface
 
         // Routes will be bound after all others
         // Add a new controller provider can be added as follows
-        // $app['plugin.controller_providers'][] = array('/prefix', 'controller_provider_service_key');
-        $app['plugin.controller_providers.api'] = new ArrayObject();
+        $app['plugin.controller_providers.api'] = new \ArrayObject();
     }
 
     public function boot(Application $app)
