@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "46145dca88c4931c93137fce4655ee33",
-    "content-hash": "4c6d1db13d08074867c134e20871d484",
+    "hash": "3580bd1a47f7160cdfdef3a85ea8988c",
+    "content-hash": "3f1082f75c156723b27060f2156e617a",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -4278,6 +4278,54 @@
                 "message bus"
             ],
             "time": "2015-07-29 09:33:21"
+        },
+        {
+            "name": "simple-bus/serialization",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/Serialization.git",
+                "reference": "df7a5704d4a9c3057184be09ce8dc6d442785618"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/Serialization/zipball/df7a5704d4a9c3057184be09ce8dc6d442785618",
+                "reference": "df7a5704d4a9c3057184be09ce8dc6d442785618",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\Serialization\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Generic classes and interfaces for serializing messages",
+            "homepage": "http://github.com/SimpleBus/Serialization",
+            "keywords": [
+                "SimpleBus",
+                "messages",
+                "serialization"
+            ],
+            "time": "2015-05-08 13:34:17"
         },
         {
             "name": "sorien/silex-dbal-profiler",
