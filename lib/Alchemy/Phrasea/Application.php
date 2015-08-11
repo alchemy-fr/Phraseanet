@@ -69,6 +69,7 @@ use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
+use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Provider\AccountServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
@@ -411,10 +412,12 @@ class Application extends SilexApplication
         $this['log.channels'] = array('monolog', 'task-manager.logger');
 
         $this->register(new LocaleServiceProvider());
+        $this->register(new MediaAccessor());
 
         $this->mount('/include/minify/', new Minifier());
         $this->mount('/permalink/', new Permalink());
         $this->mount('/lightbox/', new Lightbox());
+        $this->mount($this['controller.media_accessor.route_prefix'], new MediaAccessor());
 
         $app['plugins.directory'] = $app->share(function () {
             $dir = __DIR__ . '/../../../plugins';
