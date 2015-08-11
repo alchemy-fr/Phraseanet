@@ -2940,7 +2940,8 @@ class API_V1_adapter extends API_V1_Abstract
                     'viewBasAndCollName' => $app['phraseanet.registry']->get('GV_view_bas_and_coll'),
                     'chooseExportTitle'  => $app['phraseanet.registry']->get('GV_choose_export_title'),
                     'defaultExportTitle' => $app['phraseanet.registry']->get('GV_default_export_title'),
-                    'socialTools'        => $app['phraseanet.registry']->get('GV_social_tools'),),
+                    'socialTools'        => $app['phraseanet.registry']->get('GV_social_tools'),
+                    'defaultSubdefUrlTtl' => $app['phraseanet.registry']->get('GV_default_subdef_url_ttl'),),
                 'modules'            => array(
                     'thesaurus'          => $app['phraseanet.registry']->get('GV_thesaurus'),
                     'storyMode'          => $app['phraseanet.registry']->get('GV_multiAndReport'),
