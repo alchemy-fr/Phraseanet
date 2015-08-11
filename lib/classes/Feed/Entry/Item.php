@@ -188,7 +188,9 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
                     AND e.feed_id = f.id
                     AND f.public = 1';
 
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        /** @var appbox $appbox */
+        $appbox = $app['phraseanet.appbox'];
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':sbas_id' => $sbas_id, ':record_id' => $record_id));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();

@@ -71,10 +71,9 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     protected $app;
 
     /**
-     *
-     * @param  databox                 $databox
-     * @param  media_subdef            $media_subdef
-     * @return media_Permalink_Adapter
+     * @param Application  $app
+     * @param databox      $databox
+     * @param media_subdef $media_subdef
      */
     protected function __construct(Application $app, databox $databox, media_subdef $media_subdef)
     {
@@ -83,8 +82,6 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $this->media_subdef = $media_subdef;
 
         $this->load();
-
-        return $this;
     }
 
     /**
