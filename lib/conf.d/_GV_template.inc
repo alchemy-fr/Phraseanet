@@ -326,7 +326,13 @@ return call_user_func_array(function(Application $app) {
                     ),
                     'default'    => 'none',
                     'required'   => false
-                )
+                ),
+                array(
+                    'type'    => \registry::TYPE_INTEGER,
+                    'name'    => 'GV_default_subdef_url_ttl',
+                    'comment' => _('Default TTL in seconds of sub-definition url'),
+                    'default' => 7200,
+                ),
             )
         ), array(
             'section' => _('Homepage'),
