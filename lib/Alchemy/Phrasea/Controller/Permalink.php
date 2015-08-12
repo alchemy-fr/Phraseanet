@@ -120,19 +120,36 @@ class Permalink extends AbstractDelivery
         return $this->doDeliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
     }
 
+    /**
+     * @param PhraseaApplication $app
+     * @param \databox           $databox
+     * @param string             $token
+     * @param int                $record_id
+     * @param string             $subdef
+     * @return \record_adapter
+     */
     private function retrieveRecord($app, $databox, $token, $record_id, $subdef)
     {
-        if (in_array($subdef, array(\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL)) && \Feed_Entry_Item::is_record_in_public_feed($app, $databox->get_sbas_id(), $record_id)) {
-            $record = $databox->get_record($record_id);
-        } else {
-            $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
-
-            if (! ($record instanceof \record_adapter)) {
-                throw new NotFoundHttpException('Wrong token.');
-            }
+        try {
+            $record = new \record_adapter($app, $databox->get_sbas_id(), $record_id);
+            $subDefinition = new \media_subdef($app, $record, $subdef);
+            $permalink = new \media_Permalink_Adapter($app, $databox, $subDefinition);
+        } catch (\Exception $exception) {
+            throw new NotFoundHttpException('Wrong token.', $exception);
         }
 
-        return $record;
+        if (!$permalink->get_is_activated()) {
+            throw new NotFoundHttpException('This token has been disabled.');
+        }
+
+        if (in_array($subdef, array(\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL))
+            && \Feed_Entry_Item::is_record_in_public_feed($app, $databox->get_sbas_id(), $record_id)) {
+            return $record;
+        } elseif ($permalink->get_token() == (string) $token) {
+            return $record;
+        }
+
+        throw new NotFoundHttpException('Wrong token.');
     }
 
     private function doDeliverPermaview($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app)
@@ -173,12 +190,7 @@ class Permalink extends AbstractDelivery
                     $watermark = false;
                 }
             }
-            $response = $this->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
-
-            $linkToCaption = $app->url("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
-            $response->headers->set('Link', $linkToCaption);
-
-            return $response;
+            return $this->deliverContentWithCaptionLink($app, $app['request'], $record, $subdef, $watermark, $stamp, $token);
         }
 
         $collection = \collection::get_from_base_id($app, $record->get_base_id());
@@ -195,10 +207,28 @@ class Permalink extends AbstractDelivery
                 break;
         }
 
-        $response = $this->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+        return $this->deliverContentWithCaptionLink($app, $app['request'], $record, $subdef, $watermark, $stamp, $token);
+    }
 
-        $linkToCaption = $app->url("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
-        $response->headers->set('Link', $linkToCaption);
+    /**
+     * @param PhraseaApplication $app
+     * @param Request            $request
+     * @param \record_adapter    $record
+     * @param string             $subdef
+     * @param bool               $watermark
+     * @param bool               $stamp
+     * @param string             $token
+     * @return Response
+     */
+    private function deliverContentWithCaptionLink(PhraseaApplication $app, Request $request, \record_adapter $record, $subdef, $watermark, $stamp, $token)
+    {
+        $response = $this->deliverContent($request, $record, $subdef, $watermark, $stamp, $app);
+
+        $response->headers->set('Link', $app->url('permalinks_caption', [
+            'sbas_id' => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id(),
+            'token' => $token,
+        ]));
 
         return $response;
     }

@@ -1041,7 +1041,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     /**
      * @covers \API_V1_adapter::get_record_embed
-     * @covers \API_V1_adapter::list_embedable_media
+     * @covers \API_V1_adapter::listEmbeddableMedia
      * @covers \API_V1_adapter::list_permalink
      */
     public function testRecordsEmbedRoute()
@@ -1129,7 +1129,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     /**
      * @covers \API_V1_adapter::get_record_embed
-     * @covers \API_V1_adapter::list_embedable_media
+     * @covers \API_V1_adapter::listEmbeddableMedia
      * @covers \API_V1_adapter::list_permalink
      */
     public function testStoriesEmbedRoute()

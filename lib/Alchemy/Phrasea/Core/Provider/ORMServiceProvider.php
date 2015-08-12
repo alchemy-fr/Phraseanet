@@ -99,6 +99,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 'longblob' => 'Types\LongBlob',
                 'varbinary' => 'Types\VarBinary',
                 'binary' => 'Types\Binary',
+                'binary_string' => 'Types\BinaryString',
             );
 
             foreach ($types as $type => $class) {
