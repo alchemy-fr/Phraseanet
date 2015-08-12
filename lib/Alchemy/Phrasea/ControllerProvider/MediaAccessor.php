@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\ControllerProvider;
 use Alchemy\Phrasea\Controller\MediaAccessorController;
 use Alchemy\Phrasea\Model\Provider\DefaultSecretProvider;
 use Doctrine\ORM\EntityManager;
+use RandomLib\Factory;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -29,7 +30,9 @@ class MediaAccessor implements ServiceProviderInterface, ControllerProviderInter
         });
 
         $app['provider.secrets'] = $app->share(function (Application $app) {
-            return new DefaultSecretProvider($app['repo.secrets'], $app['random.medium']);
+            $factory = new Factory();
+
+            return new DefaultSecretProvider($app['repo.secrets'], $factory->getMediumStrengthGenerator());
         });
 
         $app['controller.media_accessor'] = $app->share(function (Application $app) {
