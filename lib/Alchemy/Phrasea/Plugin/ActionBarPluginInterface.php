@@ -13,5 +13,8 @@ namespace Alchemy\Phrasea\Plugin;
 
 interface ActionBarPluginInterface
 {
-
+    /**
+     * @return mixed
+     */
+    public function getActionBar();
 }
