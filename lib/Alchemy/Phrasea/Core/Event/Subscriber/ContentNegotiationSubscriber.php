@@ -14,11 +14,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class ContentNegotiationSubscriber implements EventSubscriberInterface
 {
@@ -38,8 +34,8 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $priorities = array('text/html', 'application/json',  '*/*');
-        $format = $this->app['format.negotiator']->getBest($event->getRequest()->headers->get('accept', '*/*'), $priorities);
+        $priorities = array('text/html', 'application/json');
+        $format = $this->app['negotiator']->getBest($event->getRequest()->headers->get('accept', '*/*'), $priorities);
 
         if (null === $format) {
             $this->app->abort(406, 'Not acceptable');

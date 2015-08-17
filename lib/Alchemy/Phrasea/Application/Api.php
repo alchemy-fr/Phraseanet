@@ -60,7 +60,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $request->setFormat(Result::FORMAT_JSONP_EXTENDED, V1::$extendedContentTypes['jsonp']);
         $request->setFormat(Result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
 
-        $format = $app['format.negotiator']->getBest(
+        $format = $app['negotiator']->getBest(
             $request->headers->get('accept', 'application/json'),
             array_merge(
                 ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
