@@ -134,9 +134,9 @@
         <jms:reference-file line="7">Bridge/Flickr/element_informations.html.twig</jms:reference-file>
         <jms:reference-file line="7">Bridge/Youtube/element_informations.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ac5c6fe2979cfa2496c95dcb218f135fd916040d" resname="%quantity% Stories attached to the WorkZone">
+      <trans-unit id="ac5c6fe2979cfa2496c95dcb218f135fd916040d" resname="%quantity% Stories attached to the WorkZone" approved="yes">
         <source>%quantity% Stories attached to the WorkZone</source>
-        <target state="new">%quantity% Stories attached to the WorkZone</target>
+        <target state="translated">%quantity% reportages attachés à la zone de travail</target>
         <jms:reference-file line="163">Controller/Prod/WorkZone.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1c0df10208cc3bed3e1f4c7a814a53b5866d65a1" resname="%quantity% Stories attached to the WorkZone, %quantity_already% already attached">
@@ -2477,7 +2477,7 @@
       </trans-unit>
       <trans-unit id="9eeffe4b7b6e5e1e997946906659420d101fba64" resname="E-Mail" approved="yes">
         <source>E-Mail</source>
-        <target state="translated">Email</target>
+        <target state="translated">E-mail</target>
         <jms:reference-file line="29">actions/Feedback/ListsMacros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d01e2e86669e98441ab4dce5520696c318b7098" resname="E-mail">
@@ -2565,9 +2565,9 @@
         <target state="new">ElasticSearch server</target>
         <jms:reference-file line="6">admin/search-engine/elastic-search.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="84add5b2952787581cb9a8851eef63d1ec75d22b" resname="Email">
+      <trans-unit id="84add5b2952787581cb9a8851eef63d1ec75d22b" resname="Email" approved="yes">
         <source>Email</source>
-        <target>Email</target>
+        <target state="translated">E-mail</target>
         <jms:reference-file line="131">web/admin/dashboard.html.twig</jms:reference-file>
         <jms:reference-file line="135">admin/publications/fiche.html.twig</jms:reference-file>
       </trans-unit>
@@ -2578,7 +2578,7 @@
       </trans-unit>
       <trans-unit id="e4aaac273d3c0d793207e6b559a7b7f97d543064" resname="Email Name" approved="yes">
         <source>Email Name</source>
-        <target state="translated">Adresse email</target>
+        <target state="translated">Adresse e-mail</target>
         <jms:reference-file line="23">prod/User/Add.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2e1342ee456b9b08f20e2dcf9d7565fffa460597" resname="Email export fails" approved="yes">
