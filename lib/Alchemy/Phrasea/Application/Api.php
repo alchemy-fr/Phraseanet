@@ -53,7 +53,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
         foreach (\API_V1_adapter::$extendedContentTypes['json'] as $priorities[]);
         foreach (\API_V1_adapter::$extendedContentTypes['yaml'] as $priorities[]);
-        $format = $app['format.negociator']->getBest($request->headers->get('accept', 'application/json') ,$priorities);
+        $format = $app['negotiator']->getBest($request->headers->get('accept', 'application/json') ,$priorities);
 
         // throw unacceptable http error if API can not handle asked format
         if (null === $format) {

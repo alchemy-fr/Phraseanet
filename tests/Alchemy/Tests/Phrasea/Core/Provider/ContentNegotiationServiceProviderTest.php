@@ -12,17 +12,12 @@ class classContentNegotiationServiceProviderTest extends ServiceProviderTestCase
         return array(
             array(
                 'Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider',
-                'negociator',
+                'negotiator',
                 'Negotiation\Negotiator',
             ),
             array(
                 'Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider',
-                'format.negociator',
-                'Negotiation\FormatNegotiator'
-            ),
-            array(
-                'Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider',
-                'langage.negociator',
+                'language.negotiator',
                 'Negotiation\LanguageNegotiator'
             )
         );
