@@ -261,27 +261,30 @@
                 <div class="searchFormWrapper">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
-                        <div class="input-append">
-                            <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query danger_indicator" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
-                            <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
-                                <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
-                            </a>
-                            <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                                {% if GV_multiAndReport %}
-                                    <label for="mode_type_doc" class="radio inline">
-                                        <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
-                                        {{ 'phraseanet::type:: documents' | trans }}
-                                    </label>
-                                    <label for="mode_type_reg" class="radio inline">
-                                        <input type="radio" value="1" class="mode_type_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
-                                        {{ 'phraseanet::type:: reportages' | trans }}
-                                    </label>
-                                {% else %}
-                                    <input type="hidden" value="0" name="search_type" />
-                                {% endif %}
+                        <input type="hidden" name="pag" id="formAnswerPage" value="">
+                        <input type="hidden" name="sel" value="">
+
+                        <div class="controls controls-row">
+                            <div class="input-append">
+                                <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query danger_indicator" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
+                                <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
+                                    <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
+                                </a>
+                                <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
+                            </div>
+                            <div class="control-group">
+                            {% if GV_multiAndReport %}
+                                <label for="mode_type_doc" class="radio inline">
+                                    <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
+                                    {{ 'phraseanet::type:: documents' | trans }}
+                                </label>
+                                <label for="mode_type_reg" class="radio inline">
+                                    <input type="radio" value="1" class="mode_type_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
+                                    {{ 'phraseanet::type:: reportages' | trans }}
+                                </label>
+                            {% else %}
+                                <input type="hidden" value="0" name="search_type" />
+                            {% endif %}
                                 <select name="record_type" id="recordtype_sel" class="input-small">
                                     <option value="">{{ 'Tout type' | trans }}</option>
                                     <option value="image">{{ 'Image' | trans }}</option>
@@ -292,11 +295,9 @@
                                 </select>
                             </div>
                         </div>
-                        <input type="hidden" name="pag" id="formAnswerPage" value="">
-                        <input type="hidden" name="sel" value="">
 
 
-                        <div class="adv_options" style="display:none;">
+                        <div class="controls controls-row adv_options" style="display:none;">
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
@@ -316,7 +317,7 @@
                                                 <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="reset_adv_search();" />
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
-                                                <div class="ADVSRCH_SORT_ZONE">
+                                                <div id="ADVSRCH_SORT_ZONE">
                                                     <span>{{ 'Trier par' | trans }}</span>
                                                     <select name="sort" class="input-medium">
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
@@ -343,18 +344,18 @@
                                                         <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                         {% for field_id, field in search_datas['fields'] %}
                                                             {% if field['type'] != 'date' %}
-                                                                <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
                                                             {% endif %}
                                                         {% endfor %}
                                                     </select>
                                                 </div>
 
                                                 <div id="ADVSRCH_SB_ZONE">
-                                                {% set status_length = search_status|length %}
-                                                {% if status_length > 0 %}
+                                                {% if search_status|length > 0 %}
                                                     <hr />
                                                     <span>{{ 'Status des documents a rechercher' | trans }}</span>
                                                     {% for databox_id, databox in search_status %}
+                                                    {% if databox.status|length > 0 %}
                                                     <table style="width: 100%;" id="ADVSRCH_SB_ZONE_{{databox_id}}" class="field_{{databox_id}}">
                                                         <thead>
                                                             <tr>
@@ -393,44 +394,36 @@
                                                             {% endfor %}
                                                         </tbody>
                                                     </table>
+                                                    {% endif %}
                                                     {% endfor %}
                                                 {% endif %}
                                                 </div>
 
-                                                <div id="ADVSRCH_DATE_ZONE">
+                                                <div id="ADVSRCH_DATE_ZONE" class="danger_indicator">
                                                     {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
                                                     <hr />
-                                                    <table>
-                                                        <tr>
-                                                            <td colspan="2">{{ 'Rechercher dans un champ date' | trans }}</td>
-                                                            <td colspan="2">
-                                                                <select name="date_field" class="input-medium">
-                                                                    <option onchange="checkFilters(true);" selected="selected"
-                                                                            value="">{{ 'Rechercher dans un champ date' | trans }}</option>
-                                                                    {% for fieldname, date in search_datas['dates'] %}
-                                                                        <option onchange="checkFilters(true);"
-                                                                            class="db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>{{ 'phraseanet::time:: de' | trans }}</td>
-                                                            <td style="padding-right: 5px;">
-                                                                <div class="input-prepend">
-                                                                    <span class="add-on"><i class="icon-calendar"></i></span>
-                                                                    <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
-                                                                </div>
-                                                            </td>
-                                                            <td>{{ 'phraseanet::time:: a' | trans }}</td>
-                                                            <td>
-                                                                <div class="input-prepend">
-                                                                    <span class="add-on"><i class="icon-calendar"></i></span>
-                                                                    <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
+                                                    <span>
+                                                        <select name="date_field" class="input-medium" onchange="checkFilters(true);">
+                                                            <option selected="selected"
+                                                                    value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                            {% for fieldname, date in search_datas['dates'] %}
+                                                                <option
+                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </span>
+                                                    <span id="ADVSRCH_DATE_SELECTORS">
+                                                        {{ 'phraseanet::time:: de' | trans }}
+                                                        <div class="input-prepend">
+                                                            <span class="add-on"><i class="icon-calendar"></i></span>
+                                                            <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                        </div>
+                                                        {{ 'phraseanet::time:: a' | trans }}
+                                                        <div class="input-prepend">
+                                                            <span class="add-on"><i class="icon-calendar"></i></span>
+                                                            <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                        </div>
+                                                    </span>
                                                     {% endif %}
                                                 </div>
                                             </div>

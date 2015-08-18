@@ -185,31 +185,15 @@ function checkFilters(save) {
     var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
-    var switches = $('.field_switch', container);
-/*
-    switches.filter('.was').removeClass('was');
-    switches.filter('option:selected, input:checked').addClass('was');
-
-//    $('select option.field_switch', container).addClass("hidden");
-//    $('input.field_switch:checked', container).removeAttr('checked');
-//    $('input.field_switch:checkbox', container).parent().hide();
-
-//    filters.removeClass('danger');
-
-
-    // mark the selected options in the "fields" select
-*/
-    // hide all the fields in the "fields" select, so only the relevant ones will be shown again
-    $("option:gt(0)", fieldsSelect).prop("disabled", true);     // option[0] is "all fields"
-    $("option:gt(0)", fieldsSelect).hide();                     // option[0] is "all fields"
 
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
-    $("option.dbx", fieldsSort).prop("disabled", true);         // dbx is for "field of databases"
-    $("option.dbx", fieldsSort).hide();
+    $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
+
+    // hide all the fields in the "fields" select, so only the relevant ones will be shown again
+    $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
 
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
-    $("option.dbx", dateFilterSelect).prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
-    $("option.dbx", dateFilterSelect).hide();
+    $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
 
     var nbTotalSelectedColls = 0;
     $.each($('.sbascont', adv_box), function () {
@@ -241,7 +225,6 @@ function checkFilters(save) {
             $("#ADVSRCH_SBAS_LABEL_" + sbas_id).removeClass("danger");
         }
 
-
         if(nbSelectedColls == 0) {
             // no collections checked for this databox
             // hide the status bits
@@ -252,22 +235,18 @@ function checkFilters(save) {
         else {
             // at least one coll checked for this databox
             // show again the relevant fields in "sort by" select
-            $(".db_"+sbas_id, fieldsSort).prop("disabled", false);
-            $(".db_"+sbas_id, fieldsSort).show();
+            $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
             // show again the relevant fields in "from fields" select
-            $(".field_"+sbas_id, fieldsSelect).prop("disabled", false);
-            $(".field_"+sbas_id, fieldsSelect).show();
+            $(".db_"+sbas_id, fieldsSelect).show().prop("disabled", false);
             // show the sb
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
             // show again the relevant fields in "date field" select
-            $(".db_"+sbas_id, dateFilterSelect).prop("disabled", false);
-            $(".db_"+sbas_id, dateFilterSelect).show();
+            $(".db_"+sbas_id, dateFilterSelect).show().prop("disabled", false);
         }
     });
 
     if (nbTotalSelectedColls == 0) {
         // no collections checked at all
-        // filters.addClass("danger");
         // hide irrelevant filters
         $("#ADVSRCH_OPTIONS_ZONE").hide();
     }
@@ -280,7 +259,7 @@ function checkFilters(save) {
     // --------- sort  --------
 
     // if no field is selected for sort, select the first option
-    if($("option.dbx:selected:visible:enabled", fieldsSort).length == 0) {
+    if($("option.dbx:selected:enabled", fieldsSort).length == 0) {
         $("option:eq(0)", fieldsSort).prop("selected", true);
     }
 
@@ -329,41 +308,26 @@ function checkFilters(save) {
             danger = true;
         }
     }
-/*
-    $('#ADVSRCH_SB_ZONE :checkbox[checked]').each(function () {
-        var n = $(this).attr('n');
-        search.status[n] = $(this).val().split('_');
-    });
-    if(search.status.length == 0) {
-        $('#ADVSRCH_SB_ZONE', container).removeClass('danger');
-    }
-    else {
-        $('#ADVSRCH_SB_ZONE', container).addClass('danger');
-    }
-*/
+
     //--------- dates filter ---------
 
     // if no date field is selected for filter, select the first option
-    if($("option.dbx:selected:visible:enabled", dateFilterSelect).length == 0) {
+    $('#ADVSRCH_DATE_ZONE', adv_box).removeClass('danger');
+    if($("option.dbx:selected:enabled", dateFilterSelect).length == 0) {
         $("option:eq(0)", dateFilterSelect).prop("selected", true);
+        $("#ADVSRCH_DATE_SELECTORS", container).hide();
     }
+    else {
+        $("#ADVSRCH_DATE_SELECTORS", container).show();
+        search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
+        search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
+        search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
 
-
-
-
-
-
-
-    search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
-    search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
-    search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
-
-    if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
-        danger = true;
-        $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
+        if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
+            danger = true;
+            $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
+        }
     }
-
-
 
     fieldsSelect.scrollTop(scroll);
 
@@ -995,10 +959,10 @@ $(document).ready(function () {
         var $this = $(this);
         var $record_types = $('#recordtype_sel');
         if ($this.hasClass('mode_type_reg')) {
-            $record_types.hide();
+            $record_types.css("visibility", "hidden");  // better than hide because does not change layout
             $record_types.prop("selectedIndex", 0);
         } else {
-            $record_types.show();
+            $record_types.css("visibility", "visible");
         }
     });
 

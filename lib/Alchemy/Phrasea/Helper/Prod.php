@@ -31,26 +31,43 @@ class Prod extends Helper
 
         $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search'), true);
         $saveSettings = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'advanced_search_reload');
-
-        foreach ($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
+        foreach ($acl->get_granted_sbas() as $databox) {
             $sbasId = $databox->get_sbas_id();
 
-            $bases[$sbasId] = array('thesaurus' => (trim($databox->get_thesaurus()) !== ""), 'cterms' => false, 'collections' => array(), 'sbas_id' => $sbasId);
+            $bases[$sbasId] = array(
+                'thesaurus' => (trim($databox->get_thesaurus()) !== ""),
+                'cterms' => false,
+                'collections' => array(),
+                'sbas_id' => $sbasId
+            );
 
             foreach ($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([], [$databox->get_sbas_id()]) as $coll) {
                 $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
-                $bases[$sbasId]['collections'][] = array('selected' => $selected, 'base_id' => $coll->get_base_id());
+                $bases[$sbasId]['collections'][] = array(
+                    'selected' => $selected,
+                    'base_id' => $coll->get_base_id()
+                );
             }
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {
                     continue;
                 }
+                if($fieldMeta->isBusiness() && !$acl->can_see_business_fields($databox)) {
+                    continue;
+                }
+
                 $id = $fieldMeta->get_id();
                 $name = $fieldMeta->get_name();
                 $type = $fieldMeta->get_type();
 
-                $data = array('sbas' => array($sbasId), 'fieldname' => $name, 'type' => $type, 'id' => $id);
+                $data = array(
+                    'sbas' => array($sbasId),
+                    'fieldname' => $name,
+                    'type' => $type,
+                    'id' => $id
+                );
 
                 if ($fieldMeta->get_type() === \databox_field::TYPE_DATE) {
                     if (!array_key_exists($name, $dates)) {
