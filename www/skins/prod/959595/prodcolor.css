@@ -601,6 +601,10 @@ span.ww_winTitle {
     border: none !important;
     border-radius: 0;
 }
+#plugins.ui-accordion > .ui-accordion-content {
+    padding: 0;
+    min-height: 100%;
+}
 
 .ui-accordion-icons .ui-accordion-header,
 .ui-accordion-icons .ui-accordion-header a {
