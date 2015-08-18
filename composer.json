@@ -68,7 +68,8 @@
         "simple-bus/serialization": "^2.0",
         "firebase/php-jwt": "^3.0",
         "ircmaxell/random-lib": "^1.1",
-        "alchemy/rest-bundle": "master@dev"
+        "alchemy/rest-bundle": "master@dev",
+        "simple-bus/jms-serializer-bridge": "^1.0"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "~1.0.0",

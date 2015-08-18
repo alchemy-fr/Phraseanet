@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "54cf452a777ec96caeb54373b677e8ec",
+    "hash": "68a71aa0b9486e10ce6eea69a6fbc966",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -299,12 +299,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "c9b0bf79f26f5acb947370238fc3c9e77b34bf77"
+                "reference": "3e52d04d31a0cd3628510e9dd6387e39784e1149"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/c9b0bf79f26f5acb947370238fc3c9e77b34bf77",
-                "reference": "c9b0bf79f26f5acb947370238fc3c9e77b34bf77",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/3e52d04d31a0cd3628510e9dd6387e39784e1149",
+                "reference": "3e52d04d31a0cd3628510e9dd6387e39784e1149",
                 "shasum": ""
             },
             "require": {
@@ -323,7 +323,8 @@
                 "psr-4": {
                     "Alchemy\\Rest\\": "src/Component",
                     "Alchemy\\RestBundle\\": "src/Bundle",
-                    "Alchemy\\RestProvider\\": "src/Provider"
+                    "Alchemy\\RestProvider\\": "src/Provider",
+                    "Alchemy\\RestBundle\\Tests\\": "tests/unit/Bundle"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -337,7 +338,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2015-08-17 15:19:36"
+            "time": "2015-08-18 14:16:46"
         },
         {
             "name": "beberlei/assert",
@@ -2958,6 +2959,55 @@
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
             "time": "2014-06-04 21:14:30"
+        },
+        {
+            "name": "simple-bus/jms-serializer-bridge",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/JMSSerializerBridge.git",
+                "reference": "6292dc9537311100725f5b926d434b0495c03fad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/JMSSerializerBridge/zipball/6292dc9537311100725f5b926d434b0495c03fad",
+                "reference": "6292dc9537311100725f5b926d434b0495c03fad",
+                "shasum": ""
+            },
+            "require": {
+                "jms/serializer": "~0.12||~1.0",
+                "php": ">=5.4",
+                "simple-bus/serialization": ">=1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "type": "bundle",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\JMSSerializerBridge\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Bridge for using JMSSerializer as message serializer for SimpleBus/Asynchronous",
+            "homepage": "http://github.com/SimpleBus/JMSSerializerBridge",
+            "keywords": [
+                "asynchronous",
+                "message",
+                "serialization"
+            ],
+            "time": "2015-07-29 07:48:42"
         },
         {
             "name": "simple-bus/message-bus",
