@@ -373,6 +373,10 @@ span.ww_winTitle {
     padding: 0;
     min-height: 120px;
 }
+#plugins.ui-accordion > .ui-accordion-content {
+    padding: 0;
+    min-height: 100%;
+}
 
 .ui-accordion-icons .ui-accordion-header,
 .ui-accordion-icons .ui-accordion-header a {
