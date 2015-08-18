@@ -289,6 +289,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
+
         return new SearchEngineResult(
             $results,   // ArrayCollection of results
             json_encode($query),
