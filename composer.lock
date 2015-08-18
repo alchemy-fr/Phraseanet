@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0d009e4f04af2e11c229217285f99c31",
-    "content-hash": "27269c3a6c84d09c7af04e640fa2188c",
+    "hash": "0f1fde563267cf7296afcf36db971ff2",
+    "content-hash": "531ddad67cfb56e58e4c2f0297ed9e3e",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -4342,6 +4342,55 @@
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
             "time": "2015-06-04 14:27:33"
+        },
+        {
+            "name": "simple-bus/jms-serializer-bridge",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/JMSSerializerBridge.git",
+                "reference": "6292dc9537311100725f5b926d434b0495c03fad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/JMSSerializerBridge/zipball/6292dc9537311100725f5b926d434b0495c03fad",
+                "reference": "6292dc9537311100725f5b926d434b0495c03fad",
+                "shasum": ""
+            },
+            "require": {
+                "jms/serializer": "~0.12||~1.0",
+                "php": ">=5.4",
+                "simple-bus/serialization": ">=1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "type": "bundle",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\JMSSerializerBridge\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Bridge for using JMSSerializer as message serializer for SimpleBus/Asynchronous",
+            "homepage": "http://github.com/SimpleBus/JMSSerializerBridge",
+            "keywords": [
+                "asynchronous",
+                "message",
+                "serialization"
+            ],
+            "time": "2015-07-29 07:48:42"
         },
         {
             "name": "simple-bus/message-bus",
