@@ -14,8 +14,6 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use JMS\Serializer\SerializerBuilder;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\AnnotationReader;
 
 class JMSSerializerServiceProvider implements ServiceProviderInterface
 {
@@ -24,20 +22,20 @@ class JMSSerializerServiceProvider implements ServiceProviderInterface
         $app['serializer.cache-directory'] = $app->share(function () use ($app) {
             return $app['cache.path'].'/serializer/';
         });
-
-        $app['serializer.src_directory'] = $app['root.path'] . '/vendor/jms/serializer/src/';
-
-        $app['serializer.metadata.annotation_reader'] = $app->share(function () use ($app) {
-            AnnotationRegistry::registerAutoloadNamespace("JMS\Serializer\Annotation", $app['serializer.src_directory']);
-
-            return new AnnotationReader();
+        $app['serializer.metadata_dirs'] = $app->share(function () {
+            return [];
         });
 
         $app['serializer'] = $app->share(function (Application $app) {
-            return SerializerBuilder::create()->setCacheDir($app['serializer.cache-directory'])
-                ->setDebug($app['debug'])
-                ->setAnnotationReader($app['serializer.metadata.annotation_reader'])
-                ->build();
+            $builder = SerializerBuilder::create()
+                ->setCacheDir($app['serializer.cache-directory'])
+                ->setDebug($app['debug']);
+
+            if (!empty($app['serializer.metadata_dirs'])) {
+                $builder->addMetadataDirs($app['serializer.metadata_dirs']);
+            }
+
+            return $builder->build();
         });
     }
 
