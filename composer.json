@@ -69,7 +69,8 @@
         "firebase/php-jwt": "^3.0",
         "ircmaxell/random-lib": "^1.1",
         "alchemy/rest-bundle": "master@dev",
-        "simple-bus/jms-serializer-bridge": "^1.0"
+        "simple-bus/jms-serializer-bridge": "^1.0",
+        "pagerfanta/pagerfanta": "^1.0"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "~1.0.0",

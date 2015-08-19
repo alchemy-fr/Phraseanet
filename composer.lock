@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "68a71aa0b9486e10ce6eea69a6fbc966",
+    "hash": "fd543d9f20edb071de5ae67b4632a138",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -299,12 +299,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "3e52d04d31a0cd3628510e9dd6387e39784e1149"
+                "reference": "50fe38d882e739ac39c124c6505b84cc1a9cae0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/3e52d04d31a0cd3628510e9dd6387e39784e1149",
-                "reference": "3e52d04d31a0cd3628510e9dd6387e39784e1149",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/50fe38d882e739ac39c124c6505b84cc1a9cae0b",
+                "reference": "50fe38d882e739ac39c124c6505b84cc1a9cae0b",
                 "shasum": ""
             },
             "require": {
@@ -323,8 +323,7 @@
                 "psr-4": {
                     "Alchemy\\Rest\\": "src/Component",
                     "Alchemy\\RestBundle\\": "src/Bundle",
-                    "Alchemy\\RestProvider\\": "src/Provider",
-                    "Alchemy\\RestBundle\\Tests\\": "tests/unit/Bundle"
+                    "Alchemy\\RestProvider\\": "src/Provider"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -338,7 +337,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2015-08-18 14:16:46"
+            "time": "2015-08-19 12:34:39"
         },
         {
             "name": "beberlei/assert",
@@ -2261,6 +2260,73 @@
             ],
             "description": "Symfony filesystem extension to handle temporary files",
             "time": "2013-10-10 10:58:09"
+        },
+        {
+            "name": "pagerfanta/pagerfanta",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/whiteoctober/Pagerfanta.git",
+                "reference": "a874d3612d954dcbbb49e5ffe178890918fb76fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/a874d3612d954dcbbb49e5ffe178890918fb76fb",
+                "reference": "a874d3612d954dcbbb49e5ffe178890918fb76fb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "doctrine/orm": "~2.3",
+                "doctrine/phpcr-odm": "1.*",
+                "jackalope/jackalope-doctrine-dbal": "1.*",
+                "jmikola/geojson": "~1.0",
+                "mandango/mandango": "~1.0@dev",
+                "mandango/mondator": "~1.0@dev",
+                "phpunit/phpunit": "~4",
+                "propel/propel1": "~1.6",
+                "ruflin/elastica": "~1.3",
+                "solarium/solarium": "~3.1"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "To use the DoctrineODMMongoDBAdapter.",
+                "doctrine/orm": "To use the DoctrineORMAdapter.",
+                "doctrine/phpcr-odm": "To use the DoctrineODMPhpcrAdapter. >= 1.1.0",
+                "mandango/mandango": "To use the MandangoAdapter.",
+                "propel/propel1": "To use the PropelAdapter",
+                "solarium/solarium": "To use the SolariumAdapter."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pagerfanta\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pablo Díez",
+                    "email": "pablodip@gmail.com"
+                }
+            ],
+            "description": "Pagination for PHP 5.3",
+            "keywords": [
+                "page",
+                "pagination",
+                "paginator",
+                "paging"
+            ],
+            "time": "2014-10-06 10:57:25"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
