@@ -140,11 +140,6 @@
 
 {% block javascript %}
     {% include "common/templates.html.twig" %}
-    <script>
-        $(function() {
-            $("#plugins").accordion();
-        });
-    </script>
 {% endblock %}
 
 {% block content %}
@@ -674,6 +669,30 @@
                                             {% trans 'action : publier' %}
                                         </a>
                                     </li>
+                                    {% if app['plugin.actionbar'].keys() is not empty %}
+
+                                        {% for  actionId in app['plugin.actionbar'].keys() %}
+
+
+                                            {% for key,action in app['plugin.actionbar'][actionId].getActionBar()
+                                            .push %}
+                                                <li class="divider"></li>
+                                                <li>
+                                                    <a class="results_window {{ action
+                                                    .classes|default('')
+                                                    }}">
+                                                        {% if action.icon %}
+                                                        <img src="{{ plugin_asset(app['plugin.actionbar'][actionId].PluginName,action.icon) }}" height="16"
+                                                             width="16" />
+                                                        {% endif %}
+
+                                                        {% set label = action.label %}
+                                                        {% trans label app['plugin.actionbar'][actionId].PluginLocale %}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
                                 </ul>
                             </div>
                         </span>
