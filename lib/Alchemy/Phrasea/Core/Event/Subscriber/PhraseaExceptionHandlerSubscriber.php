@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Symfony\Component\Debug\ExceptionHandler;
+use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -21,7 +21,7 @@ class PhraseaExceptionHandlerSubscriber implements EventSubscriberInterface
     protected $enabled;
     protected $handler;
 
-    public function __construct(ExceptionHandler $handler)
+    public function __construct(PhraseaExceptionHandler $handler)
     {
         $this->enabled = true;
         $this->handler = $handler;
@@ -46,6 +46,6 @@ class PhraseaExceptionHandlerSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::EXCEPTION => array('onSilexError', 0));
+        return array(KernelEvents::EXCEPTION => array('onSilexError', -2));
     }
 }

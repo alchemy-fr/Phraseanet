@@ -41,6 +41,6 @@ class JsonRequestSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::EXCEPTION => array('onSilexError', 10));
+        return array(KernelEvents::EXCEPTION => array('onSilexError', -1));
     }
 }
