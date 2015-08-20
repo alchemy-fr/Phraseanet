@@ -20,7 +20,9 @@ class QuotedTextNode extends Node
         $query_builder = function (array $fields) use ($context) {
             $index_fields = [];
             foreach ($fields as $field) {
-                foreach ($context->localizeField($field) as $index_fields[]);
+                foreach ($context->localizeField($field) as $f) {
+                    $index_fields[] = $f;
+                }
             }
             if (!$index_fields) {
                 return null;

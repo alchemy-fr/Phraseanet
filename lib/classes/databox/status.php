@@ -21,39 +21,31 @@ class databox_status
 {
     public static function getSearchStatus(Application $app)
     {
-        $see_all = $structures = $stats = [];
+        $structures = $stats = [];
         foreach ($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
-            $see_all[$databox->get_sbas_id()] = false;
+            $see_all = false;
             foreach ($databox->get_collections() as $collection) {
                 if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
-                    $see_all[$databox->get_sbas_id()] = true;
+                    $see_all = true;
                     break;
                 }
             }
-            $structures[$databox->get_sbas_id()] = $databox->getStatusStructure();
-        }
-
-        foreach ($structures as $databox_id => $structure) {
-            if (false === $see_all[$databox_id]) {
-                $structure = array_filter($structure->toArray(), function ($status) {
-                    return (bool) $status['searchable'];
+            $status = $databox->getStatusStructure()->toArray();
+            if (!$see_all) {
+                $status = array_filter($status, function ($statusbit) {
+                    return (bool)$statusbit['searchable'];
                 });
             }
+            ksort($status);
 
-            foreach($structure as $bit => $status) {
-                $key = RecordHelper::normalizeFlagKey($status['labelon']);
-
-                if (isset($stats[$key])) {
-                    $status = $stats[$key];
-                }
-
-                $status['sbas'][] = $databox_id;
-                $status['bit'] = $bit;
-
-                $stats[$key] = $status;
-            }
+            $structures[$databox->get_sbas_id()] = array(
+                'name' => $databox->get_label($app['locale']),
+                'status'=>$status
+            );
         }
-        return $stats;
+        ksort($structures);
+
+        return $structures;
     }
 
     public static function deleteIcon(Application $app, $databox_id, $bit, $switch)
