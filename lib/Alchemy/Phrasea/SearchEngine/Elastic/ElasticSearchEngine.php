@@ -373,7 +373,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
 
         $query_filters = $this->createQueryFilters($options);
-        $acl_filters = $this->createACLFilters();
+        $acl_filters = $this->createACLFilters($options);
 
         $ESQuery = ['filtered' => ['query' => $ESQuery]];
 
@@ -411,13 +411,16 @@ class ElasticSearchEngine implements SearchEngineInterface
             // document that shouldn't be displayed can go this far.
             $agg = [];
             $agg['terms']['field'] = $field->getIndexField(true);
+            if(($size = $field->getFacetsSize()) !== null) {
+                $agg['terms']['size'] = $size;
+            }
             $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
         }
 
         return $aggs;
     }
 
-    private function createACLFilters()
+    private function createACLFilters(SearchEngineOptions $options)
     {
         // No ACLs if no user
         if (false === $this->app->getAuthenticator()->isAuthenticated()) {
@@ -440,7 +443,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         // Get intersection between collection ACLs and collection chosen by end user
         $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
 
-        return $this->buildACLsFilters($aclRules);
+        return $this->buildACLsFilters($aclRules, $options);
     }
 
     private function createQueryFilters(SearchEngineOptions $options)
@@ -601,11 +604,20 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $rules;
     }
 
-    private function buildACLsFilters(array $aclRules)
+    private function buildACLsFilters(array $aclRules, SearchEngineOptions $options)
     {
         $filters = [];
 
+        $collections = $options->getCollections();
+
+        $collectionsWoRules = [];
+        $collectionsWoRules['terms']['base_id'] = [];
         foreach ($aclRules as $baseId => $flagsRules) {
+            if(!array_key_exists($baseId, $collections)) {
+                // no need to add a filter if the collection is not searched
+                continue;
+            }
+
             $ruleFilter = $baseFilter = [];
 
             // filter on base
@@ -626,9 +638,27 @@ class ElasticSearchEngine implements SearchEngineInterface
                 $ruleFilter['bool']['must'][] = $flagFilter;
             }
 
-            $filters[] = $ruleFilter;
+            if(count($ruleFilter['bool']['must']) > 1) {
+                // some rules found, add the filter
+                $filters[] = $ruleFilter;
+            }
+            else {
+                // no rules for this collection, add it to the 'simple' list
+                $collectionsWoRules['terms']['base_id'][] = $baseId;
+            }
+        }
+        if (count($collectionsWoRules['terms']['base_id']) > 0) {
+            // collections w/o rules : add a simple list ?
+            if(count($filters) > 0) {   // no need to add a big 'should' filter only on collections
+                $filters[] = $collectionsWoRules;
+            }
         }
 
-        return ['bool' => ['should' => $filters]];
+        if(count($filters) > 0) {
+            return ['bool' => ['should' => $filters]];
+        }
+        else {
+            return [];
+        }
     }
 }

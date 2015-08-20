@@ -41,6 +41,9 @@ final class LimitedStructure implements Structure
         return $this->limit($this->structure->getPrivateFields());
     }
 
+    /**
+     * @return Field[]
+     */
     public function getFacetFields()
     {
         return $this->limit($this->structure->getFacetFields());

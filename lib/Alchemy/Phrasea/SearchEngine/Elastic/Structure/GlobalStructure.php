@@ -71,6 +71,9 @@ final class GlobalStructure implements Structure
         return $this->private;
     }
 
+    /**
+     * @return Field[]
+     */
     public function getFacetFields()
     {
         return $this->facets;

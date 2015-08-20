@@ -19,7 +19,8 @@ class Field
     private $type;
     private $is_searchable;
     private $is_private;
-    private $is_facet;
+    private $is_facet;      // bool return facet for this field
+    private $facets_size;   // number of facets to return (null=default, 0= no limit)
     private $thesaurus_roots;
     private $used_by_collections;
 
@@ -36,10 +37,19 @@ class Field
             $roots = null;
         }
 
+        // for phraseanet : 0=no facets (also returns isAggregable()=false)  ;  -1=all facets
+        $facet = $field->isAggregable();
+        $facets_size = $field->getAggregableSize();
+        if($facets_size === -1) {
+            // for ES 0=all facets
+            $facets_size = 0;
+        }
+
         return new self($field->get_name(), $type, [
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
-            'facet' => $field->isAggregable(),
+            'facet' => $facet,
+            'facets_size' => $facets_size,
             'thesaurus_roots' => $roots,
             'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
@@ -68,6 +78,7 @@ class Field
         $this->is_searchable   = \igorw\get_in($options, ['searchable'], true);
         $this->is_private      = \igorw\get_in($options, ['private'], false);
         $this->is_facet        = \igorw\get_in($options, ['facet'], false);
+        $this->facets_size     = $this->is_facet ? \igorw\get_in($options, ['facets_size'], null) : 0;  // here 0 means "no facets"
         $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
         $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
 
@@ -86,6 +97,7 @@ class Field
             'searchable' => $this->is_searchable,
             'private' => $this->is_private,
             'facet' => $this->is_facet,
+            'facets_size' => $this->facets_size,
             'thesaurus_roots' => $this->thesaurus_roots,
             'used_by_collections' => $this->used_by_collections
         ]);
@@ -169,6 +181,11 @@ class Field
     public function isFacet()
     {
         return $this->is_facet;
+    }
+
+    public function getFacetsSize()
+    {
+        return $this->facets_size;
     }
 
     public function hasConceptInference()

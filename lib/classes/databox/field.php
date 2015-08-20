@@ -194,6 +194,11 @@ class databox_field implements cache_cacheableInterface
         return $this->aggregable != 0;
     }
 
+    public function getAggregableSize()
+    {
+        return $this->aggregable;
+    }
+
     public function hydrate(Application $app)
     {
         $this->app = $app;
