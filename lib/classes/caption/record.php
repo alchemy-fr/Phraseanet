@@ -93,7 +93,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
         return \p4string::jsonencode($this->toArray($includeBusinessFields));
     }
 
-    protected function toArray($includeBusinessFields)
+    public function toArray($includeBusinessFields)
     {
         $buffer = array();
 
