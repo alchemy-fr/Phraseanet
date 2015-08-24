@@ -79,8 +79,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testMixedFacetEligibilityMerge()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING, ['facet' => true]);
-        $other = new Field('foo', Mapping::TYPE_STRING, ['facet' => false]);
+        $field = new Field('foo', Mapping::TYPE_STRING, ['facet' => Field::FACET_NO_LIMIT]);
+        $other = new Field('foo', Mapping::TYPE_STRING, ['facet' => Field::FACET_DISABLED]);
         $field->mergeWith($other);
     }
 
