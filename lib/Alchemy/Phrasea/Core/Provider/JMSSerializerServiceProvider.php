@@ -11,9 +11,10 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\SerializerBuilder;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use JMS\Serializer\SerializerBuilder;
 
 class JMSSerializerServiceProvider implements ServiceProviderInterface
 {
@@ -25,6 +26,9 @@ class JMSSerializerServiceProvider implements ServiceProviderInterface
         $app['serializer.metadata_dirs'] = $app->share(function () {
             return [];
         });
+        $app['serializer.handlers'] = $app->share(function () {
+            return [];
+        });
         $app['serializer'] = $app->share(function (Application $app) {
             $builder = SerializerBuilder::create()
                 ->setCacheDir($app['serializer.cache-directory'])
@@ -32,6 +36,14 @@ class JMSSerializerServiceProvider implements ServiceProviderInterface
 
             if (!empty($app['serializer.metadata_dirs'])) {
                 $builder->addMetadataDirs($app['serializer.metadata_dirs']);
+            }
+
+            if (!empty($app['serializer.handlers'])) {
+                $builder->configureHandlers(function (HandlerRegistryInterface $registry) use ($app) {
+                    foreach ($app['serializer.handlers'] as $handler) {
+                        $registry->registerSubscribingHandler($handler);
+                    }
+                });
             }
 
             return $builder->build();
