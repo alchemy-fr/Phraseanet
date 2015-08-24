@@ -108,6 +108,9 @@ class databox_field implements cache_cacheableInterface
     const DCES_COVERAGE = 'Coverage';
     const DCES_RIGHTS = 'Rights';
 
+    const FACET_DISABLED = 0;
+    const FACET_NO_LIMIT = -1;
+
     /**
      * @param Application $app
      * @param databox     $databox
@@ -191,10 +194,16 @@ class databox_field implements cache_cacheableInterface
 
     public function isAggregable()
     {
-        return $this->aggregable != 0;
+        return $this->aggregable !== self::FACET_DISABLED;
     }
 
-    public function getAggregableSize()
+    /**
+     * A value of "0" means no facets (in that case, isAggregable() returns false too)
+     * "-1" means all facet values should be returned (no limit)
+     *
+     * @return integer Maximum expected number of values on this facet
+     */
+    public function getFacetValuesLimit()
     {
         return $this->aggregable;
     }

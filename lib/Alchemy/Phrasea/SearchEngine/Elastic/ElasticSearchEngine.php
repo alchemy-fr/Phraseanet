@@ -411,9 +411,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             // document that shouldn't be displayed can go this far.
             $agg = [];
             $agg['terms']['field'] = $field->getIndexField(true);
-            if(($size = $field->getFacetsSize()) !== null) {
-                $agg['terms']['size'] = $size;
-            }
+            $agg['terms']['size'] = $field->getFacetValuesLimit();
             $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
         }
 
