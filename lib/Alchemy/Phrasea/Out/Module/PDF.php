@@ -349,7 +349,7 @@ class PDF
             $RIGHT_TEXT = "";
             $RIGHT_IMG = NULL;
 
-            $LEFT__IMG = $this->app['root.path'] . "/config/minilogos/logopdf_" . $rec->get_sbas_id();
+            $LEFT__IMG = $this->app['root.path'] . "/config/minilogos/logopdf_" . $rec->get_sbas_id() . ".jpg";
 
             if (!is_file($LEFT__IMG)) {
                 $databox = $rec->get_databox();
