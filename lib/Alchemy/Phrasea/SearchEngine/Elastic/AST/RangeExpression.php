@@ -45,8 +45,16 @@ class RangeExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
+        $structure_field = $context->get($this->field);
+        if (!$structure_field) {
+            throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
+        }
+
         $params = array();
         if ($this->lower_bound !== null) {
+            if (!$structure_field->isValueCompatible($this->lower_bound)) {
+                return;
+            }
             if ($this->lower_inclusive) {
                 $params['lte'] = $this->lower_bound;
             } else {
@@ -54,20 +62,14 @@ class RangeExpression extends Node
             }
         }
         if ($this->higher_bound !== null) {
+            if (!$structure_field->isValueCompatible($this->higher_bound)) {
+                return;
+            }
             if ($this->higher_inclusive) {
                 $params['gte'] = $this->higher_bound;
             } else {
                 $params['gt'] = $this->higher_bound;
             }
-        }
-
-        $structure_field = $context->get($this->field);
-        if (!$structure_field) {
-            throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
-        }
-        if (!$structure_field->isValueCompatible($this->lower_bound) ||
-            !$structure_field->isValueCompatible($this->higher_bound)) {
-            return null;
         }
 
         $query = [];

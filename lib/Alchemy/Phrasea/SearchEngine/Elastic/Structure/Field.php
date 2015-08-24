@@ -120,13 +120,13 @@ class Field
 
     public function isValueCompatible($value)
     {
-        return count(self::filterCompatibleFields([$field], $value)) > 0;
+        return count(self::filterByValueCompatibility([$this], $value)) > 0;
     }
 
     public static function filterByValueCompatibility(array $fields, $value)
     {
         $is_numeric = is_numeric($value);
-        $is_valid_date = RecordHelper::sanitizeDate($value) !== null;
+        $is_valid_date = RecordHelper::validateDate($value);
         $filtered = [];
         foreach ($fields as $field) {
             switch ($field->type) {

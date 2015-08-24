@@ -15,6 +15,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use appbox;
+use DateTime;
 use igorw;
 
 class RecordHelper
@@ -72,6 +73,12 @@ class RecordHelper
     public static function normalizeFlagKey($key)
     {
         return StringUtils::slugify($key, '_');
+    }
+
+    public static function validateDate($date)
+    {
+        $d = DateTime::createFromFormat(Mapping::DATE_FORMAT_CAPTION_PHP, $date);
+        return $d && $d->format(Mapping::DATE_FORMAT_CAPTION_PHP) == $date;
     }
 
     public static function sanitizeDate($value)
