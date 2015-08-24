@@ -47,7 +47,7 @@ class CaptionSerializer extends AbstractSerializer
         return \p4string::jsonencode($this->toArray($caption, $includeBusinessFields));
     }
 
-    private function toArray(\caption_record $caption, $includeBusinessFields)
+    public function toArray(\caption_record $caption, $includeBusinessFields)
     {
         $buffer = [];
 
