@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
 use Silex\Application;
@@ -30,6 +31,12 @@ class JMSSerializerServiceProvider implements ServiceProviderInterface
             return [];
         });
         $app['serializer'] = $app->share(function (Application $app) {
+            // Register JMS annotation into Doctrine's registry
+            AnnotationRegistry::registerAutoloadNamespace(
+                'JMS\Serializer\Annotation',
+                $app['root.path'] . '/vendor/jms/serializer/src/'
+            );
+
             $builder = SerializerBuilder::create()
                 ->setCacheDir($app['serializer.cache-directory'])
                 ->setDebug($app['debug']);
