@@ -250,7 +250,12 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $options = $options ?: new SearchEngineOptions();
 
-        $context = $this->createQueryContext($options);
+        $narrowToFields = array();
+        foreach($options->getFields() as $field) {
+            $narrowToFields[] = $field->get_name();
+        }
+        $context = $this->createQueryContext($options)->narrowToFields($narrowToFields);
+
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
         $recordQuery = $query_compiler->compile($string, $context);
