@@ -318,7 +318,7 @@
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">
-                                                    <span>{{ 'Trier par' | trans }} {{ app['phraseanet.SE'].getDefaultSort() }}</span>
+                                                    <span>{{ 'Trier par' | trans }}</span>
                                                     <select name="sort" class="input-medium">
                                                         {% set b = (app['phraseanet.SE'].getDefaultSort() == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
