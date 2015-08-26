@@ -19,10 +19,12 @@ class Field
     private $type;
     private $is_searchable;
     private $is_private;
-    private $is_facet;      // bool return facet for this field
-    private $facets_size;   // number of facets to return (null=default, 0= no limit)
+    private $facet; // facet values limit or NULL (zero means no limit)
     private $thesaurus_roots;
     private $used_by_collections;
+
+    const FACET_DISABLED = null;
+    const FACET_NO_LIMIT = 0;
 
     public static function createFromLegacyField(databox_field $field)
     {
@@ -37,19 +39,18 @@ class Field
             $roots = null;
         }
 
-        // for phraseanet : 0=no facets (also returns isAggregable()=false)  ;  -1=all facets
-        $facet = $field->isAggregable();
-        $facets_size = $field->getAggregableSize();
-        if($facets_size === -1) {
-            // for ES 0=all facets
-            $facets_size = 0;
+        // Facet (enable + optional limit)
+        $facet = $field->getFacetValuesLimit();
+        if ($facet === databox_field::FACET_DISABLED) {
+            $facet = self::FACET_DISABLED;
+        } elseif ($facet === databox_field::FACET_NO_LIMIT) {
+            $facet = self::FACET_NO_LIMIT;
         }
 
         return new self($field->get_name(), $type, [
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
             'facet' => $facet,
-            'facets_size' => $facets_size,
             'thesaurus_roots' => $roots,
             'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
@@ -77,14 +78,15 @@ class Field
         $this->type = $type;
         $this->is_searchable   = \igorw\get_in($options, ['searchable'], true);
         $this->is_private      = \igorw\get_in($options, ['private'], false);
-        $this->is_facet        = \igorw\get_in($options, ['facet'], false);
-        $this->facets_size     = $this->is_facet ? \igorw\get_in($options, ['facets_size'], null) : 0;  // here 0 means "no facets"
+        $this->facet           = \igorw\get_in($options, ['facet']);
         $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
         $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
 
         Assertion::boolean($this->is_searchable);
         Assertion::boolean($this->is_private);
-        Assertion::boolean($this->is_facet);
+        if ($this->facet !== self::FACET_DISABLED) {
+            Assertion::integer($this->facet);
+        }
         if ($this->thesaurus_roots !== null) {
             Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
         }
@@ -96,8 +98,7 @@ class Field
         return new self($this->name, $this->type, $options + [
             'searchable' => $this->is_searchable,
             'private' => $this->is_private,
-            'facet' => $this->is_facet,
-            'facets_size' => $this->facets_size,
+            'facet' => $this->facet,
             'thesaurus_roots' => $this->thesaurus_roots,
             'used_by_collections' => $this->used_by_collections
         ]);
@@ -180,12 +181,12 @@ class Field
 
     public function isFacet()
     {
-        return $this->is_facet;
+        return $this->facet !== self::FACET_DISABLED;
     }
 
-    public function getFacetsSize()
+    public function getFacetValuesLimit()
     {
-        return $this->facets_size;
+        return $this->facet;
     }
 
     public function hasConceptInference()
@@ -227,7 +228,7 @@ class Field
             throw new MergeException(sprintf("Field %s can't be merged, incompatible searchablility", $name));
         }
 
-        if ($other->isFacet() !== $this->is_facet) {
+        if ($other->getFacetValuesLimit() !== $this->facet) {
             throw new MergeException(sprintf("Field %s can't be merged, incompatible facet eligibility", $name));
         }
 

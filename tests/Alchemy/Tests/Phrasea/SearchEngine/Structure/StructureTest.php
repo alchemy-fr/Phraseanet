@@ -94,8 +94,8 @@ class StructureTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFacetFields()
     {
-        $facet = new Field('foo', Mapping::TYPE_STRING, ['facet' => true]);
-        $not_facet = new Field('bar', Mapping::TYPE_STRING, ['facet' => false]);
+        $facet = new Field('foo', Mapping::TYPE_STRING, ['facet' => Field::FACET_NO_LIMIT]);
+        $not_facet = new Field('bar', Mapping::TYPE_STRING, ['facet' => Field::FACET_DISABLED]);
         $structure = new Structure();
         $structure->add($facet);
         $this->assertContains($facet, $structure->getFacetFields());
