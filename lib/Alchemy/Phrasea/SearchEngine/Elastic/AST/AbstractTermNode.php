@@ -37,6 +37,9 @@ abstract class AbstractTermNode extends Node implements TermInterface
             foreach ($fields as $field) {
                 $index_fields[] = $field->getConceptPathIndexField();
             }
+            if (!$index_fields) {
+                return null;
+            }
             $query = null;
             foreach ($concepts as $concept) {
                 $concept_query = [

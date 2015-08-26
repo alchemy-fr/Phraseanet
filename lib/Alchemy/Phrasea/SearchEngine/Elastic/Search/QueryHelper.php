@@ -50,8 +50,8 @@ class QueryHelper
     private static function restrictQueryToCollections(array $query, array $collections)
     {
         $wrapper = [];
-        $wrapper['bool']['must'][0]['terms']['base_id'] = $collections;
-        $wrapper['bool']['must'][1] = $query;
+        $wrapper['filtered']['filter']['terms']['base_id'] = $collections;
+        $wrapper['filtered']['query'] = $query;
         return $wrapper;
     }
 
@@ -86,9 +86,7 @@ class QueryHelper
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
             $query = $query_builder($fields);
-            $collection_query = [];
-            $collection_query['terms']['base_id'] = $collections_map[$hash];
-            $query = self::applyBooleanClause($query, 'must', $collection_query);
+            $query = self::restrictQueryToCollections($query, $collections_map[$hash]);
             $queries[] = $query;
         }
 
