@@ -121,23 +121,27 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                         "query": "/qux"
                     }
                 }, {
-                    "bool": {
-                        "must": [{
+                    "filtered": {
+                        "filter": {
                             "terms": {
                                 "base_id": [1, 2, 3]
                             }
-                        }],
-                        "should": [{
-                            "multi_match": {
-                                "fields": ["concept_path.bar"],
-                                "query": "/baz"
+                        },
+                        "query": {
+                            "bool": {
+                                "should": [{
+                                    "multi_match": {
+                                        "fields": ["concept_path.bar"],
+                                        "query": "/baz"
+                                    }
+                                }, {
+                                    "multi_match": {
+                                        "fields": ["concept_path.bar"],
+                                        "query": "/qux"
+                                    }
+                                }]
                             }
-                        }, {
-                            "multi_match": {
-                                "fields": ["concept_path.bar"],
-                                "query": "/qux"
-                            }
-                        }]
+                        }
                     }
                 }]
             }
