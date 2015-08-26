@@ -27,31 +27,9 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
     protected function buildConceptQueries(QueryContext $context)
     {
-        $concept_query = $this->buildConceptQuery($context);
-        if ($concept_query === null) {
-            return [];
-        }
-
-        // Extract all should clauses
-        if (
-            isset($concept_query['bool']) &&
-            isset($concept_query['bool']['should']) &&
-            count($concept_query) === 1 /* no options or must(_not) clauses */
-        ) {
-            return isset($concept_query['bool']['should'][0]) ?
-                $concept_query['bool']['should'] :
-                [$concept_query['bool']['should']];
-        }
-
-        // Fallback to returning full query
-        return [$concept_query];
-    }
-
-    protected function buildConceptQuery(QueryContext $context)
-    {
         $concepts = Concept::pruneNarrowConcepts($this->concepts);
         if (!$concepts) {
-            return null;
+            return [];
         }
 
         $query_builder = function (array $fields) use ($concepts) {
@@ -76,12 +54,22 @@ abstract class AbstractTermNode extends Node implements TermInterface
         };
 
         $query = $query_builder($context->getUnrestrictedFields());
-        $private_fields = $context->getPrivateFields();
-        foreach (QueryHelper::wrapPrivateFieldConceptQueries($private_fields, $query_builder) as $private_field_query) {
-            $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
+        if (
+            isset($query['bool']) &&
+            isset($query['bool']['should']) &&
+            count($query) === 1 /* no options or must(_not) clauses */
+        ) {
+            $queries = $query['bool']['should'];
+        } else {
+            $queries = [$query];
         }
 
-        return $query;
+        $private_fields = $context->getPrivateFields();
+        foreach (QueryHelper::wrapPrivateFieldConceptQueries($private_fields, $query_builder) as $private_field_query) {
+            $queries[] = $private_field_query;
+        }
+
+        return $queries;
     }
 
     public function getValue()
