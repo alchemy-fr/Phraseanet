@@ -59,18 +59,30 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
         };
 
         $unrestricted_fields = $context->getUnrestrictedFields();
-        $unrestricted_fields = Field::filterByValueCompatibility($unrestricted_fields, $this->text);
-        $query = $query_builder($unrestricted_fields);
+        $compatible_unrestricted_fields = Field::filterByValueCompatibility($unrestricted_fields, $this->text);
+        $query = $query_builder($compatible_unrestricted_fields);
 
         $private_fields = $context->getPrivateFields();
-        $private_fields = Field::filterByValueCompatibility($private_fields, $this->text);
-        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
+        $compatible_private_fields = Field::filterByValueCompatibility($private_fields, $this->text);
+        foreach (QueryHelper::wrapPrivateFieldQueries($compatible_private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 
-        $concept_queries = $this->buildConceptQueries($context);
+        // Concepts handling
+        $concept_queries = $this->buildConceptQueriesForFields($unrestricted_fields);
         foreach ($concept_queries as $concept_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
+        }
+        $query_builder = function (array $fields) {
+            $concept_queries = $this->buildConceptQueriesForFields($fields);
+            $query = null;
+            foreach ($concept_queries as $concept_query) {
+                $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
+            }
+            return $query;
+        };
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
+            $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 
         return $query;
