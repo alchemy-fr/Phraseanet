@@ -193,22 +193,6 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                         "lenient": true
                     }
                 }, {
-                    "filtered": {
-                        "filter": {
-                            "terms": {
-                                "base_id": [1, 2, 3]
-                            }
-                        },
-                        "query": {
-                            "multi_match": {
-                                "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
-                                "query": "baz",
-                                "operator": "and",
-                                "lenient": true
-                            }
-                        }
-                    }
-                }, {
                     "multi_match": {
                         "fields": [
                             "concept_path.foo"
@@ -223,9 +207,20 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                             }
                         },
                         "query": {
-                            "multi_match": {
-                                "fields": ["concept_path.bar"],
-                                "query": "/qux"
+                            "bool": {
+                                "should": [{
+                                    "multi_match": {
+                                        "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                        "query": "baz",
+                                        "operator": "and",
+                                        "lenient": true
+                                    }
+                                }, {
+                                    "multi_match": {
+                                        "fields": ["concept_path.bar"],
+                                        "query": "/qux"
+                                    }
+                                }]
                             }
                         }
                     }

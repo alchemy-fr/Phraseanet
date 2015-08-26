@@ -39,8 +39,9 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
     public function buildQuery(QueryContext $context)
     {
         $query_builder = function (array $fields) use ($context) {
+            // Full text
             $index_fields = [];
-            foreach ($fields as $field) {
+            foreach (Field::filterByValueCompatibility($fields, $this->text) as $field) {
                 foreach ($context->localizeField($field) as $f) {
                     $index_fields[] = $f;
                 }
@@ -48,7 +49,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
             if (!$index_fields) {
                 return null;
             }
-            return [
+            $query = [
                 'multi_match' => [
                     'fields'   => $index_fields,
                     'query'    => $this->text,
@@ -56,31 +57,19 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
                     'lenient'  => true,
                 ]
             ];
-        };
-
-        $unrestricted_fields = $context->getUnrestrictedFields();
-        $compatible_unrestricted_fields = Field::filterByValueCompatibility($unrestricted_fields, $this->text);
-        $query = $query_builder($compatible_unrestricted_fields);
-
-        $private_fields = $context->getPrivateFields();
-        $compatible_private_fields = Field::filterByValueCompatibility($private_fields, $this->text);
-        foreach (QueryHelper::wrapPrivateFieldQueries($compatible_private_fields, $query_builder) as $private_field_query) {
-            $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
-        }
-
-        // Concepts handling
-        $concept_queries = $this->buildConceptQueriesForFields($unrestricted_fields);
-        foreach ($concept_queries as $concept_query) {
-            $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
-        }
-        $query_builder = function (array $fields) {
+            // Thesaurus
             $concept_queries = $this->buildConceptQueriesForFields($fields);
-            $query = null;
             foreach ($concept_queries as $concept_query) {
                 $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
             }
             return $query;
         };
+
+        // Unrestricted fields
+        $query = $query_builder($context->getUnrestrictedFields());
+
+        // Private fields
+        $private_fields = $context->getPrivateFields();
         foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
