@@ -134,6 +134,14 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
+    public function getDefaultSortDirection()
+    {
+        return SearchEngineOptions::SORT_MODE_DESC;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isStemmingEnabled()
     {
         return false;

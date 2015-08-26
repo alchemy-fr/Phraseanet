@@ -318,22 +318,26 @@
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">
-                                                    <span>{{ 'Trier par' | trans }}</span>
+                                                    <span>{{ 'Trier par' | trans }} {{ app['phraseanet.SE'].getDefaultSort() }}</span>
                                                     <select name="sort" class="input-medium">
-                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
-                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if app['phraseanet.SE'].getDefaultSort() is empty %}selected="selected default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
+                                                        {% set b = (app['phraseanet.SE'].getDefaultSort() == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                        {% set b = (app['phraseanet.SE'].getDefaultSort() == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
                                                         <optgroup label="{{ 'By field'|trans }}">
                                                         {% for fieldname, sort in search_datas['sort'] %}
+                                                            {% set b = (app['phraseanet.SE'].getDefaultSort() == fieldname) %}
                                                             <option value="{{ fieldname }}"
-                                                                    {% if fieldname == app['phraseanet.SE'].getDefaultSort() %}selected="selected"{% endif %}
-                                                                    class="{% if fieldname == app['phraseanet.SE'].getDefaultSort() %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                                    {% if b %}selected="selected"{% endif %}
+                                                                    class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
                                                                     >{{ fieldname }}</option>
                                                         {% endfor %}
                                                         </optgroup>
                                                     </select>
                                                     <select name="ord" class="input-medium">
                                                         {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
-                                                        <option value="{{ ord }}">{{ ord_name }}</option>
+                                                            {% set b = (app['phraseanet.SE'].getDefaultSortDirection() == ord) %}
+                                                            <option value="{{ ord }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ ord_name }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
