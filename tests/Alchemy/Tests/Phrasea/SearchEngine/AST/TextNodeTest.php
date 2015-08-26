@@ -154,4 +154,85 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(json_decode($expected, true), $query);
     }
+
+    public function testQueryBuildWithPrivateFieldAndConcept()
+    {
+        $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $private_field = new Field('bar', Mapping::TYPE_STRING, [
+            'private' => true,
+            'used_by_collections' => [1, 2, 3]
+        ]);
+
+        $query_context = $this->prophesize(QueryContext::class);
+        $query_context
+            ->getUnrestrictedFields()
+            ->willReturn([$public_field]);
+        $query_context
+            ->localizeField($public_field)
+            ->willReturn(['foo.fr', 'foo.en']);
+        $query_context
+            ->getPrivateFields()
+            ->willReturn([$private_field]);
+        $query_context
+            ->localizeField($private_field)
+            ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
+
+        $node = new TextNode('baz');
+        $node->setConcepts([
+            new Concept('/qux'),
+        ]);
+        $query = $node->buildQuery($query_context->reveal());
+
+        $expected = '{
+            "bool": {
+                "should": [{
+                    "multi_match": {
+                        "fields": ["foo.fr", "foo.en"],
+                        "query": "baz",
+                        "operator": "and",
+                        "lenient": true
+                    }
+                }, {
+                    "filtered": {
+                        "filter": {
+                            "terms": {
+                                "base_id": [1, 2, 3]
+                            }
+                        },
+                        "query": {
+                            "multi_match": {
+                                "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                "query": "baz",
+                                "operator": "and",
+                                "lenient": true
+                            }
+                        }
+                    }
+                }, {
+                    "multi_match": {
+                        "fields": [
+                            "concept_path.foo"
+                        ],
+                        "query": "\/qux"
+                    }
+                }, {
+                    "filtered": {
+                        "filter": {
+                            "terms": {
+                                "base_id": [1, 2, 3]
+                            }
+                        },
+                        "query": {
+                            "multi_match": {
+                                "fields": ["concept_path.bar"],
+                                "query": "/qux"
+                            }
+                        }
+                    }
+                }]
+            }
+        }';
+
+        $this->assertEquals(json_decode($expected, true), $query);
+    }
 }

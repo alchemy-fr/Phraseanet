@@ -25,6 +25,28 @@ abstract class AbstractTermNode extends Node implements TermInterface
         $this->concepts = $concepts;
     }
 
+    protected function buildConceptQueries(QueryContext $context)
+    {
+        $concept_query = $this->buildConceptQuery($context);
+        if ($concept_query === null) {
+            return [];
+        }
+
+        // Extract all should clauses
+        if (
+            isset($concept_query['bool']) &&
+            isset($concept_query['bool']['should']) &&
+            count($concept_query) === 1 /* no options or must(_not) clauses */
+        ) {
+            return isset($concept_query['bool']['should'][0]) ?
+                $concept_query['bool']['should'] :
+                [$concept_query['bool']['should']];
+        }
+
+        // Fallback to returning full query
+        return [$concept_query];
+    }
+
     protected function buildConceptQuery(QueryContext $context)
     {
         $concepts = Concept::pruneNarrowConcepts($this->concepts);

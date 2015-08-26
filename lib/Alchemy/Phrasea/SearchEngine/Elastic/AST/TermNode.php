@@ -9,18 +9,13 @@ class TermNode extends AbstractTermNode
 {
     public function buildQuery(QueryContext $context)
     {
-        $query = $this->buildConceptQuery($context);
-
         // Should not match anything if no concept is defined
-        if ($query === null) {
-            $query = [
-                'bool' => [
-                    'should' => []
-                ]
-            ];
-        }
-
-        return $query;
+        // TODO Ensure no match when no concept queries are provided
+        return [
+            'bool' => [
+                'should' => $this->buildConceptQueries($context)
+            ]
+        ];
     }
 
     public function __toString()

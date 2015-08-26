@@ -68,8 +68,8 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 
-        $concept_query = $this->buildConceptQuery($context);
-        if ($concept_query !== null) {
+        $concept_queries = $this->buildConceptQueries($context);
+        foreach ($concept_queries as $concept_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
         }
 
