@@ -69,6 +69,13 @@
   </li>
   {% endif %}
 
+  <li>
+    <a target="right" href="{{ path('admin_plugins_list') }}" class="ajax">
+      <img src="/skins/admin/plugin.png" />
+      <span>{% trans 'admin::plugins: plugins' %}</span>
+    </a>
+  </li>
+
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
       <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">
