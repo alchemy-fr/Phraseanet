@@ -272,15 +272,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
-        $params['body']['highlight'] = [
-            'pre_tags' =>  ['[[em]]'],
-            'post_tags' =>  ['[[/em]]'],
-            'order' => 'score',
-            'fields' => [
-                'caption.*' => new \stdClass(),
-                'private_caption.*' => new \stdClass()
-            ]
-        ];
+        $params['body']['highlight'] = $this->buildHighlightRules($context);
 
         if ($aggs = $this->getAggregationQueryParams($options)) {
             $params['body']['aggs'] = $aggs;
@@ -317,6 +309,39 @@ class ElasticSearchEngine implements SearchEngineInterface
             $this->indexName,
             $facets
         );
+    }
+
+    private function buildHighlightRules(QueryContext $context)
+    {
+        $fields = $context->getUnrestrictedFields() + $context->getPrivateFields();
+        $highlighted_fields = [];
+        foreach ($fields as $field) {
+            switch ($field->getType()) {
+                case Mapping::TYPE_STRING:
+                    $highlighted_fields[$field->getIndexField()] = [
+                        // Requires calling Mapping::highlight() on this field mapping
+                        'type' => 'fvh'
+                    ];
+                    break;
+                case Mapping::TYPE_FLOAT:
+                case Mapping::TYPE_DOUBLE:
+                case Mapping::TYPE_INTEGER:
+                case Mapping::TYPE_LONG:
+                case Mapping::TYPE_SHORT:
+                case Mapping::TYPE_BYTE:
+                    continue;
+                case Mapping::TYPE_DATE:
+                default:
+                    continue;
+            }
+        }
+
+        return [
+            'pre_tags' =>  ['[[em]]'],
+            'post_tags' =>  ['[[/em]]'],
+            'order' => 'score',
+            'fields' => $highlighted_fields
+        ];
     }
 
     /**
