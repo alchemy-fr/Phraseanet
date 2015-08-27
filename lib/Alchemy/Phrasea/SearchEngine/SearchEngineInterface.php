@@ -55,6 +55,11 @@ interface SearchEngineInterface
     public function getDefaultSort();
 
     /**
+     * @return string The default sort direction
+     */
+    public function getDefaultSortDirection();
+
+    /**
      * @return string The default sort
      */
     public function isStemmingEnabled();

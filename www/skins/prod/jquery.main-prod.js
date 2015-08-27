@@ -182,6 +182,7 @@ function checkFilters(save) {
     var adv_box = $('form.phrasea_query .adv_options');
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
+    var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
     var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
@@ -258,9 +259,10 @@ function checkFilters(save) {
 
     // --------- sort  --------
 
-    // if no field is selected for sort, select the first option
-    if($("option.dbx:selected:enabled", fieldsSort).length == 0) {
-        $("option:eq(0)", fieldsSort).prop("selected", true);
+    // if no field is selected for sort, select the default option
+    if($("option:selected:enabled", fieldsSort).length == 0) {
+        $("option.default-selection", fieldsSort).prop("selected", true);
+        $("option.default-selection", fieldsSortOrd).prop("selected", true);
     }
 
     //--------- from fields filter ---------
@@ -392,9 +394,18 @@ function clearAnswers() {
 }
 
 function reset_adv_search() {
-    $('#ADVSRCH_OPTIONS_ZONE select[name="sort"]').val($('#ADVSRCH_OPTIONS_ZONE select[name="sort"] option.default-selection').attr('value'));
+    var container = $("#ADVSRCH_OPTIONS_ZONE");
+    var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
+    var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
+    var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
+
+    $("option.default-selection", fieldsSort).prop("selected", true);
+    $("option.default-selection", fieldsSortOrd).prop("selected", true);
+
     $('#ADVSRCH_FIELDS_ZONE option').removeAttr("selected");
     $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').removeAttr('checked');
+
+    $("option:eq(0)", dateFilterSelect).prop("selected", true);
     $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
     $('form.adv_search_bind input:text').val('');
     checkBases(true);
