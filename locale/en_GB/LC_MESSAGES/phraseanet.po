@@ -12217,3 +12217,6 @@ msgstr ""
 
 #~ msgid "Select the type of documents on which to search."
 #~ msgstr "Select the type of documents on which to search."
+
+msgid "admin::plugins: plugins"
+msgstr "Plugins"

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Helper\DatabaseHelper;
 use Alchemy\Phrasea\Helper\PathHelper;
 use Silex\Application;
+use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -29,6 +30,7 @@ class Root implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
         $app['firewall']->addMandatoryAuthentication($controllers);
 

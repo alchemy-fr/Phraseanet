@@ -11427,3 +11427,6 @@ msgid ""
 "Le connecteur API requis n'est pas configure correctement, veuillez "
 "contacter un administrateur"
 msgstr ""
+
+msgid "admin::plugins: plugins"
+msgstr ""

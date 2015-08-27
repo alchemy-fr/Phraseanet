@@ -1,0 +1,15 @@
+
+{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{% trans 'admin::plugins: plugins' %}</h1>
+    </div>
+
+    <div id="plugin_list">
+        {% for pluginKey in plugins.keys() %}
+            {% set plugin = plugins[pluginKey] %}
+            <div>{{ plugin.name }}</div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -69,6 +69,7 @@ use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
+use Alchemy\Phrasea\ControllerProvider\Admin\Plugins;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Provider\AccountServiceProvider;
@@ -413,6 +414,7 @@ class Application extends SilexApplication
 
         $this->register(new LocaleServiceProvider());
         $this->register(new MediaAccessor());
+        $this->register(new Plugins());
 
         $this->mount('/include/minify/', new Minifier());
         $this->mount('/permalink/', new Permalink());
@@ -794,6 +796,7 @@ class Application extends SilexApplication
         $this->mount('/admin/fields', new Fields());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
+        $this->mount('/admin/plugins', new Plugins());
 
         $this->mount('/client/', new ClientRoot());
         $this->mount('/client/baskets', new ClientBasket());
