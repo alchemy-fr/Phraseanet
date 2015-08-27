@@ -60,7 +60,8 @@ class CacheStatusStructureProvider implements StatusStructureProviderInterface
 
         $this->provider->updateStatus($structure, $bit, $properties);
 
-        $this->cache->save($this->get_cache_key($databox->get_sbas_id()), json_encode($structure->toArray()));
+        // note : cache->save(...) should be ok but it crashes some callers, ex. adding a sb (?)
+        $this->cache->delete($this->get_cache_key($databox->get_sbas_id()));
 
         return $structure;
     }
