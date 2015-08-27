@@ -76,13 +76,7 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
         $node = new TermNode('bar');
         $query = $node->buildQuery($query_context->reveal());
 
-        $expected = '{
-            "bool": {
-                "should": []
-            }
-        }';
-
-        $this->assertEquals(json_decode($expected, true), $query);
+        $this->assertNull($query);
     }
 
     public function testQueryBuildWithPrivateFields()

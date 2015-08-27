@@ -58,7 +58,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
                 ]
             ];
             // Thesaurus
-            $concept_queries = $this->buildConceptQueriesForFields($fields);
+            $concept_queries = $this->buildConceptQueries($fields);
             foreach ($concept_queries as $concept_query) {
                 $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
             }

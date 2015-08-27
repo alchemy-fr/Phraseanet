@@ -35,32 +35,7 @@ abstract class AbstractTermNode extends Node implements TermInterface
         return $this->pruned_concepts;
     }
 
-    protected function buildConceptQueries(QueryContext $context)
-    {
-        if (!$this->getPrunedConcepts()) {
-            return [];
-        }
-
-        $query_builder = function (array $fields) {
-            $concept_queries = $this->buildConceptQueriesForFields($fields);
-            $query = null;
-            foreach ($concept_queries as $concept_query) {
-                $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
-            }
-            return $query;
-        };
-
-        $queries = $this->buildConceptQueriesForFields($context->getUnrestrictedFields());
-
-        $private_fields = $context->getPrivateFields();
-        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
-            $queries[] = $private_field_query;
-        }
-
-        return $queries;
-    }
-
-    protected function buildConceptQueriesForFields(array $fields)
+    protected function buildConceptQueries(array $fields)
     {
         $concepts = $this->getPrunedConcepts();
         if (!$concepts) {
