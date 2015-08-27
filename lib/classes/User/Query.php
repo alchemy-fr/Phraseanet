@@ -103,13 +103,13 @@ class User_Query implements User_QueryInterface
     /**
      * Restrict user with the provided last model
      * 
-     * @param User|string|null $login
+     * @param User|int|null $login
      *
      * @return $this
      */
     public function last_model_is($login = null)
     {
-        $this->last_model = $login instanceof User ? $login->getLogin() : $login;
+        $this->last_model = $login instanceof User ? $login->getId() : $login;
 
         return $this;
     }
