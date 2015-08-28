@@ -4789,6 +4789,15 @@ ui-dialog-titlebar {
     max-heigh: 16px;
 }
 
+.plugin-container.active {
+    overflow: hidden;
+    height: 100%;
+}
+
+.plugin-container.inactive {
+    display: none;
+}
+
 #answers #answersNext {
   width: 150px;
   margin: 5px;
