@@ -183,8 +183,12 @@
                     {% block tabs_panel %}
                         <div id="retractableButton"></div>
                         {% include 'prod/tab_headers.html.twig' %}
-                        <div id="plugins" class="PNB" style="top:52px;">
-                            {% set workzone_plugins = app['plugin.workzone'] %}
+                        {% set workzone_plugins = app['plugin.workzone'] %}
+                        {% set workzone_plugins_class = 'single-plugin' %}
+                        {% if workzone_plugins.keys()|length > 1 %}
+                            {% set workzone_plugins_class = 'multiple-plugin' %}
+                        {% endif %}
+                        <div id="plugins" class="PNB {{ workzone_plugins_class }}" style="top:52px;">
                             {% for plugin in workzone_plugins.keys() %}
                                 {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
                             {% endfor %}
