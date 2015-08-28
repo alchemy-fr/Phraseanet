@@ -10,24 +10,13 @@
 
 namespace Alchemy\Phrasea\Plugin;
 
-interface ActionBarPluginInterface
+
+interface BasketActionBarPluginInterface
 {
     /**
-     * Get the action bar definition
-     *
-     * [
-     *      'push' => [
-     *          '{actionKey}' => [
-     *              'classes' => '{string with css classes}',
-     *              'icon' => '{icon asset name}',
-     *              'label' => '{translation key}',
-     *          ],
-     *     ],
-     * ]
-     *
      * @return array
      */
-    public function getActionBar();
+    public function getBasketActionBar();
 
     /**
      * @return string
