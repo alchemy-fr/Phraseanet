@@ -250,10 +250,11 @@ class RecordIndexer
             } elseif (!$searchable && $facet) {
                 $mapping->notAnalyzed();
                 $mapping->addRawVersion();
+                $mapping->enableTermVectors(true);
             } else {
                 $mapping->addRawVersion();
                 $mapping->addAnalyzedVersion($this->locales);
-                $mapping->highlight();
+                $mapping->enableTermVectors(true);
             }
         }
     }
