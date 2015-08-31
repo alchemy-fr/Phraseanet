@@ -47,17 +47,20 @@ class QueryContext
     {
         // TODO Restore search optimization by using "caption_all" field
         // (only when $this->fields is null)
-        $fields = $this->structure->getUnrestrictedFields();
-        if ($this->fields !== null) {
-            $fields = array_intersect_key($fields, array_flip($this->fields));
-        }
-
-        return array_values($fields);
+        return $this->filterFields($this->structure->getUnrestrictedFields());
     }
 
     public function getPrivateFields()
     {
-        $fields = $this->structure->getPrivateFields();
+        return $this->filterFields($this->structure->getPrivateFields());
+    }
+
+    public function getHighlightedFields() {
+        return $this->filterFields($this->structure->getAllFields());
+    }
+
+    private function filterFields(array $fields)
+    {
         if ($this->fields !== null) {
             $fields = array_intersect_key($fields, array_flip($this->fields));
         }

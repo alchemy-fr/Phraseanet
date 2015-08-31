@@ -313,9 +313,8 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     private function buildHighlightRules(QueryContext $context)
     {
-        $fields = $context->getUnrestrictedFields() + $context->getPrivateFields();
         $highlighted_fields = [];
-        foreach ($fields as $field) {
+        foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
                 case Mapping::TYPE_STRING:
                     $highlighted_fields[$field->getIndexField()] = [
