@@ -29,10 +29,10 @@ class QueryHelper
         foreach ($fields_map as $hash => $fields) {
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
-            $queries[] = self::restrictQueryToCollections(
-                $query_builder($fields),
-                $collections_map[$hash]
-            );
+            $query = $query_builder($fields);
+            if ($query !== null) {
+                $queries[] = self::restrictQueryToCollections($query, $collections_map[$hash]);
+            }
         }
 
         return $queries;
@@ -59,38 +59,6 @@ class QueryHelper
     {
         sort($collections, SORT_REGULAR);
         return implode('|', $collections);
-    }
-
-    /**
-     * @todo Factor with wrapPrivateFieldQueries()
-     */
-    public static function wrapPrivateFieldConceptQueries(array $fields, \Closure $query_builder)
-    {
-        // We make a boolean clause for each collection set to shrink query size
-        // (instead of a clause for each field, with his collection set)
-        $fields_map = [];
-        $collections_map = [];
-        foreach ($fields as $field) {
-            $collections = $field->getDependantCollections();
-            $hash = self::hashCollections($collections);
-            $collections_map[$hash] = $collections;
-            if (!isset($fields_map[$hash])) {
-                $fields_map[$hash] = [];
-            }
-            // Merge fields with others having the same collections
-            $fields_map[$hash][] = $field;
-        }
-
-        $queries = [];
-        foreach ($fields_map as $hash => $fields) {
-            // Right to query on a private field is dependant of document collection
-            // Here we make sure we can only match on allowed collections
-            $query = $query_builder($fields);
-            $query = self::restrictQueryToCollections($query, $collections_map[$hash]);
-            $queries[] = $query;
-        }
-
-        return $queries;
     }
 
     /**

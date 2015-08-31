@@ -13,6 +13,7 @@ abstract class AbstractTermNode extends Node implements TermInterface
     protected $text;
     protected $context;
     private $concepts = [];
+    private $pruned_concepts;
 
     public function __construct($text, Context $context = null)
     {
@@ -22,44 +23,43 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
     public function setConcepts(array $concepts)
     {
+        $this->pruned_concepts = null;
         $this->concepts = $concepts;
     }
 
-    protected function buildConceptQuery(QueryContext $context)
+    private function getPrunedConcepts()
     {
-        $concepts = Concept::pruneNarrowConcepts($this->concepts);
+        if ($this->pruned_concepts === null) {
+            $this->pruned_concepts = Concept::pruneNarrowConcepts($this->concepts);
+        }
+        return $this->pruned_concepts;
+    }
+
+    protected function buildConceptQueries(array $fields)
+    {
+        $concepts = $this->getPrunedConcepts();
         if (!$concepts) {
-            return null;
+            return [];
         }
 
-        $query_builder = function (array $fields) use ($concepts) {
-            $index_fields = [];
-            foreach ($fields as $field) {
-                $index_fields[] = $field->getConceptPathIndexField();
-            }
-            if (!$index_fields) {
-                return null;
-            }
-            $query = null;
-            foreach ($concepts as $concept) {
-                $concept_query = [
-                    'multi_match' => [
-                        'fields'   => $index_fields,
-                        'query'    => $concept->getPath()
-                    ]
-                ];
-                $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
-            }
-            return $query;
-        };
-
-        $query = $query_builder($context->getUnrestrictedFields());
-        $private_fields = $context->getPrivateFields();
-        foreach (QueryHelper::wrapPrivateFieldConceptQueries($private_fields, $query_builder) as $private_field_query) {
-            $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
+        $index_fields = [];
+        foreach ($fields as $field) {
+            $index_fields[] = $field->getConceptPathIndexField();
+        }
+        if (!$index_fields) {
+            return [];
         }
 
-        return $query;
+        $queries = [];
+        foreach ($concepts as $concept) {
+            $queries[] = [
+                'multi_match' => [
+                    'fields'   => $index_fields,
+                    'query'    => $concept->getPath()
+                ]
+            ];
+        }
+        return $queries;
     }
 
     public function getValue()
