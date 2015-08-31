@@ -22,6 +22,9 @@ class PluginServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['plugin.workzone.basket.actionbar'] = $app->share(function () {
+            return new Pimple();
+        });
         $app['plugin.actionbar'] = $app->share(function () {
             return new Pimple();
         });

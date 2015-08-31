@@ -12,4 +12,8 @@ namespace Alchemy\Phrasea\Plugin;
 
 interface WorkZonePluginInterface
 {
+    /**
+     * @return mixed
+     */
+    public function getWorkZoneTemplate();
 }
