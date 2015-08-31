@@ -247,10 +247,6 @@ class RecordIndexer
             $facet = $field->isFacet();
             if (!$searchable && !$facet) {
                 $mapping->notIndexed();
-            } elseif (!$searchable && $facet) {
-                $mapping->notAnalyzed();
-                $mapping->addRawVersion();
-                $mapping->enableTermVectors(true);
             } else {
                 $mapping->addRawVersion();
                 $mapping->addAnalyzedVersion($this->locales);
