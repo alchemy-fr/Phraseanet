@@ -313,13 +313,15 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     private function buildHighlightRules(QueryContext $context)
     {
-        $fields = $context->getUnrestrictedFields() + $context->getPrivateFields();
         $highlighted_fields = [];
-        foreach ($fields as $field) {
+        foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
                 case Mapping::TYPE_STRING:
-                    $highlighted_fields[$field->getIndexField()] = [
-                        // Requires calling Mapping::highlight() on this field mapping
+                    $index_field = $field->getIndexField();
+                    $raw_index_field = $field->getIndexField(true);
+                    $highlighted_fields[$index_field] = [
+                        // Requires calling Mapping::enableTermVectors() on this field mapping
+                        'matched_fields' => [$index_field, $raw_index_field],
                         'type' => 'fvh'
                     ];
                     break;

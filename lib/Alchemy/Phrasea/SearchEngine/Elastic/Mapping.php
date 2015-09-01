@@ -210,11 +210,21 @@ class Mapping
         return $this;
     }
 
-    public function highlight()
+    public function enableTermVectors($recursive = false)
     {
         $field = &$this->currentField();
-
+        if ($field['type'] !== self::TYPE_STRING) {
+            throw new LogicException('Only string fields can have term vectors');
+        }
         $field['term_vector'] = 'with_positions_offsets';
+
+        if ($recursive) {
+            if (isset($field['fields'])) {
+                foreach ($field['fields'] as $name => &$options) {
+                    $options['term_vector'] = 'with_positions_offsets';
+                }
+            }
+        }
 
         return $this;
     }
