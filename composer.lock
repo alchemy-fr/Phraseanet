@@ -299,17 +299,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "50fe38d882e739ac39c124c6505b84cc1a9cae0b"
+                "reference": "245d08aa39bdf62cc6761c8bcd25fabfe2479556"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/50fe38d882e739ac39c124c6505b84cc1a9cae0b",
-                "reference": "50fe38d882e739ac39c124c6505b84cc1a9cae0b",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/245d08aa39bdf62cc6761c8bcd25fabfe2479556",
+                "reference": "245d08aa39bdf62cc6761c8bcd25fabfe2479556",
                 "shasum": ""
             },
             "require": {
                 "league/fractal": "^0.12.0",
-                "willdurand/negotiation": "2.0.0-alpha1"
+                "willdurand/negotiation": "~2.0@dev"
             },
             "require-dev": {
                 "pagerfanta/pagerfanta": "^1.0.3",
@@ -319,6 +319,11 @@
                 "symfony/symfony": "~2.6"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Alchemy\\Rest\\": "src/Component",
@@ -337,7 +342,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2015-08-19 12:34:39"
+            "time": "2015-09-01 11:23:36"
         },
         {
             "name": "beberlei/assert",
