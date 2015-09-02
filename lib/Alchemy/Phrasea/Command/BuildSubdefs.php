@@ -12,13 +12,16 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Media\SubdefGenerator;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\SQLParserUtils;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\ProgressBar;
+use media_subdef;
 class BuildSubdefs extends Command
 {
     /**
@@ -67,14 +70,9 @@ class BuildSubdefs extends Command
             return;
         }
 
-        $sqlCount = "
-            SELECT COUNT(DISTINCT(r.record_id)) AS nb_records
-            FROM record r
-            INNER JOIN subdef s
-            ON (r.record_id = s.record_id)
-            WHERE s.name IN (?)
-            AND r.type IN (?)
-        ";
+        $sqlCount = "SELECT COUNT(DISTINCT(r.record_id)) AS nb_records"
+            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
+            . " WHERE r.type IN (?)";
 
         $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
         $params = array($subdefsName, $recordsType);
@@ -98,9 +96,9 @@ class BuildSubdefs extends Command
 
         if (false === $withSubstitution) {
             if (true === $substitutionOnly) {
-                $sqlCount .= " AND (s.substit = 1)";
+                $sqlCount .= " AND (ISNULL(s.substit) OR s.substit = 1)";
             } else  {
-                $sqlCount .= " AND (s.substit = 0)";
+                $sqlCount .= " AND (ISNULL(s.substit) OR s.substit = 0)";
             }
         } elseif ($substitutionOnly) {
             throw new InvalidArgumentException('Conflict, you can not ask for --substitution-only && --with-substitution parameters at the same time');
@@ -109,6 +107,8 @@ class BuildSubdefs extends Command
         list($sqlCount, $stmtParams) = SQLParserUtils::expandListParameters($sqlCount, $params, $types);
 
         $databox = $this->container->findDataboxById($input->getArgument('databox'));
+
+        $output->writeln($sqlCount);
 
         $connection = $databox->get_connection();
         $stmt = $connection->prepare($sqlCount);
@@ -120,20 +120,19 @@ class BuildSubdefs extends Command
             return;
         }
 
-        $progress = $this->getHelperSet()->get('progress');
+        /** @var HelperSet $helperSet */
+        $helperSet = $this->getHelperSet();
+
+        /** @var ProgressBar $progress */
+        $progress = $helperSet->get('progress');
 
         $progress->start($output, $totalRecords);
 
         $progress->display();
 
-        $sql = "
-            SELECT DISTINCT(r.record_id)
-            FROM record r
-            INNER JOIN subdef s
-            ON (r.record_id = s.record_id)
-            WHERE s.name IN (?)
-            AND r.type IN (?)
-        ";
+        $sql = "SELECT DISTINCT(r.record_id)"
+            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
+            . " WHERE r.type IN (?)";
 
         $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
         $params = array($subdefsName, $recordsType);
@@ -153,9 +152,9 @@ class BuildSubdefs extends Command
 
         if (false === $withSubstitution) {
             if (true === $substitutionOnly) {
-                $sql .= " AND (s.substit = 1)";
+                $sql .= " AND (ISNULL(s.substit) OR s.substit = 1)";
             } else  {
-                $sql .= " AND (s.substit = 0)";
+                $sql .= " AND (ISNULL(s.substit) OR s.substit = 0)";
             }
         }
 
@@ -171,7 +170,8 @@ class BuildSubdefs extends Command
 
             $record = new \record_adapter($this->container, $databox->get_sbas_id(), $row['record_id']);
 
-            $subdefs = array_filter($record->get_subdefs(), function($subdef) use ($subdefsName) {
+            /** @var media_subdef[] $subdefs */
+            $subdefs = array_filter($record->get_subdefs(), function(media_subdef $subdef) use ($subdefsName) {
                 return in_array($subdef->get_name(), $subdefsName);
             });
 
@@ -182,7 +182,9 @@ class BuildSubdefs extends Command
                 }
             }
 
-            $record->generate_subdefs($databox, $this->container, $subdefsName);
+            /** @var SubdefGenerator $subdefGenerator */
+            $subdefGenerator = $this->container['subdef.generator'];
+            $subdefGenerator->generateSubdefs($record, $subdefsName);
 
             $stmt->closeCursor();
 
