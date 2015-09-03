@@ -1,6 +1,6 @@
 {% block  content %}
     {% if results.error %}
-        <div>{{ results.error }}</div>
+        <div><pre>{{ results.error }}</pre></div>
     {% elseif results.warning %}
         <div>{{ results.warning }}</div>
     {% endif %}
