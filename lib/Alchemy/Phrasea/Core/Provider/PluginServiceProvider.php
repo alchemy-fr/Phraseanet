@@ -22,6 +22,7 @@ class PluginServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        // All plugins, indexed by their name
         $app['plugins'] = $app->share(function () {
             return new Pimple();
         });

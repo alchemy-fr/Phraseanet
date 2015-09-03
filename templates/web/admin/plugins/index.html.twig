@@ -7,9 +7,12 @@
     </div>
 
     <div id="plugin_list">
-        {% for pluginKey in plugins.keys() %}
-            {% set plugin = plugins[pluginKey] %}
-            <div>{{ plugin.name }}</div>
+        {% for pluginName in plugins.keys() %}
+            <li>
+                <a target="right" href="{{ path('admin_plugins_show', {pluginName: pluginName}) }}" class="ajax">
+                    <span>{% trans pluginName plugins[pluginName].localeTextDomain %}</span>
+                </a>
+            </li>
         {% endfor %}
     </div>
 {% endblock %}

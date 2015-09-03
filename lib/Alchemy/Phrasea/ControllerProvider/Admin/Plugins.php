@@ -47,6 +47,10 @@ class Plugins implements ControllerProviderInterface, ServiceProviderInterface
             ->get('/', 'controller.admin_plugin:indexAction')
             ->bind('admin_plugins_list');
 
+        $controllers
+            ->get('/{pluginName}', 'controller.admin_plugin:showAction')
+            ->bind('admin_plugins_show');
+
         return $controllers;
     }
 }
