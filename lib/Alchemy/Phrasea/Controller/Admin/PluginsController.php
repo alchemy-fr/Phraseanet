@@ -31,6 +31,21 @@ class PluginsController
     }
 
     /**
+     * @param string $pluginName
+     * @return Response
+     */
+    public function showAction($pluginName)
+    {
+        if (!isset($this->app['plugins'][$pluginName])) {
+            throw new \InvalidArgumentException('Expects a valid plugin name.');
+        }
+
+        return $this->render('admin/plugins/show.html.twig', [
+            'plugin' => $this->app['plugins'][$pluginName],
+        ]);
+    }
+
+    /**
      * @param string        $view
      * @param array         $parameters
      * @param Response|null $response

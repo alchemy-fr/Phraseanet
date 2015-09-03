@@ -17,17 +17,21 @@ class BasePluginMetadata implements PluginMetadataInterface
     private $version;
     /** @var string */
     private $iconUrl;
+    /** @var string */
+    private $localeTextDomain;
 
     /**
      * @param string $name
      * @param string $version
      * @param string $iconUrl
+     * @param string $localeTextDomain
      */
-    public function __construct($name, $version, $iconUrl)
+    public function __construct($name, $version, $iconUrl, $localeTextDomain)
     {
         $this->name = $name;
         $this->version = $version;
         $this->iconUrl = $iconUrl;
+        $this->localeTextDomain = $localeTextDomain;
     }
 
     /**
@@ -52,5 +56,13 @@ class BasePluginMetadata implements PluginMetadataInterface
     public function getIconUrl()
     {
         return $this->iconUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocaleTextDomain()
+    {
+        return $this->localeTextDomain;
     }
 }
