@@ -10,7 +10,7 @@
         {% for pluginName in plugins.keys() %}
             <li>
                 <a target="right" href="{{ path('admin_plugins_show', {pluginName: pluginName}) }}" class="ajax">
-                    <span>{% trans pluginName plugins[pluginName].localeTextDomain %}</span>
+                    <span>{% trans 'plugin.name' plugins[pluginName].localeTextDomain %}</span>
                 </a>
             </li>
         {% endfor %}
