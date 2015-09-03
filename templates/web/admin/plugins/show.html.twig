@@ -3,17 +3,18 @@
 
 {% block content %}
     <div class="page-header">
-        {% set pluginName = plugin.name %}
-        <h1>{% trans pluginName plugin.localeTextDomain %}</h1>
+        <h1>{% trans 'plugin.name' plugin.localeTextDomain %}</h1>
     </div>
 
-    {{ block('plugin_about') }}
+    {{ block('about') }}
 {% endblock %}
 
 
 {% block about %}
     <h1>{% trans 'admin::plugins: about' %}</h1>
 
-    {{ 'admin::plugins: name'|trans }} {{ plugin.name }}
-    {{ 'admin::plugins: version'|trans }} {{ plugin.version }}
+    <ul>
+        <li>{{ 'admin::plugins: name'|trans }}{{ plugin.name }}</li>
+        <li>{{ 'admin::plugins: version'|trans }}{{ plugin.version }}</li>
+    </ul>
 {% endblock %}
