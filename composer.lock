@@ -299,12 +299,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "245d08aa39bdf62cc6761c8bcd25fabfe2479556"
+                "reference": "28b872c388d6bd83534df5a95441cd15911819a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/245d08aa39bdf62cc6761c8bcd25fabfe2479556",
-                "reference": "245d08aa39bdf62cc6761c8bcd25fabfe2479556",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/28b872c388d6bd83534df5a95441cd15911819a6",
+                "reference": "28b872c388d6bd83534df5a95441cd15911819a6",
                 "shasum": ""
             },
             "require": {
@@ -342,7 +342,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2015-09-01 11:23:36"
+            "time": "2015-09-03 10:04:42"
         },
         {
             "name": "beberlei/assert",
@@ -1148,12 +1148,12 @@
             "version": "v2.3.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
+                "url": "git@github.com:Atlantic18/DoctrineExtensions.git",
                 "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/c753df0c3471630c32e5edb54d36963e745f14fe",
                 "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
                 "shasum": ""
             },
