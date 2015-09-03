@@ -67,14 +67,9 @@ class BuildSubdefs extends Command
             return;
         }
 
-        $sqlCount = "
-            SELECT COUNT(DISTINCT(r.record_id)) AS nb_records
-            FROM record r
-            INNER JOIN subdef s
-            ON (r.record_id = s.record_id)
-            WHERE s.name IN (?)
-            AND r.type IN (?)
-        ";
+        $sqlCount = "SELECT COUNT(DISTINCT(r.record_id)) AS nb_records"
+            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
+            . " WHERE r.type IN (?)";
 
         $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
         $params = array($subdefsName, $recordsType);
@@ -98,9 +93,9 @@ class BuildSubdefs extends Command
 
         if (false === $withSubstitution) {
             if (true === $substitutionOnly) {
-                $sqlCount .= " AND (s.substit = 1)";
+                $sqlCount .= " AND (ISNULL(s.substit) OR s.substit = 1)";
             } else  {
-                $sqlCount .= " AND (s.substit = 0)";
+                $sqlCount .= " AND (ISNULL(s.substit) OR s.substit = 0)";
             }
         } elseif ($substitutionOnly) {
             throw new InvalidArgumentException('Conflict, you can not ask for --substituion-only && --with-substitution parameters at the same time');
@@ -126,14 +121,9 @@ class BuildSubdefs extends Command
 
         $progress->display();
 
-        $sql = "
-            SELECT DISTINCT(r.record_id)
-            FROM record r
-            INNER JOIN subdef s
-            ON (r.record_id = s.record_id)
-            WHERE s.name IN (?)
-            AND r.type IN (?)
-        ";
+        $sql = "SELECT DISTINCT(r.record_id)"
+            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
+            . " WHERE r.type IN (?)";
 
         $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
         $params = array($subdefsName, $recordsType);
@@ -153,9 +143,9 @@ class BuildSubdefs extends Command
 
         if (false === $withSubstitution) {
             if (true === $substitutionOnly) {
-                $sql .= " AND (s.substit = 1)";
+                $sql .= " AND (ISNULL(s.substit) OR s.substit = 1)";
             } else  {
-                $sql .= " AND (s.substit = 0)";
+                $sql .= " AND (ISNULL(s.substit) OR s.substit = 0)";
             }
         }
 
