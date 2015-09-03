@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-12 13:37+0100\n"
-"PO-Revision-Date: 2015-09-03 16:20+0200\n"
-"Last-Translator: Anthony <acabot@alchemy.fr>\n"
+"PO-Revision-Date: 2015-09-03 16:46+0200\n"
+"Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
@@ -11652,6 +11652,15 @@ msgstr ""
 
 msgid "admin::plugins: plugins"
 msgstr "Plugins"
+
+msgid "admin::plugins: about"
+msgstr "About"
+
+msgid "admin::plugins: name"
+msgstr "Name: "
+
+msgid "admin::plugins: version"
+msgstr "Version: "
 
 #~ msgid "report:: questions"
 #~ msgstr "Questions"
