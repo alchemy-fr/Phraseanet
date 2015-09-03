@@ -1,0 +1,20 @@
+
+{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{% trans 'plugin.name' plugin.localeTextDomain %}</h1>
+    </div>
+
+    {{ block('about') }}
+{% endblock %}
+
+
+{% block about %}
+    <h1>{% trans 'admin::plugins: about' %}</h1>
+
+    <ul>
+        <li>{{ 'admin::plugins: name'|trans }}{{ plugin.name }}</li>
+        <li>{{ 'admin::plugins: version'|trans }}{{ plugin.version }}</li>
+    </ul>
+{% endblock %}

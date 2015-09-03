@@ -3,19 +3,20 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-12 13:37+0100\n"
-"PO-Revision-Date: 2015-06-24 16:42+0000\n"
-"Last-Translator: Anthony <acabot@alchemy.fr>\n"
+"PO-Revision-Date: 2015-09-03 16:46+0200\n"
+"Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.1\n"
+"X-Generator: Poedit 1.8.4\n"
 "X-Launchpad-Export-Date: 2011-10-31 17:00+0000\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-KeywordsList: _e;__;_;gettext;gettext_noop\n"
+"X-POOTLE-MTIME: 1435164136.000000\n"
 "X-Poedit-SearchPath-0: ../config\n"
 "X-Poedit-SearchPath-1: ../lib/classes\n"
 "X-Poedit-SearchPath-2: ../lib/conf.d\n"
@@ -24,7 +25,6 @@ msgstr ""
 "X-Poedit-SearchPath-5: ../lib/Alchemy\n"
 "X-Poedit-SearchPath-6: ../lib/Doctrine\n"
 "X-Poedit-SearchPath-7: ../bin\n"
-"X-POOTLE-MTIME: 1435164136.000000\n"
 
 #: ../lib/Alchemy/Phrasea/Application.php:607
 msgid "Open the URL in a new window"
@@ -86,8 +86,7 @@ msgstr "Empty the collection before deleting."
 #: ../lib/Alchemy/Phrasea/Controller/Admin/Databox.php:876
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Basket.php:288
 #: ../lib/classes/API/V1/adapter.php:876 ../lib/classes/API/V1/adapter.php:929
-#: ../lib/classes/API/V1/adapter.php:983
-#: ../lib/classes/API/V1/adapter.php:1007
+#: ../lib/classes/API/V1/adapter.php:983 ../lib/classes/API/V1/adapter.php:1007
 #: ../tmp/cache_twig/8c/52/71fe43827db543f5bce5a2b2b0a93638f987dbfbc9b8eeca0aabc869c648.php:184
 msgid "An error occurred"
 msgstr "An error occurred"
@@ -638,8 +637,8 @@ msgstr "Redirection to the login page, click OK to continue or cancel."
 #: ../tmp/cache_twig/6e/d8/96ed32119c5b7381fae92881a1d30e6e4180fbbb4d3b0a5309bc5ddb5fe0.php:80
 #: ../tmp/cache_twig/cc/6e/1bdfb8ab7d03c221ec708aafb13eb519396bf86fedd4404bac51625ea38a.php:80
 msgid ""
-"phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, "
-"contactez le support technique"
+"phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez "
+"le support technique"
 msgstr ""
 "An error occurred. If this problem happens again, please contact technical "
 "support"
@@ -649,8 +648,7 @@ msgstr ""
 #: ../tmp/cache_twig/6e/d8/96ed32119c5b7381fae92881a1d30e6e4180fbbb4d3b0a5309bc5ddb5fe0.php:84
 #: ../tmp/cache_twig/cc/6e/1bdfb8ab7d03c221ec708aafb13eb519396bf86fedd4404bac51625ea38a.php:84
 msgid ""
-"phraseanet::erreur: La connection au serveur Phraseanet semble etre "
-"indisponible"
+"phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible"
 msgstr "Server connection is not available"
 
 #: ../lib/Alchemy/Phrasea/Controller/Client/Root.php:274
@@ -765,8 +763,7 @@ msgid "Do you want to send your report ?"
 msgstr "Send your Report?"
 
 #: ../lib/Alchemy/Phrasea/Controller/Lightbox.php:495
-msgid ""
-"You have to give your feedback at least on one document to send a report"
+msgid "You have to give your feedback at least on one document to send a report"
 msgstr "You have to give at least one document feedback to send a report"
 
 #: ../lib/Alchemy/Phrasea/Controller/Lightbox.php:524
@@ -914,8 +911,8 @@ msgstr "Your own rss"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:32
 msgid ""
-"prod::recherche: Attention : la liste des bases selectionnees pour la "
-"recherche a ete changee."
+"prod::recherche: Attention : la liste des bases selectionnees pour la recherche "
+"a ete changee."
 msgstr "Warning, list of collections to search in has been changed"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:38
@@ -930,8 +927,7 @@ msgstr "Delete also the documents linked to this story?"
 msgid ""
 "reponses:: Ces enregistrements vont etre definitivement supprimes et ne "
 "pourront etre recuperes. Etes vous sur ?"
-msgstr ""
-"Documents will be deleted, you will not be able to recover them. Confirm?"
+msgstr "Documents will be deleted, you will not be able to recover them. Confirm?"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:42
 #: ../lib/Alchemy/Phrasea/Controller/Thesaurus/Xmlhttp.php:486
@@ -962,8 +958,7 @@ msgstr "Delete records"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:44
 msgid ""
-"prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou "
-"'annuler'"
+"prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'"
 msgstr "Terms are heterogeneous, select \"replace\" or \"add\" or \"cancel\""
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:45
@@ -1083,8 +1078,8 @@ msgstr "Delete one record from story"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:60
 msgid ""
-"panier::Attention, vous etes sur le point de supprimer un element du "
-"reportage. Merci de confirmer votre action."
+"panier::Attention, vous etes sur le point de supprimer un element du reportage. "
+"Merci de confirmer votre action."
 msgstr ""
 "Your are about to delete on record from a story, please confirm your action"
 
@@ -1099,8 +1094,8 @@ msgstr "Rename"
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:63
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:72
 msgid ""
-"panier:: Un reportage ne peux recevoir que des elements provenants de la "
-"base ou il est enregistre"
+"panier:: Un reportage ne peux recevoir que des elements provenants de la base "
+"ou il est enregistre"
 msgstr ""
 "A story can't contain document from a different database than the one use to "
 "create it"
@@ -1111,16 +1106,16 @@ msgstr "Error"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:65
 msgid ""
-"cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures "
-"plus acces"
+"cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus "
+"acces"
 msgstr ""
-"Warning : If you reject the General Terms of Use, you will not be able to "
-"login to this database"
+"Warning : If you reject the General Terms of Use, you will not be able to login "
+"to this database"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:66
 msgid ""
-"cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris "
-"en compte."
+"cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en "
+"compte."
 msgstr "Changes will take effect next time you login."
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:67
@@ -1153,8 +1148,8 @@ msgstr "You may not select more then 800 records"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:75
 msgid ""
-"Erreur : soit les parametres sont incorrects, soit le serveur distant ne "
-"repond pas"
+"Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond "
+"pas"
 msgstr "Either invalid settings , either distant server is not responding"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:76
@@ -1162,8 +1157,7 @@ msgid "Les parametres sont corrects, le serveur distant est operationnel"
 msgstr "Valid parameters, distant server is responding"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:77
-msgid ""
-"Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
+msgid "Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
 msgstr "Some publications failed, check settings"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:78
@@ -1180,8 +1174,8 @@ msgstr ""
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:80
 msgid ""
-"edit::certains documents possedent des champs requis non remplis. Merci de "
-"les remplir pour valider votre editing"
+"edit::certains documents possedent des champs requis non remplis. Merci de les "
+"remplir pour valider votre editing"
 msgstr "Some documents have empty required fields. Please complete  fields"
 
 #: ../lib/Alchemy/Phrasea/Controller/Prod/Language.php:81
@@ -1702,8 +1696,7 @@ msgstr "number of preview(s)"
 #: ../lib/Alchemy/Phrasea/Controller/Report/Activity.php:240
 #: ../lib/Alchemy/Phrasea/Controller/Report/Informations.php:82
 #: ../lib/Alchemy/Phrasea/Controller/Report/Root.php:251
-#: ../lib/classes/module/report.php:667
-#: ../lib/classes/module/report/filter.php:70
+#: ../lib/classes/module/report.php:667 ../lib/classes/module/report/filter.php:70
 #: ../lib/classes/module/report/question.php:44
 #: ../tmp/cache_twig/d5/de/bb4b8a93cf4e3eb54a5bab6dc80525f2dacbede1164f3fbaa965ba7448bd.php:226
 #: ../tmp/cache_twig/d5/de/bb4b8a93cf4e3eb54a5bab6dc80525f2dacbede1164f3fbaa965ba7448bd.php:238
@@ -1773,8 +1766,7 @@ msgstr "Filter results on column %s"
 #: ../lib/Alchemy/Phrasea/Controller/Report/Informations.php:296
 #: ../lib/Alchemy/Phrasea/Controller/Report/Root.php:330
 #: ../lib/Alchemy/Phrasea/Controller/Report/Root.php:415
-#: ../lib/classes/module/report.php:677
-#: ../lib/classes/module/report/filter.php:66
+#: ../lib/classes/module/report.php:677 ../lib/classes/module/report/filter.php:66
 msgid "report:: record id"
 msgstr "recordId"
 
@@ -1845,16 +1837,14 @@ msgstr "Modules"
 #: ../lib/Alchemy/Phrasea/Controller/Report/Informations.php:78
 #: ../lib/Alchemy/Phrasea/Controller/Report/Informations.php:307
 #: ../lib/Alchemy/Phrasea/Controller/Report/Root.php:332
-#: ../lib/classes/module/report.php:664
-#: ../lib/classes/module/report/filter.php:68
+#: ../lib/classes/module/report.php:664 ../lib/classes/module/report/filter.php:68
 msgid "report:: collections"
 msgstr "Collections"
 
 #: ../lib/Alchemy/Phrasea/Controller/Report/Informations.php:79
 #: ../lib/Alchemy/Phrasea/Controller/Report/Informations.php:308
 #: ../lib/Alchemy/Phrasea/Controller/Report/Root.php:333
-#: ../lib/classes/module/report.php:666
-#: ../lib/classes/module/report/filter.php:69
+#: ../lib/classes/module/report.php:666 ../lib/classes/module/report/filter.php:69
 msgid "report:: commentaire"
 msgstr "Comments"
 
@@ -1962,8 +1952,7 @@ msgid "report:: telechargements"
 msgstr "Downloads"
 
 #: ../lib/Alchemy/Phrasea/Controller/Report/Root.php:416
-#: ../lib/classes/module/report.php:684
-#: ../lib/classes/module/report/filter.php:67
+#: ../lib/classes/module/report.php:684 ../lib/classes/module/report/filter.php:67
 msgid "phraseanet:: sous definition"
 msgstr "Subview"
 
@@ -2045,11 +2034,11 @@ msgstr "Mail-server error"
 
 #: ../lib/Alchemy/Phrasea/Controller/Root/Account.php:165
 msgid ""
-"admin::compte-utilisateur un email de confirmation vient de vous etre "
-"envoye. Veuillez suivre les instructions contenue pour continuer"
+"admin::compte-utilisateur un email de confirmation vient de vous etre envoye. "
+"Veuillez suivre les instructions contenue pour continuer"
 msgstr ""
-"A confirmation e-mail has been sent. Please follow the instructions "
-"contained to continue."
+"A confirmation e-mail has been sent. Please follow the instructions contained "
+"to continue."
 
 #: ../lib/Alchemy/Phrasea/Controller/Root/Account.php:186
 msgid "admin::compte-utilisateur: L'email a correctement ete mis a jour"
@@ -2228,8 +2217,8 @@ msgid ""
 "An unexpected error occured during authentication process, please contact an "
 "admin"
 msgstr ""
-"An unexpected error occurred during authentication process. Please contact "
-"an administrator."
+"An unexpected error occurred during authentication process. Please contact an "
+"administrator."
 
 #: ../lib/Alchemy/Phrasea/Controller/Root/Login.php:1027
 msgid "Please fill the captcha"
@@ -2631,8 +2620,7 @@ msgstr "Delivery of your order %s"
 #, php-format
 msgid ""
 "%s vous a delivre votre commande, consultez la en ligne a l'adresse suivante"
-msgstr ""
-"%s has delivered your order, retreive it online at the following address"
+msgstr "%s has delivered your order, retreive it online at the following address"
 
 #: ../lib/Alchemy/Phrasea/Notification/Mail/MailInfoPushReceived.php:48
 #, php-format
@@ -2744,12 +2732,11 @@ msgstr "E-mail address check."
 
 #: ../lib/Alchemy/Phrasea/Notification/Mail/MailRequestEmailConfirmation.php:29
 msgid ""
-"login::register: email confirmation email Pour valider votre inscription a "
-"la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-"
-"dessous."
+"login::register: email confirmation email Pour valider votre inscription a la "
+"base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous."
 msgstr ""
-"To process your registration, please confirm your e-mail address by using "
-"the following link:"
+"To process your registration, please confirm your e-mail address by using the "
+"following link:"
 
 #: ../lib/Alchemy/Phrasea/Notification/Mail/MailRequestEmailConfirmation.php:37
 msgid "Validate e-mail address"
@@ -2757,14 +2744,14 @@ msgstr "Validate e-mail address"
 
 #: ../lib/Alchemy/Phrasea/Notification/Mail/MailRequestEmailUpdate.php:29
 msgid ""
-"admin::compte-utilisateur: email changement de mot d'email Bonjour, nous "
-"avons bien recu votre demande de changement d'adresse e-mail. Pour la "
-"confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans "
-"l'avoir sollicite, merci de le detruire et de l'ignorer."
+"admin::compte-utilisateur: email changement de mot d'email Bonjour, nous avons "
+"bien recu votre demande de changement d'adresse e-mail. Pour la confirmer, "
+"veuillez suivre le lien qui suit. SI vous recevez ce mail sans l'avoir "
+"sollicite, merci de le detruire et de l'ignorer."
 msgstr ""
 "Hello, we received a request to change your email address in your Phraseanet "
-"account.Please click on the following link to process. If you did not ask "
-"for email change, please ignore this message."
+"account.Please click on the following link to process. If you did not ask for "
+"email change, please ignore this message."
 
 #: ../lib/Alchemy/Phrasea/Notification/Mail/MailRequestEmailUpdate.php:37
 msgid "Confirm new email address"
@@ -2914,8 +2901,8 @@ msgstr "Query is empty"
 #: ../lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngineQueryParser.php:956
 #, php-format
 msgid ""
-"qparser::Formulation incorrecte, un nom de champs est attendu avant l "
-"operateur %s"
+"qparser::Formulation incorrecte, un nom de champs est attendu avant l operateur "
+"%s"
 msgstr "a field name is expected before the operator : %s"
 
 #: ../lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngineQueryParser.php:964
@@ -3162,8 +3149,8 @@ msgid ""
 "Erreur lors de l'authentification au service Youtube, Veuillez vous "
 "déconnecter, puis vous reconnecter."
 msgstr ""
-"Unable to authenticate on Youtube service, Please disconnect and try to "
-"connect again"
+"Unable to authenticate on Youtube service, Please disconnect and try to connect "
+"again"
 
 #: ../lib/classes/Bridge/Api/Youtube.php:550
 msgid "Erreur lors de l'envoi de la requête. Erreur d'authentification."
@@ -3179,8 +3166,7 @@ msgstr "Youtube has encountered an error processing query"
 
 #: ../lib/classes/Bridge/Api/Youtube.php:559
 msgid ""
-"Erreur vous avez essayé d'exécuter une requête non prise en charge par "
-"Youtube"
+"Erreur vous avez essayé d'exécuter une requête non prise en charge par Youtube"
 msgstr "Attempted query is not supported by Youtube"
 
 #: ../lib/classes/Bridge/Api/Youtube.php:562
@@ -3217,17 +3203,15 @@ msgstr "Youtube server has received too many close calls from same caller"
 
 #: ../lib/classes/Bridge/Api/Youtube.php:598
 msgid ""
-"You are attempting to exceed the storage limit on your account and must "
-"delete existing entries before inserting new entries"
+"You are attempting to exceed the storage limit on your account and must delete "
+"existing entries before inserting new entries"
 msgstr ""
 "Maximum storage size reached on your account, delete existing entries before "
 "adding new ones"
 
 #: ../lib/classes/Bridge/Api/Youtube.php:601
-msgid ""
-"The authentication token specified in the Authorization header is invalid"
-msgstr ""
-"The authentication token specified in the Authorization header is invalid"
+msgid "The authentication token specified in the Authorization header is invalid"
+msgstr "The authentication token specified in the Authorization header is invalid"
 
 #: ../lib/classes/Bridge/Api/Youtube.php:604
 msgid ""
@@ -3240,8 +3224,8 @@ msgid ""
 "Current operations cannot be executed because the site is temporarily in "
 "maintenance mode. Wait a few minutes and try your request again"
 msgstr ""
-"The site is temporarily in maintenance mode, current operations cannot be "
-"done. Wait a few minutes and try again."
+"The site is temporarily in maintenance mode, current operations cannot be done. "
+"Wait a few minutes and try again."
 
 #: ../lib/classes/Bridge/Api/Youtube.php:615
 msgid "Service youtube introuvable."
@@ -3257,8 +3241,7 @@ msgstr "A user with email address %s already exists."
 msgid "modele %s"
 msgstr "Template %s"
 
-#: ../lib/classes/User/Adapter.php:1432
-#: ../lib/classes/module/report/nav.php:470
+#: ../lib/classes/User/Adapter.php:1432 ../lib/classes/module/report/nav.php:470
 msgid "phraseanet::utilisateur inconnu"
 msgstr "Unknown user"
 
@@ -3292,8 +3275,7 @@ msgid "Post upgrade"
 msgstr "Post upgrade"
 
 #: ../lib/classes/appbox.php:392 ../lib/classes/appbox.php:394
-msgid ""
-"Your install requires data migration, please execute the following command"
+msgid "Your install requires data migration, please execute the following command"
 msgstr ""
 "Your install requires data migration, please execute the following command"
 
@@ -3341,11 +3323,11 @@ msgstr "Error: Attribute \"name\" from node \"subdef\" is required and single."
 
 #: ../lib/classes/databox.php:1376
 msgid ""
-"ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview"
-"\" ou \"document\""
+"ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview\" "
+"ou \"document\""
 msgstr ""
-"Error: Attribute \"class\" from node \"subdef\" is required and must be  \""
-"thumbnail\", \"preview\" or \"document\"."
+"Error: Attribute \"class\" from node \"subdef\" is required and must be  "
+"\"thumbnail\", \"preview\" or \"document\"."
 
 #: ../lib/classes/databox/cgu.php:37 ../lib/classes/databox/cgu.php:96
 #, php-format
@@ -4136,8 +4118,8 @@ msgstr "Port"
 #: ../lib/classes/task/period/ftp.php:339
 #, php-format
 msgid ""
-"task::ftp:Etat d'envoi FTP vers le serveur \"%1$s\" avec le compte \"%2$s\" "
-"et pour destination le dossier : \"%3$s\""
+"task::ftp:Etat d'envoi FTP vers le serveur \"%1$s\" avec le compte \"%2$s\" et "
+"pour destination le dossier : \"%3$s\""
 msgstr ""
 "Transfer status to %1$s server to %3$s recipient folder using %2$s account"
 
@@ -4152,15 +4134,14 @@ msgid ""
 "task::ftp:File \"%1$s\" (record %2$s) de la base \"%3$s\" (Export du "
 "Document) : Transfert cancelled (le document n'existe plus)"
 msgstr ""
-"File \"%1$s\" (record %2$s) from database \"%3$s\" (Preview dowload): "
-"Transfer cancelled (document deleted)"
+"File \"%1$s\" (record %2$s) from database \"%3$s\" (Preview dowload): Transfer "
+"cancelled (document deleted)"
 
 #: ../lib/classes/task/period/ftp.php:617
 msgid "task::ftp:Tous les documents ont ete transferes avec succes"
 msgstr "All files transferred"
 
-#: ../lib/classes/task/period/ftp.php:627
-#: ../lib/classes/task/period/ftp.php:633
+#: ../lib/classes/task/period/ftp.php:627 ../lib/classes/task/period/ftp.php:633
 #, php-format
 msgid "task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s"
 msgstr "Record %1$s - %2$s from database (%3$s - %4$s) - %5$s"
@@ -4558,14 +4539,13 @@ msgstr "Search using the dialog box (top left of window)"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:83
 msgid ""
-"Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux "
-"suivants :"
+"Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :"
 msgstr "You may use the following  search operators and special characters:"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:87
 msgid ""
-"* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , "
-"LAST , ALL)"
+"* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , LAST , "
+"ALL)"
 msgstr "* , ? , AND , OR , EXCEPT , IN , LAST , ALL"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:92
@@ -4616,8 +4596,7 @@ msgstr "Advanced search"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:151
 msgid ""
-"Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou "
-"DANS"
+"Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou DANS"
 msgstr "You can refine you search using operators such as: AND, OR, EXCEPTS, IN"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:157
@@ -4646,8 +4625,7 @@ msgstr "France EXCEPT Paris"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:183
 msgid "retourne les documents comprenant cannes sans le mot festival."
-msgstr ""
-"Returns answers for documents containing France but not Paris  in caption"
+msgstr "Returns answers for documents containing France but not Paris  in caption"
 
 #: ../tmp/cache_twig/02/d5/8ab7a59907a395c4f33fc3b92862c60ddbf062e7c727f6f090ed4db46f63.php:189
 msgid "thalassa DANS titre"
@@ -4692,8 +4670,8 @@ msgstr "You are successfully authenticated"
 
 #: ../tmp/cache_twig/03/64/bb32125ba8c7a7515360fcd4ca0a5b387a8014f4331c0e603d94b81ceb02.php:70
 msgid ""
-"Si cette fenetre ne se ferme pas automatiquement, fermez la, et "
-"raffraichissez votre compte"
+"Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez "
+"votre compte"
 msgstr ""
 "This window should close automatically, if not, close it and refresh your "
 "account"
@@ -4989,8 +4967,7 @@ msgstr "Warning, this database is not empty"
 #: ../tmp/cache_twig/d9/c8/09f22bd9734531e4179a97e10292f51be6f033e517ce3e7281bf5ee205fb.php:322
 msgid "Connection is OK but database does not exists or can not be accessed"
 msgstr ""
-"Connection to server is Ok, but database does not exist or can not be "
-"accessed"
+"Connection to server is Ok, but database does not exist or can not be accessed"
 
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:327
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:337
@@ -5148,9 +5125,8 @@ msgstr "About password security policy"
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:724
 #: ../tmp/cache_twig/d9/c8/09f22bd9734531e4179a97e10292f51be6f033e517ce3e7281bf5ee205fb.php:724
 msgid ""
-"admin::compte-utilisateur Les mots de passe doivent etre clairement "
-"distincts du login et contenir au moins deux types parmis les caracteres "
-"suivants :"
+"admin::compte-utilisateur Les mots de passe doivent etre clairement distincts "
+"du login et contenir au moins deux types parmis les caracteres suivants :"
 msgstr ""
 "Password has to be clearly different from login and must contain 2 types of "
 "characters among the following:"
@@ -5275,8 +5251,8 @@ msgid ""
 "                                    MariaDB%link_end% as a replacement for "
 "MySQL."
 msgstr ""
-"The Phraseanet developers team strongly recommends the use of "
-"%link_start%MariaDB%link_end% as a replacement for MySQL."
+"The Phraseanet developers team strongly recommends the use of %link_start"
+"%MariaDB%link_end% as a replacement for MySQL."
 
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:976
 #: ../tmp/cache_twig/d9/c8/09f22bd9734531e4179a97e10292f51be6f033e517ce3e7281bf5ee205fb.php:976
@@ -5291,8 +5267,8 @@ msgstr "Documents storage folder"
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:1009
 #: ../tmp/cache_twig/d9/c8/09f22bd9734531e4179a97e10292f51be6f033e517ce3e7281bf5ee205fb.php:1009
 msgid ""
-"Your medias and their subdefinitions (previews, thumbnails..) will be stored "
-"in these directories."
+"Your medias and their subdefinitions (previews, thumbnails..) will be stored in "
+"these directories."
 msgstr ""
 "Media and their subviews (such as previews, thumbnails...) will be stored in "
 "the following directories:"
@@ -5311,8 +5287,7 @@ msgstr ""
 msgid ""
 "If you plan to store large files, be sure it will fit in these directories."
 msgstr ""
-"If you plan to store large files, make sure they will fit in these "
-"directories."
+"If you plan to store large files, make sure they will fit in these directories."
 
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:1060
 #: ../tmp/cache_twig/d9/c8/09f22bd9734531e4179a97e10292f51be6f033e517ce3e7281bf5ee205fb.php:1060
@@ -5340,8 +5315,8 @@ msgid ""
 "Phraseanet embarque un moteur de taches pour la lecture / ecriture des "
 "metadonnes, et autre operations"
 msgstr ""
-"Phraseanet has an embedded task engine to read and write metadata and "
-"perform other operations"
+"Phraseanet has an embedded task engine to read and write metadata and perform "
+"other operations"
 
 #: ../tmp/cache_twig/0e/3e/c9229564143c76beec04e26b6f4c397924cb08f9f4b5bb5cc491e13d81c9.php:1165
 #: ../tmp/cache_twig/d9/c8/09f22bd9734531e4179a97e10292f51be6f033e517ce3e7281bf5ee205fb.php:1165
@@ -5446,8 +5421,7 @@ msgstr "Or login with"
 
 #: ../tmp/cache_twig/0f/ad/056ac26c43e63a641add46ed5e7238c0c78ca9a4919b6de0b9bae0d6cf7b.php:28
 msgid ""
-"%name% est momentanement indisponible a cause d'un trop grand nombre de "
-"requetes"
+"%name% est momentanement indisponible a cause d'un trop grand nombre de requetes"
 msgstr "%name% is currently unavailable, too many requests sent"
 
 #: ../tmp/cache_twig/0f/ad/056ac26c43e63a641add46ed5e7238c0c78ca9a4919b6de0b9bae0d6cf7b.php:33
@@ -5544,11 +5518,11 @@ msgstr "Access history"
 #: ../tmp/cache_twig/16/7a/9cf898cb2278daefa3407d751c4ae17e833f8b390861fd5eb310e9165bee.php:47
 #: ../tmp/cache_twig/a5/35/cc651f98f8ebed2bf6af6f7e50f1ae944880306eb0dcf77cfc4471a028c1.php:47
 msgid ""
-"If you notice any unfamiliar devices or locations, click 'End Activity' to "
-"end the session."
+"If you notice any unfamiliar devices or locations, click 'End Activity' to end "
+"the session."
 msgstr ""
-"If you notice any unfamiliar devices or locations, click 'End Activity' to "
-"end the session."
+"If you notice any unfamiliar devices or locations, click 'End Activity' to end "
+"the session."
 
 #: ../tmp/cache_twig/16/7a/9cf898cb2278daefa3407d751c4ae17e833f8b390861fd5eb310e9165bee.php:57
 #: ../tmp/cache_twig/a5/35/cc651f98f8ebed2bf6af6f7e50f1ae944880306eb0dcf77cfc4471a028c1.php:57
@@ -5666,15 +5640,13 @@ msgid "and %n% more peoples"
 msgstr "and %n% more people"
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:306
-msgid ""
-"Please consider send this push to the following users : %recommendation%"
+msgid "Please consider send this push to the following users : %recommendation%"
 msgstr ""
 "Please consider sending this Push to the following users: %recommendation%"
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:312
 msgid ""
-"Please consider send this validation to the following users : %recommendation"
-"%"
+"Please consider send this validation to the following users : %recommendation%"
 msgstr ""
 "Please consider you can send this feedback request to the following users: "
 "%recommendation%"
@@ -5695,20 +5667,19 @@ msgstr "Add"
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:371
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
 msgstr ""
-"Push allows to send documents to users. They will receive an e-mail "
-"containing a link launching Phraseanet Lightbox. This interface allows them "
-"to view and download its content. For authenticated users, a push is also "
-"available as a received basket in the work zone."
+"Push allows to send documents to users. They will receive an e-mail containing "
+"a link launching Phraseanet Lightbox. This interface allows them to view and "
+"download its content. For authenticated users, a push is also available as a "
+"received basket in the work zone."
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:377
-msgid ""
-"Push::une validation est une demande d'appreciation a d'autres personnes"
+msgid "Push::une validation est une demande d'appreciation a d'autres personnes"
 msgstr ""
-"Feedback can addressed requests for assessment of documents to users. They "
-"will receive an e-mail containing a link launching Phraseanet Lightbox. This "
-"interface allows them to view, download, and provide advice and comments on "
-"its content. For authenticated users, the Feedback is also available as a "
-"received basket in the work zone."
+"Feedback can addressed requests for assessment of documents to users. They will "
+"receive an e-mail containing a link launching Phraseanet Lightbox. This "
+"interface allows them to view, download, and provide advice and comments on its "
+"content. For authenticated users, the Feedback is also available as a received "
+"basket in the work zone."
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:405
 msgid "You are about to push %nb_push_items% records."
@@ -5716,11 +5687,11 @@ msgstr "You are about to push %nb_push_items% records."
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:414
 msgid ""
-"You are about to push %nb_push_items% records, %nb_not_available% records "
-"can not be processed."
+"You are about to push %nb_push_items% records, %nb_not_available% records can "
+"not be processed."
 msgstr ""
-"You are about to push %nb_push_items% records, %nb_not_available% records "
-"can not be processed."
+"You are about to push %nb_push_items% records, %nb_not_available% records can "
+"not be processed."
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:429
 msgid "You are about to ask for feedback for %nb_push_items% records."
@@ -5728,11 +5699,11 @@ msgstr "You are about to ask a feedback for %nb_push_items% records."
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:438
 msgid ""
-"You are about to ask for feedback for %nb_push_items% records, "
-"%nb_not_available% records can not be processed."
+"You are about to ask for feedback for %nb_push_items% records, %nb_not_available"
+"% records can not be processed."
 msgstr ""
-"You are about to ask a feedback for %nb_push_items% records, "
-"%nb_not_available% records can not be processed."
+"You are about to ask a feedback for %nb_push_items% records, %nb_not_available% "
+"records can not be processed."
 
 #: ../tmp/cache_twig/18/28/d8f0d5b6c976a4ef95688454086a51ae9ec36ef5556abb2bac11cac7583f.php:450
 #: ../tmp/cache_twig/ed/a0/acc11e784faa0db9adcbfaca8dcf380cc57b46ffb1fc53769f8f3eed88d3.php:76
@@ -5824,8 +5795,8 @@ msgstr "Generate"
 
 #: ../tmp/cache_twig/1e/fa/ec68795cd6dc679dff9b5c37c13e4931e40e1843e582a3292e6e664f6b25.php:83
 msgid ""
-"Report generation may take a long time to generate, depending on the number "
-"of collections and the period selected."
+"Report generation may take a long time to generate, depending on the number of "
+"collections and the period selected."
 msgstr ""
 "Report may take time to be generated, depending on the number of collections "
 "and the chosen period interval."
@@ -5997,11 +5968,11 @@ msgstr "Contrast settings"
 
 #: ../tmp/cache_twig/1f/33/af72a3afd1e25393575605835b9f425f597a5f8a64d8ffcb2f64a5e2f26b.php:456
 msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
+"Changes for rotation will be applied only on the sub-definitions of \"image\" "
+"type."
 msgstr ""
-"Changes for rotation will be applied only on the sub-definitions of \"image\""
-" type."
+"Changes for rotation will be applied only on the sub-definitions of \"image\" "
+"type."
 
 #: ../tmp/cache_twig/1f/33/af72a3afd1e25393575605835b9f425f597a5f8a64d8ffcb2f64a5e2f26b.php:466
 msgid "image rotation"
@@ -6403,8 +6374,8 @@ msgid ""
 "                     inacessible. Nous vous invitons si vous le souhaitez à "
 "utiliser production dés maintenant."
 msgstr ""
-"Phraseanet Classic interface is no longer maintained and will be dropped "
-"soon. Use Phraseanet Production interface right now."
+"Phraseanet Classic interface is no longer maintained and will be dropped soon. "
+"Use Phraseanet Production interface right now."
 
 #: ../tmp/cache_twig/2a/cf/57311da4a725f8e8b3f2c1e27c51235c69a268ae54660a202caa70c4369e.php:122
 msgid "Production "
@@ -6468,8 +6439,7 @@ msgstr "Collections"
 
 #: ../tmp/cache_twig/2a/cf/57311da4a725f8e8b3f2c1e27c51235c69a268ae54660a202caa70c4369e.php:466
 msgid ""
-"client::recherche: cliquez ici pour desactiver tous les filtres de toutes "
-"base"
+"client::recherche: cliquez ici pour desactiver tous les filtres de toutes base"
 msgstr "Click here to reset all filters"
 
 #: ../tmp/cache_twig/2a/cf/57311da4a725f8e8b3f2c1e27c51235c69a268ae54660a202caa70c4369e.php:482
@@ -6728,8 +6698,7 @@ msgstr "Accept %d candidate terms?"
 #: ../tmp/cache_twig/2e/b6/00d7b5029ddc6a6631278ee1362a60c701c3dedb7269f558272dfbc56360.php:607
 #: ../tmp/cache_twig/30/5d/97484a91e698a1345c7291b427ba20fe69fb71a54dd7360afbaaada21c83.php:607
 #, php-format
-msgid ""
-"prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
+msgid "prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
 msgstr "Accept \"%s\" candidat term"
 
 #: ../tmp/cache_twig/2e/b6/00d7b5029ddc6a6631278ee1362a60c701c3dedb7269f558272dfbc56360.php:616
@@ -6814,8 +6783,8 @@ msgid ""
 "Your documents are ready. If the download does not start, %before_link%click "
 "here%after_link%"
 msgstr ""
-"Your documents are ready. If the download doesn't start automatically, "
-"please %before_link%click here%after_link%."
+"Your documents are ready. If the download doesn't start automatically, please "
+"%before_link%click here%after_link%."
 
 #: ../tmp/cache_twig/2f/fa/f0f1a334dabb1aa3fbc275ae7379b0a3c04f8fbd4579af6ca34aa6ab55eb.php:88
 msgid "The file contains the following elements"
@@ -7021,8 +6990,8 @@ msgstr "Unable to edit"
 
 #: ../tmp/cache_twig/33/83/0bed76980e773d4ac79e8dd5cfbe66b0605b6b68d7a8a0eeaa65765ac28a.php:554
 msgid ""
-"prod::edit: Impossible d'editer simultanement des documents provenant de "
-"bases differentes"
+"prod::edit: Impossible d'editer simultanement des documents provenant de bases "
+"differentes"
 msgstr "Selected documents come from differents databases, unable to edit"
 
 #: ../tmp/cache_twig/33/83/0bed76980e773d4ac79e8dd5cfbe66b0605b6b68d7a8a0eeaa65765ac28a.php:560
@@ -7033,8 +7002,8 @@ msgstr "Your user rights do not allow you to edit any of the selected documents"
 
 #: ../tmp/cache_twig/33/83/0bed76980e773d4ac79e8dd5cfbe66b0605b6b68d7a8a0eeaa65765ac28a.php:597
 msgid ""
-"prod::editing: %not_actionable% documents ne peuvent etre edites car vos "
-"droits sont induffisants"
+"prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits "
+"sont induffisants"
 msgstr ""
 "Your user rights do not allow you to edit %not_actionable% documents from "
 "selection"
@@ -7459,11 +7428,11 @@ msgstr "Third-party applications."
 #: ../tmp/cache_twig/41/45/58fb1d080c20585bb97dc156c613ffaaf4c5d880e6961e9a27d4cabe986a.php:172
 #: ../tmp/cache_twig/df/e9/a32c325d4ae6f0a1f30d130bc285450d035c1100dffc78e690a08bb2b859.php:172
 msgid ""
-"A third-party application is a product developed apart from Phraseanet and "
-"that would access Phraseanet data."
+"A third-party application is a product developed apart from Phraseanet and that "
+"would access Phraseanet data."
 msgstr ""
-"A third-party application is a product developed apart from Phraseanet and "
-"that would access Phraseanet data."
+"A third-party application is a product developed apart from Phraseanet and that "
+"would access Phraseanet data."
 
 #: ../tmp/cache_twig/41/45/58fb1d080c20585bb97dc156c613ffaaf4c5d880e6961e9a27d4cabe986a.php:180
 #: ../tmp/cache_twig/df/e9/a32c325d4ae6f0a1f30d130bc285450d035c1100dffc78e690a08bb2b859.php:180
@@ -7473,11 +7442,11 @@ msgstr "Developers"
 #: ../tmp/cache_twig/41/45/58fb1d080c20585bb97dc156c613ffaaf4c5d880e6961e9a27d4cabe986a.php:185
 #: ../tmp/cache_twig/df/e9/a32c325d4ae6f0a1f30d130bc285450d035c1100dffc78e690a08bb2b859.php:185
 msgid ""
-"Les developpeurs peuvent editer l'enregistrement de leurs application grace "
-"a l'onglet 'developpeurs' ci-dessus"
+"Les developpeurs peuvent editer l'enregistrement de leurs application grace a "
+"l'onglet 'developpeurs' ci-dessus"
 msgstr ""
-"Developers can edit the registration of their applications in the "
-"'Developers' tabs above."
+"Developers can edit the registration of their applications in the 'Developers' "
+"tabs above."
 
 #: ../tmp/cache_twig/43/44/21d1be6c664fb9e2fc2b75f3646767e8fb77183de3687a1416dd142b72f8.php:118
 #: ../tmp/cache_twig/74/95/5f0df45702a01e48bbd498b5876098bbfe4340ac1ad3bbac7e7a61caf302.php:136
@@ -7547,8 +7516,7 @@ msgid "Caption"
 msgstr "Caption"
 
 #: ../tmp/cache_twig/48/35/43e219954245a51014f25095648167a5b59ab51fb3bdd954fe3aa7244ebd.php:66
-msgid ""
-"report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%"
+msgid "report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%"
 msgstr "Pushed to %link% ici %endlink% users from application box %appbox%."
 
 #: ../tmp/cache_twig/48/35/43e219954245a51014f25095648167a5b59ab51fb3bdd954fe3aa7244ebd.php:81
@@ -7670,11 +7638,11 @@ msgstr "You are using the Flash uploader"
 
 #: ../tmp/cache_twig/4c/53/d05a5600a4406121d9037be7acb76b75850fde804b568df898bebb99a160.php:90
 msgid ""
-"This version does not allow you to access all the features offered by the "
-"HTML5 uploader"
+"This version does not allow you to access all the features offered by the HTML5 "
+"uploader"
 msgstr ""
-"This version does not allow you to access all the features offered by the "
-"HTML5 uploader"
+"This version does not allow you to access all the features offered by the HTML5 "
+"uploader"
 
 #: ../tmp/cache_twig/4c/53/d05a5600a4406121d9037be7acb76b75850fde804b568df898bebb99a160.php:103
 msgid "Use the HTML5 uploader"
@@ -7905,8 +7873,7 @@ msgstr ""
 
 #: ../tmp/cache_twig/59/b0/82b466c1cb421b9703d0bffd44e829e7ff3c869e24d5011a7666ac91fd60.php:215
 #: ../tmp/cache_twig/86/a6/bc06026c6c20432cf99cccc15fae79266af0c3fc56e2498add52059361fa.php:215
-msgid ""
-"Mettez à jour votre navigateur ou téléchargez un navigateur plus récent."
+msgid "Mettez à jour votre navigateur ou téléchargez un navigateur plus récent."
 msgstr "Upgrade your current browser or download a newer one."
 
 #: ../tmp/cache_twig/59/b0/82b466c1cb421b9703d0bffd44e829e7ff3c869e24d5011a7666ac91fd60.php:221
@@ -8397,8 +8364,7 @@ msgstr "Advanced search"
 #: ../tmp/cache_twig/5c/ba/67c316ca71fa884e4edcfb3c4be8660ca96858184f6c89c0904eb21918e4.php:2250
 #: ../tmp/cache_twig/c5/13/77f9250d31b429b5e3e023d16ff96cae0885ef7c11c6cecae0b5da825f8a.php:2250
 msgid ""
-"Séléctionner les champs et les collections sur lesquels vous voulez "
-"rechercher."
+"Séléctionner les champs et les collections sur lesquels vous voulez rechercher."
 msgstr "Select fields and collections on which you want to search."
 
 #: ../tmp/cache_twig/5c/ba/67c316ca71fa884e4edcfb3c4be8660ca96858184f6c89c0904eb21918e4.php:2260
@@ -8419,8 +8385,8 @@ msgstr "Toolbar"
 #: ../tmp/cache_twig/5c/ba/67c316ca71fa884e4edcfb3c4be8660ca96858184f6c89c0904eb21918e4.php:2282
 #: ../tmp/cache_twig/c5/13/77f9250d31b429b5e3e023d16ff96cae0885ef7c11c6cecae0b5da825f8a.php:2282
 msgid ""
-"Utilisez la barre d'outils pour télécharger les documents ou pour agir sur "
-"ces documents."
+"Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces "
+"documents."
 msgstr "Use the toolbar to download or interact on these documents."
 
 #: ../tmp/cache_twig/5c/ba/67c316ca71fa884e4edcfb3c4be8660ca96858184f6c89c0904eb21918e4.php:2292
@@ -8457,8 +8423,8 @@ msgstr "Baskets"
 #: ../tmp/cache_twig/c5/13/77f9250d31b429b5e3e023d16ff96cae0885ef7c11c6cecae0b5da825f8a.php:2318
 msgid ""
 "Consulter et administrer vos paniers dans cet onglet.\n"
-"                        Pour créer un panier et affichez le menu déroulant "
-"en cliquant sue la\n"
+"                        Pour créer un panier et affichez le menu déroulant en "
+"cliquant sue la\n"
 "                        flèche blanche."
 msgstr ""
 "Consult and administrate baskets in this tab.\n"
@@ -8599,8 +8565,8 @@ msgstr "Confirm Database re-indexation"
 #: ../tmp/cache_twig/62/46/0f73f446c2257d8868642dc8681b9c19d59d0547ea7fac773a2bdb6767ca.php:373
 msgid "base:: re-indexer"
 msgstr ""
-"Re-index database now (regarding quantity of documents, this operation can "
-"last several hours)"
+"Re-index database now (regarding quantity of documents, this operation can last "
+"several hours)"
 
 #: ../tmp/cache_twig/5f/8b/bddcd19b3c8e133a74b214bc4ff51e6a5e2775e9b4597d1d2ba75885ed09.php:387
 #: ../tmp/cache_twig/5f/8b/bddcd19b3c8e133a74b214bc4ff51e6a5e2775e9b4597d1d2ba75885ed09.php:444
@@ -8716,8 +8682,8 @@ msgstr "Questions asked"
 
 #: ../tmp/cache_twig/66/75/9ef767319f818e0b869a6fd887780271f387af0918dfd36327e53878cbb3.php:33
 msgid ""
-"prod::Les enregistrements ne provienent pas tous de la meme base et ne "
-"peuvent donc etre traites ensemble"
+"prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent "
+"donc etre traites ensemble"
 msgstr ""
 "Unable to perform action, selected documents come from different databases"
 
@@ -8865,14 +8831,14 @@ msgstr "Public"
 
 #: ../tmp/cache_twig/6d/73/01dcbc66e086254c7f83c28979177e4d338aea6bdb9a31119929b34cb899.php:279
 msgid ""
-"En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour "
-"le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu "
+"En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour le "
+"contenu ou que vous etes autorisé par le proprietaire à rendre le contenu "
 "accessible au public sur YouTube, et qu'il est autrement conforme aux "
 "Conditions d'utilisation de YouTubesitue a %lien_term_youtube%"
 msgstr ""
-"Clicking on the Upload button means that you have the rights on the content "
-"or that you have been autorized by the content owner  to make it avalaible "
-"on Youtube and also that it is compliant to Youtube GTU available from "
+"Clicking on the Upload button means that you have the rights on the content or "
+"that you have been autorized by the content owner  to make it avalaible on "
+"Youtube and also that it is compliant to Youtube GTU available from "
 "%lien_term_youtube%"
 
 #: ../tmp/cache_twig/6d/73/01dcbc66e086254c7f83c28979177e4d338aea6bdb9a31119929b34cb899.php:299
@@ -9191,11 +9157,10 @@ msgstr "Include Business-fields in caption"
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:479
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:820
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:1040
-msgid ""
-"By checking this box, you accept %beginning_link% Terms of Use %end_link%"
+msgid "By checking this box, you accept %beginning_link% Terms of Use %end_link%"
 msgstr ""
-"By checking this box, you have read and agree to the %beginning_link% Terms "
-"of Use %end_link%"
+"By checking this box, you have read and agree to the %beginning_link% Terms of "
+"Use %end_link%"
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:305
 msgid "export::mail: destinataire"
@@ -9206,8 +9171,7 @@ msgid "Recevoir un accuse de reception a %my_email%"
 msgstr "Receive an acknowledgement at %my_email%."
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:328
-msgid ""
-"Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
+msgid "Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
 msgstr "Unable to send an acknowledgement: Missing email address."
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:336
@@ -9299,23 +9263,21 @@ msgstr "Select type of subviews"
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:1288
 msgid ""
-"You can not directly download more than %max_download% Mo ; time to package "
-"all documents is too long"
+"You can not directly download more than %max_download% Mo ; time to package all "
+"documents is too long"
 msgstr ""
-"You can't directly download more than %max_download% Mo ; time to package "
-"all documents would be too long."
+"You can't directly download more than %max_download% Mo ; time to package all "
+"documents would be too long."
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:1297
 msgid "You can alternatively receive an email when the download is ready."
 msgstr ""
-"You can get a delayed download link in an email when the archive will be "
-"ready."
+"You can get a delayed download link in an email when the archive will be ready."
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:1306
 msgid "Would you like to receive an e-mail when your download is ready ?"
 msgstr ""
-"Would you like to keep going and get those documents by a delayed download "
-"link?"
+"Would you like to keep going and get those documents by a delayed download link?"
 
 #: ../tmp/cache_twig/72/0d/2656d51914f1039feb96567cfdac8dc3f05e74a19d4a4b2eadb523c120c2.php:1453
 msgid "Success !"
@@ -9437,11 +9399,10 @@ msgstr "Public"
 
 #: ../tmp/cache_twig/79/21/4e41b46fc61684359a36fc0b3a47a4b5e1b40d6c8aa13fe7f98fce98c35c.php:278
 msgid ""
-"Une fois la publication supprimee, les donnees publiees seront "
-"definitivement perdues. Continuer ?"
+"Une fois la publication supprimee, les donnees publiees seront definitivement "
+"perdues. Continuer ?"
 msgstr ""
-"Once the publication is deleted, all information about it will be lost, "
-"proceed?"
+"Once the publication is deleted, all information about it will be lost, proceed?"
 
 #: ../tmp/cache_twig/7a/d9/e4c0ad6ea010d5672c5d9e27a76911b2cd159b34bd12ca2513c08e2536da.php:142
 msgid "validation:: editer ma note"
@@ -9574,8 +9535,7 @@ msgstr "Collection not created, it must have a name"
 #: ../tmp/cache_twig/87/2c/65c16f8a7b0774206e33d4b1c333430fff1e71956fc4603eb98b409c2852.php:45
 msgid "An error occured, please retry or contact an admin if problem persist"
 msgstr ""
-"An error occurred, please retry or contact an administrator if problem "
-"persist."
+"An error occurred, please retry or contact an administrator if problem persist."
 
 #: ../tmp/cache_twig/87/2c/65c16f8a7b0774206e33d4b1c333430fff1e71956fc4603eb98b409c2852.php:61
 msgid "admin::base:collection: Nom de la nouvelle collection : "
@@ -9617,8 +9577,8 @@ msgstr "Accept branch as"
 
 #: ../tmp/cache_twig/88/fc/e71ebbecd21fb058a8885f84eca7fe7d2597dfeadfce12be48deb98749db.php:324
 msgid ""
-"thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% "
-"ne peut etre accepte"
+"thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne "
+"peut etre accepte"
 msgstr ""
 "At this location of thesaurus, a candidate term from field cfield%% can't be "
 "accepted."
@@ -9862,11 +9822,11 @@ msgstr "Access code"
 
 #: ../tmp/cache_twig/94/45/418dda2113940a29b312ed98ac1de9d528240bbe34d3b17bc657961d1814.php:66
 msgid ""
-"Copy the code below, return to your application and paste the code to the "
-"right place."
+"Copy the code below, return to your application and paste the code to the right "
+"place."
 msgstr ""
-"Copy the code below then return to your application and paste it to the "
-"right place."
+"Copy the code below then return to your application and paste it to the right "
+"place."
 
 #: ../tmp/cache_twig/94/60/2911a1ba8a05fd8445e0d90183d758fdc3a3da49a0eb102045277a4c7581.php:71
 msgid "Do not forget to restart the tasks scheduler"
@@ -9901,11 +9861,9 @@ msgid "admin::base: creer une base"
 msgstr "Create new database"
 
 #: ../tmp/cache_twig/94/60/2911a1ba8a05fd8445e0d90183d758fdc3a3da49a0eb102045277a4c7581.php:236
-msgid ""
-"phraseanet:: Creer une base sur un serveur different de l'application box"
+msgid "phraseanet:: Creer une base sur un serveur different de l'application box"
 msgstr ""
-"Create a base on a different database server than the one of the Application "
-"Box"
+"Create a base on a different database server than the one of the Application Box"
 
 #: ../tmp/cache_twig/94/60/2911a1ba8a05fd8445e0d90183d758fdc3a3da49a0eb102045277a4c7581.php:242
 #: ../tmp/cache_twig/94/60/2911a1ba8a05fd8445e0d90183d758fdc3a3da49a0eb102045277a4c7581.php:323
@@ -9937,8 +9895,8 @@ msgstr "Mount database"
 
 #: ../tmp/cache_twig/94/60/2911a1ba8a05fd8445e0d90183d758fdc3a3da49a0eb102045277a4c7581.php:317
 msgid ""
-"phraseanet:: Monter une base provenant d'un serveur different de "
-"l'application box"
+"phraseanet:: Monter une base provenant d'un serveur different de l'application "
+"box"
 msgstr ""
 "Mount an existing base from a different database server than the one of the "
 "Application Box"
@@ -10016,8 +9974,7 @@ msgstr "%ElementsCount% records"
 #: ../tmp/cache_twig/f4/bb/8f486c7fc72ffff9235f118dfeea658be8d0c18f235dbd08c0a348992d67.php:70
 msgid "An error occured, please retry or contact an admin if problem persists"
 msgstr ""
-"An error occurred. Please retry or contact an administrator if problem "
-"persists."
+"An error occurred. Please retry or contact an administrator if problem persists."
 
 #: ../tmp/cache_twig/9a/4d/3bf02fbac6fb7a3ad643a465ab2ad4fda93e7427503931c093365c09a9dd.php:75
 msgid "Page %page%"
@@ -10326,12 +10283,11 @@ msgstr "Use quotation marks to groups words: \"Eiffel Tower\""
 #: ../tmp/cache_twig/b1/a1/86be79547108374b773f8a04ce823dd6c2502920f9ca120a0d6178d9eb24.php:245
 msgid ""
 "Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le "
-"contenu de la vidéo que vous allez mettre en ligne est conforme aux "
-"conditions d'utilisations"
+"contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions "
+"d'utilisations"
 msgstr ""
-"We remind you that it is under your responsability to make sure that the "
-"video content you are about to put online is compliant to service the Terms "
-"of Use"
+"We remind you that it is under your responsability to make sure that the video "
+"content you are about to put online is compliant to service the Terms of Use"
 
 #: ../tmp/cache_twig/b1/b8/5154062f9bd259d5e5a6048d9684d95628a0c491d7f6e5b0b361614d8107.php:38
 msgid "Records Statut"
@@ -10410,8 +10366,8 @@ msgid ""
 "modifications du xml si vous n'appliquez pas les changements avant.\n"
 "Continuer quand meme"
 msgstr ""
-"Warning: Switch to graphics mode involves the loss of changes in the XML if "
-"you don't save changes before.\n"
+"Warning: Switch to graphics mode involves the loss of changes in the XML if you "
+"don't save changes before.\n"
 "Continue anyway?"
 
 #: ../tmp/cache_twig/b4/bc/b3d98da85e443d0733c25d65550d62ad9d27c863c5df1db427e3e709bd48.php:50
@@ -10454,18 +10410,18 @@ msgstr "Force users authentication"
 
 #: ../tmp/cache_twig/bc/c5/c03951f8ffec57c605119c4cad699c3690fed66ad4bacc3e9dfa50af0a06.php:283
 msgid ""
-"The parameter \"force authentication\" forces the recipient(s) of the push "
-"to possess a Phraseanet account\n"
+"The parameter \"force authentication\" forces the recipient(s) of the push to "
+"possess a Phraseanet account\n"
 "                    to see its contents.\n"
-"                    This avoids anonymous users to access to the content of "
-"the push if they were able to get the display\n"
+"                    This avoids anonymous users to access to the content of the "
+"push if they were able to get the display\n"
 "                    url through a forwarded mail for example."
 msgstr ""
-"Check the force authentication checkbox to constrain users to authenticate "
-"to access content of Push and Feedbacks.\n"
-"This feature can avoid divulging connection parameters contained in given "
-"links in e-mails notifications. This may be helpfull if you'd like to be "
-"sure these are your recipients who access the shared items."
+"Check the force authentication checkbox to constrain users to authenticate to "
+"access content of Push and Feedbacks.\n"
+"This feature can avoid divulging connection parameters contained in given links "
+"in e-mails notifications. This may be helpfull if you'd like to be sure these "
+"are your recipients who access the shared items."
 
 #: ../tmp/cache_twig/bd/3b/60e0a06a71768472e0199d6712af8b2c0946a5e7da1f2e77e0ba07c30db8.php:61
 msgid "Le bridge FlickR ne prend en charge que les photos"
@@ -10553,8 +10509,7 @@ msgstr "Automatic message from Phraseanet"
 #: ../tmp/cache_twig/be/81/5cb62926bb6d31f6da6fb1a060599bf5029e21c158b45127445ed228293f.php:230
 msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
 msgstr ""
-"To set preferences for automatic e-mail notifications, please connect to "
-"%link%."
+"To set preferences for automatic e-mail notifications, please connect to %link%."
 
 #: ../tmp/cache_twig/c0/99/22f0928a03f9123dd1846d2e322938f98bef3b5aa691cbf067b012442cb6.php:33
 #: ../tmp/cache_twig/c0/99/22f0928a03f9123dd1846d2e322938f98bef3b5aa691cbf067b012442cb6.php:38
@@ -10671,8 +10626,8 @@ msgstr "Select origin to accept"
 #: ../tmp/cache_twig/c1/c7/106f5a862c8e7e61b506754d60a00c35833ccc11d62f3322173b82b6391a.php:185
 #: ../tmp/cache_twig/c1/c7/106f5a862c8e7e61b506754d60a00c35833ccc11d62f3322173b82b6391a.php:191
 msgid ""
-"thesaurus:: est candidat en provenance des champs mais ne peut etre accepte "
-"a cet emplacement du thesaurus"
+"thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a "
+"cet emplacement du thesaurus"
 msgstr "is a candidate from fields but can't be accepted for this branch"
 
 #: ../tmp/cache_twig/c1/c7/106f5a862c8e7e61b506754d60a00c35833ccc11d62f3322173b82b6391a.php:202
@@ -10824,8 +10779,8 @@ msgstr "Indications given below are informal"
 
 #: ../tmp/cache_twig/d2/bf/81a1f9667518b8328bc5f0de30fe0f66b76fef9ea9ccad61f1af05aeff53.php:82
 msgid ""
-"Si vous ne les respectez pas, les documents seront correctement indexes, "
-"mais les metadonnees inscrites risquent d'etre erronnees"
+"Si vous ne les respectez pas, les documents seront correctement indexes, mais "
+"les metadonnees inscrites risquent d'etre erronnees"
 msgstr ""
 "If you do not follow them, documents will be correctly indexed but written "
 "metadata could be incorrect"
@@ -10835,8 +10790,8 @@ msgid ""
 "Ces informations sont directement fournies par la norme de metadonnees de ce "
 "champ : %norm_name%"
 msgstr ""
-"These informations are directly provided by the metadata standard for the "
-"field %norm_name%"
+"These informations are directly provided by the metadata standard for the field "
+"%norm_name%"
 
 #: ../tmp/cache_twig/d4/54/2a8acbccc70dd6980cbba10bfc1d5ffd61a5e2f065454b50dcd3d4a34370.php:84
 #: ../tmp/cache_twig/d4/54/2a8acbccc70dd6980cbba10bfc1d5ffd61a5e2f065454b50dcd3d4a34370.php:91
@@ -11106,17 +11061,17 @@ msgstr "Language"
 
 #: ../tmp/cache_twig/da/cd/d7e41bf7b4450d00eb2ef607cb86821f01b9ac99df2c2485b3dea6c8d342.php:675
 msgid ""
-"thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront "
-"en candidats a la prochaine indexation)"
+"thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en "
+"candidats a la prochaine indexation)"
 msgstr ""
-"Delete branch: &#10 (concerned terms will be displayed as candidates on "
-"future indexation)"
+"Delete branch: &#10 (concerned terms will be displayed as candidates on future "
+"indexation)"
 
 #: ../tmp/cache_twig/da/cd/d7e41bf7b4450d00eb2ef607cb86821f01b9ac99df2c2485b3dea6c8d342.php:680
 msgid ""
 "thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer "
-"quand meme ?&#10;(les termes concernes remonteront en candidats a la "
-"prochaine indexation)"
+"quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine "
+"indexation)"
 msgstr ""
 "This branch has hits, confirm delete? (Concerned terms will move back to "
 "candidates)"
@@ -11182,11 +11137,10 @@ msgstr "Delete this subview?"
 
 #: ../tmp/cache_twig/e2/f2/e339e78351785a6655e0d49442670a7ce61479f893eedbddc420f59a3a31.php:223
 msgid ""
-"These subdef will be permanently deleted and cannot be recovered. Are you "
-"sure?"
+"These subdef will be permanently deleted and cannot be recovered. Are you sure?"
 msgstr ""
-"This subview set will be permanently deleted, recovery will be impossible. "
-"Are you sure?"
+"This subview set will be permanently deleted, recovery will be impossible. Are "
+"you sure?"
 
 #: ../tmp/cache_twig/e2/f2/e339e78351785a6655e0d49442670a7ce61479f893eedbddc420f59a3a31.php:234
 msgid "Subdef name"
@@ -11337,8 +11291,8 @@ msgid ""
 "Autorisez-vous l'application \"<span>%application_name%</span>\" &agrave; "
 "acc&eacute;der &agrave; votre contenu sur %home_title% ?"
 msgstr ""
-"Do you authorize application \"<span>%application_name%</span>\" to access "
-"your content on %home_title%?"
+"Do you authorize application \"<span>%application_name%</span>\" to access your "
+"content on %home_title%?"
 
 #: ../tmp/cache_twig/e3/9e/bab1344b4a27a4d32816dc3d8765959b64d4b8666f795bb44879ecf2cf00.php:200
 #: ../tmp/cache_twig/e7/c9/2e21e76a4b0174c24ab0ab3ba02d4a8da2a63aa24accf4ffad56033b885e.php:198
@@ -11356,8 +11310,8 @@ msgstr "Technical Informations"
 
 #: ../tmp/cache_twig/e5/6e/c145c2e5bca6cd69d8d85f08026f43396c13aef009d1b22e6389f7661029.php:30
 msgid ""
-"Cochez les cases correspondantes aux colonnes que vous desirez voire "
-"apparaitre dans le report"
+"Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre "
+"dans le report"
 msgstr "Select the columns to be displayed in report"
 
 #: ../tmp/cache_twig/e5/6e/c145c2e5bca6cd69d8d85f08026f43396c13aef009d1b22e6389f7661029.php:36
@@ -11396,9 +11350,9 @@ msgstr "Why should I give my password to change my e-mail?"
 
 #: ../tmp/cache_twig/e6/c8/5c4c6fdb048148576732a6cac9a64a13240adc4124e64fa40e7b2517f706.php:125
 msgid ""
-"admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la "
-"perte de votre mot de passe afin de pouvoir le reinitialiser, il est "
-"important que vous soyez la seule personne a pouvoir la changer."
+"admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte "
+"de votre mot de passe afin de pouvoir le reinitialiser, il est important que "
+"vous soyez la seule personne a pouvoir la changer."
 msgstr ""
 "Your e-mail address will be used if you lose your password. It is important "
 "that you are the only one who can change it."
@@ -11473,19 +11427,19 @@ msgid ""
 "thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et "
 "candidats seront supprimes"
 msgstr ""
-"This field is no longer linked to thesaurus, indexed terms and candidates "
-"will be deleted"
+"This field is no longer linked to thesaurus, indexed terms and candidates will "
+"be deleted"
 
 #: ../tmp/cache_twig/eb/3f/ec0adb8c5186c43a2661ab4d86cbc9a4e0732d4627cc611c293fa0d583c1.php:130
 msgid ""
-"thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base "
-"est necessaire"
+"thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est "
+"necessaire"
 msgstr "This field must be linked to thesaurus. Database re indexation needed"
 
 #: ../tmp/cache_twig/eb/3f/ec0adb8c5186c43a2661ab4d86cbc9a4e0732d4627cc611c293fa0d583c1.php:138
 msgid ""
-"thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la "
-"base est necessaire"
+"thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la base "
+"est necessaire"
 msgstr "Link to thesaurus must be modified , database re indextion needed"
 
 #: ../tmp/cache_twig/eb/3f/ec0adb8c5186c43a2661ab4d86cbc9a4e0732d4627cc611c293fa0d583c1.php:168
@@ -11655,11 +11609,10 @@ msgstr "Number of ordered documents"
 #: ../tmp/cache_twig/f4/bb/8f486c7fc72ffff9235f118dfeea658be8d0c18f235dbd08c0a348992d67.php:136
 msgid ""
 "Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  "
-"elements correspondants aux collections sur lesquelles vous gerez les "
-"commandes"
+"elements correspondants aux collections sur lesquelles vous gerez les commandes"
 msgstr ""
-"This order view might be uncomplete, you can only see documents from "
-"collection for which you manage orders"
+"This order view might be uncomplete, you can only see documents from collection "
+"for which you manage orders"
 
 #: ../tmp/cache_twig/f4/bb/8f486c7fc72ffff9235f118dfeea658be8d0c18f235dbd08c0a348992d67.php:179
 msgid "Document refuse par %name%"
@@ -11691,16 +11644,27 @@ msgstr "Create an account manually"
 
 #: ../tmp/cache_twig/fd/fd/fe12b10cd283f4b133fb1cd44dc31504fa0485a32b84c4b527f989a57c33.php:25
 msgid ""
-"Le connecteur API requis n'est pas configure correctement, veuillez "
-"contacter un administrateur"
+"Le connecteur API requis n'est pas configure correctement, veuillez contacter "
+"un administrateur"
 msgstr ""
 "The required API connector has a bad configuration, please contact your "
 "Application administrator"
 
+msgid "admin::plugins: plugins"
+msgstr "Plugins"
+
+msgid "admin::plugins: about"
+msgstr "About"
+
+msgid "admin::plugins: name"
+msgstr "Name: "
+
+msgid "admin::plugins: version"
+msgstr "Version: "
+
 #~ msgid "report:: questions"
 #~ msgstr "Questions"
 
-#, php-format
 #~ msgid "report:: Telechargement effectue par l'utilisateur %s"
 #~ msgstr "downloads from user %s"
 
@@ -11752,7 +11716,6 @@ msgstr ""
 #~ msgid "Use youtube API"
 #~ msgstr "Use youtube API"
 
-#, php-format
 #~ msgid "Create API account at %s, then use %s as callback URL value"
 #~ msgstr "Create API account at %s, then use %s as callback URL value."
 
@@ -11765,7 +11728,6 @@ msgstr ""
 #~ msgid "Youtube developer key"
 #~ msgstr "Youtube developer key"
 
-#, php-format
 #~ msgid "See %s"
 #~ msgstr "See %s"
 
@@ -12152,38 +12114,36 @@ msgstr ""
 #~ msgstr "Check Online for required list of components and web server setup"
 
 #~ msgid ""
-#~ "Vous aurez besoin de spécifier un serveur MySQL, des repertoires de "
-#~ "stockage pour vos documents, et de configurer votre serveur web pour "
-#~ "qu'il publie certains de ces dossiers de stockage."
+#~ "Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage "
+#~ "pour vos documents, et de configurer votre serveur web pour qu'il publie "
+#~ "certains de ces dossiers de stockage."
 #~ msgstr ""
 #~ "You will need  a MySQL server, documents storage folders, and  setup web "
 #~ "server to publish some of these folders"
 
 #~ msgid ""
-#~ "Avant de continuer, prenez connaissance des points ci-dessous. Vous "
-#~ "pouvez continuer sans corriger ces problèmes."
-#~ msgstr ""
-#~ "Please take notice of the followings points, and finish installation."
+#~ "Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez "
+#~ "continuer sans corriger ces problèmes."
+#~ msgstr "Please take notice of the followings points, and finish installation."
 
 #~ msgid ""
-#~ "Si vous aviez besoin de plus de parametres, %debut_lien%Afficher "
-#~ "d'avantage d'options%fin_lien%"
-#~ msgstr ""
-#~ "If you need more parameters, %debut_lien%show more options%fin_lien%"
+#~ "Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage "
+#~ "d'options%fin_lien%"
+#~ msgstr "If you need more parameters, %debut_lien%show more options%fin_lien%"
 
 #~ msgid ""
-#~ "It stores users datas, rights, and references to DataBoxes where records "
-#~ "are stored."
+#~ "It stores users datas, rights, and references to DataBoxes where records are "
+#~ "stored."
 #~ msgstr ""
-#~ "It stores users datas, rights, and references to DataBoxes where records "
-#~ "are stored."
+#~ "It stores users datas, rights, and references to DataBoxes where records are "
+#~ "stored."
 
 #~ msgid ""
-#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% "
-#~ "as a replacement for MySQL."
+#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
+#~ "replacement for MySQL."
 #~ msgstr ""
-#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% "
-#~ "as a replacement for MySQL."
+#~ "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a "
+#~ "replacement for MySQL."
 
 #~ msgid "Monter"
 #~ msgstr "Mount"

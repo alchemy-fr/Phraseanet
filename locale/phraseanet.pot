@@ -1,16 +1,17 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Phraseanet 3.8\n"
-"POT-Creation-Date: 2015-06-24 19:15+0100\n"
+"POT-Creation-Date: 2015-09-03 16:49+0200\n"
 "PO-Revision-Date: 2015-06-24 19:22+0100\n"
-"Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
+"Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
 "Language-Team: Phraseanet TEAM <info@phraseanet.com>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.1\n"
-"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: bin\n"
@@ -3043,8 +3044,7 @@ msgid ""
 "Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifie par Flickr"
 msgstr ""
 
-#: lib/classes/Bridge/Api/Flickr.php:498
-#: lib/classes/Bridge/Api/Youtube.php:507
+#: lib/classes/Bridge/Api/Flickr.php:498 lib/classes/Bridge/Api/Youtube.php:507
 msgid "L'upload a echoue"
 msgstr ""
 
@@ -3707,8 +3707,7 @@ msgstr ""
 #: lib/classes/module/report/download.php:162
 #: lib/classes/module/report/edit.php:117
 #: lib/classes/module/report/filter.php:76
-#: lib/classes/module/report/nav.php:465
-#: lib/classes/module/report/push.php:120
+#: lib/classes/module/report/nav.php:465 lib/classes/module/report/push.php:120
 #: lib/classes/module/report/question.php:101
 #: lib/classes/module/report/sent.php:120
 #: lib/classes/module/report/validate.php:120
@@ -11426,4 +11425,16 @@ msgstr ""
 msgid ""
 "Le connecteur API requis n'est pas configure correctement, veuillez "
 "contacter un administrateur"
+msgstr ""
+
+msgid "admin::plugins: plugins"
+msgstr ""
+
+msgid "admin::plugins: about"
+msgstr ""
+
+msgid "admin::plugins: name"
+msgstr ""
+
+msgid "admin::plugins: version"
 msgstr ""
