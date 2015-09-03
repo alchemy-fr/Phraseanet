@@ -2258,12 +2258,12 @@ class V1Controller extends Controller
             $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->getDataboxId(), $record_id));
         }
 
-        if ($record->getType() !== 'image') {
+        if ($record->getType() !== 'image' && $record->getType() !== 'video') {
             // this can fail so we can loop on many records during story creation...
             if($can_fail) {
                 return false;
             }
-            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image', $story->getDataboxId(), $record_id));
+            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image nor a video', $story->getDataboxId(), $record_id));
         }
 
         foreach ($record->get_subdefs() as $name => $value) {
