@@ -444,6 +444,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         $base_facet_agg['terms']['field'] = 'databox_name';
         $aggs['Base'] = $base_facet_agg;
 
+        // We always want a type facet right now
+        $base_facet_agg = array();
+        $base_facet_agg['terms']['field'] = 'type';
+        $aggs['Type'] = $base_facet_agg;
+
         $structure = $this->getLimitedStructure($options);
         foreach ($structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.

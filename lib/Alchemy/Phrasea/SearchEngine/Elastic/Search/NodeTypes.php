@@ -22,6 +22,7 @@ class NodeTypes
     const TEXT                = '#text';
     const CONTEXT             = '#context';
     const COLLECTION          = '#collection';
+    const TYPE                = '#type';
     const DATABASE            = '#database';
     const IDENTIFIER          = '#id';
     // Token types for leaf nodes
