@@ -164,7 +164,7 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
-                        <li class="ui-tabs-selected ui-corner-top">
+                        <li class="ui-corner-top">
                             <a href="#baskets" class="WZbasketTab">
                                 <div id="basket_menu_trigger">&#9660;</div>
                             </a>
@@ -195,16 +195,6 @@
                             </a>
                         </li>
                     </ul>
-                    {% set workzone_plugins = app['plugin.workzone'] %}
-                    {% set workzone_plugins_class = 'single-plugin' %}
-                    {% if workzone_plugins.keys()|length > 1 %}
-                        {% set workzone_plugins_class = 'multiple-plugin' %}
-                    {% endif %}
-                    <div id="plugins" class="PNB {{ workzone_plugins_class }}" style="top:52px;">
-                        {% for plugin in workzone_plugins.keys() %}
-                            {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
-                        {% endfor %}
-                    </div>
                     <div id="baskets" class="PNB" style="top:52px;">
                         {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                         {{WorkZoneMacros.make_bloc(app, WorkZone)}}
@@ -280,6 +270,16 @@
                         </div>
                     </div>
                     {% endif %}
+                    {% set workzone_plugins = app['plugin.workzone'] %}
+                    {% set workzone_plugins_class = 'single-plugin' %}
+                    {% if workzone_plugins.keys()|length > 1 %}
+                        {% set workzone_plugins_class = 'multiple-plugin' %}
+                    {% endif %}
+                    <div id="plugins" class="PNB {{ workzone_plugins_class }}" style="top:52px;">
+                        {% for plugin in workzone_plugins.keys() %}
+                            {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
