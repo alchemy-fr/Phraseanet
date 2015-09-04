@@ -75,6 +75,8 @@ class FacetsResponse implements JsonSerializable
                 return sprintf('collection:%s', $this->escaper->escapeWord($value));
             case 'Base':
                 return sprintf('database:%s', $this->escaper->escapeWord($value));
+            case 'Type':
+                return sprintf('type:%s', $this->escaper->escapeWord($value));
             default:
                 return sprintf('r"%s" IN %s', $this->escaper->escapeRaw($value), $name);
         }

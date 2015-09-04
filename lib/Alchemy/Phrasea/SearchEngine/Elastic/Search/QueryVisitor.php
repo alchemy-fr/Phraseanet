@@ -88,6 +88,9 @@ class QueryVisitor implements Visit
             case NodeTypes::COLLECTION:
                 return $this->visitCollectionNode($element);
 
+            case NodeTypes::TYPE:
+                return $this->visitTypeNode($element);
+
             case NodeTypes::IDENTIFIER:
                 return $this->visitIdentifierNode($element);
 
@@ -277,6 +280,16 @@ class QueryVisitor implements Visit
         $collectionName = $element->getChild(0)->getValue()['value'];
 
         return new AST\CollectionExpression($collectionName);
+    }
+
+    private function visitTypeNode(Element $element)
+    {
+        if ($element->getChildrenNumber() !== 1) {
+            throw new \Exception('Type filter can only have a single child.');
+        }
+        $typeName = $element->getChild(0)->getValue()['value'];
+
+        return new AST\TypeExpression($typeName);
     }
 
     private function visitIdentifierNode(Element $element)

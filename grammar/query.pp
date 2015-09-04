@@ -29,6 +29,7 @@
 // Rest
 %token  database        database
 %token  collection      collection
+%token  type            type
 %token  id              id|recordid
 %token  word            [^\s()\[\]:<>≤≥=]+
 
@@ -55,6 +56,7 @@ ternary:
 quaternary:
     ::database:: ::colon:: string() #database
   | ::collection:: ::colon:: string() #collection
+  | ::type:: ::colon:: string() #type
   | ::id:: ::colon:: string() #id
   | quinary()
 
@@ -136,6 +138,7 @@ keyword:
   | <or>
   | <database>
   | <collection>
+  | <type>
   | <id>
 
 symbol:
