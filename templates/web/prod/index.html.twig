@@ -183,16 +183,6 @@
                     {% block tabs_panel %}
                         <div id="retractableButton"></div>
                         {% include 'prod/tab_headers.html.twig' %}
-                        {% set workzone_plugins = app['plugin.workzone'] %}
-                        {% set workzone_plugins_class = 'single-plugin' %}
-                        {% if workzone_plugins.keys()|length > 1 %}
-                            {% set workzone_plugins_class = 'multiple-plugin' %}
-                        {% endif %}
-                        <div id="plugins" class="PNB {{ workzone_plugins_class }}" style="top:52px;">
-                            {% for plugin in workzone_plugins.keys() %}
-                                {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
-                            {% endfor %}
-                        </div>
                         <div id="baskets" class="PNB">
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                             {{WorkZoneMacros.make_bloc(app, WorkZone)}}
@@ -205,6 +195,16 @@
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
                         {% endif %}
                     {% endblock %}
+                    {% set workzone_plugins = app['plugin.workzone'] %}
+                    {% set workzone_plugins_class = 'single-plugin' %}
+                    {% if workzone_plugins.keys()|length > 1 %}
+                        {% set workzone_plugins_class = 'multiple-plugin' %}
+                    {% endif %}
+                    <div id="plugins" class="PNB {{ workzone_plugins_class }}" style="top:52px;">
+                        {% for plugin in workzone_plugins.keys() %}
+                            {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
