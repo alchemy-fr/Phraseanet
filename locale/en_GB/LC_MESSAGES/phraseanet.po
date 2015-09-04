@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-12 13:37+0100\n"
-"PO-Revision-Date: 2015-09-03 16:46+0200\n"
+"PO-Revision-Date: 2015-09-04 14:56+0200\n"
 "Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -11661,6 +11661,9 @@ msgstr "Name: "
 
 msgid "admin::plugins: version"
 msgstr "Version: "
+
+msgid "admin::plugins: retrieveConfigurationError"
+msgstr "An error occurred while fetching configuration content."
 
 #~ msgid "report:: questions"
 #~ msgstr "Questions"

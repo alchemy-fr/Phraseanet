@@ -11438,3 +11438,7 @@ msgstr ""
 
 msgid "admin::plugins: version"
 msgstr ""
+
+msgid "admin::plugins: retrieveConfigurationError"
+msgstr ""
+

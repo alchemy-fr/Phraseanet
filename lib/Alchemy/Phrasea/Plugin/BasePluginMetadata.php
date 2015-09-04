@@ -9,6 +9,8 @@
  */
 namespace Alchemy\Phrasea\Plugin;
 
+use Assert\Assertion;
+
 class BasePluginMetadata implements PluginMetadataInterface
 {
     /** @var string */
@@ -19,6 +21,8 @@ class BasePluginMetadata implements PluginMetadataInterface
     private $iconUrl;
     /** @var string */
     private $localeTextDomain;
+    /** @var ConfigurationTabInterface[] */
+    private $configurationTabs;
 
     /**
      * @param string $name
@@ -64,5 +68,39 @@ class BasePluginMetadata implements PluginMetadataInterface
     public function getLocaleTextDomain()
     {
         return $this->localeTextDomain;
+    }
+
+    /**
+     * @param ConfigurationTabInterface[] $tabs
+     */
+    public function setConfigurationTabs($tabs)
+    {
+        Assertion::allIsInstanceOf($tabs, 'Alchemy\Phrasea\Plugin\ConfigurationTabInterface');
+
+        foreach ($tabs as $name => $tab) {
+            $this->addConfigurationTab($name, $tab);
+        }
+    }
+
+    /**
+     * @param string                    $name
+     * @param ConfigurationTabInterface $tab
+     */
+    public function addConfigurationTab($name, ConfigurationTabInterface $tab)
+    {
+        Assertion::regex($name, '/^[a-zA-Z][-_a-zA-Z0-9]*$/');
+        if (isset($this->configurationTabs[$name])) {
+            throw new \LogicException(sprintf(
+                'A configuration tab with name "%s" is already defined. Registered tabs: "%s"',
+                implode('", "', array_keys($this->configurationTabs))
+            ));
+        }
+
+        $this->configurationTabs[$name] = $tab;
+    }
+
+    public function getConfigurationTabs()
+    {
+        return $this->configurationTabs;
     }
 }
