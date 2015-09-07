@@ -53,6 +53,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
                 'multi_match' => [
                     'fields'   => $index_fields,
                     'query'    => $this->text,
+                    'type'     => 'cross_fields',
                     'operator' => 'and',
                     'lenient'  => true,
                 ]
