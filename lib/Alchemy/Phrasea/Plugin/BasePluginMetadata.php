@@ -9,8 +9,6 @@
  */
 namespace Alchemy\Phrasea\Plugin;
 
-use Assert\Assertion;
-
 class BasePluginMetadata implements PluginMetadataInterface
 {
     /** @var string */
@@ -21,21 +19,23 @@ class BasePluginMetadata implements PluginMetadataInterface
     private $iconUrl;
     /** @var string */
     private $localeTextDomain;
-    /** @var ConfigurationTabInterface[] */
-    private $configurationTabs;
+    /** @var string[] */
+    private $configurationTabServiceIds;
 
     /**
-     * @param string $name
-     * @param string $version
-     * @param string $iconUrl
-     * @param string $localeTextDomain
+     * @param string   $name
+     * @param string   $version
+     * @param string   $iconUrl
+     * @param string   $localeTextDomain
+     * @param string[] $configurationTabServiceIds
      */
-    public function __construct($name, $version, $iconUrl, $localeTextDomain)
+    public function __construct($name, $version, $iconUrl, $localeTextDomain, array $configurationTabServiceIds = [])
     {
         $this->name = $name;
         $this->version = $version;
         $this->iconUrl = $iconUrl;
         $this->localeTextDomain = $localeTextDomain;
+        $this->configurationTabServiceIds = $configurationTabServiceIds;
     }
 
     /**
@@ -71,36 +71,10 @@ class BasePluginMetadata implements PluginMetadataInterface
     }
 
     /**
-     * @param ConfigurationTabInterface[] $tabs
+     * @return string[]
      */
-    public function setConfigurationTabs($tabs)
+    public function getConfigurationTabServiceIds()
     {
-        Assertion::allIsInstanceOf($tabs, 'Alchemy\Phrasea\Plugin\ConfigurationTabInterface');
-
-        foreach ($tabs as $name => $tab) {
-            $this->addConfigurationTab($name, $tab);
-        }
-    }
-
-    /**
-     * @param string                    $name
-     * @param ConfigurationTabInterface $tab
-     */
-    public function addConfigurationTab($name, ConfigurationTabInterface $tab)
-    {
-        Assertion::regex($name, '/^[a-zA-Z][-_a-zA-Z0-9]*$/');
-        if (isset($this->configurationTabs[$name])) {
-            throw new \LogicException(sprintf(
-                'A configuration tab with name "%s" is already defined. Registered tabs: "%s"',
-                implode('", "', array_keys($this->configurationTabs))
-            ));
-        }
-
-        $this->configurationTabs[$name] = $tab;
-    }
-
-    public function getConfigurationTabs()
-    {
-        return $this->configurationTabs;
+        return $this->configurationTabServiceIds;
     }
 }

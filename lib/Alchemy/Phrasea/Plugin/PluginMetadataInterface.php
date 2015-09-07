@@ -25,4 +25,16 @@ interface PluginMetadataInterface
      * @return string
      */
     public function getIconUrl();
+
+    /**
+     * @return string
+     */
+    public function getLocaleTextDomain();
+
+    /**
+     * Names of all configuration tabs service.
+     *
+     * @return array<string>
+     */
+    public function getConfigurationTabServiceIds();
 }
