@@ -9,7 +9,8 @@
     <div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="configurationTabs">
-            {% for divId, configurationTab in plugin.configurationTabs %}
+            {% for divId, configurationTabServiceId in plugin.configurationTabServiceIds %}
+                {% set configurationTab = app[configurationTabServiceId] %}
                 {% set tabTitle = configurationTab.title %}
             <li role="presentation"><a href="#{{ divId }}" aria-controls="{{ divId }}" role="tab" data-toggle="tab" data-url="{{ configurationTab.url }}">{% trans tabTitle plugin.localeTextDomain  %}</a></li>
             {% endfor %}
@@ -18,7 +19,7 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-            {% for divId, configurationTab in plugin.configurationTabs %}
+            {% for divId, configurationTabServiceId in plugin.configurationTabServiceIds %}
             <div role="tabpanel" class="tab-pane fade" id="{{ divId }}"></div>
             {% endfor %}
             <div role="tabpanel" class="tab-pane fade in active" id="about">

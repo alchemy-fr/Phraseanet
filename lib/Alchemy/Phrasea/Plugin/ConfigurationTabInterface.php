@@ -19,7 +19,7 @@ interface ConfigurationTabInterface
     public function getTitle();
 
     /**
-     * Get the url where configuration tab can be retrived
+     * Get the url where configuration tab can be retrieved
      *
      * @return string
      */
