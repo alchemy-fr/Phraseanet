@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 
 class TextNode extends AbstractTermNode implements ContextAbleInterface
@@ -41,7 +41,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
         $query_builder = function (array $fields) use ($context) {
             // Full text
             $index_fields = [];
-            foreach (Field::filterByValueCompatibility($fields, $this->text) as $field) {
+            foreach (StructureField::filterByValueCompatibility($fields, $this->text) as $field) {
                 foreach ($context->localizeField($field) as $f) {
                     $index_fields[] = $f;
                 }
