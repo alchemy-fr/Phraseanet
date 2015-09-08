@@ -55,6 +55,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
             "multi_match": {
                 "fields": ["foo.fr", "foo.en"],
                 "query": "bar",
+                "type": "cross_fields",
                 "operator": "and",
                 "lenient": true
             }
@@ -94,6 +95,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "fields": ["foo.fr", "foo.en"],
                         "query": "baz",
+                        "type": "cross_fields",
                         "operator": "and",
                         "lenient": true
                     }
@@ -108,6 +110,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                             "multi_match": {
                                 "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
                                 "query": "baz",
+                                "type": "cross_fields",
                                 "operator": "and",
                                 "lenient": true
                             }
@@ -140,6 +143,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "fields": ["foo.fr", "foo.en"],
                         "query": "bar",
+                        "type": "cross_fields",
                         "operator": "and",
                         "lenient": true
                     }
@@ -189,6 +193,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                     "multi_match": {
                         "fields": ["foo.fr", "foo.en"],
                         "query": "baz",
+                        "type": "cross_fields",
                         "operator": "and",
                         "lenient": true
                     }
@@ -212,6 +217,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                                     "multi_match": {
                                         "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
                                         "query": "baz",
+                                        "type": "cross_fields",
                                         "operator": "and",
                                         "lenient": true
                                     }
