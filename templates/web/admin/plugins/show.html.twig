@@ -6,15 +6,56 @@
         <h1>{% trans 'plugin.name' plugin.localeTextDomain %}</h1>
     </div>
 
-    {{ block('about') }}
-{% endblock %}
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="configurationTabs">
+            {% for divId, configurationTabServiceId in plugin.configurationTabServiceIds %}
+                {% set configurationTab = app[configurationTabServiceId] %}
+                {% set tabTitle = configurationTab.title %}
+            <li role="presentation"><a href="#{{ divId }}" aria-controls="{{ divId }}" role="tab" data-toggle="tab" data-url="{{ configurationTab.url }}">{% trans tabTitle plugin.localeTextDomain  %}</a></li>
+            {% endfor %}
+            <li role="presentation" class="active"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">{% trans 'admin::plugins: about' %}</a></li>
+        </ul>
 
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {% for divId, configurationTabServiceId in plugin.configurationTabServiceIds %}
+            <div role="tabpanel" class="tab-pane fade" id="{{ divId }}"></div>
+            {% endfor %}
+            <div role="tabpanel" class="tab-pane fade in active" id="about">
+                <ul>
+                    <li>{{ 'admin::plugins: name'|trans }}{{ plugin.name }}</li>
+                    <li>{{ 'admin::plugins: version'|trans }}{{ plugin.version }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-{% block about %}
-    <h1>{% trans 'admin::plugins: about' %}</h1>
+    <script type="text/javascript">
+        var contentsDownloaded = {};
+        var remoteContent = function(url) {
+            return $.get(url);
+        };
 
-    <ul>
-        <li>{{ 'admin::plugins: name'|trans }}{{ plugin.name }}</li>
-        <li>{{ 'admin::plugins: version'|trans }}{{ plugin.version }}</li>
-    </ul>
+        var tabs = $('#configurationTabs a[data-toggle="tab"]');
+
+        tabs.on('show', function (e) {
+            if (e.target.hash != '#about' && contentsDownloaded[e.target.hash] === undefined) {
+                $(e.target.hash).empty().html('<img src="/skins/icons/main-loader.gif" alt="loading"/>');
+            }
+        });
+        tabs.on('shown', function (e) {
+            if (e.target.hash != '#about' && contentsDownloaded[e.target.hash] === undefined) {
+                var targetDiv = $(e.target.hash);
+
+                remoteContent($(e.target).attr('data-url')).then(function(response) {
+                    targetDiv.empty().html(response);
+                    contentsDownloaded[e.target.hash] = true;
+                }, function(error) {
+                    console.log(error);
+                    targetDiv.empty().html('<i class="icon-fire">{% trans 'admin::plugins: retrieveConfigurationError' %}</i>');
+                });
+            }
+        });
+    </script>
 {% endblock %}

@@ -19,19 +19,23 @@ class BasePluginMetadata implements PluginMetadataInterface
     private $iconUrl;
     /** @var string */
     private $localeTextDomain;
+    /** @var string[] */
+    private $configurationTabServiceIds;
 
     /**
-     * @param string $name
-     * @param string $version
-     * @param string $iconUrl
-     * @param string $localeTextDomain
+     * @param string   $name
+     * @param string   $version
+     * @param string   $iconUrl
+     * @param string   $localeTextDomain
+     * @param string[] $configurationTabServiceIds
      */
-    public function __construct($name, $version, $iconUrl, $localeTextDomain)
+    public function __construct($name, $version, $iconUrl, $localeTextDomain, array $configurationTabServiceIds = [])
     {
         $this->name = $name;
         $this->version = $version;
         $this->iconUrl = $iconUrl;
         $this->localeTextDomain = $localeTextDomain;
+        $this->configurationTabServiceIds = $configurationTabServiceIds;
     }
 
     /**
@@ -64,5 +68,13 @@ class BasePluginMetadata implements PluginMetadataInterface
     public function getLocaleTextDomain()
     {
         return $this->localeTextDomain;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getConfigurationTabServiceIds()
+    {
+        return $this->configurationTabServiceIds;
     }
 }
