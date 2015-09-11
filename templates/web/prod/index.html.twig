@@ -275,11 +275,13 @@
                     {% if workzone_plugins.keys()|length > 1 %}
                         {% set workzone_plugins_class = 'multiple-plugin' %}
                     {% endif %}
+                    {% if app['plugin.workzone'].keys() is not empty %}
                     <div id="plugins" class="PNB {{ workzone_plugins_class }}" style="top:52px;">
                         {% for plugin in workzone_plugins.keys() %}
                             {% include workzone_plugins[plugin].getWorkzoneTemplate() with {'app': app, 'plugin_id': plugin} only %}
                         {% endfor %}
                     </div>
+                    {% endif %}
                 </div>
             </div>
             <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
