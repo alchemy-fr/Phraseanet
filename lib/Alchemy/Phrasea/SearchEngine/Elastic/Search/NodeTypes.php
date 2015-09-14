@@ -21,6 +21,8 @@ class NodeTypes
     const TERM                = '#thesaurus_term';
     const TEXT                = '#text';
     const CONTEXT             = '#context';
+    const FLAG_STATEMENT      = '#flag_statement';
+    const FLAG                = '#flag';
     const COLLECTION          = '#collection';
     const TYPE                = '#type';
     const DATABASE            = '#database';
@@ -29,4 +31,6 @@ class NodeTypes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
     const TOKEN_RAW_STRING    = 'raw_quoted';
+    const TOKEN_TRUE          = 'true';
+    const TOKEN_FALSE         = 'false';
 }

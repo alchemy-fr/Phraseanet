@@ -31,6 +31,9 @@
 %token  collection      collection
 %token  type            type
 %token  id              id|recordid
+%token  flag_prefix     flag.
+%token  true            true|1
+%token  false           false|0
 %token  word            [^\s()\[\]:<>≤≥=]+
 
 // relative order of precedence is NOT > XOR > AND > OR
@@ -58,8 +61,16 @@ quaternary:
   | ::collection:: ::colon:: string() #collection
   | ::type:: ::colon:: string() #type
   | ::id:: ::colon:: string() #id
+  | ::flag_prefix:: flag() ::colon:: boolean() #flag_statement
   | quinary()
 
+
+#flag:
+  word_or_keyword()+
+
+boolean:
+    <true>
+  | <false>
 
 // Field narrowing
 
@@ -140,6 +151,9 @@ keyword:
   | <collection>
   | <type>
   | <id>
+  | <flag_prefix>
+  | <true>
+  | <false>
 
 symbol:
     <parenthese_>

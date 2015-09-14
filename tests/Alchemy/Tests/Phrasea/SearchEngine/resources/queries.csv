@@ -78,6 +78,15 @@ id:90 AND foo|(<record_identifier:90> AND <text:"foo">)
 id:90 foo|<text:"id:90 foo">
 recordid:90|<record_identifier:90>
 
+# Flag matcher
+flag.foo:true|<flag:foo set>
+flag.foo:1|<flag:foo set>
+flag.foo:false|<flag:foo cleared>
+flag.foo:0|<flag:foo cleared>
+flag.true:true|<flag:true set>
+flag.foo bar:true|<text:"flag.foo bar:true">
+true|<text:"true">
+
 # Matcher on unknown name --> fulltext
 foo:bar|<text:"foo:bar">
 
