@@ -15,6 +15,7 @@ use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
+use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
 use Alchemy\Phrasea\Cache\Factory;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
@@ -191,6 +192,7 @@ class Application extends SilexApplication
         $this->register(new ACLServiceProvider());
         $this->register(new APIServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
+        $this->register(new AuthorizationServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConvertersServiceProvider());
         $this->register(new CSVServiceProvider());
