@@ -13,12 +13,14 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Logger\MonologSQLLogger;
+use Gedmo\Sortable\SortableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -40,6 +42,19 @@ class ORMServiceProvider implements ServiceProviderInterface
             return new MonologSQLLogger($logger, 'yaml');
         });
 
+        $app['EM.metadata_driver'] = $app->share(function (Application $app) {
+            $chainDriverImpl = new MappingDriverChain();
+            $driverYaml = new YamlDriver(array($app['root.path'] . '/lib/conf.d/Doctrine'));
+            $chainDriverImpl->addDriver($driverYaml, 'Entities');
+            $chainDriverImpl->addDriver($driverYaml, 'Gedmo\Timestampable');
+
+            return $chainDriverImpl;
+        });
+        $app['EM.evm_subscribers'] = function () {
+            return [
+                new TimestampableListener(),
+            ];
+        };
         $app['EM'] = $app->share(function (Application $app) {
 
             $config = new ORMConfiguration();
@@ -67,11 +82,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             //define autoregeneration of proxies base on debug mode
             $config->setAutoGenerateProxyClasses($app['debug']);
 
-            $chainDriverImpl = new DriverChain();
-            $driverYaml = new YamlDriver(array($app['root.path'] . '/lib/conf.d/Doctrine'));
-            $chainDriverImpl->addDriver($driverYaml, 'Entities');
-            $chainDriverImpl->addDriver($driverYaml, 'Gedmo\Timestampable');
-            $config->setMetadataDriverImpl($chainDriverImpl);
+            $config->setMetadataDriverImpl($app['EM.metadata_driver']);
 
             $config->setProxyDir($app['root.path'] . '/lib/Doctrine/Proxies');
             $config->setProxyNamespace('Proxies');
@@ -83,7 +94,9 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
 
             $evm = new EventManager();
-            $evm->addEventSubscriber(new TimestampableListener());
+            foreach ($app['EM.evm_subscribers'] as $subscriber) {
+                $evm->addEventSubscriber($subscriber);
+            }
 
             try {
                 $em = EntityManager::create($dbalConf, $config, $evm);
