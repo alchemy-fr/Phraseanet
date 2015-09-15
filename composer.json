@@ -82,6 +82,7 @@
         "roave/security-advisories":             "dev-master",
         "silex/silex":                           "^1.3.0",
         "silex/web-profiler":                    "~1.0",
+        "simple-bus/doctrine-orm-bridge":        "^4.0",
         "simple-bus/message-bus":                "^2.1",
         "simple-bus/jms-serializer-bridge":      "^1.0",
         "simple-bus/serialization":              "^2.0",
