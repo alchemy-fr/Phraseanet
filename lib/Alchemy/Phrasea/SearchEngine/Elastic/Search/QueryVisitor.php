@@ -82,6 +82,12 @@ class QueryVisitor implements Visit
             case NodeTypes::FIELD:
                 return new AST\Field($this->visitString($element));
 
+            case NodeTypes::FLAG_STATEMENT:
+                return $this->visitFlagStatementNode($element);
+
+            case NodeTypes::FLAG:
+                return $this->visitString($element);
+
             case NodeTypes::DATABASE:
                 return $this->visitDatabaseNode($element);
 
@@ -242,6 +248,8 @@ class QueryVisitor implements Visit
                 }
             } elseif ($node instanceof AST\Node) {
                 $root = new AST\AndExpression($root, $node);
+            } else {
+                throw new \Exception('Unexpected node type inside text node.');
             }
         }
 
@@ -260,6 +268,35 @@ class QueryVisitor implements Visit
         }
 
         return implode($tokens);
+    }
+
+    private function visitFlagStatementNode(TreeNode $node)
+    {
+        if ($node->getChildrenNumber() !== 2) {
+            throw new \Exception('Flag statement can only have 2 childs.');
+        }
+
+        return new AST\FlagStatement(
+            $node->getChild(0)->accept($this),
+            $this->visitBoolean($node->getChild(1))
+        );
+    }
+
+    private function visitBoolean(TreeNode $node)
+    {
+        if (null === $value = $node->getValue()) {
+            throw new \Exception('Boolean node must be a token');
+        }
+        switch ($value['token']) {
+            case NodeTypes::TOKEN_TRUE:
+                return true;
+
+            case NodeTypes::TOKEN_FALSE:
+                return false;
+
+            default:
+                throw new \Exception('Unexpected token for a boolean.');
+        }
     }
 
     private function visitDatabaseNode(Element $element)
