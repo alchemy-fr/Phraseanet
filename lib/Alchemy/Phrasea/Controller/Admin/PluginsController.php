@@ -10,19 +10,12 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Plugin\PluginMetadataInterface;
+use Alchemy\WebGalleryPlugin\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class PluginsController
+class PluginsController extends BaseController
 {
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     public function indexAction()
     {
         return $this->render('admin/plugins/index.html.twig', [
@@ -40,33 +33,22 @@ class PluginsController
             throw new \InvalidArgumentException('Expects a valid plugin name.');
         }
 
-        return $this->render('admin/plugins/show.html.twig', [
-            'plugin' => $this->app['plugins'][$pluginName],
-        ]);
-    }
+        /** @var PluginMetadataInterface $plugin */
+        $plugin = $this->app['plugins'][$pluginName];
 
-    /**
-     * @param string        $view
-     * @param array         $parameters
-     * @param Response|null $response
-     * @return Response
-     */
-    public function render($view, array $parameters = array(), Response $response = null)
-    {
-        /** @var \Twig_Environment $twig */
-        $twig = $this->app['twig'];
+        $configurationTabs = [];
 
-        if ($response instanceof StreamedResponse) {
-            $response->setCallback(function () use ($twig, $view, $parameters) {
-                $twig->display($view, $parameters);
-            });
-        } else {
-            if (null === $response) {
-                $response = new Response();
+        foreach ($plugin->getConfigurationTabServiceIds() as $tabName => $serviceId) {
+            $configurationTab = $this->app[$serviceId];
+
+            if ($this->isGranted('VIEW', $configurationTab)) {
+                $configurationTabs[$tabName] = $configurationTab;
             }
-            $response->setContent($twig->render($view, $parameters));
         }
 
-        return $response;
+        return $this->render('admin/plugins/show.html.twig', [
+            'plugin' => $this->app['plugins'][$pluginName],
+            'configurationTabs' => $configurationTabs,
+        ]);
     }
 }
