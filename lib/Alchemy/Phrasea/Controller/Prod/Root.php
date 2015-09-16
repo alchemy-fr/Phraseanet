@@ -105,6 +105,14 @@ class Root implements ControllerProviderInterface
                 }
             }
 
+            /** @var \Closure $filter */
+            $filter = $app['plugin.filter_by_authorization'];
+
+            $plugins = [
+                'workzone' => $filter('workzone'),
+                'actionbar' => $filter('actionbar'),
+            ];
+
             return $app['twig']->render('prod/index.html.twig', array(
                 'module_name'          => 'Production',
                 'WorkZone'             => new Helper\WorkZone($app, $app['request']),
@@ -126,6 +134,7 @@ class Root implements ControllerProviderInterface
                 'thesau_json_sbas'     => json_encode($sbas),
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),
                 'thesau_languages'     => $app['locales.available'],
+                'plugins'              => $plugins,
             ));
         })->bind('prod');
 

@@ -152,9 +152,15 @@ class Basket implements ControllerProviderInterface
             }
         }
 
+        /** @var \Closure $filter */
+        $filter = $app['plugin.filter_by_authorization'];
+
         $params = array(
             'basket' => $basket,
-            'ordre'  => $request->query->get('order')
+            'ordre'  => $request->query->get('order'),
+            'plugins' => [
+                'actionbar' => $filter('workzone.basket.actionbar'),
+            ],
         );
 
         return $app['twig']->render('prod/WorkZone/Basket.html.twig', $params);

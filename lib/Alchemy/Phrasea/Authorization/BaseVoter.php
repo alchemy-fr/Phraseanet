@@ -16,16 +16,21 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 abstract class BaseVoter implements VoterInterface
 {
     private $supportedAttributes;
-    private $supportedClass;
+    private $supportedClasses;
 
     /** @var Application */
     private $app;
 
-    public function __construct(Application $app, array $attributes, $supportedClass)
+    /**
+     * @param Application  $app
+     * @param array        $attributes
+     * @param string|array $supportedClasses
+     */
+    public function __construct(Application $app, array $attributes, $supportedClasses)
     {
         $this->app = $app;
         $this->supportedAttributes = $attributes;
-        $this->supportedClass = $supportedClass;
+        $this->supportedClasses = is_array($supportedClasses) ? $supportedClasses : [$supportedClasses];
 
         if (!is_callable([$this, 'isGranted'])) {
             throw new \LogicException('Subclasses should implement a "isGranted" method');
@@ -39,9 +44,10 @@ abstract class BaseVoter implements VoterInterface
 
     public function supportsClass($class)
     {
-        $supportedClass = $this->supportedClass;
-        if ($class == $supportedClass || is_subclass_of($class, $supportedClass)) {
-            return true;
+        foreach ($this->supportedClasses as $supportedClass) {
+            if ($class == $supportedClass || is_subclass_of($class, $supportedClass)) {
+                return true;
+            }
         }
 
         return false;

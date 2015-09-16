@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Authorization\AuthorizationChecker;
 use ArrayObject;
 use Pimple;
 use Silex\Application;
@@ -35,6 +36,23 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
         $app['plugin.workzone'] = $app->share(function () {
             return new Pimple();
+        });
+        $app['plugin.filter_by_authorization'] = $app->protect(function ($pluginZone, $attributes = 'VIEW') use ($app) {
+            /** @var \Pimple $container */
+            $container = $app['plugin.' . $pluginZone];
+            /** @var AuthorizationChecker $authorizationChecker */
+            $authorizationChecker = $app['phraseanet.authorization_checker'];
+
+            $plugins = [];
+            foreach ($container->keys() as $pluginKey) {
+                $plugin = $container[$pluginKey];
+
+                if ($authorizationChecker->isGranted($attributes, $plugin)) {
+                    $plugins[$pluginKey] = $plugin;
+                }
+            }
+
+            return $plugins;
         });
 
         $app['plugin.locale.textdomains'] = new ArrayObject();

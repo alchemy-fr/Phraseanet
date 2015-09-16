@@ -57,15 +57,13 @@
         <img src="/skins/icons/delete.png"/>
       </button>
 
-      {% if app['plugin.workzone.basket.actionbar'].keys() is not empty %}
-        {% for  pluginId in app['plugin.workzone.basket.actionbar'].keys() %}
-          {% for key,action in app['plugin.workzone.basket.actionbar'][pluginId].getBasketActionBar() %}
+      {% if plugins['actionbar'] is not empty %}
+        {% for plugin in plugins['actionbar'] %}
+          {% for key, action in plugin.getBasketActionBar() %}
             {% set label = action.label %}
-
-            <button class="ui-corner-all basket_window  {{ action.classes|default('') }}" title="{% trans label app['plugin.workzone.basket.actionbar'][pluginId].PluginLocale %}">
-              <img src="{{ plugin_asset(app['plugin.workzone.basket.actionbar'][pluginId].PluginName,action.icon) }}"/>
+            <button class="ui-corner-all basket_window  {{ action.classes|default('') }}" title="{% trans label plugin.PluginLocale %}">
+              <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"/>
             </button>
-
           {% endfor %}
         {% endfor %}
       {% endif %}
