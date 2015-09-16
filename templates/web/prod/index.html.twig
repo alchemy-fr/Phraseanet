@@ -160,14 +160,6 @@
 {% endblock %}
 
 {% block content %}
-
-    {% set workzone_plugins = [] %}
-    {% for plugin in app['plugin.workzone'].keys() %}
-        {% if app['phraseanet.authorization_checker'].isGranted('VIEW', app['plugin.workzone'][plugin]) %}
-            {% set workzone_plugins = workzone_plugins|merge({(plugin): app['plugin.workzone'][plugin]}) %}
-        {% endif %}
-    {% endfor %}
-
     {% set search_datas = module_prod.get_search_datas() %}
     <div style="position:absolute; top:0; left:0; right:0; bottom:0; background-color:#1a1a1a; z-index:32766;">
         <div id="loader" style="top:200px; margin:0 auto; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; background-color:#CCCCCC; position:relative; margin:0 auto; text-align:center; width:400px; height:100px; padding:20px; z-index:32767;">
@@ -203,8 +195,8 @@
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
                         {% endif %}
                     {% endblock %}
-                    <div id="plugins" class="PNB {{ workzone_plugins|length > 1 ? 'multiple-plugin' : 'single-plugin' }}" style="top:52px;">
-                        {% for pluginId, plugin in workzone_plugins %}
+                    <div id="plugins" class="PNB {{ plugins.workzone|length > 1 ? 'multiple-plugin' : 'single-plugin' }}" style="top:52px;">
+                        {% for pluginId, plugin in plugins.workzone %}
                             {% include plugin.getWorkzoneTemplate() with {'app': app, 'plugin_id': pluginId} only %}
                         {% endfor %}
                     </div>

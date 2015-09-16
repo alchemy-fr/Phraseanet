@@ -154,18 +154,18 @@
                             {{ 'action : publier' | trans }}
                         </a>
                     </li>
-                    {% if app['plugin.actionbar'].keys() is not empty %}
-                        {% for  actionId in app['plugin.actionbar'].keys() %}
-                            {% for key, action in app['plugin.actionbar'][actionId].getActionBar().push|default([]) %}
+                    {% if plugins.actionbar is not empty %}
+                        {% for plugin in plugins.actionbar %}
+                            {% for key, action in plugin.getActionBar().push|default([]) %}
                                 <li class="divider"></li>
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
                                         {% if action.icon %}
-                                            <img src="{{ plugin_asset(app['plugin.actionbar'][actionId].PluginName, action.icon) }}" height="16" width="16"/>
+                                            <img src="{{ plugin.PluginName, action.icon) }}" height="16" width="16"/>
                                         {% endif %}
 
                                         {% set label = action.label %}
-                                        {% trans label app['plugin.actionbar'][actionId].PluginLocale %}
+                                        {% trans label plugin.PluginLocale %}
                                     </a>
                                 </li>
                             {% endfor %}

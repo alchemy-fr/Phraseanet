@@ -106,6 +106,14 @@ class RootController extends Controller
 
         $helper = new Helper\Prod($this->app, $request);
 
+        /** @var \Closure $filter */
+        $filter = $this->app['plugin.filter_by_authorization'];
+
+        $plugins = [
+            'workzone' => $filter('workzone'),
+            'actionbar' => $filter('actionbar'),
+        ];
+
         return $this->render('prod/index.html.twig', [
             'module_name'          => 'Production',
             'WorkZone'             => new Helper\WorkZone($this->app, $request),
@@ -129,6 +137,7 @@ class RootController extends Controller
             'thesau_json_sbas'     => json_encode($sbas),
             'thesau_json_bas2sbas' => json_encode($bas2sbas),
             'thesau_languages'     => $this->app['locales.available'],
+            'plugins'              => $plugins,
         ]);
     }
     /**
