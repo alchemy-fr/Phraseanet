@@ -23,10 +23,11 @@ class BulkOperation
     private $logger;
 
     private $stack = array();
-    private $opCount = 0;
+    private $opData = [];
     private $index;
     private $type;
     private $flushLimit = 1000;
+    private $flushCallbacks = [];
 
     public function __construct(Client $client, LoggerInterface $logger)
     {
@@ -52,27 +53,32 @@ class BulkOperation
         $this->flushLimit = (int) $limit;
     }
 
-    public function index(array $params)
+    public function onFlush(\Closure $callback)
+    {
+        $this->flushCallbacks[] = $callback;
+    }
+
+    public function index(array $params, $_data)
     {
         $header = $this->buildHeader('index', $params);
         $body = igorw\get_in($params, ['body']);
-        $this->push($header, $body);
+        $this->push($header, $body, $_data);
     }
 
-    public function delete(array $params)
+    public function delete(array $params, $_data)
     {
-        $this->push($this->buildHeader('delete', $params));
+        $this->push($this->buildHeader('delete', $params), null, $_data);
     }
 
-    private function push($header, $body = null)
+    private function push($header, $body, $_data)
     {
         $this->stack[] = $header;
         if ($body) {
             $this->stack[] = $body;
         }
-        $this->opCount++;
+        $this->opData[] = $_data;
 
-        if ($this->flushLimit === $this->opCount) {
+        if (count($this->opData) === $this->flushLimit) {
             $this->flush();
         }
     }
@@ -93,11 +99,10 @@ class BulkOperation
         }
         $params['body'] = $this->stack;
 
-        $this->logger->debug("ES Bulk query about to be performed\n", ['opCount' => $this->opCount]);
+        $this->logger->debug("ES Bulk query about to be performed\n", ['opCount' => count($this->opData)]);
 
         $response = $this->client->bulk($params);
         $this->stack = array();
-        $this->opCount = 0;
 
         if (igorw\get_in($response, ['errors'], true)) {
             foreach ($response['items'] as $key => $item) {
@@ -106,6 +111,10 @@ class BulkOperation
                 }
             }
         }
+        foreach($this->flushCallbacks as $flushCallback) {
+            $flushCallback($this->opData);
+        }
+        $this->opData = [];
     }
 
     private function buildHeader($key, array $params)

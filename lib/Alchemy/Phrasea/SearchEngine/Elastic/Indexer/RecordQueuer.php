@@ -35,38 +35,42 @@ class RecordQueuer
         $connection = $collection->get_connection();
 
         // Set TO_INDEX flag on all records from this collection
-        $sql = <<<SQL
-            UPDATE record
-            SET jeton = (jeton | :token)
-            WHERE coll_id = :coll_id
-SQL;
+        $sql = "UPDATE record SET jeton = (jeton | :token) WHERE coll_id = :coll_id";
+
         $stmt = $connection->prepare($sql);
         $stmt->bindValue(':token', Flag::TO_INDEX, PDO::PARAM_INT);
         $stmt->bindValue(':coll_id', $collection->get_coll_id(), PDO::PARAM_INT);
         $stmt->execute();
     }
 
+    /**
+     * @param array $records
+     * @param $databox
+     *
+     * nb: changing the jeton may affect a fetcher if his "where" clause (delegate) depends on jeton.
+     * in this case the client of the fetcher must set a "postFetch" callback and restart the fetcher
+     */
     public static function didStartIndexingRecords(array $records, $databox)
     {
         $connection = $databox->get_connection();
-        $sql = <<<SQL
-            UPDATE record
-            SET jeton = (jeton | :flag)
-            WHERE record_id IN (:record_ids)
-SQL;
+        $sql = "UPDATE record SET jeton = (jeton | :flag) WHERE record_id IN (:record_ids)";
+
         self::executeFlagQuery($connection, $sql, Flag::INDEXING, $records);
     }
 
+    /**
+     * @param array $records
+     * @param $databox
+     *
+     * nb: changing the jeton may affect a fetcher if his "where" clause (delegate) depends on jeton.
+     * in this case the client of the fetcher must set a "postFetch" callback and restart the fetcher
+     */
     public static function didFinishIndexingRecords(array $records, $databox)
     {
         $connection = $databox->get_connection();
-        $sql = <<<SQL
-            UPDATE record
-            SET jeton = (jeton & ~ :flag)
-            WHERE record_id IN (:record_ids)
-SQL;
-        $flag = Flag::TO_INDEX | Flag::INDEXING;
-        self::executeFlagQuery($connection, $sql, $flag, $records);
+        $sql = "UPDATE record SET jeton = (jeton & ~ :flag) WHERE record_id IN (:record_ids)";
+
+        self::executeFlagQuery($connection, $sql, Flag::TO_INDEX | Flag::INDEXING, $records);
     }
 
     private static function executeFlagQuery($connection, $sql, $flag, array $records)
