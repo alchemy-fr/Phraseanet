@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
 use Alchemy\Phrasea\Controller\Lightbox;
 use Alchemy\Phrasea\Controller\Datafiles;
 use Alchemy\Phrasea\Controller\Permalink;
@@ -191,6 +192,7 @@ class Application extends SilexApplication
 
         $this->register(new AccountServiceProvider());
         $this->register(new AuthenticationManagerServiceProvider());
+        $this->register(new AuthorizationServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());

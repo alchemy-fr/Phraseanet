@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fd543d9f20edb071de5ae67b4632a138",
+    "hash": "905b5796f2dc06a066753657370034ce",
+    "content-hash": "27d20e5c5da8804d7a9aeb72be1e5877",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1148,12 +1149,12 @@
             "version": "v2.3.9",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Atlantic18/DoctrineExtensions.git",
+                "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
                 "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/c753df0c3471630c32e5edb54d36963e745f14fe",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
                 "reference": "35adcaae1a3f50d0d5b73aa50ed8fd28ee35ce54",
                 "shasum": ""
             },
@@ -3030,6 +3031,60 @@
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
             "time": "2014-06-04 21:14:30"
+        },
+        {
+            "name": "simple-bus/doctrine-orm-bridge",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/DoctrineORMBridge.git",
+                "reference": "46df998f26940d9525f8e35c40641328c679dbfe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/DoctrineORMBridge/zipball/46df998f26940d9525f8e35c40641328c679dbfe",
+                "reference": "46df998f26940d9525f8e35c40641328c679dbfe",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "doctrine/orm": "~2.2",
+                "php": ">=5.4",
+                "simple-bus/message-bus": "~2.0"
+            },
+            "require-dev": {
+                "matthiasnoback/doctrine-orm-test-service-provider": "~2.0",
+                "phpunit/phpunit": "~4.5",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "suggest": {
+                "simple-bus/symfony-bridge": "Bridge for using command buses and event buses with Symfony"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\DoctrineORMBridge\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Doctrine ORM bridge for using command and event buses",
+            "homepage": "http://github.com/SimpleBus/DoctrineORMBridge",
+            "keywords": [
+                "command bus",
+                "doctrine",
+                "event bus"
+            ],
+            "time": "2015-04-29 12:27:27"
         },
         {
             "name": "simple-bus/jms-serializer-bridge",
