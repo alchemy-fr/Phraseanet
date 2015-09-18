@@ -300,12 +300,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "28b872c388d6bd83534df5a95441cd15911819a6"
+                "reference": "833effa4531684827b086cd46755146ff6010256"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/28b872c388d6bd83534df5a95441cd15911819a6",
-                "reference": "28b872c388d6bd83534df5a95441cd15911819a6",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/833effa4531684827b086cd46755146ff6010256",
+                "reference": "833effa4531684827b086cd46755146ff6010256",
                 "shasum": ""
             },
             "require": {
@@ -343,7 +343,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2015-09-03 10:04:42"
+            "time": "2015-09-18 17:26:11"
         },
         {
             "name": "beberlei/assert",
