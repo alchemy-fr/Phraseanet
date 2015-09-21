@@ -191,7 +191,7 @@ class RecordIndexer
             });
 
             // bulk flush : flag records as "indexed"
-            $bulk->onFlush(function($operation_identifiers) use ($databox) {
+            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
                 $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
             });
 
