@@ -16,12 +16,14 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
 use Closure;
+use databox;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use PDO;
 
 class Fetcher
 {
+    private $databox;
     private $connection;
     private $statement;
     private $delegate;
@@ -34,11 +36,17 @@ class Fetcher
     private $postFetch;
     private $onDrain;
 
-    public function __construct(ConnectionInterface $connection, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
-        $this->connection = $connection;
+        $this->databox = $databox;
+        $this->connection = $databox->get_connection();;
         $this->hydrators  = $hydrators;
         $this->delegate   = $delegate ?: new FetcherDelegate();
+    }
+
+    public function getDatabox()
+    {
+        return $this->databox;
     }
 
     public function fetch()
@@ -64,7 +72,6 @@ class Fetcher
             $records[$record['record_id']] = $record;
             $this->offset++;
         }
-
         if (empty($records)) {
             $this->onDrain->__invoke();
             return;
@@ -87,6 +94,12 @@ class Fetcher
         return $records;
     }
 
+    public function restart()
+    {
+        $this->buffer = array();
+        $this->offset = 0;
+    }
+
     public function setBatchSize($size)
     {
         if ($size < 1) {
@@ -105,28 +118,24 @@ class Fetcher
         $this->onDrain = $onDrain;
     }
 
+    /**
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
     private function getExecutedStatement()
     {
         if (!$this->statement) {
-            $sql = <<<SQL
-            SELECT r.record_id
-                 , r.coll_id as collection_id
-                 , c.asciiname as collection_name
-                 , r.uuid
-                 , r.status as flags_bitfield
-                 , r.sha256 -- TODO rename in "hash"
-                 , r.originalname as original_name
-                 , r.mime
-                 , r.type
-                 , r.parent_record_id
-                 , r.credate as created_on
-                 , r.moddate as updated_on
-                    FROM record r
-                    INNER JOIN coll c ON (c.coll_id = r.coll_id)
-                    -- WHERE
-                    ORDER BY r.record_id DESC
-                    LIMIT :offset, :limit
-SQL;
+            $sql = "SELECT r.record_id"
+                 . ", r.coll_id AS collection_id"
+                 . ", c.asciiname AS collection_name"
+                 . ", r.uuid"
+                 . ", r.status AS flags_bitfield"
+                 . ", r.sha256" // -- TODO rename in "hash"
+                 . ", r.originalname AS original_name"
+                 . ", r.mime, r.type, r.parent_record_id, r.credate AS created_on, r.moddate AS updated_on"
+                 . " FROM record r INNER JOIN coll c ON (c.coll_id = r.coll_id)"
+                 . " -- WHERE"
+                 . " ORDER BY r.record_id DESC"
+                 . " LIMIT :offset, :limit";
 
             $where = $this->delegate->buildWhereClause();
             $sql = str_replace('-- WHERE', $where, $sql);

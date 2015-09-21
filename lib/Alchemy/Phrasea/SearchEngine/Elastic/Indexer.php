@@ -41,7 +41,7 @@ class Indexer
     private $recordIndexer;
     private $termIndexer;
 
-    private $indexQueue;
+    private $indexQueue;        // contains RecordInterface(s)
     private $deleteQueue;
 
     private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;

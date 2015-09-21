@@ -45,7 +45,7 @@
 
     <li>
         {{ 'admin::base: nombre d\'enregistrements sur la base :' | trans }}
-        <span id="nrecords">{{ databox.get_record_amount() }}</span>
+        <span id="records"></span>
 
         (<a href="{{ path('admin_database_display_document_details', {'databox_id': databox.get_sbas_id()}) }}" class="ajax" target="rights">{{ 'phraseanet:: details' | trans }}</a>)
     </li>
@@ -54,41 +54,13 @@
         {{ 'admin::base: subdefs to be created :' | trans }}
         <span id="subdefs_todo"></span>
     </li>
-
-    {% if showDetail %}
-        <li>
-            {{ 'admin::base: nombre de mots uniques sur la base :' | trans }}
-            {{ databox.get_unique_keywords() }}
-        </li>
-        <li>
-            {{ 'admin::base: nombre de mots indexes sur la base' | trans }}
-            {{ databox.get_index_amount() }}
-        </li>
-        {% if app['conf'].get(['registry', 'modules', 'thesaurus']) %}
-            <li>
-            {{ 'admin::base: nombre de termes de Thesaurus indexes :' | trans }}
-            {{ databox.get_thesaurus_hits() }}
-            </li>
-        {% endif %}
-    {% endif %}
 </ul>
 
-<div id="INDEX_P_BAR" style="margin-bottom:20px;">
-    <div style="height: 35px;">
-        <p>
-            {{ "admin::base: document indexes en utilisant la fiche xml" | trans }} :
-            <span id="xml_indexed"></span>
-        </p>
-        <div id="xml_indexed_bar"></div>
-        <div id="xml_indexed_percent"></div>
-    </div>
-    <div style="height: 35px;">
-        <p>
-            {{ "admin::base: document indexes en utilisant le thesaurus" | trans }} :
-            <span id="thesaurus_indexed"></span>
-        </p>
-        <div id="thesaurus_indexed_bar"></div>
-        <div id="thesaurus_indexed_percent"></div>
+<div id="INDEX_P_BAR" style="margin-bottom:20px; width:50%">
+    <div class="progress">
+        <div class="bar bar-success records_indexed" style="transition: none; width:0%;">...</div>
+        <div class="bar bar-warning records_indexing" style="transition:none; width:0%;"></div>
+        <div class="bar bar-danger records_not_indexed" style="transition:none; width:0%;"></div>
     </div>
 </div>
 
@@ -248,65 +220,91 @@
 </div>
 
 <script type="text/javascript">
-    function refreshDatabaseInformations()
-    {
-        // stop the refresh if the page changed
-        if($("#thesaurus_indexed_bar").length == 0) {
-            return;
-        }
 
+    function displayDatabaseInformations(delay)
+    {
+        try {
+            clearTimeout(document.refreshDatabaseInformations_timer);
+        }
+        catch(err) {
+
+        }
+        document.refreshDatabaseInformations_timer = setTimeout("_displayDatabaseInformations();", delay);
+    }
+
+    function _displayDatabaseInformations()
+    {
+        var container = $("#INDEX_P_BAR");
+        if(!container || container.length == 0) {
+            return;     // wrong page ?
+        }
         $.ajax({
             type: "GET",
             url: "/admin/databox/{{ databox.get_sbas_id() }}/informations/documents/",
             dataType: 'json',
             data: {},
-            success: function(data){
-                if(data.viewname === '') {
-                    $("#viewname").html("{{ 'admin::base: aucun alias' | trans }}");
-                } else {
-                    $("#viewname").html(data.viewname);
-                }
-
-                $("#nrecords").text(data.records);
-                $("#is_indexable").attr('checked', data.indexable);
-                $("#xml_indexed").text(data.xml_indexed);
-                $("#thesaurus_indexed").text(data.thesaurus_indexed);
-
-                if(data.records > 0)
-                {
-                    var p;
-                    p = 100*data.xml_indexed/data.records;
-                    $("#xml_indexed_bar").width(Math.round(2*p)); // 0..200px
-                    $("#xml_indexed_percent").text((Math.round(p*100)/100)+" %");
-                    p = 100*data.thesaurus_indexed/data.records;
-                    $("#thesaurus_indexed_bar").width(Math.round(2*p));
-                    $("#thesaurus_indexed_percent").text((Math.round(p*100)/100)+" %");
-
-                    var t = "";
-                    for(var i in data.jeton_subdef)
-                    {
-                        t += (t==""?"":" ; ") + i + ": " + data.jeton_subdef[i];
+            success: function (data) {
+                try {
+                    if (data.viewname === '') {
+                        $("#viewname").html("{{ 'admin::base: aucun alias' | trans }}");
+                    } else {
+                        $("#viewname").html(data.viewname);
                     }
-                    if(t == "") {
-                        t = "0";
+
+                    $("#is_indexable").attr('checked', data.indexable);
+                    $("#records").text(data.counts.records);
+
+                    if (data.counts.records > 0) {
+                        var records_indexed     = data.counts.records_indexed;
+                        var records_not_indexed = data.counts.records_not_indexed;  // flag indexing but NOT to_index ???
+                        var records_indexing    = data.counts.records_indexing;
+                        var p;
+
+                        p = 100 * records_indexed / data.counts.records;
+                        $(".records_indexed", container).width(p + "%").text(records_indexed);
+
+                        if (records_not_indexed > 0) {
+                            p = 100 * records_not_indexed / data.counts.records;
+                            $(".records_not_indexed", container).width(p + "%").text(records_not_indexed);
+                        }
+                        else {
+                            $(".records_not_indexed", container).width(0).text("");
+                        }
+
+                        if (records_indexing > 0) {
+                            p = 100 * records_indexing / data.counts.records;
+                            $(".records_indexing", container).width(p + "%").text(records_indexing);
+                        }
+                        else {
+                            $(".records_indexing", container).width(0).text("");
+                        }
+
+                        var t = "";
+                        for (var i in data.counts.subdefs_todo) {
+                            t += (t == "" ? "" : " ; ") + i + ": " + data.counts.subdefs_todo[i];
+                        }
+                        if (t == "") {
+                            t = "0";
+                        }
+                        $("#subdefs_todo").text(t);
                     }
-                    $("#subdefs_todo").text(t);
-                }
 
-                if(data.printLogoURL)
-                {
-                    $("#printLogo").attr("src", data.printLogoURL);
-                    $("#printLogoDIV_NONE").hide();
-                    $("#printLogoDIV_OK").show();
-                }
-                else
-                {
-                    $("#printLogoDIV_OK").hide();
-                    $("#printLogoDIV_NONE").show();
-                }
+                    if (data.printLogoURL) {
+                        $("#printLogo").attr("src", data.printLogoURL);
+                        $("#printLogoDIV_NONE").hide();
+                        $("#printLogoDIV_OK").show();
+                    }
+                    else {
+                        $("#printLogoDIV_OK").hide();
+                        $("#printLogoDIV_NONE").show();
+                    }
 
-                // refresh every 10 sec.
-                setTimeout("refreshDatabaseInformations();", 10000);
+                    // refresh every 10 sec.
+                    displayDatabaseInformations(10000);
+                }
+                catch(err) {
+                    // wrong page ? don't refresh again
+                }
             }
         });
     }
@@ -407,8 +405,7 @@
             }
         });
 
-        // start the refresh of the page content (progress bar etc...)
-        setTimeout("refreshDatabaseInformations();", 2000);
+        displayDatabaseInformations(200);   // wait 200ms
     });
 
 </script>

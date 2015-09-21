@@ -577,29 +577,23 @@ class DataboxController extends Controller
 
         $ret = [
             'success'           => false,
-            'msg'               => $this->app->trans('An error occured'),
             'sbas_id'           => null,
+            'msg'               => $this->app->trans('An error occured'),
             'indexable'         => false,
-            'records'           => 0,
-            'xml_indexed'       => 0,
-            'thesaurus_indexed' => 0,
             'viewname'          => null,
             'printLogoURL'      => null,
+            'counts'            => null,
         ];
 
         try {
             $databox = $this->findDataboxById($databox_id);
-            $data = $databox->get_indexed_record_amount();
 
+            $ret['sbas_id'] = $databox_id;
             $ret['indexable'] = $appbox->is_databox_indexable($databox);
             $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname())
                 ? $this->app->trans('admin::base: aucun alias')
                 : $databox->get_viewname());
-            $ret['records'] = $databox->get_record_amount();
-            $ret['sbas_id'] = $databox_id;
-            $ret['xml_indexed'] = $data['xml_indexed'];
-            $ret['thesaurus_indexed'] = $data['thesaurus_indexed'];
-            $ret['jeton_subdef'] = $data['jeton_subdef'];
+            $ret['counts'] = $databox->get_counts();
             if ($this->app['filesystem']->exists($this->app['root.path'] . '/config/minilogos/logopdf_' . $databox_id . '.jpg')) {
                 $ret['printLogoURL'] = '/custom/minilogos/logopdf_' . $databox_id . '.jpg';
             }
