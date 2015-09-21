@@ -34,7 +34,7 @@ class AuthorizationServiceProvider implements ServiceProviderInterface
             return new AccessDecisionManager($app['phraseanet.voters']);
         });
         $app['phraseanet.voters'] = $app->share(function () {
-            return [];
+            return [new MockedAuthenticatedVoter()];
         });
 
         $app['phraseanet.authorization_checker'] = $app->share(function (PhraseaApplication $app) {
