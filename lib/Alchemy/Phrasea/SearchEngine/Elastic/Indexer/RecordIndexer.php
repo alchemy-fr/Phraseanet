@@ -60,17 +60,10 @@ class RecordIndexer
 
     private $logger;
 
-    private $submited_records = [];
-
-    private function getUniqueOperationId()
+    private function getUniqueOperationId($record_key)
     {
-        static $_key = null;
-        static $_n = 0;
-        if($_key == null) {
-            mt_srand();
-            $_key = dechex(mt_rand());
-        }
-        return $_key . '_' . ($_n++);
+        $_key = dechex(mt_rand());
+        return $_key . '_' . $record_key;
     }
 
     public function __construct(Structure $structure, RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales, LoggerInterface $logger)
@@ -83,10 +76,45 @@ class RecordIndexer
         $this->logger = $logger;
     }
 
+    /**
+     * ES made a bulk op, check our (index) operations to drop the "indexing" & "to_index" jetons
+     *
+     * @param databox $databox
+     * @param array $operation_identifiers  key:op_identifier ; value:operation result (json from es)
+     * @param array $submited_records       records indexed, key:op_identifier
+     */
+    private function onBulkFlush(databox $databox, array $operation_identifiers, array &$submited_records)
+    {
+        // nb: because the same bulk could be used by many "clients", this (each) callback may receive
+        // operation_identifiers that does not belong to it.
+        // flag only records that the fetcher worked on
+        $records = array_intersect_key(
+            $submited_records,        // this is OUR records list
+            $operation_identifiers          // reduce to the records indexed by this bulk (should be the same...)
+        );
+        if(count($records) === 0) {
+            return;
+        }
+        // Commit and remove "indexing" flag
+        RecordQueuer::didFinishIndexingRecords(array_values($records), $databox);
+        foreach (array_keys($records) as $id) {
+            unset($submited_records[$id]);
+        }
+    }
+
+    /**
+     * index whole databox(es), don't test actual "jetons"
+     *
+     * @param BulkOperation $bulk
+     * @param databox[] $databoxes
+     */
     public function populateIndex(BulkOperation $bulk, array $databoxes)
     {
         foreach ($databoxes as $databox) {
+            $submited_records = [];
+
             $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
+
             $fetcher = $this->createFetcherForDatabox($databox);    // no delegate, scan the whole records
 
             // post fetch : flag records as "indexing"
@@ -96,27 +124,22 @@ class RecordIndexer
             });
 
             // bulk flush : flag records as "indexed"
-            $bulk->onFlush(function($operation_identifiers) use ($databox) {
-                // nb: because the same bulk could be used by many "clients", this (each) callback may receive
-                // operation_identifiers that does not belong to us.
-                // flag only records that our fetcher worked on
-                $ops = array_flip($operation_identifiers);  // now the key is the op_identifiers
-                $records = array_intersect_key(
-                    $this->submited_records,        // this is OUR records list
-                    $ops                            // reduce to the records indexed by this bulk (should be the same...)
-                );
-                // Commit and remove "indexing" flag
-                RecordQueuer::didFinishIndexingRecords(array_values($records), $databox);
-                foreach (array_keys($records) as $id) {
-                    unset($this->submited_records[$id]);
-                }
+            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
+                $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
             });
 
-            $this->indexFromFetcher($bulk, $fetcher);
+            // Perform indexing
+            $this->indexFromFetcher($bulk, $fetcher, $submited_records);
+
             $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
         }
     }
 
+    /**
+     * Index the records flagged as "to_index" on all databoxes
+     *
+     * @param BulkOperation $bulk
+     */
     public function indexScheduled(BulkOperation $bulk)
     {
         foreach ($this->appbox->get_databoxes() as $databox) {
@@ -126,6 +149,8 @@ class RecordIndexer
 
     private function indexScheduledInDatabox(BulkOperation $bulk, databox $databox)
     {
+        $submited_records = [];
+
         // Make fetcher
         $delegate = new ScheduledFetcherDelegate();
         $fetcher = $this->createFetcherForDatabox($databox, $delegate);
@@ -139,64 +164,55 @@ class RecordIndexer
         });
 
         // bulk flush : flag records as "indexed"
-        $bulk->onFlush(function($operation_identifiers) use ($databox) {
-            // nb: because the same bulk could be used by many "clients", this (each) callback may receive
-            // operation_identifiers that does not belong to us.
-            // flag only records that our fetcher worked on
-            $ops = array_flip($operation_identifiers);  // now the key is the op_identifiers
-            $records = array_intersect_key(
-                $this->submited_records,        // this is OUR records list
-                $ops                            // reduce to the records indexed by this bulk (should be the same...)
-            );
-            // Commit and remove "indexing" flag
-            RecordQueuer::didFinishIndexingRecords(array_values($records), $databox);
-            foreach (array_keys($records) as $id) {
-                unset($this->submited_records[$id]);
-            }
+        $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
+            $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
         });
 
         // Perform indexing
-        $this->indexFromFetcher($bulk, $fetcher);
+        $this->indexFromFetcher($bulk, $fetcher, $submited_records);
     }
 
+    /**
+     * Index a list of records
+     *
+     * @param BulkOperation $bulk
+     * @param Iterator $records
+     */
     public function index(BulkOperation $bulk, Iterator $records)
     {
         foreach ($this->createFetchersForRecords($records) as $fetcher) {
+            $submited_records = [];
             $databox = $fetcher->getDatabox();
 
             // post fetch : flag records as "indexing"
             $fetcher->setPostFetch(function(array $records) use ($fetcher, $databox) {
                 RecordQueuer::didStartIndexingRecords($records, $databox);
+                // do not restart the fetcher since it has no clause on jetons
             });
 
             // bulk flush : flag records as "indexed"
             $bulk->onFlush(function($operation_identifiers) use ($databox) {
-                // nb: because the same bulk could be used by many "clients", this (each) callback may receive
-                // operation_identifiers that does not belong to us.
-                // flag only records that our fetcher worked on
-                $ops = array_flip($operation_identifiers);  // now the key is the op_identifiers
-                $records = array_intersect_key(
-                    $this->submited_records,        // this is OUR records list
-                    $ops                            // reduce to the records indexed by this bulk (should be the same...)
-                );
-                // Commit and remove "indexing" flag
-                RecordQueuer::didFinishIndexingRecords(array_values($records), $databox);
-                foreach (array_keys($records) as $id) {
-                    unset($this->submited_records[$id]);
-                }
+                $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
             });
 
-            $this->indexFromFetcher($bulk, $fetcher);
+            // Perform indexing
+            $this->indexFromFetcher($bulk, $fetcher, $submited_records);
         }
     }
 
+    /**
+     * Deleta a list of records
+     *
+     * @param BulkOperation $bulk
+     * @param Iterator $records
+     */
     public function delete(BulkOperation $bulk, Iterator $records)
     {
         foreach ($records as $record) {
             $params = array();
             $params['id'] = $record->getId();
             $params['type'] = self::TYPE_NAME;
-            $bulk->delete($params, null);       // no _data is related to a delete op
+            $bulk->delete($params, null);       // no operationIdentifier is related to a delete op
         }
     }
 
@@ -248,20 +264,21 @@ class RecordIndexer
         return array_values($databoxes);
     }
 
-    private function indexFromFetcher(BulkOperation $bulk, Fetcher $fetcher)
+    private function indexFromFetcher(BulkOperation $bulk, Fetcher $fetcher, array &$submited_records)
     {
         /** @var RecordInterface $record */
         while ($record = $fetcher->fetch()) {
+            $op_identifier = $this->getUniqueOperationId($record['id']);
+
             $params = array();
             $params['id'] = $record['id'];
             unset($record['id']);
             $params['type'] = self::TYPE_NAME;
             $params['body'] = $this->transform($record);
 
-            $opIdentifier = $this->getUniqueOperationId();
-            $this->submited_records[$opIdentifier] = $record;
+            $submited_records[$op_identifier] = $record;
 
-            $bulk->index($params, $opIdentifier);
+            $bulk->index($params, $op_identifier);
         }
     }
 

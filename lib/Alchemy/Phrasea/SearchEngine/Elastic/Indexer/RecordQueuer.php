@@ -65,15 +65,14 @@ class RecordQueuer
      * nb: changing the jeton may affect a fetcher if his "where" clause (delegate) depends on jeton.
      * in this case the client of the fetcher must set a "postFetch" callback and restart the fetcher
      */
-    public static function didFinishIndexingRecords(array $records, $databox)
+    public static function didFinishIndexingRecords(array $records, databox $databox)
     {
         $connection = $databox->get_connection();
         $sql = "UPDATE record SET jeton = (jeton & ~ :flag) WHERE record_id IN (:record_ids)";
-
         self::executeFlagQuery($connection, $sql, Flag::TO_INDEX | Flag::INDEXING, $records);
     }
 
-    private static function executeFlagQuery($connection, $sql, $flag, array $records)
+    private static function executeFlagQuery(Connection $connection, $sql, $flag, array $records)
     {
         return $connection->executeQuery($sql, array(
             ':flag'       => $flag,

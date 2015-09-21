@@ -23,7 +23,7 @@ class BulkOperation
     private $logger;
 
     private $stack = array();
-    private $opData = [];
+    private $operationIdentifiers = [];
     private $index;
     private $type;
     private $flushLimit = 1000;
@@ -58,27 +58,27 @@ class BulkOperation
         $this->flushCallbacks[] = $callback;
     }
 
-    public function index(array $params, $_data)
+    public function index(array $params, $operationIdentifier)
     {
         $header = $this->buildHeader('index', $params);
         $body = igorw\get_in($params, ['body']);
-        $this->push($header, $body, $_data);
+        $this->push($header, $body, $operationIdentifier);
     }
 
-    public function delete(array $params, $_data)
+    public function delete(array $params, $operationIdentifier)
     {
-        $this->push($this->buildHeader('delete', $params), null, $_data);
+        $this->push($this->buildHeader('delete', $params), null, $operationIdentifier);
     }
 
-    private function push($header, $body, $_data)
+    private function push($header, $body, $operationIdentifier)
     {
         $this->stack[] = $header;
         if ($body) {
             $this->stack[] = $body;
         }
-        $this->opData[] = $_data;
+        $this->operationIdentifiers[] = $operationIdentifier;
 
-        if (count($this->opData) === $this->flushLimit) {
+        if (count($this->operationIdentifiers) === $this->flushLimit) {
             $this->flush();
         }
     }
@@ -99,22 +99,32 @@ class BulkOperation
         }
         $params['body'] = $this->stack;
 
-        $this->logger->debug("ES Bulk query about to be performed\n", ['opCount' => count($this->opData)]);
+        $this->logger->debug("ES Bulk query about to be performed\n", ['opCount' => count($this->operationIdentifiers)]);
 
         $response = $this->client->bulk($params);
         $this->stack = array();
 
-        if (igorw\get_in($response, ['errors'], true)) {
-            foreach ($response['items'] as $key => $item) {
-                if ($item['index']['status'] >= 400) { // 4xx or 5xx error
-                    throw new Exception(sprintf('%d: %s', $key, $item['index']['error']));
+        $callbackData = [];     // key: operationIdentifier passed when command was pushed on this bulk
+                                // value: json result from es for the command
+        // nb: results (items) are returned IN THE SAME ORDER as commands were pushed in the stack
+        // so the items[X] match the operationIdentifiers[X]
+        foreach ($response['items'] as $key => $item) {
+            foreach($item as $command=>$result) {   // command may be "index" or "delete"
+                if($response['errors'] && $result['status'] >= 400) { // 4xx or 5xx error
+                    $err = array_key_exists('error', $result) ? $result['error'] : ($command . " error " . $result['status']);
+                    throw new Exception(sprintf('%d: %s', $key, $err));
                 }
             }
+
+            $operationIdentifier = $this->operationIdentifiers[$key];
+            if(is_string($operationIdentifier) || is_int($operationIdentifier)) {   // dont include null keys
+                $callbackData[$operationIdentifier] = $response['items'][$key];
+            }
         }
-        foreach($this->flushCallbacks as $flushCallback) {
-            $flushCallback($this->opData);
+        foreach($this->flushCallbacks as $iCallBack=>$flushCallback) {
+            $flushCallback($callbackData);
         }
-        $this->opData = [];
+        $this->operationIdentifiers = [];
     }
 
     private function buildHeader($key, array $params)

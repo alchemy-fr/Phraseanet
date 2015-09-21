@@ -405,14 +405,6 @@
             }
         });
 
-        // start the refresh of the page content (progress bar etc...)
-        try {
-            clearTimeout(document.refreshDatabaseInformations_timer);
-        }
-        catch(err) {
-
-        }
-
         displayDatabaseInformations(200);   // wait 200ms
     });
 
