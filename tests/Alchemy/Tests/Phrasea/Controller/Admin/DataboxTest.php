@@ -234,9 +234,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
         $this->assertObjectHasAttribute('sbas_id', $json);
         $this->assertObjectHasAttribute('indexable', $json);
-        $this->assertObjectHasAttribute('records', $json);
-        $this->assertObjectHasAttribute('xml_indexed', $json);
-        $this->assertObjectHasAttribute('thesaurus_indexed', $json);
+        $this->assertObjectHasAttribute('counts', $json);
         $this->assertObjectHasAttribute('viewname', $json);
         $this->assertObjectHasAttribute('printLogoURL', $json);
     }
