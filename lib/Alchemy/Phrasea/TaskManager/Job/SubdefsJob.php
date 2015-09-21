@@ -121,8 +121,7 @@ class SubdefsJob extends AbstractJob
 
                 // rewrite metadata
                 $sql = 'UPDATE record'
-                    . ' SET status=(status & ~0x03),'
-                    . ' jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF . ')'
+                    . ' SET jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX . ')'
                     . ' WHERE record_id=:record_id';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([':record_id' => $row['record_id']]);
