@@ -38,7 +38,7 @@ class PhraseaExceptionHandlerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $event->setResponse($this->handler->createResponseBasedOnRequest($event->getRequest(), $event->getException()));
+        $event->setResponse($this->handler->createResponse($event->getException()));
     }
 
     /**
