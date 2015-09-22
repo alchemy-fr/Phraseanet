@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Core;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +22,18 @@ use Symfony\Component\Translation\TranslatorInterface;
 class PhraseaExceptionHandler extends SymfonyExceptionHandler
 {
     private $translator;
+
+    private $logger;
+
+    public function __construct()
+    {
+        $this->logger = new NullLogger();
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function setTranslator(TranslatorInterface $translator)
     {
@@ -33,6 +47,13 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
 
     public function getContent(FlattenException $exception)
     {
+        if ($exception->getStatusCode() == '500') {
+            $this->logger->error($exception->getMessage(), [
+                'code' => $exception->getCode(),
+                'trace' => $exception->getTrace()
+            ]);
+        }
+
         switch (true) {
             case 404 === $exception->getStatusCode():
                 if (null !== $this->translator) {

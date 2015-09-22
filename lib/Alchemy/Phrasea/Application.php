@@ -267,6 +267,7 @@ class Application extends SilexApplication
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             $handler =  PhraseaExceptionHandler::register($app['debug']);
             $handler->setTranslator($app['translator']);
+            $handler->setLogger($app['monolog']);
 
             return $handler;
         });
