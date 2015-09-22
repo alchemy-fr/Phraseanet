@@ -110,6 +110,12 @@ class V1 implements ControllerProviderInterface
             }
         };
 
+        $requireUserManagementRight = function () use ($app) {
+            $app['firewall']
+                ->requireAccessToModule('admin')
+                ->requireRight('manageusers');
+        };
+
         /**
          * OAuth log process
          *
@@ -1016,7 +1022,9 @@ class V1 implements ControllerProviderInterface
             $result = $app['api']->reset_password($login);
 
             return $result->get_response();
-        })->before($requirePasswordGrant);
+        })
+            ->before($requirePasswordGrant)
+            ->before($requireUserManagementRight);
 
         /**
          * Route : /accounts/update-password/{token}/
@@ -1030,20 +1038,26 @@ class V1 implements ControllerProviderInterface
             $result = $app['api']->set_new_password($token, $request->request->get('password', null));
 
             return $result->get_response();
-        })->before($requirePasswordGrant);
+        })
+            ->before($requirePasswordGrant)
+            ->before($requireUserManagementRight);
 
         $controllers->post('/accounts/access-demand/', function (Request $request) use ($app) {
             $data = json_decode($request->getContent(false), true);
             $result = $app['api']->create_account($data);
 
             return $result->get_response();
-        })->before($requirePasswordGrant);
+        })
+            ->before($requirePasswordGrant)
+            ->before($requireUserManagementRight);
 
         $controllers->post('/accounts/unlock/{token}/', function ($token) use ($app) {
             $result = $app['api']->unlock_account($token);
 
             return $result->get_response();
-        })->before($requirePasswordGrant);
+        })
+            ->before($requirePasswordGrant)
+            ->before($requireUserManagementRight);
 
         return $controllers;
     }
