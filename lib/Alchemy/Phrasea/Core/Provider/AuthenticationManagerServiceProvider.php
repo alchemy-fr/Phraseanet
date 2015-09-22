@@ -95,7 +95,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 $app['manipulator.token'],
                 $app['repo.tokens'],
                 $app['manipulator.user'],
-                $app['repo.user'],
+                $app['repo.users'],
                 $app['url_generator']
             );
         });
