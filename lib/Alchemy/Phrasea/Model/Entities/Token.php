@@ -177,7 +177,7 @@ class Token
     /**
      * Set expiration
      *
-     * @param  \DateTime $updated
+     * @param  \DateTime $expiration
      * @return Token
      */
     public function setExpiration(\DateTime $expiration = null)

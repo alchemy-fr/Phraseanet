@@ -1075,14 +1075,6 @@ class LoginController extends Controller
      */
     private function getRecoveryService()
     {
-        return new RecoveryService(
-            $this->app,
-            $this->getDeliverer(),
-            $this->getTokenManipulator(),
-            $this->getTokenRepository(),
-            $this->getUserManipulator(),
-            $this->getUserRepository(),
-            $this->app['url_generator']
-        );
+        return $this->app['authentication.recovery_service'];
     }
 }

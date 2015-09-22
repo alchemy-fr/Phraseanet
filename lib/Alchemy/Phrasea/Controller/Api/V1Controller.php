@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Account\CollectionRequestMapper;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
@@ -773,6 +774,42 @@ class V1Controller extends Controller
         }
 
         return $grants;
+    }
+
+    private function listUserDemands(User $user)
+    {
+        return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
+    }
+
+    public function resetPassword(Request $request, $email)
+    {
+        /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
+        $service = $this->app['authentication.recovery_service'];
+
+        try {
+            $token = $service->requestPasswordResetToken($email, false);
+        }
+        catch (\Exception $exception) {
+            $token = $service->requestPasswordResetTokenByLogin($email, false);
+        }
+
+        return Result::create($request, [ 'reset_token' => $token ]);
+    }
+
+    public function setNewPassword(Request $request, $token)
+    {
+        $password = $request->request->get('password', null);
+        /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
+        $service = $this->app['authentication.recovery_service'];
+
+        try {
+            $service->resetPassword($token, $password);
+        }
+        catch (\Exception $exception) {
+            return Result::create($request, [ 'success' => false ]);
+        }
+
+        return Result::create($request, [ 'success' => true ]);
     }
 
     public function addRecordAction(Request $request)
@@ -2288,7 +2325,8 @@ class V1Controller extends Controller
     {
         $ret = [
             "user" => $this->listUser($this->getAuthenticatedUser()),
-            "collections" => $this->listUserCollections($this->getAuthenticatedUser())
+            "collections" => $this->listUserCollections($this->getAuthenticatedUser()),
+            "demands" => $this->listUserDemands($this->getAuthenticatedUser())
         ];
 
         return Result::create($request, $ret)->createResponse();
