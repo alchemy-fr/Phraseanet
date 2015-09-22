@@ -1029,7 +1029,6 @@ class V1Controller extends Controller
                 continue;
             }
 
-
             if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {

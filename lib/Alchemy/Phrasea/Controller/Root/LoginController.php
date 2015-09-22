@@ -16,10 +16,11 @@ use Alchemy\Phrasea\Authentication\AccountCreator;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
+use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
+use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
@@ -470,23 +471,17 @@ class LoginController extends Controller
 
     public function renewPassword(Request $request)
     {
-        if (null === $tokenValue = $request->get('token')) {
-            $this->app->abort(401, 'A token is required');
-        }
-
-        if (null === $token = $this->getTokenRepository()->findValidToken($tokenValue)) {
-            $this->app->abort(401, 'A token is required');
-        }
+        $service = $this->getRecoveryService();
 
         $form = $this->app->form(new PhraseaRecoverPasswordForm($this->getTokenRepository()));
-        $form->setData(['token' => $token->getValue()]);
+        $form->setData(['token' => $request->get('token') ]);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $data = $form->getData();
-                $this->getUserManipulator()->setPassword($token->getUser(), $data['password']);
-                $this->getTokenManipulator()->delete($token);
+
+                $service->resetPassword($data['token'], $data['password']);
                 $this->app->addFlash('success', $this->app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
                 return $this->app->redirectPath('homepage');
@@ -495,7 +490,7 @@ class LoginController extends Controller
 
         return $this->render('login/renew-password.html.twig', array_merge(
             $this->getDefaultTemplateVariables($request),
-            ['form' => $form->createView()]
+            ['form' => $form->createView() ]
         ));
     }
 
@@ -508,6 +503,7 @@ class LoginController extends Controller
     public function forgotPassword(Request $request)
     {
         $form = $this->app->form(new PhraseaForgotPasswordForm());
+        $service = $this->getRecoveryService();
 
         try {
             if ('POST' === $request->getMethod()) {
@@ -516,27 +512,13 @@ class LoginController extends Controller
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    if (null === $user = $this->getUserRepository()->findByEmail($data['email'])) {
-                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
-                    }
-
                     try {
-                        $receiver = Receiver::fromUser($user);
-                    } catch (InvalidArgumentException $e) {
-                        throw new FormProcessingException($this->app->trans('Invalid email address'));
+                        $service->requestPasswordResetToken($data['email'], true);
+                    }
+                    catch (InvalidArgumentException $ex) {
+                        throw new FormProcessingException($this->app->trans($ex->getMessage()));
                     }
 
-                    $token = $this->getTokenManipulator()->createResetPasswordToken($user);
-
-                    $url = $this->app->url('login_renew_password', ['token' => $token->getValue()], true);
-
-                    $expirationDate = new \DateTime('+1 day');
-                    $mail = MailRequestPasswordUpdate::create($this->app, $receiver);
-                    $mail->setLogin($user->getLogin());
-                    $mail->setButtonUrl($url);
-                    $mail->setExpiration($expirationDate);
-
-                    $this->deliver($mail);
                     $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));
 
                     return $this->app->redirectPath('login_forgot_password');
@@ -548,9 +530,8 @@ class LoginController extends Controller
 
         return $this->render('login/forgot-password.html.twig', array_merge(
             $this->getDefaultTemplateVariables($request),
-            [
-                'form'  => $form->createView(),
-            ]));
+            [ 'form'  => $form->createView() ]
+        ));
     }
 
     /**
@@ -698,8 +679,8 @@ class LoginController extends Controller
     public function postAuthProcess(Request $request, User $user)
     {
         $date = new \DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
-
         $manager = $this->getEntityManager();
+
         foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
@@ -862,8 +843,11 @@ class LoginController extends Controller
         }
 
         try {
-            $usr_id = $this->getNativeAuthentication()
-                ->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
+            $usr_id = $this->getPasswordAuthentication()->getUsrId(
+                $request->request->get('login'),
+                $request->request->get('password'),
+                $request
+            );
         } catch (RequireCaptchaException $e) {
             $this->app->requireCaptcha();
             $this->app->addFlash('warning', $this->app->trans('Please fill the captcha'));
@@ -883,7 +867,6 @@ class LoginController extends Controller
         }
 
         $user = $this->getUserRepository()->find($usr_id);
-
         $session = $this->postAuthProcess($request, $user);
 
         $response = $this->generateAuthResponse($this->getBrowser(), $request->request->get('redirect'));
@@ -1064,9 +1047,9 @@ class LoginController extends Controller
     }
 
     /**
-     * @return NativeAuthentication
+     * @return PasswordAuthenticationInterface
      */
-    private function getNativeAuthentication()
+    private function getPasswordAuthentication()
     {
         return $this->app['auth.native'];
     }
@@ -1085,5 +1068,21 @@ class LoginController extends Controller
     private function getConfigurationStore()
     {
         return $this->app['configuration.store'];
+    }
+
+    /**
+     * @return RecoveryService
+     */
+    private function getRecoveryService()
+    {
+        return new RecoveryService(
+            $this->app,
+            $this->getDeliverer(),
+            $this->getTokenManipulator(),
+            $this->getTokenRepository(),
+            $this->getUserManipulator(),
+            $this->getUserRepository(),
+            $this->app['url_generator']
+        );
     }
 }
