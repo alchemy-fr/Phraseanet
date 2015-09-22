@@ -9,7 +9,6 @@
  */
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Plugin\PluginMetadataInterface;
 use Alchemy\WebGalleryPlugin\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
