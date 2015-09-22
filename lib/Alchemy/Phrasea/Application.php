@@ -84,6 +84,7 @@ use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
 use Monolog\Processor\IntrospectionProcessor;
 use MP4Box\MP4BoxServiceProvider;
@@ -1051,13 +1052,8 @@ class Application extends SilexApplication
     {
         $this['monolog.name'] = 'phraseanet';
         $this['monolog.handler'] = $this->share(function () {
-            return new NullHandler();
+            return new SyslogHandler('phraseanet', LOG_SYSLOG, Logger::ERROR);
         });
-        $this['monolog'] = $this->share($this->extend('monolog', function (Logger $logger) {
-            $logger->pushProcessor(new IntrospectionProcessor());
-
-            return $logger;
-        }));
     }
 
     private function setupEventDispatcher()
