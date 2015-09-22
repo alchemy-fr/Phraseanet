@@ -140,7 +140,7 @@ class RecoveryService
     {
         $token = $this->tokenRepository->findValidToken($resetToken);
 
-        if ($token === null || $token->getType() == TokenManipulator::TYPE_PASSWORD) {
+        if ($token === null || $token->getType() != TokenManipulator::TYPE_PASSWORD) {
             $this->application->abort(401, 'A token is required');
         }
 
