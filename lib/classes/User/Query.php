@@ -307,7 +307,7 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->in_ids) {
-            $sql .= 'AND (usr.usr_id = ' . implode(' OR usr.usr_id = ', $this->in_ids) . ')';
+            $sql .= ' AND (usr.usr_id = ' . implode(' OR usr.usr_id = ', $this->in_ids) . ')';
         }
 
         if ($this->have_rights) {
@@ -684,7 +684,7 @@ class User_Query implements User_QueryInterface
      * Query width a like field
      * like fields are defined as constants of the object
      *
-     * @param  const      $like_field
+     * @param  string      $like_field
      * @param  string     $like_value
      * @return User_Query
      */
@@ -709,7 +709,7 @@ class User_Query implements User_QueryInterface
     /**
      * Choose whether multiple like will be treated as AND or OR
      *
-     * @param  type       $like_match
+     * @param  string $like_match
      * @return User_Query
      */
     public function like_match($like_match)
@@ -782,8 +782,8 @@ class User_Query implements User_QueryInterface
      * Sort results. Sort field and sort order are defined as constants
      * of this object
      *
-     * @param  const      $sort
-     * @param  const      $ord
+     * @param string $sort
+     * @param string $ord
      * @return User_Query
      */
     public function sort_by($sort, $ord = 'asc')
