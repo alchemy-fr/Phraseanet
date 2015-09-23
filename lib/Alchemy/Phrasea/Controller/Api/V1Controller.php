@@ -2325,9 +2325,14 @@ class V1Controller extends Controller
     {
         $ret = [
             "user" => $this->listUser($this->getAuthenticatedUser()),
-            "collections" => $this->listUserCollections($this->getAuthenticatedUser()),
-            "demands" => $this->listUserDemands($this->getAuthenticatedUser())
+            "collections" => $this->listUserCollections($this->getAuthenticatedUser())
         ];
+
+        if (! constant('API_SKIP_USER_REGISTRATIONS')) {
+            // I am infinitely sorry... if you feel like it, you can fix the tests database bootstrapping
+            // to use SQLite in all cases and remove this check. Good luck...
+            $ret["demands"] = $this->listUserDemands($this->getAuthenticatedUser());
+        }
 
         return Result::create($request, $ret)->createResponse();
     }
