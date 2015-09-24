@@ -60,7 +60,7 @@ class TermIndexer
                 $params['type'] = self::TYPE_NAME;
                 $params['body'] = $term;
 
-                $bulk->index($params);
+                $bulk->index($params, null);
             });
 
             $document = Helper::thesaurusFromDatabox($databox);
