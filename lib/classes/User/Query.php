@@ -155,7 +155,7 @@ class User_Query implements User_QueryInterface
     protected $countries;
     protected $positions;
     protected $in_ids;
-    protected $existsSql;
+    protected $sqlFilters = [];
 
     const ORD_ASC = 'asc';
     const ORD_DESC = 'desc';
@@ -310,8 +310,11 @@ class User_Query implements User_QueryInterface
         if ($this->in_ids) {
             $sql .= ' AND (usr.usr_id = ' . implode(' OR usr.usr_id = ', $this->in_ids) . ')';
         }
-        if ($this->existsSql) {
-            $sql .= sprintf(' AND EXISTS(%s)', $this->existsSql);
+        if ($this->sqlFilters) {
+            foreach ($this->sqlFilters as $sqlFilter) {
+                $sql .= ' AND (' . $sqlFilter['sql'] . ')';
+                $this->sql_params = array_merge($this->sql_params, $sqlFilter['params']);
+            }
         }
 
         if ($this->have_rights) {
@@ -406,9 +409,9 @@ class User_Query implements User_QueryInterface
         return $this;
     }
 
-    public function existsSql($sql)
+    public function addSqlFilter($sql, array $params = [])
     {
-        $this->existsSql = $sql;
+        $this->sqlFilters[] = ['sql' => $sql, 'params' => $params];
         return $this;
     }
 
