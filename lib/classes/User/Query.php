@@ -155,6 +155,7 @@ class User_Query implements User_QueryInterface
     protected $countries;
     protected $positions;
     protected $in_ids;
+    protected $existsSql;
 
     const ORD_ASC = 'asc';
     const ORD_DESC = 'desc';
@@ -198,7 +199,7 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection|User_Adapter[]
      */
     public function get_results()
     {
@@ -309,6 +310,9 @@ class User_Query implements User_QueryInterface
         if ($this->in_ids) {
             $sql .= ' AND (usr.usr_id = ' . implode(' OR usr.usr_id = ', $this->in_ids) . ')';
         }
+        if ($this->existsSql) {
+            $sql .= sprintf(' AND EXISTS(%s)', $this->existsSql);
+        }
 
         if ($this->have_rights) {
             foreach ($this->have_rights as $right) {
@@ -399,6 +403,12 @@ class User_Query implements User_QueryInterface
 
         $this->in_ids = array_unique($tmp_usr_ids);
 
+        return $this;
+    }
+
+    public function existsSql($sql)
+    {
+        $this->existsSql = $sql;
         return $this;
     }
 
@@ -498,50 +508,7 @@ class User_Query implements User_QueryInterface
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $sorter = array();
-
-        foreach ($this->sort as $sort => $ord) {
-
-            $k = count($sorter);
-
-            switch ($sort) {
-                case self::SORT_FIRSTNAME:
-                case self::SORT_LASTNAME:
-                case self::SORT_COMPANY:
-                case self::SORT_LOGIN:
-                case self::SORT_EMAIL:
-                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
-                    break;
-                case self::SORT_ID:
-                case self::SORT_CREATIONDATE:
-                case self::SORT_COUNTRY:
-                case self::SORT_LASTMODEL:
-                    $sorter[$k] = ' usr.`' . $sort . '` ';
-                    break;
-                default:
-                    break;
-            }
-
-            if ( ! isset($sorter[$k]))
-                continue;
-
-            switch ($ord) {
-                case self::ORD_ASC:
-                default:
-                    $sorter[$k] .= ' ASC ';
-                    break;
-                case self::ORD_DESC:
-                    $sorter[$k] .= ' DESC ';
-                    break;
-            }
-        }
-
-        $sql = 'SELECT DISTINCT usr.usr_id ' . $this->generate_sql_constraints();
-
-        $sorter = implode(', ', $sorter);
-
-        if (trim($sorter) != '')
-            $sql .= ' ORDER BY ' . $sorter;
+        list ($sql, $params) = $this->createSelectQuery();
 
         if (is_int($this->offset_start) && is_int($this->results_quantity)) {
             $sql .= sprintf(
@@ -552,7 +519,7 @@ class User_Query implements User_QueryInterface
         }
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
+        $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -795,7 +762,7 @@ class User_Query implements User_QueryInterface
 
     public function haveActivities(array $req_activities)
     {
-        $Activities = new \Doctrine\Common\Collections\ArrayCollection();
+        $Activities = new ArrayCollection();
 
         foreach ($req_activities as $activity) {
             $activity = trim($activity);
@@ -818,7 +785,7 @@ class User_Query implements User_QueryInterface
 
     public function havePositions(array $req_positions)
     {
-        $Positions = new \Doctrine\Common\Collections\ArrayCollection();
+        $Positions = new ArrayCollection();
 
         foreach ($req_positions as $Position) {
             $Position = trim($Position);
@@ -841,7 +808,7 @@ class User_Query implements User_QueryInterface
 
     public function inCountries(array $req_countries)
     {
-        $Countries = new \Doctrine\Common\Collections\ArrayCollection();
+        $Countries = new ArrayCollection();
 
         foreach ($req_countries as $Country) {
             $Country = trim($Country);
@@ -864,7 +831,7 @@ class User_Query implements User_QueryInterface
 
     public function inCompanies(array $req_companies)
     {
-        $Companies = new \Doctrine\Common\Collections\ArrayCollection();
+        $Companies = new ArrayCollection();
 
         foreach ($req_companies as $Company) {
             $Company = trim($Company);
@@ -887,7 +854,7 @@ class User_Query implements User_QueryInterface
 
     public function haveTemplate(array $req_templates)
     {
-        $Templates = new \Doctrine\Common\Collections\ArrayCollection();
+        $Templates = new ArrayCollection();
 
         foreach ($req_templates as $Template) {
             $Template = trim($Template);
@@ -1050,5 +1017,61 @@ class User_Query implements User_QueryInterface
         }
 
         return $lastModel;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function createSelectQuery()
+    {
+        $sorter = array();
+
+        foreach ($this->sort as $sort => $ord) {
+
+            $k = count($sorter);
+
+            switch ($sort) {
+                case self::SORT_FIRSTNAME:
+                case self::SORT_LASTNAME:
+                case self::SORT_COMPANY:
+                case self::SORT_LOGIN:
+                case self::SORT_EMAIL:
+                    $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
+                    break;
+                case self::SORT_ID:
+                case self::SORT_CREATIONDATE:
+                case self::SORT_COUNTRY:
+                case self::SORT_LASTMODEL:
+                    $sorter[$k] = ' usr.`' . $sort . '` ';
+                    break;
+                default:
+                    break;
+            }
+
+            if (!isset($sorter[$k])) {
+                continue;
+            }
+
+            switch ($ord) {
+                case self::ORD_ASC:
+                default:
+                    $sorter[$k] .= ' ASC ';
+                    break;
+                case self::ORD_DESC:
+                    $sorter[$k] .= ' DESC ';
+                    break;
+            }
+        }
+
+        $sql = 'SELECT DISTINCT usr.usr_id ' . $this->generate_sql_constraints();
+
+        $sorter = implode(', ', $sorter);
+
+        if (trim($sorter) != '') {
+            $sql .= ' ORDER BY ' . $sorter;
+        }
+
+        return array($sql, $this->sql_params);
     }
 }
