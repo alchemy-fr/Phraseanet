@@ -68,6 +68,7 @@ class User_Query implements User_QueryInterface
     protected $countries = null;
     protected $positions = null;
     protected $in_ids = null;
+    protected $existsSql;
     protected $sql_params = null;
 
     public function __construct(Application $app)
@@ -97,6 +98,12 @@ class User_Query implements User_QueryInterface
     {
         $this->in_ids = array_unique(array_filter(array_map('intval', $usr_ids)));
 
+        return $this;
+    }
+
+    public function existsSql($sql)
+    {
+        $this->existsSql = $sql;
         return $this;
     }
 
@@ -234,11 +241,7 @@ class User_Query implements User_QueryInterface
     public function execute()
     {
         $conn = $this->app->getApplicationBox()->get_connection();
-        $sql = 'SELECT DISTINCT Users.id ' . $this->generate_sql_constraints();
-
-        if ('' !== $sorter = $this->generate_sort_constraint()) {
-            $sql .= ' ORDER BY ' . $sorter;
-        }
+        list ($sql, $params) = $this->createSelectQuery();
 
         if (is_int($this->offset_start) && is_int($this->results_quantity)) {
             $sql .= sprintf(
@@ -249,7 +252,7 @@ class User_Query implements User_QueryInterface
         }
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
+        $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -883,7 +886,10 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->in_ids) {
-            $sql .= 'AND (Users.id = ' . implode(' OR Users.id = ', $this->in_ids) . ')';
+            $sql .= ' AND (Users.id = ' . implode(' OR Users.id = ', $this->in_ids) . ')';
+        }
+        if ($this->existsSql) {
+            $sql .= sprintf(' AND EXISTS(%s)', $this->existsSql);
         }
 
         if ($this->have_rights) {
@@ -1014,5 +1020,20 @@ class User_Query implements User_QueryInterface
                 $this->active_bases[] = $collection->get_base_id();
             }
         }
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function createSelectQuery()
+    {
+        $sql = 'SELECT DISTINCT Users.id ' . $this->generate_sql_constraints();
+
+        if ('' !== $sorter = $this->generate_sort_constraint()) {
+            $sql .= ' ORDER BY ' . $sorter;
+            return $sql;
+        }
+        return [$sql, $this->sql_params];
     }
 }
