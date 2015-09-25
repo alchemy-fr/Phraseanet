@@ -469,7 +469,7 @@ class V1Controller extends Controller
     public function getDataboxCollectionAction(Request $request, $base_id)
     {
         return Result::create($request, [
-            $this->listCollection($this->app['phraseanet.appbox']->get_collection($base_id))
+            $this->listCollection($this->app->getApplicationBox()->get_collection($base_id))
         ])->createResponse();
     }
 

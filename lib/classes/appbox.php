@@ -367,7 +367,7 @@ class appbox extends base
 
         return $this->databoxes;
     }
-    
+
     public function get_databox($sbas_id)
     {
         $databoxes = $this->get_databoxes();
