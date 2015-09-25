@@ -601,9 +601,12 @@ class API_OAuth2_Adapter extends OAuth2
             'state' => null,
         ];
 
+        $result = [];
+
         if ($params['state'] !== null) {
             $result["query"]["state"] = $params['state'];
         }
+
         if ($is_authorized === false) {
             $result["query"]["error"] = OAUTH2_ERROR_USER_DENIED;
         } else {
@@ -615,6 +618,7 @@ class API_OAuth2_Adapter extends OAuth2
                 $result["fragment"] = $this->createAccessToken($params['account_id'], $params['scope']);
             }
         }
+
         $this->doRedirectUriCallback($params['redirect_uri'], $result);
     }
 
@@ -812,7 +816,7 @@ class API_OAuth2_Adapter extends OAuth2
 
             return [
                 'redirect_uri' => $this->client->getRedirectUri(),
-                'client_id'    => $this->client->getClient(),
+                'client_id'    => $this->client->getClientId(),
                 'account_id'   => $account->getId(),
             ];
         } catch (AccountLockedException $e) {
