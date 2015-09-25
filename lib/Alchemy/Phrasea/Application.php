@@ -126,7 +126,9 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -548,7 +550,7 @@ class Application extends SilexApplication
     public function setupTwig()
     {
         $this['twig'] = $this->share(
-            $this->extend('twig', function (\Twig_Environment $twig, $app) {
+            $this->extend('twig', function (\Twig_Environment $twig, Application $app) {
                 $paths = require $app['plugins.directory'] . '/twig-paths.php';
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
@@ -578,6 +580,25 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Escaper());
                 if ($app['debug']) {
                     $twig->addExtension(new \Twig_Extension_Debug());
+
+                    // This render function appeared with symfony 2.4+
+                    $twig->addFunction(new \Twig_SimpleFunction('render', function ($uri, array $options = []) use ($app) {
+                        /** @var Request $request */
+                        $request = $app['request'];
+
+                        $subRequest = Request::create(
+                            $uri,
+                            'GET',
+                            array(),
+                            $request->cookies->all(),
+                            $options,
+                            $request->server->all()
+                        );
+
+                        $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
+
+                        return $response->getContent();
+                    }));
                 }
 
                 // add filter trans

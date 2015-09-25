@@ -50,7 +50,7 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
 
         $content = '<div id="sf-resetcontent" class="sf-reset">'
             . '<h1><span>' . $title . '</span></h1>'
-            . substr($content, $start);
+            . substr($content, $start + 5);
 
         return $content;
     }
