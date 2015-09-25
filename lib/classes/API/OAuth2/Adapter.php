@@ -16,9 +16,11 @@ use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class API_OAuth2_Adapter extends OAuth2
 {
@@ -684,9 +686,15 @@ class API_OAuth2_Adapter extends OAuth2
                 }
                 break;
             case OAUTH2_GRANT_TYPE_USER_CREDENTIALS:
-                $application = ApiApplication::load_from_client_id($this->app, $client[0]);
+                /** @var ApiApplicationRepository $appRepository */
+                $appRepository = $this->app['repo.api-applications'];
+                $application = $appRepository->findByClientId($client[0]);
 
-                if ( ! $application->is_password_granted()) {
+                if (! $application) {
+                    throw new NotFoundHttpException('Application not found');
+                }
+
+                if ( ! $application->isPasswordGranted()) {
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNSUPPORTED_GRANT_TYPE, 'Password grant type is not enable for your client');
                 }
 
