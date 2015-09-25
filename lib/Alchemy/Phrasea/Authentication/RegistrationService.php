@@ -5,22 +5,11 @@ namespace Alchemy\Phrasea\Authentication;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
-use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
-use Alchemy\Phrasea\Core\Event\RegistrationEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
-use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
-use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
-use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Alchemy\Phrasea\Model\Repositories\TokenRepository;
-use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RegistrationService
 {
@@ -28,19 +17,19 @@ class RegistrationService
      * @var array
      */
     private static $userPropertySetterMap = array(
-        'gender'    => 'setGender',
-        'firstname' => 'setFirstName',
-        'lastname'  => 'setLastName',
-        'address'   => 'setAddress',
-        'city'      => 'setCity',
-        'zipcode'   => 'setZipCode',
-        'tel'       => 'setPhone',
-        'fax'       => 'setFax',
-        'job'       => 'setJob',
-        'company'   => 'setCompany',
-        'position'  => 'setPosition',
-        'geonameid' => 'setGeonameId',
-        'notifications' => 'setMailNotificationsActivated'
+        'gender'    => 'set_gender',
+        'firstname' => 'set_firstname',
+        'lastname'  => 'set_lastname',
+        'address'   => 'set_address',
+        'city'      => 'set_city',
+        'zipcode'   => 'set_zip',
+        'tel'       => 'set_tel',
+        'fax'       => 'set_fax',
+        'job'       => 'set_job',
+        'company'   => 'set_company',
+        'position'  => 'set_position',
+        'geonameid' => 'set_geonameid',
+        'notifications' => 'set_mail_notifications'
     );
 
     /**
@@ -54,34 +43,9 @@ class RegistrationService
     private $appbox;
 
     /**
-     * @var ACLProvider
-     */
-    private $aclProvider;
-
-    /**
-     * @var PropertyAccess
-     */
-    private $configuration;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
      * @var ProvidersCollection
      */
     private $oauthProviderCollection;
-
-    /**
-     * @var RegistrationManager
-     */
-    private $registrationManager;
 
     /**
      * @var UsrAuthProviderRepository
@@ -89,76 +53,21 @@ class RegistrationService
     private $userAuthenticationProviderRepository;
 
     /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * @var UserManipulator
-     */
-    private $userManipulator;
-
-    /**
-     * @var TokenManipulator
-     */
-    private $tokenManipulator;
-
-    /**
-     * @var TokenRepository
-     */
-    private $tokenRepository;
-
-    /**
-     * @var RegistrationManipulator
-     */
-    private $registrationManipulator;
-
-    /**
      * @param Application $application
      * @param \appbox $appbox
-     * @param ACLProvider $aclProvider
-     * @param PropertyAccess $configuration
-     * @param EntityManager $entityManager
-     * @param EventDispatcherInterface $eventDispatcher
      * @param ProvidersCollection $oauthProviderCollection
      * @param UsrAuthProviderRepository $userAuthenticationProviderRepository
-     * @param UserRepository $userRepository
-     * @param UserManipulator $userManipulator
-     * @param TokenManipulator $tokenManipulator
-     * @param TokenRepository $tokenRepository
-     * @param RegistrationManipulator $registrationManipulator
-     * @param RegistrationManager $registrationManager
      */
     public function __construct(
         Application $application,
         \appbox $appbox,
-        ACLProvider $aclProvider,
-        PropertyAccess $configuration,
-        EntityManager $entityManager,
-        EventDispatcherInterface $eventDispatcher,
         ProvidersCollection $oauthProviderCollection,
-        UsrAuthProviderRepository $userAuthenticationProviderRepository,
-        UserRepository $userRepository,
-        UserManipulator $userManipulator,
-        TokenManipulator $tokenManipulator,
-        TokenRepository $tokenRepository,
-        RegistrationManipulator $registrationManipulator,
-        RegistrationManager $registrationManager
+        UsrAuthProviderRepository $userAuthenticationProviderRepository
     ) {
-        $this->aclProvider = $aclProvider;
         $this->app = $application;
         $this->appbox = $appbox;
-        $this->configuration = $configuration;
-        $this->entityManager = $entityManager;
-        $this->eventDispatcher = $eventDispatcher;
         $this->oauthProviderCollection = $oauthProviderCollection;
         $this->userAuthenticationProviderRepository = $userAuthenticationProviderRepository;
-        $this->userRepository = $userRepository;
-        $this->userManipulator = $userManipulator;
-        $this->tokenManipulator = $tokenManipulator;
-        $this->tokenRepository = $tokenRepository;
-        $this->registrationManipulator = $registrationManipulator;
-        $this->registrationManager = $registrationManager;
     }
 
     /**
@@ -190,18 +99,15 @@ class RegistrationService
             $provider = $this->oauthProviderCollection->get($providerId);
         }
 
-        $inscriptions = $this->registrationManager->getRegistrationSummary();
+        $inscriptions = giveMeBases($this->app);
         $authorizedCollections = $this->getAuthorizedCollections($selectedCollections, $inscriptions);
 
         if (!isset($data['login'])) {
             $data['login'] = $data['email'];
         }
 
-        $user = $this->userManipulator->createUser($data['login'], $data['password'], $data['email'], false);
-
-        if (isset($data['geonameid'])) {
-            $this->userManipulator->setGeonameId($user, $data['geonameid']);
-        }
+        $user = User::create($this->app, $data['login'], $data['password'], $data['email'], false);
+        $user = new User();
 
         foreach (self::$userPropertySetterMap as $property => $method) {
             if (isset($data[$property])) {
@@ -209,24 +115,24 @@ class RegistrationService
             }
         }
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush($user);
-
         if (null !== $provider) {
-            $this->attachProviderToUser($this->entityManager, $provider, $user);
-            $this->entityManager->flush();
+            $this->attachProviderToUser($this->app['EM'], $provider, $user);
+            $this->app['EM']->flush();
         }
 
-        $this->applyAclsToUser($authorizedCollections, $user);
+        if ($this->app['phraseanet.registry']->get('GV_autoregister')) {
+            $this->applyAclsToUser($authorizedCollections, $user);
+        }
+
         $this->createCollectionAccessDemands($user, $authorizedCollections);
-        $user->setMailLocked(true);
+        $user->set_mail_locked(true);
 
         return $user;
     }
 
     public function createCollectionRequests(User $user, array $collections)
     {
-        $inscriptions = $this->registrationManager->getRegistrationSummary($user);
+        $inscriptions = giveMeBases($this->app);
         $authorizedCollections = $this->getAuthorizedCollections($collections, $inscriptions);
 
         $this->createCollectionAccessDemands($user, $authorizedCollections);
@@ -234,28 +140,36 @@ class RegistrationService
 
     public function getAccountUnlockToken(User $user)
     {
-        return $this->tokenManipulator->createAccountUnlockToken($user);
+        $expire = new \DateTime('+3 days');
+        $token = $this->app['tokens']->getUrlToken(
+            \random::TYPE_PASSWORD,
+            $user->get_id(),
+            $expire,
+            $user->get_email()
+        );
+
+        return $token;
     }
 
     public function unlockAccount($token)
     {
-        $token = $this->tokenRepository->findValidToken($token);
-        $user = $token->getUser();
+        $tokenData = $this->app['tokens']->helloToken($token);
+        $user = \User_Adapter::getInstance((int) $tokenData['usr_id'], $this->app);
 
-        if (!$user->isMailLocked()) {
+        if (!$user->get_mail_locked()) {
             throw new RegistrationException(
                 'Account is already unlocked, you can login.',
                 RegistrationException::ACCOUNT_ALREADY_UNLOCKED
             );
         }
 
-        $this->tokenManipulator->delete($token);
-        $user->setMailLocked(false);
+        $this->app['tokens']->removeToken($token);
+        $user->set_mail_locked(false);
 
         return $user;
     }
 
-    private function attachProviderToUser(ProviderInterface $provider, User $user)
+    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, User $user)
     {
         $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
@@ -268,31 +182,49 @@ class RegistrationService
             // log these errors
         }
 
-        $this->entityManager->persist($usrAuthProvider);
+        $em->persist($usrAuthProvider);
     }
 
     /**
      * @param array $selectedCollections
+     * @param array $inscriptions
      * @return array
      */
-    private function getAuthorizedCollections(array $selectedCollections = null)
+    private function getAuthorizedCollections(array $selectedCollections = null, array $inscriptions)
     {
-        $inscriptions = $this->registrationManager->getRegistrationSummary();
-        $authorizedCollections = [];
+        $authorizedCollections = array();
 
         foreach ($this->appbox->get_databoxes() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+
             foreach ($databox->get_collections() as $collection) {
                 if (null !== $selectedCollections && !in_array($collection->get_base_id(), $selectedCollections)) {
                     continue;
                 }
 
-                if ($canRegister = \igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'config', 'collections', $collection->get_base_id(), 'can-register'])) {
-                    $authorizedCollections[$collection->get_base_id()] = $canRegister;
+                if ($this->isCollectionAuthorized($inscriptions, $collection, $databoxId)) {
+                    $authorizedCollections[$collection->get_base_id()] = true;
+                } else {
+                    $authorizedCollections[$collection->get_base_id()] = false;
                 }
             }
         }
 
         return $authorizedCollections;
+    }
+
+    /**
+     * @param array $inscriptions
+     * @param \collection $collection
+     * @param $databoxId
+     * @return bool
+     */
+    private function isCollectionAuthorized(array $inscriptions, \collection $collection, $databoxId)
+    {
+        return isset($inscriptions[$databoxId])
+            && $inscriptions[$databoxId]['inscript'] === true
+            && (isset($inscriptions[$databoxId]['Colls'][$collection->get_coll_id()])
+                || isset($inscriptions[$databoxId]['CollsCGU'][$collection->get_coll_id()]));
     }
 
     /**
@@ -303,36 +235,45 @@ class RegistrationService
      */
     private function applyAclsToUser(array $authorizedCollections, User $user)
     {
-        $acl = $this->aclProvider->get($user);
+        $template_user_id = \User_Adapter::get_usr_id_from_login($this->app, 'autoregister');
+        $template_user = \User_Adapter::getInstance($template_user_id, $this->app);
 
-        if ($this->configuration->get(['registry', 'registration', 'auto-register-enabled'])) {
-            $template_user = $this->userRepository->findByLogin(User::USER_AUTOREGISTER);
-            $acl->apply_model($template_user, array_keys($authorizedCollections));
+        $base_ids = array();
+
+        foreach (array_keys($authorizedCollections) as $base_id) {
+            $base_ids[] = $base_id;
         }
+
+        $user->setLastAppliedTemplate($template_user);
     }
 
     /**
-     * @param User $user
+     * @param \User_Adapter $user
      * @param array $authorizedCollections
      */
-    private function createCollectionAccessDemands(User $user, $authorizedCollections)
+    private function createCollectionAccessDemands(\User_Adapter $user, $authorizedCollections)
     {
-        $successfulRegistrations = [];
-        $acl = $this->aclProvider->get($user);
-        $autoReg = $acl->get_granted_base();
-        $registrationManipulator = $this->registrationManipulator;
+        $demandOK = array();
+        $autoReg = $user->ACL()->get_granted_base();
+        $appbox_register = new \appbox_register($this->appbox);
 
-        array_walk($authorizedCollections, function ($authorization, $baseId) use ($registrationManipulator, $user, &$successfulRegistrations, $acl) {
-            if (false === $authorization || $acl->has_access_to_base($baseId)) {
-                return;
+        foreach ($authorizedCollections as $base_id => $authorization) {
+            if (false === $authorization || $user->ACL()->has_access_to_base($base_id)) {
+                continue;
             }
 
-            $collection = \collection::get_from_base_id($this->app, $baseId);
-            $registrationManipulator->createRegistration($user, $collection);
-            $successfulRegistrations[$baseId] = $collection;
-        });
+            $collection = \collection::get_from_base_id($this->app, $base_id);
+            $appbox_register->add_request($user, $collection);
+            $demandOK[$base_id] = true;
+        }
 
-        $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
-        $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $successfulRegistrations));
+        $params = array(
+            'demand' => $demandOK,
+            'autoregister' => $autoReg,
+            'usr_id' => $user->get_id()
+        );
+
+        $this->app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
+        $this->app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
     }
 }
