@@ -92,6 +92,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         if ($request->getRequestFormat(Result::FORMAT_JSON) === Result::FORMAT_JSONP && !$response->isOk() && !$response->isServerError()) {
             $response->setStatusCode(200);
         }
+
         // set response content type
         if (!$response->headers->get('Content-Type')) {
             $response->headers->set('Content-Type', $request->getMimeType($request->getRequestFormat(Result::FORMAT_JSON)));
