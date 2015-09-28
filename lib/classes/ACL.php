@@ -802,6 +802,18 @@ class ACL implements cache_cacheableInterface
 
         $this->is_admin = null;
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_SET_ADMIN,
+            new AclSetAdminEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'is_admin'=>$boolean
+                )
+            )
+        );
+
         return $this;
     }
 
@@ -1153,6 +1165,17 @@ class ACL implements cache_cacheableInterface
             if (!$stmt_del->execute(array(':base_id' => $base_id, ':usr_id'  => $usr_id))) {
                 throw new Exception('Error while deleteing some rights');
             }
+            $this->app['dispatcher']->dispatch(
+                PhraseaEvents::ACL_REVOKE_ACCESS_FROM_BASE,
+                new AclRevokeAccessFromBaseEvent(
+                    $this->user->get_id(),
+                    $this->user->get_login(),
+                    $this->user->get_email(),
+                    array(
+                        'base_id'=>$base_id
+                    )
+                )
+            );
         }
         $stmt_del->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
@@ -1188,6 +1211,18 @@ class ACL implements cache_cacheableInterface
         $stmt_upd = $this->app['phraseanet.appbox']->get_connection()->prepare($sql_upd);
         foreach ($to_update as $base_id) {
             $stmt_upd->execute(array(':usr_id'  => $usr_id, ':base_id' => $base_id));
+
+            $this->app['dispatcher']->dispatch(
+                PhraseaEvents::ACL_GIVE_ACCESS_TO_BASE,
+                new AclGiveAccessToBaseEvent(
+                    $this->user->get_id(),
+                    $this->user->get_login(),
+                    $this->user->get_email(),
+                    array(
+                        'base_id'=>$base_id
+                    )
+                )
+            );
         }
         $stmt_upd->closeCursor();
 
@@ -1210,8 +1245,21 @@ class ACL implements cache_cacheableInterface
         $usr_id = $this->user->get_id();
 
         foreach ($sbas_ids as $sbas_id) {
-            if (!$this->has_access_to_sbas($sbas_id))
-                $stmt_ins->execute(array(':sbas_id' => $sbas_id, ':usr_id'  => $usr_id));
+            if (!$this->has_access_to_sbas($sbas_id)) {
+                $stmt_ins->execute(array(':sbas_id' => $sbas_id, ':usr_id' => $usr_id));
+
+                $this->app['dispatcher']->dispatch(
+                    PhraseaEvents::ACL_GIVE_ACCESS_TO_SBAS,
+                    new AclGiveAccessToSbasEvent(
+                        $this->user->get_id(),
+                        $this->user->get_login(),
+                        $this->user->get_email(),
+                        array(
+                            'sbas_id'=>$sbas_id
+                        )
+                    )
+                );
+            }
         }
         $stmt_ins->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
@@ -1229,7 +1277,6 @@ class ACL implements cache_cacheableInterface
      */
     public function update_rights_to_base($base_id, $rights)
     {
-
         if (!$this->has_access_to_base($base_id) && (!isset($rights['actif']) || $rights['actif'] == '1')) {
             $this->give_access_to_base(array($base_id));
         }
@@ -1270,6 +1317,19 @@ class ACL implements cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_UPDATE_RIGHTS_TO_BASE,
+            new AclUpdateRightsToBaseEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'base_id'=>$base_id,
+                    'rights'=>$rights
+                )
+            )
+        );
+
         return $this;
     }
 
@@ -1305,8 +1365,9 @@ class ACL implements cache_cacheableInterface
      */
     public function update_rights_to_sbas($sbas_id, $rights)
     {
-        if (!$this->has_access_to_sbas($sbas_id))
+        if (!$this->has_access_to_sbas($sbas_id)) {
             $this->give_access_to_sbas(array($sbas_id));
+        }
 
         $sql_up = "UPDATE sbasusr SET ";
 
@@ -1334,6 +1395,19 @@ class ACL implements cache_cacheableInterface
         $stmt_up->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_UPDATE_RIGHTS_TO_SBAS,
+            new AclUpdateRightsToSbasEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'sbas_id'=>$sbas_id,
+                    'rights'=>$rights
+                )
+            )
+        );
+
         return $this;
     }
 
@@ -1345,8 +1419,8 @@ class ACL implements cache_cacheableInterface
     public function remove_quotas_on_base($base_id)
     {
         $sql = 'UPDATE basusr
-      SET remain_dwnld = 0, restrict_dwnld = 0, month_dwnld_max = 0
-      WHERE usr_id = :usr_id AND base_id = :base_id ';
+        SET remain_dwnld = 0, restrict_dwnld = 0, month_dwnld_max = 0
+        WHERE usr_id = :usr_id AND base_id = :base_id ';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id'  => $this->user->get_id(), ':base_id' => $base_id));
@@ -1354,6 +1428,18 @@ class ACL implements cache_cacheableInterface
 
         unset($stmt);
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_REMOVE_QUOTAS_ON_BASE,
+            new AclRemoveQuotasOnBaseEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'base_id'=>$base_id
+                )
+            )
+        );
 
         return $this;
     }
@@ -1376,6 +1462,16 @@ class ACL implements cache_cacheableInterface
 
         unset($stmt);
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_UPDATE_DOWNLOAD_RESTRICTIONS,
+            new AclUpdateDownloadRestrictionsEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array()
+            )
+        );
 
         return $this;
     }
@@ -1406,6 +1502,20 @@ class ACL implements cache_cacheableInterface
 
         unset($stmt);
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_SET_QUOTAS_ON_BASE,
+            new AclSetQuotasOnBaseEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'base_id'=>$base_id,
+                    'remain_dwnld'=>$restes,
+                    'month_dwnld_max'=>$droits
+                )
+            )
+        );
 
         return $this;
     }
@@ -1577,6 +1687,18 @@ class ACL implements cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_SET_MASKS_ON_BASE,
+            new AclSetMasksOnBaseEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'base_id'=>$base_id
+                )
+            )
+        );
+
         return $this;
     }
 
@@ -1609,25 +1731,18 @@ class ACL implements cache_cacheableInterface
 
     public function set_limits($base_id, $limit, DateTime $limit_from = null, DateTime $limit_to = null)
     {
-        if ($limit) {
-            $sql = 'UPDATE basusr
-              SET time_limited = 1
+        $sql = 'UPDATE basusr
+              SET time_limited = :time_limited
                   , limited_from = :limited_from
                   , limited_to = :limited_to
               WHERE base_id = :base_id AND usr_id = :usr_id';
-        } else {
-            $sql = 'UPDATE basusr
-              SET time_limited = 0
-                  , limited_from = :limited_from
-                  , limited_to = :limited_to
-              WHERE base_id = :base_id AND usr_id = :usr_id';
-        }
 
         $params = array(
             ':usr_id'      => $this->user->get_id()
             , ':base_id'     => $base_id
-            , 'limited_from' => ($limit_from ? $limit_from->format(DATE_ISO8601) : null)
-            , 'limited_to'   => ($limit_to ? $limit_to->format(DATE_ISO8601) : null)
+            , ':time_limited'=> $limit ? 1 : 0
+            , ':limited_from' => ($limit_from ? $limit_from->format(DATE_ISO8601) : null)
+            , ':limited_to'   => ($limit_to ? $limit_to->format(DATE_ISO8601) : null)
         );
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -1637,6 +1752,21 @@ class ACL implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_LIMITS_BAS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACL_SET_LIMITS,
+            new AclSetLimitsEvent(
+                $this->user->get_id(),
+                $this->user->get_login(),
+                $this->user->get_email(),
+                array(
+                    'base_id'=>$base_id,
+                    'limit'=>$limit,
+                    'limit_from'=>$limit_from,
+                    'limit_to'=>$limit_to
+                )
+            )
+        );
 
         return $this;
     }

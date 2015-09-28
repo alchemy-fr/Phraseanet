@@ -1002,7 +1002,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function delete()
     {
         $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
-        $event = new AccountDeletedEvent($this->get_id(), $this->get_login(), $this->get_email());
 
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
@@ -1088,7 +1087,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         unset(self::$_instance[$this->get_id()]);
 
-        $this->app['dispatcher']->dispatch(PhraseaEvents::ACCOUNT_DELETED, $event);
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::ACCOUNT_DELETED,
+            new AccountDeletedEvent(
+                $this->get_id(),
+                $this->get_login(),
+                $this->get_email()
+            )
+        );
 
         return;
     }
@@ -1822,6 +1828,15 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt->execute();
             $stmt->closeCursor();
         }
+
+        $app['dispatcher']->dispatch(
+            PhraseaEvents::ACCOUNT_CREATED,
+            new AccountCreatedEvent(
+                $usr_id,
+                $login,
+                ($email ? $email : null)
+            )
+        );
 
         return self::getInstance($usr_id, $app);
     }
