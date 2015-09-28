@@ -12,7 +12,6 @@ namespace Alchemy\Phrasea\Controller\Api;
 use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
-use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
@@ -826,7 +825,8 @@ class V1Controller extends Controller
 
     public function updatePassword(Request $request, $login)
     {
-        $service = $this->getAccountService();
+        /** @var AccountService $service */
+        $service = $this->app['accounts.service'];
         $command = new UpdatePasswordCommand();
         $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
             'csrf_protection' => false

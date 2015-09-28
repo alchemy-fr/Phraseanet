@@ -7,12 +7,10 @@ use Alchemy\Phrasea\Account\Command\UpdateFtpCredentialsCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
@@ -34,11 +32,6 @@ class AccountService
      * @var EventDispatcher
      */
     private $eventDispatcher;
-
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
 
     /**
      * @var UserManager
@@ -68,7 +61,7 @@ class AccountService
         'getFax' => 'setFax',
         'getJob' => 'setJob',
         'getCompany' => 'setCompany',
-        'getPosition' => 'setActivity',
+        'getPosition' => 'setPosition',
         'getGeonameId' => 'setGeonameId',
         'getNotifications' => 'setMailNotificationsActivated'
     ];
@@ -80,15 +73,13 @@ class AccountService
         'getPassword' => 'setPassword',
         'getPassiveMode' => 'setPassive',
         'getFolder' => 'setReceptionFolder',
-        'getFolderPrefix' => 'setRepositoryPrefixName',
-        'getRetries' => 'setMaxRetry'
+        'getFolderPrefix' => 'setRepositoryPrefixName'
     ];
 
     public function __construct(
         Authenticator $authenticator,
         PasswordEncoderInterface $passwordEncoder,
         EventDispatcherInterface $eventDispatcher,
-        EntityManager $entityManager,
         UserManager $userManager,
         UserManipulator $userManipulator,
         UserRepository $userRepository
@@ -96,7 +87,7 @@ class AccountService
         $this->authenticationService = $authenticator;
         $this->passwordEncoder = $passwordEncoder;
         $this->eventDispatcher = $eventDispatcher;
-        $this->entityManager = $entityManager;
+
         $this->userManager = $userManager;
         $this->userManipulator = $userManipulator;
         $this->userRepository = $userRepository;
@@ -131,9 +122,9 @@ class AccountService
                 }
             }
 
-            $this->userManager->update($user, true);
+            $this->userManager->update($user);
         } catch (\Exception $e) {
-            throw new AccountException('Account update failed:' . $e->getMessage(), 0, $e);
+            throw new AccountException('Account update failed', 0, $e);
         }
     }
 
@@ -143,11 +134,6 @@ class AccountService
             $user = $this->authenticationService->getUser();
             $credentials = $user->getFtpCredential();
 
-            if (null === $credentials) {
-                $credentials = new FtpCredential();
-                $credentials->setUser($user);
-            }
-
             foreach ($this->updateFtpSettingsMap as $getter => $setter) {
                 $value = call_user_func([$command, $getter]);
 
@@ -156,8 +142,7 @@ class AccountService
                 }
             }
 
-            $this->entityManager->persist($credentials);
-            $this->entityManager->flush($credentials);
+            $this->userManager->update($user);
         } catch (\Exception $e) {
             throw new AccountException('Account FTP settings update failed', 0, $e);
         }

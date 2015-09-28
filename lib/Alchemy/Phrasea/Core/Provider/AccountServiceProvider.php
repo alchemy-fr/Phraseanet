@@ -24,7 +24,6 @@ class AccountServiceProvider implements ServiceProviderInterface
                 $app['authentication'],
                 $app['auth.password-encoder'],
                 $app['dispatcher'],
-                $app['orm.em'],
                 $app['model.user-manager'],
                 $app['manipulator.user'],
                 $app['repo.users']
