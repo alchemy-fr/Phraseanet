@@ -9,7 +9,10 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Account\AccountException;
+use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
+use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
@@ -28,6 +31,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -788,7 +792,7 @@ class V1Controller extends Controller
         return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
     }
 
-    public function resetPassword(Request $request, $email)
+    public function requestPasswordReset(Request $request, $email)
     {
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
         $service = $this->app['authentication.recovery_service'];
@@ -803,7 +807,7 @@ class V1Controller extends Controller
         return Result::create($request, [ 'reset_token' => $token ])->createResponse();
     }
 
-    public function setNewPassword(Request $request, $token)
+    public function resetPassword(Request $request, $token)
     {
         $password = $request->request->get('password', null);
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
@@ -817,6 +821,39 @@ class V1Controller extends Controller
         }
 
         return Result::create($request, [ 'success' => true ])->createResponse();
+    }
+
+    public function updatePassword(Request $request, $login)
+    {
+        /** @var AccountService $service */
+        $service = $this->app['accounts.service'];
+        $command = new UpdatePasswordCommand();
+        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+            'csrf_protection' => false
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            try {
+                $service->updatePassword($command, $login);
+
+                return Result::create($request, [ 'success' => true ]);
+            }
+            catch (AccountException $exception) {
+                return Result::create($request, [ 'success' => false, 'message' => $exception->getMessage() ]);
+            }
+        }
+
+        return Result::create($request, [ 'success' => false, 'message' => (string) $form->getErrors() ]);
+    }
+
+    public function unlockAccount(Request $request, $token)
+    {
+        /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
+        $service = $this->app['authentication.registration_service'];
+
+        $service->unlockAccount($token);
     }
 
     public function addRecordAction(Request $request)
