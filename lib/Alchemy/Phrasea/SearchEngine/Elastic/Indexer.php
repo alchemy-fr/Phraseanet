@@ -155,6 +155,11 @@ class Indexer
         // RecordQueuer::queueRecordsFromDatabox($databox);
     }
 
+    public function scheduleRecordsFromDataboxForIndexing(\databox $databox)
+    {
+        RecordQueuer::queueRecordsFromDatabox($databox);
+    }
+
     public function scheduleRecordsFromCollectionForIndexing(\collection $collection)
     {
         RecordQueuer::queueRecordsFromCollection($collection);
