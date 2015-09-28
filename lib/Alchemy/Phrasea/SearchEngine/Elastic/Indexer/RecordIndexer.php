@@ -20,6 +20,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetch
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\ScheduledFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\CoreHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\FlagHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\ThesaurusHydrator;
@@ -143,6 +144,7 @@ class RecordIndexer
             new CoreHydrator($databox->get_sbas_id(), $databox->get_viewname(), $this->helper),
             new TitleHydrator($connection),
             new MetadataHydrator($connection, $this->structure, $this->helper),
+            new FlagHydrator($this->structure, $databox),
             new ThesaurusHydrator($this->structure, $this->thesaurus, $candidateTerms),
             new SubDefinitionHydrator($connection)
         ), $delegate);
@@ -174,7 +176,7 @@ class RecordIndexer
             $params['id'] = $record['id'];
             unset($record['id']);
             $params['type'] = self::TYPE_NAME;
-            $params['body'] = $this->transform($record);
+            $params['body'] = $record;
             $bulk->index($params);
         }
     }
@@ -307,37 +309,10 @@ class RecordIndexer
     private function getFlagsMapping()
     {
         $mapping = new Mapping();
-
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            foreach ($databox->getStatusStructure() as $bit => $status) {
-                $key = RecordHelper::normalizeFlagKey($status['labelon']);
-                // We only add to mapping new statuses
-                if (!$mapping->has($key)) {
-                    $mapping->add($key, 'boolean');
-                }
-            }
+        foreach ($this->structure->getAllFlags() as $name => $_) {
+            $mapping->add($name, 'boolean');
         }
 
         return $mapping;
-    }
-
-    /**
-     * Inspired by ESRecordSerializer
-     *
-     * @todo complete, with all the other transformations
-     * @todo convert this function in a HydratorInterface and inject into fetcher
-     * @param $record
-     */
-    private function transform($record)
-    {
-        $databox = $this->appbox->get_databox($record['databox_id']);
-
-        foreach ($databox->getStatusStructure() as $bit => $status) {
-            $key = RecordHelper::normalizeFlagKey($status['labelon']);
-
-            $record['flags'][$key] = \databox_status::bitIsSet($record['flags_bitfield'], $bit);
-        }
-
-        return $record;
     }
 }

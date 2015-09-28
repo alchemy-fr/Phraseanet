@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Assert\Assertion;
 use DomainException;
 
 final class GlobalStructure implements Structure
@@ -17,6 +18,7 @@ final class GlobalStructure implements Structure
     private $private = array();
     /** @var Field[] */
     private $facets = array();
+    private $flags = array();
 
     /**
      * @param \databox[] $databoxes
@@ -24,17 +26,32 @@ final class GlobalStructure implements Structure
      */
     public static function createFromDataboxes(array $databoxes)
     {
-        $structure = new self();
+        $fields = [];
+        $flags = [];
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $fieldStructure) {
-                $field = Field::createFromLegacyField($fieldStructure);
-                $structure->add($field);
+                $fields[] = Field::createFromLegacyField($fieldStructure);
+            }
+            foreach ($databox->getStatusStructure() as $status) {
+                $flags[] = Flag::createFromLegacyStatus($status);
             }
         }
-        return $structure;
+        return new self($fields, $flags);
     }
 
-    public function add(Field $field)
+    public function __construct(array $fields, array $flags)
+    {
+        Assertion::allIsInstanceOf($fields, Field::class);
+        Assertion::allIsInstanceOf($flags, Flag::class);
+        foreach ($fields as $field) {
+            $this->add($field);
+        }
+        foreach ($flags as $flag) {
+            $this->flags[$flag->getName()] = $flag;
+        }
+    }
+
+    private function add(Field $field)
     {
         $name = $field->getName();
         if (isset($this->fields[$name])) {
@@ -118,6 +135,17 @@ final class GlobalStructure implements Structure
         }
 
         throw new DomainException(sprintf('Unknown field "%s".', $name));
+    }
+
+    public function getAllFlags()
+    {
+        return $this->flags;
+    }
+
+    public function getFlagByName($name)
+    {
+        return isset($this->flags[$name]) ?
+                     $this->flags[$name] : null;
     }
 
     /**

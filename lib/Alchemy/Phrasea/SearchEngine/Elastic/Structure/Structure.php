@@ -24,4 +24,7 @@ interface Structure
      * @throws \DomainException
      */
     public function isPrivate($name);
+
+    public function getAllFlags();
+    public function getFlagByName($name);
 }

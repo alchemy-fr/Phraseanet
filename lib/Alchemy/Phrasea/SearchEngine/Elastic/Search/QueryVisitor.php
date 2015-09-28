@@ -86,7 +86,7 @@ class QueryVisitor implements Visit
                 return $this->visitFlagStatementNode($element);
 
             case NodeTypes::FLAG:
-                return $this->visitString($element);
+                return new AST\Flag($this->visitString($element));
 
             case NodeTypes::DATABASE:
                 return $this->visitDatabaseNode($element);
@@ -275,9 +275,13 @@ class QueryVisitor implements Visit
         if ($node->getChildrenNumber() !== 2) {
             throw new \Exception('Flag statement can only have 2 childs.');
         }
+        $flag = $node->getChild(0)->accept($this);
+        if (!$flag instanceof AST\Flag) {
+            throw new \Exception('Flag statement key must be a flag node.');
+        }
 
         return new AST\FlagStatement(
-            $node->getChild(0)->accept($this),
+            $flag->getName(),
             $this->visitBoolean($node->getChild(1))
         );
     }

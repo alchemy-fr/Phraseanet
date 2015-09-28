@@ -2,9 +2,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
-use Assert\Assertion;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag as FlagStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Assert\Assertion;
 
 class FlagStatement extends Node
 {
@@ -21,12 +23,14 @@ class FlagStatement extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        // TODO Ensure flag exists
-        $key = RecordHelper::normalizeFlagKey($this->name);
-        $field = sprintf('flags.%s', $key);
+        $name = FlagStructure::normalizeName($this->name);
+        $flag = $context->getFlag($name);
+        if (!$flag) {
+            throw new QueryException(sprintf('Flag "%s" does not exist', $this->name));
+        }
         return [
             'term' => [
-                $field => $this->set
+                $flag->getIndexField() => $this->set
             ]
         ];
     }

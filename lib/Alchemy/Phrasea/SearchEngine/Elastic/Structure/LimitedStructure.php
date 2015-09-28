@@ -75,6 +75,16 @@ final class LimitedStructure implements Structure
         return $this->structure->isPrivate($name);
     }
 
+    public function getAllFlags()
+    {
+        return $this->structure->getAllFlags();
+    }
+
+    public function getFlagByName($name)
+    {
+        return $this->structure->getFlagByName($name);
+    }
+
     private function limit(array $fields)
     {
         $allowed_collections = $this->allowedCollections();

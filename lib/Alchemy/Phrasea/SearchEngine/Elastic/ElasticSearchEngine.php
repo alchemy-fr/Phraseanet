@@ -19,6 +19,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\LimitedStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -566,7 +567,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $databoxId = $databox->get_sbas_id();
             $statusStructure = $databox->getStatusStructure();
             foreach($statusStructure as $bit => $status) {
-                $flags[$databoxId][$bit] = RecordHelper::normalizeFlagKey($status['labelon']);
+                $flags[$databoxId][$bit] = Flag::normalizeName($status['labelon']);
             }
         }
 
