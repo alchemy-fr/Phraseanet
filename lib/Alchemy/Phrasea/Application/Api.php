@@ -41,7 +41,10 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->loadPlugins();
 
     $app['exception_handler'] = $app->share(function ($app) {
-        return new ApiExceptionHandlerSubscriber($app);
+        $handler = new ApiExceptionHandlerSubscriber($app);
+        $handler->setLogger($app['monolog']);
+
+        return $handler;
     });
     $app['monolog'] = $app->share($app->extend('monolog', function (Logger $monolog) {
         $monolog->pushProcessor(new WebProcessor());

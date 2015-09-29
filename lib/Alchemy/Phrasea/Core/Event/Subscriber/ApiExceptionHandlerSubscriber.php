@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Api\Result;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,9 +29,17 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
 {
     private $app;
 
+    private $logger;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->logger = new NullLogger();
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     public static function getSubscribedEvents()
@@ -62,6 +72,13 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
             }
         } else {
             $code = 500;
+        }
+
+        if ($code == 500) {
+            $this->logger->error($e->getMessage(), [
+                'code' => $e->getCode(),
+                'trace' => $e->getTrace()
+            ]);
         }
 
         if ($e instanceof HttpExceptionInterface) {
