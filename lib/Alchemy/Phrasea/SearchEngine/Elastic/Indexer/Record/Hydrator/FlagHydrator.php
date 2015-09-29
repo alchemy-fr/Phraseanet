@@ -46,7 +46,6 @@ class FlagHydrator implements HydratorInterface
         foreach ($records as &$record) {
             if (isset($record['flags_bitfield'])) {
                 $record['flags'] = $this->bitfieldToFlagsMap($record['flags_bitfield']);
-                var_dump($record['flags_bitfield'], $record['flags']);
             }
         }
     }
