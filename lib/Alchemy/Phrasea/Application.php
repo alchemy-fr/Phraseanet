@@ -84,6 +84,7 @@ use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
 use Monolog\Processor\IntrospectionProcessor;
@@ -1052,8 +1053,15 @@ class Application extends SilexApplication
     private function setupMonolog()
     {
         $this['monolog.name'] = 'phraseanet';
-        $this['monolog.handler'] = $this->share(function () {
-            return new SyslogHandler('phraseanet', LOG_SYSLOG, Logger::ERROR);
+        $this['monolog.logfile'] = $this['root.path'] . '/logs/app_error.log';
+        $this['monolog.handler'] = $this->share(function (Application $app) {
+            return new RotatingFileHandler(
+                $app['monolog.logfile'],
+                10,
+                Logger::ERROR,
+                $app['monolog.bubble'],
+                $app['monolog.permission']
+            );
         });
     }
 
