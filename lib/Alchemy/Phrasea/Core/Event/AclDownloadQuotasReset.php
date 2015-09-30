@@ -4,6 +4,6 @@ namespace Alchemy\Phrasea\Core\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class AccountDeletedEvent extends AccountRelatedEvent
+class AclDownloadQuotasReset extends AclRelated
 {
 }

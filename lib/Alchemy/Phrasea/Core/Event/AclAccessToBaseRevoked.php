@@ -4,10 +4,10 @@ namespace Alchemy\Phrasea\Core\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class AclRevokeAccessFromBaseEvent extends AclRelatedEvent
+class AclAccessToBaseRevoked extends AclRelated
 {
     public function getBaseId()
     {
-        return $this->parms['base_id'];
+        return $this->args['base_id'];
     }
 }

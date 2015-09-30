@@ -4,10 +4,10 @@ namespace Alchemy\Phrasea\Core\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class AclGiveAccessToSbasEvent extends AclRelatedEvent
+class AclAccessToSbasGranted extends AclRelated
 {
     public function getSbasId()
     {
-        return $this->parms['sbas_id'];
+        return $this->args['sbas_id'];
     }
 }

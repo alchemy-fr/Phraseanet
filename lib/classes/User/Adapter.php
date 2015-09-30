@@ -11,7 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Core\Event\AccountDeletedEvent;
+use Alchemy\Phrasea\Core\Event\AccountCreated;
+use Alchemy\Phrasea\Core\Event\AccountDeleted;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
@@ -1001,6 +1002,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function delete()
     {
+        $old_id = $this->get_id();
+        $old_login = $this->get_login();
+        $old_email = $this->get_email();
+
         $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
 
         foreach ($repo->findByUser($this) as $provider) {
@@ -1089,12 +1094,15 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $this->app['dispatcher']->dispatch(
             PhraseaEvents::ACCOUNT_DELETED,
-            new AccountDeletedEvent(
-                $this->get_id(),
-                $this->get_login(),
-                $this->get_email()
+            new AccountDeleted(
+                null,
+                array(
+                    'user_id'=>$old_id,
+                    'login'=>$old_login,
+                    'email'=>$old_email
+                )
             )
-        );
+    );
 
         return;
     }
@@ -1829,16 +1837,16 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt->closeCursor();
         }
 
+        $user = self::getInstance($usr_id, $app);
+
         $app['dispatcher']->dispatch(
             PhraseaEvents::ACCOUNT_CREATED,
-            new AccountCreatedEvent(
-                $usr_id,
-                $login,
-                ($email ? $email : null)
+            new AccountCreated(
+                $user
             )
         );
 
-        return self::getInstance($usr_id, $app);
+        return $user;
     }
 
     protected $nonce;

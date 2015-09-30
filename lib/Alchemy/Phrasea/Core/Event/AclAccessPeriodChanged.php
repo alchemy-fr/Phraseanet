@@ -4,25 +4,25 @@ namespace Alchemy\Phrasea\Core\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class AclSetLimitsEvent extends AclRelatedEvent
+class AclAccessPeriodChanged extends AclRelated
 {
     public function getBaseId()
     {
-        return $this->parms['base_id'];
+        return $this->args['base_id'];
     }
 
     public function getLimit()
     {
-        return $this->parms['limit'];
+        return $this->args['limit'];
     }
 
     public function getLimitFrom()
     {
-        return $this->parms['limit_from'];
+        return $this->args['limit_from'];
     }
 
     public function getLimitTo()
     {
-        return $this->parms['limit_to'];
+        return $this->args['limit_to'];
     }
 }

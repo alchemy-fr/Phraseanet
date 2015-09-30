@@ -14,6 +14,16 @@ use Symfony\Component\Filesystem\Filesystem;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\DataboxCreated;
+use Alchemy\Phrasea\Core\Event\DataboxDeleted;
+use Alchemy\Phrasea\Core\Event\DataboxMounted;
+use Alchemy\Phrasea\Core\Event\DataboxReindexAsked;
+use Alchemy\Phrasea\Core\Event\DataboxStructureChanged;
+use Alchemy\Phrasea\Core\Event\DataboxThesaurusChanged;
+use Alchemy\Phrasea\Core\Event\DataboxTouChanged;
+use Alchemy\Phrasea\Core\Event\DataboxUnmounted;
+
 class databox extends base
 {
     /**
@@ -447,6 +457,8 @@ class databox extends base
 
     public function unmount_databox()
     {
+        $old_dbname = $this->get_dbname();
+
         if ($this->app['phraseanet.static-file-factory']->isStaticFileModeEnabled()) {
             $sql = "SELECT path, file FROM subdef WHERE `name`='thumbnail'";
             $stmt = $this->get_connection()->prepare($sql);
@@ -518,6 +530,16 @@ class databox extends base
 
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_UNMOUNTED,
+            new DataboxUnmounted(
+                null,
+                array(
+                    'dbname'=>$old_dbname
+                )
+            )
+        );
 
         return;
     }
@@ -597,10 +619,18 @@ class databox extends base
 
         $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
+        /** @var \databox $databox */
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
             $data_template, $registry->get('GV_base_datapath_noweb')
+        );
+
+        $app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_CREATED,
+            new DataboxCreated(
+                $databox
+            )
         );
 
         return $databox;
@@ -658,6 +688,13 @@ class databox extends base
         phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
         cache_databox::update($app, $databox->get_sbas_id(), 'structure');
+
+        $app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_MOUNTED,
+            new DataboxMounted(
+                $databox
+            )
+        );
 
         return $databox;
     }
@@ -749,12 +786,23 @@ class databox extends base
 
     public function delete()
     {
+        $old_dbname = $this->get_dbname();
         $sql = 'DROP DATABASE `' . $this->get_dbname() . '`';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_DELETED,
+            new DataboxDeleted(
+                null,
+                array(
+                    'dbname'=>$old_dbname
+                )
+            )
+        );
 
         return;
     }
@@ -858,6 +906,7 @@ class databox extends base
      */
     public function saveStructure(DOMDocument $dom_struct)
     {
+        $old_structure = $this->get_dom_structure();
 
         $dom_struct->documentElement
             ->setAttribute("modification_date", $now = date("YmdHis"));
@@ -878,7 +927,7 @@ class databox extends base
 
         $this->_sxml_structure = $this->_dom_structure = $this->_xpath_structure = null;
 
-        $com_struct = $this->get_dom_structure();
+        $dom_struct = $this->get_dom_structure();
         $xp_struct = $this->get_xpath_structure();
 
         $this->meta_struct = null;
@@ -888,6 +937,16 @@ class databox extends base
         $this->delete_data_from_cache(self::CACHE_META_STRUCT);
 
         cache_databox::update($this->app, $this->id, 'structure');
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_STRUCTURE_CHANGED,
+            new DataboxStructureChanged(
+                $this,
+                array(
+                    'dom_before'=>$old_structure
+                )
+            )
+        );
 
         return $this;
     }
@@ -916,6 +975,7 @@ class databox extends base
 
     public function saveThesaurus(DOMDocument $dom_thesaurus)
     {
+        $old_thesaurus = $this->get_dom_thesaurus();
 
         $dom_thesaurus->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
         $this->thesaurus = $dom_thesaurus->saveXML();
@@ -925,6 +985,16 @@ class databox extends base
         $stmt->execute(array(':xml'  => $this->thesaurus, ':date' => $now));
         $stmt->closeCursor();
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_THESAURUS_CHANGED,
+            new DataboxThesaurusChanged(
+                $this,
+                array(
+                    'dom_before'=>$old_thesaurus,
+                )
+            )
+        );
 
         return $this;
     }
@@ -948,6 +1018,8 @@ class databox extends base
         $this->saveStructure($dom_doc);
 
         $this->feed_meta_fields();
+
+        // event sent by saveStructure()
 
         return $this;
     }
@@ -1002,6 +1074,8 @@ class databox extends base
             } catch (\Exception $e) {
             }
         }
+
+        // event sent by saveStructure()
 
         return $this;
     }
@@ -1062,6 +1136,8 @@ class databox extends base
             );
         }
 
+        // event sent by acl->give_access_to_base()
+
         return $this;
     }
 
@@ -1097,6 +1173,13 @@ class databox extends base
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_REINDEX_ASKED,
+            new DataboxReindexAsked(
+                $this
+            )
+        );
 
         return $this;
     }
@@ -1446,6 +1529,8 @@ class databox extends base
 
     public function update_cgus($locale, $terms, $reset_date)
     {
+        $old_tou = $this->get_cgus();
+
         $terms = str_replace(array("\r\n", "\n", "\r"), array('', '', ''), strip_tags($terms, '<p><strong><a><ul><ol><li><h1><h2><h3><h4><h5><h6>'));
         $sql = 'UPDATE pref SET value = :terms ';
 
@@ -1460,6 +1545,16 @@ class databox extends base
         $update = true;
         $this->cgus = null;
         $this->delete_data_from_cache(self::CACHE_CGUS);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::DATABOX_TOU_CHANGED,
+            new DataboxTouChanged(
+                $this,
+                array(
+                    'tou_before'=>$old_tou,
+                )
+            )
+        );
 
         return $this;
     }

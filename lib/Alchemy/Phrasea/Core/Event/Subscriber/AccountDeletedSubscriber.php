@@ -3,11 +3,11 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\AccountDeletedEvent;
+use Alchemy\Phrasea\Core\Event\AccountDeleted;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class AccountDeletedEventSubscriber implements EventSubscriberInterface
+class AccountDeletedSubscriber implements EventSubscriberInterface
 {
     /**
      * @var Application
@@ -19,7 +19,7 @@ class AccountDeletedEventSubscriber implements EventSubscriberInterface
         $this->app = $app;;
     }
 
-    public function onAccountDeleted(AccountDeletedEvent $event)
+    public function onAccountDeleted(AccountDeleted $event)
     {
         $appbox = $this->app['phraseanet.appbox'];
 

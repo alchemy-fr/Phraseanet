@@ -10,6 +10,14 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\CollectionCreated;
+use Alchemy\Phrasea\Core\Event\CollectionDisabled;
+use Alchemy\Phrasea\Core\Event\CollectionEmptied;
+use Alchemy\Phrasea\Core\Event\CollectionEnabled;
+use Alchemy\Phrasea\Core\Event\CollectionMounted;
+use Alchemy\Phrasea\Core\Event\CollectionSettingsChanged;
+use Alchemy\Phrasea\Core\Event\CollectionUnmounted;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
@@ -146,6 +154,13 @@ class collection implements cache_cacheableInterface
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_ENABLED,
+            new CollectionEnabled(
+                $this
+            )
+        );
+
         return $this;
     }
 
@@ -175,6 +190,13 @@ class collection implements cache_cacheableInterface
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_DISABLED,
+            new CollectionDisabled(
+                $this
+            )
+        );
+
         return $this;
     }
 
@@ -187,15 +209,27 @@ class collection implements cache_cacheableInterface
             ORDER BY record_id DESC LIMIT 0, " . $pass_quantity;
 
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':coll_id' => $this->get_coll_id()));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        do {
+            $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
 
-        foreach ($rs as $row) {
-            $record = $this->databox->get_record($row['record_id']);
-            $record->delete();
-            unset($record);
+            $n = 0;
+            foreach ($rs as $row) {
+                $record = $this->databox->get_record($row['record_id']);
+                $record->delete();
+                unset($record);
+                $n++;
+            }
         }
+        while($n > 0);
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_EMPTIED,
+            new CollectionEmptied(
+                $this
+            )
+        );
 
         return $this;
     }
@@ -485,6 +519,7 @@ class collection implements cache_cacheableInterface
 
     public function set_prefs(DOMDocument $dom)
     {
+        $old_prefs = $this->get_prefs();
         $this->prefs = $dom->saveXML();
 
         $sql = "UPDATE coll SET prefs = :prefs WHERE coll_id = :coll_id";
@@ -493,6 +528,16 @@ class collection implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_SETTING_CHANGED,
+            new CollectionSettingsChanged(
+                $this,
+                array(
+                    'settings_before'=>$old_prefs
+                )
+            )
+        );
 
         return $this->prefs;
     }
@@ -514,6 +559,9 @@ class collection implements cache_cacheableInterface
 
     public function unmount_collection(Application $app)
     {
+        $old_coll_id = $this->get_coll_id();
+        $old_name = $this->get_name();
+
         $params = array(':base_id' => $this->get_base_id());
 
         $query = new User_Query($app);
@@ -548,6 +596,17 @@ class collection implements cache_cacheableInterface
         $stmt->closeCursor();
 
         phrasea::reset_baseDatas($app['phraseanet.appbox']);
+
+        $app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_UNMOUNTED,
+            new CollectionUnmounted(
+                null,                   // the coll is not available anymore
+                array(
+                    'coll_id'=>$old_coll_id,
+                    'name'=>$old_name
+                )
+            )
+        );
 
         return $this;
     }
@@ -616,6 +675,13 @@ class collection implements cache_cacheableInterface
             $collection->set_admin($new_bas, $user);
         }
 
+        $app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_CREATED,
+            new CollectionCreated(
+                $collection
+            )
+        );
+
         return $collection;
     }
 
@@ -644,6 +710,8 @@ class collection implements cache_cacheableInterface
 
         $user->ACL()->update_rights_to_base($base_id, $rights);
 
+        // event sent by acl()->update_rights_to_base()
+
         return true;
     }
 
@@ -670,8 +738,15 @@ class collection implements cache_cacheableInterface
 
         phrasea::reset_baseDatas($databox->get_appbox());
 
-        $coll = self::get_from_base_id($app, $new_bas);
-        $coll->set_admin($new_bas, $user);
+        $collection = self::get_from_base_id($app, $new_bas);
+        $collection->set_admin($new_bas, $user);
+
+        $app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_MOUNTED,
+            new CollectionMounted(
+                $collection
+            )
+        );
 
         return $new_bas;
     }
