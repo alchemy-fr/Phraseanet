@@ -15,7 +15,7 @@ class CollectionRelated extends Event
      * @param \collection|null $collection
      * @param array|null $args
      */
-    public function __construct(\collection $collection, array $args = null)
+    public function __construct($collection, array $args = null)
     {
         $this->collection = $collection;
         $this->args = $args;

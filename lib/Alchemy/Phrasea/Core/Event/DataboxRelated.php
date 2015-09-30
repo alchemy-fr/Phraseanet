@@ -16,7 +16,7 @@ class DataboxRelated extends Event
      * @param \databox|null $databox
      * @param array|null $args
      */
-    public function __construct(\databox $databox, array $args = null)
+    public function __construct($databox, array $args = null)
     {
         $this->databox = $databox;
         $this->args = $args;
