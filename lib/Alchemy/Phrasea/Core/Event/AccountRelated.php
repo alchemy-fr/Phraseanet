@@ -22,4 +22,9 @@ class AccountRelated extends Event
         $this->user = $user;
         $this->args = $args;
     }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
 }
