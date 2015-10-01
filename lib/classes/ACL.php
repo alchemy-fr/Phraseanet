@@ -160,6 +160,11 @@ class ACL implements cache_cacheableInterface
         $this->app = $app;
     }
 
+    public function get_user()
+    {
+        return $this->user;
+    }
+
     /**
      * Returns the list of available rights for collections
      *
@@ -1752,10 +1757,7 @@ class ACL implements cache_cacheableInterface
             new AclAccessPeriodChanged(
                 $this,
                 array(
-                    'base_id'=>$base_id,
-                    'limit'=>$limit,
-                    'limit_from'=>$limit_from,
-                    'limit_to'=>$limit_to
+                    'base_id'=>$base_id
                 )
             )
         );
