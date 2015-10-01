@@ -65,7 +65,7 @@ class PhraseaEngineSubscriber implements EventSubscriberInterface
     {
         return array(
             PhraseaEvents::POST_AUTHENTICATE => array('onAuthenticate', 0),
-            PhraseaEvents::COLLECTION_CREATE => array('onCollectionCreate', 0),
+            PhraseaEvents::COLLECTION_CREATED => array('onCollectionCreate', 0),
         );
     }
 }
