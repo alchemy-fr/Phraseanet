@@ -56,32 +56,36 @@ abstract class BaseController
     }
 
     /**
-     * @param mixed $formType
-     * @param mixed $data
+     * @param string $method
+     * @param mixed  $formType
+     * @param array  $options
+     * @param mixed  $data
      * @return FormInterface
      */
-    public function createApiForm($formType, $data, array $options = [])
+    public function createApiForm($method = 'POST', $formType = 'form', array $options = [], $data = null)
     {
         return $this->app['form.factory']->createNamed(
             'data',
             $formType,
             $data,
-            array_merge(['csrf_protection' => false], $options)
+            array_merge(['method' => $method, 'csrf_protection' => false], $options)
         );
     }
 
     /**
-     * @param mixed $formType
-     * @param mixed $data
+     * @param string $method
+     * @param mixed  $formType
+     * @param array  $options
+     * @param mixed  $data
      * @return FormBuilderInterface
      */
-    public function createApiFormBuilder($formType = 'form', $data = null, array $options = [])
+    public function createApiFormBuilder($method = 'POST', $formType = 'form', array $options = [], $data = null)
     {
         return $this->app['form.factory']->createNamedBuilder(
             'data',
             $formType,
             $data,
-            array_merge(['csrf_protection' => false], $options)
+            array_merge(['method' => $method, 'csrf_protection' => false], $options)
         );
     }
 
