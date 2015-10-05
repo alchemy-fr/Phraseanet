@@ -15,7 +15,9 @@ use Alchemy\Phrasea\Core\Event\CollectionCreated;
 use Alchemy\Phrasea\Core\Event\CollectionDisabled;
 use Alchemy\Phrasea\Core\Event\CollectionEmptied;
 use Alchemy\Phrasea\Core\Event\CollectionEnabled;
+use Alchemy\Phrasea\Core\Event\CollectionLabelChanged;
 use Alchemy\Phrasea\Core\Event\CollectionMounted;
+use Alchemy\Phrasea\Core\Event\CollectionNameChanged;
 use Alchemy\Phrasea\Core\Event\CollectionSettingsChanged;
 use Alchemy\Phrasea\Core\Event\CollectionUnmounted;
 
@@ -271,6 +273,8 @@ class collection implements cache_cacheableInterface
 
     public function set_name($name)
     {
+        $old_name = $this->get_name();
+
         $name = trim(strip_tags($name));
 
         if ($name === '')
@@ -288,6 +292,14 @@ class collection implements cache_cacheableInterface
 
         phrasea::reset_baseDatas($this->databox->get_appbox());
 
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_NAME_CHANGED,
+            new CollectionNameChanged(
+                $this,
+                array("name_before"=>$old_name)
+            )
+        );
+
         return $this;
     }
 
@@ -296,6 +308,8 @@ class collection implements cache_cacheableInterface
         if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
+
+        $old_label = $this->labels[$code];
 
         $sql = "UPDATE coll SET label_$code = :label
             WHERE coll_id = :coll_id";
@@ -308,6 +322,14 @@ class collection implements cache_cacheableInterface
         $this->delete_data_from_cache();
 
         phrasea::reset_baseDatas($this->databox->get_appbox());
+
+        $this->app['dispatcher']->dispatch(
+            PhraseaEvents::COLLECTION_LABEL_CHANGED,
+            new CollectionLabelChanged(
+                $this,
+                array("lng"=>$code, "label_before"=>$old_label)
+            )
+        );
 
         return $this;
     }
