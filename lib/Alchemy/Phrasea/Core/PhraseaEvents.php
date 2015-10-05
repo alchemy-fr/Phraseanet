@@ -58,4 +58,6 @@ final class PhraseaEvents
     const COLLECTION_MOUNTED = 'collection.mounted';
     const COLLECTION_UNMOUNTED = 'collection.unmounted';
     const COLLECTION_SETTING_CHANGED = 'collection.settings.changed';
+    const COLLECTION_NAME_CHANGED = 'collection.name.changed';
+    const COLLECTION_LABEL_CHANGED = 'collection.label.changed';
 }
