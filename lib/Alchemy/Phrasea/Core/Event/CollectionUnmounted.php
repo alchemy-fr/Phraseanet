@@ -11,8 +11,8 @@ class CollectionUnmounted extends CollectionRelated
         return $this->args['coll_id'];
     }
 
-    public function getName()
+    public function getCollName()
     {
-        return $this->args['name'];
+        return $this->args['coll_name'];
     }
 }

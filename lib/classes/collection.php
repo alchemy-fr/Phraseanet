@@ -625,7 +625,7 @@ class collection implements cache_cacheableInterface
                 null,                   // the coll is not available anymore
                 array(
                     'coll_id'=>$old_coll_id,
-                    'name'=>$old_name
+                    'coll_name'=>$old_name
                 )
             )
         );
