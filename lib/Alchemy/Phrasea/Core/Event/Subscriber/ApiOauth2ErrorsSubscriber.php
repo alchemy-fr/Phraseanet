@@ -61,7 +61,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
             $msg = json_encode(['msg'  => $msg, 'code' => $code]);
             $event->setResponse(new Response($msg, $code, $headers));
         } else {
-            $response = $this->handler->createResponseBasedOnRequest($event->getRequest(), $event->getException());
+            $response = $this->handler->createResponse($event->getException());
             $response->headers->set('Content-Type', 'text/html');
             $event->setResponse($response);
         }

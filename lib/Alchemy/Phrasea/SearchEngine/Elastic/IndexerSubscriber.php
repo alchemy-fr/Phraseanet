@@ -19,6 +19,8 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\RecordSubDefinitionCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
+use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvent;
+use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -84,6 +86,17 @@ class IndexerSubscriber implements EventSubscriberInterface
             RecordEvents::STATUS_CHANGED => 'onRecordChange',
             RecordEvents::SUB_DEFINITION_CREATED => 'onRecordChange',
             RecordEvents::MEDIA_SUBSTITUTED => 'onRecordChange',
+            ThesaurusEvents::IMPORTED => 'onThesaurusChange',
+            ThesaurusEvents::FIELD_LINKED => 'onThesaurusChange',
+            ThesaurusEvents::CANDIDATE_ACCEPTED_AS_CONCEPT => 'onThesaurusChange',
+            ThesaurusEvents::CANDIDATE_ACCEPTED_AS_SYNONYM => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_LNG_CHANGED => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_POSITION_CHANGED => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_TRASHED => 'onThesaurusChange',
+            ThesaurusEvents::CONCEPT_TRASHED => 'onThesaurusChange',
+            ThesaurusEvents::CONCEPT_DELETED => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_ADDED => 'onThesaurusChange',
+            ThesaurusEvents::CONCEPT_ADDED => 'onThesaurusChange'
         ];
     }
 
@@ -91,6 +104,12 @@ class IndexerSubscriber implements EventSubscriberInterface
     {
         $databox = $event->getDatabox();
         $this->getIndexer()->migrateMappingForDatabox($databox);
+    }
+
+    public function onThesaurusChange(ThesaurusEvent $event)
+    {
+        $databox = $event->getDatabox();
+        $this->getIndexer()->scheduleRecordsFromDataboxForIndexing($databox);
     }
 
     public function onCollectionChange(CollectionEvent $event)

@@ -41,7 +41,7 @@ class Indexer
     private $recordIndexer;
     private $termIndexer;
 
-    private $indexQueue;
+    private $indexQueue;        // contains RecordInterface(s)
     private $deleteQueue;
 
     private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
@@ -153,6 +153,11 @@ class Indexer
 
         // $this->updateMapping();
         // RecordQueuer::queueRecordsFromDatabox($databox);
+    }
+
+    public function scheduleRecordsFromDataboxForIndexing(\databox $databox)
+    {
+        RecordQueuer::queueRecordsFromDatabox($databox);
     }
 
     public function scheduleRecordsFromCollectionForIndexing(\collection $collection)

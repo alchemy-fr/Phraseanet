@@ -12,7 +12,7 @@ namespace Alchemy\Phrasea\Controller\Thesaurus;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Thesaurus as ThesaurusEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -699,7 +699,7 @@ class ThesaurusController extends Controller
                 }
 
                 $this->dispatch(
-                    PhraseaEvents::THESAURUS_IMPORTED,
+                    ThesaurusEvents::IMPORTED,
                     new ThesaurusEvent\Imported($databox)
                 );
             }
@@ -987,7 +987,7 @@ class ThesaurusController extends Controller
 
             if ($request->get("reindex")) {
                 $this->dispatch(
-                    PhraseaEvents::THESAURUS_FIELD_LINKED,
+                    ThesaurusEvents::FIELD_LINKED,
                     new ThesaurusEvent\FieldLinked($databox)
                 );
             }
@@ -1360,7 +1360,7 @@ class ThesaurusController extends Controller
                                 $databox->saveThesaurus($domth);
 
                                 $this->dispatch(
-                                    PhraseaEvents::THESAURUS_CANDIDATE_ACCEPTED_AS_CONCEPT,
+                                    ThesaurusEvents::CANDIDATE_ACCEPTED_AS_CONCEPT,
                                     new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id'))
                                 );
 
@@ -1404,7 +1404,7 @@ class ThesaurusController extends Controller
                                     $databox->saveThesaurus($domth);
 
                                     $this->dispatch(
-                                        PhraseaEvents::THESAURUS_CANDIDATE_ACCEPTED_AS_SYNONYM,
+                                        ThesaurusEvents::CANDIDATE_ACCEPTED_AS_SYNONYM,
                                         new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id'))
                                     );
                                 }
@@ -1493,7 +1493,7 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            PhraseaEvents::THESAURUS_SYNONYM_LNG_CHANGED,
+                            ThesaurusEvents::SYNONYM_LNG_CHANGED,
                             new ThesaurusEvent\SynonymLngChanged($databox, $sy0->getAttribute('id'))
                         );
                     }
@@ -1575,7 +1575,7 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            PhraseaEvents::THESAURUS_SYNONYM_POSITION_CHANGED,
+                            ThesaurusEvents::SYNONYM_POSITION_CHANGED,
                             new ThesaurusEvent\SynonymPositionChanged($databox, $sy0->getAttribute('id'))
                         );
 
@@ -1720,7 +1720,7 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            PhraseaEvents::THESAURUS_SYNONYM_TRASHED,
+                            ThesaurusEvents::SYNONYM_TRASHED,
                             new ThesaurusEvent\ItemTrashed($databox, $te->getAttribute('id'), $delsy->getAttribute('id'))
                         );
 
@@ -1837,7 +1837,7 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($domth);
 
                         $this->dispatch(
-                            PhraseaEvents::THESAURUS_CONCEPT_TRASHED,
+                            ThesaurusEvents::CONCEPT_TRASHED,
                             new ThesaurusEvent\ItemTrashed($databox, $thnode_parent->getAttribute('id'), $newte->getAttribute('id'))
                         );
 
@@ -2282,7 +2282,7 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            PhraseaEvents::THESAURUS_CONCEPT_DELETED,
+                            ThesaurusEvents::CONCEPT_DELETED,
                             new ThesaurusEvent\ConceptDeleted($databox, $refrid, $sy_evt_parm)
                         );
 
@@ -2391,7 +2391,7 @@ class ThesaurusController extends Controller
                     $databox->saveThesaurus($domth);
 
                     $this->dispatch(
-                        PhraseaEvents::THESAURUS_SYNONYM_ADDED,
+                        ThesaurusEvents::SYNONYM_ADDED,
                         new ThesaurusEvent\ItemAdded($databox, $syid)
                     );
 
@@ -2496,7 +2496,7 @@ class ThesaurusController extends Controller
                     $databox->saveThesaurus($domth);
 
                     $this->dispatch(
-                        PhraseaEvents::THESAURUS_CONCEPT_ADDED,
+                        ThesaurusEvents::CONCEPT_ADDED,
                         new ThesaurusEvent\ItemAdded($databox, $syid)
                     );
 

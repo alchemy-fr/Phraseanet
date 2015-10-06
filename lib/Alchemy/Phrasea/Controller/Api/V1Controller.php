@@ -462,6 +462,13 @@ class V1Controller extends Controller
         ];
     }
 
+    public function getDataboxCollectionAction(Request $request, $base_id)
+    {
+        return Result::create($request, [
+            $this->listCollection($this->app->getApplicationBox()->get_collection($base_id))
+        ])->createResponse();
+    }
+
     /**
      * Get a Response containing the collections of a \databox
      *
@@ -1459,9 +1466,9 @@ class V1Controller extends Controller
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        $ret = array_filter(array_map(function ($media) use ($request, $record) {
+        $ret = array_values(array_filter(array_map(function ($media) use ($request, $record) {
             return $this->listEmbeddableMedia($request, $record, $media);
-        }, $record->get_embedable_medias($devices, $mimes)));
+        }, $record->get_embedable_medias($devices, $mimes))));
 
         return Result::create($request, ["embed" => $ret])->createResponse();
     }
@@ -1978,9 +1985,9 @@ class V1Controller extends Controller
         $devices = $request->get('devices', []);
         $mimes = $request->get('mimes', []);
 
-        $ret = array_filter(array_map(function ($media) use ($request, $record) {
+        $ret = array_values(array_filter(array_map(function ($media) use ($request, $record) {
             return $this->listEmbeddableMedia($request, $record, $media);
-        }, $record->get_embedable_medias($devices, $mimes)));
+        }, $record->get_embedable_medias($devices, $mimes))));
 
         return Result::create($request, ["embed" => $ret])->createResponse();
     }

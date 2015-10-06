@@ -294,42 +294,6 @@ class databox extends base implements ThumbnailedElement
         return $this->id;
     }
 
-    public function get_unique_keywords()
-    {
-        $sql = "SELECT COUNT(kword_id) AS n FROM kword";
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        return ($rowbas ? $rowbas['n'] : null);
-    }
-
-    public function get_index_amount()
-    {
-        $sql = "SELECT COUNT(idx_id) AS n FROM idx";
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        return ($rowbas ? $rowbas['n'] : null);
-    }
-
-    public function get_thesaurus_hits()
-    {
-        $sql = "SELECT COUNT(thit_id) AS n FROM thit";
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        return ($rowbas ? $rowbas['n'] : null);
-    }
-
     public function get_record_details($sort)
     {
         $sql = "SELECT record.coll_id, ISNULL(coll.coll_id) AS lostcoll,
@@ -390,36 +354,46 @@ class databox extends base implements ThumbnailedElement
         return $amount;
     }
 
-    public function get_indexed_record_amount()
+    public function get_counts()
     {
-        $sql = "SELECT status & 3 AS status, SUM(1) AS n FROM record GROUP BY(status & 3)";
+        $mask = PhraseaTokens::MAKE_SUBDEF | PhraseaTokens::TO_INDEX | PhraseaTokens::INDEXING; // we only care about those "jetons"
+        $sql = "SELECT type, jeton & (".$mask.") AS status, SUM(1) AS n FROM record GROUP BY type, (jeton & ".$mask.")";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $ret = array(
-            'xml_indexed'       => 0,
-            'thesaurus_indexed' => 0,
-            'jeton_subdef' => array()
+            'records'             => 0,
+            'records_indexed'     => 0,    // jetons = 0;0
+            'records_to_index'    => 0,    // jetons = 0;1
+            'records_not_indexed' => 0,    // jetons = 1;0
+            'records_indexing'    => 0,    // jetons = 1;1
+            'subdefs_todo'        => array()   // by type "image", "video", ...
         );
-
         foreach ($rs as $row) {
+            $ret['records'] += ($n = (int)($row['n']));
             $status = $row['status'];
-            if ($status & 1)
-                $ret['xml_indexed'] += $row['n'];
-            if ($status & 2)
-                $ret['thesaurus_indexed'] += $row['n'];
-        }
-
-        $sql = "SELECT type, COUNT(record_id) AS n FROM record WHERE jeton & ".PhraseaTokens::MAKE_SUBDEF." GROUP BY type";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $ret['jeton_subdef'][$row['type']] = (int)$row['n'];
+            switch($status & (PhraseaTokens::TO_INDEX | PhraseaTokens::INDEXING)) {
+                case 0:
+                    $ret['records_indexed'] += $n;
+                    break;
+                case PhraseaTokens::TO_INDEX:
+                    $ret['records_to_index'] += $n;
+                    break;
+                case PhraseaTokens::INDEXING:
+                    $ret['records_not_indexed'] += $n;
+                    break;
+                case PhraseaTokens::INDEXING | PhraseaTokens::TO_INDEX:
+                    $ret['records_indexing'] += $n;
+                    break;
+            }
+            if($status & PhraseaTokens::MAKE_SUBDEF) {
+                if(!array_key_exists($row['type'], $ret['subdefs_todo'])) {
+                    $ret['subdefs_todo'][$row['type']] = 0;
+                }
+                $ret['subdefs_todo'][$row['type']] += $n;
+            }
         }
 
         return $ret;
@@ -1056,6 +1030,12 @@ class databox extends base implements ThumbnailedElement
     public function reindex()
     {
         $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
+
+        // Set TO_INDEX flag on all records
+        $sql = "UPDATE record SET jeton = (jeton | :token)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':token', PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $this;
     }

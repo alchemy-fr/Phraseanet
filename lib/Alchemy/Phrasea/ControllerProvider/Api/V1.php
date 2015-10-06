@@ -20,7 +20,7 @@ use Silex\ServiceProviderInterface;
 
 class V1 implements ControllerProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '1.4.1';
+    const VERSION = '2.0.0';
 
     public static $extendedContentTypes = [
         'json' => ['application/vnd.phraseanet.record-extended+json'],
@@ -71,6 +71,8 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:showPhraseanetConfigurationAction')
             ->before('controller.api.v1:ensureAdmin');
+
+        $controllers->get('/collections/{base_id}/', 'controller.api.v1:getDataboxCollectionAction');
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:listDataboxesAction');
 
