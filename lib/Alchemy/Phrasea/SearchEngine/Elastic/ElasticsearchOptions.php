@@ -23,6 +23,8 @@ class ElasticsearchOptions
     private $replicas;
     /** @var int */
     private $minScore;
+    /** @var  bool */
+    private $highlight;
 
     /**
      * Factory method to hydrate an instance from serialized options
@@ -39,6 +41,7 @@ class ElasticsearchOptions
             'shards' => 3,
             'replicas' => 0,
             'minScore' => 4,
+            'highlight' => true
         ], $options);
 
         $self = new self();
@@ -48,6 +51,7 @@ class ElasticsearchOptions
         $self->setShards($options['shards']);
         $self->setReplicas($options['replicas']);
         $self->setMinScore($options['minScore']);
+        $self->setHighlight($options['highlight']);
 
         return $self;
     }
@@ -64,6 +68,7 @@ class ElasticsearchOptions
             'shards' => $this->shards,
             'replicas' => $this->replicas,
             'minScore' => $this->minScore,
+            'highlight' => $this->highlight,
         ];
     }
 
@@ -161,5 +166,21 @@ class ElasticsearchOptions
     public function getReplicas()
     {
         return $this->replicas;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHighlight()
+    {
+        return $this->highlight;
+    }
+
+    /**
+     * @param bool $highlight
+     */
+    public function setHighlight($highlight)
+    {
+        $this->highlight = $highlight;
     }
 }
