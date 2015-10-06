@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
 use MediaAlchemyst\Transmuter\Image2Image;
+use Alchemy\Phrasea\Media\SubdefGenerator;
 
 class SubdefsJob extends AbstractJob
 {
@@ -106,25 +107,33 @@ class SubdefsJob extends AbstractJob
 
                 try {
                     $record = $databox->get_record($row['record_id']);
-                    $app['subdef.generator']->generateSubdefs($record);
+                    /** @var SubdefGenerator $sg */
+                    $sg = $app['subdef.generator'];
+                    $sg->generateSubdefs($record);
                 } catch (\Exception $e) {
                     $this->log('warning', sprintf("Generate subdefs failed for : sbasid=%s / databox=%s / recordid=%s : %s", $databox->get_sbas_id(), $databox->get_dbname() , $row['record_id'], $e->getMessage()));
                 }
 
                 $sql = 'UPDATE record'
-                    . ' SET jeton=(jeton & ~' . PhraseaTokens::MAKE_SUBDEF . '), moddate=NOW()'
+                    . ' SET jeton=(jeton & ~(:flag)), moddate=NOW()'
                     . ' WHERE record_id=:record_id';
 
                 $stmt = $conn->prepare($sql);
-                $stmt->execute([':record_id' => $row['record_id']]);
+                $stmt->execute([
+                    ':record_id' => $row['record_id'],
+                    ':flag' => PhraseaTokens::MAKE_SUBDEF
+                ]);
                 $stmt->closeCursor();
 
                 // rewrite metadata
                 $sql = 'UPDATE record'
-                    . ' SET jeton=(jeton | ' . PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX . ')'
+                    . ' SET jeton=(jeton | :flag)'
                     . ' WHERE record_id=:record_id';
                 $stmt = $conn->prepare($sql);
-                $stmt->execute([':record_id' => $row['record_id']]);
+                $stmt->execute([
+                    ':record_id' => $row['record_id'],
+                    ':flag' => (PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX)
+                ]);
                 $stmt->closeCursor();
 
                 unset($record);
