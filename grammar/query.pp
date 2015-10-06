@@ -31,10 +31,11 @@
 %token  collection      collection
 %token  type            type
 %token  id              id|recordid
+%token  field_prefix    field.
 %token  flag_prefix     flag.
 %token  true            true|1
 %token  false           false|0
-%token  word            [^\s()\[\]:<>≤≥=]+
+%token  word            [^\s\(\)\[\]:<>≤≥=]+
 
 // relative order of precedence is NOT > XOR > AND > OR
 
@@ -75,7 +76,18 @@ boolean:
 // Field narrowing
 
 quinary:
-    senary() ( ::space:: ::in:: ::space:: field() #in )?
+    senary() ( ::space:: ::in:: ::space:: key() #in )?
+
+key:
+    native_key() #native_key
+  | ::field_prefix:: field()
+  | field()
+
+native_key:
+    <database>
+  | <collection>
+  | <type>
+  | <id>
 
 #field:
     word_or_keyword()+
@@ -151,6 +163,7 @@ keyword:
   | <collection>
   | <type>
   | <id>
+  | <field_prefix>
   | <flag_prefix>
   | <true>
   | <false>

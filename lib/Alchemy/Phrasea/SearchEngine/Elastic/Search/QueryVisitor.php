@@ -88,6 +88,9 @@ class QueryVisitor implements Visit
             case NodeTypes::FLAG:
                 return $this->visitString($element);
 
+            case NodeTypes::NATIVE_KEY:
+                return $this->visitNativeKeyNode($element);
+
             case NodeTypes::DATABASE:
                 return $this->visitDatabaseNode($element);
 
@@ -119,9 +122,18 @@ class QueryVisitor implements Visit
         if ($element->getChildrenNumber() !== 2) {
             throw new \Exception('IN expression can only have 2 childs.');
         }
-        $expression = $element->getChild(0)->accept($this);
+        $expression = $element->getChild(0);
         $field = $this->visit($element->getChild(1));
-        return new AST\InExpression($field, $expression);
+        if ($field instanceof AST\Field) {
+            return new AST\InExpression($field, $this->visit($expression));
+        } elseif ($field instanceof AST\Key) {
+            return new AST\KeyValueExpression(
+                $field,
+                $this->visitString($expression)
+            );
+        } else {
+            throw new \Exception(sprintf('Unexpected key node type "%s".', is_object($field) ? get_class($field) : gettype($field)));
+        }
     }
 
     private function visitAndNode(Element $element)
@@ -299,6 +311,26 @@ class QueryVisitor implements Visit
         }
     }
 
+    private function visitNativeKeyNode(Element $element)
+    {
+        if ($element->getChildrenNumber() !== 1) {
+            throw new \Exception('Native key node can only have a single child.');
+        }
+        $type = $element->getChild(0)->getValue()['token'];
+        switch ($type) {
+            case NodeTypes::TOKEN_DATABASE:
+                return AST\Key::database();
+            case NodeTypes::TOKEN_COLLECTION:
+                return AST\Key::collection();
+            case NodeTypes::TOKEN_MEDIA_TYPE:
+                return AST\Key::mediaType();
+            case NodeTypes::TOKEN_RECORD_ID:
+                return AST\Key::recordIdentifier();
+            default:
+                throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for native key.', $type));
+        }
+    }
+
     private function visitDatabaseNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
@@ -306,7 +338,7 @@ class QueryVisitor implements Visit
         }
         $baseName = $element->getChild(0)->getValue()['value'];
 
-        return new AST\DatabaseExpression($baseName);
+        return new AST\KeyValueExpression(AST\Key::database(), $baseName);
     }
 
     private function visitCollectionNode(Element $element)
@@ -316,7 +348,7 @@ class QueryVisitor implements Visit
         }
         $collectionName = $element->getChild(0)->getValue()['value'];
 
-        return new AST\CollectionExpression($collectionName);
+        return new AST\KeyValueExpression(AST\Key::collection(), $collectionName);
     }
 
     private function visitTypeNode(Element $element)
@@ -326,7 +358,7 @@ class QueryVisitor implements Visit
         }
         $typeName = $element->getChild(0)->getValue()['value'];
 
-        return new AST\TypeExpression($typeName);
+        return new AST\KeyValueExpression(AST\Key::mediaType(), $typeName);
     }
 
     private function visitIdentifierNode(Element $element)
@@ -336,6 +368,6 @@ class QueryVisitor implements Visit
         }
         $identifier = $element->getChild(0)->getValue()['value'];
 
-        return new AST\RecordIdentifierExpression($identifier);
+        return new AST\KeyValueExpression(AST\Key::recordIdentifier(), $identifier);
     }
 }

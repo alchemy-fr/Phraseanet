@@ -23,6 +23,7 @@ class NodeTypes
     const CONTEXT             = '#context';
     const FLAG_STATEMENT      = '#flag_statement';
     const FLAG                = '#flag';
+    const NATIVE_KEY          = '#native_key';
     const COLLECTION          = '#collection';
     const TYPE                = '#type';
     const DATABASE            = '#database';
@@ -31,6 +32,10 @@ class NodeTypes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
     const TOKEN_RAW_STRING    = 'raw_quoted';
+    const TOKEN_DATABASE      = 'database';
+    const TOKEN_COLLECTION    = 'collection';
+    const TOKEN_MEDIA_TYPE    = 'type';
+    const TOKEN_RECORD_ID     = 'id';
     const TOKEN_TRUE          = 'true';
     const TOKEN_FALSE         = 'false';
 }

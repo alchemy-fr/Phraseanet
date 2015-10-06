@@ -66,6 +66,27 @@ foo bar IN baz|(<text:"foo bar"> IN <field:baz>)
 foo IN bar baz|<text:"foo IN bar baz">
 fooINbar|<text:"fooINbar">
 
+# Native fields with IN syntax (temporary)
+foo IN collection|<collection:foo>
+foo IN collection AND bar|(<collection:foo> AND <text:"bar">)
+foo IN collection bar|<text:"foo IN collection bar">
+foo IN database|<database:foo>
+foo IN database AND bar|(<database:foo> AND <text:"bar">)
+foo IN database bar|<text:"foo IN database bar">
+foo IN type|<media_type:foo>
+foo IN type AND bar|(<media_type:foo> AND <text:"bar">)
+foo IN type bar|<text:"foo IN type bar">
+90 IN id|<record_identifier:90>
+90 IN id AND foo|(<record_identifier:90> AND <text:"foo">)
+90 IN id foo|<text:"90 IN id foo">
+90 IN recordid|<record_identifier:90>
+
+# Regular field with name colliding with a native key
+foo IN field.collection|(<text:"foo"> IN <field:collection>)
+foo IN field.database|(<text:"foo"> IN <field:database>)
+foo IN field.type|(<text:"foo"> IN <field:type>)
+foo IN field.id|(<text:"foo"> IN <field:id>)
+
 # Matchers
 collection:foo|<collection:foo>
 collection:foo AND bar|(<collection:foo> AND <text:"bar">)
@@ -73,6 +94,9 @@ collection:foo bar|<text:"collection:foo bar">
 database:foo|<database:foo>
 database:foo AND bar|(<database:foo> AND <text:"bar">)
 database:foo bar|<text:"database:foo bar">
+type:foo|<media_type:foo>
+type:foo AND bar|(<media_type:foo> AND <text:"bar">)
+type:foo bar|<text:"type:foo bar">
 id:90|<record_identifier:90>
 id:90 AND foo|(<record_identifier:90> AND <text:"foo">)
 id:90 foo|<text:"id:90 foo">
