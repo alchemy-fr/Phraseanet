@@ -39,7 +39,7 @@ final class GlobalStructure implements Structure
         return new self($fields, $flags);
     }
 
-    public function __construct(array $fields, array $flags)
+    public function __construct(array $fields = [], array $flags = [])
     {
         Assertion::allIsInstanceOf($fields, Field::class);
         Assertion::allIsInstanceOf($flags, Flag::class);
@@ -51,7 +51,7 @@ final class GlobalStructure implements Structure
         }
     }
 
-    private function add(Field $field)
+    public function add(Field $field)
     {
         $name = $field->getName();
         if (isset($this->fields[$name])) {
