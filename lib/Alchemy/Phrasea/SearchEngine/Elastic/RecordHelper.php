@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 use appbox;
 use DateTime;
 use igorw;
@@ -68,11 +69,6 @@ class RecordHelper
         }
 
         return $this->collectionMap;
-    }
-
-    public static function normalizeFlagKey($key)
-    {
-        return StringUtils::slugify($key, '_');
     }
 
     public static function validateDate($date)

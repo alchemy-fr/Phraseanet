@@ -6,6 +6,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\Flag;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 /**
@@ -73,11 +74,15 @@ class QueryContext
         if ($name instanceof ASTField) {
             $name = $name->getValue();
         }
-        $field = $this->structure->get($name);
-        if (!$field) {
-            return null;
+        return $this->structure->get($name);
+    }
+
+    public function getFlag($name)
+    {
+        if ($name instanceof Flag) {
+            $name = $name->getName();
         }
-        return $field;
+        return $this->structure->getFlagByName($name);
     }
 
     /**

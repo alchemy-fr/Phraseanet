@@ -39,6 +39,7 @@ class CoreHydrator implements HydratorInterface
         // Some casting
         $record['record_id'] = (int) $record['record_id'];
         $record['collection_id'] = (int) $record['collection_id'];
+        $record['flags_bitfield'] = (int) $record['flags_bitfield'];
         // Some identifiers
         $record['id'] = $this->helper->getUniqueRecordId($this->databox_id, $record['record_id']);
         $record['base_id'] = $this->helper->getUniqueCollectionId($this->databox_id, $record['collection_id']);

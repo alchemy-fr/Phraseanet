@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\FlagStatement;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
 /**
  * @group unit
@@ -24,13 +25,14 @@ class FlagStatementTest extends \PHPUnit_Framework_TestCase
     public function testQueryBuild()
     {
         $query_context = $this->prophesize(QueryContext::class);
+        $query_context->getFlag('foo')->willReturn(new Flag('bar'));
 
         $node = new FlagStatement('foo', true);
         $query = $node->buildQuery($query_context->reveal());
 
         $expected = '{
             "term": {
-                "flags.foo": true
+                "flags.bar": true
             }
         }';
 
