@@ -44,14 +44,17 @@ class ElasticSearchEngine implements SearchEngineInterface
     private $indexName;
     private $configurationPanel;
     private $locales;
+    /** @var ElasticsearchOptions */
+    private $options;
 
-    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, Closure $facetsResponseFactory)
+    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
         $this->client = $client;
         $this->locales = array_keys($locales);
         $this->facetsResponseFactory = $facetsResponseFactory;
+        $this->options = $options;
 
         if ('' === trim($indexName)) {
             throw new \InvalidArgumentException('The provided index name is invalid.');
@@ -272,7 +275,9 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
-        $params['body']['highlight'] = $this->buildHighlightRules($context);
+        if($this->options->getHighlight()) {
+            $params['body']['highlight'] = $this->buildHighlightRules($context);
+        }
 
         if ($aggs = $this->getAggregationQueryParams($options)) {
             $params['body']['aggs'] = $aggs;

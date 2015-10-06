@@ -63,7 +63,8 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.client'],
                 $options->getIndexName(),
                 $app['locales.available'],
-                $app['elasticsearch.facets_response.factory']
+                $app['elasticsearch.facets_response.factory'],
+                $options
             );
         });
 

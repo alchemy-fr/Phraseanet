@@ -42,6 +42,10 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'label' => 'Thesaurus Min score',
                 'constraints' => new Range(['min' => 0]),
             ])
+            ->add('highlight', 'checkbox', [
+                'label' => 'Activate highlight',
+                'required' => false
+            ])
             ->add('save', 'submit')
         ;
     }
