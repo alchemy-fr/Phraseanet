@@ -18,6 +18,8 @@ class task_period_ftp extends task_appboxAbstract
 {
     protected $proxy;
     protected $proxyport;
+    protected $proxyuser;
+    protected $proxypwd;
 
     /**
      *
@@ -273,6 +275,8 @@ class task_period_ftp extends task_appboxAbstract
     {
         $this->proxy = (string) $sx_task_settings->proxy;
         $this->proxyport = (string) $sx_task_settings->proxyport;
+        $this->proxyuser = (string) $sx_task_settings->proxyuser;
+        $this->proxypwd  = (string) $sx_task_settings->proxypwd;
 
         parent::loadSettings($sx_task_settings);
     }
@@ -376,7 +380,10 @@ class task_period_ftp extends task_appboxAbstract
 
         try {
             $ssl = ($ftp_export['ssl'] == '1');
-            $ftp_client = $this->dependencyContainer['phraseanet.ftp.client']($ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport);
+            $ftp_client = $this->dependencyContainer['phraseanet.ftp.client'](
+                $ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport,
+                $this->proxyuser, $this->proxypwd
+            );
             $ftp_client->login($ftp_user_name, $ftp_user_pass);
 
             if ($ftp_export["passif"] == "1") {
