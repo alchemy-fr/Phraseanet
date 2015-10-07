@@ -46,13 +46,13 @@ class task_period_ftp extends task_appboxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms('proxy', 'proxyport', 'period', 'syslog');
+        $parm2 = $request->get_parms('proxy', 'proxyport', 'proxyuser', 'proxypwd', 'period', 'syslog');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if ((@$dom->loadXML($oldxml)) != FALSE) {
             $xmlchanged = false;
-            foreach (array('str:proxy', 'str:proxyport', 'str:period', 'pop:syslog') as $pname) {
+            foreach (array('str:proxy', 'str:proxyport', 'str:proxyuser', 'str:proxypwd', 'str:period', 'pop:syslog') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -101,6 +101,8 @@ class task_period_ftp extends task_appboxAbstract
                     {
                         proxy.value     = xml.find("proxy").text();
                         proxyport.value = xml.find("proxyport").text();
+                        proxyuser.value = xml.find("proxyuser").text();
+                        proxypwd.value  = xml.find("proxypwd").text();
                         period.value    = xml.find("period").text();
                     }
                 }
@@ -155,6 +157,18 @@ class task_period_ftp extends task_appboxAbstract
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:proxy user') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="proxyuser" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:proxy password') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="password" name="proxypwd" />
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label"><?php echo _('task::_common_:periodicite de la tache') ?></label>
                 <div class="controls">
                     <input class="formElem input-small" type="text" name="period" />
@@ -177,6 +191,8 @@ class task_period_ftp extends task_appboxAbstract
             , 'active'
             , 'proxy'
             , 'proxyport'
+            , 'proxyuser'
+            , 'proxypwd'
             , 'period'
             , 'debug'
         );
@@ -189,6 +205,8 @@ class task_period_ftp extends task_appboxAbstract
                 foreach (array(
                 'proxy'
                 , 'proxyport'
+                , 'proxyuser'
+                , 'proxypwd'
                 , 'period'
                 ) as $f) {
                     if ($parm[$f] !== NULL) {
@@ -718,6 +736,8 @@ class task_period_ftp extends task_appboxAbstract
             <tasksettings>
                 <proxy></proxy>
                 <proxyport></proxyport>
+                <proxyuser></proxyuser>
+                <proxypwd></proxypwd>
                 <period>%s</period>
                 <syslog></syslog>
             </tasksettings>", min(max($period, self::MINPERIOD), self::MAXPERIOD));

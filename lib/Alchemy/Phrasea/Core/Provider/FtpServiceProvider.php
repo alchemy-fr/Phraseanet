@@ -21,9 +21,11 @@ class FtpServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $app['phraseanet.ftp.client'] = $app->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) {
-            return new \ftpclient($host, $port, $timeout, $ssl, $proxy, $proxyport);
-        });
+        $app['phraseanet.ftp.client'] = $app->protect(
+            function ($host, $port=21, $timeout=90, $ssl=false, $proxyhost=false, $proxyport=false, $proxyuser=false, $proxypwd=false) {
+                return new \ftpclient($host, $port, $timeout, $ssl, $proxyhost, $proxyport, $proxyuser, $proxypwd);
+            }
+        );
     }
 
     /**
