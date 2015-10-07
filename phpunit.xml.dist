@@ -14,6 +14,7 @@
     <php>
       <ini name="display_errors" value="on"/>
       <ini name="memory_limit" value="2G"/>
+      <const name="API_SKIP_USER_REGISTRATIONS" value="true" />
     </php>
 
     <testsuites>

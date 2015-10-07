@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Account\CollectionRequestMapper;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
@@ -782,6 +783,42 @@ class V1Controller extends Controller
         return $grants;
     }
 
+    private function listUserDemands(User $user)
+    {
+        return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
+    }
+
+    public function resetPassword(Request $request, $email)
+    {
+        /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
+        $service = $this->app['authentication.recovery_service'];
+
+        try {
+            $token = $service->requestPasswordResetToken($email, false);
+        }
+        catch (\Exception $exception) {
+            $token = $service->requestPasswordResetTokenByLogin($email, false);
+        }
+
+        return Result::create($request, [ 'reset_token' => $token ]);
+    }
+
+    public function setNewPassword(Request $request, $token)
+    {
+        $password = $request->request->get('password', null);
+        /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
+        $service = $this->app['authentication.recovery_service'];
+
+        try {
+            $service->resetPassword($token, $password);
+        }
+        catch (\Exception $exception) {
+            return Result::create($request, [ 'success' => false ]);
+        }
+
+        return Result::create($request, [ 'success' => true ]);
+    }
+
     public function addRecordAction(Request $request)
     {
         if (count($request->files->get('file')) == 0) {
@@ -1035,7 +1072,6 @@ class V1Controller extends Controller
             } catch (\Exception $e) {
                 continue;
             }
-
 
             if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
@@ -2298,6 +2334,12 @@ class V1Controller extends Controller
             "user" => $this->listUser($this->getAuthenticatedUser()),
             "collections" => $this->listUserCollections($this->getAuthenticatedUser())
         ];
+
+        if (! constant('API_SKIP_USER_REGISTRATIONS')) {
+            // I am infinitely sorry... if you feel like it, you can fix the tests database bootstrapping
+            // to use SQLite in all cases and remove this check. Good luck...
+            $ret["demands"] = $this->listUserDemands($this->getAuthenticatedUser());
+        }
 
         return Result::create($request, $ret)->createResponse();
     }

@@ -332,7 +332,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $response = self::$DI['client']->getResponse();
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testRenewPasswordBadTokenWheneverItsAuthenticated()
@@ -359,7 +359,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testRenewPasswordNoTokenWheneverItsAuthenticated()
