@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d373365ac5a7284c4226047322aba87b",
-    "content-hash": "bfc7b957c6ad61773783e4c5b0e63fb4",
+    "hash": "95ec8a23c6c8b7d876c3cdb912100140",
+    "content-hash": "4b321c68709e515a6a5e9a714d178da5",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -344,6 +344,46 @@
             ],
             "description": "Simple REST utility bundle",
             "time": "2015-09-22 06:58:52"
+        },
+        {
+            "name": "alchemy/symfony-cors",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/symfony-cors",
+                "reference": "88f2d4089e252153946e283ac89631e78b4d73a5"
+            },
+            "require": {
+                "symfony/http-kernel": "^2.3.0|^3.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0",
+                "silex/silex": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alchemy\\Cors\\": "src/Component/",
+                    "Alchemy\\CorsProvider\\": "src/Provider/",
+                    "Alchemy\\CorsBundle\\": "src/Bundle/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Alchemy\\Cors\\Tests\\": "tests/unit/Component/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benoît Burnichon",
+                    "email": "bburnichon@alchemy.fr"
+                }
+            ],
+            "description": "A library that adds CORS services to Silex/Symfony Applications",
+            "time": "2015-10-12 11:04:31"
         },
         {
             "name": "alchemy/task-manager",
@@ -6136,6 +6176,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alchemy/rest-bundle": 20,
+        "alchemy/symfony-cors": 20,
         "alchemy/task-manager": 20,
         "alchemy/zippy": 20,
         "doctrine/migrations": 20,

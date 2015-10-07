@@ -29,6 +29,10 @@
         {
             "type": "git",
             "url": "https://github.com/bburnichon/Twig-extensions"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/alchemy-fr/symfony-cors"
         }
     ],
     "require":      {
@@ -40,6 +44,7 @@
         "alchemy/oauth2php":                     "1.0.0",
         "alchemy/phlickr":                       "0.2.9",
         "alchemy/rest-bundle":                   "master@dev",
+        "alchemy/symfony-cors":                  "master@dev",
         "alchemy/task-manager":                  "2.0.x-dev@dev",
         "alchemy/zippy":                         "0.2.x-dev@dev",
         "beberlei/assert":                       "^2.3",
