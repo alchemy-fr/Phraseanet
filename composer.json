@@ -21,6 +21,10 @@
         {
             "type": "git",
             "url": "https://github.com/bburnichon/Twig-extensions"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/alchemy-fr/symfony-cors"
         }
     ],
     "require": {
@@ -71,7 +75,8 @@
         "alchemy/rest-bundle": "master@dev",
         "simple-bus/jms-serializer-bridge": "^1.0",
         "pagerfanta/pagerfanta": "^1.0",
-        "simple-bus/doctrine-orm-bridge": "^4.0"
+        "simple-bus/doctrine-orm-bridge": "^4.0",
+        "alchemy/symfony-cors": "master@dev"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "~1.0.0",

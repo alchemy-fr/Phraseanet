@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "905b5796f2dc06a066753657370034ce",
-    "content-hash": "27d20e5c5da8804d7a9aeb72be1e5877",
+    "hash": "10946690aa8850dd8fd46da6b05d830c",
+    "content-hash": "687cd09860d240360788f63e9a4a2e45",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -304,7 +304,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/833effa4531684827b086cd46755146ff6010256",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
                 "reference": "833effa4531684827b086cd46755146ff6010256",
                 "shasum": ""
             },
@@ -344,6 +344,46 @@
             ],
             "description": "Simple REST utility bundle",
             "time": "2015-09-18 17:26:11"
+        },
+        {
+            "name": "alchemy/symfony-cors",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/symfony-cors",
+                "reference": "21f278e0c17a3720d21f548f6f3aeac2e5354d6a"
+            },
+            "require": {
+                "symfony/http-kernel": "^2.3.0|^3.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0",
+                "silex/silex": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alchemy\\Cors\\": "src/Component/",
+                    "Alchemy\\CorsProvider\\": "src/Provider/",
+                    "Alchemy\\CorsBundle\\": "src/Bundle/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Alchemy\\Cors\\Tests\\": "tests/unit/Component/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benoît Burnichon",
+                    "email": "bburnichon@alchemy.fr"
+                }
+            ],
+            "description": "A library that adds CORS services to Silex/Symfony Applications",
+            "time": "2015-10-12 08:11:12"
         },
         {
             "name": "beberlei/assert",
@@ -3342,12 +3382,12 @@
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Icu.git",
+                "url": "https://github.com/symfony/icu.git",
                 "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
+                "url": "https://api.github.com/repos/symfony/icu/zipball/d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
                 "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
                 "shasum": ""
             },
@@ -4722,7 +4762,8 @@
         "phpexiftool/phpexiftool": 20,
         "twig/extensions": 20,
         "willdurand/negotiation": 15,
-        "alchemy/rest-bundle": 20
+        "alchemy/rest-bundle": 20,
+        "alchemy/symfony-cors": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
