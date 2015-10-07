@@ -133,7 +133,7 @@ class RecoveryService
             $this->mailer->deliver($mail);
         }
 
-        return $token;
+        return $token->getValue();
     }
 
     public function resetPassword($resetToken, $newPassword)
