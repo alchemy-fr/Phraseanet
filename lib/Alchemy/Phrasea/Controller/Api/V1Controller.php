@@ -800,7 +800,7 @@ class V1Controller extends Controller
             $token = $service->requestPasswordResetTokenByLogin($email, false);
         }
 
-        return Result::create($request, [ 'reset_token' => $token ]);
+        return Result::create($request, [ 'reset_token' => $token ])->createResponse();
     }
 
     public function setNewPassword(Request $request, $token)
@@ -813,10 +813,10 @@ class V1Controller extends Controller
             $service->resetPassword($token, $password);
         }
         catch (\Exception $exception) {
-            return Result::create($request, [ 'success' => false ]);
+            return Result::create($request, [ 'success' => false ])->createResponse();
         }
 
-        return Result::create($request, [ 'success' => true ]);
+        return Result::create($request, [ 'success' => true ])->createResponse();
     }
 
     public function addRecordAction(Request $request)
