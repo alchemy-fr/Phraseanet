@@ -2335,7 +2335,7 @@ class V1Controller extends Controller
             "collections" => $this->listUserCollections($this->getAuthenticatedUser())
         ];
 
-        if (! constant('API_SKIP_USER_REGISTRATIONS')) {
+        if (defined('API_SKIP_USER_REGISTRATIONS') && ! constant('API_SKIP_USER_REGISTRATIONS')) {
             // I am infinitely sorry... if you feel like it, you can fix the tests database bootstrapping
             // to use SQLite in all cases and remove this check. Good luck...
             $ret["demands"] = $this->listUserDemands($this->getAuthenticatedUser());
