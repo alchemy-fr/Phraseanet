@@ -143,7 +143,7 @@ class task_period_ftp extends task_appboxAbstract
     {
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post">
+        <form id="graphicForm" name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post" autocomplete="off">
             <div class="control-group">
                 <label class="control-label"><?php echo _('task::ftp:proxy') ?></label>
                 <div class="controls">
@@ -157,15 +157,17 @@ class task_period_ftp extends task_appboxAbstract
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::ftp:proxy user') ?></label>
+                <label class="control-label"><?php echo _('task::proxy user') ?></label>
                 <div class="controls">
-                    <input class="formElem" type="text" name="proxyuser" />
+                    <input class="formElem" type="text" name="proxyuser" autocomplete="off"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label"><?php echo _('task::ftp:proxy password') ?></label>
                 <div class="controls">
-                    <input class="formElem" type="password" name="proxypwd" />
+                    <!-- input type=password is double because of chrome and autofill issue  see  http://stackoverflow.com/questions/10938891/disable-autofill-in-chrome-without-disabling-autocomplete -->
+                    <input class="formElem" type="password" name="proxypwd_fake" autocomplete="off" style="display:none"/>
+                    <input class="formElem" type="password" name="proxypwd" autocomplete="off"/>
                 </div>
             </div>
             <div class="control-group">
