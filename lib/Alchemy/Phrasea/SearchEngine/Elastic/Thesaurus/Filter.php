@@ -13,32 +13,36 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 
 class Filter
 {
+    private $databox_id;
     private $paths;
 
-    public static function childOfConcepts(array $concepts)
+    public static function childOfConcepts($databox_id, array $concepts)
     {
-        return new self(Concept::toPathArray($concepts));
+        return new self($databox_id, Concept::toPathArray($concepts));
     }
 
     public static function byDatabox($databox_id)
     {
-        return new self(array(sprintf('/%d', $databox_id)));
+        return new self($databox_id, []);
     }
 
-    public static function dumpPaths(Filter $filter)
+    public static function dump(Filter $filter)
     {
-        return $filter->paths;
+        return $filter->getQueryFilter();   // perfect as an array
     }
 
-    private function __construct(array $paths)
+    private function __construct($databox_id, array $paths)
     {
+        $this->databox_id = $databox_id;
         $this->paths = $paths;
     }
 
     public function getQueryFilter()
     {
-        $filter = array();
-        $filter['terms']['path'] = $this->paths;
+        $filter = ['terms'=>['databox_id'=>[$this->databox_id]]];
+        if(count($this->paths) > 0) {
+            $filter['terms']['path'] = $this->paths;
+        }
 
         return $filter;
     }
