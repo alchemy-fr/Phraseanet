@@ -127,7 +127,7 @@ class Thesaurus
         }
 
         if ($filter) {
-            $this->logger->debug('Using filter', array('filter' => Filter::dumpPaths($filter)));
+            $this->logger->debug('Using filter', array('filter' => Filter::dump($filter)));
             $query = self::applyQueryFilter($query, $filter->getQueryFilter());
         }
 
@@ -170,30 +170,42 @@ class Thesaurus
         return $concepts;
     }
 
-    private static function applyQueryFilter(array $query, array $filter)
+    private static function applyQueryFilter(array $query, array $filters)
     {
         if (!isset($query['filtered'])) {
             // Wrap in a filtered query
-            $filtered = array();
-            $filtered['filtered']['query'] = $query;
-            $filtered['filtered']['filter'] = $filter;
+            $query = ['filtered' => ['query' => $query, 'filter' => []]];
+        }
+        elseif (!isset($query['filtered']['filter'])) {
+            $query['filtered']['filter'] = [];
+        }
 
-            return $filtered;
-        } elseif (isset($query['filtered']['filter'])) {
-            // Reuse the existing filtered query
-            if (!isset($query['filtered']['filter']['bool']['must'])) {
-                // Wrap the previous filter in a boolean (must) filter
-                $previous_filter = $query['filtered']['filter'];
-                $query['filtered']['filter'] = array();
-                $query['filtered']['filter']['bool']['must'][0] = $previous_filter;
+        self::addFilters($query['filtered']['filter'], $filters);
+
+        return $query;
+    }
+
+    /**
+     * @param array $current_filters BY REF !
+     * @param array $new_filters
+     *
+     * add filters to existing filters, wrapping with bool/must if necessary
+     */
+    private static function addFilters(array &$current_filters, array $new_filters)
+    {
+        foreach($new_filters as $verb=>$new_filter) {
+            foreach ($new_filter as $f=>$v) {
+                if(count($current_filters) == 0) {
+                    $current_filters = [$verb => [$f=>$v]];
+                }
+                else {
+                    if (!isset($current_filters['bool']['must'])) {
+                        // Wrap the previous filter in a boolean (must) filter
+                        $current_filters = ['bool' => ['must' => [$current_filters]]];
+                    }
+                    $current_filters['bool']['must'][] = [$verb => [$f => $v]];
+                }
             }
-            $query['filtered']['filter']['bool']['must'][] = $filter;
-
-            return $query;
-        } else {
-            $query['filtered']['filter'] = $filter;
-
-            return $query;
         }
     }
 }

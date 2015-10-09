@@ -19,6 +19,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
 class ThesaurusHydrator implements HydratorInterface
 {
@@ -36,6 +37,7 @@ class ThesaurusHydrator implements HydratorInterface
     public function hydrateRecords(array &$records)
     {
         // Fields with concept inference enabled
+        /** @var Field[] $structure */
         $structure = $this->structure->getThesaurusEnabledFields();
         $fields = [];
         $index_fields = [];
@@ -66,7 +68,7 @@ class ThesaurusHydrator implements HydratorInterface
                 // Concepts are databox's specific, but when no root concepts are
                 // given we need to make sure we only match in the right databox.
                 $filter = $root_concepts
-                    ? Filter::childOfConcepts($root_concepts)
+                    ? Filter::childOfConcepts($record['databox_id'], $root_concepts)
                     : Filter::byDatabox($record['databox_id']);
                 foreach ($field_values as $value) {
                     $values[] = $value;
