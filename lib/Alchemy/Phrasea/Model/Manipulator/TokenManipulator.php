@@ -39,11 +39,18 @@ class TokenManipulator implements ManipulatorInterface
     private $random;
     private $repository;
 
-    public function __construct(ObjectManager $om, Generator $random, TokenRepository $repository)
+    private $temporaryDownloadPath;
+
+    public function __construct(
+        ObjectManager $om,
+        Generator $random,
+        TokenRepository $repository,
+        $temporaryDownloadPath)
     {
         $this->om = $om;
         $this->random = $random;
         $this->repository = $repository;
+        $this->temporaryDownloadPath = $temporaryDownloadPath;
     }
 
     /**
@@ -205,7 +212,7 @@ class TokenManipulator implements ManipulatorInterface
             switch ($token->getType()) {
                 case 'download':
                 case 'email':
-                    $file = $this->app['tmp.download.path'].'/' . $token->getValue() . '.zip';
+                    $file = $this->temporaryDownloadPath . '/' . $token->getValue() . '.zip';
                     if (is_file($file)) {
                         unlink($file);
                     }

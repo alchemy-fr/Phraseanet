@@ -42,7 +42,12 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.token'] = $app->share(function ($app) {
-            return new TokenManipulator($app['orm.em'], $app['random.medium'], $app['repo.tokens']);
+            return new TokenManipulator(
+                $app['orm.em'],
+                $app['random.medium'],
+                $app['repo.tokens'],
+                $app['tmp.download.path']
+            );
         });
 
         $app['manipulator.preset'] = $app->share(function ($app) {
