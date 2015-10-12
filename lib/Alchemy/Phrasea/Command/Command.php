@@ -52,14 +52,6 @@ abstract class Command extends SymfoCommand implements CommandInterface
                     return $logger;
                 })
             );
-
-            $this->container['dispatcher'] = $this->container->share(
-                $this->container->extend('dispatcher', function ($dispatcher, Application $app) {
-                    $dispatcher->addSubscriber($app['phraseanet.bo-events-subscriber']);
-
-                    return $dispatcher;
-                })
-            );
         }
 
         return $this->doExecute($input, $output);
