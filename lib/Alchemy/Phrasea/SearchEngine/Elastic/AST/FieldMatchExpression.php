@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class InExpression extends Node
+class FieldMatchExpression extends Node
 {
     protected $field;
     protected $expression;

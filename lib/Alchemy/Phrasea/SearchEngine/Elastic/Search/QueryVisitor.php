@@ -123,12 +123,15 @@ class QueryVisitor implements Visit
             throw new \Exception('IN expression can only have 2 childs.');
         }
         $expression = $element->getChild(0);
-        $field = $this->visit($element->getChild(1));
-        if ($field instanceof AST\Field) {
-            return new AST\InExpression($field, $this->visit($expression));
-        } elseif ($field instanceof AST\KeyValue\Key) {
+        $key = $this->visit($element->getChild(1));
+        if ($key instanceof AST\Field) {
+            return new AST\FieldMatchExpression(
+                $key,
+                $this->visit($expression)
+            );
+        } elseif ($key instanceof AST\KeyValue\Key) {
             return new AST\KeyValue\Expression(
-                $field,
+                $key,
                 $this->visitString($expression)
             );
         } else {
