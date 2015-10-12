@@ -14,6 +14,10 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
 use Alchemy\Phrasea\Notification\Receiver;
 
+use Alchemy\Phrasea\Notification\Deliverer;
+use Alchemy\Phrasea\Notification\Emitter;
+
+
 class task_period_ftp extends task_appboxAbstract
 {
     protected $proxy;
@@ -707,7 +711,9 @@ class task_period_ftp extends task_appboxAbstract
         if ($sender) {
             $mail = MailSuccessFTPSender::create($this->dependencyContainer, $sender, null, $sender_message);
             $mail->setServer($ftp_server);
-            $this->dependencyContainer['notification.deliverer']->deliver($mail);
+            /** @var Deliverer $deliverer */
+            $deliverer = $this->dependencyContainer['notification.deliverer'];
+            $deliverer->deliver($mail);
         }
 
         $receiver = null;
