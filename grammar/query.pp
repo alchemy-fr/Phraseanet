@@ -55,13 +55,14 @@ ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
 
-// Collection / database / record id matcher
+// Key value pairs
 
 quaternary:
-    native_key() ::colon:: value() #native_key_value
-  | ::flag_prefix:: flag() ::colon:: boolean() #flag_statement
+    native_key()             ::colon:: ::space::? value()   #native_key_value
+  | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
+  | ::field_prefix:: field() ::colon:: ::space::? quinary() #field_statement
+  |                  field() ::colon:: ::space::? quinary() #field_statement
   | quinary()
-
 
 #flag:
   word_or_keyword()+
@@ -69,16 +70,6 @@ quaternary:
 boolean:
     <true>
   | <false>
-
-// Field narrowing
-
-quinary:
-    senary() ( ::space:: ::in:: ::space:: key() #in )?
-
-key:
-    native_key() #native_key
-  | ::field_prefix:: field()
-  | field()
 
 #native_key:
     <database>
@@ -93,7 +84,7 @@ key:
 
 // Field level matchers (*may* be restricted to a field subset)
 
-senary:
+quinary:
     group() #group
   | field() ::space::? ::lt:: ::space::? value() #less_than
   | field() ::space::? ::gt:: ::space::? value() #greater_than

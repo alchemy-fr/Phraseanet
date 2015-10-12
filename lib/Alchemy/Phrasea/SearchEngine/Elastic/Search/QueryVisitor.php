@@ -46,9 +46,6 @@ class QueryVisitor implements Visit
             case NodeTypes::GROUP:
                 return $this->visitNode($element->getChild(0));
 
-            case NodeTypes::IN_EXPR:
-                return $this->visitInNode($element);
-
             case NodeTypes::AND_EXPR:
                 return $this->visitAndNode($element);
 
@@ -79,6 +76,9 @@ class QueryVisitor implements Visit
             case NodeTypes::CONTEXT:
                 return new AST\Context($this->visitString($element));
 
+            case NodeTypes::FIELD_STATEMENT:
+                return $this->visitFieldStatementNode($element);
+
             case NodeTypes::FIELD:
                 return new AST\Field($this->visitString($element));
 
@@ -108,26 +108,14 @@ class QueryVisitor implements Visit
         return new Query($root);
     }
 
-    private function visitInNode(Element $element)
+    private function visitFieldStatementNode(TreeNode $node)
     {
-        if ($element->getChildrenNumber() !== 2) {
-            throw new \Exception('IN expression can only have 2 childs.');
+        if ($node->getChildrenNumber() !== 2) {
+            throw new \Exception('Field statement must have 2 childs.');
         }
-        $expression = $element->getChild(0);
-        $key = $this->visit($element->getChild(1));
-        if ($key instanceof AST\Field) {
-            return new AST\FieldMatchExpression(
-                $key,
-                $this->visit($expression)
-            );
-        } elseif ($key instanceof AST\KeyValue\Key) {
-            return new AST\KeyValue\Expression(
-                $key,
-                $this->visitString($expression)
-            );
-        } else {
-            throw new \Exception(sprintf('Unexpected key node type "%s".', is_object($field) ? get_class($field) : gettype($field)));
-        }
+        $field = $this->visit($node->getChild(0));
+        $value = $this->visit($node->getChild(1));
+        return new AST\FieldMatchExpression($field, $value);
     }
 
     private function visitAndNode(Element $element)

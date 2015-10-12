@@ -29,6 +29,6 @@ class FieldMatchExpression extends Node
 
     public function __toString()
     {
-        return sprintf('(%s IN %s)', $this->expression, $this->field);
+        return sprintf('(%s MATCHES %s)', $this->field, $this->expression);
     }
 }

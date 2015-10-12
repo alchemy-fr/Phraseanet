@@ -16,6 +16,7 @@ class NodeTypes
     const LTE_EXPR            = '#less_than_or_equal_to';
     const GTE_EXPR            = '#greater_than_or_equal_to';
     const EQUAL_EXPR          = '#equal_to';
+    const FIELD_STATEMENT     = '#field_statement';
     const FIELD               = '#field';
     const VALUE               = '#value';
     const TERM                = '#thesaurus_term';
