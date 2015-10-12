@@ -23,11 +23,8 @@ class NodeTypes
     const CONTEXT             = '#context';
     const FLAG_STATEMENT      = '#flag_statement';
     const FLAG                = '#flag';
+    const NATIVE_KEY_VALUE    = '#native_key_value';
     const NATIVE_KEY          = '#native_key';
-    const COLLECTION          = '#collection';
-    const TYPE                = '#type';
-    const DATABASE            = '#database';
-    const IDENTIFIER          = '#id';
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';

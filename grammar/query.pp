@@ -58,10 +58,7 @@ ternary:
 // Collection / database / record id matcher
 
 quaternary:
-    ::database:: ::colon:: string() #database
-  | ::collection:: ::colon:: string() #collection
-  | ::type:: ::colon:: string() #type
-  | ::id:: ::colon:: string() #id
+    native_key() ::colon:: value() #native_key_value
   | ::flag_prefix:: flag() ::colon:: boolean() #flag_statement
   | quinary()
 
@@ -83,7 +80,7 @@ key:
   | ::field_prefix:: field()
   | field()
 
-native_key:
+#native_key:
     <database>
   | <collection>
   | <type>

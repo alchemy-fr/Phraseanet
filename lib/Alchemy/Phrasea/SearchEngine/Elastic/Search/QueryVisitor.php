@@ -88,20 +88,11 @@ class QueryVisitor implements Visit
             case NodeTypes::FLAG:
                 return $this->visitString($element);
 
+            case NodeTypes::NATIVE_KEY_VALUE:
+                return $this->visitNativeKeyValueNode($element);
+
             case NodeTypes::NATIVE_KEY:
                 return $this->visitNativeKeyNode($element);
-
-            case NodeTypes::DATABASE:
-                return $this->visitDatabaseNode($element);
-
-            case NodeTypes::COLLECTION:
-                return $this->visitCollectionNode($element);
-
-            case NodeTypes::TYPE:
-                return $this->visitTypeNode($element);
-
-            case NodeTypes::IDENTIFIER:
-                return $this->visitIdentifierNode($element);
 
             default:
                 throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
@@ -314,6 +305,16 @@ class QueryVisitor implements Visit
         }
     }
 
+    private function visitNativeKeyValueNode(TreeNode $node)
+    {
+        if ($node->getChildrenNumber() !== 2) {
+            throw new \Exception('Key value expression can only have 2 childs.');
+        }
+        $key = $this->visit($node->getChild(0));
+        $value = $this->visit($node->getChild(1));
+        return new AST\KeyValue\Expression($key, $value);
+    }
+
     private function visitNativeKeyNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
@@ -332,45 +333,5 @@ class QueryVisitor implements Visit
             default:
                 throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for native key.', $type));
         }
-    }
-
-    private function visitDatabaseNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Base filter can only have a single child.');
-        }
-        $baseName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\KeyValue\Expression(AST\KeyValue\NativeKey::database(), $baseName);
-    }
-
-    private function visitCollectionNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Collection filter can only have a single child.');
-        }
-        $collectionName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\KeyValue\Expression(AST\KeyValue\NativeKey::collection(), $collectionName);
-    }
-
-    private function visitTypeNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Type filter can only have a single child.');
-        }
-        $typeName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\KeyValue\Expression(AST\KeyValue\NativeKey::mediaType(), $typeName);
-    }
-
-    private function visitIdentifierNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Identifier filter can only have a single child.');
-        }
-        $identifier = $element->getChild(0)->getValue()['value'];
-
-        return new AST\KeyValue\Expression(AST\KeyValue\NativeKey::recordIdentifier(), $identifier);
     }
 }
