@@ -1,11 +1,12 @@
 <?php
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Assert\Assertion;
 
-class KeyValueExpression extends Node
+class Expression extends Node
 {
     protected $key;
     protected $value;

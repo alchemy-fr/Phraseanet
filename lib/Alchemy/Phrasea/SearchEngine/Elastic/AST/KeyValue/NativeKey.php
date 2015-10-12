@@ -1,8 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
-class Key
+class NativeKey implements Key
 {
     const TYPE_DATABASE = 'database';
     const TYPE_COLLECTION = 'collection';
