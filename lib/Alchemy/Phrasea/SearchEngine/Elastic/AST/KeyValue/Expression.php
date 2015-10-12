@@ -20,11 +20,7 @@ class Expression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        return [
-            'term' => [
-                $this->key->getIndexField() => $this->value
-            ]
-        ];
+        return $this->key->buildQueryForValue($this->value, $context);
     }
 
     public function getTermNodes()
