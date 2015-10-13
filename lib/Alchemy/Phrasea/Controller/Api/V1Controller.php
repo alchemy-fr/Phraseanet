@@ -2425,6 +2425,31 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    public function updateCurrentUserPasswordAction(Request $request)
+    {
+        $service = $this->getAccountService();
+        $data = json_decode($request->getContent(false), true);
+        $command = new UpdatePasswordCommand();
+        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+            'csrf_protection' => false
+        ]);
+
+        $form->submit($data);
+
+        if ($form->isValid()) {
+            try {
+                $service->updatePassword($command, null);
+                $ret = ['success' => true];
+            } catch (AccountException $exception) {
+                $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+            }
+        } else {
+            $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
     public function ensureAdmin(Request $request)
     {
         if (!$user = $this->getApiAuthenticatedUser()->isAdmin()) {
