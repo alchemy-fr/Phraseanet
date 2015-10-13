@@ -39,7 +39,7 @@ class module_console_systemClearCache extends Command
         $finder
             ->exclude('.git')
             ->exclude('.svn')
-            ->in($this->container['cache.paths']->toArray());
+            ->in($this->container['cache.paths']->getArrayCopy());
 
         $filesystem = new Filesystem();
 
