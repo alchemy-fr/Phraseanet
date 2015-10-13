@@ -31,7 +31,7 @@ class module_console_systemClearCache extends Command
     {
         $finder = new Finder();
 
-        $in = $this->container['cache.path'];
+        $in = $this->container['cache.paths']->toArray();
         $finder
             ->exclude('.git')
             ->exclude('.svn')

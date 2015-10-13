@@ -771,6 +771,11 @@ class Application extends SilexApplication
 
             return $path;
         });
+        $this['cache.paths'] = function (Application $app) {
+            return new \ArrayObject([
+                $app['cache.path'],
+            ]);
+        };
 
         // log path
         $this['log.path'] = $this->share(function() {
