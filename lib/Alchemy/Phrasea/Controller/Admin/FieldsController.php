@@ -119,26 +119,40 @@ class FieldsController extends Controller
 
     public function searchTag(Request $request)
     {
-        $term = trim(strtolower($request->query->get('term')));
+        $term = str_replace(['/', ':', '.'], ' ', strtolower($request->query->get('term')));
         $res = [];
 
-        if ($term) {
+        $term = explode(' ', $term, 2);
+        if(($term[0] = trim($term[0])) != '') {
+            if( ($nparts = count($term)) == 2) {
+                $term[1] = trim($term[1]);
+            }
             $provider = new TagProvider();
 
             foreach ($provider->getLookupTable() as $namespace => $tags) {
-                $ns = strpos($namespace, $term);
-
+                $match_ns = (strpos($namespace, $term[0]) !== false);
+                if($nparts == 2 && !$match_ns) {
+                    // with "abc:xyz", "abc" MUST match the namespace
+                    continue;
+                }
                 foreach ($tags as $tagname => $datas) {
-                    if ($ns === false && strpos($tagname, $term) === false) {
-                        continue;
+                    if($nparts == 1) {
+                        // "abc" can match the namespace OR the tagname
+                        $match = $match_ns || (strpos($tagname, $term[0]) !== false);
+                    }
+                    else {
+                        // match "abc:xyz" against namespace (already true) AND tagname
+                        $match = ($term[1] == '' || strpos($tagname, $term[1]) !== false);
                     }
 
-                    $res[] = [
-                        'id'    => $namespace . '/' . $tagname,
-                        /** @Ignore */
-                        'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
-                        'value' => $datas['namespace'] . ':' . $datas['tagname'],
-                    ];
+                    if($match) {
+                        $res[] = [
+                            'id' => $namespace . '/' . $tagname,
+                            /** @Ignore */
+                            'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
+                            'value' => $datas['namespace'] . ':' . $datas['tagname'],
+                        ];
+                    }
                 }
             }
         }
