@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller\Api;
 use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
+use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
@@ -825,8 +826,7 @@ class V1Controller extends Controller
 
     public function updatePassword(Request $request, $login)
     {
-        /** @var AccountService $service */
-        $service = $this->app['accounts.service'];
+        $service = $this->getAccountService();
         $command = new UpdatePasswordCommand();
         $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
             'csrf_protection' => false
@@ -2381,6 +2381,50 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    public function deleteCurrentUserAction(Request $request)
+    {
+        try {
+            $service = $this->getAccountService();
+            $service->deleteAccount();
+
+            $ret = [ 'success' => true ];
+        }
+        catch (\Exception $ex) {
+            $ret = [ 'success' => false ];
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    public function updateCurrentUserAction(Request $request)
+    {
+        $service = $this->getAccountService();
+        $data = json_decode($request->getContent(false), true);
+
+        $command = new UpdateAccountCommand();
+        $command
+            ->setEmail(isset($data['email']) ? $data['email'] : null)
+            ->setGender(isset($data['gender']) ? $data['gender'] : null)
+            ->setFirstName(isset($data['firstname']) ? $data['firstname'] : null)
+            ->setLastName(isset($data['lastname']) ? $data['lastname'] : null)
+            ->setZipCode(isset($data['zip_code']) ? $data['zip_code'] : null)
+            ->setCity(isset($data['city']) ? $data['city'] : null)
+            ->setPhone(isset($data['tel']) ? $data['tel'] : null)
+            ->setCompany(isset($data['company']) ? $data['company'] : null)
+            ->setJob(isset($data['job']) ? $data['job'] : null)
+            ->setNotifications(isset($data['notifications']) ? $data['notifications'] : null);
+
+        try {
+            $service->updateAccount($command);
+            $ret = [ 'success' => true ];
+        }
+        catch (AccountException $exception) {
+            $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
     public function ensureAdmin(Request $request)
     {
         if (!$user = $this->getApiAuthenticatedUser()->isAdmin()) {
@@ -2477,6 +2521,14 @@ class V1Controller extends Controller
     private function getOAuth2Server()
     {
         return $this->app['oauth2-server'];
+    }
+
+    /**
+     * @return AccountService
+     */
+    public function getAccountService()
+    {
+        return $this->app['accounts.service'];
     }
 
     /**

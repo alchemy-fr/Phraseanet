@@ -11,6 +11,8 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Geonames\Connector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
+use Alchemy\Phrasea\Account\Command\UpdateFtpCredentialsCommand;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
@@ -304,9 +306,11 @@ class AccountController extends Controller
     public function updateAccount(Request $request)
     {
         $registrations = $request->request->get('registrations', []);
+
         if (false === is_array($registrations)) {
             $this->app->abort(400, '"registrations" parameter must be an array of base ids.');
         }
+
         $user = $this->getAuthenticatedUser();
 
         if (0 !== count($registrations)) {
@@ -337,8 +341,11 @@ class AccountController extends Controller
             'form_retryFTP'
         ];
 
+        $service = $this->app['accounts.service'];
+
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
-            $user
+            $command = new UpdateAccountCommand();
+            $command
                 ->setGender((int) $request->request->get("form_gender"))
                 ->setFirstName($request->request->get("form_firstname"))
                 ->setLastName($request->request->get("form_lastname"))
@@ -348,8 +355,10 @@ class AccountController extends Controller
                 ->setFax($request->request->get("form_fax"))
                 ->setJob($request->request->get("form_activity"))
                 ->setCompany($request->request->get("form_company"))
-                ->setActivity($request->request->get("form_function"))
-                ->setMailNotificationsActivated((Boolean) $request->request->get("mail_notifications"));
+                ->setPosition($request->request->get("form_function"))
+                ->setNotifications((Boolean) $request->request->get("mail_notifications"));
+
+            $service->updateAccount($command);
 
             $this->getUserManipulator()->setGeonameId($user, $request->request->get("form_geonameid"));
 
@@ -360,19 +369,19 @@ class AccountController extends Controller
                 $ftpCredential->setUser($user);
             }
 
-            $ftpCredential->setActive($request->request->get("form_activeFTP"));
-            $ftpCredential->setAddress($request->request->get("form_addressFTP"));
-            $ftpCredential->setLogin($request->request->get("form_loginFTP"));
-            $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
-            $ftpCredential->setPassive($request->request->get("form_passifFTP"));
-            $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
-            $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
+            $command = new UpdateFtpCredentialsCommand();
 
-            $manager = $this->getEntityManager();
-            $manager->persist($ftpCredential);
-            $manager->persist($user);
+            $command->setEnabled($request->request->get("form_activeFTP"));
+            $command->setAddress($request->request->get("form_addressFTP"));
+            $command->setLogin($request->request->get("form_loginFTP"));
+            $command->setPassword($request->request->get("form_pwdFTP"));
+            $command->setPassiveMode($request->request->get("form_passifFTP"));
+            $command->setFolder($request->request->get("form_destFTP"));
+            $command->setFolderPrefix($request->request->get("form_prefixFTPfolder"));
+            $command->setRetries($request->request->get("form_retryFTP"));
 
-            $manager->flush();
+            $service->updateFtpSettings($command);
+
             $this->app->addFlash('success', $this->app->trans('login::notification: Changements enregistres'));
         }
 
