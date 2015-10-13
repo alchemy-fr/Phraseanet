@@ -21,6 +21,8 @@ class UpdateFtpCredentialsCommand
 
     private $ftpDefaultData;
 
+    private $retries;
+
     /**
      * @return mixed
      */
@@ -173,5 +175,13 @@ class UpdateFtpCredentialsCommand
         return $this;
     }
 
+    public function getRetries()
+    {
+        return $this->retries;
+    }
 
+    public function setRetries($retries)
+    {
+        $this->retries = $retries;
+    }
 }

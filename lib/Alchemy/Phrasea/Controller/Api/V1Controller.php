@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller\Api;
 use Alchemy\Phrasea\Account\AccountException;
 use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
+use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
@@ -825,8 +826,7 @@ class V1Controller extends Controller
 
     public function updatePassword(Request $request, $login)
     {
-        /** @var AccountService $service */
-        $service = $this->app['accounts.service'];
+        $service = $this->getAccountService();
         $command = new UpdatePasswordCommand();
         $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
             'csrf_protection' => false
@@ -2420,31 +2420,6 @@ class V1Controller extends Controller
         }
         catch (AccountException $exception) {
             $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
-        }
-
-        return Result::create($request, $ret)->createResponse();
-    }
-
-    public function updateCurrentUserPasswordAction(Request $request)
-    {
-        $service = $this->getAccountService();
-        $data = json_decode($request->getContent(false), true);
-        $command = new UpdatePasswordCommand();
-        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
-            'csrf_protection' => false
-        ]);
-
-        $form->submit($data);
-
-        if ($form->isValid()) {
-            try {
-                $service->updatePassword($command, null);
-                $ret = ['success' => true];
-            } catch (AccountException $exception) {
-                $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
-            }
-        } else {
-            $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];
         }
 
         return Result::create($request, $ret)->createResponse();
