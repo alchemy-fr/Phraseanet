@@ -213,39 +213,23 @@ class RegistrationService
      */
     private function getAuthorizedCollections(array $selectedCollections = null, array $inscriptions)
     {
-        $authorizedCollections = array();
+        $inscriptions = $this->registrationManager->getRegistrationSummary();
+        $authorizedCollections = [];
+
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-            $databoxId = $databox->get_sbas_id();
-
             foreach ($databox->get_collections() as $collection) {
                 if (null !== $selectedCollections && !in_array($collection->get_base_id(), $selectedCollections)) {
                     continue;
                 }
 
-                if ($this->isCollectionAuthorized($inscriptions, $collection, $databoxId)) {
-                    $authorizedCollections[$collection->get_base_id()] = true;
-                } else {
-                    $authorizedCollections[$collection->get_base_id()] = false;
+                if ($canRegister = \igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'config', 'collections', $collection->get_base_id(), 'can-register'])) {
+                    $authorizedCollections[$collection->get_base_id()] = $canRegister;
                 }
             }
         }
 
         return $authorizedCollections;
-    }
-
-    /**
-     * @param array $inscriptions
-     * @param \collection $collection
-     * @param $databoxId
-     * @return bool
-     */
-    private function isCollectionAuthorized(array $inscriptions, \collection $collection, $databoxId)
-    {
-        return isset($inscriptions[$databoxId])
-            && $inscriptions[$databoxId]['inscript'] === true
-            && (isset($inscriptions[$databoxId]['Colls'][$collection->get_coll_id()])
-                || isset($inscriptions[$databoxId]['CollsCGU'][$collection->get_coll_id()]));
     }
 
     /**
@@ -263,7 +247,7 @@ class RegistrationService
             $baseIds[] = $baseId;
         }
 
-        $user->setLastAppliedTemplate($template_user);
+        $user->setLastAppliedTemplate($templateUser);
     }
 
     /**
