@@ -256,7 +256,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/accounts/reset-password/{email}/', 'controller.api.v1:resetPassword')
             ->before('controller.api.v1:ensureAdmin');
 
-        $controllers->post('/accounts/update-password/{token}/', 'controller.api.v1:resetPassword')
+        $controllers->post('/accounts/update-password/{token}/', 'controller.api.v1:setNewPassword')
             ->before('controller.api.v1:ensureAdmin');
 
         return $controllers;
