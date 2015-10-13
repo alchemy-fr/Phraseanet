@@ -5,15 +5,22 @@ namespace Alchemy\Phrasea\Authentication;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
+use Alchemy\Phrasea\Core\Event\RegistrationEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
+use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RegistrationService
 {
@@ -47,6 +54,26 @@ class RegistrationService
     private $appbox;
 
     /**
+     * @var ACLProvider
+     */
+    private $aclProvider;
+
+    /**
+     * @var PropertyAccess
+     */
+    private $configuration;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
      * @var ProvidersCollection
      */
     private $oauthProviderCollection;
@@ -72,24 +99,66 @@ class RegistrationService
     private $userManipulator;
 
     /**
+     * @var TokenManipulator
+     */
+    private $tokenManipulator;
+
+    /**
+     * @var TokenRepository
+     */
+    private $tokenRepository;
+
+    /**
+     * @var RegistrationManipulator
+     */
+    private $registrationManipulator;
+
+    /**
      * @param Application $application
      * @param \appbox $appbox
+     * @param ACLProvider $aclProvider
+     * @param PropertyAccess $configuration
+     * @param EntityManager $entityManager
+     * @param EventDispatcherInterface $eventDispatcher
      * @param ProvidersCollection $oauthProviderCollection
      * @param UsrAuthProviderRepository $userAuthenticationProviderRepository
      * @param UserRepository $userRepository
+     * @param UserManipulator $userManipulator
+     * @param TokenManipulator $tokenManipulator
+     * @param TokenRepository $tokenRepository
+     * @param RegistrationManipulator $registrationManipulator
+     * @param RegistrationManager $registrationManager
      */
     public function __construct(
         Application $application,
         \appbox $appbox,
+        ACLProvider $aclProvider,
+        PropertyAccess $configuration,
+        EntityManager $entityManager,
+        EventDispatcherInterface $eventDispatcher,
         ProvidersCollection $oauthProviderCollection,
         UsrAuthProviderRepository $userAuthenticationProviderRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserManipulator $userManipulator,
+        TokenManipulator $tokenManipulator,
+        TokenRepository $tokenRepository,
+        RegistrationManipulator $registrationManipulator,
+        RegistrationManager $registrationManager
     ) {
+        $this->aclProvider = $aclProvider;
         $this->app = $application;
         $this->appbox = $appbox;
+        $this->configuration = $configuration;
+        $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
         $this->oauthProviderCollection = $oauthProviderCollection;
         $this->userAuthenticationProviderRepository = $userAuthenticationProviderRepository;
         $this->userRepository = $userRepository;
+        $this->userManipulator = $userManipulator;
+        $this->tokenManipulator = $tokenManipulator;
+        $this->tokenRepository = $tokenRepository;
+        $this->registrationManipulator = $registrationManipulator;
+        $this->registrationManager = $registrationManager;
     }
 
     /**
@@ -130,21 +199,25 @@ class RegistrationService
 
         $user = $this->userManipulator->createUser($data['login'], $data['password'], $data['email'], false);
 
+        if (isset($data['geonameid'])) {
+            $this->userManipulator->setGeonameId($user, $data['geonameid']);
+        }
+
         foreach (self::$userPropertySetterMap as $property => $method) {
             if (isset($data[$property])) {
                 call_user_func(array($user, $method), $data[$property]);
             }
         }
 
+        $this->entityManager->persist($user);
+        $this->entityManager->flush($user);
+
         if (null !== $provider) {
-            $this->attachProviderToUser($this->app['orm.em'], $provider, $user);
-            $this->app['orm.em']->flush();
+            $this->attachProviderToUser($this->entityManager, $provider, $user);
+            $this->entityManager->flush();
         }
 
-        if ($this->app['phraseanet.registry']->get('GV_autoregister')) {
-            $this->applyAclsToUser($authorizedCollections, $user);
-        }
-
+        $this->applyAclsToUser($authorizedCollections, $user);
         $this->createCollectionAccessDemands($user, $authorizedCollections);
         $user->setMailLocked(true);
 
@@ -161,36 +234,28 @@ class RegistrationService
 
     public function getAccountUnlockToken(User $user)
     {
-        $expire = new \DateTime('+3 days');
-        $token = $this->app['tokens']->getUrlToken(
-            \random::TYPE_PASSWORD,
-            $user->get_id(),
-            $expire,
-            $user->get_email()
-        );
-
-        return $token;
+        return $this->tokenManipulator->createAccountUnlockToken($user);
     }
 
     public function unlockAccount($token)
     {
-        $tokenData = $this->app['tokens']->helloToken($token);
-        $user = \User_Adapter::getInstance((int) $tokenData['usr_id'], $this->app);
+        $token = $this->tokenRepository->findValidToken($token);
+        $user = $token->getUser();
 
-        if (!$user->get_mail_locked()) {
+        if (!$user->isMailLocked()) {
             throw new RegistrationException(
                 'Account is already unlocked, you can login.',
                 RegistrationException::ACCOUNT_ALREADY_UNLOCKED
             );
         }
 
-        $this->app['tokens']->removeToken($token);
-        $user->set_mail_locked(false);
+        $this->tokenManipulator->delete($token);
+        $user->setMailLocked(false);
 
         return $user;
     }
 
-    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, User $user)
+    private function attachProviderToUser(ProviderInterface $provider, User $user)
     {
         $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
@@ -203,19 +268,17 @@ class RegistrationService
             // log these errors
         }
 
-        $em->persist($usrAuthProvider);
+        $this->entityManager->persist($usrAuthProvider);
     }
 
     /**
      * @param array $selectedCollections
-     * @param array $inscriptions
      * @return array
      */
-    private function getAuthorizedCollections(array $selectedCollections = null, array $inscriptions)
+    private function getAuthorizedCollections(array $selectedCollections = null)
     {
         $inscriptions = $this->registrationManager->getRegistrationSummary();
         $authorizedCollections = [];
-
 
         foreach ($this->appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
@@ -240,14 +303,12 @@ class RegistrationService
      */
     private function applyAclsToUser(array $authorizedCollections, User $user)
     {
-        $templateUser = $this->userRepository->findByLogin('autoregister');
-        $baseIds = array();
+        $acl = $this->aclProvider->get($user);
 
-        foreach (array_keys($authorizedCollections) as $baseId) {
-            $baseIds[] = $baseId;
+        if ($this->configuration->get(['registry', 'registration', 'auto-register-enabled'])) {
+            $template_user = $this->userRepository->findByLogin(User::USER_AUTOREGISTER);
+            $acl->apply_model($template_user, array_keys($authorizedCollections));
         }
-
-        $user->setLastAppliedTemplate($templateUser);
     }
 
     /**
@@ -256,27 +317,22 @@ class RegistrationService
      */
     private function createCollectionAccessDemands(User $user, $authorizedCollections)
     {
-        $demandOK = array();
-        $autoReg = $user->ACL()->get_granted_base();
-        $appbox_register = new Registration();
+        $successfulRegistrations = [];
+        $acl = $this->aclProvider->get($user);
+        $autoReg = $acl->get_granted_base();
+        $registrationManipulator = $this->registrationManipulator;
 
-        foreach ($authorizedCollections as $base_id => $authorization) {
-            if (false === $authorization || $user->ACL()->has_access_to_base($base_id)) {
-                continue;
+        array_walk($authorizedCollections, function ($authorization, $baseId) use ($registrationManipulator, $user, &$successfulRegistrations, $acl) {
+            if (false === $authorization || $acl->has_access_to_base($baseId)) {
+                return;
             }
 
-            $collection = \collection::get_from_base_id($this->app, $base_id);
-            $appbox_register->add_request($user, $collection);
-            $demandOK[$base_id] = true;
-        }
+            $collection = \collection::get_from_base_id($this->app, $baseId);
+            $registrationManipulator->createRegistration($user, $collection);
+            $successfulRegistrations[$baseId] = $collection;
+        });
 
-        $params = array(
-            'demand' => $demandOK,
-            'autoregister' => $autoReg,
-            'usr_id' => $user->get_id()
-        );
-
-        $this->app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
-        $this->app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
+        $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
+        $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $successfulRegistrations));
     }
 }
