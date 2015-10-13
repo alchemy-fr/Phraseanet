@@ -172,6 +172,20 @@ class Application extends SilexApplication
         error_reporting(-1);
 
         $this['root.path'] = realpath(__DIR__ . '/../../..');
+        $this['cache.path'] = function (Application $app) {
+            return $app['root.path'] . '/tmp/cache/';
+        };
+        $this['cache.paths'] = function (Application $app) {
+            $rootPath = $app['root.path'];
+
+            return new \ArrayObject(array(
+                $rootPath . '/tmp/cache_minify/',
+                $rootPath . '/tmp/cache_twig/',
+                $app['cache.path'],
+                $rootPath . '/tmp/doctrine/',
+                $rootPath . '/tmp/serializer/',
+            ));
+        };
         $this->environment = $environment;
 
         mb_internal_encoding("UTF-8");
