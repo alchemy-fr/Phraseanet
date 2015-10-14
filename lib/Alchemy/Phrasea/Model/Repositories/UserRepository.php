@@ -62,6 +62,7 @@ class UserRepository extends EntityRepository
 
     /**
      * Finds a user by email.
+     * nb : mail match is CASE INSENSITIVE, "john@doe"=="John@Doe"=="john@DOE"
      *
      * @param string $email
      *
@@ -71,7 +72,7 @@ class UserRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('u');
 
-        $qb->where($qb->expr()->eq('u.email', $qb->expr()->literal($email)))
+        $qb->where($qb->expr()->eq($qb->expr()->lower('u.email'), $qb->expr()->lower($qb->expr()->literal($email))))
             ->andWhere($qb->expr()->isNotNull('u.email'))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 
@@ -80,6 +81,7 @@ class UserRepository extends EntityRepository
 
     /**
      * Finds a user that is not deleted, not a model and not a guest.
+     * nb : login match is CASE INSENSITIVE, "doe"=="Doe"=="DOE"
      *
      * @param $login
      *
@@ -88,7 +90,7 @@ class UserRepository extends EntityRepository
     public function findRealUserByLogin($login)
     {
         $qb = $this->createQueryBuilder('u');
-        $qb->where($qb->expr()->eq('u.login', $qb->expr()->literal($login)))
+        $qb->where($qb->expr()->eq($qb->expr()->lower('u.login'), $qb->expr()->lower($qb->expr()->literal($login))))
             ->andWhere($qb->expr()->isNotNull('u.email'))
             ->andWhere($qb->expr()->isNull('u.templateOwner'))
             ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
