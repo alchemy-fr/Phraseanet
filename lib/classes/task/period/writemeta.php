@@ -134,7 +134,7 @@ class task_period_writemeta extends task_databoxAbstract
                     {
                         period.value     = xml.find("period").text();
                         cleardoc.checked = Number(xml.find("cleardoc").text()) > 0;
-                        cleardoc.mwg     = Number(xml.find("mwg").text()) > 0;
+                        mwg.checked      = Number(xml.find("mwg").text()) > 0;
                         maxrecs.value    = xml.find("maxrecs").text();
                         maxmegs.value    = xml.find("maxmegs").text();
                     }
