@@ -154,7 +154,9 @@ function openPreview(env, pos, contId, reload) {
             setPreview();
 
             if (env != 'RESULT') {
-                setCurrent(data.current);
+                if (justOpen || reload) {
+                    setCurrent(data.current);
+                }
                 viewCurrent($('#PREVIEWCURRENT li.selected'));
             }
             else {
@@ -333,7 +335,7 @@ function getNext() {
         if (p4.preview.mode == 'RESULT') {
             posAsk = parseInt(p4.preview.current.pos) + 1;
             posAsk = (posAsk > parseInt(p4.tot) || isNaN(posAsk)) ? 0 : posAsk;
-            openPreview('RESULT', posAsk);
+            openPreview('RESULT', posAsk, '', false);
         }
         else {
             if (!$('#PREVIEWCURRENT li.selected').is(':last-child'))
@@ -352,7 +354,7 @@ function getPrevious() {
     if (p4.preview.mode == 'RESULT') {
         posAsk = parseInt(p4.preview.current.pos) - 1;
         posAsk = (posAsk < 0) ? ((parseInt(p4.tot) - 1)) : posAsk;
-        openPreview('RESULT', posAsk);
+        openPreview('RESULT', posAsk, '', false);
     }
     else {
         if (!$('#PREVIEWCURRENT li.selected').is(':first-child'))
@@ -396,7 +398,7 @@ function setCurrent(current) {
             $(el).removeClass('openPreview');
             $(el).bind('click', function () {
                 viewCurrent($(this).parent());
-                openPreview(jsopt[0], jsopt[1], jsopt[2]);
+                openPreview(jsopt[0], jsopt[1], jsopt[2], false);
             });
         });
     }
@@ -408,7 +410,9 @@ function viewCurrent(el) {
     }
     $('#PREVIEWCURRENT li.selected').removeClass('selected');
     el.addClass('selected');
-    $('#PREVIEWCURRENTCONT').animate({'scrollLeft': ($('#PREVIEWCURRENT li.selected').position().left + $('#PREVIEWCURRENT li.selected').width() / 2 - ($('#PREVIEWCURRENTCONT').width() / 2 ))});
+    $('#PREVIEWCURRENTCONT').animate(
+        {'scrollLeft': ($('#PREVIEWCURRENT li.selected').position().left + $('#PREVIEWCURRENT li.selected').width() / 2 - ($('#PREVIEWCURRENTCONT').width() / 2 ))}
+    );
     return;
 }
 
@@ -477,16 +481,6 @@ function setPreview() {
 function classicMode() {
     $('#PREVIEWCURRENTCONT').animate({'scrollLeft': ($('#PREVIEWCURRENT li.selected').position().left - 160)});
     p4.currentViewMode = 'classic';
-}
-
-function doudouMode() {
-    $('#PREVIEWCURRENT li').removeClass('see-all');
-    $('#PREVIEWCURRENT ul').width('auto');
-    $('#PREVIEWCURRENTCONT').css({
-        'overflow-x': 'hidden'
-    });
-    p4.currentViewMode = 'enhance';
-    viewCurrent($('#PREVIEWCURRENT li.selected'));
 }
 
 function closePreview() {
