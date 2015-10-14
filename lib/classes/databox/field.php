@@ -468,7 +468,7 @@ class databox_field implements cache_cacheableInterface
         }
 
         try {
-            return TagFactory::getFromRDFTagname($tagName);
+            return TagFactory::getFromTagname($tagName);
         } catch (TagUnknown $exception) {
             if ($throwException) {
                 throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $exception);

@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Metadata;
 
 use PHPExiftool\Driver\TagFactory as BaseTagFactory;
+use PHPExiftool\Exception\TagUnknown;
 
 class TagFactory extends BaseTagFactory
 {
@@ -36,17 +37,27 @@ class TagFactory extends BaseTagFactory
         'tf-width'       => 'Alchemy\Phrasea\Metadata\Tag\TfWidth',
     ];
 
+    public static function getFromTagname($tagname)
+    {
+        $classname = static::classnameFromTagname($tagname);
+
+        if ( ! class_exists($classname)) {
+            throw new TagUnknown(sprintf('Unknown tag %s', $tagname));
+        }
+
+        return new $classname;
+    }
+
     protected static function classnameFromTagname($tagname)
     {
         $tagname = str_replace('rdf:RDF/rdf:Description/', '', $tagname);
 
-        if ('Phraseanet:' === substr($tagname, 0, 11)) {
-            $parts = explode(':', $tagname, 2);
-            if (isset(self::$knownClasses[$parts[1]])) {
-                return self::$knownClasses[$parts[1]];
-            }
+        $parts = explode(':', strtolower($tagname), 2);
+        if (count($parts) == 2 && $parts[0] == 'phraseanet' && isset(self::$knownClasses[$parts[1]])) {
+            // a specific phraseanet fieldname
+            return self::$knownClasses[$parts[1]];
         }
-
+        // another (exiftool) fieldname ?
         return parent::classnameFromTagname($tagname);
     }
 }

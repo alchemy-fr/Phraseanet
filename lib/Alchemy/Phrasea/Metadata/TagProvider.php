@@ -58,102 +58,102 @@ class TagProvider extends ExiftoolTagProvider
         $table = parent::getLookupTable();
 
         $table['phraseanet'] = [
-            'pdftext'       => [
-                'tagname'   => 'PdfText',
+            'pdf-text'       => [
+                'tagname'   => 'Pdf-Text',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\PdfText',
                 'namespace' => 'Phraseanet'],
-            'tfarchivedate' => [
-                'tagname'   => 'TfArchivedate',
+            'tf-archivedate' => [
+                'tagname'   => 'Tf-Archivedate',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfArchivedate',
                 'namespace' => 'Phraseanet'
             ],
-            'tfatime'       => [
-                'tagname'   => 'TfAtime',
+            'tf-atime'       => [
+                'tagname'   => 'Tf-Atime',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfAtime',
                 'namespace' => 'Phraseanet'
             ],
-            'tfbasename'    => [
-                'tagname'   => 'TfBasename',
+            'tf-basename'    => [
+                'tagname'   => 'Tf-Basename',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBasename',
                 'namespace' => 'Phraseanet'
             ],
-            'tfbits'        => [
-                'tagname'   => 'TfBits',
+            'tf-bits'        => [
+                'tagname'   => 'Tf-Bits',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBits',
                 'namespace' => 'Phraseanet'
             ],
-            'tfchannels'    => [
-                'tagname'   => 'TfChannels',
+            'tf-channels'    => [
+                'tagname'   => 'Tf-Channels',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfChannels',
                 'namespace' => 'Phraseanet'
             ],
-            'tTfCtime'      => [
-                'tagname'   => 'TfCtime',
+            'tf-ctime'      => [
+                'tagname'   => 'Tf-Ctime',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfCtime',
                 'namespace' => 'Phraseanet'
             ],
-            'tfdirname'     => [
-                'tagname'   => 'TfDirname',
+            'tf-dirname'     => [
+                'tagname'   => 'Tf-Dirname',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDirname',
                 'namespace' => 'Phraseanet'
             ],
-            'tfduration'    => [
-                'tagname'   => 'TfDuration',
+            'tf-duration'    => [
+                'tagname'   => 'Tf-Duration',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDuration',
                 'namespace' => 'Phraseanet'
             ],
-            'tfeditdate'    => [
-                'tagname'   => 'TfEditdate',
+            'tf-editdate'    => [
+                'tagname'   => 'Tf-Editdate',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfEditdate',
                 'namespace' => 'Phraseanet'
             ],
-            'tfextension'   => [
-                'tagname'   => 'TfExtension',
+            'tf-extension'   => [
+                'tagname'   => 'Tf-Extension',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfExtension',
                 'namespace' => 'Phraseanet'
             ],
-            'tffilename'    => [
-                'tagname'   => 'TfFilename',
+            'tf-filename'    => [
+                'tagname'   => 'Tf-Filename',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilename',
                 'namespace' => 'Phraseanet'
             ],
-            'tffilepath'    => [
-                'tagname'   => 'TfFilepath',
+            'tf-filepath'    => [
+                'tagname'   => 'Tf-Filepath',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilepath',
                 'namespace' => 'Phraseanet'
             ],
-            'tfheight'      => [
-                'tagname'   => 'TfHeight',
+            'tf-height'      => [
+                'tagname'   => 'Tf-Height',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfHeight',
                 'namespace' => 'Phraseanet'
             ],
-            'tfmimetype'    => [
-                'tagname'   => 'TfMimetype',
+            'tf-mimetype'    => [
+                'tagname'   => 'Tf-Mimetype',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMimetype',
                 'namespace' => 'Phraseanet'
             ],
-            'tfmtime'       => [
-                'tagname'   => 'TfMtime',
+            'tf-mtime'       => [
+                'tagname'   => 'Tf-Mtime',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMtime',
                 'namespace' => 'Phraseanet'
             ],
-            'tfquarantine'  => [
-                'tagname'   => 'TfQuarantine',
+            'tf-quarantine'  => [
+                'tagname'   => 'Tf-Quarantine',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfQuarantine',
                 'namespace' => 'Phraseanet'
             ],
-            'tfrecordid'    => [
-                'tagname'   => 'TfRecordid',
+            'tf-recordid'    => [
+                'tagname'   => 'Tf-Recordid',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfRecordid',
                 'namespace' => 'Phraseanet'
             ],
-            'tfsize'        => [
-                'tagname'   => 'TfSize',
+            'tf-size'        => [
+                'tagname'   => 'Tf-Size',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfSize',
                 'namespace' => 'Phraseanet'
             ],
-            'tfwidth'       => [
-                'tagname'   => 'TfWidth',
+            'tf-width'       => [
+                'tagname'   => 'Tf-Width',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfWidth',
                 'namespace' => 'Phraseanet'
             ],
