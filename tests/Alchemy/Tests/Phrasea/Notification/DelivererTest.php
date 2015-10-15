@@ -337,7 +337,20 @@ class DelivererTest extends \PhraseanetTestCase
 
     private function getMailerMock()
     {
-        return $this->getMockBuilder('\Swift_Mailer')->disableOriginalConstructor()->getMock();
+        $mailer = $this->getMockBuilder('\Swift_Mailer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $transport = $this->getMock('Swift_Transport');
+        $transport->expects($this->any())
+            ->method('isStarted')
+            ->willReturn(true);
+
+        $mailer->expects($this->any())
+            ->method('getTransport')
+            ->willReturn($transport);
+
+        return $mailer;
     }
 
     private function getEmitterMock()
