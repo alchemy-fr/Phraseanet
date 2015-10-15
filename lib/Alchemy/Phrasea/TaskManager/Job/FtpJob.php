@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
+use ftpclient;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
@@ -95,6 +96,8 @@ class FtpJob extends AbstractJob
 
         $proxy = (string) $settings->proxy;
         $proxyport = (string) $settings->proxyport;
+        $proxyuser = (string) $settings->proxyuser;
+        $proxypwd  = (string) $settings->proxypwd;
 
         $state = "";
         $ftp_server = $export->getAddr();
@@ -122,7 +125,11 @@ class FtpJob extends AbstractJob
 
         try {
             $ssl = $export->isSsl();
-            $ftp_client = $app['phraseanet.ftp.client']($ftp_server, 21, 300, $ssl, $proxy, $proxyport);
+            /** @var \ftpClient $ftp_client */
+            $ftp_client = $app['phraseanet.ftp.client'](
+                $ftp_server, 21, 300, $ssl, $proxy, $proxyport,
+                $proxyuser, $proxypwd
+            );
             $ftp_client->login($ftp_user_name, $ftp_user_pass);
 
             if ($export->isPassif()) {
@@ -261,7 +268,7 @@ class FtpJob extends AbstractJob
             if ($export->isLogfile()) {
                 $this->log('debug', "logfile ");
 
-                $date = new DateTime();
+                $date = new \DateTime();
                 $buffer = '#transfert finished ' . $date->format(DATE_ATOM) . "\n\n";
 
                 foreach ($export->getElements() as $exportElement) {

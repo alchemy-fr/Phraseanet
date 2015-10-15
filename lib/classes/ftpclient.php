@@ -12,36 +12,53 @@
 class ftpclient
 {
     protected $connexion;
-    protected $proxy;
     protected $host;
+    protected $port;
     protected $cached_dirs = [];
     protected $debug = false;
+    private $proxyhost = false;
+    private $proxyport = false;
+    private $proxyuser = false;
+    private $proxypwd  = false;
 
-    public function __construct($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false)
+    private function cleanAddr($addr, &$usedSSL)
     {
-        $host = mb_substr($host, -1, 1) == '/' ? mb_substr($host, 0, (mb_strlen($host) - 1)) : $host;
+        $addr = trim($addr);
+        if(substr($addr, 0, 7) === "ftps://") {
+            $addr = substr($addr, 7);
+            $usedSSL = true;
+        }
+        elseif(substr($addr, 0, 6) === "ftp://") {
+            $addr = substr($addr, 6);
+        }
+        if(substr($addr, -1, 1) == '/') {
+            $addr = substr($addr, 0, (strlen($addr) - 1));
+        }
+        return $addr;
+    }
 
-        if (mb_strpos($host, 'ftp://') !== false)
-            $host = mb_substr($host, 6);
-
-        $host = $proxy ? $proxy : $host;
-        $port = $proxyport ? $proxyport : $port;
-
-        if ($this->debug && $proxy)
-            echo "Utilisation du proxy $proxy\n<br>";
-
-        if ($this->debug && $proxyport)
-            echo "Utilisation du port proxy $proxyport\n<br>";
-
-        $this->proxy = $proxy;
+    public function __construct($host, $port = 21, $timeout = 90, $ssl = false,
+                                $proxyhost = false,
+                                $proxyport = false,
+                                $proxyuser = false,
+                                $proxypwd  = false
+    )
+    {
         $this->host = $host;
+        $this->port = $port;
+        $this->proxyhost = $proxyhost;
+        $this->proxyport = $proxyport;
+        $this->proxyuser = $proxyuser;
+        $this->proxypwd = $proxypwd;
+
+        // if there is a proxy, connect to it, not on host/port provided
+        $host = $proxyhost ? $proxyhost : $host;
+        $port = $proxyport ? $proxyport : $port;
+        // clean the addr, force ssl if needed
+        $host = $this->cleanAddr($host, $ssl);
 
         if ($this->debug)
-            echo "Ouverture de connection vers $host:$port timeout $timeout et proxy $proxy:$proxyport\n<br>";
-
-        if (trim($host) == '') {
-            throw new Exception('Nom d\'hote incorrect ' . $host);
-        }
+            echo "Ouverture de connection vers $host:$port timeout $timeout\n<br>";
 
         try {
             if ($ssl === true) {
@@ -72,22 +89,29 @@ class ftpclient
 
     public function login($username, $password)
     {
-        $username = $this->proxy ? $username . "@" . $this->host : $username;
+        if($this->proxyhost) {
+            $username .= ("@" . $this->host);
+            if ($this->proxyuser) {
+                $username .= (' ' . $this->proxyuser);
+            }
+        }
 
         $retry = 3;
         $done = false;
 
-        if ($this->debug)
-            echo "tentative de login avec $username, $password\n<br>";
-
-        while ($retry > 0) {
-            if ((@ftp_login($this->connexion, $username, $password)) === false) {
-                $retry --;
-            } else {
-                $retry = 0;
+        while (!$done && $retry-- > 0) {
+            $ret = ftp_raw($this->connexion, "USER ".$username);
+            if(is_array($ret) && $password) {
+                $ret = ftp_raw($this->connexion, "PASS ".$password);
+            }
+            if(is_array($ret) && $this->proxypwd) {
+                $ret = ftp_raw($this->connexion, "ACCT ".$this->proxypwd);
+            }
+            if(is_array($ret)) {
                 $done = true;
             }
         }
+
         if (! $done) {
             throw new Exception('Impossible de s\'authentifier sur le serveur FTP');
         }
