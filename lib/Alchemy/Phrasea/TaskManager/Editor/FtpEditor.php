@@ -41,6 +41,8 @@ class FtpEditor extends AbstractEditor
 <tasksettings>
     <proxy></proxy>
     <proxyport></proxyport>
+    <proxyuser></proxyuser>
+    <proxypwd></proxypwd>
 </tasksettings>
 EOF;
     }
@@ -53,6 +55,8 @@ EOF;
         return [
             'proxy'     => static::FORM_TYPE_STRING,
             'proxyport' => static::FORM_TYPE_STRING,
+            'proxyuser' => static::FORM_TYPE_STRING,
+            'proxypwd'  => static::FORM_TYPE_STRING,
         ];
     }
 }
