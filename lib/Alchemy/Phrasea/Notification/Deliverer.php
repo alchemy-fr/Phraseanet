@@ -76,7 +76,11 @@ class Deliverer
             $message->setReadReceiptTo([$mail->getEmitter()->getEmail() => $mail->getEmitter()->getName()]);
         }
 
+        if(!$this->mailer->getTransport()->isStarted()) {
+            $this->mailer->getTransport()->start();
+        }
         $ret = $this->mailer->send($message);
+        $this->mailer->getTransport()->stop();
 
         $this->dispatcher->dispatch('phraseanet.notification.sent');
 
