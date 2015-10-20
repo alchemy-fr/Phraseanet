@@ -24,10 +24,10 @@ abstract class UserEvent extends Event
     protected $args;
 
     /**
-     * @param UserEntity |null $user
+     * @param UserEntity|null $user
      * @param array|null $args
      */
-    public function __construct(UserEntity $user, Array $args = null)
+    public function __construct($user, Array $args = null)
     {
         $this->user = $user;
         $this->args = $args;
