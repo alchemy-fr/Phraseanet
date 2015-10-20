@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -26,9 +25,6 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
@@ -51,7 +47,6 @@ use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Provider\SecretProvider;
-use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
@@ -82,53 +77,6 @@ class V1Controller extends Controller
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
-
-    public function authenticate(Request $request)
-    {
-        $context = new Context(Context::CONTEXT_OAUTH2_TOKEN);
-
-        $dispatcher = $this->getDispatcher();
-        $dispatcher->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
-        $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
-
-        $this->getOAuth2Server()->verifyAccessToken();
-
-        /** @var ApiOauthToken $token */
-        if (null === $token = $this->getApiTokenRepository()->find($this->getOAuth2Server()->getToken())) {
-            throw new NotFoundHttpException('Provided token is not valid.');
-        }
-        $this->getSession()->set('token', $token);
-
-        $oAuth2Account = $token->getAccount();
-        $oAuth2App = $oAuth2Account->getApplication();
-
-        $conf = $this->getConf();
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID && !$conf->get(['registry', 'api-clients', 'navigator-enabled'])) {
-            return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
-        }
-
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID && !$conf->get(['registry', 'api-clients', 'office-enabled'])) {
-            return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
-        }
-
-        $this->getAuthenticator()->openAccount($oAuth2Account->getUser());
-        $this->getOAuth2Server()->rememberSession($this->getSession());
-        $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
-
-        return null;
-    }
-
-    public function after(Request $request, Response $response)
-    {
-        /** @var ApiOauthToken $token */
-        $token = $this->getSession()->get('token');
-        $this->getApiLogManipulator()->create($token->getAccount(), $request, $response);
-        $this->getApiOAuthTokenManipulator()->setLastUsed($token, new \DateTime());
-        $this->getSession()->set('token', null);
-        if (null !== $this->getAuthenticatedUser()) {
-            $this->getAuthenticator()->closeAccount();
-        }
-    }
 
     public function getBadRequestAction(Request $request, $message = '')
     {
@@ -2602,14 +2550,6 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return \API_OAuth2_Adapter
-     */
-    private function getOAuth2Server()
-    {
-        return $this->app['oauth2-server'];
-    }
-
-    /**
      * @return AccountService
      */
     public function getAccountService()
@@ -2626,35 +2566,11 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return ApiOauthTokenRepository
-     */
-    private function getApiTokenRepository()
-    {
-        return $this->app['repo.api-oauth-tokens'];
-    }
-
-    /**
      * @return Session
      */
     private function getSession()
     {
         return $this->app['session'];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getApiLogManipulator()
-    {
-        return $this->app['manipulator.api-log'];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getApiOAuthTokenManipulator()
-    {
-        return $this->app['manipulator.api-oauth-token'];
     }
 
     /**

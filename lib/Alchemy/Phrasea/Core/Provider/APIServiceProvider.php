@@ -21,6 +21,14 @@ class APIServiceProvider implements ServiceProviderInterface
         $app['oauth2-server'] = $app->share(function ($app) {
             return new \API_OAuth2_Adapter($app);
         });
+        $app['token'] = $app->share(function (Application $app) {
+            /** @var \API_OAuth2_Adapter $oauth2 */
+            $oauth2 = $app['oauth2-server'];
+
+            $token = $oauth2->getToken();
+
+            return $token ? $app['repo.api-oauth-tokens']->find($token) : null;
+        });
     }
 
     public function boot(Application $app)

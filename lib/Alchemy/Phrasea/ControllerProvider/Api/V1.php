@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
+use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -46,7 +47,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->before('controller.api.v1:authenticate');
+        $controllers->before(new OAuthListener());
         $controllers->after('controller.api.v1:after');
 
         $controllers->get('/monitor/scheduler/', 'controller.api.v1:getSchedulerAction')
