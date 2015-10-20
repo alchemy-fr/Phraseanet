@@ -38,7 +38,7 @@ class RegistrationService
         'fax'       => 'setFax',
         'job'       => 'setJob',
         'company'   => 'setCompany',
-        'position'  => 'setPosition',
+        'position'  => 'setJob',
         'geonameid' => 'setGeonameId',
         'notifications' => 'setMailNotificationsActivated'
     );

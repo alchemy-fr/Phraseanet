@@ -504,7 +504,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['authentication.providers']->expects($this->once())
+        self::$DI['app']['authentication.providers']->expects($this->any())
             ->method('get')
             ->with($this->equalTo('provider-test'))
             ->will($this->returnValue($provider));
@@ -1406,7 +1406,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['authentication.providers']->expects($this->once())
+        self::$DI['app']['authentication.providers']->expects($this->any())
             ->method('get')
             ->with($this->equalTo('provider-test'))
             ->will($this->returnValue($provider));
@@ -1455,7 +1455,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['authentication.providers']->expects($this->once())
+        self::$DI['app']['authentication.providers']->expects($this->any())
             ->method('get')
             ->with($this->equalTo('provider-test'))
             ->will($this->throwException(new InvalidArgumentException('Provider not found')));
@@ -1472,7 +1472,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['authentication.providers']->expects($this->once())
+        self::$DI['app']['authentication.providers']->expects($this->any())
             ->method('get')
             ->with($this->equalTo($name))
             ->will($this->returnValue($provider));
