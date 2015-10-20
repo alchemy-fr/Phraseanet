@@ -5908,6 +5908,16 @@ msgstr "Régénération des sous-définitions"
 msgid "video tool"
 msgstr "Outils vidéos"
 
+msgid "Document Type Sharing"
+msgstr "Partage des sous-définitions"
+
+msgid "Disable document type sharing"
+msgstr "Désactiver le lien de partage"
+
+msgid "Enable document type sharing"
+msgstr "Activer le lien de partage"
+
+
 #: ../tmp/cache_twig/1f/33/af72a3afd1e25393575605835b9f425f597a5f8a64d8ffcb2f64a5e2f26b.php:131
 msgid "image tool"
 msgstr "Rotation"

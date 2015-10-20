@@ -5763,6 +5763,15 @@ msgstr ""
 msgid "video tool"
 msgstr ""
 
+msgid "Document Type Sharing"
+msgstr ""
+
+msgid "Disable document type sharing"
+msgstr ""
+
+msgid "Enable document type sharing"
+msgstr ""
+
 #: tmp/cache_twig/1f/33/af72a3afd1e25393575605835b9f425f597a5f8a64d8ffcb2f64a5e2f26b.php:131
 msgid "image tool"
 msgstr ""

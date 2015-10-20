@@ -636,8 +636,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @return Array
+     * @return array|media_subdef[]
      */
     public function get_subdefs()
     {
