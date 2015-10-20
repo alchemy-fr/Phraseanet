@@ -21,8 +21,8 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $processor = new FeedEntryProcessor($event, self::$DI['app']);
-        $this->assertEquals($processor->process(), null);
+        $processor = new FeedEntryProcessor(self::$DI['app']);
+        $this->assertEquals($processor->process($event), null);
     }
 
     public function testProcessWithMissingDataProperty()
@@ -33,8 +33,8 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $processor = new FeedEntryProcessor($event, self::$DI['app']);
-        $this->assertEquals($processor->process(), null);
+        $processor = new FeedEntryProcessor(self::$DI['app']);
+        $this->assertEquals($processor->process($event), null);
     }
 
     public function testProcess()
@@ -46,7 +46,7 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $processor = new FeedEntryProcessor($event, self::$DI['app']);
-        $this->assertEquals($processor->process(), null);
+        $processor = new FeedEntryProcessor(self::$DI['app']);
+        $this->assertEquals($processor->process($event), null);
     }
 }
