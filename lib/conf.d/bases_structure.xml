@@ -128,6 +128,14 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>deleted</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -261,6 +269,14 @@
             <comment></comment>
           </field>
           <field>
+            <name>deleted</name>
+            <type>datetime</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>last_modified</name>
             <type>datetime</type>
             <null></null>
@@ -318,7 +334,7 @@
           </field>
           <field>
             <name>webhook_url</name>
-            <type>varchar(128)</type>
+            <type>varchar(4096)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
