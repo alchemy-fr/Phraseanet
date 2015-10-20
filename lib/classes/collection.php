@@ -10,16 +10,24 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
-use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
-use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\NameChangedEvent;
 use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Thumbnail\ThumbnailManager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\HttpFoundation\File\File;
+
+use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
+use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
+use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\NameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\EmptiedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\EnabledEvent;
+use Alchemy\Phrasea\Core\Event\Collection\DisabledEvent;
+use Alchemy\Phrasea\Core\Event\Collection\MountedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\UnmountedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\SettingsChangedEvent;
+use Alchemy\Phrasea\Core\Event\Collection\LabelChangedEvent;
 
 class collection implements cache_cacheableInterface, ThumbnailedElement
 {
@@ -157,6 +165,13 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
+        $this->app['dispatcher']->dispatch(
+            CollectionEvents::ENABLED,
+            new EnabledEvent(
+                $this
+            )
+        );
+
         return $this;
     }
 
@@ -186,6 +201,13 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
+        $this->app['dispatcher']->dispatch(
+            CollectionEvents::DISABLED,
+            new DisabledEvent(
+                $this
+            )
+        );
+
         return $this;
     }
 
@@ -207,6 +229,13 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
             $record->delete();
             unset($record);
         }
+
+        $this->app['dispatcher']->dispatch(
+            CollectionEvents::EMPTIED,
+            new EmptiedEvent(
+                $this
+            )
+        );
 
         return $this;
     }
@@ -273,6 +302,8 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function set_name($name)
     {
+        $old_name = $this->get_name();
+
         $name = trim(strip_tags($name));
 
         if ($name === '')
@@ -290,7 +321,13 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
         phrasea::reset_baseDatas($this->databox->get_appbox());
 
-        $this->dispatch(CollectionEvents::NAME_CHANGED, new NameChangedEvent($this));
+        $this->dispatch(
+            CollectionEvents::NAME_CHANGED,
+            new NameChangedEvent(
+                $this,
+                array("name_before"=>$old_name)
+            )
+        );
 
         return $this;
     }
@@ -300,6 +337,8 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
+
+        $old_label = $this->labels[$code];
 
         $sql = "UPDATE coll SET label_$code = :label
             WHERE coll_id = :coll_id";
@@ -312,6 +351,14 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->delete_data_from_cache();
 
         phrasea::reset_baseDatas($this->databox->get_appbox());
+
+        $this->app['dispatcher']->dispatch(
+            CollectionEvents::LABEL_CHANGED,
+            new LabelChangedEvent(
+                $this,
+                array("lng"=>$code, "label_before"=>$old_label)
+            )
+        );
 
         return $this;
     }
@@ -528,6 +575,8 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function set_prefs(DOMDocument $dom)
     {
+        $old_prefs = $this->get_prefs();
+
         $this->prefs = $dom->saveXML();
 
         $sql = "UPDATE coll SET prefs = :prefs WHERE coll_id = :coll_id";
@@ -536,6 +585,16 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
+
+        $this->app['dispatcher']->dispatch(
+            CollectionEvents::SETTING_CHANGED,
+            new SettingsChangedEvent(
+                $this,
+                array(
+                    'settings_before'=>$old_prefs
+                )
+            )
+        );
 
         return $this->prefs;
     }
@@ -557,6 +616,9 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
     public function unmount_collection(Application $app)
     {
+        $old_coll_id = $this->get_coll_id();
+        $old_name = $this->get_name();
+
         $params = [':base_id' => $this->get_base_id()];
 
         $query = $app['phraseanet.user-query'];
@@ -588,6 +650,17 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
 
         phrasea::reset_baseDatas($app['phraseanet.appbox']);
+
+        $app['dispatcher']->dispatch(
+            CollectionEvents::UNMOUNTED,
+            new UnmountedEvent(
+                null,                   // the coll is not available anymore
+                array(
+                    'coll_id'=>$old_coll_id,
+                    'coll_name'=>$old_name
+                )
+            )
+        );
 
         return $this;
     }
@@ -654,7 +727,12 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
             $collection->set_admin($new_bas, $user);
         }
 
-        $app['dispatcher']->dispatch(CollectionEvents::CREATED, new CreatedEvent($collection));
+        $app['dispatcher']->dispatch(
+            CollectionEvents::CREATED,
+            new CreatedEvent(
+                $collection
+            )
+        );
 
         return $collection;
     }
@@ -710,8 +788,15 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
         phrasea::reset_baseDatas($databox->get_appbox());
 
-        $coll = self::get_from_base_id($app, $new_bas);
-        $coll->set_admin($new_bas, $user);
+        $collection = self::get_from_base_id($app, $new_bas);
+        $collection->set_admin($new_bas, $user);
+
+        $app['dispatcher']->dispatch(
+            CollectionEvents::MOUNTED,
+            new MountedEvent(
+                $collection
+            )
+        );
 
         return $new_bas;
     }

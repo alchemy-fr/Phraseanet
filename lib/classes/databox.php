@@ -26,6 +26,17 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
+use Alchemy\Phrasea\Core\Event\Databox\DataboxEvents;
+use Alchemy\Phrasea\Core\Event\Databox\CreatedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\DeletedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\MountedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\ReindexAskedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\StructureChangedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\ThesaurusChangedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\TouChangedEvent;
+use Alchemy\Phrasea\Core\Event\Databox\UnmountedEvent;
+
+
 class databox extends base implements ThumbnailedElement
 {
 
@@ -401,6 +412,8 @@ class databox extends base implements ThumbnailedElement
 
     public function unmount_databox()
     {
+        $old_dbname = $this->get_dbname();
+
         foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($this->app);
         }
@@ -456,6 +469,16 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::UNMOUNTED,
+            new UnmountedEvent(
+                null,
+                array(
+                    'dbname'=>$old_dbname
+                )
+            )
+        );
 
         return;
     }
@@ -554,6 +577,13 @@ class databox extends base implements ThumbnailedElement
             $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
+        $app['dispatcher']->dispatch(
+            DataboxEvents::CREATED,
+            new CreatedEvent(
+                $databox
+            )
+        );
+
         return $databox;
     }
 
@@ -612,6 +642,13 @@ class databox extends base implements ThumbnailedElement
         phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
         cache_databox::update($app, $databox->get_sbas_id(), 'structure');
+
+        $app['dispatcher']->dispatch(
+            DataboxEvents::MOUNTED,
+            new MountedEvent(
+                $databox
+            )
+        );
 
         return $databox;
     }
@@ -682,12 +719,24 @@ class databox extends base implements ThumbnailedElement
 
     public function delete()
     {
+        $old_dbname = $this->get_dbname();
+
         $sql = 'DROP DATABASE `' . $this->get_dbname() . '`';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::DELETED,
+            new DeletedEvent(
+                null,
+                array(
+                    'dbname'=>$old_dbname
+                )
+            )
+        );
 
         return;
     }
@@ -801,6 +850,7 @@ class databox extends base implements ThumbnailedElement
      */
     public function saveStructure(DOMDocument $dom_struct)
     {
+        $old_structure = $this->get_dom_structure();
 
         $dom_struct->documentElement
             ->setAttribute("modification_date", $now = date("YmdHis"));
@@ -828,6 +878,16 @@ class databox extends base implements ThumbnailedElement
 
         cache_databox::update($this->app, $this->id, 'structure');
 
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::STRUCTURE_CHANGED,
+            new StructureChangedEvent(
+                $this,
+                array(
+                    'dom_before'=>$old_structure
+                )
+            )
+        );
+
         return $this;
     }
 
@@ -854,6 +914,7 @@ class databox extends base implements ThumbnailedElement
 
     public function saveThesaurus(DOMDocument $dom_thesaurus)
     {
+        $old_thesaurus = $this->get_dom_thesaurus();
 
         $dom_thesaurus->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
         $this->thesaurus = $dom_thesaurus->saveXML();
@@ -863,6 +924,16 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute([':xml'  => $this->thesaurus, ':date' => $now]);
         $stmt->closeCursor();
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
+
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::THESAURUS_CHANGED,
+            new ThesaurusChangedEvent(
+                $this,
+                array(
+                    'dom_before'=>$old_thesaurus,
+                )
+            )
+        );
 
         return $this;
     }
@@ -1036,6 +1107,13 @@ class databox extends base implements ThumbnailedElement
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':token', PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
         $stmt->execute();
+
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::REINDEX_ASKED,
+            new ReindexAskedEvent(
+                $this
+            )
+        );
 
         return $this;
     }
@@ -1389,6 +1467,8 @@ class databox extends base implements ThumbnailedElement
 
     public function update_cgus($locale, $terms, $reset_date)
     {
+        $old_tou = $this->get_cgus();
+
         $terms = str_replace(["\r\n", "\n", "\r"], ['', '', ''], strip_tags($terms, '<p><strong><a><ul><ol><li><h1><h2><h3><h4><h5><h6>'));
         $sql = 'UPDATE pref SET value = :terms ';
 
@@ -1402,6 +1482,16 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
         $this->cgus = null;
         $this->delete_data_from_cache(self::CACHE_CGUS);
+
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::TOU_CHANGED,
+            new TouChangedEvent(
+                $this,
+                array(
+                    'tou_before'=>$old_tou,
+                )
+            )
+        );
 
         return $this;
     }
