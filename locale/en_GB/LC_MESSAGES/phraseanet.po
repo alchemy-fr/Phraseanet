@@ -5899,6 +5899,15 @@ msgstr "Recreate subviews"
 msgid "video tool"
 msgstr "Video Tools"
 
+msgid "Document Type Sharing"
+msgstr "Document type sharing"
+
+msgid "Disable document type sharing"
+msgstr "Disable sharing permalink"
+
+msgid "Enable document type sharing"
+msgstr "Enable sharing permalink"
+
 #: ../tmp/cache_twig/1f/33/af72a3afd1e25393575605835b9f425f597a5f8a64d8ffcb2f64a5e2f26b.php:131
 msgid "image tool"
 msgstr "Rotate"

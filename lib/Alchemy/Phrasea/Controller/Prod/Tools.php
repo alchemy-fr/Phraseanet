@@ -42,9 +42,22 @@ class Tools implements ControllerProviderInterface
 
             $metadatas = false;
             $record = null;
+            $recordAccessibleSubdefs = array();
 
             if (count($records) == 1) {
                 $record = $records->first();
+
+                // fetch subdef list:
+                $subdefs = $record->get_subdefs();
+
+                foreach ($subdefs as $subdef) {
+                    $permalink = $subdef->get_permalink();
+                    $recordAccessibleSubdefs[] = array(
+                      'name' => $subdef->get_name(),
+                      'state' => $permalink->get_is_activated()
+                    );
+                }
+
                 if (!$record->is_grouping()) {
                     try {
                         $metadatas = $app['exiftool.reader']
@@ -61,6 +74,7 @@ class Tools implements ControllerProviderInterface
             $var = array(
                 'records'   => $records,
                 'record'    => $record,
+                'recordSubdefs' => $recordAccessibleSubdefs,
                 'metadatas' => $metadatas,
             );
 
@@ -301,6 +315,73 @@ class Tools implements ControllerProviderInterface
             return $app->json($return);
         });
 
+        /**
+         * Edit share state of the record
+         *
+         * name         : export_multi_export
+         *
+         * description  : Display edit_record_sharing export
+         *
+         * method       : POST
+         *
+         * parameters   : base_id, record_id
+         *
+         * data params  : name, state
+         *
+         * return       : JSON Response
+         */
+        $controllers->post('/sharing-editor/{base_id}/{record_id}/', $this->call('editRecordSharing'))
+          ->bind('edit_record_sharing');
+
         return $controllers;
     }
+
+    /**
+     * Edit a record share state
+     * @param Application $app
+     * @param Request $request
+     * @param $base_id
+     * @param $record_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function editRecordSharing(Application $app, Request $request, $base_id, $record_id)
+    {
+
+        $record = new \record_adapter($app, \phrasea::sbasFromBas($app, $base_id), $record_id);
+        $subdefName = (string)$request->request->get('name');
+        $state = $request->request->get('state') == 'true' ? true : false;
+
+        /** @var \ACL $acl */
+        $acl = $app['authentication']->getUser()->ACL();
+
+        if (!$acl->has_access_to_subdef($record, $subdefName) || !$acl->is_admin()) {
+            $app->abort(403);
+        }
+
+        $subdefs = $record->get_subdefs();
+
+        foreach ($subdefs as $subdef) {
+            if ($subdef->get_name($subdefName) === $subdefName) {
+                $permalink = $subdef->get_permalink();
+                $permalink->set_is_activated($state);
+
+                $changedState = $permalink->get_is_activated();
+            }
+        }
+
+        return $app->json(array('success' => true, 'state' => $changedState),
+          200);
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
+    }
+
 }
