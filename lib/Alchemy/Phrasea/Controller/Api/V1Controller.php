@@ -852,7 +852,14 @@ class V1Controller extends Controller
 
     public function unlockAccount(Request $request, $token)
     {
-        $this->getRegistrationService()->unlockAccount($token);
+        try {
+            $this->getRegistrationService()->unlockAccount($token);
+        }
+        catch (RegistrationException $exception) {
+            return Result::createError($request, 400, $exception->getMessage())->createResponse();
+        }
+
+        return Result::create($request, [ 'success' => true ])->createResponse();
     }
 
     public function addRecordAction(Request $request)

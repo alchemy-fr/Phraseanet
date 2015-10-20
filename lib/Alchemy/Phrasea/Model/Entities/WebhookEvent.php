@@ -14,6 +14,13 @@ class WebhookEvent
     const NEW_FEED_ENTRY = 'new_feed_entry';
     const FEED_ENTRY_TYPE = 'feed_entry';
 
+    const USER_REGISTRATION_GRANTED = 'user.registration.granted';
+    const USER_REGISTRATION_REJECTED = 'user.registration.rejected';
+    const USER_REGISTRATION_TYPE = 'user.registration';
+
+    const USER_DELETED = 'user.deleted';
+    const USER_DELETED_TYPE = 'user.deleted';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -53,12 +60,21 @@ class WebhookEvent
 
     public static function types()
     {
-        return [self::FEED_ENTRY_TYPE];
+        return [
+            self::FEED_ENTRY_TYPE,
+            self::USER_REGISTRATION_TYPE,
+            self::USER_DELETED_TYPE
+        ];
     }
 
     public static function events()
     {
-        return [self::NEW_FEED_ENTRY];
+        return [
+            self::NEW_FEED_ENTRY,
+            self::USER_REGISTRATION_REJECTED,
+            self::USER_REGISTRATION_GRANTED,
+            self::USER_DELETED
+        ];
     }
 
     /**

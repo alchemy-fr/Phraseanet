@@ -2,17 +2,19 @@
 
 namespace Alchemy\Phrasea\Webhook\Processor;
 
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
+
 class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
 {
-    public function process()
+    public function process(WebhookEvent $event)
     {
-        $data = $this->event->getData();
+        $data = $event->getData();
 
-        if (!isset($data->{"entry_id"})) {
+        if (!isset($data->entry_id)) {
             return null;
         }
 
-        $entry = $this->app['orm.em']->getRepository('Phraseanet::Entry')->find($data->{"entry_id"});
+        $entry = $this->app['orm.em']->getRepository('Phraseanet::Entry')->find($data->entry_id);
 
         if (null === $entry) {
             return null;
@@ -51,7 +53,7 @@ class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
 
         return [
             'event' => $this->event->getName(),
-            'users_were_notified' => isset($data->{'notify_email'}) ?: !!$data->{"notify_email"},
+            'users_were_notified' => isset($data->notify_email) ?: (bool) $data->notify_email,
             'feed' => [
                 'id' => $feed->getId(),
                 'title' => $feed->getTitle(),

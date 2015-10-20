@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
@@ -489,20 +490,33 @@ class UserController extends Controller
             });
             unset ($cacheToUpdate);
 
+            $hookName = WebhookEvent::USER_REGISTRATION_REJECTED;
+            $hookType = WebhookEvent::USER_REGISTRATION_TYPE;
+            $hookData = [
+                'user_id' => $user->getId(),
+                'granted' => [],
+                'rejected' => []
+            ];
+
             foreach ($done as $usr => $bases) {
                 $user = $userRepository->find($usr);
                 $acceptColl = $denyColl = [];
 
                 foreach ($bases as $bas => $isok) {
                     $collection = \collection::get_from_base_id($this->app, $bas);
+                    $label = $collection->get_label($this->app['locale']);
 
                     if ($isok) {
-                        $acceptColl[] = $collection->get_label($this->app['locale']);
-                        continue;
+                        $acceptColl[] = $label;
+                        $hookData['granted'][$bas] = $label;
+                        $hookName = WebhookEvent::USER_REGISTRATION_GRANTED;
+                    } else {
+                        $denyColl[] = $label;
+                        $hookData['rejected'][$bas] = $label;
                     }
-
-                    $denyColl[] = $collection->get_label($this->app['locale']);
                 }
+
+                $this->app['manipulator.webhook-event']->create($hookName, $hookType, $hookData);
 
                 if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
                     $message = '';

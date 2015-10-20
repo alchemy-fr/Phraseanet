@@ -234,12 +234,18 @@ class RegistrationService
 
     public function getAccountUnlockToken(User $user)
     {
-        return $this->tokenManipulator->createAccountUnlockToken($user);
+        return $this->tokenManipulator->createAccountUnlockToken($user)
+            ->getValue();
     }
 
     public function unlockAccount($token)
     {
         $token = $this->tokenRepository->findValidToken($token);
+
+        if (! $token) {
+            throw new RegistrationException('Invalid token');
+        }
+
         $user = $token->getUser();
 
         if (!$user->isMailLocked()) {
