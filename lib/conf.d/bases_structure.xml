@@ -130,10 +130,10 @@
           </field>
           <field>
             <name>deleted</name>
-            <type>datetime</type>
+            <type>tinyint</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
         </fields>
@@ -270,10 +270,10 @@
           </field>
           <field>
             <name>deleted</name>
-            <type>datetime</type>
+            <type>tinyint</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
