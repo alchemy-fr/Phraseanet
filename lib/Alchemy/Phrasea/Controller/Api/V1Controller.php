@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
+use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Checker\Response as CheckerResponse;
 use Alchemy\Phrasea\Border\File;
@@ -850,10 +852,7 @@ class V1Controller extends Controller
 
     public function unlockAccount(Request $request, $token)
     {
-        /** @var \Alchemy\Phrasea\Authentication\RegistrationService $service */
-        $service = $this->app['authentication.registration_service'];
-
-        $service->unlockAccount($token);
+        $this->getRegistrationService()->unlockAccount($token);
     }
 
     public function addRecordAction(Request $request)
@@ -2450,6 +2449,41 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    public function createAccessDemand(Request $request)
+    {
+        $service = $this->getRegistrationService();
+        $data = json_decode($request->getContent(false), true);
+        $collections = null;
+
+        if (isset($data['collections'])) {
+            $collections = $data['collections'];
+        }
+
+        try {
+            $user = $service->registerUser($data, $collections);
+            $token = $service->getAccountUnlockToken($user);
+        }
+        catch (RegistrationException $exception) {
+            return Result::createError($request, 500, $exception->getMessage())->createResponse();
+        }
+
+        return Result::create($request, [
+            'user' => $user,
+            'token' => $token
+        ])->createResponse();
+    }
+
+    public function createCollectionRequests(Request $request)
+    {
+        $service = $this->getRegistrationService();
+        $user = $this->getAuthenticatedUser();
+        $data = json_decode($request->getContent(false), true);
+
+        $service->createCollectionRequests($user, $data);
+
+        return Result::create($request, $this->listUserDemands($user))->createResponse();
+    }
+
     public function ensureAdmin(Request $request)
     {
         if (!$user = $this->getApiAuthenticatedUser()->isAdmin()) {
@@ -2554,6 +2588,14 @@ class V1Controller extends Controller
     public function getAccountService()
     {
         return $this->app['accounts.service'];
+    }
+
+    /**
+     * @return RegistrationService
+     */
+    public function getRegistrationService()
+    {
+        return $this->app['authentication.registration_service'];
     }
 
     /**
