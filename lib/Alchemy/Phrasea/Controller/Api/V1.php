@@ -11,28 +11,36 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
-use Silex\ControllerProviderInterface;
-use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application as SilexApplication;
+use Silex\ControllerProviderInterface;
+use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class V1 implements ControllerProviderInterface
+class V1 implements ControllerProviderInterface, ServiceProviderInterface
 {
-    public function connect(SilexApplication $app)
+    public function register(SilexApplication $app)
     {
-        $controllers = $app['controllers_factory'];
+        $app['oauth2_server'] = $app->share(function (Application $app) {
+            return new \API_OAuth2_Adapter($app);
+        });
 
         /**
-         * @var API_OAuth2_Token
+         * @var \API_OAuth2_Token|null
          */
-        $app['token'] = null;
+        $app['token'] = $app->share(function (Application $app) {
+            /** @var \API_OAuth2_Adapter $oauth2 */
+            $oauth2 = $app['oauth2_server'];
+
+            $token = $oauth2->getToken();
+
+            return $token ? \API_OAuth2_Token::load_by_oauth_token($app, $token) : null;
+        });
 
         /**
          * Api Service
@@ -40,56 +48,20 @@ class V1 implements ControllerProviderInterface
          * @return \API_V1_adapter
          */
         $app['api'] = function () use ($app) {
-                return new \API_V1_adapter($app);
-            };
+            return new \API_V1_adapter($app);
+        };
+    }
 
-        /**
-         * oAuth token verification process
-         * - Check if oauth_token exists && is valid
-         * - Check if request comes from phraseanet Navigator && phraseanet Navigator
-         *  is enable on current instance
-         * - restore user session
-         *
-         * @ throws \API_V1_exception_unauthorized
-         * @ throws \API_V1_exception_forbidden
-         */
-        $controllers->before(function ($request) use ($app) {
-            $context = new Context(Context::CONTEXT_OAUTH2_TOKEN);
-            $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+    public function boot(SilexApplication $app)
+    {
+        // Nothing to do
+    }
 
-            $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
-            $oauth2_adapter = new \API_OAuth2_Adapter($app);
-            $oauth2_adapter->verifyAccessToken();
+    public function connect(SilexApplication $app)
+    {
+        $controllers = $app['controllers_factory'];
 
-            $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app, $oauth2_adapter->getToken());
-
-            $oAuth2App = $app['token']->get_account()->get_application();
-            /* @var $oAuth2App \API_OAuth2_Application */
-
-            if ($oAuth2App->get_client_id() == \API_OAuth2_Application_Navigator::CLIENT_ID
-                && !$app['phraseanet.registry']->get('GV_client_navigator')) {
-                throw new \API_V1_exception_forbidden(_('The use of phraseanet Navigator is not allowed'));
-            }
-
-            if ($oAuth2App->get_client_id() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
-                && ! $app['phraseanet.registry']->get('GV_client_officeplugin')) {
-                throw new \API_V1_exception_forbidden('The use of Office Plugin is not allowed.');
-            }
-
-            if ($app['authentication']->isAuthenticated()) {
-                $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
-
-                return;
-            }
-
-            $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app);
-
-            $app['authentication']->openAccount($user);
-            $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));
-            $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
-
-            return;
-        }, 256);
+        $controllers->before(new OAuthListener());
 
         $requirePasswordGrant = function () use ($app) {
             /** @var \API_OAuth2_Token $oauthToken */
@@ -193,13 +165,6 @@ class V1 implements ControllerProviderInterface
                 $route['aspect'],
                 $route['action']
             );
-        });
-
-        /**
-         * Close session
-         */
-        $controllers->after(function () use ($app) {
-            $app['authentication']->closeAccount();
         });
 
         /**

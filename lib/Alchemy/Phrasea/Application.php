@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
+use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Controller\Lightbox;
 use Alchemy\Phrasea\Controller\Datafiles;
 use Alchemy\Phrasea\Controller\Permalink;
@@ -324,6 +325,8 @@ class Application extends SilexApplication
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
         $this->register(new ContentNegotiationServiceProvider());
+        // allow access to oauth service from standard application scope
+        $this->register(new V1());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
