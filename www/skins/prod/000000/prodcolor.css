@@ -4997,3 +4997,27 @@ ui-dialog-titlebar {
     width: 26px;
   }
 }
+
+.status-marker {
+    line-height: 10px;
+    border-radius: 50%;
+    width: 7px;
+    height: 7px;
+    display: inline-block;
+    margin-right: 4px;
+    margin-bottom: 0px;
+}
+.status-marker.status-active{
+    background-color: #58d5b5;
+    box-shadow: 0 0 6px #69fcd6;
+
+}
+
+.status-marker.status-inactive {
+    background-color: #aaaaaa;
+    box-shadow: inset 1px 1px 2px 0px rgba(0,0,0,0.7);
+}
+
+.text-right {
+    text-align: right;
+}
