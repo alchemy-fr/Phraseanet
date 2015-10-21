@@ -213,7 +213,7 @@ class RegistrationService
         $this->entityManager->flush($user);
 
         if (null !== $provider) {
-            $this->attachProviderToUser($this->entityManager, $provider, $user);
+            $this->attachProviderToUser($provider, $user);
             $this->entityManager->flush();
         }
 
