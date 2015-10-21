@@ -587,7 +587,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->delete_data_from_cache();
 
         $this->app['dispatcher']->dispatch(
-            CollectionEvents::SETTING_CHANGED,
+            CollectionEvents::SETTINGS_CHANGED,
             new SettingsChangedEvent(
                 $this,
                 array(
