@@ -12006,7 +12006,7 @@
       </trans-unit>
       <trans-unit id="947bf7311fd8812a74c45f8f566659d8acd60673" resname="report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%" approved="yes">
         <source>report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%</source>
-        <target state="translated">Pushed to %link% ici %endlink% users from application box %appbox%.</target>
+        <target state="translated">Pushed to %n_user% users from application box %appbox%.</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="006fe40054b1e40e52a475778d2cca84f3af7fa9" resname="report::Substitution de %dest%" approved="yes">
