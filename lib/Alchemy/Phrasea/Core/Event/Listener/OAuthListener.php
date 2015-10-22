@@ -40,7 +40,7 @@ class OAuthListener
 
     public function __construct(array $options = [])
     {
-        if (!$options) {
+        if ($options) {
             $this->setVerifyOptions($options);
         }
     }
