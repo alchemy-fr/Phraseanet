@@ -119,13 +119,51 @@ class PermalinkController extends AbstractDelivery
         throw new NotFoundHttpException('Wrong token.');
     }
 
-    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdef)
+    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
     {
         $databox = $this->getDatabox($sbas_id);
-        $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
+        $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
+
+        // build up record ogMetaData data:
+        $ogMetaDatas = [];
+        $subdef = $record->get_subdef($subdefName);
+        $preview = $record->get_preview();
+        $thumbnail = $record->get_thumbnail();
+        $baseUrl = $this->app['request']->getScheme() . '://' . $this->app['request']->getHost();
+
+        // generate metadatas:
+        switch($record->getType() ) {
+            case 'video':
+                $ogMetaDatas['og:type'] = 'video.other';
+                $ogMetaDatas['og:image'] = $baseUrl.$thumbnail->get_url();
+                $ogMetaDatas['og:image:width'] = $thumbnail->get_width();
+                $ogMetaDatas['og:image:height'] = $thumbnail->get_height();
+                break;
+            case 'flexpaper':
+            case 'document':
+                $ogMetaDatas['og:type'] = 'article';
+                $ogMetaDatas['og:image'] = $baseUrl.$thumbnail->get_url();
+                $ogMetaDatas['og:image:width'] = $thumbnail->get_width();
+                $ogMetaDatas['og:image:height'] = $thumbnail->get_height();
+                break;
+            case 'audio':
+                $ogMetaDatas['og:type'] = 'music.song';
+                $ogMetaDatas['og:image'] = $baseUrl.$thumbnail->get_url();
+                $ogMetaDatas['og:image:width'] = $thumbnail->get_width();
+                $ogMetaDatas['og:image:height'] = $thumbnail->get_height();
+                break;
+            default:
+                $ogMetaDatas['og:type'] = 'image';
+                $ogMetaDatas['og:image'] = $preview->get_permalink()->get_url();
+                $ogMetaDatas['og:image:width'] = $subdef->get_width();
+                $ogMetaDatas['og:image:height'] = $subdef->get_height();
+                break;
+
+        }
 
         return $this->app['twig']->render('overview.html.twig', [
-            'subdef_name' => $subdef,
+            'ogMetaDatas'    => $ogMetaDatas,
+            'subdef'      => $subdef,
             'module_name' => 'overview',
             'module'      => 'overview',
             'view'        => 'overview',

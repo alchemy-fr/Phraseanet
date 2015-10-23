@@ -1,14 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="{{ app['locale'] }}">
+<!DOCTYPE html>
+<html lang="{{ app['locale'] }}" prefix="og: http://ogp.me/ns#">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ module_name }} </title>
-    <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css" />
+    <meta property="og:title" content="{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ module_name }}">
+    <meta property="og:site_name" content="{{ app['conf'].get(['registry', 'general', 'title']) }}">
+    <meta property="og:url" content="{{ app['request'].getUri }}">
+    {% block rss %}{% endblock %}
     {% block stylesheet %}{% endblock %}
     {% block icon %}{% endblock %}
-    {% block rss %}{% endblock %}
     {% block javascript %}{% endblock %}
-
   </head>
   <body>
     <div id="mainContainer">
@@ -17,7 +18,6 @@
         <div id="mainContent">
                 {% block content %}{% endblock %}
         </div>
-
     </div>
     {% include 'common/analytics.html.twig' %}
   </body>
