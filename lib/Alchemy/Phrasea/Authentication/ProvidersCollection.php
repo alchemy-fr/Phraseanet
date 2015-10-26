@@ -23,16 +23,27 @@ class ProvidersCollection implements \Countable, \IteratorAggregate
         return new \ArrayIterator($this->providers);
     }
 
+    /**
+     * @param ProviderInterface $provider
+     */
     public function register(ProviderInterface $provider)
     {
         $this->providers[$provider->getId()] = $provider;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function has($id)
     {
         return isset($this->providers[$id]);
     }
 
+    /**
+     * @param $id
+     * @return ProviderInterface
+     */
     public function get($id)
     {
         if (!isset($this->providers[$id])) {

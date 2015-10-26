@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Authentication\RecoveryService;
+use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
@@ -231,87 +232,11 @@ class LoginController extends Controller
                         throw new FormProcessingException($this->app->trans('Invalid captcha answer.'));
                     }
 
-                    if ($conf->get(['registry', 'registration', 'auto-select-collections'])) {
-                        $selected = null;
-                    } else {
-                        $selected = isset($data['collections']) ? $data['collections'] : null;
-                    }
-                    $inscriptions = $this->getRegistrationManager()->getRegistrationSummary();
-                    $inscOK = [];
+                    $registrationService = $this->getRegistrationService();
+                    $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
+                    $selectedCollections = isset($data['collections']) ? $data['collections'] : null;
 
-                    foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
-                        foreach ($databox->get_collections() as $collection) {
-                            if (null !== $selected && !in_array($collection->get_base_id(), $selected)) {
-                                continue;
-                            }
-
-                            if ($canRegister = igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'config', 'collections', $collection->get_base_id(), 'can-register'])) {
-                                $inscOK[$collection->get_base_id()] = $canRegister;
-                            }
-                        }
-                    }
-
-                    if (!isset($data['login'])) {
-                        $data['login'] = $data['email'];
-                    }
-
-                    $userManipulator = $this->getUserManipulator();
-                    $user = $userManipulator->createUser($data['login'], $data['password'], $data['email'], false);
-
-                    if (isset($data['geonameid'])) {
-                        $userManipulator->setGeonameId($user, $data['geonameid']);
-                    }
-
-                    foreach ([
-                                 'gender'    => 'setGender',
-                                 'firstname' => 'setFirstName',
-                                 'lastname'  => 'setLastName',
-                                 'address'   => 'setAddress',
-                                 'zipcode'   => 'setZipCode',
-                                 'tel'       => 'setPhone',
-                                 'fax'       => 'setFax',
-                                 'job'       => 'setJob',
-                                 'company'   => 'setCompany',
-                                 'position'  => 'setActivity',
-                             ] as $property => $method) {
-                        if (isset($data[$property])) {
-                            call_user_func([$user, $method], $data[$property]);
-                        }
-                    }
-
-                    $manager = $this->getEntityManager();
-                    $manager->persist($user);
-                    $manager->flush();
-
-                    if (null !== $provider) {
-                        $this->attachProviderToUser($manager, $provider, $user);
-                        $manager->flush();
-                    }
-
-                    $registrationsOK = [];
-                    $acl = $this->getAclForUser($user);
-                    if ($conf->get(['registry', 'registration', 'auto-register-enabled'])) {
-                        $template_user = $this->getUserRepository()->findByLogin(User::USER_AUTOREGISTER);
-                        $acl->apply_model($template_user, array_keys($inscOK));
-                    }
-
-                    $autoReg = $acl->get_granted_base();
-
-                    $registrationManipulator = $this->getRegistrationManipulator();
-                    array_walk($inscOK, function ($authorization, $baseId) use ($registrationManipulator, $user, &$registrationsOK) {
-                        if (false === $authorization || $this->getAclForUser($user)->has_access_to_base($baseId)) {
-                            return;
-                        }
-
-                        $collection = \collection::get_from_base_id($this->app, $baseId);
-                        $registrationManipulator->createRegistration($user, $collection);
-                        $registrationsOK[$baseId] = $collection;
-                    });
-
-                    $this->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
-                    $this->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $registrationsOK));
-
-                    $user->setMailLocked(true);
+                    $user = $registrationService->registerUser($data, $selectedCollections, $providerId);
 
                     try {
                         $this->sendAccountUnlockEmail($user);
@@ -1076,5 +1001,13 @@ class LoginController extends Controller
     private function getRecoveryService()
     {
         return $this->app['authentication.recovery_service'];
+    }
+
+    /**
+     * @return RegistrationService
+     */
+    private function getRegistrationService()
+    {
+        return $this->app['authentication.registration_service'];
     }
 }

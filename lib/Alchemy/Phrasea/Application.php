@@ -28,6 +28,7 @@ use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
+use Alchemy\Phrasea\Core\Provider\AccountServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ACLServiceProvider;
 use Alchemy\Phrasea\Core\Provider\APIServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
@@ -181,6 +182,7 @@ class Application extends SilexApplication
         $this->setupOrms();
         $this->register(new BasketMiddlewareProvider());
         $this->register(new TokenMiddlewareProvider());
+        $this->register(new AccountServiceProvider());
         $this->register(new ApiApplicationMiddlewareProvider());
         $this->register(new ACLServiceProvider());
         $this->register(new APIServiceProvider());

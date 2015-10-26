@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Webhook;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor;
+use Alchemy\Phrasea\Webhook\Processor\UserRegistrationProcessor;
 
 class EventProcessorFactory
 {
@@ -19,8 +20,13 @@ class EventProcessorFactory
     {
         switch ($event->getType()) {
             case WebhookEvent::FEED_ENTRY_TYPE:
-                return new FeedEntryProcessor($event, $this->app);
-            break;
+                return new FeedEntryProcessor(
+                    $this->app,
+                    $this->app['repo.feed-entries'],
+                    $this->app['phraseanet.user-query']
+                );
+            case WebhookEvent::USER_REGISTRATION_TYPE:
+                return new UserRegistrationProcessor($this->app['repo.users']);
             default:
                 throw new \RuntimeException(sprintf('No processor found for %s', $event->getType()));
         }

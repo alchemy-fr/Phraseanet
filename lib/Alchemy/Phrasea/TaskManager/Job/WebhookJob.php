@@ -121,6 +121,8 @@ class WebhookJob extends AbstractJob
             )
         ));
 
+        $eventFactory = new EventProcessorFactory($app);
+
         foreach ($app['repo.webhook-event']->findUnprocessedEvents() as $event) {
             // set event as processed
             $app['manipulator.webhook-event']->processed($event);
@@ -128,11 +130,11 @@ class WebhookJob extends AbstractJob
             $this->log('info', sprintf('Processing event "%s" with id %d', $event->getName(), $event->getId()));
 
             // send requests
-            $this->deliverEvent($app, $thirdPartyApplications, $event);
+            $this->deliverEvent($eventFactory, $app, $thirdPartyApplications, $event);
         }
     }
 
-    private function deliverEvent(Application $app, array $thirdPartyApplications, WebhookEvent $event)
+    private function deliverEvent(EventProcessorFactory $eventFactory, Application $app, array $thirdPartyApplications, WebhookEvent $event)
     {
         if (count($thirdPartyApplications) === 0) {
             $this->log('info', sprintf('No applications defined to listen for webhook events'));
@@ -141,9 +143,8 @@ class WebhookJob extends AbstractJob
         }
 
         // format event data
-        $eventFactory = new EventProcessorFactory($app);
         $eventProcessor = $eventFactory->get($event);
-        $data = $eventProcessor->process();
+        $data = $eventProcessor->process($event);
 
         // batch requests
         $batch = BatchBuilder::factory()

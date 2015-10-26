@@ -9,10 +9,16 @@
  */
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Account\AccountException;
+use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
+use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
+use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
+use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Checker\Response as CheckerResponse;
 use Alchemy\Phrasea\Border\File;
@@ -28,6 +34,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -788,7 +795,7 @@ class V1Controller extends Controller
         return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
     }
 
-    public function resetPassword(Request $request, $email)
+    public function requestPasswordReset(Request $request, $email)
     {
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
         $service = $this->app['authentication.recovery_service'];
@@ -803,7 +810,7 @@ class V1Controller extends Controller
         return Result::create($request, [ 'reset_token' => $token ])->createResponse();
     }
 
-    public function setNewPassword(Request $request, $token)
+    public function resetPassword(Request $request, $token)
     {
         $password = $request->request->get('password', null);
         /** @var \Alchemy\Phrasea\Authentication\RecoveryService $service */
@@ -814,6 +821,42 @@ class V1Controller extends Controller
         }
         catch (\Exception $exception) {
             return Result::create($request, [ 'success' => false ])->createResponse();
+        }
+
+        return Result::create($request, [ 'success' => true ])->createResponse();
+    }
+
+    public function updatePassword(Request $request, $login)
+    {
+        $service = $this->getAccountService();
+        $command = new UpdatePasswordCommand();
+        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+            'csrf_protection' => false
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            try {
+                $service->updatePassword($command, $login);
+
+                return Result::create($request, [ 'success' => true ]);
+            }
+            catch (AccountException $exception) {
+                return Result::create($request, [ 'success' => false, 'message' => $exception->getMessage() ]);
+            }
+        }
+
+        return Result::create($request, [ 'success' => false, 'message' => (string) $form->getErrors() ]);
+    }
+
+    public function unlockAccount(Request $request, $token)
+    {
+        try {
+            $this->getRegistrationService()->unlockAccount($token);
+        }
+        catch (RegistrationException $exception) {
+            return Result::createError($request, 400, $exception->getMessage())->createResponse();
         }
 
         return Result::create($request, [ 'success' => true ])->createResponse();
@@ -2344,6 +2387,110 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    public function deleteCurrentUserAction(Request $request)
+    {
+        try {
+            $service = $this->getAccountService();
+            $service->deleteAccount();
+
+            $ret = [ 'success' => true ];
+        }
+        catch (\Exception $ex) {
+            $ret = [ 'success' => false ];
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    public function updateCurrentUserAction(Request $request)
+    {
+        $service = $this->getAccountService();
+        $data = json_decode($request->getContent(false), true);
+
+        $command = new UpdateAccountCommand();
+        $command
+            ->setEmail(isset($data['email']) ? $data['email'] : null)
+            ->setGender(isset($data['gender']) ? $data['gender'] : null)
+            ->setFirstName(isset($data['firstname']) ? $data['firstname'] : null)
+            ->setLastName(isset($data['lastname']) ? $data['lastname'] : null)
+            ->setZipCode(isset($data['zip_code']) ? $data['zip_code'] : null)
+            ->setCity(isset($data['city']) ? $data['city'] : null)
+            ->setPhone(isset($data['tel']) ? $data['tel'] : null)
+            ->setCompany(isset($data['company']) ? $data['company'] : null)
+            ->setJob(isset($data['job']) ? $data['job'] : null)
+            ->setNotifications(isset($data['notifications']) ? $data['notifications'] : null);
+
+        try {
+            $service->updateAccount($command);
+            $ret = [ 'success' => true ];
+        }
+        catch (AccountException $exception) {
+            $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    public function updateCurrentUserPasswordAction(Request $request)
+    {
+        $service = $this->getAccountService();
+        $data = json_decode($request->getContent(false), true);
+        $command = new UpdatePasswordCommand();
+        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+            'csrf_protection' => false
+        ]);
+
+        $form->submit($data);
+
+        if ($form->isValid()) {
+            try {
+                $service->updatePassword($command, null);
+                $ret = ['success' => true];
+            } catch (AccountException $exception) {
+                $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+            }
+        } else {
+            $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];
+        }
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    public function createAccessDemand(Request $request)
+    {
+        $service = $this->getRegistrationService();
+        $data = json_decode($request->getContent(false), true);
+        $collections = null;
+
+        if (isset($data['collections'])) {
+            $collections = $data['collections'];
+        }
+
+        try {
+            $user = $service->registerUser($data, $collections);
+            $token = $service->getAccountUnlockToken($user);
+        }
+        catch (RegistrationException $exception) {
+            return Result::createError($request, 500, $exception->getMessage())->createResponse();
+        }
+
+        return Result::create($request, [
+            'user' => $user,
+            'token' => $token
+        ])->createResponse();
+    }
+
+    public function createCollectionRequests(Request $request)
+    {
+        $service = $this->getRegistrationService();
+        $user = $this->getAuthenticatedUser();
+        $data = json_decode($request->getContent(false), true);
+
+        $service->createCollectionRequests($user, $data);
+
+        return Result::create($request, $this->listUserDemands($user))->createResponse();
+    }
+
     public function ensureAdmin(Request $request)
     {
         if (!$user = $this->getApiAuthenticatedUser()->isAdmin()) {
@@ -2440,6 +2587,22 @@ class V1Controller extends Controller
     private function getOAuth2Server()
     {
         return $this->app['oauth2-server'];
+    }
+
+    /**
+     * @return AccountService
+     */
+    public function getAccountService()
+    {
+        return $this->app['accounts.service'];
+    }
+
+    /**
+     * @return RegistrationService
+     */
+    public function getRegistrationService()
+    {
+        return $this->app['authentication.registration_service'];
     }
 
     /**

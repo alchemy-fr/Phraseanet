@@ -1953,7 +1953,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $route = '/api/v1/me/';
 
-        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());

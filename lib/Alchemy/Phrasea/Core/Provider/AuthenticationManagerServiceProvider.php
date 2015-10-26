@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\RecoveryService;
+use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -97,6 +98,25 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 $app['manipulator.user'],
                 $app['repo.users'],
                 $app['url_generator']
+            );
+        });
+
+        $app['authentication.registration_service'] = $app->share(function (Application $app) {
+            return new RegistrationService(
+                $app,
+                $app['phraseanet.appbox'],
+                $app['acl'],
+                $app['conf'],
+                $app['orm.em'],
+                $app['dispatcher'],
+                $app['authentication.providers'],
+                $app['repo.usr-auth-providers'],
+                $app['repo.users'],
+                $app['manipulator.user'],
+                $app['manipulator.token'],
+                $app['repo.tokens'],
+                $app['manipulator.registration'],
+                $app['registration.manager']
             );
         });
 
