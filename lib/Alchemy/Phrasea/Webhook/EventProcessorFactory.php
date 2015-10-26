@@ -20,9 +20,13 @@ class EventProcessorFactory
     {
         switch ($event->getType()) {
             case WebhookEvent::FEED_ENTRY_TYPE:
-                return new FeedEntryProcessor($this->app);
+                return new FeedEntryProcessor(
+                    $this->app,
+                    $this->app['repo.feed-entries'],
+                    $this->app['phraseanet.user-query']
+                );
             case WebhookEvent::USER_REGISTRATION_TYPE:
-                return new UserRegistrationProcessor($this->app, $this->app['repo.users']);
+                return new UserRegistrationProcessor($this->app['repo.users']);
             default:
                 throw new \RuntimeException(sprintf('No processor found for %s', $event->getType()));
         }

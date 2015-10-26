@@ -2,10 +2,34 @@
 
 namespace Alchemy\Phrasea\Webhook\Processor;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 
-class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
+class FeedEntryProcessor implements ProcessorInterface
 {
+    /**
+     * @var Application
+     */
+    private $application;
+
+    /**
+     * @var FeedEntryRepository
+     */
+    private $entryRepository;
+
+    /**
+     * @var \User_Query
+     */
+    private $userQuery;
+
+    public function __construct(Application $application, FeedEntryRepository $entryRepository, \User_Query $userQuery)
+    {
+        $this->application = $application;
+        $this->entryRepository = $entryRepository;
+        $this->userQuery = $userQuery;
+    }
+
     public function process(WebhookEvent $event)
     {
         $data = $event->getData();
@@ -14,17 +38,16 @@ class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
             return null;
         }
 
-        $entry = $this->app['orm.em']->getRepository('Phraseanet::Entry')->find($data->entry_id);
+        $entry = $this->entryRepository->find($data->entry_id);
 
         if (null === $entry) {
             return null;
         }
 
-        $data = $this->event->getData();
-
+        $data = $event->getData();
         $feed = $entry->getFeed();
 
-        $query = $this->app['phraseanet.user-query'];
+        $query = $this->userQuery;
 
         $query->include_phantoms(true)
             ->include_invite(false)
@@ -52,7 +75,7 @@ class FeedEntryProcessor extends AbstractProcessor implements ProcessorInterface
         } while (count($results) > 0);
 
         return [
-            'event' => $this->event->getName(),
+            'event' => $event->getName(),
             'users_were_notified' => isset($data->notify_email) ?: (bool) $data->notify_email,
             'feed' => [
                 'id' => $feed->getId(),

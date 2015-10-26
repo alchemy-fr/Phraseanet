@@ -6,17 +6,15 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 
-class UserRegistrationProcessor extends AbstractProcessor implements ProcessorInterface
+class UserRegistrationProcessor implements ProcessorInterface
 {
     /**
      * @var UserRepository
      */
     private $userRepository;
 
-    public function __construct(Application $application, UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository)
     {
-        parent::__construct($application);
-
         $this->userRepository = $userRepository;
     }
 

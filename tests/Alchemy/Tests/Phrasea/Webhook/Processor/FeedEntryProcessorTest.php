@@ -21,7 +21,11 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $processor = new FeedEntryProcessor(self::$DI['app']);
+        $processor = new FeedEntryProcessor(
+            self::$DI['app'],
+            self::$DI['app']['repo.feed-entries'],
+            self::$DI['app']['phraseanet.user-query']
+        );
         $this->assertEquals($processor->process($event), null);
     }
 
@@ -33,7 +37,11 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $processor = new FeedEntryProcessor(self::$DI['app']);
+        $processor = new FeedEntryProcessor(
+            self::$DI['app'],
+            self::$DI['app']['repo.feed-entries'],
+            self::$DI['app']['phraseanet.user-query']
+        );
         $this->assertEquals($processor->process($event), null);
     }
 
@@ -46,7 +54,11 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);
-        $processor = new FeedEntryProcessor(self::$DI['app']);
+        $processor = new FeedEntryProcessor(
+            self::$DI['app'],
+            self::$DI['app']['repo.feed-entries'],
+            self::$DI['app']['phraseanet.user-query']
+        );
         $this->assertEquals($processor->process($event), null);
     }
 }
