@@ -24,7 +24,6 @@ use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -135,39 +134,9 @@ class OAuthListener
 
     private function registerClosingAccountCallback(EventDispatcherInterface $dispatcher, Application $app)
     {
-        $dispatcher->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use ($app) {
-            $request = $event->getRequest();
-            $response = $event->getResponse();
-
-            $session = $this->getSession($app);
-            /** @var ApiOauthToken $token */
-            $token = $session->get('token');
-            $this->getApiLogManipulator($app)->create($token->getAccount(), $request, $response);
-            $this->getApiOAuthTokenManipulator($app)->setLastUsed($token, new \DateTime());
-            $session->set('token', null);
-            if (null !== $this->getAuthenticator($app)->getUser()) {
-                $this->getAuthenticator($app)->closeAccount();
-            }
-        }, -20);
+        $dispatcher->addListener(KernelEvents::RESPONSE, new OAuthResponseListener($app), -20);
     }
 
-    /**
-     * @param Application $app
-     * @return ApiLogManipulator
-     */
-    private function getApiLogManipulator(Application $app)
-    {
-        return $app['manipulator.api-log'];
-    }
-
-    /**
-     * @param Application $app
-     * @return ApiOauthTokenManipulator
-     */
-    private function getApiOAuthTokenManipulator(Application $app)
-    {
-        return $app['manipulator.api-oauth-token'];
-    }
 
     /**
      * @param Application $app
