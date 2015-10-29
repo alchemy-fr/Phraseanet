@@ -121,6 +121,60 @@
             "time": "2013-06-21 15:51:20"
         },
         {
+            "name": "alchemy/embed-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lostdalek/embed-bundle.git",
+                "reference": "304481b5b63bb8576bfb3211152f8d70d7d62b70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lostdalek/embed-bundle/zipball/304481b5b63bb8576bfb3211152f8d70d7d62b70",
+                "reference": "304481b5b63bb8576bfb3211152f8d70d7d62b70",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.7",
+                "silex/silex": "^1.0.0",
+                "squizlabs/php_codesniffer": "^2.3",
+                "symfony/symfony": "~2.6"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Alchemy\\Embed\\": "src/Component",
+                    "Alchemy\\EmbedBundle\\": "src/Bundle",
+                    "Alchemy\\EmbedProvider\\": "src/Provider"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Alchemy\\EmbedBundle\\Tests\\": "tests/unit/Bundle"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Blouet",
+                    "email": "florian.blouet@gmail.com"
+                }
+            ],
+            "description": "Embed resources bundle",
+            "support": {
+                "source": "https://github.com/lostdalek/embed-bundle/tree/master",
+                "issues": "https://github.com/lostdalek/embed-bundle/issues"
+            },
+            "time": "2015-10-29 10:43:15"
+        },
+        {
             "name": "alchemy/geonames-api-consumer",
             "version": "0.1.2",
             "source": {
@@ -2765,7 +2819,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.7-dev"
+                    "dev-develop": "0.6-dev"
                 }
             },
             "autoload": {
@@ -4258,7 +4312,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 }
             ],
             "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
