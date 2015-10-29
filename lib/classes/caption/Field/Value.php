@@ -455,7 +455,7 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     public function get_cache_key($option = null)
     {
-        return 'caption_fieldvalue_' . $this->id . '_' . ($option ? '_' . $option : '');
+        return 'caption_fieldvalue_' . $this->record->get_databox()->get_sbas_id() . '_' . $this->id . '_' . ($option ? '_' . $option : '');
     }
 
     /**
