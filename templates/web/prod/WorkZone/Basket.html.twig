@@ -62,7 +62,7 @@
         {% for plugin in plugins['actionbar'] %}
           {% for key, action in plugin.getBasketActionBar() %}
             {% set label = action.label %}
-            <button class="ui-corner-all basket_window  {{ action.classes|default('') }}" title="{% trans label plugin.PluginLocale %}">
+            <button class="ui-corner-all basket_window  {{ action.classes|default('') }}" title="{{ label|trans([], plugin.PluginLocale) }}">
               <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"/>
             </button>
           {% endfor %}

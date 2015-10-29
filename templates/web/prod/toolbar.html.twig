@@ -161,11 +161,11 @@
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
                                         {% if action.icon %}
-                                            <img src="{{ plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
                                         {% endif %}
 
                                         {% set label = action.label %}
-                                        {% trans label plugin.PluginLocale %}
+                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
                                     </a>
                                 </li>
                             {% endfor %}
