@@ -50,12 +50,19 @@ class Tools implements ControllerProviderInterface
                 // fetch subdef list:
                 $subdefs = $record->get_subdefs();
 
+                /** @var \ACL $acl */
+                $acl = $app['authentication']->getUser()->ACL();
+
                 foreach ($subdefs as $subdef) {
-                    $permalink = $subdef->get_permalink();
-                    $recordAccessibleSubdefs[] = array(
-                      'name' => $subdef->get_name(),
-                      'state' => $permalink->get_is_activated()
-                    );
+                    $subdefName = $subdef->get_name();
+
+                    if ($acl->has_access_to_subdef($record, $subdefName) && $acl->is_admin()) {
+                        $permalink = $subdef->get_permalink();
+                        $recordAccessibleSubdefs[] = array(
+                          'name' => $subdefName,
+                          'state' => $permalink->get_is_activated()
+                        );
+                    }
                 }
 
                 if (!$record->is_grouping()) {
@@ -358,16 +365,12 @@ class Tools implements ControllerProviderInterface
             $app->abort(403);
         }
 
-        $subdefs = $record->get_subdefs();
+        $subdef = $record->get_subdef($subdefName);
 
-        foreach ($subdefs as $subdef) {
-            if ($subdef->get_name($subdefName) === $subdefName) {
-                $permalink = $subdef->get_permalink();
-                $permalink->set_is_activated($state);
+        $permalink = $subdef->get_permalink();
+        $permalink->set_is_activated($state);
 
-                $changedState = $permalink->get_is_activated();
-            }
-        }
+        $changedState = $permalink->get_is_activated();
 
         return $app->json(array('success' => true, 'state' => $changedState),
           200);
