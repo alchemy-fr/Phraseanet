@@ -143,8 +143,6 @@ class OAuthListener
 
     private function registerClosingAccountCallback(EventDispatcherInterface $dispatcher, Authenticator $authenticator)
     {
-        $dispatcher->addListener(KernelEvents::RESPONSE, function () use ($authenticator) {
-            return $authenticator->closeAccount();
-        }, -20);
+        $dispatcher->addListener(KernelEvents::RESPONSE, new OAuthResponseListener($authenticator), -20);
     }
 }
