@@ -1035,7 +1035,6 @@ class User_Query implements User_QueryInterface
 
         if ('' !== $sorter = $this->generate_sort_constraint()) {
             $sql .= ' ORDER BY ' . $sorter;
-            return $sql;
         }
         return [$sql, $this->sql_params];
     }
