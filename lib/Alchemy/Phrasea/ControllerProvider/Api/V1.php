@@ -48,7 +48,6 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(new OAuthListener());
-        $controllers->after('controller.api.v1:after');
 
         $controllers->get('/monitor/scheduler/', 'controller.api.v1:getSchedulerAction')
             ->before('controller.api.v1:ensureAdmin');

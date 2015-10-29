@@ -59,7 +59,6 @@ class OAuthListener
         /** @var \API_OAuth2_Adapter $oauth2 */
         $oauth2 = $app['oauth2-server'];
 
-
         if (false === $this->verifyAccessToken($oauth2)) {
             $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
@@ -71,6 +70,8 @@ class OAuthListener
         if (!$token instanceof ApiOauthToken) {
             throw new NotFoundHttpException('Provided token is not valid.');
         }
+
+        $this->getSession($app)->set('token', $token);
 
         $oAuth2Account = $token->getAccount();
         $oAuth2App = $oAuth2Account->getApplication();
