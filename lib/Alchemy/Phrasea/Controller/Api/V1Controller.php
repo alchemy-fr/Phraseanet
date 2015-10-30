@@ -2493,11 +2493,21 @@ class V1Controller extends Controller
 
     public function ensureAdmin(Request $request)
     {
-        if (!$user = $this->getApiAuthenticatedUser()->isAdmin()) {
+        if (! $this->getApiAuthenticatedUser()->isAdmin()) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 
         return null;
+    }
+
+    public function ensureUserManagementRights(Request $request)
+    {
+        $user = $this->getApiAuthenticatedUser();
+        $acl = $this->getAclForUser($user);
+
+        if (! $acl->has_access_to_module('admin') || ! $acl->has_right('manageusers')) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
     }
 
     public function ensureAccessToDatabox(Request $request)
