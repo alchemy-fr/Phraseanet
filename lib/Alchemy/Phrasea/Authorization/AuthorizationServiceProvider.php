@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Authorization;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -23,8 +24,8 @@ class AuthorizationServiceProvider implements ServiceProviderInterface
         $app['phraseanet.security_token'] = $app->share(function (PhraseaApplication $app) {
             $user = $app['authentication']->getUser();
 
-            if ($user instanceof \User_Adapter) {
-                return new PreAuthenticatedToken((string)$user->get_id(), null, 'fake', ['ROLE_USER']);
+            if ($user instanceof User) {
+                return new PreAuthenticatedToken((string)$user->getId(), null, 'fake', ['ROLE_USER']);
             }
 
             return new AnonymousToken('fake', 'anon.', []);

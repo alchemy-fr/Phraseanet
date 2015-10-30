@@ -11,6 +11,7 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authorization\AuthorizationChecker;
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +28,7 @@ abstract class BaseController
     }
 
     /**
-     * @return \User_Adapter
+     * @return User
      */
     public function getAuthenticatedUser()
     {
