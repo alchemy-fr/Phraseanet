@@ -9,7 +9,8 @@
  */
 namespace Alchemy\Phrasea\Authorization;
 
-use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
@@ -18,23 +19,23 @@ abstract class BaseVoter implements VoterInterface
     private $supportedAttributes;
     private $supportedClasses;
 
-    /** @var Application */
-    private $app;
+    /** @var UserRepository */
+    protected $userRepository;
 
     /**
-     * @param Application  $app
-     * @param array        $attributes
-     * @param string|array $supportedClasses
+     * @param UserRepository $userRepository
+     * @param array          $attributes
+     * @param string|array   $supportedClasses
      */
-    public function __construct(Application $app, array $attributes, $supportedClasses)
+    public function __construct(UserRepository $userRepository, array $attributes, $supportedClasses)
     {
-        $this->app = $app;
         $this->supportedAttributes = $attributes;
         $this->supportedClasses = is_array($supportedClasses) ? $supportedClasses : [$supportedClasses];
 
         if (!is_callable([$this, 'isGranted'])) {
             throw new \LogicException('Subclasses should implement a "isGranted" method');
         }
+        $this->userRepository = $userRepository;
     }
 
     public function supportsAttribute($attribute)
@@ -59,7 +60,7 @@ abstract class BaseVoter implements VoterInterface
             return self::ACCESS_ABSTAIN;
         }
 
-        $user = (ctype_digit($token->getUser())) ? new \User_Adapter((int) $token->getUser(), $this->app) : null;
+        $user = (ctype_digit($token->getUser())) ? $this->userRepository->find((int) $token->getUser()) : null;
 
         foreach ($attributes as $attribute) {
             $attribute = strtolower($attribute);
@@ -75,10 +76,10 @@ abstract class BaseVoter implements VoterInterface
     }
 
     /**
-     * @param string             $attribute
-     * @param object             $object
-     * @param \User_Adapter|null $user
+     * @param string    $attribute
+     * @param object    $object
+     * @param User|null $user
      * @return bool
      */
-    //abstract protected function isGranted($attribute, $object, \User_Adapter $user = null);
+    //abstract protected function isGranted($attribute, $object, User $user = null);
 }
