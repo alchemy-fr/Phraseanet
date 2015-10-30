@@ -147,8 +147,8 @@ class UserManipulator implements ManipulatorInterface
                 $user->setCountry($country['code']);
             }
         } catch (GeonamesExceptionInterface $e) {
-            $user->setCountry(null);
-            $user->setCity(null);
+            $user->setCountry('');
+            $user->setCity('');
         }
 
         $this->manager->update($user);
