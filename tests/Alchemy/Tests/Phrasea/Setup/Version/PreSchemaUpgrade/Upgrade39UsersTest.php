@@ -24,9 +24,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
      */
     public function testApply($fixture)
     {
-        $this->loadFixture($fixture);
-
-        $em = $this->createEntityManager();
+        $em = $this->loadFixture($fixture);
 
         $upgrader = new Upgrade39Users();
         $configuration = new YamlConfiguration($em->getConnection());
@@ -131,6 +129,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $em->getConnection()->executeQuery('CREATE DATABASE '.self::DB_NAME.' CHARACTER SET utf8 COLLATE utf8_general_ci');
         $em = $this->createEntityManager();
         $em->getConnection()->executeQuery(file_get_contents(self::$DI['cli']['root.path'].'/'.$fixture));
+        return $em;
     }
 
     private function createEntityManager($dbname = self::DB_NAME)
