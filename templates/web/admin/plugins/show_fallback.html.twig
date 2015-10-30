@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>{% trans 'plugin.name' plugin.localeTextDomain %}</h1>
+        <h1>{{ 'plugin.name'|trans([], plugin.localeTextDomain) }}</h1>
     </div>
 
     <div>
@@ -11,9 +11,9 @@
         <ul class="nav nav-tabs" id="configurationTabs">
             {% for divId, configurationTab in configurationTabs %}
                 {% set tabTitle = configurationTab.title %}
-            <li role="presentation"><a href="#{{ divId }}" aria-controls="{{ divId }}" role="tab" data-toggle="tab" data-url="{{ configurationTab.url }}">{% trans tabTitle plugin.localeTextDomain  %}</a></li>
+            <li role="presentation"><a href="#{{ divId }}" aria-controls="{{ divId }}" role="tab" data-toggle="tab" data-url="{{ configurationTab.url }}">{{ tabTitle|trans([], plugin.localeTextDomain) }}</a></li>
             {% endfor %}
-            <li role="presentation" class="active"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">{% trans 'admin::plugins: about' %}</a></li>
+            <li role="presentation" class="active"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">{{ 'admin::plugins: about'|trans }}</a></li>
         </ul>
 
         <!-- Tab panes -->
@@ -52,7 +52,7 @@
                     contentsDownloaded[e.target.hash] = true;
                 }, function(error) {
                     console.log(error);
-                    targetDiv.empty().html('<i class="icon-fire">{% trans 'admin::plugins: retrieveConfigurationError' %}</i>');
+                    targetDiv.empty().html('<i class="icon-fire">{{ 'admin::plugins: retrieveConfigurationError'|trans }}</i>');
                 });
             }
         });
