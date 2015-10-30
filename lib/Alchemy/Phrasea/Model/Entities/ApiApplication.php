@@ -127,7 +127,7 @@ class ApiApplication
     /**
      * @var string
      *
-     * @ORM\Column(name="webhook_url", type="string", length=128, nullable=true)
+     * @ORM\Column(name="webhook_url", type="string", length=1024, nullable=true)
      */
     private $webhookUrl;
 
