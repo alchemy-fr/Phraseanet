@@ -255,16 +255,16 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/me/update-password/', 'controller.api.v1:updateCurrentUserPasswordAction');
 
         $controllers->post('/accounts/reset-password/{email}/', 'controller.api.v1:requestPasswordReset')
-            ->before('controller.api.v1:ensureAdmin');
+            ->before('controller.api.v1:ensureUserManagementRights');
 
         $controllers->post('/accounts/update-password/{token}/', 'controller.api.v1:resetPassword')
-            ->before('controller.api.v1:ensureAdmin');
+            ->before('controller.api.v1:ensureUserManagementRights');
 
         $controllers->post('/accounts/access-demand/', 'controller.api.v1:createAccessDemand')
-            ->before('controller.api.v1:ensureAdmin');
+            ->before('controller.api.v1:ensureUserManagementRights');
 
         $controllers->post('/accounts/unlock/{token}/', 'controller.api.v1:unlockAccount')
-            ->before('controller.api.v1:ensureAdmin');
+            ->before('controller.api.v1:ensureUserManagementRights');
 
         return $controllers;
     }
