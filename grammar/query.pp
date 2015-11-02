@@ -60,17 +60,14 @@ ternary:
 quaternary:
     native_key()             ::colon:: ::space::? value()   #native_key_value
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
-  | ::field_prefix:: field() ::colon:: ::space::? quinary() #field_statement
-  |                  field() ::colon:: ::space::? quinary() #field_statement
+  | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
+  |                  field() ::colon:: ::space::? term()    #field_statement
   | field() ::space::?       ::lt::    ::space::? value()   #less_than
   | field() ::space::?       ::gt::    ::space::? value()   #greater_than
   | field() ::space::?       ::lte::   ::space::? value()   #less_than_or_equal_to
   | field() ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
   | field() ::space::?       ::equal:: ::space::? value()   #equal_to
-  | quinary()
-
-quinary:
-    group() #group
+  | group() #group
   | term()
 
 #flag:
