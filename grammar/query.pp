@@ -67,10 +67,6 @@ quaternary:
 #flag:
   word_or_keyword()+
 
-boolean:
-    <true>
-  | <false>
-
 #native_key:
     <database>
   | <collection>
@@ -127,6 +123,10 @@ context:
 
 
 // Generic helpers
+
+boolean:
+    <true>
+  | <false>
 
 string:
     word_or_keyword()+
