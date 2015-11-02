@@ -156,8 +156,8 @@
                     </li>
                     {% if plugins.actionbar is not empty %}
                         {% for plugin in plugins.actionbar %}
+                            <li class="divider"></li>
                             {% for key, action in plugin.getActionBar().push|default([]) %}
-                                <li class="divider"></li>
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
                                         {% if action.icon %}
@@ -189,6 +189,23 @@
                             {{ 'Feedback' | trans }}
                         </a>
                     </li>
+                    {% if plugins.actionbar is not empty %}
+                        {% for plugin in plugins.actionbar %}
+                            <li class="divider"></li>
+                            {% for key, action in plugin.getActionBar().push|default([]) %}
+                                <li>
+                                    <a class="results_window {{ action.classes|default('') }}">
+                                        {% if action.icon %}
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                                        {% endif %}
+
+                                        {% set label = action.label %}
+                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                 </ul>
             </div>
         </span>
@@ -207,7 +224,66 @@
                             {{ 'action : publier' | trans }}
                         </a>
                     </li>
+                    {% if plugins.actionbar is not empty %}
+                        {% for plugin in plugins.actionbar %}
+                            <li class="divider"></li>
+                            {% for key, action in plugin.getActionBar().push|default([]) %}
+                                <li>
+                                    <a class="results_window {{ action.classes|default('') }}">
+                                        {% if action.icon %}
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                                        {% endif %}
+
+                                        {% set label = action.label %}
+                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                 </ul>
+            </div>
+        </span>
+    {% elseif plugins.actionbar is not empty %}
+        <span class="dropdownButton">
+            <div class="btn-group">
+                {% set firstButton = true %}
+                {% for plugin in plugins.actionbar %}
+                {% for key, action in plugin.getActionBar().push|default([]) %}
+                {% if firstButton %}
+                <button class="default_action results_window btn btn-inverse">
+                    <a class="results_window {{ action.classes|default('') }}">
+                        {% if action.icon %}
+                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                        {% endif %}
+                        {% set label = action.label %}
+                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                    </a>
+                </button>
+                {% if not (loop.last and loop.parent.loop.last) %}
+                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="submenu dropdown-menu">
+                    {% endif %}
+                    {% if not loop.first %}<li class="divider"></li>{% endif %}
+                    {% if not firstButton %}
+                        <li>
+                            <a class="results_window {{ action.classes|default('') }}">
+                                {% if action.icon %}
+                                    <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                                {% endif %}
+                                {% set label = action.label %}
+                                {% trans from plugin.PluginLocale %}label{% endtrans %}
+                            </a>
+                        </li>
+                    {% else %}
+                        {% set firstButton = false %}
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% if not firstButton %}
+                </ul>
+                {% endif %}
             </div>
         </span>
     {% endif %}
