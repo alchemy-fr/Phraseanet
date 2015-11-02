@@ -62,6 +62,8 @@ foo ≥ "2015/01/01"|<range:foo gte="2015/01/01">
 
 # Field narrowing
 foo:bar|(<field:foo> MATCHES <text:"bar">)
+foo:[bar]|(<field:foo> MATCHES <term:"bar">)
+foo:[bar (baz)]|(<field:foo> MATCHES <term:"bar" context:"baz">)
 foo:bar baz|(<field:foo> MATCHES <text:"bar baz">)
 foo bar:baz|<text:"foo bar:baz">
 
