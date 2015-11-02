@@ -16,6 +16,11 @@
                     </a>
                 </li>
             {% endif %}
+            <li class="ui-corner-top baskets">
+                <a href="#baskets" class="WZbasketTab">
+                    <div id="basket_menu_trigger">&#9660;</div>
+                </a>
+            </li>
             {% if plugins.workzone is not empty %}
                 <li>
                     <a href="#plugins" class="WZplugins">
@@ -23,11 +28,6 @@
                     </a>
                 </li>
             {% endif %}
-            <li class="ui-corner-top baskets">
-                <a href="#baskets" class="WZbasketTab">
-                    <div id="basket_menu_trigger">&#9660;</div>
-                </a>
-            </li>
         {% endblock %}
     </ul>
 {% endblock %}

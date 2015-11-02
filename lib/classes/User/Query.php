@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Utilities\Countries;
+use Doctrine\Common\Collections\Collection;
 
 class User_Query implements User_QueryInterface
 {
@@ -80,7 +81,7 @@ class User_Query implements User_QueryInterface
     /**
      * Return query results
      *
-     * @return User[]
+     * @return User[]|Collection
      */
     public function get_results()
     {
