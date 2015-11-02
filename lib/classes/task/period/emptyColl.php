@@ -38,12 +38,12 @@ class task_period_emptyColl extends task_appboxAbstract
      */
     public static function getDefaultSettings(Configuration $config, array $params = array())
     {
-        return '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . (isset($params['bas_id']) ? $params['bas_id'] : '' ) . '</bas_id></tasksettings>';
+        return '<?xml version="1.0" encoding="UTF-8"?><tasksettings><base_id>' . (isset($params['base_id']) ? $params['base_id'] : '' ) . '</base_id></tasksettings>';
     }
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
-        $this->base_id = (int) $sx_task_settings->bas_id;
+        $this->base_id = (int) $sx_task_settings->base_id;
         parent::loadSettings($sx_task_settings);
     }
 
