@@ -55,14 +55,23 @@ ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
 
-// Key value pairs
+// Key value pairs & field level matchers (restricted to a single field)
 
 quaternary:
     native_key()             ::colon:: ::space::? value()   #native_key_value
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
   | ::field_prefix:: field() ::colon:: ::space::? quinary() #field_statement
   |                  field() ::colon:: ::space::? quinary() #field_statement
+  | field() ::space::?       ::lt::    ::space::? value()   #less_than
+  | field() ::space::?       ::gt::    ::space::? value()   #greater_than
+  | field() ::space::?       ::lte::   ::space::? value()   #less_than_or_equal_to
+  | field() ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
+  | field() ::space::?       ::equal:: ::space::? value()   #equal_to
   | quinary()
+
+quinary:
+    group() #group
+  | term()
 
 #flag:
   word_or_keyword()+
@@ -76,18 +85,6 @@ quaternary:
 #field:
     word_or_keyword()+
   | quoted_string()
-
-
-// Field level matchers (*may* be restricted to a field subset)
-
-quinary:
-    group() #group
-  | field() ::space::? ::lt:: ::space::? value() #less_than
-  | field() ::space::? ::gt:: ::space::? value() #greater_than
-  | field() ::space::? ::lte:: ::space::? value() #less_than_or_equal_to
-  | field() ::space::? ::gte:: ::space::? value() #greater_than_or_equal_to
-  | field() ::space::? ::equal:: ::space::? value() #equal_to
-  | term()
 
 #value:
     word_or_keyword()+
