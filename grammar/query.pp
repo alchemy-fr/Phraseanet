@@ -60,10 +60,14 @@ secondary:
 ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
+quaternary:
+    group() #group
+  | key_value_pair() ( ::space:: primary() #and )?
+  | term() ( ::space:: key_value_pair() #and )?
 
 // Key value pairs & field level matchers (restricted to a single field)
 
-quaternary:
+key_value_pair:
     native_key()             ::colon:: ::space::? value()   #native_key_value
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
   | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
@@ -73,8 +77,6 @@ quaternary:
   | field() ::space::?       ::lte::   ::space::? value()   #less_than_or_equal_to
   | field() ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
   | field() ::space::?       ::equal:: ::space::? value()   #equal_to
-  | group() #group
-  | term()
 
 #flag:
   word_or_keyword()+

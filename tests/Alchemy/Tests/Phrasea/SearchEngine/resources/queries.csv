@@ -64,8 +64,8 @@ foo ≥ "2015/01/01"|<range:foo gte="2015/01/01">
 foo:bar|(<field:foo> MATCHES <text:"bar">)
 foo:[bar]|(<field:foo> MATCHES <term:"bar">)
 foo:[bar (baz)]|(<field:foo> MATCHES <term:"bar" context:"baz">)
-foo:bar baz|(<field:foo> MATCHES <text:"bar baz">)
-foo bar:baz|<text:"foo bar:baz">
+foo:bar baz|((<field:foo> MATCHES <text:"bar">) AND <text:"baz">)
+foo bar:baz|(<text:"foo"> AND (<field:bar> MATCHES <text:"baz">))
 
 # Regular field with name colliding with a native key
 field.collection:foo|(<field:collection> MATCHES <text:"foo">)
@@ -76,16 +76,16 @@ field.id:foo|(<field:id> MATCHES <text:"foo">)
 # Matchers
 collection:foo|<collection:foo>
 collection:foo AND bar|(<collection:foo> AND <text:"bar">)
-#collection:foo bar|<text:"collection:foo bar">
+collection:foo bar|(<collection:foo> AND <text:"bar">)
 database:foo|<database:foo>
 database:foo AND bar|(<database:foo> AND <text:"bar">)
-#database:foo bar|<text:"database:foo bar">
+database:foo bar|(<database:foo> AND <text:"bar">)
 type:foo|<media_type:foo>
 type:foo AND bar|(<media_type:foo> AND <text:"bar">)
-#type:foo bar|<text:"type:foo bar">
+type:foo bar|(<media_type:foo> AND <text:"bar">)
 id:90|<record_identifier:90>
 id:90 AND foo|(<record_identifier:90> AND <text:"foo">)
-#id:90 foo|<text:"id:90 foo">
+id:90 foo|(<record_identifier:90> AND <text:"foo">)
 recordid:90|<record_identifier:90>
 
 # Flag matcher
@@ -94,7 +94,7 @@ flag.foo:1|<flag:foo set>
 flag.foo:false|<flag:foo cleared>
 flag.foo:0|<flag:foo cleared>
 flag.true:true|<flag:true set>
-flag.foo bar:true|<text:"flag.foo bar:true">
+flag.foo bar:true|(<text:"flag.foo"> AND (<field:bar> MATCHES <text:"true">))
 true|<text:"true">
 
 # Matcher on unknown name --> fulltext
