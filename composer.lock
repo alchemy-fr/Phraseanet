@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "95ec8a23c6c8b7d876c3cdb912100140",
-    "content-hash": "4b321c68709e515a6a5e9a714d178da5",
+    "hash": "6b9d684c6bf7474ea317d0a0b0098622",
+    "content-hash": "807d04aa86d8645c4162d4e85e206892",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1482,27 +1482,26 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v2.2.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "e0a75bfb6413f22092c99b70f310ccb2cca3efa5"
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/e0a75bfb6413f22092c99b70f310ccb2cca3efa5",
-                "reference": "e0a75bfb6413f22092c99b70f310ccb2cca3efa5",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.0"
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "Authentication/",
-                    "Exceptions/"
-                ]
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1522,7 +1521,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2015-06-22 23:26:39"
+            "time": "2015-07-22 18:31:08"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -4241,7 +4240,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/43ac5a3afcae6ab9ec1a4cb193c9c9a995d9e1df",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/583b8eba0bcc0ac9aa8e7309e5313c068dbfbe30",
                 "reference": "4f1925fc351a2f058bb56117203a85c5da8852cc",
                 "shasum": ""
             },
