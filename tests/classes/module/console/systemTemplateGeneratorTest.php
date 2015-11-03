@@ -14,6 +14,8 @@ class module_console_systemTemplateGeneratorTest extends \PhraseanetTestCase
     {
         $application = new CLI('test', null, 'test');
         $application->command(new module_console_systemTemplateGenerator('system:templateGenerator'));
+        // Application should be booted before executing commands
+        $application->boot();
 
         $command = $application['console']->find('system:templateGenerator');
         $commandTester = new CommandTester($command);

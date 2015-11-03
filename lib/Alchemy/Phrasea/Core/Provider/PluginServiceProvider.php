@@ -87,14 +87,6 @@ class PluginServiceProvider implements ServiceProviderInterface
         // Add a new controller provider can be added as follows
         // $app['plugin.controller_providers'][] = array('/prefix', 'controller_provider_service_key');
         $app['plugin.controller_providers.api'] = new ArrayObject();
-    }
-
-    public function boot(Application $app)
-    {
-        foreach ($app['plugin.locale.textdomains'] as $textdomain => $dir) {
-            bind_textdomain_codeset($textdomain, 'UTF-8');
-            bindtextdomain($textdomain, $dir);
-        }
 
         $app['twig'] = $app->share(
             $app->extend('twig', function (Twig_Environment $twig) {
@@ -104,5 +96,13 @@ class PluginServiceProvider implements ServiceProviderInterface
                 return $twig;
             })
         );
+    }
+
+    public function boot(Application $app)
+    {
+        foreach ($app['plugin.locale.textdomains'] as $textdomain => $dir) {
+            bind_textdomain_codeset($textdomain, 'UTF-8');
+            bindtextdomain($textdomain, $dir);
+        }
     }
 }
