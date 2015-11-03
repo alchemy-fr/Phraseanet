@@ -73,6 +73,7 @@ class Thesaurus implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->match('xmlhttp/newsy.x.php', 'controller.thesaurus:newSynonymXml');
         $controllers->match('xmlhttp/newts.x.php', 'controller.thesaurus:newSpecificTermXml');
         $controllers->match('xmlhttp/openbranches.x.php', 'controller.thesaurus:openBranchesXml');
+        $controllers->match('xmlhttp/openbranches.j.php', 'controller.thesaurus:openBranchesJson');
         $controllers->match('xmlhttp/reject.x.php', 'controller.thesaurus:RejectXml');
         $controllers->match('xmlhttp/searchcandidate.x.php', 'controller.thesaurus:searchCandidateXml');
 

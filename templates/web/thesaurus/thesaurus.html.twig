@@ -585,8 +585,8 @@
                                             var zdialog = $(this);
                                             var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
                                             $("#THB_" + nid).empty();
-                                            $.post(
-                                                    "/thesaurus/xmlhttp/openbranches.x.php",
+                                            $.get(
+                                                    "/thesaurus/xmlhttp/openbranches.j.php",
                                                     {
                                                         bid: {{ bid }},
                                                         id: cbParm.id.substr(4),
@@ -595,12 +595,12 @@
                                                         t: zdialog.find("[name=t]").val()
                                                     },
                                                     function(data, textStatus, jqXHR) {
-                                                        var ts = $(data).find("html");
-                                                        $("#THB_" + nid).html(ts.html()).removeClass().addClass("hb");
+                                                        var ts = data.result.html;
+                                                        $("#THB_" + nid).html(ts).removeClass().addClass("hb");
                                                         $("#THP_" + nid).text("...");
                                                         zdialog.dialog("close");
                                                     },
-                                                    "xml"
+                                                    "json"
                                             );
                                         }
                                     }
@@ -1083,8 +1083,8 @@
                                                         var zdialog = $(this);
                                                         var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
                                                         $("#THB_" + nid).empty();
-                                                        $.post(
-                                                            "/thesaurus/xmlhttp/openbranches.x.php",
+                                                        $.get(
+                                                            "/thesaurus/xmlhttp/openbranches.j.php",
                                                             {
                                                                 bid: {{ bid }},
                                                                 id: cbParm.id.substr(4),
@@ -1093,12 +1093,12 @@
                                                                 t: zdialog.find("[name=t]").val()
                                                             },
                                                             function(data, textStatus, jqXHR) {
-                                                                var ts = $(data).find("html");
-                                                                $("#THB_" + nid).html(ts.html()).removeClass().addClass("hb");
+                                                                var ts = data.result.html;
+                                                                $("#THB_" + nid).html(ts).removeClass().addClass("hb");
                                                                 $("#THP_" + nid).text("...");
                                                                 zdialog.dialog("close");
                                                             },
-                                                            "xml"
+                                                            "json"
                                                         );
                                                     }
                                                 }

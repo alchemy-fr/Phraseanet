@@ -2608,6 +2608,107 @@ class ThesaurusController extends Controller
         return new Response($ret->saveXML(), 200, ['Content-Type' => 'text/xml']);
     }
 
+    public function openBranchesJson(Request $request)
+    {
+        $dom_ret = new \DOMDocument("1.0", "UTF-8");
+        $dom_ret->preserveWhiteSpace = false;
+        $dom_ret->formatOutput = true;
+        $dom_html = $dom_ret->appendChild($dom_ret->createElement("html"));
+
+        $ret = array(
+            "parms" => array(
+                "bid"    => $request->get('bid'),
+                "id"     => $request->get('id'),
+                "typ"    => $request->get('typ'),
+                "t"      => $request->get('t'),
+                "method" => $request->get('method'),
+                "debug"  => $request->get('debug')
+            ),
+            "result" => array(
+                "html" => ""
+            )
+        );
+
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        try {
+            $databox = $this->findDataboxById((int) $bid);
+            if ($request->get('typ') == "CT") {
+                $xqroot = "cterms";
+                $dom = $databox->get_dom_cterms();
+            } else {
+                $xqroot = "thesaurus";
+                $dom = $databox->get_dom_thesaurus();
+            }
+
+            if ($dom) {
+                $xpath = new \DOMXPath($dom);
+
+                if ($request->get('id') == "T") {
+                    $q = "/thesaurus";
+                } elseif ($request->get('id') == "C") {
+                    $q = "/cterms";
+                } else {
+                    $q = "/$xqroot//te[@id='" . $request->get('id') . "']";
+                }
+
+                /** @var \DOMElement $znode */
+                $znode = $xpath->query($q)->item(0);
+                if ($znode) {
+                    $q2 = "//sy";
+                    if ($request->get('t')) {
+                        $t = $this->splitTermAndContext($request->get('t'));
+                        $unicode = $this->getUnicode();
+                        switch ($request->get('method')) {
+                            case "begins":
+                                $q2 = "starts-with(@w, '" . \thesaurus::xquery_escape(
+                                        $unicode->remove_indexer_chars($t[0])) . "')";
+                                if ($t[1]) {
+                                    $q2 .= " and starts-with(@k, '" . \thesaurus::xquery_escape(
+                                            $unicode->remove_indexer_chars($t[1])) . "')";
+                                }
+                                break;
+                            case "contains":
+                                $q2 = "contains(@w, '" . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . "')";
+                                if ($t[1]) {
+                                    $q2 .= " and contains(@k, '" . \thesaurus::xquery_escape(
+                                            $unicode->remove_indexer_chars($t[1])) . "')";
+                                }
+                                break;
+                            case "equal":
+                            default:
+                                $q2 = "(@w='" . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . "')";
+                                if ($t[1]) {
+                                    $q2 .= " and (@k='" . \thesaurus::xquery_escape(
+                                            $unicode->remove_indexer_chars($t[1])) . "')";
+                                }
+                                break;
+                        }
+                        $q2 = "//sy[" . $q2 . "]";
+                    }
+
+                    $nodes = $xpath->query($q2, $znode);
+                    for ($i = 0; $i < $nodes->length; $i ++) {
+                        for ($n = $nodes->item($i)->parentNode; $n && $n->nodeType == XML_ELEMENT_NODE && $n->nodeName == "te"; $n = $n->parentNode) {
+                            /** @var \DOMElement $n */
+                            $n->setAttribute("open", "1");
+                        }
+                    }
+
+                    $this->getBranchHTML($request->get('typ'), $znode, $dom_ret, $dom_html, 0);
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        $ret["result"]["html"] = trim(str_replace(array("<html>", "</html>"), "", $dom_ret->saveXML($dom_html)));
+
+        return new Response(json_encode($ret), 200, ['Content-Type' => 'application/json']);
+    }
+
     private function getBranchHTML($type, \DOMElement $srcnode, \DOMDocument $dstdom, \DOMElement $dstnode, $depth)
     {
         $allsy = "";
