@@ -52,7 +52,7 @@
         "data-uri/data-uri":                     "~0.1.0",
         "dflydev/doctrine-orm-service-provider": "~1.0",
         "doctrine/dbal":                         "~2.4.0",
-        "doctrine/migrations":                   "1.0.x-dev@dev",
+        "doctrine/migrations":                   "^1.0.0",
         "doctrine/orm":                          "~2.4.0",
         "elasticsearch/elasticsearch":           "~1.0",
         "facebook/php-sdk":                      "~3.0",
