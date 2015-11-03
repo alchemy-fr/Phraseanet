@@ -24,7 +24,7 @@ class module_console_systemTemplateGeneratorTest extends \PhraseanetTestCase
         $data = explode("\n", trim($commandTester->getDisplay()));
         $last_line = array_pop($data);
 
-        $this->assertTrue(strpos($last_line, 'templates failed') === false, 'Some templates failed');
-        $this->assertTrue(strpos($last_line, 'templates generated') !== true, 'Some templates have been generated');
+        $this->assertTrue(strpos($last_line, 'templates failed') === false, sprintf('Some templates failed: %s', $commandTester->getDisplay()));
+        $this->assertTrue(strpos($last_line, 'templates generated') !== false, 'No templates have been generated');
     }
 }
