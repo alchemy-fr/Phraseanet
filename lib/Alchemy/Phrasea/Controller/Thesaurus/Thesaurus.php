@@ -58,6 +58,7 @@ class Thesaurus implements ControllerProviderInterface
         $controllers->match('xmlhttp/newsy.x.php', $this->call('newSynonymXml'));
         $controllers->match('xmlhttp/newts.x.php', $this->call('newSpecificTermXml'));
         $controllers->match('xmlhttp/openbranches.x.php', $this->call('openBranchesXml'));
+        $controllers->match('xmlhttp/openbranches.j.php', $this->call('openBranchesJson'));
         $controllers->match('xmlhttp/reject.x.php', $this->call('RejectXml'));
         $controllers->match('xmlhttp/searchcandidate.x.php', $this->call('searchCandidateXml'));
         $controllers->match('xmlhttp/searchnohits.x.php', $this->call('searchNoHitsXml'));
@@ -2960,6 +2961,105 @@ class Thesaurus implements ControllerProviderInterface
         }
 
         return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
+    }
+
+    public function openBranchesJson(Application $app, Request $request)
+    {
+        $dom_ret = new \DOMDocument("1.0", "UTF-8");
+        $dom_ret->preserveWhiteSpace = false;
+        $dom_ret->formatOutput = true;
+        $dom_html = $dom_ret->appendChild($dom_ret->createElement("html"));
+
+        $ret = array(
+            "parms" => array(
+                "bid"    => $request->get('bid'),
+                "id"     => $request->get('id'),
+                "typ"    => $request->get('typ'),
+                "t"      => $request->get('t'),
+                "method" => $request->get('method'),
+                "debug"  => $request->get('debug')
+            ),
+            "result" => array(
+                "html" => ""
+            )
+        );
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            if ($request->get('typ') == "CT") {
+                $xqroot = "cterms";
+                $dom = $databox->get_dom_cterms();
+            } else {
+                $xqroot = "thesaurus";
+                $dom = $databox->get_dom_thesaurus();
+            }
+
+            if ($dom) {
+                $xpath = new \DOMXPath($dom);
+
+                if ($request->get('id') == "T") {
+                    $q = "/thesaurus";
+                } elseif ($request->get('id') == "C") {
+                    $q = "/cterms";
+                } else {
+                    $q = "/$xqroot//te[@id='" . $request->get('id') . "']";
+                }
+
+                if ($request->get('debug')) {
+                    print("q:" . $q . "<br/>\n");
+                }
+
+                if (($znode = $xpath->query($q)->item(0))) {
+                    if ($request->get('t')) {
+                        $t = $this->splitTermAndContext($request->get('t'));
+                        switch ($request->get('method')) {
+                            case "begins":
+                                $q2 = "starts-with(@w, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . "')";
+                                if ($t[1]) {
+                                    $q2 .= " and starts-with(@k, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . "')";
+                                }
+                                break;
+                            case "contains":
+                                $q2 = "contains(@w, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . "')";
+                                if ($t[1]) {
+                                    $q2 .= " and contains(@k, '" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . "')";
+                                }
+                                break;
+                            case "equal":
+                            default:
+                                $q2 = "(@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[0])) . "')";
+                                if ($t[1]) {
+                                    $q2 .= " and (@k='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($t[1])) . "')";
+                                }
+                                break;
+                        }
+                        $q2 = "//sy[" . $q2 . "]";
+                    }
+                    if ($request->get('debug')) {
+                        print("q2:" . $q2 . "<br/>\n");
+                    }
+                    $nodes = $xpath->query($q2, $znode);
+                    for ($i = 0; $i < $nodes->length; $i ++) {
+                        for ($n = $nodes->item($i)->parentNode; $n && $n->nodeType == XML_ELEMENT_NODE && $n->nodeName == "te"; $n = $n->parentNode) {
+                            $n->setAttribute("open", "1");
+                            if ($request->get('debug')) {
+                                printf("opening node te id=%s<br/>\n", $n->getAttribute("id"));
+                            }
+                        }
+                    }
+                    $this->getBranchHTML($request->get('typ'), $znode, $dom_ret, $dom_html, 0);
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        $ret["result"]["html"] = trim(str_replace(array("<html>", "</html>"), "", $dom_ret->saveXML($dom_html)));
+
+        return new Response(json_encode($ret), 200, array('Content-Type' => 'application/json'));
     }
 
     private function getBranchHTML($type, $srcnode, $dstdom, $dstnode, $depth)
