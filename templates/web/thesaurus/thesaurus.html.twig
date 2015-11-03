@@ -238,7 +238,7 @@
                     </div>
                 </div>
 
-                <!-- ------------------------------ the "search" dialog --------------------------- -->
+                <!-- ******************************* the "search" dialog *************************** -->
                 <div id="SEARCH_DLG">
                     <form>
                         <table>
@@ -259,9 +259,9 @@
                         <input type="text" name="t" value="" style="width:200px;" autofocus>
                     </form>
                 </div>
-                <!-- ------------------------------ end "search" dialog --------------------------- -->
+                <!-- ******************* end "search" dialog ****************** -->
 
-                <!-- ------------------------ the "new term/synonym" dialog ----------------------- -->
+                <!-- ******************* the "new term/synonym" dialog ******************* -->
                 <div id="NEWSY_DLG">
                     <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
@@ -289,7 +289,7 @@
                         </tr>
                     </table>
                 </div>
-                <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
+                <!-- ******************* end "new term/synonym" dialog ******************* -->
 
             </div>
 
@@ -631,8 +631,8 @@
                                             var zdialog = $(this);
                                             var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
                                             $("#THB_" + nid).empty();
-                                            $.post(
-                                                    "/thesaurus/xmlhttp/openbranches.x.php",
+                                            $.get(
+                                                    "/thesaurus/xmlhttp/openbranches.j.php",
                                                     {
                                                         bid: {{ bid }},
                                                         id: cbParm.id.substr(4),
@@ -641,12 +641,12 @@
                                                         t: zdialog.find("[name=t]").val()
                                                     },
                                                     function(data, textStatus, jqXHR) {
-                                                        var ts = $(data).find("html");
-                                                        $("#THB_" + nid).html(ts.html()).removeClass().addClass("hb");
+                                                        var ts = data.result.html;
+                                                        $("#THB_" + nid).html(ts).removeClass().addClass("hb");
                                                         $("#THP_" + nid).text("...");
                                                         zdialog.dialog("close");
                                                     },
-                                                    "xml"
+                                                    "json"
                                             );
                                         }
                                     }
@@ -1129,8 +1129,8 @@
                                                         var zdialog = $(this);
                                                         var nid = cbParm.id.substr(4).replace(".", "\\.", "g");
                                                         $("#THB_" + nid).empty();
-                                                        $.post(
-                                                            "/thesaurus/xmlhttp/openbranches.x.php",
+                                                        $.get(
+                                                            "/thesaurus/xmlhttp/openbranches.j.php",
                                                             {
                                                                 bid: {{ bid }},
                                                                 id: cbParm.id.substr(4),
@@ -1139,12 +1139,12 @@
                                                                 t: zdialog.find("[name=t]").val()
                                                             },
                                                             function(data, textStatus, jqXHR) {
-                                                                var ts = $(data).find("html");
-                                                                $("#THB_" + nid).html(ts.html()).removeClass().addClass("hb");
+                                                                var ts = data.result.html;
+                                                                $("#THB_" + nid).html(ts).removeClass().addClass("hb");
                                                                 $("#THP_" + nid).text("...");
                                                                 zdialog.dialog("close");
                                                             },
-                                                            "xml"
+                                                            "json"
                                                         );
                                                     }
                                                 }
