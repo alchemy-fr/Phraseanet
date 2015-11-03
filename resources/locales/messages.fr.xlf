@@ -267,7 +267,7 @@
       </trans-unit>
       <trans-unit id="3019178ac9fca4836df4f1232391cf04e6e43139" resname="%user% vient de publier %title%" approved="yes">
         <source>%user% vient de publier %title%</source>
-        <target state="translated">%user% vient de publier %title%</target>
+        <target state="translated">%user% a publié %title%</target>
         <jms:reference-file line="67">Notification/Mail/MailInfoNewPublication.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="578411bc3eda63423c62f54431d62591422c6e5f" resname="%user% vous a delivre %quantity% document(s) pour votre commande %title%" approved="yes">
@@ -287,7 +287,7 @@
       </trans-unit>
       <trans-unit id="e3f18be0f58ebf1fe310471f7bc5ac6f430b8c3c" resname="%user% vous demande de valider %title%" approved="yes">
         <source>%user% vous demande de valider %title%</source>
-        <target state="translated">%user% vous demande de valider %title%</target>
+        <target state="translated">%user% vous propose de valider %title%</target>
         <jms:reference-file line="62">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd8b8aa0c4e8a2a4534fc794850750326e79fae3" resname="%user_count% users have been created." approved="yes">
@@ -2580,22 +2580,22 @@
       </trans-unit>
       <trans-unit id="2e1342ee456b9b08f20e2dcf9d7565fffa460597" resname="Email export fails" approved="yes">
         <source>Email export fails</source>
-        <target state="translated">L'export par email a échoué</target>
+        <target state="translated">L'export par e-mail a échoué</target>
         <jms:reference-file line="63">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fe7db1d225b18b4bc134c757a6f95dd4d38a5d02" resname="Email is invalid" approved="yes">
         <source>Email is invalid</source>
-        <target state="translated">L'email est invalide</target>
+        <target state="translated">L'adresse e-mail est invalide</target>
         <jms:reference-file line="502">Controller/Prod/Push.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4da1d591c49e895131ce66f5b488149cd53d651b" resname="Email is required" approved="yes">
         <source>Email is required</source>
-        <target state="translated">L'adresse email est obligatoire</target>
+        <target state="translated">L'adresse e-mail est obligatoire</target>
         <jms:reference-file line="499">Controller/Prod/Push.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8efc876746f2fe8dae7e433323dc4f22535d1ac" resname="Email successfully confirmed" approved="yes">
         <source>Email successfully confirmed</source>
-        <target state="translated">Adresse E-mail confirmée avec succès</target>
+        <target state="translated">Adresse e-mail confirmée avec succès</target>
         <jms:reference-file line="21">Notification/Mail/MailSuccessEmailConfirmationRegistered.php</jms:reference-file>
         <jms:reference-file line="21">Notification/Mail/MailSuccessEmailConfirmationUnregistered.php</jms:reference-file>
       </trans-unit>
@@ -3247,7 +3247,7 @@
       </trans-unit>
       <trans-unit id="5334c3c15248b80aba72d8a192cb45256f6de263" resname="Get a notification when a mail export fails" approved="yes">
         <source>Get a notification when a mail export fails</source>
-        <target state="translated">Obtenir une notification quand un export par email échoue</target>
+        <target state="translated">Obtenir une notification quand un export par e-mail échoue</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee485ef50d127d2c51fe0091051d8c390d03ed59" resname="Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." approved="yes">
@@ -3544,7 +3544,7 @@
       </trans-unit>
       <trans-unit id="9e4ee6d718da29c791cb6499ae1de88bbd71758c" resname="Invalid email address" approved="yes">
         <source>Invalid email address</source>
-        <target state="translated">Adresse E-mail invalide</target>
+        <target state="translated">Adresse e-mail invalide</target>
         <jms:reference-file line="616">Controller/Root/Login.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3da203883b919e942c295aa2ebec1ac7e121c3fb" resname="Invalid file format" approved="yes">
@@ -3768,7 +3768,7 @@
       </trans-unit>
       <trans-unit id="1486ba721fa0e62d17c809eb55964a1c514f6d3f" resname="Le contenu de cet email est confidentiel, ne le divulguez pas." approved="yes">
         <source>Le contenu de cet email est confidentiel, ne le divulguez pas.</source>
-        <target state="translated">Le contenu de cet email est confidentiel. Ne le divulguez pas.</target>
+        <target state="translated">Le contenu de cet e-mail est confidentiel. Ne le divulguez pas.</target>
         <jms:reference-file line="119">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d90d64a516aa1d05e3aa4c5beb4f9e80bf77bb1" resname="Le nom de base de donnee est incorrect" approved="yes">
@@ -4237,7 +4237,7 @@
       </trans-unit>
       <trans-unit id="994e92a6f1e83337ca0193b7fa44cf6b3e9287e5" resname="Name or email" approved="yes">
         <source>Name or email</source>
-        <target state="translated">Nom ou email</target>
+        <target state="translated">Nom ou e-mail</target>
         <jms:reference-file line="170">admin/publications/fiche.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="611ce61a8afa84c06dd4ae06d9405b50d7cadc70" resname="Ne pas autoriser">
@@ -4871,7 +4871,7 @@
       </trans-unit>
       <trans-unit id="40c963556bf21635f163641ae0bbc354c6f8452c" resname="Prefix for notification emails" approved="yes">
         <source>Prefix for notification emails</source>
-        <target state="translated">Préfixe pour les notifications adressées par email</target>
+        <target state="translated">Préfixe pour les notifications adressées par e-mail</target>
         <jms:reference-file line="25">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="474ae549026692693381925784cc30e5b706f330" resname="Prerequisite and Configuration" approved="yes">
@@ -5246,7 +5246,7 @@
       </trans-unit>
       <trans-unit id="75670270ebfa505b89e4942c9ed9f816d23227e8" resname="Recevoir un accuse de reception a %my_email%" approved="yes">
         <source>Recevoir un accuse de reception a %my_email%</source>
-        <target state="translated">Demander un accusé de reception à transmettre à l'adresse %my_email%</target>
+        <target state="translated">Demander un accusé de réception à transmettre à l'adresse %my_email%</target>
         <jms:reference-file line="187">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="755fb2c1aedc1788dd72fda36ce0fe1cae5b7edc" resname="Recherche Avancée" approved="yes">
@@ -5461,7 +5461,7 @@
       </trans-unit>
       <trans-unit id="8c91dfa0024a9c65cb1f4cba0f4744e66fbcccba" resname="Require email validation to activate the account" approved="yes">
         <source>Require email validation to activate the account</source>
-        <target state="translated">Demander une confirmation par mail pour valider le compte</target>
+        <target state="translated">Demander une confirmation par e-mail pour valider le compte</target>
         <jms:reference-file line="94">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eed6bfb41051ed5b74447340f3c2e29d11e99a7c" resname="Required" approved="yes">
@@ -5784,7 +5784,7 @@
       </trans-unit>
       <trans-unit id="3b6564ae1423d96730d38a49a4c796ed79c6e0b1" resname="Send an email to the user to setup his password" approved="yes">
         <source>Send an email to the user to setup his password</source>
-        <target state="translated">Envoyer un email à l'utilisateur pour créer son mot de passe</target>
+        <target state="translated">Envoyer un e-mail à l'utilisateur pour créer son mot de passe</target>
         <jms:reference-file line="90">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ff7a49e36b0e5c8302603f98e4eb1c7dec4a56e" resname="Send to Facebook" approved="yes">
@@ -5804,7 +5804,7 @@
       </trans-unit>
       <trans-unit id="31f38dffd0e514c2f0c21da7a49966442217f792" resname="Sent documents (mail)" approved="yes">
         <source>Sent documents (mail)</source>
-        <target state="translated">Documents envoyés (par email)</target>
+        <target state="translated">Documents envoyés (par e-mail)</target>
         <jms:reference-file line="46">module/report/sent.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="22a218d55afcb680a6b803b92f1efbd7e55b23d1" resname="Sent for validation to %list_participants%" approved="yes">
@@ -7134,7 +7134,7 @@
       </trans-unit>
       <trans-unit id="7e400a7eef4ab49bbe657b3e3c557d64e091a356" resname="Validate e-mail address" approved="yes">
         <source>Validate e-mail address</source>
-        <target state="translated">Valider votre adresse email</target>
+        <target state="translated">Valider votre adresse e-mail</target>
         <jms:reference-file line="37">Notification/Mail/MailRequestEmailConfirmation.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dd74d182c641e4c78502d863b44d0aeff1575e54" resname="Validation">
@@ -7507,7 +7507,7 @@
       </trans-unit>
       <trans-unit id="7ab92d62bb58a2af64dc9340b4af855014a1932f" resname="Would you like to receive an e-mail when your download is ready ?" approved="yes">
         <source>Would you like to receive an e-mail when your download is ready ?</source>
-        <target state="translated">Souhaitez vous recevoir un email quand votre téléchargement est prêt ?</target>
+        <target state="translated">Souhaitez-vous recevoir un e-mail quand votre téléchargement est prêt ?</target>
         <jms:reference-file line="661">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ed4ea66d26e0757b57b8c7af0813e42daa6c6a2" resname="Would you like to reset rights before applying the template?" approved="yes">
@@ -7619,7 +7619,7 @@
       </trans-unit>
       <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="yes">
         <source>You can alternatively receive an email when the download is ready.</source>
-        <target state="translated">Vous pouvez être informé par email quand votre téléchargement est prêt.</target>
+        <target state="translated">Vous pouvez être informé par e-mail quand votre téléchargement est prêt.</target>
         <jms:reference-file line="658">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
@@ -7816,7 +7816,7 @@
       </trans-unit>
       <trans-unit id="3fb2fffe1ca3626067248d8a892a1b42452548ca" resname="Your email will be used to log in the application." approved="yes">
         <source>Your email will be used to log in the application.</source>
-        <target state="translated">Votre adresse email sera utilisée pour vous connecter à l'application</target>
+        <target state="translated">Votre adresse e-mail sera utilisée pour vous connecter à l'application</target>
         <jms:reference-file line="503">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ff2e2369a8f0959a7f665f926ec4d84b3c5a46f5" resname="Your identity is not recognized." approved="yes">
@@ -8542,7 +8542,7 @@
       </trans-unit>
       <trans-unit id="29d3952c833272679cb313988c698f11cb6bbb64" resname="admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer" approved="yes">
         <source>admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer</source>
-        <target state="translated">Un e-mail de confirmation vient de vous être envoyé. Veuillez suivre les instructions contenues dans ce mail pour continuer</target>
+        <target state="translated">Un e-mail de confirmation vient de vous être envoyé. Veuillez suivre les instructions contenues dans celui-ci pour continuer</target>
         <jms:reference-file line="159">Controller/Root/Account.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="00a39eeb4e86af2189a6080e16418d249d98a12b" resname="admin::compte-utilisateur ville" approved="yes">
@@ -8556,12 +8556,12 @@
       </trans-unit>
       <trans-unit id="2f752312fcd370b6547b296ca173da51487a2c5d" resname="admin::compte-utilisateur: L'email a correctement ete mis a jour" approved="yes">
         <source>admin::compte-utilisateur: L'email a correctement ete mis a jour</source>
-        <target state="translated">L'e-mail a été mis à jour</target>
+        <target state="translated">L'adresse e-mail a été mise à jour</target>
         <jms:reference-file line="184">Controller/Root/Account.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="65b62caf0d011a7a87ac02e39fcea79869f0d26a" resname="admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?" approved="yes">
         <source>admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?</source>
-        <target state="translated">Pourquoi me demande t-on mon mot de passe, pour changer mon adresse e-mail ?</target>
+        <target state="translated">Pourquoi me demander mon mot de passe pour changer d'adresse e-mail ?</target>
         <jms:reference-file line="54">web/account/reset-email.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d9fe871c9d00702ae8484e4a94585b87bd5caed5" resname="admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer." approved="yes">
@@ -8571,7 +8571,8 @@
       </trans-unit>
       <trans-unit id="13429b37f2178dd4aafc6a1b66c66026d904143e" resname="admin::compte-utilisateur: email changement de mot d'email Bonjour, nous avons bien recu votre demande de changement d'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l'avoir sollicite, merci de le detruire et de l'ignorer." approved="yes">
         <source>admin::compte-utilisateur: email changement de mot d'email Bonjour, nous avons bien recu votre demande de changement d'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l'avoir sollicite, merci de le detruire et de l'ignorer.</source>
-        <target state="translated">Bonjour, nous avons bien reçu votre demande de changement d'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. Si vous recevez ce mail sans l'avoir sollicité, merci de le détruire et de l'ignorer.</target>
+        <target state="translated">Nous accusons réception d'une demande de changement d'adresse e-mail. Pour confirmer cette demande, suivre le lien suivant. 
+Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le supprimer.</target>
         <jms:reference-file line="29">Notification/Mail/MailRequestEmailUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5bea2ac2d5d9b17df772d715e4a452316e6625f6" resname="admin::compte-utilisateur: erreur lors de la mise a jour" approved="yes">
@@ -9699,7 +9700,7 @@
       </trans-unit>
       <trans-unit id="a04a3246075e5b6ac9d63ad46d807a1221e71321" resname="email is not valid" approved="yes">
         <source>email is not valid</source>
-        <target state="translated">Adresse email non valide</target>
+        <target state="translated">Adresse e-mail non valide</target>
         <jms:reference-file line="40">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1609a932c70b7a1202ffbd3fb9196ca159d2ef08" resname="erreur : Vous n'avez pas les droits" approved="yes">
@@ -9778,7 +9779,7 @@
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
         <source>failed to send mail</source>
-        <target state="translated">Echec de l'envoi d'email</target>
+        <target state="translated">Echec de l'envoi d'e-mail</target>
         <jms:reference-file line="42">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">
@@ -9956,7 +9957,7 @@
       </trans-unit>
       <trans-unit id="51813acc1a667a12d4be8e86f3f2300e369a68cf" resname="login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien" approved="yes">
         <source>login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien</source>
-        <target state="translated">Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet e-mail et il ne se passera rien.</target>
+        <target state="translated">Visitez le lien suivant et suivez les instructions pour continuer. Sinon ignorez cet e-mail et il ne se passera rien.</target>
         <jms:reference-file line="50">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc34348ea6d542311054178a4c8640d80537c4c" resname="login:: connexion" approved="yes">
@@ -11024,7 +11025,7 @@
       </trans-unit>
       <trans-unit id="12f6f5d3ef3c414e9819bcf0fbbdaf454ce0fd27" resname="publication : email autheur" approved="yes">
         <source>publication : email autheur</source>
-        <target state="translated">Email de l'auteur</target>
+        <target state="translated">Adresse e-mail de l'auteur</target>
         <jms:reference-file line="59">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="45">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
