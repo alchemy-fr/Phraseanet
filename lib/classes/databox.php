@@ -924,7 +924,7 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute([':xml'  => $this->thesaurus, ':date' => $now]);
         $stmt->closeCursor();
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
-/*
+
         $this->app['dispatcher']->dispatch(
             DataboxEvents::THESAURUS_CHANGED,
             new ThesaurusChangedEvent(
@@ -934,7 +934,7 @@ class databox extends base implements ThumbnailedElement
                 )
             )
         );
-*/
+
         return $this;
     }
 
