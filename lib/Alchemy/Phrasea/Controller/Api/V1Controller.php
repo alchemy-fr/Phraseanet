@@ -59,6 +59,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
+use Firebase\JWT\JWT;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use Psr\Log\LoggerInterface;
@@ -1028,7 +1029,7 @@ class V1Controller extends Controller
         $secret = $provider->getSecretForUser($issuer);
 
         return $this->app->url('media_accessor', [
-            'token' => \JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
+            'token' => JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
         ]);
     }
 
