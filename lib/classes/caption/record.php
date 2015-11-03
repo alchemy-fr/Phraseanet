@@ -55,7 +55,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     public function toArray($includeBusinessFields)
     {
         /** @var CaptionSerializer $serializer */
-        $serializer = $this->app['caption.serializer'];
+        $serializer = $this->app['serializer.caption'];
 
         return $serializer->toArray($this, $includeBusinessFields);
     }
