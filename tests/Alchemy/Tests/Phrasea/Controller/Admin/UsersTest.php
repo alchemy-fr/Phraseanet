@@ -381,6 +381,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRegistrations()
     {
+        self::$DI['user_alt1']->setMailNotificationsActivated(true);
+
         $id = self::$DI['user_alt1']->getId();
         $baseId = self::$DI['collection']->get_base_id();
         $param = sprintf('%s_%s', $id, $baseId);
@@ -422,6 +424,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['phraseanet.appbox'] = $appbox;
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+
+        self::$DI['user_alt1']->setMailNotificationsActivated(false);
     }
 
     public function testRenderImportFile()

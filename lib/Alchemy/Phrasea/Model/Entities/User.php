@@ -1001,7 +1001,7 @@ class User
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|UserNotificationSetting[]
      */
     public function getNotificationSettings()
     {

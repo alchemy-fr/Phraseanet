@@ -490,17 +490,17 @@ class UserController extends Controller
             });
             unset ($cacheToUpdate);
 
-            $hookName = WebhookEvent::USER_REGISTRATION_REJECTED;
-            $hookType = WebhookEvent::USER_REGISTRATION_TYPE;
-            $hookData = [
-                'user_id' => $user->getId(),
-                'granted' => [],
-                'rejected' => []
-            ];
-
             foreach ($done as $usr => $bases) {
                 $user = $userRepository->find($usr);
                 $acceptColl = $denyColl = [];
+
+                $hookName = WebhookEvent::USER_REGISTRATION_REJECTED;
+                $hookType = WebhookEvent::USER_REGISTRATION_TYPE;
+                $hookData = [
+                    'user_id' => $user->getId(),
+                    'granted' => [],
+                    'rejected' => []
+                ];
 
                 foreach ($bases as $bas => $isok) {
                     $collection = \collection::get_from_base_id($this->app, $bas);
@@ -518,7 +518,7 @@ class UserController extends Controller
 
                 $this->app['manipulator.webhook-event']->create($hookName, $hookType, $hookData);
 
-                if (0 !== count($acceptColl) || 0 !== count($denyColl)) {
+                if ($user->hasMailNotificationsActivated() && (0 !== count($acceptColl) || 0 !== count($denyColl))) {
                     $message = '';
                     if (0 !== count($acceptColl)) {
                         $message .= "\n" . $this->app->trans('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $acceptColl). "\n";
