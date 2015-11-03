@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5822255c3c31bae0ee7df919c1f031dd",
-    "content-hash": "b8dab330f8d50543a1ecb5c5c00e6f73",
+    "hash": "b79c048570e0040b2439e76931bde084",
+    "content-hash": "bd8a87ac442267a6c55ae072202acc64",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -4967,11 +4967,17 @@
         },
         {
             "name": "twig/extensions",
-            "version": "dev-improved-i18n",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/bburnichon/Twig-extensions",
-                "reference": "a1fbd480ebe9a58dded8e3bfcbbbb565dc0eded4"
+                "url": "https://github.com/twigphp/Twig-extensions.git",
+                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
+                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
+                "shasum": ""
             },
             "require": {
                 "twig/twig": "~1.12"
@@ -4993,6 +4999,7 @@
                     "Twig_Extensions_": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -5008,7 +5015,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2015-07-21 19:39:26"
+            "time": "2014-10-30 14:30:03"
         },
         {
             "name": "twig/twig",
@@ -6187,7 +6194,6 @@
         "neutron/process-manager": 20,
         "phpexiftool/phpexiftool": 20,
         "roave/security-advisories": 20,
-        "twig/extensions": 20,
         "willdurand/negotiation": 15
     },
     "prefer-stable": false,
