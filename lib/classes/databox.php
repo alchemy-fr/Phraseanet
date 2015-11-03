@@ -1532,6 +1532,7 @@ class databox extends base implements ThumbnailedElement
                 break;
             case self::CACHE_THESAURUS:
                 $this->thesaurus = null;
+                unset(self::$_dom_thesaurus[$this->id]);
                 break;
             default:
                 break;
