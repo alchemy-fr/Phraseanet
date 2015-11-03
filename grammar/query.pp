@@ -41,7 +41,13 @@
 
 #query:
     ::space::? primary()? ::space::?
+  | catch_all()
 
+catch_all:
+  ( <space>
+  | <word>
+  | keyword()
+  | symbol() #text )*
 
 // Boolean operators
 
@@ -101,13 +107,9 @@ term:
 // Free text handling
 
 text:
-    string_keyword_symbol()
-  ( <space>? string_keyword_symbol() )*
-  ( ::space::? context_block() )?
-
-string_keyword_symbol:
     string()
-  | symbol()
+  ( <space>? string() )*
+  ( ::space::? context_block() )?
 
 context_block:
     ::parenthese_:: ::space::? context() ::space::? ::_parenthese:: #context
