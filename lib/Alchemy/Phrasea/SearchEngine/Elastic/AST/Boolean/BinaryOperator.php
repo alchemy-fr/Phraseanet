@@ -1,6 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\Boolean;
+
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 
 abstract class BinaryOperator extends Node
 {

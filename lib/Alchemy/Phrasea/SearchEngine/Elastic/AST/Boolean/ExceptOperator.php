@@ -1,12 +1,12 @@
 <?php
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\Boolean;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class AndExpression extends BinaryOperator
+class ExceptOperator extends BinaryOperator
 {
-    protected $operator = 'AND';
+    protected $operator = 'EXCEPT';
 
     public function buildQuery(QueryContext $context)
     {
@@ -15,7 +15,8 @@ class AndExpression extends BinaryOperator
 
         return [
             'bool' => [
-                'must' => [$left, $right]
+                'must' => $left,
+                'must_not' => $right
             ]
         ];
     }

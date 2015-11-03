@@ -121,21 +121,21 @@ class QueryVisitor implements Visit
     private function visitAndNode(Element $element)
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\AndExpression($left, $right);
+            return new AST\Boolean\AndOperator($left, $right);
         });
     }
 
     private function visitOrNode(Element $element)
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\OrExpression($left, $right);
+            return new AST\Boolean\OrOperator($left, $right);
         });
     }
 
     private function visitExceptNode(Element $element)
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\ExceptExpression($left, $right);
+            return new AST\Boolean\ExceptOperator($left, $right);
         });
     }
 
