@@ -241,7 +241,7 @@ class QueryVisitor implements Visit
                     throw new \Exception('Unexpected context after non-contextualizable node');
                 }
             } elseif ($node instanceof AST\Node) {
-                $root = new AST\AndExpression($root, $node);
+                $root = new AST\Boolean\AndOperator($root, $node);
             } else {
                 throw new \Exception('Unexpected node type inside text node.');
             }

@@ -1,5 +1,7 @@
 foo|<text:"foo">
 foo (bar)|<text:"foo" context:"bar">
+foo "bar"|(<text:"foo "> AND <exact_text:"bar">)
+"foo" bar|(<exact_text:"foo"> AND <text:" bar">)
 # foo ("bar baz")|<text:"foo" context:"bar baz">
 foo bar|<text:"foo bar">
 foo bar (baz qux)|<text:"foo bar" context:"baz qux">
