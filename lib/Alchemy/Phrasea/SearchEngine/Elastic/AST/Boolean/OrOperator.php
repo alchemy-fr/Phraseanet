@@ -1,10 +1,10 @@
 <?php
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\Boolean;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class OrExpression extends BinaryOperator
+class OrOperator extends BinaryOperator
 {
     protected $operator = 'OR';
 

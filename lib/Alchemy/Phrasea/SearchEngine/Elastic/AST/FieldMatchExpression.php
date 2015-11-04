@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class InExpression extends Node
+class FieldMatchExpression extends Node
 {
     protected $field;
     protected $expression;
@@ -29,6 +29,6 @@ class InExpression extends Node
 
     public function __toString()
     {
-        return sprintf('(%s IN %s)', $this->expression, $this->field);
+        return sprintf('(%s MATCHES %s)', $this->field, $this->expression);
     }
 }

@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
@@ -46,9 +47,6 @@ class QueryVisitor implements Visit
             case NodeTypes::GROUP:
                 return $this->visitNode($element->getChild(0));
 
-            case NodeTypes::IN_EXPR:
-                return $this->visitInNode($element);
-
             case NodeTypes::AND_EXPR:
                 return $this->visitAndNode($element);
 
@@ -79,6 +77,9 @@ class QueryVisitor implements Visit
             case NodeTypes::CONTEXT:
                 return new AST\Context($this->visitString($element));
 
+            case NodeTypes::FIELD_STATEMENT:
+                return $this->visitFieldStatementNode($element);
+
             case NodeTypes::FIELD:
                 return new AST\Field($this->visitString($element));
 
@@ -88,20 +89,14 @@ class QueryVisitor implements Visit
             case NodeTypes::FLAG:
                 return new AST\Flag($this->visitString($element));
 
-            case NodeTypes::DATABASE:
-                return $this->visitDatabaseNode($element);
+            case NodeTypes::NATIVE_KEY_VALUE:
+                return $this->visitNativeKeyValueNode($element);
 
-            case NodeTypes::COLLECTION:
-                return $this->visitCollectionNode($element);
-
-            case NodeTypes::TYPE:
-                return $this->visitTypeNode($element);
-
-            case NodeTypes::IDENTIFIER:
-                return $this->visitIdentifierNode($element);
+            case NodeTypes::NATIVE_KEY:
+                return $this->visitNativeKeyNode($element);
 
             default:
-                throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
+                throw new Exception(sprintf('Unknown node type "%s".', $element->getId()));
         }
     }
 
@@ -114,41 +109,41 @@ class QueryVisitor implements Visit
         return new Query($root);
     }
 
-    private function visitInNode(Element $element)
+    private function visitFieldStatementNode(TreeNode $node)
     {
-        if ($element->getChildrenNumber() !== 2) {
-            throw new \Exception('IN expression can only have 2 childs.');
+        if ($node->getChildrenNumber() !== 2) {
+            throw new Exception('Field statement must have 2 childs.');
         }
-        $expression = $element->getChild(0)->accept($this);
-        $field = $this->visit($element->getChild(1));
-        return new AST\InExpression($field, $expression);
+        $field = $this->visit($node->getChild(0));
+        $value = $this->visit($node->getChild(1));
+        return new AST\FieldMatchExpression($field, $value);
     }
 
     private function visitAndNode(Element $element)
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\AndExpression($left, $right);
+            return new AST\Boolean\AndOperator($left, $right);
         });
     }
 
     private function visitOrNode(Element $element)
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\OrExpression($left, $right);
+            return new AST\Boolean\OrOperator($left, $right);
         });
     }
 
     private function visitExceptNode(Element $element)
     {
         return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\ExceptExpression($left, $right);
+            return new AST\Boolean\ExceptOperator($left, $right);
         });
     }
 
     private function visitRangeNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Comparison operator can only have 2 childs.');
+            throw new Exception('Comparison operator can only have 2 childs.');
         }
         $field = $node->getChild(0)->accept($this);
         $expression = $node->getChild(1)->accept($this);
@@ -168,7 +163,7 @@ class QueryVisitor implements Visit
     private function handleBinaryOperator(Element $element, \Closure $factory)
     {
         if ($element->getChildrenNumber() !== 2) {
-            throw new \Exception('Binary expression can only have 2 childs.');
+            throw new Exception('Binary expression can only have 2 childs.');
         }
         $left  = $element->getChild(0)->accept($this);
         $right = $element->getChild(1)->accept($this);
@@ -179,7 +174,7 @@ class QueryVisitor implements Visit
     private function visitEqualNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Equality operator can only have 2 childs.');
+            throw new Exception('Equality operator can only have 2 childs.');
         }
 
         return new AST\FieldEqualsExpression(
@@ -196,13 +191,13 @@ class QueryVisitor implements Visit
             $node = $child->accept($this);
             if ($node instanceof AST\TextNode) {
                 if ($context) {
-                    throw new \Exception('Unexpected text node after context');
+                    throw new Exception('Unexpected text node after context');
                 }
                 $words[] = $node->getValue();
             } elseif ($node instanceof AST\Context) {
                 $context = $node;
             } else {
-                throw new \Exception('Term node can only contain text nodes');
+                throw new Exception('Term node can only contain text nodes');
             }
         }
 
@@ -223,7 +218,7 @@ class QueryVisitor implements Visit
                 $node instanceof AST\TextNode) {
                 // Prevent merge once a context is set
                 if ($last->hasContext()) {
-                    throw new \Exception('Unexpected text node after context');
+                    throw new Exception('Unexpected text node after context');
                 }
                 $nodes[$last_index] = $last = AST\TextNode::merge($last, $node);
             } else {
@@ -244,12 +239,12 @@ class QueryVisitor implements Visit
                 if ($root instanceof AST\ContextAbleInterface) {
                     $root = $root->withContext($node);
                 } else {
-                    throw new \Exception('Unexpected context after non-contextualizable node');
+                    throw new Exception('Unexpected context after non-contextualizable node');
                 }
             } elseif ($node instanceof AST\Node) {
-                $root = new AST\AndExpression($root, $node);
+                $root = new AST\Boolean\AndOperator($root, $node);
             } else {
-                throw new \Exception('Unexpected node type inside text node.');
+                throw new Exception('Unexpected node type inside text node.');
             }
         }
 
@@ -273,7 +268,7 @@ class QueryVisitor implements Visit
     private function visitFlagStatementNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Flag statement can only have 2 childs.');
+            throw new Exception('Flag statement can only have 2 childs.');
         }
         $flag = $node->getChild(0)->accept($this);
         if (!$flag instanceof AST\Flag) {
@@ -289,7 +284,7 @@ class QueryVisitor implements Visit
     private function visitBoolean(TreeNode $node)
     {
         if (null === $value = $node->getValue()) {
-            throw new \Exception('Boolean node must be a token');
+            throw new Exception('Boolean node must be a token');
         }
         switch ($value['token']) {
             case NodeTypes::TOKEN_TRUE:
@@ -299,47 +294,37 @@ class QueryVisitor implements Visit
                 return false;
 
             default:
-                throw new \Exception('Unexpected token for a boolean.');
+                throw new Exception('Unexpected token for a boolean.');
         }
     }
 
-    private function visitDatabaseNode(Element $element)
+    private function visitNativeKeyValueNode(TreeNode $node)
     {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Base filter can only have a single child.');
+        if ($node->getChildrenNumber() !== 2) {
+            throw new Exception('Key value expression can only have 2 childs.');
         }
-        $baseName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\DatabaseExpression($baseName);
+        $key = $this->visit($node->getChild(0));
+        $value = $this->visit($node->getChild(1));
+        return new AST\KeyValue\Expression($key, $value);
     }
 
-    private function visitCollectionNode(Element $element)
+    private function visitNativeKeyNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Collection filter can only have a single child.');
+            throw new Exception('Native key node can only have a single child.');
         }
-        $collectionName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\CollectionExpression($collectionName);
-    }
-
-    private function visitTypeNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Type filter can only have a single child.');
+        $type = $element->getChild(0)->getValue()['token'];
+        switch ($type) {
+            case NodeTypes::TOKEN_DATABASE:
+                return AST\KeyValue\NativeKey::database();
+            case NodeTypes::TOKEN_COLLECTION:
+                return AST\KeyValue\NativeKey::collection();
+            case NodeTypes::TOKEN_MEDIA_TYPE:
+                return AST\KeyValue\NativeKey::mediaType();
+            case NodeTypes::TOKEN_RECORD_ID:
+                return AST\KeyValue\NativeKey::recordIdentifier();
+            default:
+                throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for native key.', $type));
         }
-        $typeName = $element->getChild(0)->getValue()['value'];
-
-        return new AST\TypeExpression($typeName);
-    }
-
-    private function visitIdentifierNode(Element $element)
-    {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Identifier filter can only have a single child.');
-        }
-        $identifier = $element->getChild(0)->getValue()['value'];
-
-        return new AST\RecordIdentifierExpression($identifier);
     }
 }

@@ -21,7 +21,6 @@
 %token  raw:_raw_quote  "        -> default
 
 // Operators (too bad we can't use preg "i" flag)
-%token  in              [Ii][Nn]|[Dd][Aa][Nn][Ss]
 %token  and             [Aa][Nn][Dd]|[Ee][Tt]
 %token  or              [Oo][Rr]|[Oo][Uu]
 %token  except          [Ee][Xx][Cc][Ee][Pp][Tt]|[Ss][Aa][Uu][Ff]
@@ -31,16 +30,23 @@
 %token  collection      collection
 %token  type            type
 %token  id              id|recordid
+%token  field_prefix    field.
 %token  flag_prefix     flag.
 %token  true            true|1
 %token  false           false|0
-%token  word            [^\s()\[\]:<>≤≥=]+
+%token  word            [^\s\(\)\[\]:<>≤≥=]+
 
 // relative order of precedence is NOT > XOR > AND > OR
 
 #query:
     ::space::? primary()? ::space::?
+  | catch_all()
 
+catch_all:
+  ( <space>
+  | <word>
+  | keyword()
+  | symbol() #text )*
 
 // Boolean operators
 
@@ -53,45 +59,36 @@ secondary:
 ternary:
     quaternary() ( ::space:: ::and:: ::space:: primary() #and )?
 
-
-// Collection / database / record id matcher
-
 quaternary:
-    ::database:: ::colon:: string() #database
-  | ::collection:: ::colon:: string() #collection
-  | ::type:: ::colon:: string() #type
-  | ::id:: ::colon:: string() #id
-  | ::flag_prefix:: flag() ::colon:: boolean() #flag_statement
-  | quinary()
+    group() #group
+  | key_value_pair() ( ::space:: primary() #and )?
+  | term() ( ::space:: key_value_pair() #and )?
 
+// Key value pairs & field level matchers (restricted to a single field)
+
+key_value_pair:
+    native_key()             ::colon:: ::space::? value()   #native_key_value
+  | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
+  | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
+  |                  field() ::colon:: ::space::? term()    #field_statement
+  | field() ::space::?       ::lt::    ::space::? value()   #less_than
+  | field() ::space::?       ::gt::    ::space::? value()   #greater_than
+  | field() ::space::?       ::lte::   ::space::? value()   #less_than_or_equal_to
+  | field() ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
+  | field() ::space::?       ::equal:: ::space::? value()   #equal_to
 
 #flag:
   word_or_keyword()+
 
-boolean:
-    <true>
-  | <false>
-
-// Field narrowing
-
-quinary:
-    senary() ( ::space:: ::in:: ::space:: field() #in )?
+#native_key:
+    <database>
+  | <collection>
+  | <type>
+  | <id>
 
 #field:
     word_or_keyword()+
   | quoted_string()
-
-
-// Field level matchers (*may* be restricted to a field subset)
-
-senary:
-    group() #group
-  | field() ::space::? ::lt:: ::space::? value() #less_than
-  | field() ::space::? ::gt:: ::space::? value() #greater_than
-  | field() ::space::? ::lte:: ::space::? value() #less_than_or_equal_to
-  | field() ::space::? ::gte:: ::space::? value() #greater_than_or_equal_to
-  | field() ::space::? ::equal:: ::space::? value() #equal_to
-  | term()
 
 #value:
     word_or_keyword()+
@@ -111,13 +108,9 @@ term:
 // Free text handling
 
 text:
-    string_keyword_symbol()
-  ( <space>? string_keyword_symbol() )*
-  ( ::space::? context_block() )?
-
-string_keyword_symbol:
     string()
-  | symbol()
+  ( <space>? string() )*
+  ( ::space::? context_block() )?
 
 context_block:
     ::parenthese_:: ::space::? context() ::space::? ::_parenthese:: #context
@@ -127,6 +120,10 @@ context:
 
 
 // Generic helpers
+
+boolean:
+    <true>
+  | <false>
 
 string:
     word_or_keyword()+
@@ -143,14 +140,14 @@ raw_quoted_string:
     ::raw_quote_:: <raw_quoted> ::_raw_quote::
 
 keyword:
-    <in>
-  | <except>
+    <except>
   | <and>
   | <or>
   | <database>
   | <collection>
   | <type>
   | <id>
+  | <field_prefix>
   | <flag_prefix>
   | <true>
   | <false>

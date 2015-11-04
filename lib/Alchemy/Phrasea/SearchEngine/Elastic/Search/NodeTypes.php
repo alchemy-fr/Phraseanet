@@ -7,7 +7,6 @@ class NodeTypes
     // Tree node types
     const QUERY               = '#query';
     const GROUP               = '#group';
-    const IN_EXPR             = '#in';
     const AND_EXPR            = '#and';
     const OR_EXPR             = '#or';
     const EXCEPT_EXPR         = '#except';
@@ -16,6 +15,7 @@ class NodeTypes
     const LTE_EXPR            = '#less_than_or_equal_to';
     const GTE_EXPR            = '#greater_than_or_equal_to';
     const EQUAL_EXPR          = '#equal_to';
+    const FIELD_STATEMENT     = '#field_statement';
     const FIELD               = '#field';
     const VALUE               = '#value';
     const TERM                = '#thesaurus_term';
@@ -23,14 +23,16 @@ class NodeTypes
     const CONTEXT             = '#context';
     const FLAG_STATEMENT      = '#flag_statement';
     const FLAG                = '#flag';
-    const COLLECTION          = '#collection';
-    const TYPE                = '#type';
-    const DATABASE            = '#database';
-    const IDENTIFIER          = '#id';
+    const NATIVE_KEY_VALUE    = '#native_key_value';
+    const NATIVE_KEY          = '#native_key';
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
     const TOKEN_RAW_STRING    = 'raw_quoted';
+    const TOKEN_DATABASE      = 'database';
+    const TOKEN_COLLECTION    = 'collection';
+    const TOKEN_MEDIA_TYPE    = 'type';
+    const TOKEN_RECORD_ID     = 'id';
     const TOKEN_TRUE          = 'true';
     const TOKEN_FALSE         = 'false';
 }
