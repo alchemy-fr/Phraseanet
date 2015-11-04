@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="ApiOauthRefreshTokens", indexes={@ORM\Index(name="account_id", columns={"account_id"})})
+ * @ORM\Table(name="ApiOauthRefreshTokens", indexes={@ORM\Index(name="api_oauth_refresh_token_account_id", columns={"account_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiOauthRefreshTokenRepository")
  */
 class ApiOauthRefreshToken

@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Table(name="ApiApplications", uniqueConstraints={
  *      @ORM\UniqueConstraint(name="client_id", columns={"client_id"})}, indexes={
- *          @ORM\Index(name="creator_id", columns={"creator_id"})
+ *          @ORM\Index(name="api_application_creator_id", columns={"creator_id"})
  *      })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository")
  */

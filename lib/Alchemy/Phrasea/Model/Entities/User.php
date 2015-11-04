@@ -24,12 +24,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\UniqueConstraint(name="login_unique",columns={"login"})
  *      },
  *      indexes={
- *          @ORM\index(name="login", columns={"login"}),
- *          @ORM\index(name="mail", columns={"email"}),
- *          @ORM\index(name="model_of", columns={"model_of"}),
- *          @ORM\index(name="salted_password", columns={"salted_password"}),
- *          @ORM\index(name="admin", columns={"admin"}),
- *          @ORM\index(name="guest", columns={"guest"})
+ *          @ORM\index(name="user_login", columns={"login"}),
+ *          @ORM\index(name="user_mail", columns={"email"}),
+ *          @ORM\index(name="user_model_of", columns={"model_of"}),
+ *          @ORM\index(name="user_salted_password", columns={"salted_password"}),
+ *          @ORM\index(name="user_admin", columns={"admin"}),
+ *          @ORM\index(name="user_guest", columns={"guest"})
  *      }
  * )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserRepository")

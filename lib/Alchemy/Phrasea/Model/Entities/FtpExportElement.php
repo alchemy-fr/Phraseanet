@@ -21,8 +21,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\UniqueConstraint(name="unique_ftp_export", columns={"export_id","base_id","record_id", "subdef"})
  *      },
  *      indexes={
- *          @ORM\index(name="done", columns={"done"}),
- *          @ORM\index(name="error", columns={"error"})
+ *          @ORM\index(name="ftp_export_element_done", columns={"done"}),
+ *          @ORM\index(name="ftp_export_element_error", columns={"error"})
  *      }
  * )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpExportElementRepository")

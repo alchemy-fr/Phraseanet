@@ -7,8 +7,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="ApiOauthTokens", indexes={
- *      @ORM\Index(name="account_id", columns={"account_id"}),
- *      @ORM\Index(name="session_id", columns={"session_id"})
+ *      @ORM\Index(name="api_oauth_token_account_id", columns={"account_id"}),
+ *      @ORM\Index(name="api_oauth_token_session_id", columns={"session_id"})
  * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository")
  */

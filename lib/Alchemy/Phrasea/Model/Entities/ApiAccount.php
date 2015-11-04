@@ -8,8 +8,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="ApiAccounts", indexes={
- *      @ORM\Index(name="user_id", columns={"user_id"}),
- *      @ORM\Index(name="application_id", columns={"application_id"})
+ *      @ORM\Index(name="api_account_user_id", columns={"user_id"}),
+ *      @ORM\Index(name="api_account_application_id", columns={"application_id"})
  * })
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiAccountRepository")
  */
