@@ -29,7 +29,7 @@ class FieldEqualsExpression extends Node
 
         $query = [
             'term' => [
-                $structure_field->getIndexField() => $this->value
+                $structure_field->getIndexField(true) => $this->value
             ]
         ];
 
