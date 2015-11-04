@@ -48,7 +48,7 @@ foo EXCEPT (bar AND baz)|(<text:"foo"> EXCEPT (<text:"bar"> AND <text:"baz">))
 foo EXCEPT (bar OR baz)|(<text:"foo"> EXCEPT (<text:"bar"> OR <text:"baz">))
 foo EXCEPT (bar EXCEPT baz)|(<text:"foo"> EXCEPT (<text:"bar"> EXCEPT <text:"baz">))
 
-# Inequality operators
+# Comparison operators
 foo < 42|<range:foo lt="42">
 foo ≤ 42|<range:foo lte="42">
 foo > 42|<range:foo gt="42">
@@ -61,6 +61,9 @@ foo < "2015/01/01"|<range:foo lt="2015/01/01">
 foo ≤ "2015/01/01"|<range:foo lte="2015/01/01">
 foo > "2015/01/01"|<range:foo gt="2015/01/01">
 foo ≥ "2015/01/01"|<range:foo gte="2015/01/01">
+foo = 42|(<field:foo> == <value:"42">)
+foo = bar|(<field:foo> == <value:"bar">)
+foo = "bar"|(<field:foo> == <value:"bar">)
 
 # Field narrowing
 foo:bar|(<field:foo> MATCHES <text:"bar">)
