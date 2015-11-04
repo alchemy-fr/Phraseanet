@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller;
 
+use Alchemy\Embed\Media\Media;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
@@ -28,6 +29,8 @@ class PermalinkController extends AbstractDelivery
     private $appbox;
     /** @var Authenticator */
     private $authentication;
+    /** @var Media */
+    private $mediaService;
 
     public function __construct(Application $app, \appbox $appbox, ACLProvider $acl, Authenticator $authenticator)
     {
@@ -36,13 +39,14 @@ class PermalinkController extends AbstractDelivery
         $this->appbox = $appbox;
         $this->acl = $acl;
         $this->authentication = $authenticator;
+        $this->mediaService = new Media($this->app, $this->app->getApplicationBox(), $this->app['acl'], $this->app->getAuthenticator());
     }
 
     public function getOptionsResponse(Request $request, $sbas_id, $record_id)
     {
         $databox = $this->getDatabox($sbas_id);
         $token = $request->query->get('token');
-        $record = $this->retrieveRecord($databox, $token, $record_id, $request->get('subdef', 'thumbnail'));
+        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $request->get('subdef', 'thumbnail'));
 
         if (null === $record) {
             throw new NotFoundHttpException("Record not found");
@@ -55,7 +59,7 @@ class PermalinkController extends AbstractDelivery
     {
         $databox = $this->getDatabox($sbas_id);
         $token = $request->query->get('token');
-        $record = $this->retrieveRecord($databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
+        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
 
         if (null === $record) {
             throw new NotFoundHttpException("Caption not found");
@@ -85,84 +89,16 @@ class PermalinkController extends AbstractDelivery
         return $this->doDeliverPermalink($request, $sbas_id, $record_id, $token, $subdef);
     }
 
-    /**
-     * @param \databox $databox
-     * @param string   $token
-     * @param int      $record_id
-     * @param string   $subdef
-     * @return \record_adapter
-     */
-    private function retrieveRecord(\databox $databox, $token, $record_id, $subdef)
-    {
-        try {
-            $record = new \record_adapter($this->app, $databox->get_sbas_id(), $record_id);
-            $subDefinition = new \media_subdef($this->app, $record, $subdef);
-            $permalink = new \media_Permalink_Adapter($this->app, $databox, $subDefinition);
-        } catch (\Exception $exception) {
-            throw new NotFoundHttpException('Wrong token.', $exception);
-        }
-
-        if (! $permalink->get_is_activated()) {
-            throw new NotFoundHttpException('This token has been disabled.');
-        }
-
-        /** @var FeedItemRepository $feedItemsRepository */
-        $feedItemsRepository = $this->app['repo.feed-items'];
-        if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL])
-            && $feedItemsRepository->isRecordInPublicFeed($databox->get_sbas_id(), $record_id)
-        ) {
-            return $record;
-        } elseif ($permalink->get_token() == (string) $token) {
-            return $record;
-        }
-
-        throw new NotFoundHttpException('Wrong token.');
-    }
-
     private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
     {
         $databox = $this->getDatabox($sbas_id);
-        $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
-
-        // build up record ogMetaData data:
-        $ogMetaDatas = [];
+        // $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
+        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdefName);
+        $metaDatas = $this->mediaService->getMetaDatas($record, $subdefName);
         $subdef = $record->get_subdef($subdefName);
-        $preview = $record->get_preview();
-        $thumbnail = $record->get_thumbnail();
-        $baseUrl = $this->app['request']->getScheme() . '://' . $this->app['request']->getHost();
-
-        // generate metadatas:
-        switch($record->getType() ) {
-            case 'video':
-                $ogMetaDatas['og:type'] = 'video.other';
-                $ogMetaDatas['og:image'] = $baseUrl.$thumbnail->get_url();
-                $ogMetaDatas['og:image:width'] = $thumbnail->get_width();
-                $ogMetaDatas['og:image:height'] = $thumbnail->get_height();
-                break;
-            case 'flexpaper':
-            case 'document':
-                $ogMetaDatas['og:type'] = 'article';
-                $ogMetaDatas['og:image'] = $baseUrl.$thumbnail->get_url();
-                $ogMetaDatas['og:image:width'] = $thumbnail->get_width();
-                $ogMetaDatas['og:image:height'] = $thumbnail->get_height();
-                break;
-            case 'audio':
-                $ogMetaDatas['og:type'] = 'music.song';
-                $ogMetaDatas['og:image'] = $baseUrl.$thumbnail->get_url();
-                $ogMetaDatas['og:image:width'] = $thumbnail->get_width();
-                $ogMetaDatas['og:image:height'] = $thumbnail->get_height();
-                break;
-            default:
-                $ogMetaDatas['og:type'] = 'image';
-                $ogMetaDatas['og:image'] = $preview->get_permalink()->get_url();
-                $ogMetaDatas['og:image:width'] = $subdef->get_width();
-                $ogMetaDatas['og:image:height'] = $subdef->get_height();
-                break;
-
-        }
 
         return $this->app['twig']->render('overview.html.twig', [
-            'ogMetaDatas'    => $ogMetaDatas,
+            'ogMetaDatas'    => $metaDatas['ogMetaDatas'],
             'subdef'      => $subdef,
             'module_name' => 'overview',
             'module'      => 'overview',
@@ -174,8 +110,8 @@ class PermalinkController extends AbstractDelivery
     private function doDeliverPermalink(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
         $databox = $this->getDatabox($sbas_id);
-        $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
-
+        // $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
+        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdef);
         $watermark = $stamp = false;
 
         if ($this->authentication->isAuthenticated()) {
