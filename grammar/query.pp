@@ -21,7 +21,6 @@
 %token  raw:_raw_quote  "        -> default
 
 // Operators (too bad we can't use preg "i" flag)
-%token  in              [Ii][Nn]|[Dd][Aa][Nn][Ss]
 %token  and             [Aa][Nn][Dd]|[Ee][Tt]
 %token  or              [Oo][Rr]|[Oo][Uu]
 %token  except          [Ee][Xx][Cc][Ee][Pp][Tt]|[Ss][Aa][Uu][Ff]
@@ -141,8 +140,7 @@ raw_quoted_string:
     ::raw_quote_:: <raw_quoted> ::_raw_quote::
 
 keyword:
-    <in>
-  | <except>
+    <except>
   | <and>
   | <or>
   | <database>
