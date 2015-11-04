@@ -241,11 +241,7 @@ class Application extends SilexApplication
         $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
         $this->register(new HttpFragmentServiceProvider());
-        $this->register(new TwigServiceProvider(), [
-            'twig.options' => [
-                'cache' => $this->share(function($app) {return $app['cache.path'].'/twig';}),
-            ],
-        ]);
+        $this->register(new TwigServiceProvider());
         $this->setupTwig();
         $this->register(new TranslationServiceProvider(), [
             'locale_fallbacks' => ['fr'],
