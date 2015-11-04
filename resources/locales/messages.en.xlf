@@ -10564,7 +10564,7 @@
       </trans-unit>
       <trans-unit id="ed783308f09120432326bbe67088be585e3bd6e9" resname="phraseanet::temps:: a l'instant" approved="yes">
         <source>phraseanet::temps:: a l'instant</source>
-        <target state="translated">just now</target>
+        <target state="translated">Just now</target>
         <jms:reference-file line="103">lib/classes/phraseadate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1a2cfa22b0639837d6293cf2e530ce6ae63aeace" resname="phraseanet::temps:: hier" approved="yes">
