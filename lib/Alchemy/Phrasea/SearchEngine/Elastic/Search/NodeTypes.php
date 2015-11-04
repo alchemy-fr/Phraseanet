@@ -7,7 +7,6 @@ class NodeTypes
     // Tree node types
     const QUERY               = '#query';
     const GROUP               = '#group';
-    const IN_EXPR             = '#in';
     const AND_EXPR            = '#and';
     const OR_EXPR             = '#or';
     const EXCEPT_EXPR         = '#except';
