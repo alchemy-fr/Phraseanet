@@ -39,7 +39,6 @@ class WebservicesFormType extends AbstractType
 
         $builder->add('captchas-enabled', 'checkbox', [
             'label'        => 'Use recaptcha API',
-            /** @Ignore */
             'help_message' => $help
         ]);
         $builder->add('recaptcha-public-key', 'text', [
