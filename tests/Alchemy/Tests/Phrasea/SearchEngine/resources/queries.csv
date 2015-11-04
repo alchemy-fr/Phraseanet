@@ -102,6 +102,9 @@ flag.true:true|<flag:true set>
 flag.foo bar:true|(<text:"flag.foo"> AND (<field:bar> MATCHES <text:"true">))
 true|<text:"true">
 
+# Metadata (EXIF or anything else) matcher
+meta.MimeType:image/jpeg|<metadata:MimeType value:"image/jpeg">
+
 # Matcher on unknown name --> fulltext
 foo:bar|(<field:foo> MATCHES <text:"bar">)
 foo:bar AND baz|((<field:foo> MATCHES <text:"bar">) AND <text:"baz">)

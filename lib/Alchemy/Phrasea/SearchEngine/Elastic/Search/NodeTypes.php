@@ -21,6 +21,8 @@ class NodeTypes
     const TERM                = '#thesaurus_term';
     const TEXT                = '#text';
     const CONTEXT             = '#context';
+    const METADATA_STATEMENT  = '#meta_statement';
+    const METADATA_KEY        = '#meta_key';
     const FLAG_STATEMENT      = '#flag_statement';
     const FLAG                = '#flag';
     const NATIVE_KEY_VALUE    = '#native_key_value';

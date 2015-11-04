@@ -32,6 +32,7 @@
 %token  id              id|recordid
 %token  field_prefix    field.
 %token  flag_prefix     flag.
+%token  meta_prefix     meta.
 %token  true            true|1
 %token  false           false|0
 %token  word            [^\s\(\)\[\]:<>≤≥=]+
@@ -68,6 +69,7 @@ quaternary:
 
 key_value_pair:
     native_key()             ::colon:: ::space::? value()   #native_key_value
+  | ::meta_prefix::  meta_key() ::colon:: ::space::? value() #meta_statement
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
   | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
   |                  field() ::colon:: ::space::? term()    #field_statement
@@ -77,14 +79,17 @@ key_value_pair:
   | field() ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
   | field() ::space::?       ::equal:: ::space::? value()   #equal_to
 
-#flag:
-  word_or_keyword()+
-
 #native_key:
     <database>
   | <collection>
   | <type>
   | <id>
+
+#meta_key:
+  word_or_keyword()+
+
+#flag:
+  word_or_keyword()+
 
 #field:
     word_or_keyword()+

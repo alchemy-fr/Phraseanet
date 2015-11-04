@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use media_subdef;
 
 class QueryHelper
 {
@@ -106,5 +107,35 @@ class QueryHelper
 
             return $query;
         }
+    }
+
+    public static function isValidMetadataName($name)
+    {
+        return in_array($name, [
+            // To keep in sync with RecordIndexer::getExifMapping()
+            media_subdef::TC_DATA_WIDTH,
+            media_subdef::TC_DATA_HEIGHT,
+            media_subdef::TC_DATA_COLORSPACE,
+            media_subdef::TC_DATA_CHANNELS,
+            media_subdef::TC_DATA_ORIENTATION,
+            media_subdef::TC_DATA_COLORDEPTH,
+            media_subdef::TC_DATA_DURATION,
+            media_subdef::TC_DATA_AUDIOCODEC,
+            media_subdef::TC_DATA_AUDIOSAMPLERATE,
+            media_subdef::TC_DATA_VIDEOCODEC,
+            media_subdef::TC_DATA_FRAMERATE,
+            media_subdef::TC_DATA_MIMETYPE,
+            media_subdef::TC_DATA_FILESIZE,
+            media_subdef::TC_DATA_LONGITUDE,
+            media_subdef::TC_DATA_LATITUDE,
+            media_subdef::TC_DATA_FOCALLENGTH,
+            media_subdef::TC_DATA_CAMERAMODEL,
+            media_subdef::TC_DATA_FLASHFIRED,
+            media_subdef::TC_DATA_APERTURE,
+            media_subdef::TC_DATA_SHUTTERSPEED,
+            media_subdef::TC_DATA_HYPERFOCALDISTANCE,
+            media_subdef::TC_DATA_ISO,
+            media_subdef::TC_DATA_LIGHTVALUE
+        ]);
     }
 }
