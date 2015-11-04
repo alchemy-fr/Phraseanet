@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
@@ -95,7 +96,7 @@ class QueryVisitor implements Visit
                 return $this->visitNativeKeyNode($element);
 
             default:
-                throw new \Exception(sprintf('Unknown node type "%s".', $element->getId()));
+                throw new Exception(sprintf('Unknown node type "%s".', $element->getId()));
         }
     }
 
@@ -111,7 +112,7 @@ class QueryVisitor implements Visit
     private function visitFieldStatementNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Field statement must have 2 childs.');
+            throw new Exception('Field statement must have 2 childs.');
         }
         $field = $this->visit($node->getChild(0));
         $value = $this->visit($node->getChild(1));
@@ -142,7 +143,7 @@ class QueryVisitor implements Visit
     private function visitRangeNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Comparison operator can only have 2 childs.');
+            throw new Exception('Comparison operator can only have 2 childs.');
         }
         $field = $node->getChild(0)->accept($this);
         $expression = $node->getChild(1)->accept($this);
@@ -162,7 +163,7 @@ class QueryVisitor implements Visit
     private function handleBinaryOperator(Element $element, \Closure $factory)
     {
         if ($element->getChildrenNumber() !== 2) {
-            throw new \Exception('Binary expression can only have 2 childs.');
+            throw new Exception('Binary expression can only have 2 childs.');
         }
         $left  = $element->getChild(0)->accept($this);
         $right = $element->getChild(1)->accept($this);
@@ -173,7 +174,7 @@ class QueryVisitor implements Visit
     private function visitEqualNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Equality operator can only have 2 childs.');
+            throw new Exception('Equality operator can only have 2 childs.');
         }
 
         return new AST\FieldEqualsExpression(
@@ -190,13 +191,13 @@ class QueryVisitor implements Visit
             $node = $child->accept($this);
             if ($node instanceof AST\TextNode) {
                 if ($context) {
-                    throw new \Exception('Unexpected text node after context');
+                    throw new Exception('Unexpected text node after context');
                 }
                 $words[] = $node->getValue();
             } elseif ($node instanceof AST\Context) {
                 $context = $node;
             } else {
-                throw new \Exception('Term node can only contain text nodes');
+                throw new Exception('Term node can only contain text nodes');
             }
         }
 
@@ -217,7 +218,7 @@ class QueryVisitor implements Visit
                 $node instanceof AST\TextNode) {
                 // Prevent merge once a context is set
                 if ($last->hasContext()) {
-                    throw new \Exception('Unexpected text node after context');
+                    throw new Exception('Unexpected text node after context');
                 }
                 $nodes[$last_index] = $last = AST\TextNode::merge($last, $node);
             } else {
@@ -238,12 +239,12 @@ class QueryVisitor implements Visit
                 if ($root instanceof AST\ContextAbleInterface) {
                     $root = $root->withContext($node);
                 } else {
-                    throw new \Exception('Unexpected context after non-contextualizable node');
+                    throw new Exception('Unexpected context after non-contextualizable node');
                 }
             } elseif ($node instanceof AST\Node) {
                 $root = new AST\Boolean\AndOperator($root, $node);
             } else {
-                throw new \Exception('Unexpected node type inside text node.');
+                throw new Exception('Unexpected node type inside text node.');
             }
         }
 
@@ -267,7 +268,7 @@ class QueryVisitor implements Visit
     private function visitFlagStatementNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Flag statement can only have 2 childs.');
+            throw new Exception('Flag statement can only have 2 childs.');
         }
 
         return new AST\FlagStatement(
@@ -279,7 +280,7 @@ class QueryVisitor implements Visit
     private function visitBoolean(TreeNode $node)
     {
         if (null === $value = $node->getValue()) {
-            throw new \Exception('Boolean node must be a token');
+            throw new Exception('Boolean node must be a token');
         }
         switch ($value['token']) {
             case NodeTypes::TOKEN_TRUE:
@@ -289,14 +290,14 @@ class QueryVisitor implements Visit
                 return false;
 
             default:
-                throw new \Exception('Unexpected token for a boolean.');
+                throw new Exception('Unexpected token for a boolean.');
         }
     }
 
     private function visitNativeKeyValueNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
-            throw new \Exception('Key value expression can only have 2 childs.');
+            throw new Exception('Key value expression can only have 2 childs.');
         }
         $key = $this->visit($node->getChild(0));
         $value = $this->visit($node->getChild(1));
@@ -306,7 +307,7 @@ class QueryVisitor implements Visit
     private function visitNativeKeyNode(Element $element)
     {
         if ($element->getChildrenNumber() !== 1) {
-            throw new \Exception('Native key node can only have a single child.');
+            throw new Exception('Native key node can only have a single child.');
         }
         $type = $element->getChild(0)->getValue()['token'];
         switch ($type) {
