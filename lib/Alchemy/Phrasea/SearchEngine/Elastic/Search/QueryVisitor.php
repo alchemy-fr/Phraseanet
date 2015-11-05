@@ -101,6 +101,9 @@ class QueryVisitor implements Visit
             case NodeTypes::METADATA_KEY:
                 return $this->visitMetadataKeyNode($element);
 
+            case NodeTypes::FIELD_KEY:
+                return new AST\KeyValue\FieldKey($this->visitString($element));
+
             default:
                 throw new Exception(sprintf('Unknown node type "%s".', $element->getId()));
         }
@@ -151,18 +154,18 @@ class QueryVisitor implements Visit
         if ($node->getChildrenNumber() !== 2) {
             throw new Exception('Comparison operator can only have 2 childs.');
         }
-        $field = $node->getChild(0)->accept($this);
-        $expression = $node->getChild(1)->accept($this);
+        $key = $node->getChild(0)->accept($this);
+        $boundary = $node->getChild(1)->accept($this);
 
         switch ($node->getId()) {
             case NodeTypes::LT_EXPR:
-                return AST\RangeExpression::lessThan($field, $expression);
+                return AST\RangeExpression::lessThan($key, $boundary);
             case NodeTypes::LTE_EXPR:
-                return AST\RangeExpression::lessThanOrEqual($field, $expression);
+                return AST\RangeExpression::lessThanOrEqual($key, $boundary);
             case NodeTypes::GT_EXPR:
-                return AST\RangeExpression::greaterThan($field, $expression);
+                return AST\RangeExpression::greaterThan($key, $boundary);
             case NodeTypes::GTE_EXPR:
-                return AST\RangeExpression::greaterThanOrEqual($field, $expression);
+                return AST\RangeExpression::greaterThanOrEqual($key, $boundary);
         }
     }
 

@@ -17,6 +17,7 @@ class NodeTypes
     const EQUAL_EXPR          = '#equal_to';
     const FIELD_STATEMENT     = '#field_statement';
     const FIELD               = '#field';
+    const FIELD_KEY           = '#field_key';
     const VALUE               = '#value';
     const TERM                = '#thesaurus_term';
     const TEXT                = '#text';

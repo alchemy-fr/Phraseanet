@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
 use Assert\Assertion;
 
-class MetadataKey implements Key
+class FieldKey implements Key
 {
     private $name;
 
@@ -16,11 +16,16 @@ class MetadataKey implements Key
 
     public function getIndexField()
     {
-        return sprintf('exif.%s', $this->name);
+        return 'yolo';
+    }
+
+    public function getValue()
+    {
+        return $this->name;
     }
 
     public function __toString()
     {
-        return sprintf('metadata.%s', $this->name);
+        return sprintf('field.%s', $this->name);
     }
 }

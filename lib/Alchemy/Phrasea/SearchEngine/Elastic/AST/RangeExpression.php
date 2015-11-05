@@ -2,41 +2,49 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Assert\Assertion;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 
 class RangeExpression extends Node
 {
-    private $field;
+    private $key;
+    private $field_cache;
     private $lower_bound;
     private $lower_inclusive;
     private $higher_bound;
     private $higher_inclusive;
 
-    public static function lessThan(Field $field, $bound)
+    public static function lessThan(Key $key, $bound)
     {
-        return new self($field, $bound, false);
+        return new self($key, $bound, false);
     }
 
-    public static function lessThanOrEqual(Field $field, $bound)
+    public static function lessThanOrEqual(Key $key, $bound)
     {
-        return new self($field, $bound, true);
+        return new self($key, $bound, true);
     }
 
-    public static function greaterThan(Field $field, $bound)
+    public static function greaterThan(Key $key, $bound)
     {
-        return new self($field, null, null, $bound, false);
+        return new self($key, null, false, $bound, false);
     }
 
-    public static function greaterThanOrEqual(Field $field, $bound)
+    public static function greaterThanOrEqual(Key $key, $bound)
     {
-        return new self($field, null, null, $bound, true);
+        return new self($key, null, false, $bound, true);
     }
 
-    public function __construct(Field $field, $lb, $li = false, $hb = null, $hi = false)
+    public function __construct(Key $key, $lb, $li = false, $hb = null, $hi = false)
     {
-        $this->field = $field;
+        Assertion::nullOrScalar($lb);
+        Assertion::boolean($li);
+        Assertion::nullOrScalar($hb);
+        Assertion::boolean($hi);
+        $this->key = $key;
         $this->lower_bound = $lb;
         $this->lower_inclusive = $li;
         $this->higher_bound = $hb;
@@ -45,14 +53,9 @@ class RangeExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        $structure_field = $context->get($this->field);
-        if (!$structure_field) {
-            throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
-        }
-
         $params = array();
         if ($this->lower_bound !== null) {
-            if (!$structure_field->isValueCompatible($this->lower_bound)) {
+            if (!$this->isValueCompatible($this->lower_bound, $context)) {
                 return;
             }
             if ($this->lower_inclusive) {
@@ -62,7 +65,7 @@ class RangeExpression extends Node
             }
         }
         if ($this->higher_bound !== null) {
-            if (!$structure_field->isValueCompatible($this->higher_bound)) {
+            if (!$this->isValueCompatible($this->higher_bound, $context)) {
                 return;
             }
             if ($this->higher_inclusive) {
@@ -73,9 +76,48 @@ class RangeExpression extends Node
         }
 
         $query = [];
-        $query['range'][$structure_field->getIndexField()] = $params;
+        $query['range'][$this->getIndexField($context)] = $params;
 
-        return QueryHelper::wrapPrivateFieldQuery($structure_field, $query);
+        return $this->postProcessQuery($query, $context);
+    }
+
+    private function isValueCompatible($value, QueryContext $context)
+    {
+        if ($this->key instanceof FieldKey) {
+            return $this->getField($context)->isValueCompatible($value);
+        } else {
+            return true;
+        }
+    }
+
+    private function getIndexField(QueryContext $context)
+    {
+        if ($this->key instanceof FieldKey) {
+            return $this->getField($context)->getIndexField();
+        } else {
+            return $this->key->getIndexField();
+        }
+    }
+
+    private function postProcessQuery($query, QueryContext $context)
+    {
+        if ($this->key instanceof FieldKey) {
+            $field = $this->getField($context);
+            return QueryHelper::wrapPrivateFieldQuery($field, $query);
+        } else {
+            return $query;
+        }
+    }
+
+    private function getField(QueryContext $context)
+    {
+        if ($this->field_cache === null) {
+            $this->field_cache = $context->get($this->key->getValue());
+        }
+        if ($this->field_cache === null) {
+            throw new QueryException(sprintf('Field "%s" does not exist', $this->key->getValue()));
+        }
+        return $this->field_cache;
     }
 
     public function getTermNodes()
@@ -101,6 +143,6 @@ class RangeExpression extends Node
             }
         }
 
-        return sprintf('<range:%s%s>', $this->field->getValue(), $string);
+        return sprintf('<range:%s%s>', $this->key, $string);
     }
 }
