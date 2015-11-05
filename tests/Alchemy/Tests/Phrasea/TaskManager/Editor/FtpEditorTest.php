@@ -24,12 +24,12 @@ class FtpEditorTest extends EditorTestCase
 <tasksettings>
   <proxy>1234</proxy>
   <proxyport>5678</proxyport>
-  <proxyuser>joe</proxyuser>
-  <proxypwd>aze</proxypwd>
+  <proxyuser>user_of_proxy</proxyuser>
+  <proxypwd>proxy_pwd</proxypwd>
 </tasksettings>
 ', '<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings><proxy>12</proxy><proxyport>8</proxyport>
-</tasksettings>', ['proxy' => 1234, 'proxyport' => 5678, 'proxyuser' => 'joe', 'proxypwd' => 'aze']
+</tasksettings>', ['proxy' => 1234, 'proxyport' => 5678, 'proxyuser' => 'user_of_proxy', 'proxypwd' => 'proxy_pwd']
             ],
             ['<?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>

@@ -21,16 +21,26 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $route = '/prod/query/';
 
-        self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
-            ->setConstructorArgs([self::$DI['app']['model.user-manager'], self::$DI['app']['auth.password-encoder'], self::$DI['app']['geonames.connector'], self::$DI['app']['repo.users'], self::$DI['app']['random.low']])
+        $userManipulator = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
+            ->setConstructorArgs([
+                self::$DI['app']['model.user-manager'],
+                self::$DI['app']['auth.password-encoder'],
+                self::$DI['app']['geonames.connector'],
+                self::$DI['app']['repo.users'],
+                self::$DI['app']['random.low'],
+                self::$DI['app']['dispatcher'],
+            ])
             ->setMethods(['logQuery'])
             ->getMock();
 
-        self::$DI['app']['manipulator.user']->expects($this->once())->method('logQuery');
+        self::$DI['app']['manipulator.user'] = $userManipulator;
 
-        self::$DI['client']->request('POST', $route);
+        $userManipulator->expects($this->once())->method('logQuery');
 
-        $response = self::$DI['client']->getResponse();
+        $client = $this->getClient();
+        $client->request('POST', $route);
+
+        $response = $client->getResponse();
         $this->assertEquals('application/json', $response->headers->get('Content-type'));
         $data = json_decode($response->getContent(), true);
         $this->assertInternalType('array', $data);
@@ -48,12 +58,13 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $options->onCollections($app->getAclForUser($app->getAuthenticatedUser())->get_granted_base());
         $serializedOptions = $options->serialize();
 
-        self::$DI['client']->request('POST', '/prod/query/answer-train/', [
+        $client = $this->getClient();
+        $client->request('POST', '/prod/query/answer-train/', [
             'options_serial' => $serializedOptions,
             'pos'            => 0,
             'query'          => ''
             ]);
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('current', $datas);

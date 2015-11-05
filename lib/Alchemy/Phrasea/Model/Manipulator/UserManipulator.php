@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Geonames\Connector as GeonamesConnector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Core\Event\User\CreatedEvent;
 use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
@@ -23,6 +24,11 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use RandomLib\Generator;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Alchemy\Phrasea\Core\Event\User\UserEvents;
+use Alchemy\Phrasea\Core\Event\User\DeletedEvent;
+
 
 /**
  * Manages common operations for the users.
@@ -39,14 +45,18 @@ class UserManipulator implements ManipulatorInterface
     private $generator;
     /** @var EntityRepository */
     private $repository;
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
 
-    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, EntityRepository $repo, Generator $generator)
+
+    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, EntityRepository $repo, Generator $generator, EventDispatcherInterface $dispatcher)
     {
         $this->manager = $manager;
         $this->generator = $generator;
         $this->passwordEncoder = $passwordEncoder;
         $this->geonamesConnector = $connector;
         $this->repository = $repo;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -71,6 +81,13 @@ class UserManipulator implements ManipulatorInterface
         $user->setAdmin($admin);
         $this->manager->update($user);
 
+        $this->dispatcher->dispatch(
+            UserEvents::CREATED,
+            new CreatedEvent(
+                $user
+            )
+        );
+
         return $user;
     }
 
@@ -81,11 +98,28 @@ class UserManipulator implements ManipulatorInterface
      */
     public function delete($users)
     {
+        /** @var User $user */
         foreach ($this->makeTraversable($users) as $user) {
+            $old_id = $user->getId();
+            $old_login = $user->getLogin();
+            $old_email = $user->getEmail();
+
             $user->setDeleted(true);
             $user->setEmail(null);
 
             $this->manager->delete($user);
+
+            $this->dispatcher->dispatch(
+                UserEvents::DELETED,
+                new DeletedEvent(
+                    null,
+                    array(
+                        'user_id'=>$old_id,
+                        'login'=>$old_login,
+                        'email'=>$old_email
+                    )
+                )
+            );
         }
     }
 
