@@ -79,19 +79,19 @@ field.type:foo|(<field:type> MATCHES <text:"foo">)
 field.id:foo|(<field:id> MATCHES <text:"foo">)
 
 # Matchers
-collection:foo|<collection:foo>
-collection:foo AND bar|(<collection:foo> AND <text:"bar">)
-collection:foo bar|(<collection:foo> AND <text:"bar">)
-database:foo|<database:foo>
-database:foo AND bar|(<database:foo> AND <text:"bar">)
-database:foo bar|(<database:foo> AND <text:"bar">)
-type:foo|<media_type:foo>
-type:foo AND bar|(<media_type:foo> AND <text:"bar">)
-type:foo bar|(<media_type:foo> AND <text:"bar">)
-id:90|<record_identifier:90>
-id:90 AND foo|(<record_identifier:90> AND <text:"foo">)
-id:90 foo|(<record_identifier:90> AND <text:"foo">)
-recordid:90|<record_identifier:90>
+collection:foo|<collection:"foo">
+collection:foo AND bar|(<collection:"foo"> AND <text:"bar">)
+collection:foo bar|(<collection:"foo"> AND <text:"bar">)
+database:foo|<database:"foo">
+database:foo AND bar|(<database:"foo"> AND <text:"bar">)
+database:foo bar|(<database:"foo"> AND <text:"bar">)
+type:foo|<media_type:"foo">
+type:foo AND bar|(<media_type:"foo"> AND <text:"bar">)
+type:foo bar|(<media_type:"foo"> AND <text:"bar">)
+id:90|<record_identifier:"90">
+id:90 AND foo|(<record_identifier:"90"> AND <text:"foo">)
+id:90 foo|(<record_identifier:"90"> AND <text:"foo">)
+recordid:90|<record_identifier:"90">
 
 # Flag matcher
 flag.foo:true|<flag:foo set>
@@ -103,7 +103,7 @@ flag.foo bar:true|(<text:"flag.foo"> AND (<field:bar> MATCHES <text:"true">))
 true|<text:"true">
 
 # Metadata (EXIF or anything else) matcher
-meta.MimeType:image/jpeg|<metadata:MimeType value:"image/jpeg">
+meta.MimeType:image/jpeg|<metadata.MimeType:"image/jpeg">
 
 # Unescaped "." issue on key prefixes
 fieldOne:foo|(<field:fieldOne> MATCHES <text:"foo">)

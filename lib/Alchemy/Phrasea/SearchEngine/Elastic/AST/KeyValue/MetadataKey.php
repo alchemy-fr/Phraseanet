@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Assert\Assertion;
 
-class MetadataKey
+class MetadataKey implements Key
 {
     private $name;
 
@@ -15,8 +15,13 @@ class MetadataKey
         $this->name = $name;
     }
 
+    public function getIndexField()
+    {
+        return sprintf('exif.%s', $this->name);
+    }
+
     public function __toString()
     {
-        return $this->name;
+        return sprintf('metadata.%s', $this->name);
     }
 }

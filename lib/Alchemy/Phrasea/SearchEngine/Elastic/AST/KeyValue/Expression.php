@@ -8,8 +8,8 @@ use Assert\Assertion;
 
 class Expression extends Node
 {
-    protected $key;
-    protected $value;
+    private $key;
+    private $value;
 
     public function __construct(Key $key, $value)
     {
@@ -20,7 +20,11 @@ class Expression extends Node
 
     public function buildQuery(QueryContext $context)
     {
-        return $this->key->buildQueryForValue($this->value, $context);
+        return [
+            'term' => [
+                $this->key->getIndexField() => $this->value
+            ]
+        ];
     }
 
     public function getTermNodes()
@@ -30,6 +34,6 @@ class Expression extends Node
 
     public function __toString()
     {
-        return sprintf('<%s:%s>', $this->key, $this->value);
+        return sprintf('<%s:"%s">', $this->key, $this->value);
     }
 }

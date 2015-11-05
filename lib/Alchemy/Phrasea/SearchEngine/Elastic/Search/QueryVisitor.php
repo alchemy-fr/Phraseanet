@@ -85,12 +85,6 @@ class QueryVisitor implements Visit
             case NodeTypes::FIELD:
                 return new AST\Field($this->visitString($element));
 
-            case NodeTypes::METADATA_STATEMENT:
-                return $this->visitMetadataStatementNode($element);
-
-            case NodeTypes::METADATA_KEY:
-                return $this->visitMetadataKeyNode($element);
-
             case NodeTypes::FLAG_STATEMENT:
                 return $this->visitFlagStatementNode($element);
 
@@ -98,10 +92,14 @@ class QueryVisitor implements Visit
                 return new AST\Flag($this->visitString($element));
 
             case NodeTypes::NATIVE_KEY_VALUE:
-                return $this->visitNativeKeyValueNode($element);
+            case NodeTypes::METADATA_STATEMENT:
+                return $this->visitKeyValueNode($element);
 
             case NodeTypes::NATIVE_KEY:
                 return $this->visitNativeKeyNode($element);
+
+            case NodeTypes::METADATA_KEY:
+                return $this->visitMetadataKeyNode($element);
 
             default:
                 throw new Exception(sprintf('Unknown node type "%s".', $element->getId()));
@@ -315,17 +313,7 @@ class QueryVisitor implements Visit
         return new AST\KeyValue\MetadataKey($name);
     }
 
-    private function visitMetadataStatementNode(TreeNode $node)
-    {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Flag statement can only have 2 childs.');
-        }
-        $name = $this->visit($node->getChild(0));
-        $value = $this->visit($node->getChild(1));
-        return new AST\MetadataMatchStatement($name, $value);
-    }
-
-    private function visitNativeKeyValueNode(TreeNode $node)
+    private function visitKeyValueNode(TreeNode $node)
     {
         if ($node->getChildrenNumber() !== 2) {
             throw new Exception('Key value expression can only have 2 childs.');

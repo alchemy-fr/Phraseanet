@@ -2,9 +2,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
-use Assert\Assertion;
-
 class NativeKey implements Key
 {
     const TYPE_DATABASE = 'database';
@@ -41,14 +38,9 @@ class NativeKey implements Key
         $this->key = $key;
     }
 
-    public function buildQueryForValue($value, QueryContext $context)
+    public function getIndexField()
     {
-        Assertion::string($value);
-        return [
-            'term' => [
-                $this->key => $value
-            ]
-        ];
+        return $this->key;
     }
 
     public function __toString()
