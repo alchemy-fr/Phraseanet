@@ -30,9 +30,9 @@
 %token  collection      collection
 %token  type            type
 %token  id              id|recordid
-%token  field_prefix    field.
-%token  flag_prefix     flag.
-%token  meta_prefix     meta.
+%token  field_prefix    field\.
+%token  flag_prefix     flag\.
+%token  meta_prefix     meta\.
 %token  true            true|1
 %token  false           false|0
 %token  word            [^\s\(\)\[\]:<>≤≥=]+

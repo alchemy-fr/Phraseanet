@@ -105,6 +105,11 @@ true|<text:"true">
 # Metadata (EXIF or anything else) matcher
 meta.MimeType:image/jpeg|<metadata:MimeType value:"image/jpeg">
 
+# Unescaped "." issue on key prefixes
+fieldOne:foo|(<field:fieldOne> MATCHES <text:"foo">)
+flagged:true|(<field:flagged> MATCHES <text:"true">)
+metadata:foo|(<field:metadata> MATCHES <text:"foo">)
+
 # Matcher on unknown name --> fulltext
 foo:bar|(<field:foo> MATCHES <text:"bar">)
 foo:bar AND baz|((<field:foo> MATCHES <text:"bar">) AND <text:"baz">)
