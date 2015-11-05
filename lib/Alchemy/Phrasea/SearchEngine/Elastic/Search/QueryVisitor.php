@@ -4,6 +4,8 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
@@ -87,7 +89,7 @@ class QueryVisitor implements Visit
                 return $this->visitMetadataStatementNode($element);
 
             case NodeTypes::METADATA_KEY:
-                return $this->visitString($element);
+                return $this->visitMetadataKeyNode($element);
 
             case NodeTypes::FLAG_STATEMENT:
                 return $this->visitFlagStatementNode($element);
@@ -302,6 +304,15 @@ class QueryVisitor implements Visit
             default:
                 throw new Exception('Unexpected token for a boolean.');
         }
+    }
+
+    private function visitMetadataKeyNode(TreeNode $node)
+    {
+        $name = $this->visitString($node);
+        if (!QueryHelper::isValidMetadataName($name)) {
+            throw new QueryException(sprintf('"%s" is not a valid metadata name', $name));
+        }
+        return new AST\KeyValue\MetadataKey($name);
     }
 
     private function visitMetadataStatementNode(TreeNode $node)
