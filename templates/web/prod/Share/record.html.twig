@@ -42,7 +42,7 @@
                         <label>{% trans %}Embed code{% endtrans %}</label>
                         {% spaceless %}
                             <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
-                                <iframe width="{{ preview.width }}" height="{{ preview.height }}" src="{{ preview.embedUrl|url_encode }}" frameborder="0" allowfullscreen></iframe>
+                                <iframe width="{{ preview.width }}" height="{{ preview.height }}" src="{{ preview.embedUrl }}" frameborder="0" allowfullscreen></iframe>
                             </textarea>
                         {% endspaceless %}
                         <p class="pull-right">

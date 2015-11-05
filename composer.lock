@@ -126,12 +126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lostdalek/embed-bundle.git",
-                "reference": "304481b5b63bb8576bfb3211152f8d70d7d62b70"
+                "reference": "fea613bb99ddb93b3fdeb207e9a5dfc39a4eedf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lostdalek/embed-bundle/zipball/304481b5b63bb8576bfb3211152f8d70d7d62b70",
-                "reference": "304481b5b63bb8576bfb3211152f8d70d7d62b70",
+                "url": "https://api.github.com/repos/lostdalek/embed-bundle/zipball/fea613bb99ddb93b3fdeb207e9a5dfc39a4eedf4",
+                "reference": "fea613bb99ddb93b3fdeb207e9a5dfc39a4eedf4",
                 "shasum": ""
             },
             "require-dev": {
@@ -172,7 +172,7 @@
                 "source": "https://github.com/lostdalek/embed-bundle/tree/master",
                 "issues": "https://github.com/lostdalek/embed-bundle/issues"
             },
-            "time": "2015-10-29 10:43:15"
+            "time": "2015-11-05 16:53:28"
         },
         {
             "name": "alchemy/geonames-api-consumer",
