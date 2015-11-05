@@ -154,6 +154,7 @@ keyword:
   | <id>
   | <field_prefix>
   | <flag_prefix>
+  | <meta_prefix>
   | <true>
   | <false>
 
