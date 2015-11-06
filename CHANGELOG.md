@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## 3.9.0 (xxxx-xx-xx)
+## 4.0.0 (xxxx-xx-xx)
 
   - Convert Orders custom adapter to Doctrine entity.
   - Convert Feeds custom adapter to Doctrine entity.
@@ -9,6 +9,40 @@
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Convert Ftp Export custom adapter to Doctrine entity.
   - Session management is now part of Phraseanet configuration.
+
+## 3.8.7 (2015-11-09)
+
+  - NewFeature: Adding public, temporary links (link generation based on JSON Web Token)
+  - NewFeature: Modification of a video snapshot (extract picture from a video)
+  - NewFeature: Adding alternative route for the subdefinitions via the API
+  - NewFeature: Adding a rebuild command for the subdefinitions with a filter by database, type of document (name of subdefs)
+  - NewFeature: Adding verification of INNODB storage engine when creating a Phraseanet database
+  - NewFeature: The user can set the mime type of a record in the HMI
+  - NewFeature: Adding a route for the creation of a story in the API (management of the video screenshot, management of the description)
+  - NewFeature: Adding a route for an additional document to a story
+  - NewFeature: Adding the possibility to upload a document without creating its subdefinitions
+  - Enhancement: Deactivation of a permalink for a subdef
+  - Enhancement: Improvement of performance when deleting items in the quarantine
+  - Enhancement: Change of the basic documentary structures
+  - Enhancement: Display of the collection in which the media file can be found, in the detailed view
+  - Enhancement: Deleting the desired type of documents searched (stories mode)
+  - Enhancement: The API returns json by default if the "accept" attribute is not specified
+  - BugFix: The search route via the API ne longer returns a 404 error if a collection is not known
+  - BugFix: The upload module doesn't work on IE 10 & IE 11
+  - BugFix: Adding wma files doesn't work
+  - BugFix: Third party applications of a user is deleted when it is itself deleted
+  - BugFix: The test button for the FTP export does not work
+  - BugFix: Apply a template to a template does not work
+  - BugFix: The names of the stories in which media can be found are truncated
+  - BugFix: The interface of the suggested values in the Admin does not work
+  - BugFix: The report tab:activity does not work on Chrome
+  - BugFix: The time of validity is not displayed for the password renewal email
+  - BugFix: The focus on the documentary fields labels systematically shows french label
+  - BugFix: The "delay" parameter to make gifs is not taken into account
+  - BugFix: When adding a term in the thesurus, previous value entered appears at the opening of the modal
+  - BugFix: Error when generating SWF subdefinitions
+  - BugFix: The "flatten" parameter when generating PDF thumbnails is not taken into account
+  - Deprecation: Classic application is now obsolete
 
 ## 3.8.6 (2015-01-20)
 
