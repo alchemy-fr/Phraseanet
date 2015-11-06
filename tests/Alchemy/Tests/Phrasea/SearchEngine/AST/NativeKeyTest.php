@@ -26,7 +26,8 @@ class NativeKeyTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetIndexField($key, $field)
     {
-        $this->assertEquals($key->getIndexField(), $field);
+        $query_context = $this->prophesize(QueryContext::class);
+        $this->assertEquals($key->getIndexField($query_context->reveal()), $field);
     }
 
     public function keyProvider()

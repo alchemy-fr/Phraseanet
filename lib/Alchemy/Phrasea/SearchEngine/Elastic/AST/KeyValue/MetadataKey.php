@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Assert\Assertion;
 
 class MetadataKey implements Key
@@ -14,9 +15,14 @@ class MetadataKey implements Key
         $this->name = $name;
     }
 
-    public function getIndexField()
+    public function getIndexField(QueryContext $context)
     {
         return sprintf('exif.%s', $this->name);
+    }
+
+    public function isValueCompatible($value, QueryContext $context)
+    {
+        return true;
     }
 
     public function __toString()

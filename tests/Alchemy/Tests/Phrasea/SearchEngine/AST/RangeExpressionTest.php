@@ -9,6 +9,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\NativeKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\RangeExpression;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Prophecy\Argument;
 
 /**
  * @group unit
@@ -46,39 +47,38 @@ class RangeExpressionTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider queryProvider
      */
-    public function testQueryBuild($factory, $key, $value, $result)
+    public function testQueryBuild($factory, $query_context, $key, $value, $result)
     {
-        $query_context = $this->prophesize(QueryContext::class);
         $node = RangeExpression::$factory($key, $value);
-        $query = $node->buildQuery($query_context->reveal());
+        $query = $node->buildQuery($query_context);
         $this->assertEquals(json_decode($result, true), $query);
     }
 
     public function queryProvider()
     {
+        $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key_prophecy = $this->prophesize(Key::class);
-        $key_prophecy->getIndexField()->willReturn('foo');
+        $key_prophecy->getIndexField($query_context)->willReturn('foo');
+        $key_prophecy->isValueCompatible('bar', $query_context)->willReturn(true);
         $key = $key_prophecy->reveal();
         return [
-            ['lessThan',           $key, 'bar', '{"range":{"foo": {"lt":"bar"}}}'],
-            ['lessThanOrEqual',    $key, 'baz', '{"range":{"foo": {"lte":"baz"}}}'],
-            ['greaterThan',        $key, 'qux', '{"range":{"foo": {"gt":"qux"}}}'],
-            ['greaterThanOrEqual', $key, 'bla', '{"range":{"foo": {"gte":"bla"}}}'],
+            ['lessThan',           $query_context, $key, 'bar', '{"range":{"foo": {"lt":"bar"}}}'],
+            ['lessThanOrEqual',    $query_context, $key, 'bar', '{"range":{"foo": {"lte":"bar"}}}'],
+            ['greaterThan',        $query_context, $key, 'bar', '{"range":{"foo": {"gt":"bar"}}}'],
+            ['greaterThanOrEqual', $query_context, $key, 'bar', '{"range":{"foo": {"gte":"bar"}}}'],
         ];
     }
 
     public function testQueryBuildWithFieldKey()
     {
+        $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key = $this->prophesize(FieldKey::class);
-        $key->getValue()->willReturn('foo');
+        $key->getIndexField($query_context)->willReturn('baz');
+        $key->isValueCompatible('bar', $query_context)->willReturn(true);
+        $key->postProcessQuery(Argument::any(), $query_context)->willReturnArgument(0);
+
         $node = RangeExpression::lessThan($key->reveal(), 'bar');
-        $structure_field = $this->prophesize(Field::class);
-        $structure_field->isPrivate()->willReturn(false);
-        $structure_field->isValueCompatible('bar')->willReturn(true);
-        $structure_field->getIndexField()->willReturn('baz');
-        $query_context = $this->prophesize(QueryContext::class);
-        $query_context->get('foo')->willReturn($structure_field->reveal());
-        $query = $node->buildQuery($query_context->reveal());
+        $query = $node->buildQuery($query_context);
 
         $expected = '{
             "range": {

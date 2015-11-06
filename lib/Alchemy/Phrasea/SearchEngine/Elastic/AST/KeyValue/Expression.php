@@ -22,7 +22,7 @@ class Expression extends Node
     {
         return [
             'term' => [
-                $this->key->getIndexField() => $this->value
+                $this->key->getIndexField($context) => $this->value
             ]
         ];
     }

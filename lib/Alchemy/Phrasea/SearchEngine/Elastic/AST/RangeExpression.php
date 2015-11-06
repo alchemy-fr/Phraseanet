@@ -5,14 +5,12 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Assert\Assertion;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 
 class RangeExpression extends Node
 {
     private $key;
-    private $field_cache;
     private $lower_bound;
     private $lower_inclusive;
     private $higher_bound;
@@ -55,7 +53,7 @@ class RangeExpression extends Node
     {
         $params = array();
         if ($this->lower_bound !== null) {
-            if (!$this->isValueCompatible($this->lower_bound, $context)) {
+            if (!$this->key->isValueCompatible($this->lower_bound, $context)) {
                 return;
             }
             if ($this->lower_inclusive) {
@@ -65,7 +63,7 @@ class RangeExpression extends Node
             }
         }
         if ($this->higher_bound !== null) {
-            if (!$this->isValueCompatible($this->higher_bound, $context)) {
+            if (!$this->key->isValueCompatible($this->higher_bound, $context)) {
                 return;
             }
             if ($this->higher_inclusive) {
@@ -76,48 +74,13 @@ class RangeExpression extends Node
         }
 
         $query = [];
-        $query['range'][$this->getIndexField($context)] = $params;
+        $query['range'][$this->key->getIndexField($context)] = $params;
 
-        return $this->postProcessQuery($query, $context);
-    }
+        if ($this->key instanceof QueryPostProcessor) {
+            return $this->key->postProcessQuery($query, $context);
+        }
 
-    private function isValueCompatible($value, QueryContext $context)
-    {
-        if ($this->key instanceof FieldKey) {
-            return $this->getField($context)->isValueCompatible($value);
-        } else {
-            return true;
-        }
-    }
-
-    private function getIndexField(QueryContext $context)
-    {
-        if ($this->key instanceof FieldKey) {
-            return $this->getField($context)->getIndexField();
-        } else {
-            return $this->key->getIndexField();
-        }
-    }
-
-    private function postProcessQuery($query, QueryContext $context)
-    {
-        if ($this->key instanceof FieldKey) {
-            $field = $this->getField($context);
-            return QueryHelper::wrapPrivateFieldQuery($field, $query);
-        } else {
-            return $query;
-        }
-    }
-
-    private function getField(QueryContext $context)
-    {
-        if ($this->field_cache === null) {
-            $this->field_cache = $context->get($this->key->getValue());
-        }
-        if ($this->field_cache === null) {
-            throw new QueryException(sprintf('Field "%s" does not exist', $this->key->getValue()));
-        }
-        return $this->field_cache;
+        return $query;
     }
 
     public function getTermNodes()

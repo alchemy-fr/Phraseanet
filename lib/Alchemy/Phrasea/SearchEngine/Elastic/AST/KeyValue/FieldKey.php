@@ -2,11 +2,16 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 use Assert\Assertion;
 
-class FieldKey implements Key
+class FieldKey implements Key, QueryPostProcessor
 {
     private $name;
+    private $field_cache = [];
 
     public function __construct($name)
     {
@@ -14,14 +19,37 @@ class FieldKey implements Key
         $this->name = $name;
     }
 
-    public function getIndexField()
+    public function getIndexField(QueryContext $context, ...$other)
     {
-        return 'yolo';
+        return $this->getField($context)->getIndexField(...$other);
     }
 
-    public function getValue()
+    public function isValueCompatible($value, QueryContext $context)
     {
-        return $this->name;
+        return $this->getField($context)->isValueCompatible($value);
+    }
+
+    public function postProcessQuery($query, QueryContext $context)
+    {
+        $field = $this->getField($context);
+        return QueryHelper::wrapPrivateFieldQuery($field, $query);
+    }
+
+    private function getField(QueryContext $context)
+    {
+        $hash = spl_object_hash($context);
+        if (!isset($this->field_cache[$hash])) {
+            $this->field_cache[$hash] = $context->get($this->name);
+        }
+        if ($field = $this->field_cache[$hash] === null) {
+            throw new QueryException(sprintf('Field "%s" does not exist', $this->name));
+        }
+        return $field;
+    }
+
+    public function clearCache()
+    {
+        $this->field_cache = [];
     }
 
     public function __toString()

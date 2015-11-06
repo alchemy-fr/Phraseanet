@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+
 class NativeKey implements Key
 {
     const TYPE_DATABASE = 'database';
@@ -38,9 +40,14 @@ class NativeKey implements Key
         $this->key = $key;
     }
 
-    public function getIndexField()
+    public function getIndexField(QueryContext $context)
     {
         return $this->key;
+    }
+
+    public function isValueCompatible($value, QueryContext $context)
+    {
+        return true;
     }
 
     public function __toString()
