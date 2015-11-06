@@ -80,11 +80,11 @@ class FeedRepository extends EntityRepository
      * Returns all the feeds from a given array containing their id.
      *
      * @param \ACL   $userACL
-     * @param  array $feedIds
+     * @param  array $feedIds Ids to restrict feeds, all accessible otherwise
      *
      * @return Feed[]
      */
-    public function filterUserAccessibleByIds(\ACL $userACL, array $feedIds)
+    public function filterUserAccessibleByIds(\ACL $userACL, array $feedIds = [])
     {
         $qb = $this->createQueryBuilder('f');
 
@@ -100,11 +100,9 @@ class FeedRepository extends EntityRepository
             $orx->add($qb->expr()->in('f.baseId', $grantedBases));
         }
 
-        if (empty($feedIds)) {
-            throw new \LogicException('At least one feed id should be provided');
+        if ($feedIds) {
+            $qb->where($qb->expr()->in('f.id', $feedIds), $orx);
         }
-
-        $qb->where($qb->expr()->in('f.id', $feedIds), $orx);
 
         $qb->orderBy('f.updatedOn', 'DESC');
 
