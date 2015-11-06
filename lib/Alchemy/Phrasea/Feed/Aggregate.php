@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -78,7 +79,9 @@ class Aggregate implements FeedInterface
      */
     public static function createFromUser(Application $app, User $user, array $restrictions = [])
     {
-        $feeds = $app['repo.feeds']->getAllForUser($app->getAclForUser($user), $restrictions);
+        /** @var FeedRepository $feedRepository */
+        $feedRepository = $app['repo.feeds'];
+        $feeds = $feedRepository->filterUserAccessibleByIds($app->getAclForUser($user), $restrictions);
         $token = $app['repo.aggregate-tokens']->findOneBy(['user' => $user]);
 
         return new static($app['orm.em'], $feeds, $token);
