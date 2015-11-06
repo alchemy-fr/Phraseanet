@@ -22,11 +22,4 @@ interface PasswordAuthenticationInterface
      * @throws RequireCaptchaException
      */
     public function getUsrId($username, $password, Request $request);
-
-    /**
-     * Factory for the class
-     *
-     * @param Application $app
-     */
-    public static function create(Application $app);
 }

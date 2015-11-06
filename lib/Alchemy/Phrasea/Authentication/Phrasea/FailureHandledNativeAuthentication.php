@@ -34,14 +34,4 @@ class FailureHandledNativeAuthentication implements PasswordAuthenticationInterf
 
         return $usr_id;
     }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return FailureHandledNativeAuthentication
-     */
-    public static function create(Application $app)
-    {
-        return new static(NativeAuthentication::create($app));
-    }
 }
