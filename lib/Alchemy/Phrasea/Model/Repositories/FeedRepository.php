@@ -25,6 +25,9 @@ class FeedRepository extends EntityRepository
     /**
      * Returns all the feeds a user can access.
      *
+     * @param \ACL  $userACL
+     * @param array $restrictions
+     *
      * @return Feed[]
      */
     public function getAllForUser(\ACL $userACL, array $restrictions = [])
@@ -58,7 +61,7 @@ class FeedRepository extends EntityRepository
      * Returns all the feeds from a given array containing their id.
      *
      * @param  array      $feedIds
-     * @return Collection
+     * @return Feed[]
      */
     public function findByIds(array $feedIds)
     {
@@ -67,6 +70,41 @@ class FeedRepository extends EntityRepository
         if (!empty($feedIds)) {
             $qb->Where($qb->expr()->in('f.id', $feedIds));
         }
+
+        $qb->orderBy('f.updatedOn', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Returns all the feeds from a given array containing their id.
+     *
+     * @param \ACL   $userACL
+     * @param  array $feedIds
+     *
+     * @return Feed[]
+     */
+    public function filterUserAccessibleByIds(\ACL $userACL, array $feedIds)
+    {
+        $qb = $this->createQueryBuilder('f');
+
+        // is public feed?
+        $orx = $qb->expr()->orX(
+            $qb->expr()->isNull('f.baseId'),
+            $qb->expr()->eq('f.public', $qb->expr()->literal(true))
+        );
+
+        // is granted base?
+        $grantedBases = array_keys($userACL->get_granted_base());
+        if ($grantedBases) {
+            $orx->add($qb->expr()->in('f.baseId', $grantedBases));
+        }
+
+        if (empty($feedIds)) {
+            throw new \LogicException('At least one feed id should be provided');
+        }
+
+        $qb->where($qb->expr()->in('f.id', $feedIds), $orx);
 
         $qb->orderBy('f.updatedOn', 'DESC');
 
