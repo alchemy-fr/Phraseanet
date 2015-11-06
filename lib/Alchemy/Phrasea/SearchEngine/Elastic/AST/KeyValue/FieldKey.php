@@ -19,9 +19,9 @@ class FieldKey implements Key, QueryPostProcessor
         $this->name = $name;
     }
 
-    public function getIndexField(QueryContext $context, ...$other)
+    public function getIndexField(QueryContext $context, $raw = false)
     {
-        return $this->getField($context)->getIndexField(...$other);
+        return $this->getField($context)->getIndexField($raw);
     }
 
     public function isValueCompatible($value, QueryContext $context)
@@ -41,7 +41,8 @@ class FieldKey implements Key, QueryPostProcessor
         if (!isset($this->field_cache[$hash])) {
             $this->field_cache[$hash] = $context->get($this->name);
         }
-        if ($field = $this->field_cache[$hash] === null) {
+        $field = $this->field_cache[$hash];
+        if ($field === null) {
             throw new QueryException(sprintf('Field "%s" does not exist', $this->name));
         }
         return $field;

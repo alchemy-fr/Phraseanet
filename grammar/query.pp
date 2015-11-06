@@ -73,11 +73,11 @@ key_value_pair:
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
   | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
   |                  field() ::colon:: ::space::? term()    #field_statement
-  | key()   ::space::?       ::lt::    ::space::? value()   #less_than
-  | key()   ::space::?       ::gt::    ::space::? value()   #greater_than
-  | key()   ::space::?       ::lte::   ::space::? value()   #less_than_or_equal_to
-  | key()   ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
-  | field() ::space::?       ::equal:: ::space::? value()   #equal_to
+  | key() ::space::?         ::lt::    ::space::? value()   #less_than
+  | key() ::space::?         ::gt::    ::space::? value()   #greater_than
+  | key() ::space::?         ::lte::   ::space::? value()   #less_than_or_equal_to
+  | key() ::space::?         ::gte::   ::space::? value()   #greater_than_or_equal_to
+  | key() ::space::?         ::equal:: ::space::? value()   #equal_to
 
 #native_key:
     <database>

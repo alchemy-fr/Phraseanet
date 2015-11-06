@@ -61,9 +61,9 @@ foo < "2015/01/01"|<range:field.foo lt="2015/01/01">
 foo ≤ "2015/01/01"|<range:field.foo lte="2015/01/01">
 foo > "2015/01/01"|<range:field.foo gt="2015/01/01">
 foo ≥ "2015/01/01"|<range:field.foo gte="2015/01/01">
-foo = 42|(<field:foo> == <value:"42">)
-foo = bar|(<field:foo> == <value:"bar">)
-foo = "bar"|(<field:foo> == <value:"bar">)
+foo = 42|(<field.foo> == <value:"42">)
+foo = bar|(<field.foo> == <value:"bar">)
+foo = "bar"|(<field.foo> == <value:"bar">)
 
 # Field narrowing
 foo:bar|(<field:foo> MATCHES <text:"bar">)
@@ -109,6 +109,7 @@ meta.Duration < 300|<range:metadata.Duration lt="300">
 meta.Duration ≤ 300|<range:metadata.Duration lte="300">
 meta.Duration > 300|<range:metadata.Duration gt="300">
 meta.Duration ≥ 300|<range:metadata.Duration gte="300">
+meta.Duration = 300|(<metadata.Duration> == <value:"300">)
 
 # Unescaped "." issue on key prefixes
 fieldOne:foo|(<field:fieldOne> MATCHES <text:"foo">)

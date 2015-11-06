@@ -2,38 +2,41 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 
 class FieldEqualsExpression extends Node
 {
-    private $field;
+    private $key;
     private $value;
 
-    public function __construct(Field $field, $value)
+    public function __construct(Key $key, $value)
     {
-        $this->field = $field;
+        $this->key = $key;
         $this->value = $value;
     }
 
     public function buildQuery(QueryContext $context)
     {
-        $structure_field = $context->get($this->field);
-        if (!$structure_field) {
-            throw new QueryException(sprintf('Field "%s" does not exist', $this->field->getValue()));
-        }
-        if (!$structure_field->isValueCompatible($this->value)) {
+        if (!$this->key->isValueCompatible($this->value, $context)) {
             return null;
         }
 
         $query = [
             'term' => [
-                $structure_field->getIndexField(true) => $this->value
+                $this->key->getIndexField($context, true) => $this->value
             ]
         ];
 
-        return QueryHelper::wrapPrivateFieldQuery($structure_field, $query);
+        if ($this->key instanceof QueryPostProcessor) {
+            return $this->key->postProcessQuery($query, $context);
+        }
+
+        return $query;
     }
 
     public function getTermNodes()
@@ -43,6 +46,6 @@ class FieldEqualsExpression extends Node
 
     public function __toString()
     {
-        return sprintf('(%s == <value:"%s">)', $this->field, $this->value);
+        return sprintf('(<%s> == <value:"%s">)', $this->key, $this->value);
     }
 }
