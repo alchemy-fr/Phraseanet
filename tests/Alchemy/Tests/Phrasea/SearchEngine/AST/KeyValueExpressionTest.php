@@ -32,7 +32,7 @@ class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
         $node = new KeyValueExpression($key->reveal(), 'bar');
         $query = $node->buildQuery($query_context);
 
-        $result = '{"term":{"foo": "bar"}}';
+        $result = '{"match":{"foo": "bar"}}';
         $this->assertEquals(json_decode($result, true), $query);
     }
 
@@ -50,10 +50,10 @@ class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
     public function keyProvider()
     {
         return [
-            [NativeKey::database(),         'foo', '{"term":{"databox_name": "foo"}}'],
-            [NativeKey::collection(),       'bar', '{"term":{"collection_name": "bar"}}'],
-            [NativeKey::mediaType(),        'baz', '{"term":{"type": "baz"}}'],
-            [NativeKey::recordIdentifier(), 'qux', '{"term":{"record_id": "qux"}}'],
+            [NativeKey::database(),         'foo', '{"match":{"databox_name": "foo"}}'],
+            [NativeKey::collection(),       'bar', '{"match":{"collection_name": "bar"}}'],
+            [NativeKey::mediaType(),        'baz', '{"match":{"type": "baz"}}'],
+            [NativeKey::recordIdentifier(), 'qux', '{"match":{"record_id": "qux"}}'],
         ];
     }
 }

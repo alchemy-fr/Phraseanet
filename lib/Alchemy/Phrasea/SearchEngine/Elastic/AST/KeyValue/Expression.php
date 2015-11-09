@@ -21,7 +21,7 @@ class Expression extends Node
     public function buildQuery(QueryContext $context)
     {
         return [
-            'term' => [
+            'match' => [
                 $this->key->getIndexField($context) => $this->value
             ]
         ];
