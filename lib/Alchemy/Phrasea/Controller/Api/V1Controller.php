@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -26,9 +25,6 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
-use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
@@ -51,7 +47,6 @@ use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Provider\SecretProvider;
-use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
@@ -64,6 +59,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
+use Firebase\JWT\JWT;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use Psr\Log\LoggerInterface;
@@ -82,53 +78,6 @@ class V1Controller extends Controller
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
-
-    public function authenticate(Request $request)
-    {
-        $context = new Context(Context::CONTEXT_OAUTH2_TOKEN);
-
-        $dispatcher = $this->getDispatcher();
-        $dispatcher->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
-        $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
-
-        $this->getOAuth2Server()->verifyAccessToken();
-
-        /** @var ApiOauthToken $token */
-        if (null === $token = $this->getApiTokenRepository()->find($this->getOAuth2Server()->getToken())) {
-            throw new NotFoundHttpException('Provided token is not valid.');
-        }
-        $this->getSession()->set('token', $token);
-
-        $oAuth2Account = $token->getAccount();
-        $oAuth2App = $oAuth2Account->getApplication();
-
-        $conf = $this->getConf();
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID && !$conf->get(['registry', 'api-clients', 'navigator-enabled'])) {
-            return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
-        }
-
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID && !$conf->get(['registry', 'api-clients', 'office-enabled'])) {
-            return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
-        }
-
-        $this->getAuthenticator()->openAccount($oAuth2Account->getUser());
-        $this->getOAuth2Server()->rememberSession($this->getSession());
-        $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
-
-        return null;
-    }
-
-    public function after(Request $request, Response $response)
-    {
-        /** @var ApiOauthToken $token */
-        $token = $this->getSession()->get('token');
-        $this->getApiLogManipulator()->create($token->getAccount(), $request, $response);
-        $this->getApiOAuthTokenManipulator()->setLastUsed($token, new \DateTime());
-        $this->getSession()->set('token', null);
-        if (null !== $this->getAuthenticatedUser()) {
-            $this->getAuthenticator()->closeAccount();
-        }
-    }
 
     public function getBadRequestAction(Request $request, $message = '')
     {
@@ -472,8 +421,14 @@ class V1Controller extends Controller
 
     public function getDataboxCollectionAction(Request $request, $base_id)
     {
+        try {
+            $collection = $this->getApplicationBox()->get_collection($base_id);
+        } catch (\RuntimeException $exception) {
+            throw new \HttpException('Collection not found', 404, $exception);
+        }
+
         return Result::create($request, [
-            $this->listCollection($this->app->getApplicationBox()->get_collection($base_id))
+            'collection' => $this->listCollection($collection),
         ])->createResponse();
     }
 
@@ -505,6 +460,7 @@ class V1Controller extends Controller
     {
         return [
             'base_id' => $collection->get_base_id(),
+            'databox_id' => $collection->get_sbas_id(),
             'collection_id' => $collection->get_coll_id(),
             'name' => $collection->get_name(),
             'labels' => [
@@ -1073,7 +1029,7 @@ class V1Controller extends Controller
         $secret = $provider->getSecretForUser($issuer);
 
         return $this->app->url('media_accessor', [
-            'token' => \JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
+            'token' => JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
         ]);
     }
 
@@ -1299,7 +1255,8 @@ class V1Controller extends Controller
             'story_id'      => $story->getRecordId(),
             'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
             'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => \phrasea::collFromBas($this->app, $story->getBaseId()),
+            'collection_id' => $story->getCollectionId(),
+            'base_id'       => $story->getBaseId(),
             'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
             'uuid'          => $story->getUuid(),
             'metadatas'     => [
@@ -2522,6 +2479,18 @@ class V1Controller extends Controller
         return null;
     }
 
+    public function ensureAccessToBase(Request $request)
+    {
+        $user = $this->getApiAuthenticatedUser();
+        $base_id = $request->attributes->get('base_id');
+
+        if (!$this->getAclForUser($user)->has_access_to_base($base_id)) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+
+        return null;
+    }
+
     public function ensureCanAccessToRecord(Request $request)
     {
         $user = $this->getApiAuthenticatedUser();
@@ -2592,14 +2561,6 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return \API_OAuth2_Adapter
-     */
-    private function getOAuth2Server()
-    {
-        return $this->app['oauth2-server'];
-    }
-
-    /**
      * @return AccountService
      */
     public function getAccountService()
@@ -2616,35 +2577,11 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return ApiOauthTokenRepository
-     */
-    private function getApiTokenRepository()
-    {
-        return $this->app['repo.api-oauth-tokens'];
-    }
-
-    /**
      * @return Session
      */
     private function getSession()
     {
         return $this->app['session'];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getApiLogManipulator()
-    {
-        return $this->app['manipulator.api-log'];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getApiOAuthTokenManipulator()
-    {
-        return $this->app['manipulator.api-oauth-token'];
     }
 
     /**

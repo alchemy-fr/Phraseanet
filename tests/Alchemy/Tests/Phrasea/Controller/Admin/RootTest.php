@@ -1,6 +1,7 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
+use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -19,10 +20,13 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        self::$DI['client']->request('GET', '/admin/', ['section' => 'base:featured']);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        /** @var Client $client */
+        $client = self::$DI['client'];
 
-        self::$DI['client']->request('GET', '/admin/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $client->request('GET', '/admin/', ['section' => 'base:featured']);
+        $this->assertTrue($client->getResponse()->isOk());
+
+        $client->request('GET', '/admin/');
+        $this->assertTrue($client->getResponse()->isOk());
     }
 }

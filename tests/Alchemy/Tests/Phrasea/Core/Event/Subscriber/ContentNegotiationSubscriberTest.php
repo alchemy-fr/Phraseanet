@@ -24,14 +24,14 @@ class ContentNegotiationSubscriberTest extends \PHPUnit_Framework_TestCase
             array('text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'text/html; charset=UTF-8'),
             array('application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5', 'text/html; charset=UTF-8'),
             array('image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*', 'text/html; charset=UTF-8'),
-            array('application/json, */*', 'application/json')
+            array('application/json, */*;q=0.8', 'application/json')
         );
     }
 
     private function request($accept)
     {
         $app = new Application(Application::ENV_TEST);
-        $app['dispatcher']->addSubscriber(new ContentNegotiationSubscriber($app));
+        $app['dispatcher']->addSubscriber(new ContentNegotiationSubscriber($app['negotiator'], $app['phraseanet.content-negotiation.priorities']));
         $app->get('/content/negociation', function () {
             return '';
         });

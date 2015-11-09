@@ -52,6 +52,12 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         return $monolog;
     }));
 
+    $app['phraseanet.content-negotiation.priorities'] = array_merge(
+        ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
+        V1::$extendedContentTypes['json'],
+        V1::$extendedContentTypes['yaml']
+    );
+
     // handle API content negotiation
     $app->before(function(Request $request) use ($app) {
         // register custom API format
@@ -60,24 +66,9 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $request->setFormat(Result::FORMAT_JSONP_EXTENDED, V1::$extendedContentTypes['jsonp']);
         $request->setFormat(Result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
 
-        $format = $app['format.negotiator']->getBest(
-            $request->headers->get('accept', 'application/json'),
-            array_merge(
-                ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
-                V1::$extendedContentTypes['json'],
-                V1::$extendedContentTypes['yaml']
-            )
-        );
-
-        // throw unacceptable http error if API can not handle asked format
-        if (null === $format) {
-            $app->abort(406);
-        }
         // set request format according to negotiated content or override format with JSONP if callback parameter is defined
         if (trim($request->get('callback')) !== '') {
             $request->setRequestFormat(Result::FORMAT_JSONP);
-        } else {
-            $request->setRequestFormat($request->getFormat($format->getValue()));
         }
 
         // tells whether asked format is extended or not
@@ -138,6 +129,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/permalink/', new Permalink());
     $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
     $app->mount('/include/minify/', new Minifier());
+    $app->bindPluginRoutes('plugin.controller_providers.api');
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
         $app->register($p = new WebProfilerServiceProvider(), [

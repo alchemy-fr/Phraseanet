@@ -2,20 +2,20 @@
 
 namespace Alchemy\Tests\Phrasea\Border;
 
+use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Media\Type\Image;
-use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Audio;
-use Alchemy\Phrasea\Media\Type\Video;
 use Alchemy\Phrasea\Media\Type\Document;
+use Alchemy\Phrasea\Media\Type\Flash;
+use Alchemy\Phrasea\Media\Type\Image;
+use Alchemy\Phrasea\Media\Type\Video;
 use MediaVorus\Media\MediaInterface;
+use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
+use PHPExiftool\Driver\Tag\IPTC\Keywords;
 use PHPExiftool\Driver\Tag\MXF\ObjectName;
 use PHPExiftool\Driver\Value\Mono;
-use PHPExiftool\Driver\Tag\IPTC\Keywords;
 use PHPExiftool\Driver\Value\Multi;
-use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
-use Alchemy\Phrasea\Border\Attribute\Metadata;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @group functional

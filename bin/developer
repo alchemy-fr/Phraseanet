@@ -68,18 +68,6 @@ $cli = new CLI("
  under certain conditions; type `about:license' for details.\n\n"
             . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
 
-if ($cli['configuration.store']->isSetup()) {
-    $helpers = [
-        'db' => new ConnectionHelper($cli['orm.em']->getConnection()),
-        'em' => new EntityManagerHelper($cli['orm.em'])
-    ];
-
-    $helperSet = $cli['console']->getHelperSet();
-    foreach ($helpers as $name => $helper) {
-        $helperSet->set($helper, $name);
-    }
-}
-
 $cli->command(new TranslationDumper());
 
 $cli->command(new InstallAll());
@@ -124,5 +112,18 @@ $cli['console']->addCommands([
     new StatusCommand(),
     new VersionCommand(),
 ]);
+
+if ($cli['configuration.store']->isSetup()) {
+    $cli->loadPlugins();
+    $helpers = [
+        'db' => new ConnectionHelper($cli['orm.em']->getConnection()),
+        'em' => new EntityManagerHelper($cli['orm.em'])
+    ];
+
+    $helperSet = $cli['console']->getHelperSet();
+    foreach ($helpers as $name => $helper) {
+        $helperSet->set($helper, $name);
+    }
+}
 
 exit(is_int($cli->run()) ? : 1);

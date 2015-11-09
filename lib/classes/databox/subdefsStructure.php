@@ -58,6 +58,10 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         return $this->AvSubdefs;
     }
 
+    /**
+     * @param string $searchGroup
+     * @return databox_subdef[]
+     */
     public function getSubdefGroup($searchGroup)
     {
         $searchGroup = strtolower($searchGroup);

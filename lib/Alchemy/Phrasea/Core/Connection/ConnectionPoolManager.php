@@ -11,21 +11,16 @@
 
 namespace Alchemy\Phrasea\Core\Connection;
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Psr\Log\LoggerInterface;
 
 class ConnectionPoolManager
 {
-    /**
-     * @var \PDO[]
-     */
+    /** @var Connection[] */
     private $connections = [];
-    private $logger;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct()
     {
-        $this->logger = $logger;
     }
 
     public function __destruct()
@@ -43,29 +38,39 @@ class ConnectionPoolManager
 
     public function opened()
     {
-        return $this->filter(function($connection) {
+        return $this->filter(function(Connection $connection) {
             return $connection->isConnected();
         });
     }
 
     public function closed()
     {
-        return $this->filter(function($connection) {
+        return $this->filter(function(Connection $connection) {
             return !$connection->isConnected();
         });
     }
 
+    /**
+     * @param callable $callback
+     * @return Connection[]
+     */
     public function filter(Callable $callback)
     {
         return array_filter($this->connections, $callback);
     }
 
+    /**
+     * Add a connection to the pool
+     *
+     * @param Connection $connection
+     */
     public function add(Connection $connection)
     {
         $key = md5(serialize($connection->getParams()));
-        if (!isset($this->connections[$key])) {
-            $this->connections[$key] = $connection;
+        if (isset($this->connections[$key]) && $connection !== $this->connections[$key]) {
+            throw new \InvalidArgumentException('Expects a non registered connection.');
         }
+        $this->connections[$key] = $connection;
     }
 
     public function get(array $params)

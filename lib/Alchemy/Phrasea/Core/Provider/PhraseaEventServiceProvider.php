@@ -40,8 +40,15 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
         $app['phraseanet.session-manager-subscriber'] = $app->share(function (Application $app) {
             return new SessionManagerSubscriber($app);
         });
+        $app['phraseanet.content-negotiation.priorities'] = [
+            'text/html',
+            'application/json',
+        ];
         $app['phraseanet.content-negotiation-subscriber'] = $app->share(function (Application $app) {
-            return new ContentNegotiationSubscriber($app);
+            return new ContentNegotiationSubscriber(
+                $app['negotiator'],
+                $app['phraseanet.content-negotiation.priorities']
+            );
         });
         $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
             return new RecordEditSubscriber();

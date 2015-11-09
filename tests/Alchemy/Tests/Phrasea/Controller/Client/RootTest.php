@@ -1,6 +1,7 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Client;
+use Symfony\Bundle\FrameworkBundle\Client;
 
 /**
  * @group functional
@@ -10,12 +11,12 @@ namespace Alchemy\Tests\Phrasea\Controller\Client;
  */
 class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    protected $client;
-
     public function testGetClient()
     {
         $this->authenticate(self::$DI['app']);
-        self::$DI['client']->request("GET", "/client/");
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        /** @var Client $client */
+        $client = self::$DI['client'];
+        $client->request("GET", "/client/");
+        $this->assertTrue($client->getResponse()->isRedirect());
     }
 }

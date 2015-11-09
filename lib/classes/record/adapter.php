@@ -37,7 +37,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface

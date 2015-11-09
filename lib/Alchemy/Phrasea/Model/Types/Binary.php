@@ -25,6 +25,18 @@ class Binary extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return $platform->getDoctrineTypeMapping('BINARY');
+        if (! isset($fieldDeclaration['length'])) {
+            $fieldDeclaration['length'] = 255;
+        }
+
+        $length = $fieldDeclaration['length'];
+
+        if ($length > 4000) {
+            return $platform->getDoctrineTypeMapping('longblob');
+        }
+
+        $fixed = isset($fieldDeclaration['fixed']) ? $fieldDeclaration['fixed'] : false;
+
+        return ($fixed ? 'BINARY(' : 'VARBINARY(') . $length . ')';
     }
 }

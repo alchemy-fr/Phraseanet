@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Client;
 
 /**

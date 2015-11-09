@@ -441,7 +441,9 @@ class LoginController extends Controller
                         $service->requestPasswordResetToken($data['email'], true);
                     }
                     catch (InvalidArgumentException $ex) {
-                        throw new FormProcessingException($this->app->trans($ex->getMessage()));
+                        /** @Ignore */
+                        $message = $this->app->trans($ex->getMessage());
+                        throw new FormProcessingException($message, 0, $ex);
                     }
 
                     $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));

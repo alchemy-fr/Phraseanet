@@ -16,11 +16,18 @@
                     </a>
                 </li>
             {% endif %}
-            <li class="ui-tabs-selected ui-corner-top baskets">
+            <li class="ui-corner-top baskets">
                 <a href="#baskets" class="WZbasketTab">
                     <div id="basket_menu_trigger">&#9660;</div>
                 </a>
             </li>
+            {% if plugins.workzone is not empty %}
+                <li>
+                    <a href="#plugins" class="WZplugins">
+                        <img src="/skins/icons/plugins.png" title="{{ 'phraseanet:: plugin.workzone' | trans }}"/>
+                    </a>
+                </li>
+            {% endif %}
         {% endblock %}
     </ul>
 {% endblock %}

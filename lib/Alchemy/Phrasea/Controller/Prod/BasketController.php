@@ -36,9 +36,15 @@ class BasketController extends Controller
             }
         }
 
+        /** @var \Closure $filter */
+        $filter = $this->app['plugin.filter_by_authorization'];
+
         return $this->render('prod/WorkZone/Basket.html.twig', [
             'basket' => $basket,
             'ordre'  => $request->query->get('order'),
+            'plugins' => [
+                'actionbar' => $filter('workzone.basket.actionbar'),
+            ],
         ]);
     }
 

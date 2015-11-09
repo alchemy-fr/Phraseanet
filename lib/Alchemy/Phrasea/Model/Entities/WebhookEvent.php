@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="WebhookEvents", indexes={@ORM\Index(name="name", columns={"name"})})
+ * @ORM\Table(name="WebhookEvents", indexes={@ORM\Index(name="webhook_event_name", columns={"name"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WebhookEventRepository")
  */
 class WebhookEvent

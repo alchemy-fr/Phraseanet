@@ -3,11 +3,10 @@
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
-use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
@@ -15,9 +14,9 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
-use Rhumsaa\Uuid\Uuid;
-use Symfony\Component\HttpKernel\Client;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Client;
 
 abstract class ApiTestCase extends \PhraseanetWebTestCase
 {
@@ -316,32 +315,34 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        self::$DI['client']->request('GET', '/api/v1/monitor/tasks/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client = $this->getClient();
+
+        $client->request('GET', '/api/v1/monitor/tasks/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('GET', '/api/v1/monitor/scheduler/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client->request('GET', '/api/v1/monitor/scheduler/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('GET', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client->request('GET', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('POST', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client->request('POST', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('POST', '/api/v1/monitor/task/1/start/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client->request('POST', '/api/v1/monitor/task/1/start/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('POST', '/api/v1/monitor/task/1/stop/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client->request('POST', '/api/v1/monitor/task/1/stop/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
     }
 
@@ -1059,7 +1060,6 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $embedTypes = array_flip(array_map(function($subdef) {return $subdef['name'];}, $content['response']['embed']));
 
         //access to all subdefs
-        $this->assertArrayHasKey('document', $embedTypes);
         $this->assertArrayHasKey('preview', $embedTypes);
         $this->assertArrayHasKey('thumbnail', $embedTypes);
 

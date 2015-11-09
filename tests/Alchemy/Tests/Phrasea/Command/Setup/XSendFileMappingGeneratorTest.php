@@ -41,21 +41,17 @@ class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
         $conf->expects($this->any())
             ->method('get')
             ->will($this->returnCallback(function ($property, $defaultValue = null) use ($originalConf) {
-                switch ($property) {
-                    case ['main', 'database']:
-                        return $originalConf->get($property);
-                    default:
-                        return $defaultValue;
-                }
+                return $originalConf->get($property, $defaultValue);
             }));
+
         self::$DI['cli']['conf'] = $conf;
 
         if ($option) {
-            self::$DI['cli']['conf']->expects($this->once())
+            $conf->expects($this->once())
                 ->method('set')
                 ->with('xsendfile');
         } else {
-            self::$DI['cli']['conf']->expects($this->never())
+            $conf->expects($this->never())
                 ->method('set');
         }
         $command->setContainer(self::$DI['cli']);

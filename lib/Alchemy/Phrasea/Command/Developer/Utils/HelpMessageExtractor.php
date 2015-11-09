@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Developer\Utils;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
@@ -20,9 +21,15 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PHPParser\Node;
+use PHPParser\Node\Expr\Array_;
+use PHPParser\Node\Scalar\String_;
+use PHPParser\Node\Stmt\Class_;
+use PHPParser\NodeTraverser;
+use PHPParser\NodeVisitor;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
-class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class HelpMessageExtractor implements FileVisitorInterface, NodeVisitor, LoggerAwareInterface
 {
     private $docParser;
     private $traverser;
@@ -36,27 +43,27 @@ class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisit
     {
         $this->docParser = $docParser;
 
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Class) {
+        if ($node instanceof Class_) {
             $this->defaultDomain = null;
             $this->defaultDomainMessages = [];
         }
 
-         if ($node instanceof \PHPParser_Node_Expr_Array) {
+         if ($node instanceof Array_) {
             // first check if a translation_domain is set for this field
             $domain = null;
             foreach ($node->items as $item) {
-                if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
+                if (!$item->key instanceof String_) {
                     continue;
                 }
 
                 if ('translation_domain' === $item->key->value) {
-                    if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
+                    if (!$item->value instanceof String_) {
                         continue;
                     }
 
@@ -66,7 +73,7 @@ class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisit
 
             // look for options containing a message
             foreach ($node->items as $item) {
-                if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
+                if (!$item->key instanceof String_) {
                     continue;
                 }
 
@@ -98,7 +105,7 @@ class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisit
             }
         }
 
-        if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
+        if (!$item->value instanceof String_) {
             if ($ignore) {
                 return;
             }
@@ -162,7 +169,7 @@ class HelpMessageExtractor implements FileVisitorInterface, \PHPParser_NodeVisit
         }
     }
 
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
 
     public function beforeTraverse(array $nodes) { }
     public function afterTraverse(array $nodes) { }

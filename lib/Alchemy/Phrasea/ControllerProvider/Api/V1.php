@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
+use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -46,8 +47,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->before('controller.api.v1:authenticate');
-        $controllers->after('controller.api.v1:after');
+        $controllers->before(new OAuthListener());
 
         $controllers->get('/monitor/scheduler/', 'controller.api.v1:getSchedulerAction')
             ->before('controller.api.v1:ensureAdmin');
@@ -72,7 +72,9 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/monitor/phraseanet/', 'controller.api.v1:showPhraseanetConfigurationAction')
             ->before('controller.api.v1:ensureAdmin');
 
-        $controllers->get('/collections/{base_id}/', 'controller.api.v1:getDataboxCollectionAction');
+        $controllers->get('/collections/{base_id}/', 'controller.api.v1:getDataboxCollectionAction')
+            ->before('controller.api.v1:ensureAccessToBase')
+            ->assert('base_id', '\d+');
 
         $controllers->get('/databoxes/list/', 'controller.api.v1:listDataboxesAction');
 

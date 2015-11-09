@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller;
 
+use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -52,7 +53,7 @@ class MediaAccessorController extends Controller
     public function showAction(Request $request, $token)
     {
         try {
-            $token = \JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
+            $token = JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
         } catch (\UnexpectedValueException $exception) {
             throw new NotFoundHttpException('Resource not found', $exception);
         } catch (\Exception $exception) {

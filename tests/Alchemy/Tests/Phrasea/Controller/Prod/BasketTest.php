@@ -104,8 +104,10 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
     public function testBasketGet()
     {
         $route = '/prod/baskets/1/';
-        self::$DI['client']->request('GET', $route);
-        $response = self::$DI['client']->getResponse();
+        $client = $this->getClient();
+
+        $client->request('GET', $route);
+        $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
+use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -211,8 +212,11 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRouteSearch()
     {
-        self::$DI['client']->request('POST', '/admin/users/search/');
-        $response = self::$DI['client']->getResponse();
+        /** @var Client $client */
+        $client = self::$DI['client'];
+
+        $client->request('POST', '/admin/users/search/');
+        $response = $client->getResponse();
         $this->assertTrue($response->isOK());
     }
 

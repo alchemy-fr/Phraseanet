@@ -68,7 +68,7 @@ class ExportController extends Controller
         }
 
         $success = false;
-        $msg = _('Error while connecting to FTP');
+        $msg = $this->app->trans('Error while connecting to FTP');
 
         try {
             /** @var \ftpclient $ftpClient */

@@ -28,4 +28,9 @@ class PrefixNode extends Node
     {
         return sprintf('prefix("%s")', $this->prefix);
     }
+
+    public function getTermNodes()
+    {
+        // TODO: Implement getTermNodes() method.
+    }
 }

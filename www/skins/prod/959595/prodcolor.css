@@ -601,6 +601,10 @@ span.ww_winTitle {
     border: none !important;
     border-radius: 0;
 }
+#plugins.ui-accordion > .ui-accordion-content {
+    padding: 0;
+    min-height: 100%;
+}
 
 .ui-accordion-icons .ui-accordion-header,
 .ui-accordion-icons .ui-accordion-header a {
@@ -4278,7 +4282,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     height: 20px;
     width: 320px;
     top: 30px;
-    left: 380px;
+    left: 364px;
 }
 
 #thumbExtractor #thumb_info {
@@ -4306,7 +4310,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     line-height:210px;
     width: 320px;
     top: 50px;
-    left: 380px;
+    left: 364px;
     z-index: 2;
     text-align: center;
 }
@@ -4377,7 +4381,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     height: 95px;
     width: 320px;
     top: 285px;
-    left: 380px;
+    left: 364px;
     padding: 0;
     overflow: auto;
 }
@@ -4412,8 +4416,8 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     cursor: pointer;
     height: 30px;
     width: 80px;
-    top: 385px;
-    left: 620px;
+    top: 379px;
+    left: 608px;
     padding: 0;
 }
 
@@ -4778,6 +4782,20 @@ ui-dialog-titlebar {
 
 #clientModal .close {
     color: #404040;
+}
+
+#answers .status img {
+    max-width: 16px;
+    max-heigh: 16px;
+}
+
+.plugin-container.active {
+    overflow: hidden;
+    height: 100%;
+}
+
+.plugin-container.inactive {
+    display: none;
 }
 
 #answers #answersNext {

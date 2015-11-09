@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Command\Upgrade;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

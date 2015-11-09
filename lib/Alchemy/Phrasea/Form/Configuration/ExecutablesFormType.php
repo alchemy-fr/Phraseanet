@@ -50,7 +50,6 @@ class ExecutablesFormType extends AbstractType
 
         $builder->add('imagine-driver', 'choice', [
             'label'        => 'Imagine driver',
-            /** @Ignore */
             'help_message' => $help,
             'choices'      => ['' => 'Auto', 'gmagick' => 'GraphicsMagick', 'imagick' => 'ImageMagick', 'gd' => 'GD']
         ]);

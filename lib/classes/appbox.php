@@ -257,6 +257,10 @@ class appbox extends base
         return $this->databoxes;
     }
 
+    /**
+     * @param $sbas_id
+     * @return databox
+     */
     public function get_databox($sbas_id)
     {
         $databoxes = $this->get_databoxes();
@@ -268,6 +272,10 @@ class appbox extends base
         return $databoxes[$sbas_id];
     }
 
+    /**
+     * @param int $base_id
+     * @return collection
+     */
     public function get_collection($base_id)
     {
         $sbas_id = phrasea::sbasFromBas($this->app, $base_id);

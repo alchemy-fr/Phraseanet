@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
@@ -49,6 +50,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $this->sbas_id = $record->get_sbas_id();
         $this->record = $record;
         $this->databox = $databox;
+    }
+
+    public function toArray($includeBusinessFields)
+    {
+        /** @var CaptionSerializer $serializer */
+        $serializer = $this->app['serializer.caption'];
+
+        return $serializer->toArray($this, $includeBusinessFields);
     }
 
     public function get_record()

@@ -11,22 +11,25 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Alchemy\Phrasea\Application;
+use Negotiation\Accept;
+use Negotiation\Negotiator;
+use Silex\Application;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class ContentNegotiationSubscriber implements EventSubscriberInterface
 {
-    private $app;
+    /** @var Negotiator */
+    private $negotiator;
+    /** @var array */
+    private $priorities;
 
-    public function __construct(Application $app)
+    public function __construct(Negotiator $negotiator, array $priorities)
     {
-        $this->app = $app;
+        $this->negotiator = $negotiator;
+        $this->priorities = $priorities;
     }
 
     public static function getSubscribedEvents()
@@ -38,11 +41,10 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $priorities = array('text/html', 'application/json',  '*/*');
-        $format = $this->app['format.negotiator']->getBest($event->getRequest()->headers->get('accept', '*/*'), $priorities);
+        $format = $this->negotiator->getBest($event->getRequest()->headers->get('accept', '*/*'), $this->priorities);
 
-        if (null === $format) {
-            $this->app->abort(406, 'Not acceptable');
+        if (!$format instanceof Accept) {
+            throw new HttpException(406);
         }
 
         $event->getRequest()->setRequestFormat($event->getRequest()->getFormat($format->getValue()));

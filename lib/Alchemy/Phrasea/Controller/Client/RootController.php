@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Security\Firewall;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class RootController extends Controller
 {
@@ -25,7 +26,19 @@ class RootController extends Controller
     }
 
     /**
-     * Gets client main page
+     * @return Session
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
+    }
+
+    /**
+     * /!\/!\/!\/!\/!\/!\/!\/!\/!\
+     *
+     * Client is no longer used
+     *
+     * Redirect to production with a nice message
      *
      * @param Request $request
      * @return Response
@@ -38,6 +51,8 @@ class RootController extends Controller
         if (null !== $response = $this->getFirewall()->requireAuthentication()) {
             return $response;
         }
+
+        $this->getSession()->getFlashBag()->add('step_by_step', '');
 
         return $this->app->redirect($this->app->path('prod', array('client')));
     }
