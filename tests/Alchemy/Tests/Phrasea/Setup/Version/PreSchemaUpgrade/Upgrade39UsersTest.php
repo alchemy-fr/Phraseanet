@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Version;
 
+use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39Users;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\DBALException;
@@ -83,6 +84,16 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
     {
         $tool = new SchemaTool($em);
         $metas = $em->getMetadataFactory()->getAllMetadata();
+
+        // Bad ordering of Indexes changes in Doctrine DBAL-2.5
+        $sqls = $tool->getUpdateSchemaSql($metas, true);
+        foreach ($sqls as $sql) {
+            if ('DROP INDEX usr_id ON Sessions' === $sql) {
+                $em->getConnection()->executeQuery($sql);
+            }
+        }
+        // End patching DBAL-2.5
+
         $tool->updateSchema($metas, true);
     }
 
