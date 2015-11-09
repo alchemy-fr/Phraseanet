@@ -27,4 +27,7 @@ interface Structure
 
     public function getAllFlags();
     public function getFlagByName($name);
+
+    public function getMetadataTags();
+    public function getMetadataTagByName($name);
 }

@@ -24,10 +24,22 @@ class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<foo:"bar">', (string) $node);
     }
 
+    public function testQueryBuild()
+    {
+        $query_context = $this->prophesize(QueryContext::class)->reveal();
+        $key = $this->prophesize(Key::class);
+        $key->getIndexField($query_context)->willReturn('foo');
+        $node = new KeyValueExpression($key->reveal(), 'bar');
+        $query = $node->buildQuery($query_context);
+
+        $result = '{"term":{"foo": "bar"}}';
+        $this->assertEquals(json_decode($result, true), $query);
+    }
+
     /**
      * @dataProvider keyProvider
      */
-    public function testQueryBuild($key, $value, $result)
+    public function testNativeQueryBuild($key, $value, $result)
     {
         $query_context = $this->prophesize(QueryContext::class);
         $node = new KeyValueExpression($key, $value);
@@ -42,7 +54,6 @@ class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
             [NativeKey::collection(),       'bar', '{"term":{"collection_name": "bar"}}'],
             [NativeKey::mediaType(),        'baz', '{"term":{"type": "baz"}}'],
             [NativeKey::recordIdentifier(), 'qux', '{"term":{"record_id": "qux"}}'],
-            [new MetadataKey('foo'),        'bar', '{"term":{"exif.foo": "bar"}}'],
         ];
     }
 }
