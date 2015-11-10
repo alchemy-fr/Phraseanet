@@ -62,5 +62,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'assets/requirejs/require.js,/scripts/apps/login/home/config.js,/scripts/apps/login/home/renewEmail.js'}) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'assets/vendors/requirejs/require.min.js,/scripts/apps/login/home/config.js,/scripts/apps/login/home/renewEmail.js'}) }}"></script>
 {% endblock %}

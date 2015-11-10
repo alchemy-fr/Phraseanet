@@ -5,7 +5,6 @@
 {% set selected = "informations" %}
 
 {% block stylesheet %}
-    <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
     {{ parent() }}
 {% endblock %}
 
@@ -15,9 +14,9 @@
             requirejs.config({
                 baseUrl: "/scripts",
                 paths: {
-                    "jquery": "../assets/jquery/jquery",
-                    "jquery.ui": "../assets/jquery.ui/jquery-ui",
-                    "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
+                    jquery: "../assets/vendors/jquery/jquery.min",
+                    "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
+                    "jquery.geonames": "../assets/vendors/jquery.geonames/jquery.geonames"
                 },
                 shim: {
                     "jquery.geonames": {

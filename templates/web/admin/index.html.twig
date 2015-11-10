@@ -8,15 +8,16 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/jquery.treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/jquery.fileupload-ui.css' }) }}" />
+    <link type="text/css" rel="stylesheet" href="/assets/admin/css/admin{% if not app.debug %}.min{% endif %}.css" />
 {% endblock %}
 
 
 {% block javascript %}
     {% include "common/templates.html.twig" %}
     {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
-    <script type="text/javascript" src="/assets/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
+    <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/admin/js/admin{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
         var p4 = p4 || {};
         p4.users = {sel:[]};
@@ -54,7 +55,7 @@
         $(window).bind('resize',function(){resize();});
 
     </script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>
+    {#<script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>#}
 {% endblock %}
 
 {% block content %}

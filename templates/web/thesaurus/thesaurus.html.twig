@@ -9,17 +9,17 @@
                 display: none;
             }
         </style>
-
-        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3/css/ui-lightness/jquery-ui-1.10.3.custom.css' }) }}" />
-        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
+        <link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/ui-lightness{% if not app.debug %}.min{% endif %}.css">
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
         <script type="text/javascript">
             var p4 = {};
         </script>
 
         <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery.ui/jquery-ui.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'g' : 'thesaurus' }) }}"></script>
+        <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript">
 
             var currentBaseName = "";

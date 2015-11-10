@@ -828,19 +828,18 @@ function set_image_position(smooth, image, width, height, container, callback) {
         callback = function () {
         };
     }
-}
 
-dimensions.width = parseInt(width);
-dimensions.height = parseInt(height);
-//		if(smooth)
-//		{
-//			$(image).stop().animate(dimensions,500,callback);
-//		}
-//		else
-//		{
-$(image).css(dimensions);
-callback;
-//		}
+    dimensions.width = parseInt(width);
+    dimensions.height = parseInt(height);
+    //		if(smooth)
+    //		{
+    //			$(image).stop().animate(dimensions,500,callback);
+    //		}
+    //		else
+    //		{
+    $(image).css(dimensions);
+    callback;
+    //		}
 }
 
 

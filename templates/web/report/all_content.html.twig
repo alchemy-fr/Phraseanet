@@ -33,7 +33,8 @@
 
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'report' }) }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery.gvChart-0.1.js' }) }}"></script>
     <script type="text/javascript">
         gvChartInit();

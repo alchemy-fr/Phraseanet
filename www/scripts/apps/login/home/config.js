@@ -11,14 +11,14 @@
 require.config({
     baseUrl: "/scripts",
     paths: {
-        jquery: "../assets/jquery/jquery",
-        "jquery.ui": "../assets/jquery.ui/jquery-ui",
-        underscore: "../assets/underscore-amd/underscore",
-        backbone: "../assets/backbone-amd/backbone",
-        i18n: "../assets/i18next/i18next.amd-1.6.3",
-        bootstrap: "../assets/bootstrap/js/bootstrap.min",
-        multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect",
-        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
+        jquery: "../assets/vendors/jquery/jquery.min",
+        "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
+        underscore: "../assets/vendors/underscore/underscore.min",
+        backbone: "../assets/vendors/backbone/backbone.min",
+        i18n: "../assets/vendors/i18next/i18next.min",
+        bootstrap: "../assets/vendors/bootstrap/js/bootstrap.min",
+        multiselect: "../assets/vendors/bootstrap-multiselect/bootstrap-multiselect",
+        "jquery.geonames": "../assets/vendors/jquery.geonames/jquery.geonames"
     },
     shim: {
         bootstrap: ["jquery"],

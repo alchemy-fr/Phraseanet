@@ -4,6 +4,7 @@
 
 # Exclude javascript dependencies folder
 /www/assets
+/www/bower_components
 /tmp-assets
 
 # Exclude thumbnails folder

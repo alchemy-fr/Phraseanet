@@ -1,0 +1,9 @@
+$fontAwesomePath:   "../../common/font"; // dist path
+@import '../../../www/bower_components/normalize-css/normalize'; // not extension for inline import
+@import '../shared/bootstrap';
+// @TODO enable importation of: @import "../../../../plugins/login.less";
+@import 'variables';
+@import 'skin';
+@import '../shared/skin/geonames';
+@import '../../../www/bower_components/font-awesome/sass/font-awesome.scss';
+@import '../../../www/bower_components/jquery-ui/themes/base/jquery.ui.autocomplete'; // not extension for inline import

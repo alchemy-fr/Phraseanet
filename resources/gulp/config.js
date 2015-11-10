@@ -1,7 +1,10 @@
 var gutil = require("gulp-util");
 var configPaths = {
+    src: 'resources/www/',
     vendors: 'tmp-assets/',
-    dist: 'www/assets/'
+    distVendors: 'www/assets/', //@deprecated
+    build: 'www/assets/',
+    dist: 'www/'
 };
 
 exports.paths = configPaths;

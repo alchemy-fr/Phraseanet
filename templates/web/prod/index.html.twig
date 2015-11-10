@@ -67,44 +67,8 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <style type="text/css">
-        .noRepresent {
-            background-color: #A2F5F5;
-        }
-
-        .disable {
-            display: none;
-        }
-
-        .deployer_opened::before {
-            content: "\25BC";
-        }
-
-        .deployer_closed::before {
-            content: "\25B6";
-        }
-
-    </style>
-    <style type="text/css">
-        /* Vertical Tabs */
-        .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
-        .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
-        .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
-        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
-        .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right;}
-    </style>
-
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,assets/jquery.treeview/jquery.treeview.css,skins/common/main.css,include/jquery.image_enhancer.css,skins/geonames/geonames.css' }) }}" >
-    <link id="skinCss" type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/' ~ cssfile ~ '/prodcolor.css' }) }}" >
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css' }) }}" >
-
-    <!--[if IE 7]>
-            <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/ie7.css' }) }}" >
-    <![endif]-->
-    <!--[if IE 8]>
-            <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/ie8.css' }) }}" >
-    <![endif]-->
-
+    <link type="text/css" rel="stylesheet" href="/assets/prod/css/prod{% if not app.debug %}.min{% endif %}.css">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/css/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
     <style title="color_selection" type="text/css">
         /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
             color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
@@ -115,47 +79,10 @@
             background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
         }
     </style>
-    <!-- Include Fancytree skin and library -->
-    <link href="{{ path('minifier', { 'f' : 'assets/fancytree/dist/skin-win8/ui.fancytree.min.css'}) }}" rel="stylesheet" type="text/css">
 
-    {% if step %}
-        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/joyride/joyride-2.1.css' }) }}" >
-            <style>
-                .joyride-tip-guide {
-                    background-color: #eee;
-                    color: #000;
-                }
-
-                .joyride-tip-guide h1 {
-                    font-weight: 100;
-                    font-size: 20px;
-                    color: #0a212b;
-                    line-height: 22px;
-                    margin-bottom: 10px;
-                }
-
-                .joyride-tip-guide span.joyride-nub.top {
-                    border-color: #eee;
-                }
-
-                .joyride-tip-guide span.joyride-nub.right {
-                    border-left-color: #eee !important;
-                }
-
-                .joyride-expose-wrapper {
-                    background-color: transparent;
-                }
-
-                .joyride-tip-guide .joyride-next-tip {
-                    background: #0a212b;
-                    border: none;
-                }
-            </style>
-    {% endif %}
 {% endblock %}
 
 {% block javascript %}
-    <script src="/assets/fancytree/dist/jquery.fancytree-all.min.js" type="text/javascript"></script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
 
@@ -804,174 +731,11 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
-    {% if step %}
-        <ol id="step_by_step" style="visibility: hidden;">
-            /* data-id needs to be the same as the parent it will attach to */
-            <li data-id="EDIT_query">
-                <div>
-                    <h1>
-                        {{ "Rechercher"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Taper ici les termes de recherche afin de retrouver les documents souhaités."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="ADV_query">
-                <div>
-                    <h1>
-                        {{ "Recherche Avancée"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Séléctionner les champs et les collections sur lesquels vous voulez rechercher."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="recordtype_sel">
-                <div>
-                    <h1>
-                        {{ "Types de documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Séléctionner ici le type de document que vous souhaitez rechercher."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="TOOL_disktt">
-                <div>
-                    <h1>
-                        {{ "Barre d'outils"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Sélection et Prévisualisation de documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Sélectionner les documents en cliquant dessus.
-                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
-                        cliquez sur les documents souhaités.
-                        Pour prévisualier un document cliquez dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="basket_menu_trigger">
-                <div>
-                    <h1>
-                        {{ "Paniers"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Consulter et administrer vos paniers dans cet onglet.
-                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
-                        flèche blanche."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Ajouter au panier"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
-                        désiré et en relachant au dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-        </ol>
-    {% endif %}
-
-    {% if step %}
-        <ol id="step_by_step" style="visibility: hidden;">
-            /* data-id needs to be the same as the parent it will attach to */
-            <li data-id="EDIT_query">
-                <div>
-                    <h1>
-                        {{ "Search"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Type words to retrieve documents or stories."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="ADV_query">
-                <div>
-                    <h1>
-                        {{ "Advanced Search"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Select the fields and collections on which to search."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="recordtype_sel">
-                <div>
-                    <h1>
-                        {{ "Types of documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Select the type of documents on which to search."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="TOOL_disktt">
-                <div>
-                    <h1>
-                        {{ "Barre d'outils"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Sélection et Prévisualisation de documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Sélectionner les documents en cliquant dessus.
-                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
-                        cliquez sur les documents souhaités.
-                        Pour prévisualier un document cliquez dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="basket_menu_trigger">
-                <div>
-                    <h1>
-                        {{ "Paniers"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Consulter et administrer vos paniers dans cet onglet.
-                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
-                        flèche blanche."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Ajouter au panier"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
-                        désiré et en relachant au dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-        </ol>
-    {% endif %}
-
     <script type="text/javascript">
         {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
     </script>
-    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
@@ -1006,7 +770,7 @@
         };
 
         function setCss(color) {
-            $("#skinCss").attr("href","/include/minify/?f=skins/prod/"+color+"/prodcolor.css");
+            $("#skinCss").attr("href","/assets/prod/css/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
             $.post("{{ path('save_pref') }}", {
                 prop: "css",
                 value: color,
@@ -1020,19 +784,4 @@
 
     </script>
     <script type="text/javascript" id="bitly_loader"></script>
-    {% if step %}
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.cookie.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/modernizr.mq.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.joyride-2.1.js' }) }}"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#step_by_step").joyride({
-                    autoStart : true,
-                    modal:true,
-                    expose: true
-                });
-            });
-        </script>
-    {% endif %}
-
 {% endblock %}

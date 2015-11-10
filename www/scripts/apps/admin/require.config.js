@@ -11,20 +11,19 @@
 require.config({
     baseUrl: "/scripts",
     paths: {
-        jquery: "../assets/jquery/jquery",
-        "jquery.ui": "../assets/jquery.ui/jquery-ui",
-        underscore: "../assets/underscore-amd/underscore",
-        backbone: "../assets/backbone-amd/backbone",
-        "jquery.ui.widget": "../assets/jquery-file-upload/jquery.ui.widget",
-        "jquery.cookie": "../assets/jquery.cookie/jquery.cookie",
-        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames",
-        "jquery.treeview": "../assets/jquery.treeview/jquery.treeview",
+        jquery: "../assets/vendors/jquery/jquery.min",
+        "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
+        underscore: "../assets/vendors/underscore/underscore.min",
+        backbone: "../assets/vendors/backbone/backbone.min",
+        "jquery.ui.widget": "../assets/vendors/jquery-file-upload/jquery.ui.widget.min",
+        "jquery.cookie": "../assets/vendors/jquery.cookie/jquery.cookie.min",
+        "jquery.treeview": "../assets/vendors/jquery.treeview/jquery.treeview",
         "jquery.tooltip": "../include/jquery.tooltip",
-        "blueimp.loadimage" : "../assets/blueimp-load-image/load-image",
-        "jfu.iframe-transport": "../assets/jquery-file-upload/jquery.iframe-transport",
-        "jfu.fileupload": "../assets/jquery-file-upload/jquery.fileupload",
-        i18n: "../assets/i18next/i18next.amd-1.6.3",
-        bootstrap: "../assets/bootstrap/js/bootstrap.min"
+        "blueimp.loadimage" : "../assets/vendors/blueimp-load-image/load-image",
+        "jfu.iframe-transport": "../assets/vendors/jquery-file-upload/jquery.iframe-transport",
+        "jfu.fileupload": "../assets/vendors/jquery-file-upload/jquery.fileupload",
+        i18n: "../assets/vendors/i18next/i18next.min",
+        bootstrap: "../assets/vendors/bootstrap/js/bootstrap.min",
     },
     shim: {
         "jquery.treeview": {

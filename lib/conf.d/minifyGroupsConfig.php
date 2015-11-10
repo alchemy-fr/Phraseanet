@@ -27,20 +27,6 @@ $groups = [
         '//assets/requirejs/require.js',
         '//scripts/apps/login/home/config.js'
     ],
-    'client' => [
-        '//assets/swfobject/swfobject.js'
-        , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
-        , '//assets/jquery.cookie/jquery.cookie.js'
-        , '//include/jquery.common.js'
-        , '//assets/json2/json2.js'
-        , '//include/jslibs/audio-player/audio-player-noswfobject.js'
-        , '//include/jslibs/jquery.form.2.49.js'
-        , '//skins/prod/jquery.Dialog.js'
-        , '//skins/client/jquery.p4client.1.0.js'
-        , '//include/jquery.tooltip.js'
-        , '//include/jquery.p4.preview.js'
-        , '//include/jquery.image_enhancer.js'
-        , '//include/jslibs/jquery.contextmenu_scroll.js'],
     'admin' => [
         '//assets/modernizr/modernizr.js'
         , '//assets/underscore-amd/underscore.js'

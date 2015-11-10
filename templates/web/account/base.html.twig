@@ -4,7 +4,7 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block stylesheet %}
-    <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'assets/build/account.css,include/jslibs/jquery.contextmenu.css' }) }}"/>
+    <link type="text/css" rel="stylesheet" href="/assets/account/css/account{% if not app.debug %}.min{% endif %}.css">
     <style type="text/css">
         .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
             padding: 4px 20px;
@@ -36,7 +36,8 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'account' }) }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/account/js/account{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block content %}
