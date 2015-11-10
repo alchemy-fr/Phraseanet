@@ -6,6 +6,7 @@ use Assert\Assertion;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 
@@ -54,9 +55,7 @@ class RangeExpression extends Node
     {
         $params = array();
         if ($this->lower_bound !== null) {
-            if (!$this->key->isValueCompatible($this->lower_bound, $context)) {
-                return;
-            }
+            $this->assertValueCompatible($this->lower_bound, $context);
             if ($this->lower_inclusive) {
                 $params['lte'] = $this->lower_bound;
             } else {
@@ -64,9 +63,7 @@ class RangeExpression extends Node
             }
         }
         if ($this->higher_bound !== null) {
-            if (!$this->key->isValueCompatible($this->higher_bound, $context)) {
-                return;
-            }
+            $this->assertValueCompatible($this->higher_bound, $context);
             if ($this->higher_inclusive) {
                 $params['gte'] = $this->higher_bound;
             } else {
@@ -82,6 +79,13 @@ class RangeExpression extends Node
         }
 
         return $query;
+    }
+
+    private function assertValueCompatible($value, QueryContext $context)
+    {
+        if (!$this->key->isValueCompatible($value, $context)) {
+            throw new QueryException(sprintf('Value "%s" for metadata tag "%s" is not valid.', $value, $this->key));
+        }
     }
 
     public function getTermNodes()
