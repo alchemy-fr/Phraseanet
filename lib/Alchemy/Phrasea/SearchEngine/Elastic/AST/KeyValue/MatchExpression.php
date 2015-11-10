@@ -6,7 +6,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Assert\Assertion;
 
-class Expression extends Node
+class MatchExpression extends Node
 {
     private $key;
     private $value;

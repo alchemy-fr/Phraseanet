@@ -1,15 +1,16 @@
 <?php
 
-namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
+namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 
-class FieldEqualsExpression extends Node
+class EqualExpression extends Node
 {
     private $key;
     private $value;

@@ -157,13 +157,13 @@ class QueryVisitor implements Visit
 
         switch ($node->getId()) {
             case NodeTypes::LT_EXPR:
-                return AST\RangeExpression::lessThan($key, $boundary);
+                return AST\KeyValue\RangeExpression::lessThan($key, $boundary);
             case NodeTypes::LTE_EXPR:
-                return AST\RangeExpression::lessThanOrEqual($key, $boundary);
+                return AST\KeyValue\RangeExpression::lessThanOrEqual($key, $boundary);
             case NodeTypes::GT_EXPR:
-                return AST\RangeExpression::greaterThan($key, $boundary);
+                return AST\KeyValue\RangeExpression::greaterThan($key, $boundary);
             case NodeTypes::GTE_EXPR:
-                return AST\RangeExpression::greaterThanOrEqual($key, $boundary);
+                return AST\KeyValue\RangeExpression::greaterThanOrEqual($key, $boundary);
         }
     }
 
@@ -184,7 +184,7 @@ class QueryVisitor implements Visit
             throw new Exception('Equality operator can only have 2 childs.');
         }
 
-        return new AST\FieldEqualsExpression(
+        return new AST\KeyValue\EqualExpression(
             $node->getChild(0)->accept($this),
             $node->getChild(1)->accept($this)
         );
@@ -312,7 +312,7 @@ class QueryVisitor implements Visit
         }
         $key = $this->visit($node->getChild(0));
         $value = $this->visit($node->getChild(1));
-        return new AST\KeyValue\Expression($key, $value);
+        return new AST\KeyValue\MatchExpression($key, $value);
     }
 
     private function visitNativeKeyNode(Element $element)

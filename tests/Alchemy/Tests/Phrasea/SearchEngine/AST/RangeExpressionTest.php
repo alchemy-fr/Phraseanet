@@ -6,7 +6,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\MetadataKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\NativeKey;
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\RangeExpression;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\RangeExpression;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Prophecy\Argument;

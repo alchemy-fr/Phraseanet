@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Expression as KeyValueExpression;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\MatchExpression;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\MetadataKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\NativeKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
@@ -13,14 +13,14 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
  * @group searchengine
  * @group ast
  */
-class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
+class MatchExpressionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSerialization()
     {
-        $this->assertTrue(method_exists(KeyValueExpression::class, '__toString'), 'Class does not have method __toString');
+        $this->assertTrue(method_exists(MatchExpression::class, '__toString'), 'Class does not have method __toString');
         $key = $this->prophesize(Key::class);
         $key->__toString()->willReturn('foo');
-        $node = new KeyValueExpression($key->reveal(), 'bar');
+        $node = new MatchExpression($key->reveal(), 'bar');
         $this->assertEquals('<foo:"bar">', (string) $node);
     }
 
@@ -29,7 +29,7 @@ class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
         $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key = $this->prophesize(Key::class);
         $key->getIndexField($query_context)->willReturn('foo');
-        $node = new KeyValueExpression($key->reveal(), 'bar');
+        $node = new MatchExpression($key->reveal(), 'bar');
         $query = $node->buildQuery($query_context);
 
         $result = '{"match":{"foo": "bar"}}';
@@ -42,7 +42,7 @@ class KeyValueExpressionTest extends \PHPUnit_Framework_TestCase
     public function testNativeQueryBuild($key, $value, $result)
     {
         $query_context = $this->prophesize(QueryContext::class);
-        $node = new KeyValueExpression($key, $value);
+        $node = new MatchExpression($key, $value);
         $query = $node->buildQuery($query_context->reveal());
         $this->assertEquals(json_decode($result, true), $query);
     }
