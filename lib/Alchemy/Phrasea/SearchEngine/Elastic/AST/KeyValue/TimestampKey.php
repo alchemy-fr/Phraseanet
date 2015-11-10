@@ -2,9 +2,12 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 
-class TimestampKey implements Key
+class TimestampKey implements Key, Typed
 {
     private $type;
     private $index_field;
@@ -25,6 +28,11 @@ class TimestampKey implements Key
         $this->index_field = $index_field;
     }
 
+    public function getType()
+    {
+        return Mapping::TYPE_DATE;
+    }
+
     public function getIndexField(QueryContext $context, $raw = false)
     {
         return $this->index_field;
@@ -32,7 +40,7 @@ class TimestampKey implements Key
 
     public function isValueCompatible($value, QueryContext $context)
     {
-        return true;
+        return ValueChecker::isValueCompatible($this, $value);
     }
 
     public function __toString()
