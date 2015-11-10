@@ -12,7 +12,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
  * @group searchengine
  * @group ast
  */
-class FieldEqualsExpressionTest extends \PHPUnit_Framework_TestCase
+class EqualExpressionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSerialization()
     {
@@ -33,6 +33,7 @@ class FieldEqualsExpressionTest extends \PHPUnit_Framework_TestCase
         $key = $this->prophesize(Key::class);
         $key->isValueCompatible($value, $query_context)->willReturn($compatible_value);
         $key->getIndexField($query_context, true)->willReturn($index_field);
+        $key->__toString()->willReturn('foo');
         // TODO Test keys implementing QueryPostProcessor
 
         $node = new EqualExpression($key->reveal(), 'bar');
@@ -56,8 +57,22 @@ class FieldEqualsExpressionTest extends \PHPUnit_Framework_TestCase
             ['foo.raw', 'bar', true, false, '{
                 "term": {
                     "foo.raw": "bar" } }'],
-            ['foo.raw', 'bar', false, true, 'null'],
-            ['foo.raw', 'bar', false, false, 'null'],
         ];
+    }
+
+    /**
+     * @expectedException Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException
+     * @expectedExceptionMessageRegExp #"foo"#u
+     */
+    public function testQueryBuildWithIncompatibleValue()
+    {
+        $query_context = $this->prophesize(QueryContext::class)->reveal();
+        $key = $this->prophesize(Key::class);
+        $key->isValueCompatible('bar', $query_context)->willReturn(false);
+        $key->getIndexField($query_context, true)->willReturn('foo.raw');
+        $key->__toString()->willReturn('foo');
+
+        $node = new EqualExpression($key->reveal(), 'bar');
+        $node->buildQuery($query_context);
     }
 }

@@ -28,6 +28,7 @@ class MatchExpressionTest extends \PHPUnit_Framework_TestCase
     {
         $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key = $this->prophesize(Key::class);
+        $key->isValueCompatible('bar', $query_context)->willReturn(true);
         $key->getIndexField($query_context)->willReturn('foo');
         $node = new MatchExpression($key->reveal(), 'bar');
         $query = $node->buildQuery($query_context);

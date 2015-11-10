@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Assert\Assertion;
 
@@ -20,6 +21,10 @@ class MatchExpression extends Node
 
     public function buildQuery(QueryContext $context)
     {
+        if (!$this->key->isValueCompatible($this->value, $context)) {
+            throw new QueryException(sprintf('Value "%s" for metadata tag "%s" is not valid.', $this->value, $this->key));
+        }
+
         return [
             'match' => [
                 $this->key->getIndexField($context) => $this->value

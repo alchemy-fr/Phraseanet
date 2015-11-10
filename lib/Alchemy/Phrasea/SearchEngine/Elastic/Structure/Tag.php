@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Assert\Assertion;
 
-class Tag
+class Tag implements Typed
 {
     private $name;
     private $type;
@@ -34,11 +34,6 @@ class Tag
     public function isAnalyzable()
     {
         return $this->analyzable;
-    }
-
-    public function isValueCompatible()
-    {
-        return true;
     }
 
     public function getIndexField($raw = false)

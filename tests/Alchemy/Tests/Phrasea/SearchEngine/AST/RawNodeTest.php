@@ -24,6 +24,7 @@ class RawNodeTest extends \PHPUnit_Framework_TestCase
     public function testQueryBuildOnSingleField()
     {
         $field = $this->prophesize(Field::class);
+        $field->getType()->willReturn(Mapping::TYPE_STRING);
         $field->getIndexField(true)->willReturn('foo.raw');
 
         $query_context = $this->prophesize(QueryContext::class);
@@ -45,8 +46,10 @@ class RawNodeTest extends \PHPUnit_Framework_TestCase
     public function testQueryBuildOnMultipleFields()
     {
         $field_a = $this->prophesize(Field::class);
+        $field_a->getType()->willReturn(Mapping::TYPE_STRING);
         $field_a->getIndexField(true)->willReturn('foo.raw');
         $field_b = $this->prophesize(Field::class);
+        $field_b->getType()->willReturn(Mapping::TYPE_STRING);
         $field_b->getIndexField(true)->willReturn('bar.raw');
 
         $query_context = $this->prophesize(QueryContext::class);

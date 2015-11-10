@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 use Assert\Assertion;
 
 class MetadataKey implements Key
@@ -24,7 +25,7 @@ class MetadataKey implements Key
 
     public function isValueCompatible($value, QueryContext $context)
     {
-        return $this->getTag($context)->isValueCompatible($value);
+        return ValueChecker::isValueCompatible($this->getTag($context), $value);
     }
 
     private function getTag(QueryContext $context)

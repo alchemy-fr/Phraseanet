@@ -6,6 +6,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 use Assert\Assertion;
 
 class FieldKey implements Key, QueryPostProcessor
@@ -26,7 +27,7 @@ class FieldKey implements Key, QueryPostProcessor
 
     public function isValueCompatible($value, QueryContext $context)
     {
-        return $this->getField($context)->isValueCompatible($value);
+        return ValueChecker::isValueCompatible($this->getField($context), $value);
     }
 
     public function postProcessQuery($query, QueryContext $context)
