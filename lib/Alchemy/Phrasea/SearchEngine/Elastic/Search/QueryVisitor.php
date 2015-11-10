@@ -95,6 +95,9 @@ class QueryVisitor implements Visit
             case NodeTypes::NATIVE_KEY:
                 return $this->visitNativeKeyNode($element);
 
+            case NodeTypes::TIMESTAMP_KEY:
+                return $this->visitTimestampKeyNode($element);
+
             case NodeTypes::METADATA_KEY:
                 return new AST\KeyValue\MetadataKey($this->visitString($element));
 
@@ -297,10 +300,10 @@ class QueryVisitor implements Visit
         });
     }
 
-    private function visitNativeKeyNode(Element $element)
+    private function visitNativeKeyNode(TreeNode $node)
     {
-        $this->assertChildrenCount($element, 1);
-        $type = $element->getChild(0)->getValue()['token'];
+        $this->assertChildrenCount($node, 1);
+        $type = $node->getChild(0)->getValue()['token'];
         switch ($type) {
             case NodeTypes::TOKEN_DATABASE:
                 return AST\KeyValue\NativeKey::database();
@@ -312,6 +315,20 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::recordIdentifier();
             default:
                 throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for native key.', $type));
+        }
+    }
+
+    private function visitTimestampKeyNode(TreeNode $node)
+    {
+        $this->assertChildrenCount($node, 1);
+        $type = $node->getChild(0)->getValue()['token'];
+        switch ($type) {
+            case NodeTypes::TOKEN_CREATED_ON:
+                return AST\KeyValue\TimestampKey::createdOn();
+            case NodeTypes::TOKEN_UPDATED_ON:
+                return AST\KeyValue\TimestampKey::updatedOn();
+            default:
+                throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for timestamp key.', $type));
         }
     }
 

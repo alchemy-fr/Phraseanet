@@ -27,6 +27,7 @@ class NodeTypes
     const FLAG_STATEMENT      = '#flag_statement';
     const FLAG                = '#flag';
     const NATIVE_KEY          = '#native_key';
+    const TIMESTAMP_KEY       = '#timestamp_key';
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
@@ -35,6 +36,8 @@ class NodeTypes
     const TOKEN_COLLECTION    = 'collection';
     const TOKEN_MEDIA_TYPE    = 'type';
     const TOKEN_RECORD_ID     = 'id';
+    const TOKEN_CREATED_ON    = 'created_on';
+    const TOKEN_UPDATED_ON    = 'updated_on';
     const TOKEN_TRUE          = 'true';
     const TOKEN_FALSE         = 'false';
 }

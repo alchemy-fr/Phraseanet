@@ -22,6 +22,7 @@ class Mapping
 
     const DATE_FORMAT_MYSQL = 'yyyy-MM-dd HH:mm:ss';
     const DATE_FORMAT_CAPTION = 'yyyy/MM/dd'; // ES format
+    const DATE_FORMAT_MYSQL_OR_CAPTION = 'yyyy-MM-dd HH:mm:ss||yyyy/MM/dd';
     const DATE_FORMAT_CAPTION_PHP = 'Y/m/d';  // PHP format
 
     // Core types
