@@ -118,29 +118,28 @@ class QueryVisitor implements Visit
 
     private function visitFieldStatementNode(TreeNode $node)
     {
-        $this->assertChildrenCount($node, 2);
-        $field = $this->visit($node->getChild(0));
-        $value = $this->visit($node->getChild(1));
-        return new AST\FieldMatchExpression($field, $value);
+        return $this->handleBinaryExpression($node, function($left, $right) {
+            return new AST\FieldMatchExpression($left, $right);
+        });
     }
 
     private function visitAndNode(Element $element)
     {
-        return $this->handleBinaryOperator($element, function($left, $right) {
+        return $this->handleBinaryExpression($element, function($left, $right) {
             return new AST\Boolean\AndOperator($left, $right);
         });
     }
 
     private function visitOrNode(Element $element)
     {
-        return $this->handleBinaryOperator($element, function($left, $right) {
+        return $this->handleBinaryExpression($element, function($left, $right) {
             return new AST\Boolean\OrOperator($left, $right);
         });
     }
 
     private function visitExceptNode(Element $element)
     {
-        return $this->handleBinaryOperator($element, function($left, $right) {
+        return $this->handleBinaryExpression($element, function($left, $right) {
             return new AST\Boolean\ExceptOperator($left, $right);
         });
     }
@@ -163,7 +162,7 @@ class QueryVisitor implements Visit
         }
     }
 
-    private function handleBinaryOperator(Element $element, \Closure $factory)
+    private function handleBinaryExpression(Element $element, \Closure $factory)
     {
         $this->assertChildrenCount($element, 2);
         $left  = $element->getChild(0)->accept($this);
@@ -174,11 +173,9 @@ class QueryVisitor implements Visit
 
     private function visitEqualNode(TreeNode $node)
     {
-        $this->assertChildrenCount($node, 2);
-        return new AST\KeyValue\EqualExpression(
-            $node->getChild(0)->accept($this),
-            $node->getChild(1)->accept($this)
-        );
+        return $this->handleBinaryExpression($node, function($left, $right) {
+            return new AST\KeyValue\EqualExpression($left, $right);
+        });
     }
 
     private function visitTerm(Element $element)
@@ -296,10 +293,9 @@ class QueryVisitor implements Visit
 
     private function visitKeyValueNode(TreeNode $node)
     {
-        $this->assertChildrenCount($node, 2);
-        $key = $this->visit($node->getChild(0));
-        $value = $this->visit($node->getChild(1));
-        return new AST\KeyValue\MatchExpression($key, $value);
+        return $this->handleBinaryExpression($node, function($left, $right) {
+            return new AST\KeyValue\MatchExpression($left, $right);
+        });
     }
 
     private function visitNativeKeyNode(Element $element)
