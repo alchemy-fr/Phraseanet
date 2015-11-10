@@ -118,9 +118,7 @@ class QueryVisitor implements Visit
 
     private function visitFieldStatementNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Field statement must have 2 childs.');
-        }
+        $this->assertChildrenCount($node, 2);
         $field = $this->visit($node->getChild(0));
         $value = $this->visit($node->getChild(1));
         return new AST\FieldMatchExpression($field, $value);
@@ -149,9 +147,7 @@ class QueryVisitor implements Visit
 
     private function visitRangeNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Comparison operator can only have 2 childs.');
-        }
+        $this->assertChildrenCount($node, 2);
         $key = $node->getChild(0)->accept($this);
         $boundary = $node->getChild(1)->accept($this);
 
@@ -169,9 +165,7 @@ class QueryVisitor implements Visit
 
     private function handleBinaryOperator(Element $element, \Closure $factory)
     {
-        if ($element->getChildrenNumber() !== 2) {
-            throw new Exception('Binary expression can only have 2 childs.');
-        }
+        $this->assertChildrenCount($element, 2);
         $left  = $element->getChild(0)->accept($this);
         $right = $element->getChild(1)->accept($this);
 
@@ -180,10 +174,7 @@ class QueryVisitor implements Visit
 
     private function visitEqualNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Equality operator can only have 2 childs.');
-        }
-
+        $this->assertChildrenCount($node, 2);
         return new AST\KeyValue\EqualExpression(
             $node->getChild(0)->accept($this),
             $node->getChild(1)->accept($this)
@@ -274,9 +265,7 @@ class QueryVisitor implements Visit
 
     private function visitFlagStatementNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Flag statement can only have 2 childs.');
-        }
+        $this->assertChildrenCount($node, 2);
         $flag = $node->getChild(0)->accept($this);
         if (!$flag instanceof AST\Flag) {
             throw new \Exception('Flag statement key must be a flag node.');
@@ -307,9 +296,7 @@ class QueryVisitor implements Visit
 
     private function visitKeyValueNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Key value expression can only have 2 childs.');
-        }
+        $this->assertChildrenCount($node, 2);
         $key = $this->visit($node->getChild(0));
         $value = $this->visit($node->getChild(1));
         return new AST\KeyValue\MatchExpression($key, $value);
@@ -317,9 +304,7 @@ class QueryVisitor implements Visit
 
     private function visitNativeKeyNode(Element $element)
     {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new Exception('Native key node can only have a single child.');
-        }
+        $this->assertChildrenCount($element, 1);
         $type = $element->getChild(0)->getValue()['token'];
         switch ($type) {
             case NodeTypes::TOKEN_DATABASE:
@@ -332,6 +317,13 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::recordIdentifier();
             default:
                 throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for native key.', $type));
+        }
+    }
+
+    private function assertChildrenCount(TreeNode $node, $count)
+    {
+        if ($node->getChildrenNumber() !== $count) {
+            throw new Exception(sprintf('Node was expected to have only %s children.', $count));
         }
     }
 }
