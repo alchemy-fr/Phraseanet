@@ -61,7 +61,7 @@ SQL;
             $value = $metadata['value'];
 
             // Do not keep empty values
-            if (empty($key) || empty($value)) {
+            if ($key === '' || $value === '') {
                 continue;
             }
 
