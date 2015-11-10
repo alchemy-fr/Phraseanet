@@ -15,6 +15,7 @@ class NodeTypes
     const LTE_EXPR            = '#less_than_or_equal_to';
     const GTE_EXPR            = '#greater_than_or_equal_to';
     const EQUAL_EXPR          = '#equal_to';
+    const MATCH_EXPR          = '#match_expression';
     const FIELD_STATEMENT     = '#field_statement';
     const FIELD               = '#field';
     const FIELD_KEY           = '#field_key';
@@ -22,11 +23,9 @@ class NodeTypes
     const TERM                = '#thesaurus_term';
     const TEXT                = '#text';
     const CONTEXT             = '#context';
-    const METADATA_STATEMENT  = '#meta_statement';
     const METADATA_KEY        = '#meta_key';
     const FLAG_STATEMENT      = '#flag_statement';
     const FLAG                = '#flag';
-    const NATIVE_KEY_VALUE    = '#native_key_value';
     const NATIVE_KEY          = '#native_key';
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';

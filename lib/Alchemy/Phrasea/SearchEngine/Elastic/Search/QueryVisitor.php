@@ -89,9 +89,8 @@ class QueryVisitor implements Visit
             case NodeTypes::FLAG:
                 return new AST\Flag($this->visitString($element));
 
-            case NodeTypes::NATIVE_KEY_VALUE:
-            case NodeTypes::METADATA_STATEMENT:
-                return $this->visitKeyValueNode($element);
+            case NodeTypes::MATCH_EXPR:
+                return $this->visitMatchExpressionNode($element);
 
             case NodeTypes::NATIVE_KEY:
                 return $this->visitNativeKeyNode($element);
@@ -291,7 +290,7 @@ class QueryVisitor implements Visit
         }
     }
 
-    private function visitKeyValueNode(TreeNode $node)
+    private function visitMatchExpressionNode(TreeNode $node)
     {
         return $this->handleBinaryExpression($node, function($left, $right) {
             return new AST\KeyValue\MatchExpression($left, $right);

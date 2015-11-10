@@ -68,8 +68,7 @@ quaternary:
 // Key value pairs & field level matchers (restricted to a single field)
 
 key_value_pair:
-    native_key()             ::colon:: ::space::? value()   #native_key_value
-  | ::meta_prefix::  meta_key() ::colon:: ::space::? value() #meta_statement
+    match_key()              ::colon:: ::space::? value()   #match_expression
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
   | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
   |                  field() ::colon:: ::space::? term()    #field_statement
@@ -78,6 +77,10 @@ key_value_pair:
   | key() ::space::?         ::lte::   ::space::? value()   #less_than_or_equal_to
   | key() ::space::?         ::gte::   ::space::? value()   #greater_than_or_equal_to
   | key() ::space::?         ::equal:: ::space::? value()   #equal_to
+
+match_key:
+    native_key()
+  | ::meta_prefix:: meta_key()
 
 #native_key:
     <database>
