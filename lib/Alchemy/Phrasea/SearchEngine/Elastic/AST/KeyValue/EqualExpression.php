@@ -24,7 +24,7 @@ class EqualExpression extends Node
     public function buildQuery(QueryContext $context)
     {
         if (!$this->key->isValueCompatible($this->value, $context)) {
-            throw new QueryException(sprintf('Value "%s" for metadata tag "%s" is not valid.', $this->value, $this->key));
+            throw new QueryException(sprintf('Value "%s" for key "%s" is not valid.', $this->value, $this->key));
         }
 
         $query = [
