@@ -4,9 +4,9 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\Boolean;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-class OrOperator extends BinaryOperator
+class ExceptExpression extends BinaryExpression
 {
-    protected $operator = 'OR';
+    protected $operator = 'EXCEPT';
 
     public function buildQuery(QueryContext $context)
     {
@@ -15,7 +15,8 @@ class OrOperator extends BinaryOperator
 
         return [
             'bool' => [
-                'should' => array($left, $right)
+                'must' => $left,
+                'must_not' => $right
             ]
         ];
     }

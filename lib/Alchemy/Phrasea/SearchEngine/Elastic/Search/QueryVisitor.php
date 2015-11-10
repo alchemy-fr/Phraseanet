@@ -125,21 +125,21 @@ class QueryVisitor implements Visit
     private function visitAndNode(Element $element)
     {
         return $this->handleBinaryExpression($element, function($left, $right) {
-            return new AST\Boolean\AndOperator($left, $right);
+            return new AST\Boolean\AndExpression($left, $right);
         });
     }
 
     private function visitOrNode(Element $element)
     {
         return $this->handleBinaryExpression($element, function($left, $right) {
-            return new AST\Boolean\OrOperator($left, $right);
+            return new AST\Boolean\OrExpression($left, $right);
         });
     }
 
     private function visitExceptNode(Element $element)
     {
         return $this->handleBinaryExpression($element, function($left, $right) {
-            return new AST\Boolean\ExceptOperator($left, $right);
+            return new AST\Boolean\ExceptExpression($left, $right);
         });
     }
 
@@ -236,7 +236,7 @@ class QueryVisitor implements Visit
                     throw new Exception('Unexpected context after non-contextualizable node');
                 }
             } elseif ($node instanceof AST\Node) {
-                $root = new AST\Boolean\AndOperator($root, $node);
+                $root = new AST\Boolean\AndExpression($root, $node);
             } else {
                 throw new Exception('Unexpected node type inside text node.');
             }
