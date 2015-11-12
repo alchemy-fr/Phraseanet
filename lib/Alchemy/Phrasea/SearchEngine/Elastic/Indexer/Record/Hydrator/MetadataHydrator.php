@@ -19,12 +19,15 @@ use Alchemy\Phrasea\Utilities\StringHelper;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use DomainException;
+use InvalidArgumentException;
 
 class MetadataHydrator implements HydratorInterface
 {
     private $connection;
     private $structure;
     private $helper;
+
+    private $gps_position_buffer = [];
 
     public function __construct(DriverConnection $connection, Structure $structure, RecordHelper $helper)
     {
@@ -93,12 +96,16 @@ SQL;
                     break;
 
                 case 'exif':
-                    // EXIF data is single-valued
+                    if (GpsPosition::isSupportedTagName($key)) {
+                        $this->handleGpsPosition($records, $id, $key, $value);
+                        break;
+                    }
                     $tag = $this->structure->getMetadataTagByName($key);
                     if ($tag) {
                         $value = $this->sanitizeValue($value, $tag->getType());
                     }
-                    $record['exif'][$key] = $value;
+                    // EXIF data is single-valued
+                    $record['metadata_tags'][$key] = $value;
                     break;
 
                 default:
@@ -106,6 +113,8 @@ SQL;
                     break;
             }
         }
+
+        $this->clearGpsPositionBuffer();
     }
 
     private function sanitizeValue($value, $type)
@@ -130,5 +139,27 @@ SQL;
             default:
                 return $value;
         }
+    }
+
+    private function handleGpsPosition(&$records, $id, $tag_name, $value)
+    {
+        // Get position object
+        if (!isset($this->gps_position_buffer[$id])) {
+            $this->gps_position_buffer[$id] = new GpsPosition();
+        }
+        $position = $this->gps_position_buffer[$id];
+        // Push this tag into object
+        $position->set($tag_name, $value);
+        // Try to output complete position
+        if ($position->isComplete()) {
+            $records[$id]['metadata_tags']['Longitude'] = $position->getSignedLongitude();
+            $records[$id]['metadata_tags']['Latitude'] = $position->getSignedLatitude();
+            unset($this->gps_position_buffer[$id]);
+        }
+    }
+
+    private function clearGpsPositionBuffer()
+    {
+        $this->gps_position_buffer = [];
     }
 }
