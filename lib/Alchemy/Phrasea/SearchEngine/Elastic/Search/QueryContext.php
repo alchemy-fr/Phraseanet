@@ -85,6 +85,11 @@ class QueryContext
         return $this->structure->getFlagByName($name);
     }
 
+    public function getMetadataTag($name)
+    {
+        return $this->structure->getMetadataTagByName($name);
+    }
+
     /**
      * @todo Maybe we should put this logic in Field class?
      */

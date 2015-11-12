@@ -19,6 +19,7 @@ final class GlobalStructure implements Structure
     /** @var Field[] */
     private $facets = array();
     private $flags = array();
+    private $metadata_tags = array();
 
     /**
      * @param \databox[] $databoxes
@@ -36,18 +37,22 @@ final class GlobalStructure implements Structure
                 $flags[] = Flag::createFromLegacyStatus($status);
             }
         }
-        return new self($fields, $flags);
+        return new self($fields, $flags, MetadataHelper::createTags());
     }
 
-    public function __construct(array $fields = [], array $flags = [])
+    public function __construct(array $fields = [], array $flags = [], array $metadata_tags = [])
     {
         Assertion::allIsInstanceOf($fields, Field::class);
         Assertion::allIsInstanceOf($flags, Flag::class);
+        Assertion::allIsInstanceOf($metadata_tags, Tag::class);
         foreach ($fields as $field) {
             $this->add($field);
         }
         foreach ($flags as $flag) {
             $this->flags[$flag->getName()] = $flag;
+        }
+        foreach ($metadata_tags as $tag) {
+            $this->metadata_tags[$tag->getName()] = $tag;
         }
     }
 
@@ -146,6 +151,17 @@ final class GlobalStructure implements Structure
     {
         return isset($this->flags[$name]) ?
                      $this->flags[$name] : null;
+    }
+
+    public function getMetadataTags()
+    {
+        return $this->metadata_tags;
+    }
+
+    public function getMetadataTagByName($name)
+    {
+        return isset($this->metadata_tags[$name]) ?
+                     $this->metadata_tags[$name] : null;
     }
 
     /**

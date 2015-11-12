@@ -61,7 +61,7 @@ SQL;
             $value = $metadata['value'];
 
             // Do not keep empty values
-            if (empty($key) || empty($value)) {
+            if ($key === '' || $value === '') {
                 continue;
             }
 
@@ -76,23 +76,7 @@ SQL;
                 case 'caption':
                     // Sanitize fields
                     $value = StringHelper::crlfNormalize($value);
-                    switch ($this->structure->typeOf($key)) {
-                        case Mapping::TYPE_DATE:
-                            $value = $this->helper->sanitizeDate($value);
-                            break;
-
-                        case Mapping::TYPE_FLOAT:
-                        case Mapping::TYPE_DOUBLE:
-                            $value = (float) $value;
-                            break;
-
-                        case Mapping::TYPE_INTEGER:
-                        case Mapping::TYPE_LONG:
-                        case Mapping::TYPE_SHORT:
-                        case Mapping::TYPE_BYTE:
-                            $value = (int) $value;
-                            break;
-                    }
+                    $value = $this->sanitizeValue($value, $this->structure->typeOf($key));
                     // Private caption fields are kept apart
                     $type = $metadata['private'] ? 'private_caption' : 'caption';
                     // Caption are multi-valued
@@ -110,6 +94,10 @@ SQL;
 
                 case 'exif':
                     // EXIF data is single-valued
+                    $tag = $this->structure->getMetadataTagByName($key);
+                    if ($tag) {
+                        $value = $this->sanitizeValue($value, $tag->getType());
+                    }
                     $record['exif'][$key] = $value;
                     break;
 
@@ -117,6 +105,30 @@ SQL;
                     throw new Exception('Unexpected metadata type');
                     break;
             }
+        }
+    }
+
+    private function sanitizeValue($value, $type)
+    {
+        switch ($type) {
+            case Mapping::TYPE_DATE:
+                return $this->helper->sanitizeDate($value);
+
+            case Mapping::TYPE_FLOAT:
+            case Mapping::TYPE_DOUBLE:
+                return (float) $value;
+
+            case Mapping::TYPE_INTEGER:
+            case Mapping::TYPE_LONG:
+            case Mapping::TYPE_SHORT:
+            case Mapping::TYPE_BYTE:
+                return (int) $value;
+
+            case Mapping::TYPE_BOOLEAN:
+                return (bool) $value;
+
+            default:
+                return $value;
         }
     }
 }

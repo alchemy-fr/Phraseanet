@@ -85,6 +85,16 @@ final class LimitedStructure implements Structure
         return $this->structure->getFlagByName($name);
     }
 
+    public function getMetadataTags()
+    {
+        return $this->structure->getMetadataTags();
+    }
+
+    public function getMetadataTagByName($name)
+    {
+        return $this->structure->getMetadataTagByName($name);
+    }
+
     private function limit(array $fields)
     {
         $allowed_collections = $this->allowedCollections();

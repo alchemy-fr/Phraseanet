@@ -36,7 +36,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use databox;
 use Iterator;
-use media_subdef;
 use Psr\Log\LoggerInterface;
 
 class RecordIndexer
@@ -308,7 +307,7 @@ class RecordIndexer
             // Thesaurus
             ->add('concept_path', $this->getThesaurusPathMapping())
             // EXIF
-            ->add('exif', $this->getExifMapping())
+            ->add('exif', $this->getMetadataTagMapping())
             // Status
             ->add('flags', $this->getFlagsMapping())
             ->add('flags_bitfield', 'integer')->notIndexed()
@@ -375,36 +374,20 @@ class RecordIndexer
         return $mapping;
     }
 
-    // @todo Add call to addAnalyzedVersion ?
-    private function getExifMapping()
+    private function getMetadataTagMapping()
     {
         $mapping = new Mapping();
-        $mapping
-            ->add(media_subdef::TC_DATA_WIDTH, 'integer')
-            ->add(media_subdef::TC_DATA_HEIGHT, 'integer')
-            ->add(media_subdef::TC_DATA_COLORSPACE, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_CHANNELS, 'integer')
-            ->add(media_subdef::TC_DATA_ORIENTATION, 'integer')
-            ->add(media_subdef::TC_DATA_COLORDEPTH, 'integer')
-            ->add(media_subdef::TC_DATA_DURATION, 'float')
-            ->add(media_subdef::TC_DATA_AUDIOCODEC, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_AUDIOSAMPLERATE, 'float')
-            ->add(media_subdef::TC_DATA_VIDEOCODEC, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_FRAMERATE, 'float')
-            ->add(media_subdef::TC_DATA_MIMETYPE, 'string')->notAnalyzed()
-            ->add(media_subdef::TC_DATA_FILESIZE, 'long')
-            // TODO use geo point type for lat/long
-            ->add(media_subdef::TC_DATA_LONGITUDE, 'float')
-            ->add(media_subdef::TC_DATA_LATITUDE, 'float')
-            ->add(media_subdef::TC_DATA_FOCALLENGTH, 'float')
-            ->add(media_subdef::TC_DATA_CAMERAMODEL, 'string')
-            ->add(media_subdef::TC_DATA_FLASHFIRED, 'boolean')
-            ->add(media_subdef::TC_DATA_APERTURE, 'float')
-            ->add(media_subdef::TC_DATA_SHUTTERSPEED, 'float')
-            ->add(media_subdef::TC_DATA_HYPERFOCALDISTANCE, 'float')
-            ->add(media_subdef::TC_DATA_ISO, 'integer')
-            ->add(media_subdef::TC_DATA_LIGHTVALUE, 'float')
-        ;
+        foreach ($this->structure->getMetadataTags() as $tag) {
+            $type = $tag->getType();
+            $mapping->add($tag->getName(), $type);
+            if ($type === Mapping::TYPE_STRING) {
+                if ($tag->isAnalyzable()) {
+                    $mapping->addRawVersion();
+                } else {
+                    $mapping->notAnalyzed();
+                }
+            }
+        }
 
         return $mapping;
     }

@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\Boolean;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 
-abstract class BinaryOperator extends Node
+abstract class BinaryExpression extends Node
 {
     protected $left;
     protected $right;

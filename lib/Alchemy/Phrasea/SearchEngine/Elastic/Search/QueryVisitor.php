@@ -89,11 +89,17 @@ class QueryVisitor implements Visit
             case NodeTypes::FLAG:
                 return new AST\Flag($this->visitString($element));
 
-            case NodeTypes::NATIVE_KEY_VALUE:
-                return $this->visitNativeKeyValueNode($element);
+            case NodeTypes::MATCH_EXPR:
+                return $this->visitMatchExpressionNode($element);
 
             case NodeTypes::NATIVE_KEY:
                 return $this->visitNativeKeyNode($element);
+
+            case NodeTypes::METADATA_KEY:
+                return new AST\KeyValue\MetadataKey($this->visitString($element));
+
+            case NodeTypes::FIELD_KEY:
+                return new AST\KeyValue\FieldKey($this->visitString($element));
 
             default:
                 throw new Exception(sprintf('Unknown node type "%s".', $element->getId()));
@@ -111,60 +117,53 @@ class QueryVisitor implements Visit
 
     private function visitFieldStatementNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Field statement must have 2 childs.');
-        }
-        $field = $this->visit($node->getChild(0));
-        $value = $this->visit($node->getChild(1));
-        return new AST\FieldMatchExpression($field, $value);
+        return $this->handleBinaryExpression($node, function($left, $right) {
+            return new AST\FieldMatchExpression($left, $right);
+        });
     }
 
     private function visitAndNode(Element $element)
     {
-        return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\Boolean\AndOperator($left, $right);
+        return $this->handleBinaryExpression($element, function($left, $right) {
+            return new AST\Boolean\AndExpression($left, $right);
         });
     }
 
     private function visitOrNode(Element $element)
     {
-        return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\Boolean\OrOperator($left, $right);
+        return $this->handleBinaryExpression($element, function($left, $right) {
+            return new AST\Boolean\OrExpression($left, $right);
         });
     }
 
     private function visitExceptNode(Element $element)
     {
-        return $this->handleBinaryOperator($element, function($left, $right) {
-            return new AST\Boolean\ExceptOperator($left, $right);
+        return $this->handleBinaryExpression($element, function($left, $right) {
+            return new AST\Boolean\ExceptExpression($left, $right);
         });
     }
 
     private function visitRangeNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Comparison operator can only have 2 childs.');
-        }
-        $field = $node->getChild(0)->accept($this);
-        $expression = $node->getChild(1)->accept($this);
+        $this->assertChildrenCount($node, 2);
+        $key = $node->getChild(0)->accept($this);
+        $boundary = $node->getChild(1)->accept($this);
 
         switch ($node->getId()) {
             case NodeTypes::LT_EXPR:
-                return AST\RangeExpression::lessThan($field, $expression);
+                return AST\KeyValue\RangeExpression::lessThan($key, $boundary);
             case NodeTypes::LTE_EXPR:
-                return AST\RangeExpression::lessThanOrEqual($field, $expression);
+                return AST\KeyValue\RangeExpression::lessThanOrEqual($key, $boundary);
             case NodeTypes::GT_EXPR:
-                return AST\RangeExpression::greaterThan($field, $expression);
+                return AST\KeyValue\RangeExpression::greaterThan($key, $boundary);
             case NodeTypes::GTE_EXPR:
-                return AST\RangeExpression::greaterThanOrEqual($field, $expression);
+                return AST\KeyValue\RangeExpression::greaterThanOrEqual($key, $boundary);
         }
     }
 
-    private function handleBinaryOperator(Element $element, \Closure $factory)
+    private function handleBinaryExpression(Element $element, \Closure $factory)
     {
-        if ($element->getChildrenNumber() !== 2) {
-            throw new Exception('Binary expression can only have 2 childs.');
-        }
+        $this->assertChildrenCount($element, 2);
         $left  = $element->getChild(0)->accept($this);
         $right = $element->getChild(1)->accept($this);
 
@@ -173,14 +172,9 @@ class QueryVisitor implements Visit
 
     private function visitEqualNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Equality operator can only have 2 childs.');
-        }
-
-        return new AST\FieldEqualsExpression(
-            $node->getChild(0)->accept($this),
-            $node->getChild(1)->accept($this)
-        );
+        return $this->handleBinaryExpression($node, function($left, $right) {
+            return new AST\KeyValue\EqualExpression($left, $right);
+        });
     }
 
     private function visitTerm(Element $element)
@@ -242,7 +236,7 @@ class QueryVisitor implements Visit
                     throw new Exception('Unexpected context after non-contextualizable node');
                 }
             } elseif ($node instanceof AST\Node) {
-                $root = new AST\Boolean\AndOperator($root, $node);
+                $root = new AST\Boolean\AndExpression($root, $node);
             } else {
                 throw new Exception('Unexpected node type inside text node.');
             }
@@ -267,9 +261,7 @@ class QueryVisitor implements Visit
 
     private function visitFlagStatementNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Flag statement can only have 2 childs.');
-        }
+        $this->assertChildrenCount($node, 2);
         $flag = $node->getChild(0)->accept($this);
         if (!$flag instanceof AST\Flag) {
             throw new \Exception('Flag statement key must be a flag node.');
@@ -298,21 +290,16 @@ class QueryVisitor implements Visit
         }
     }
 
-    private function visitNativeKeyValueNode(TreeNode $node)
+    private function visitMatchExpressionNode(TreeNode $node)
     {
-        if ($node->getChildrenNumber() !== 2) {
-            throw new Exception('Key value expression can only have 2 childs.');
-        }
-        $key = $this->visit($node->getChild(0));
-        $value = $this->visit($node->getChild(1));
-        return new AST\KeyValue\Expression($key, $value);
+        return $this->handleBinaryExpression($node, function($left, $right) {
+            return new AST\KeyValue\MatchExpression($left, $right);
+        });
     }
 
     private function visitNativeKeyNode(Element $element)
     {
-        if ($element->getChildrenNumber() !== 1) {
-            throw new Exception('Native key node can only have a single child.');
-        }
+        $this->assertChildrenCount($element, 1);
         $type = $element->getChild(0)->getValue()['token'];
         switch ($type) {
             case NodeTypes::TOKEN_DATABASE:
@@ -325,6 +312,13 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::recordIdentifier();
             default:
                 throw new InvalidArgumentException(sprintf('Unexpected token type "%s" for native key.', $type));
+        }
+    }
+
+    private function assertChildrenCount(TreeNode $node, $count)
+    {
+        if ($node->getChildrenNumber() !== $count) {
+            throw new Exception(sprintf('Node was expected to have only %s children.', $count));
         }
     }
 }

@@ -30,8 +30,9 @@
 %token  collection      collection
 %token  type            type
 %token  id              id|recordid
-%token  field_prefix    field.
-%token  flag_prefix     flag.
+%token  field_prefix    field\.
+%token  flag_prefix     flag\.
+%token  meta_prefix     (?:meta|exif)\.
 %token  true            true|1
 %token  false           false|0
 %token  word            [^\s\(\)\[\]:<>≤≥=]+
@@ -67,24 +68,40 @@ quaternary:
 // Key value pairs & field level matchers (restricted to a single field)
 
 key_value_pair:
-    native_key()             ::colon:: ::space::? value()   #native_key_value
+    match_key()              ::colon:: ::space::? value()   #match_expression
   | ::flag_prefix::  flag()  ::colon:: ::space::? boolean() #flag_statement
   | ::field_prefix:: field() ::colon:: ::space::? term()    #field_statement
   |                  field() ::colon:: ::space::? term()    #field_statement
-  | field() ::space::?       ::lt::    ::space::? value()   #less_than
-  | field() ::space::?       ::gt::    ::space::? value()   #greater_than
-  | field() ::space::?       ::lte::   ::space::? value()   #less_than_or_equal_to
-  | field() ::space::?       ::gte::   ::space::? value()   #greater_than_or_equal_to
-  | field() ::space::?       ::equal:: ::space::? value()   #equal_to
+  | key() ::space::?         ::lt::    ::space::? value()   #less_than
+  | key() ::space::?         ::gt::    ::space::? value()   #greater_than
+  | key() ::space::?         ::lte::   ::space::? value()   #less_than_or_equal_to
+  | key() ::space::?         ::gte::   ::space::? value()   #greater_than_or_equal_to
+  | key() ::space::?         ::equal:: ::space::? value()   #equal_to
 
-#flag:
-  word_or_keyword()+
+match_key:
+    native_key()
+  | ::meta_prefix:: meta_key()
 
 #native_key:
     <database>
   | <collection>
   | <type>
   | <id>
+
+key:
+    ::meta_prefix::  meta_key()
+  | ::field_prefix:: field_key()
+  |                  field_key()
+
+#meta_key:
+  word_or_keyword()+
+
+#field_key:
+    word_or_keyword()+
+  | quoted_string()
+
+#flag:
+  word_or_keyword()+
 
 #field:
     word_or_keyword()+
@@ -149,6 +166,7 @@ keyword:
   | <id>
   | <field_prefix>
   | <flag_prefix>
+  | <meta_prefix>
   | <true>
   | <false>
 

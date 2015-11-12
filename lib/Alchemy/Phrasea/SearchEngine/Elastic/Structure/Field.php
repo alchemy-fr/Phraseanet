@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
 use Assert\Assertion;
@@ -13,7 +12,7 @@ use databox_field;
 /**
  * @todo Field labels
  */
-class Field
+class Field implements Typed
 {
     private $name;
     private $type;
@@ -117,41 +116,6 @@ class Field
             $this->name,
             $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
         );
-    }
-
-    public function isValueCompatible($value)
-    {
-        return count(self::filterByValueCompatibility([$this], $value)) > 0;
-    }
-
-    public static function filterByValueCompatibility(array $fields, $value)
-    {
-        $is_numeric = is_numeric($value);
-        $is_valid_date = RecordHelper::validateDate($value);
-        $filtered = [];
-        foreach ($fields as $field) {
-            switch ($field->type) {
-                case Mapping::TYPE_FLOAT:
-                case Mapping::TYPE_DOUBLE:
-                case Mapping::TYPE_INTEGER:
-                case Mapping::TYPE_LONG:
-                case Mapping::TYPE_SHORT:
-                case Mapping::TYPE_BYTE:
-                    if ($is_numeric) {
-                        $filtered[] = $field;
-                    }
-                    break;
-                case Mapping::TYPE_DATE:
-                    if ($is_valid_date) {
-                        $filtered[] = $field;
-                    }
-                    break;
-                case Mapping::TYPE_STRING:
-                default:
-                    $filtered[] = $field;
-            }
-        }
-        return $filtered;
     }
 
     public function getConceptPathIndexField()

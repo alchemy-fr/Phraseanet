@@ -49,21 +49,21 @@ foo EXCEPT (bar OR baz)|(<text:"foo"> EXCEPT (<text:"bar"> OR <text:"baz">))
 foo EXCEPT (bar EXCEPT baz)|(<text:"foo"> EXCEPT (<text:"bar"> EXCEPT <text:"baz">))
 
 # Comparison operators
-foo < 42|<range:foo lt="42">
-foo ≤ 42|<range:foo lte="42">
-foo > 42|<range:foo gt="42">
-foo ≥ 42|<range:foo gte="42">
-foo < 2015/01/01|<range:foo lt="2015/01/01">
-foo ≤ 2015/01/01|<range:foo lte="2015/01/01">
-foo > 2015/01/01|<range:foo gt="2015/01/01">
-foo ≥ 2015/01/01|<range:foo gte="2015/01/01">
-foo < "2015/01/01"|<range:foo lt="2015/01/01">
-foo ≤ "2015/01/01"|<range:foo lte="2015/01/01">
-foo > "2015/01/01"|<range:foo gt="2015/01/01">
-foo ≥ "2015/01/01"|<range:foo gte="2015/01/01">
-foo = 42|(<field:foo> == <value:"42">)
-foo = bar|(<field:foo> == <value:"bar">)
-foo = "bar"|(<field:foo> == <value:"bar">)
+foo < 42|<range:field.foo lt="42">
+foo ≤ 42|<range:field.foo lte="42">
+foo > 42|<range:field.foo gt="42">
+foo ≥ 42|<range:field.foo gte="42">
+foo < 2015/01/01|<range:field.foo lt="2015/01/01">
+foo ≤ 2015/01/01|<range:field.foo lte="2015/01/01">
+foo > 2015/01/01|<range:field.foo gt="2015/01/01">
+foo ≥ 2015/01/01|<range:field.foo gte="2015/01/01">
+foo < "2015/01/01"|<range:field.foo lt="2015/01/01">
+foo ≤ "2015/01/01"|<range:field.foo lte="2015/01/01">
+foo > "2015/01/01"|<range:field.foo gt="2015/01/01">
+foo ≥ "2015/01/01"|<range:field.foo gte="2015/01/01">
+foo = 42|(<field.foo> == <value:"42">)
+foo = bar|(<field.foo> == <value:"bar">)
+foo = "bar"|(<field.foo> == <value:"bar">)
 
 # Field narrowing
 foo:bar|(<field:foo> MATCHES <text:"bar">)
@@ -79,19 +79,19 @@ field.type:foo|(<field:type> MATCHES <text:"foo">)
 field.id:foo|(<field:id> MATCHES <text:"foo">)
 
 # Matchers
-collection:foo|<collection:foo>
-collection:foo AND bar|(<collection:foo> AND <text:"bar">)
-collection:foo bar|(<collection:foo> AND <text:"bar">)
-database:foo|<database:foo>
-database:foo AND bar|(<database:foo> AND <text:"bar">)
-database:foo bar|(<database:foo> AND <text:"bar">)
-type:foo|<media_type:foo>
-type:foo AND bar|(<media_type:foo> AND <text:"bar">)
-type:foo bar|(<media_type:foo> AND <text:"bar">)
-id:90|<record_identifier:90>
-id:90 AND foo|(<record_identifier:90> AND <text:"foo">)
-id:90 foo|(<record_identifier:90> AND <text:"foo">)
-recordid:90|<record_identifier:90>
+collection:foo|<collection:"foo">
+collection:foo AND bar|(<collection:"foo"> AND <text:"bar">)
+collection:foo bar|(<collection:"foo"> AND <text:"bar">)
+database:foo|<database:"foo">
+database:foo AND bar|(<database:"foo"> AND <text:"bar">)
+database:foo bar|(<database:"foo"> AND <text:"bar">)
+type:foo|<media_type:"foo">
+type:foo AND bar|(<media_type:"foo"> AND <text:"bar">)
+type:foo bar|(<media_type:"foo"> AND <text:"bar">)
+id:90|<record_identifier:"90">
+id:90 AND foo|(<record_identifier:"90"> AND <text:"foo">)
+id:90 foo|(<record_identifier:"90"> AND <text:"foo">)
+recordid:90|<record_identifier:"90">
 
 # Flag matcher
 flag.foo:true|<flag:foo set>
@@ -101,6 +101,20 @@ flag.foo:0|<flag:foo cleared>
 flag.true:true|<flag:true set>
 flag.foo bar:true|(<text:"flag.foo"> AND (<field:bar> MATCHES <text:"true">))
 true|<text:"true">
+
+# Metadata (EXIF or anything else) matcher
+meta.MimeType:image/jpeg|<metadata.MimeType:"image/jpeg">
+exif.MimeType:image/jpeg|<metadata.MimeType:"image/jpeg">
+meta.Duration < 300|<range:metadata.Duration lt="300">
+meta.Duration ≤ 300|<range:metadata.Duration lte="300">
+meta.Duration > 300|<range:metadata.Duration gt="300">
+meta.Duration ≥ 300|<range:metadata.Duration gte="300">
+meta.Duration = 300|(<metadata.Duration> == <value:"300">)
+
+# Unescaped "." issue on key prefixes
+fieldOne:foo|(<field:fieldOne> MATCHES <text:"foo">)
+flagged:true|(<field:flagged> MATCHES <text:"true">)
+metadata:foo|(<field:metadata> MATCHES <text:"foo">)
 
 # Matcher on unknown name --> fulltext
 foo:bar|(<field:foo> MATCHES <text:"bar">)
