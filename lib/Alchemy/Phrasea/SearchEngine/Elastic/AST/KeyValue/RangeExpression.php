@@ -9,6 +9,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 
 class RangeExpression extends Node
 {
