@@ -53,19 +53,22 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     }));
 
     $app['phraseanet.content-negotiation.priorities'] = array_merge(
-        ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
         V1::$extendedContentTypes['json'],
-        V1::$extendedContentTypes['yaml']
+        V1::$extendedContentTypes['jsonp'],
+        V1::$extendedContentTypes['yaml'],
+        ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript']
     );
 
-    // handle API content negotiation
-    $app->before(function(Request $request) use ($app) {
+    $app['phraseanet.content-negotiation.custom_formats'] = [
         // register custom API format
-        $request->setFormat(Result::FORMAT_JSON_EXTENDED, V1::$extendedContentTypes['json']);
-        $request->setFormat(Result::FORMAT_YAML_EXTENDED, V1::$extendedContentTypes['yaml']);
-        $request->setFormat(Result::FORMAT_JSONP_EXTENDED, V1::$extendedContentTypes['jsonp']);
-        $request->setFormat(Result::FORMAT_JSONP, array('text/javascript', 'application/javascript'));
+        Result::FORMAT_JSON_EXTENDED => V1::$extendedContentTypes['json'],
+        Result::FORMAT_YAML_EXTENDED => V1::$extendedContentTypes['yaml'],
+        Result::FORMAT_JSONP_EXTENDED => V1::$extendedContentTypes['jsonp'],
+        Result::FORMAT_JSONP => ['text/javascript', 'application/javascript'],
+    ];
 
+    // handle API content negotiation
+    $app->before(function(Request $request) {
         // set request format according to negotiated content or override format with JSONP if callback parameter is defined
         if (trim($request->get('callback')) !== '') {
             $request->setRequestFormat(Result::FORMAT_JSONP);
