@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
@@ -176,8 +177,27 @@ class QueryVisitor implements Visit
     private function visitEqualNode(TreeNode $node)
     {
         return $this->handleBinaryExpression($node, function($left, $right) {
+            if ($this->isDateKey($left)) {
+                try {
+                    // Try to create a range for incomplete dates
+                    $range = QueryHelper::getRangeFromDateString($right);
+                    return new AST\KeyValue\RangeExpression(
+                        $left,
+                        $range['from'], true,
+                        $range['to'], false
+                    );
+                } catch (\InvalidArgumentException $e) {
+                    // Fall back to equal expression
+                }
+            }
+
             return new AST\KeyValue\EqualExpression($left, $right);
         });
+    }
+
+    private function isDateKey(AST\KeyValue\Key $key)
+    {
+        return $key instanceof AST\KeyValue\TimestampKey;
     }
 
     private function visitTerm(Element $element)

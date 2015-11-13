@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
 class QueryHelper
@@ -106,5 +107,43 @@ class QueryHelper
 
             return $query;
         }
+    }
+
+    public static function getRangeFromDateString($string)
+    {
+        $formats = ['Y/m/d', 'Y/m', 'Y'];
+        $deltas = ['+1 day', '+1 month', '+1 year'];
+        $to = null;
+        while ($format = array_pop($formats)) {
+            $delta = array_pop($deltas);
+            $from = date_create_from_format($format, $string);
+            if ($from !== false) {
+                // Rewind to start of range
+                $month = 1;
+                $day = 1;
+                switch ($format) {
+                    case 'Y/m/d':
+                        $day = (int) $from->format('d');
+                    case 'Y/m':
+                        $month = (int) $from->format('m');
+                    case 'Y':
+                        $year = (int) $from->format('Y');
+                }
+                date_date_set($from, $year, $month, $day);
+                date_time_set($from, 0, 0, 0);
+                // Create end of the the range
+                $to = date_modify(clone $from, $delta);
+                break;
+            }
+        }
+
+        if (!$from || !$to) {
+            throw new \InvalidArgumentException(sprintf('Invalid date "%s".', $string));
+        }
+
+        return [
+            'from' => $from->format(Mapping::DATE_FORMAT_CAPTION_PHP),
+            'to'   => $to->format(Mapping::DATE_FORMAT_CAPTION_PHP)
+        ];
     }
 }

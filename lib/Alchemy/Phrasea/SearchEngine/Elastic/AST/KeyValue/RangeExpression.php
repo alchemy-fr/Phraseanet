@@ -20,22 +20,22 @@ class RangeExpression extends Node
 
     public static function lessThan(Key $key, $bound)
     {
-        return new self($key, $bound, false);
+        return new self($key, null, false, $bound, false);
     }
 
     public static function lessThanOrEqual(Key $key, $bound)
     {
-        return new self($key, $bound, true);
+        return new self($key, null, false, $bound, true);
     }
 
     public static function greaterThan(Key $key, $bound)
     {
-        return new self($key, null, false, $bound, false);
+        return new self($key, $bound, false);
     }
 
     public static function greaterThanOrEqual(Key $key, $bound)
     {
-        return new self($key, null, false, $bound, true);
+        return new self($key, $bound, true);
     }
 
     public function __construct(Key $key, $lb, $li = false, $hb = null, $hi = false)
@@ -57,17 +57,17 @@ class RangeExpression extends Node
         if ($this->lower_bound !== null) {
             $this->assertValueCompatible($this->lower_bound, $context);
             if ($this->lower_inclusive) {
-                $params['lte'] = $this->lower_bound;
+                $params['gte'] = $this->lower_bound;
             } else {
-                $params['lt'] = $this->lower_bound;
+                $params['gt'] = $this->lower_bound;
             }
         }
         if ($this->higher_bound !== null) {
             $this->assertValueCompatible($this->higher_bound, $context);
             if ($this->higher_inclusive) {
-                $params['gte'] = $this->higher_bound;
+                $params['lte'] = $this->higher_bound;
             } else {
-                $params['gt'] = $this->higher_bound;
+                $params['lt'] = $this->higher_bound;
             }
         }
 
@@ -98,16 +98,16 @@ class RangeExpression extends Node
         $string = '';
         if ($this->lower_bound !== null) {
             if ($this->lower_inclusive) {
-                $string .= sprintf(' lte="%s"', $this->lower_bound);
+                $string .= sprintf(' gte="%s"', $this->lower_bound);
             } else {
-                $string .= sprintf(' lt="%s"', $this->lower_bound);
+                $string .= sprintf(' gt="%s"', $this->lower_bound);
             }
         }
         if ($this->higher_bound !== null) {
             if ($this->higher_inclusive) {
-                $string .= sprintf(' gte="%s"', $this->higher_bound);
+                $string .= sprintf(' lte="%s"', $this->higher_bound);
             } else {
-                $string .= sprintf(' gt="%s"', $this->higher_bound);
+                $string .= sprintf(' lt="%s"', $this->higher_bound);
             }
         }
 
