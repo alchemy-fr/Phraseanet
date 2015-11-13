@@ -19,8 +19,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\LimitedStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -48,12 +48,12 @@ class ElasticSearchEngine implements SearchEngineInterface
     /** @var ElasticsearchOptions */
     private $options;
 
-    public function __construct(Application $app, Structure $structure, Client $client, $indexName, array $locales, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, Structure $structure, Client $client, $indexName, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
         $this->client = $client;
-        $this->locales = array_keys($locales);
+        $this->context_factory = $context_factory;
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
 
@@ -62,6 +62,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $this->indexName = $indexName;
+
     }
 
     public function getIndexName()
@@ -261,12 +262,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
     {
         $options = $options ?: new SearchEngineOptions();
-
-        $narrowToFields = array();
-        foreach($options->getFields() as $field) {
-            $narrowToFields[] = $field->get_name();
-        }
-        $context = $this->createQueryContext($options)->narrowToFields($narrowToFields);
+        $context = $this->context_factory->createContext($options);
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
@@ -350,23 +346,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             'order' => 'score',
             'fields' => $highlighted_fields
         ];
-    }
-
-    /**
-     * @todo Move in search engine service provider
-     */
-    private function createQueryContext(SearchEngineOptions $options)
-    {
-        return new QueryContext(
-            $this->getLimitedStructure($options),
-            $this->locales,
-            $this->app['locale']
-        );
-    }
-
-    private function getLimitedStructure(SearchEngineOptions $options)
-    {
-        return new LimitedStructure($this->structure, $options);
     }
 
     /**
@@ -455,7 +434,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $base_facet_agg['terms']['field'] = 'type';
         $aggs['Type'] = $base_facet_agg;
 
-        $structure = $this->getLimitedStructure($options);
+        $structure = $this->context_factory->getLimitedStructure($options);
         foreach ($structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no

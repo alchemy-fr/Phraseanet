@@ -24,6 +24,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
@@ -62,7 +63,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['search_engine.structure'],
                 $app['elasticsearch.client'],
                 $options->getIndexName(),
-                $app['locales.available'],
+                $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
                 $options
             );
@@ -181,6 +182,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             );
         });
 
+        $app['query_context.factory'] = $app->share(function ($app) {
+            return new QueryContextFactory(
+                $app['search_engine.structure'],
+                array_keys($app['locales.available']),
+                $app['locale']
+            );
+        });
+
         $app['query_parser.grammar_path'] = function ($app) {
             $configPath = ['registry', 'searchengine', 'query-grammar-path'];
             $grammarPath = $app['conf']->get($configPath, 'grammar/query.pp');
@@ -197,6 +206,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         $app['query_compiler'] = $app->share(function ($app) {
             return new QueryCompiler(
                 $app['query_parser'],
+                $app['search_engine.structure'],
                 $app['thesaurus']
             );
         });
