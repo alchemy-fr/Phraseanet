@@ -39,7 +39,7 @@ class Tag implements Typed
     public function getIndexField($raw = false)
     {
         return sprintf(
-            'exif.%s%s',
+            'metadata_tags.%s%s',
             $this->name,
             $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
         );

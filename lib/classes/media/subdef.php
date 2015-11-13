@@ -125,7 +125,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_MIMETYPE = 'MimeType';
     const TC_DATA_FILESIZE = 'FileSize';
     const TC_DATA_LONGITUDE = 'Longitude';
+    const TC_DATA_LONGITUDE_REF = 'LongitudeRef';
     const TC_DATA_LATITUDE = 'Latitude';
+    const TC_DATA_LATITUDE_REF = 'LatitudeRef';
     const TC_DATA_FOCALLENGTH = 'FocalLength';
     const TC_DATA_CAMERAMODEL = 'CameraModel';
     const TC_DATA_FLASHFIRED = 'FlashFired';
@@ -643,6 +645,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             self::TC_DATA_VIDEOCODEC         => 'getVideoCodec',
             self::TC_DATA_AUDIOCODEC         => 'getAudioCodec',
             self::TC_DATA_ORIENTATION        => 'getOrientation',
+            self::TC_DATA_LONGITUDE          => 'getLongitude',
+            self::TC_DATA_LONGITUDE_REF      => 'getLongitudeRef',
+            self::TC_DATA_LATITUDE           => 'getLatitude',
+            self::TC_DATA_LATITUDE_REF       => 'getLatitudeRef',
         ];
 
         foreach ($methods as $tc_name => $method) {
@@ -655,8 +661,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             }
         }
 
-        $datas[self::TC_DATA_LONGITUDE] = $media->getLongitude();
-        $datas[self::TC_DATA_LATITUDE] = $media->getLatitude();
         $datas[self::TC_DATA_MIMETYPE] = $media->getFile()->getMimeType();
         $datas[self::TC_DATA_FILESIZE] = $media->getFile()->getSize();
 

@@ -307,7 +307,7 @@ class RecordIndexer
             // Thesaurus
             ->add('concept_path', $this->getThesaurusPathMapping())
             // EXIF
-            ->add('exif', $this->getMetadataTagMapping())
+            ->add('metadata_tags', $this->getMetadataTagMapping())
             // Status
             ->add('flags', $this->getFlagsMapping())
             ->add('flags_bitfield', 'integer')->notIndexed()
