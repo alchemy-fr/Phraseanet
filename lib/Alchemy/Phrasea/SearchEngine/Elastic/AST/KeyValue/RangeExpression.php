@@ -84,7 +84,7 @@ class RangeExpression extends Node
     private function assertValueCompatible($value, QueryContext $context)
     {
         if (!$this->key->isValueCompatible($value, $context)) {
-            throw new QueryException(sprintf('Value "%s" for metadata tag "%s" is not valid.', $value, $this->key));
+            throw new QueryException(sprintf('Value "%s" for key "%s" is not valid.', $value, $this->key));
         }
     }
 

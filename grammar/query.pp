@@ -30,6 +30,8 @@
 %token  collection      collection
 %token  type            type
 %token  id              id|recordid
+%token  created_on      created_(on|at)
+%token  updated_on      updated_(on|at)
 %token  field_prefix    field\.
 %token  flag_prefix     flag\.
 %token  meta_prefix     (?:meta|exif)\.
@@ -89,9 +91,14 @@ match_key:
   | <id>
 
 key:
-    ::meta_prefix::  meta_key()
+    timestamp_key()
+  | ::meta_prefix::  meta_key()
   | ::field_prefix:: field_key()
   |                  field_key()
+
+#timestamp_key:
+    <created_on>
+  | <updated_on>
 
 #meta_key:
   word_or_keyword()+
@@ -164,6 +171,8 @@ keyword:
   | <collection>
   | <type>
   | <id>
+  | <created_on>
+  | <updated_on>
   | <field_prefix>
   | <flag_prefix>
   | <meta_prefix>

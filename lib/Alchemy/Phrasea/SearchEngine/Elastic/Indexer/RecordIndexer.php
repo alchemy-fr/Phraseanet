@@ -302,8 +302,8 @@ class RecordIndexer
             ->add('type', 'string')->notAnalyzed()
             ->add('record_type', 'string')->notAnalyzed() // record or story
             // Dates
-            ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
-            ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL)
+            ->add('created_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL_OR_CAPTION)
+            ->add('updated_on', 'date')->format(Mapping::DATE_FORMAT_MYSQL_OR_CAPTION)
             // Thesaurus
             ->add('concept_path', $this->getThesaurusPathMapping())
             // EXIF
