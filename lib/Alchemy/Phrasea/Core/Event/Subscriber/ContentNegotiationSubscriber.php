@@ -25,11 +25,14 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
     private $negotiator;
     /** @var array */
     private $priorities;
+    /** @var array */
+    private $customFormats;
 
-    public function __construct(Negotiator $negotiator, array $priorities)
+    public function __construct(Negotiator $negotiator, array $priorities, array $customFormats = [])
     {
         $this->negotiator = $negotiator;
         $this->priorities = $priorities;
+        $this->customFormats = $customFormats;
     }
 
     public static function getSubscribedEvents()
@@ -41,12 +44,18 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $format = $this->negotiator->getBest($event->getRequest()->headers->get('accept', '*/*'), $this->priorities);
+        $request = $event->getRequest();
+
+        foreach ($this->customFormats as $format => $mimeTypes) {
+            $request->setFormat($format, $mimeTypes);
+        }
+
+        $format = $this->negotiator->getBest($request->headers->get('accept', '*/*'), $this->priorities);
 
         if (!$format instanceof Accept) {
             throw new HttpException(406);
         }
 
-        $event->getRequest()->setRequestFormat($event->getRequest()->getFormat($format->getValue()));
+        $request->setRequestFormat($request->getFormat($format->getValue()));
     }
 }

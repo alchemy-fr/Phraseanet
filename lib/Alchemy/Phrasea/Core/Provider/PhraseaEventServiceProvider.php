@@ -44,10 +44,12 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
             'text/html',
             'application/json',
         ];
+        $app['phraseanet.content-negotiation.custom_formats'] = [];
         $app['phraseanet.content-negotiation-subscriber'] = $app->share(function (Application $app) {
             return new ContentNegotiationSubscriber(
                 $app['negotiator'],
-                $app['phraseanet.content-negotiation.priorities']
+                $app['phraseanet.content-negotiation.priorities'],
+                $app['phraseanet.content-negotiation.custom_formats']
             );
         });
         $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
