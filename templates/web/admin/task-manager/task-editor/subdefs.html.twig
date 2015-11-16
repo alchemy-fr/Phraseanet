@@ -98,19 +98,11 @@
             gform.flush.value = minmax(parseInt(xml.find("flush").text()), 1, 100);
             gform.maxrecs.value = minmax(parseInt(xml.find("maxrecs").text()), 10, 100);
             gform.maxmegs.value = minmax(parseInt(xml.find("maxmegs").text()), 64, 512);
-            for(i=0; i < gform['sbas[]'].length; i++)
-            {
-                var sbid = gform['sbas[]'][i].value;
+            var $databoxes = $(gform).find("input[name='sbas[]']");
+            for(i=0; i < $databoxes.length; i++) {
+                var sbid = $($databoxes[i]).attr('value');
 
-                if(xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0)
-                {
-                    gform['sbas[]'][i].checked = true;
-                }
-                else
-                {
-                    gform['sbas[]'][i].checked = false;
-                }
-
+                $($databoxes[i]).attr('checked', (xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0));
             }
         }
     }
