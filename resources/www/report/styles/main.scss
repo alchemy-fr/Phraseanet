@@ -1,0 +1,11 @@
+$sharedIconPath: '../../../skins/icons/';
+@import '../../shared/styles/skin/main';
+@import '../../shared/styles/jquery.contextmenu';
+
+$imagesPath: '../images/';
+@import './tables';
+@import './jquery-cluetip';
+@import './jquery-ui/report-base';
+@import './jquery-ui/report-detailed';
+
+

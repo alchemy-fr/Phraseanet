@@ -1,0 +1,105 @@
+$iconsPath: '../../../skins/icons/';
+@import '../../../../www/bower_components/fancytree/dist/skin-win8/ui.fancytree'; // to inline import css file, don't put extension
+@import '../../vendors/jquery.treeview/jquery.treeview'; // to inline import css file, don't put extension
+@import '../../../../www/bower_components/humane-js/themes/libnotify';
+@import '../../shared/styles/jquery.contextmenu';
+@import '../../shared/styles/jquery.image_enhancer';
+@import '../../shared/styles/colorpicker';
+@import '../../shared/styles/skin/main';
+@import '../../shared/styles/skin/geonames';
+@import '../../shared/styles/skin/basket';
+@import '../../shared/styles/skin/push';
+
+#idFrameC {
+  top: 10px;
+  bottom: 10px;
+}
+
+#idFrameC .ui-tabs {
+  bottom: 10px;
+  left: 0;
+}
+
+#answers {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.caption-tooltip-container {
+  max-width: 500px;
+
+}
+.caption-tooltip-container .popover-inner .popover-content {
+  max-width: 500px;
+  max-height: 500px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.popover-inner .popover-content dl.dl-horizontal  {
+  margin-top: 0;
+  margin-bottom: 0;
+
+}
+
+.popover-inner .popover-content dl.dl-horizontal:first-child{
+  border-top: none;
+}
+
+.dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  color: #808080;
+  text-align: left;
+  width: 100px ;
+  /*border-bottom: 1px solid #333;*/
+}
+
+.dl-horizontal dd, .popover-inner .popover-content .dl-horizontal dd {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-left: 120px;
+}
+
+.break-word {
+  word-wrap: break-word;
+}
+
+.ui-button:focus, .ui-button-text:focus {
+  outline: none;
+}
+
+.descBoxes .dl-horizontal dt{
+  float: none;
+  width: 100%;
+  padding: 0;
+}
+.descBoxes .dl-horizontal dd{
+  padding-top: 0;
+  margin-left: 10px;
+}
+
+
+/** was inline code: */
+.noRepresent {
+  background-color: #A2F5F5;
+}
+
+.disable {
+  display: none;
+}
+
+.deployer_opened::before {
+  content: "\25BC";
+}
+
+.deployer_closed::before {
+  content: "\25B6";
+}
+
+/* Vertical Tabs */
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right;}

@@ -95,16 +95,16 @@
                             <tr class='s_' id='SYN_{{ data['id'] }}' hits='{{ data['hits'] }}'>
                                 <td style='text-align:center;'>
                                 {% if loop.index > 0 %}
-                                    <img id="BTNU_{{ data['id'] }}" src="/skins/thesaurus/images/up.gif" />
+                                    <img id="BTNU_{{ data['id'] }}" src="/assets/thesaurus/images/up.gif" />
                                 {% endif %}
                                 {% if not loop.last %}
-                                    <img id="BTND_{{ data['id'] }}" src="/skins/thesaurus/images/down.gif" />
+                                    <img id="BTND_{{ data['id'] }}" src="/assets/thesaurus/images/down.gif" />
                                 {% endif %}
                                 </td>
                                 {% if data['lng'] %}
                                     <td id='FLG_{{ data['id'] }}'><img src='/skins/lng/{{ data['lng'] }}_flag_18.gif' /></td>
                                 {% else %}
-                                    <td id='FLG_{{ data['id'] }}'><img src='/skins/thesaurus/images/noflag.gif' /></td>
+                                    <td id='FLG_{{ data['id'] }}'><img src='/assets/thesaurus/images/noflag.gif' /></td>
                                 {% endif %}
                                 <td>{{ data['t'] }}</td>
                                 <td>{{ data['hits'] }}</td>
@@ -260,7 +260,7 @@
                 {
                     img = td.appendChild(document.createElement("img"));
                     img.id = "BTNU_" + id;
-                    img.src = "/skins/thesaurus/images/up.gif";
+                    img.src = "/assets/thesaurus/images/up.gif";
                     if(n.nextSibling)
                     {
                         td.appendChild(document.createTextNode(" "));
@@ -270,7 +270,7 @@
                 {
                     img = td.appendChild(document.createElement("img"));
                     img.id = "BTND_" + id;
-                    img.src = "/skins/thesaurus/images/down.gif";
+                    img.src = "/assets/thesaurus/images/down.gif";
                 }
 
                 td = tr.appendChild(document.createElement("td"));

@@ -5,7 +5,7 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
   <li>
     <a target="right" href="{{ path('admin_dashboard') }}" class="ajax">
-      <img src="/skins/admin/Dashboard.png" />
+      <img src="/assets/admin/images/Dashboard.png" />
       <span>{{ 'Tableau de bord' | trans }}</span>
     </a>
   </li>
@@ -18,7 +18,7 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
   <li>
     <a target="right" href="{{ path('setup_display_globals') }}" class="ajax">
-      <img src="/skins/admin/Setup.png" />
+      <img src="/assets/admin/images/Setup.png" />
       <span>{% trans %}Setup{% endtrans %}</span>
     </a>
   </li>
@@ -31,7 +31,7 @@
 
   <li class="{% if feature == 'connected' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_connected_users') }}" class="ajax zone_online_users">
-      <img src="/skins/admin/Connected.png" />
+      <img src="/assets/admin/images/Connected.png" />
       <span>{{ 'admin::utilisateurs: utilisateurs connectes' | trans }}</span>
     </a>
   </li>
@@ -39,13 +39,13 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
   <li class="{% if feature == 'users' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_users_search') }}" class="ajax zone_editusers">
-      <img src="/skins/admin/Users.png" />
+      <img src="/assets/admin/images/Users.png" />
       <span>{{ 'admin::utilisateurs: utilisateurs' | trans }}</span>
     </a>
   </li>
   <li class="{% if feature == 'registrations' %}selected{% endif %}">
     <a target="right" href="{{ path('users_display_registrations') }}" class="ajax">
-      <img src="/skins/admin/Demandes.png" />
+      <img src="/assets/admin/images/Demandes.png" />
       <span>{{ 'admin::utilisateurs: demandes en cours' | trans }}</span>
     </a>
   </li>
@@ -63,7 +63,7 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('taskmanager') %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_tasks_list') }}" class="ajax">
-      <img src="/skins/admin/TaskManager.png" />
+      <img src="/assets/admin/images/TaskManager.png" />
       <span>{{ 'admin::utilisateurs: gestionnaire de taches' | trans }}</span>
     </a>
   </li>
@@ -79,7 +79,7 @@
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
       <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">
-        <img src="/skins/admin/DatabasesAvailable.png" />
+        <img src="/assets/admin/images/DatabasesAvailable.png" />
         <span>{{ 'admin::utilisateurs: bases de donnees' | trans }}</span>
       </a>
     </div>
@@ -104,7 +104,7 @@
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
             <a target="right" href="{{ path('admin_database', { 'databox_id' : sbas_id }) }}" class="ajax">
-                <img src="/skins/admin/Database.png"/>
+                <img src="/assets/admin/images/Database.png"/>
                 <span>{{ databox.get_label(app['locale']) }}</span>
             </a>
         </div>
@@ -160,7 +160,7 @@
         {% if seeUsrGene %}
           <li>
             <a target="right" href="{{ path('admin_users_search', { 'sbas_id' : [ sbas_id ] }) }}" class="ajax">
-              <img src="/skins/admin/Users.png"/>
+              <img src="/assets/admin/images/Users.png"/>
               <span>{{ 'admin::utilisateurs: utilisateurs' | trans }}</span>
             </a>
           </li>
@@ -197,7 +197,7 @@
             {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), 'canadmin') %}
               <li>
                 <a target="right" href="{{ path('admin_users_search', { 'base_id' : [ collection.get_base_id() ] }) }}" class="ajax">
-                  <img src="/skins/admin/Users.png"/>
+                  <img src="/assets/admin/images/Users.png"/>
                   <span>{{ 'admin::utilisateurs: utilisateurs' | trans }}</span>
                 </a>
               </li>
