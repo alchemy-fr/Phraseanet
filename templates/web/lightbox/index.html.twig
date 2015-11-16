@@ -8,8 +8,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet"
-        href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,skins/lightbox/lightbox.css' }) }}" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
 {% endblock %}
 
   {% block icon %}

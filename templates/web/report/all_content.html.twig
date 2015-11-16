@@ -1,8 +1,8 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/common/main.css,skins/report/jquery-ui-theme/report-base/jquery-ui-1.10.3.custom.css,skins/report/jquery-ui-theme/report-detailed/jquery-ui-1.10.3.custom.css,skins/report/report-table.css,skins/report/jquery.cluetip.css,include/jslibs/jquery.contextmenu.css' }) }}" media="screen" />
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/report/print.css' }) }}" media="print" />
+    <link type="text/css" rel="stylesheet" href="/assets/report/css/report{% if not app.debug %}.min{% endif %}.css" media="screen">
+    <link type="text/css" rel="stylesheet" href="/assets/report/css/print{% if not app.debug %}.min{% endif %}.css" media="print">
 {% endblock stylesheet %}
 
 {% block icon %}

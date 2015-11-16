@@ -1,3 +1,4 @@
+$iconsPath: '../../../skins/icons/';
 ul.image_set{
   padding:0;
   margin:0;
@@ -44,28 +45,28 @@ a.active_choice{
 }
 
 .valid_choice.agree{
-  background-image: url(/skins/icons/ok.png);
+  background-image: url('#{$iconsPath}ok.png');
 }
 .valid_choice.disagree{
-  background-image: url(/skins/icons/delete.png);
+  background-image: url('#{$iconsPath}delete.png');
 }
 
 .thumb_wrapper {
-    text-align:center;
+  text-align:center;
 }
 
 @media screen and (orientation: landscape) {
 
- .thumb_wrapper img {
-   width: 50%;
- }
+  .thumb_wrapper img {
+    width: 50%;
+  }
 
 }
 
 @media screen and (orientation: portrait) {
 
- .thumb_wrapper img {
-   width: 100%;
- }
+  .thumb_wrapper img {
+    width: 100%;
+  }
 
 }

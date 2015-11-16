@@ -13,7 +13,7 @@
   width: 43px;
   height: 11px;
   position: absolute;
-  background-image: url(images/wait.gif);
+  background-image: url(images/wait.gif); //@TODO fix url
 }
 .cluetip-arrows {
   display: none;
@@ -37,15 +37,15 @@
 }
 
 #cluetip{
-	background-color: #333;
-	border: 1px solid #333;
+  background-color: #333;
+  border: 1px solid #333;
 }
 #cluetip table{
-	border: 1px solid #333;
-	border-collapse:collapse;
+  border: 1px solid #333;
+  border-collapse:collapse;
 }
 
 #cluetip thead th, #cluetip tfoot{
-	background-color:white;
-	color:white;
+  background-color:white;
+  color:white;
 }
