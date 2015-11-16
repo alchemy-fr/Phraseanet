@@ -3,6 +3,8 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Tests\Tools\CsvFileIterator;
 use Hoa\Compiler;
@@ -23,11 +25,17 @@ class QueryCompilerTest extends \PHPUnit_Framework_TestCase
         $grammar_path = realpath(implode('/', [__DIR__, $project_root, $grammar_path]));
         $parser = Compiler\Llk\Llk::load(new File\Read($grammar_path));
 
+        $structure = $this->getMock(Structure::class);
+
+        $queryVisitorFactory = function () use ($structure) {
+            return new QueryVisitor($structure);
+        };
+
         $thesaurus = $this->getMockBuilder(Thesaurus::class)
                           ->disableOriginalConstructor()
                           ->getMock();
 
-        $this->compiler = new QueryCompiler($parser, $thesaurus);
+        $this->compiler = new QueryCompiler($parser, $queryVisitorFactory, $thesaurus);
     }
 
     /**

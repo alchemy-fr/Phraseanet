@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -203,10 +204,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return Compiler\Llk\Llk::load(new File\Read($grammarPath));
         });
 
+        $app['query_visitor.factory'] = $app->protect(function () use ($app) {
+            return new QueryVisitor($app['search_engine.structure']);
+        });
+
         $app['query_compiler'] = $app->share(function ($app) {
             return new QueryCompiler(
                 $app['query_parser'],
-                $app['search_engine.structure'],
+                $app['query_visitor.factory'],
                 $app['thesaurus']
             );
         });

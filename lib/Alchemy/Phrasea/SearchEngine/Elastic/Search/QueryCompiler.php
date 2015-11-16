@@ -2,9 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Hoa\Compiler\Exception\Exception as CompilerException;
 use Hoa\Compiler\Llk\Parser;
@@ -15,7 +13,7 @@ use Hoa\Visitor\Visit;
 class QueryCompiler
 {
     private $parser;
-    private $structure;
+    private $queryVisitorFactory;
     private $thesaurus;
 
     private static $leftAssociativeOperators = array(
@@ -24,10 +22,10 @@ class QueryCompiler
         NodeTypes::EXCEPT_EXPR
     );
 
-    public function __construct(Parser $parser, Structure $structure, Thesaurus $thesaurus)
+    public function __construct(Parser $parser, callable $queryVisitorFactory, Thesaurus $thesaurus)
     {
         $this->parser = $parser;
-        $this->structure = $structure;
+        $this->queryVisitorFactory = $queryVisitorFactory;
         $this->thesaurus = $thesaurus;
     }
 
@@ -60,9 +58,12 @@ class QueryCompiler
         return $this->visitString($string, $this->createQueryVisitor(), $postprocessing);
     }
 
+    /**
+     * @return Visit
+     */
     private function createQueryVisitor()
     {
-        return new QueryVisitor($this->structure);
+        return call_user_func($this->queryVisitorFactory);
     }
 
     public function dump($string, $postprocessing = true)
