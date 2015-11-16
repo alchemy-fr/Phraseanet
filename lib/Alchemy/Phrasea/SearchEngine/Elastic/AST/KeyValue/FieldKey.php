@@ -20,6 +20,11 @@ class FieldKey implements Key, QueryPostProcessor
         $this->name = $name;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function getIndexField(QueryContext $context, $raw = false)
     {
         return $this->getField($context)->getIndexField($raw);

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -24,6 +25,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
@@ -62,7 +64,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['search_engine.structure'],
                 $app['elasticsearch.client'],
                 $options->getIndexName(),
-                $app['locales.available'],
+                $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
                 $options
             );
@@ -181,6 +183,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             );
         });
 
+        $app['query_context.factory'] = $app->share(function ($app) {
+            return new QueryContextFactory(
+                $app['search_engine.structure'],
+                array_keys($app['locales.available']),
+                $app['locale']
+            );
+        });
+
         $app['query_parser.grammar_path'] = function ($app) {
             $configPath = ['registry', 'searchengine', 'query-grammar-path'];
             $grammarPath = $app['conf']->get($configPath, 'grammar/query.pp');
@@ -194,9 +204,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return Compiler\Llk\Llk::load(new File\Read($grammarPath));
         });
 
+        $app['query_visitor.factory'] = $app->protect(function () use ($app) {
+            return new QueryVisitor($app['search_engine.structure']);
+        });
+
         $app['query_compiler'] = $app->share(function ($app) {
             return new QueryCompiler(
                 $app['query_parser'],
+                $app['query_visitor.factory'],
                 $app['thesaurus']
             );
         });

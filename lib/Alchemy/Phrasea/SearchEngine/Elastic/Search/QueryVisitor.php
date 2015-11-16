@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
@@ -12,6 +12,13 @@ use InvalidArgumentException;
 
 class QueryVisitor implements Visit
 {
+    private $structure;
+
+    public function __construct(Structure $structure)
+    {
+        $this->structure = $structure;
+    }
+
     public function visit(Element $element, &$handle = null, $eldnah = null)
     {
         if (null !== $value = $element->getValue()) {
@@ -197,7 +204,12 @@ class QueryVisitor implements Visit
 
     private function isDateKey(AST\KeyValue\Key $key)
     {
-        return $key instanceof AST\KeyValue\TimestampKey;
+        if ($key instanceof AST\KeyValue\TimestampKey) {
+            return true;
+        } elseif ($key instanceof AST\KeyValue\FieldKey) {
+            return $this->structure->get($key->getName()) !== null;
+        }
+        return false;
     }
 
     private function visitTerm(Element $element)
