@@ -45,6 +45,7 @@ class Tools implements ControllerProviderInterface
             $recordAccessibleSubdefs = array();
 
             if (count($records) == 1) {
+                /** @var \record_adapter $record */
                 $record = $records->first();
 
                 // fetch subdef list:
@@ -53,14 +54,17 @@ class Tools implements ControllerProviderInterface
                 /** @var \ACL $acl */
                 $acl = $app['authentication']->getUser()->ACL();
 
-                foreach ($subdefs as $subdef) {
-                    $subdefName = $subdef->get_name();
+                if ($acl->is_admin()) {
+                    foreach ($subdefs as $subdef) {
+                        $subdefName = $subdef->get_name();
 
-                    if ($acl->has_access_to_subdef($record, $subdefName) && $acl->is_admin()) {
-                        $permalink = $subdef->get_permalink();
+                        if (null === $permalink = $subdef->get_permalink()) {
+                            continue;
+                        }
+
                         $recordAccessibleSubdefs[] = array(
-                          'name' => $subdefName,
-                          'state' => $permalink->get_is_activated()
+                            'name'  => $subdefName,
+                            'state' => $permalink->get_is_activated(),
                         );
                     }
                 }
