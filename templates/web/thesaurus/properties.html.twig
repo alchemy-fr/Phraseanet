@@ -25,10 +25,11 @@
             }
         </style>
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/win.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
+        {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/win.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery.sprintf.1.0.3.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/sprintf.js' }) }}"></script>
+        {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/sprintf.js' }) }}"></script>#}
 
         <script type="text/javascript">
             function loaded()
