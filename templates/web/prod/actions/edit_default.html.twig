@@ -37,11 +37,11 @@
         </div>
         <img class="edit_IMGT" id="idEditDiapoImg_{{ i }}" style="position:absolute; top:{{ top|round }}%; width:{{ width }}; height:{{ height }}; left:{{ left|round }}%;" onclick="edit_clk_editimg(event, {{ i }});" src="{{ thumbnail }}" />
         <div style='position:absolute; top:0px; left:0px; height:20px'>
-            <img class="require_alert" src="/skins/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
+            <img class="require_alert" src="/assets/common/images/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
         </div>
         <div style='position:absolute; bottom:0px; left:0px; height:20px'>
             <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}"></div>
-            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" src="/skins/icons/info.gif"/>
+            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" src="/assets/common/images/icons/info.gif"/>
         </div>
         <div class="reg_opts" style="display:none;position:absolute;bottom:0;right:0;">
             <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger" id="editContextTrigger_{{ record.get_serialize_key() }}">&#9660;</a>
@@ -60,8 +60,8 @@
             </table>
         </div>
         <div class="editDiaButtons" style="position:absolute; bottom:0px; right:0px; width:30px; height:12px; display:none">
-            <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/skins/icons/plus11.png"/>
-            <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/skins/icons/minus11.png"/>
+            <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/plus11.png"/>
+            <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/minus11.png"/>
         </div>
     </div>
 {% endmacro %}
@@ -79,12 +79,12 @@
         {% if field.is_readonly() is empty %}
             <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
                 <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/assets/prod/images/{{cssfile}}/images/suggested.gif" />
-                <img src="/skins/icons/info.gif" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" class="fieldTips" alt=""/>
+                <img src="/assets/common/images/icons/info.gif" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" class="fieldTips" alt=""/>
                 {% if field.get_dces_element %}
-                    <img src="/skins/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{{ 'Ce champ est decrit comme un element DublinCore' | trans }}" class="DCESTips" />
+                    <img src="/assets/common/images/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{{ 'Ce champ est decrit comme un element DublinCore' | trans }}" class="DCESTips" />
                 {% endif %}
                 {% if field.get_thumbtitle %}
-                    <img src="/skins/icons/titre16.png" title="{{ 'This field represents the title of the document' | trans }}" />
+                    <img src="/assets/common/images/icons/titre16.png" title="{{ 'This field represents the title of the document' | trans }}" />
                 {% endif %}
                 <span id="spanidEditFieldBox_{{i}}">
                     {{field.get_label(app['locale'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
@@ -184,7 +184,7 @@
                                 <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" value="" />
                             </div>
                             <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
-                                <img id="EditButAddMultiValued" style="cursor:pointer" src="/skins/icons/plus16.png"  onclick="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);" />
+                                <img id="EditButAddMultiValued" style="cursor:pointer" src="/assets/common/images/icons/plus16.png"  onclick="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);" />
                             </div>
                         </form>
                         <div id="ZTextMultiValued_values"></div>
@@ -252,7 +252,7 @@
                             </p>
                             <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{{ 'phraseanet::chargement' | trans }}</div>
                         </div>
-                        <img style="position:absolute; margin:auto" id="TH_searching" src="/skins/icons/ftp-loader-blank.gif" />
+                        <img style="position:absolute; margin:auto" id="TH_searching" src="/assets/common/images/icons/ftp-loader-blank.gif" />
                     </div>
                 {% endif %}
                 <div id='TH_Oclipboard'>
@@ -302,7 +302,7 @@
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/ar/wiki/%D8%AA%D8%B9%D8%A7%D8%A8%D9%8A%D8%B1_%D9%86%D9%85%D8%B7%D9%8A%D8%A9' %}
                                 {% endif %}
                                 <a href="{{help_link}}" target="_blank">
-                                    <img src="/skins/icons/help.png" title="{{ 'Aide sur les expressions regulieres' | trans }}"/>
+                                    <img src="/assets/common/images/icons/help.png" title="{{ 'Aide sur les expressions regulieres' | trans }}"/>
                                 </a>
                                 <br/>
                                 <br/>

@@ -1354,7 +1354,7 @@ function ww_Window(gui, anchor, varname, idx, properties) {
 
     s += "<table cellpadding=0 cellspacing=0 border=1 width=100% xheight=19>";
     s += "	<tr>";
-    s += "		<td width=15 valign=\"top\"><img src=\"/skins/icons/grip.gif\" border=0 xwidth=15 xheight=19 alt=\"\" onDragStart=\"return false;\"></td>";
+    s += "		<td width=15 valign=\"top\"><img src=\"/assets/common/images/icons/grip.gif\" border=0 xwidth=15 xheight=19 alt=\"\" onDragStart=\"return false;\"></td>";
     if (properties.title) {
 //		s += "	<td><div id=\""+varname+"t"+idx+"\" class=ww_winTitle>" + properties.title + "</div></td>";
         s += "	<td id=\"" + varname + "t" + idx + "\" class=ww_winTitle>" + properties.title + "</td>";
@@ -1371,14 +1371,14 @@ function ww_Window(gui, anchor, varname, idx, properties) {
     s += "</table>";
     //if(properties.title)
     //	s += "<div id=\""+varname+"t"+idx+"\">&nbsp;" + properties.title + "</div>\n";
-    s += "   <img src=\"/skins/icons/titrwin.gif\" onDragStart=\"return false;\" width=\"100%\" height=\"100%\" style=\"position:absolute; top:0px; left:15px; width:100%; z-index:-1\">";
+    s += "   <img src=\"/assets/common/images/icons/titrwin.gif\" onDragStart=\"return false;\" width=\"100%\" height=\"100%\" style=\"position:absolute; top:0px; left:15px; width:100%; z-index:-1\">";
 
 
     s += "<div class=\"ww_close\">\n";
 
-    s += "<img onmousedown=\"" + varname + ".evt_mdwn_reducer(" + idx + ");\" src=\"/skins/icons/reducer.gif\" hspace=5 />";
+    s += "<img onmousedown=\"" + varname + ".evt_mdwn_reducer(" + idx + ");\" src=\"/assets/common/images/icons/reducer.gif\" hspace=5 />";
     if (this.closeable)
-        s += "<img onmousedown=\"" + varname + ".evt_mdwn_closer(" + idx + ");\" src=\"/skins/icons/closer.gif\" hspace=5 />\n";
+        s += "<img onmousedown=\"" + varname + ".evt_mdwn_closer(" + idx + ");\" src=\"/assets/common/images/icons/closer.gif\" hspace=5 />\n";
     //else
     //	s += "&nbsp;";
     s += "</div>\n";
@@ -1406,7 +1406,7 @@ function ww_Window(gui, anchor, varname, idx, properties) {
         s += "<div style=\"" + style + "\" id=\"" + varname + "c" + idx + "\" class=\"ww_content\">" + oldContent + "</div>\n";
     }
     if (this.sizeable) {
-        s += "	<div id=\"" + varname + "r" + idx + "\" class=\"ww_resize\" onMouseDown=\"" + varname + ".evt_mdwn_sizer(" + idx + ");\"><img onDragStart=\"return false\" src=\"/skins/icons/resizer.gif\"/></div>\n";
+        s += "	<div id=\"" + varname + "r" + idx + "\" class=\"ww_resize\" onMouseDown=\"" + varname + ".evt_mdwn_sizer(" + idx + ");\"><img onDragStart=\"return false\" src=\"/assets/common/images/icons/resizer.gif\"/></div>\n";
     }
 //		alert("ww_Window : style=" + style);
     //s += "</div>\n";
@@ -1638,7 +1638,7 @@ function GUI(varname, idbody, skin) {
     node.style.left = "50px";
     node.style.zIndex = 99;
     node.style.visibility = "hidden";
-    node.src = "/skins/icons/nodrop01.gif";
+    node.src = "/assets/common/images/icons/nodrop01.gif";
     dragObj.objCursor = desk.appendChild(node);
 
     desk.onmousemove = function (e) {
@@ -1697,7 +1697,7 @@ function GUI(varname, idbody, skin) {
     this.setDragObj = ww_setDragObj;
     /*
      s  = "<div id=\""+this.varname+"wb\" class=\"ww_winborder\"></div>";
-     s += "<img id=\"dragDropCursor\" style=\"position:absolute; top:50px; left:50px; z-index:99; visibility:hidden\" src=\"/skins/icons/nodrop01.gif\">";
+     s += "<img id=\"dragDropCursor\" style=\"position:absolute; top:50px; left:50px; z-index:99; visibility:hidden\" src=\"/assets/common/images/icons/nodrop01.gif\">";
      document.write(s);
 
      // on enregistre des handlers sur le document pour le drag & drop

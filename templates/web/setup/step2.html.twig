@@ -233,11 +233,11 @@
                 success: function(data){
                     el_loader.css('visibility', 'hidden');
                     if (data.connection === true && data.database === true && data.innodb === true) {
-                        el_status.attr('src', '/skins/icons/ok.png').show();
+                        el_status.attr('src', '/assets/common/images/icons/ok.png').show();
                         el_message.empty().append("{{ 'Successfull connection' | trans }}");
                         if (!data.is_empty) {
                             el_message.append("<br>{{ 'Warning, this database is not empty' | trans }}");
-                            el_status.attr('src', '/skins/icons/alert.png').show();
+                            el_status.attr('src', '/assets/common/images/icons/alert.png').show();
                         }
                         if(typeof callback == 'function')
                             callback();
@@ -257,18 +257,18 @@
                     {
                         el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
                     }
-                    el_status.attr('src', '/skins/icons/delete.png').show();
+                    el_status.attr('src', '/assets/common/images/icons/delete.png').show();
 
                     return;
                 },
                 timeout:function(){
                     el_loader.css('visibility', 'hidden');
-                    el_status.attr('src', '/skins/icons/delete.png').show();
+                    el_status.attr('src', '/assets/common/images/icons/delete.png').show();
                     el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
                 },
                 error:function(data){
                     el_loader.css('visibility', 'hidden');
-                    el_status.attr('src', '/skins/icons/delete.png').show();
+                    el_status.attr('src', '/assets/common/images/icons/delete.png').show();
                     el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
                 }
             });
@@ -573,8 +573,8 @@
                                     <tr style="height:40px;">
                                         <td style="text-align:center;">
                                             <button class="ab_tester error">{{ 'boutton::tester' | trans }}</button>
-                                            <img class="tester_loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>
-                                            <img class="tester_status" style="display:none;" src="/skins/icons/delete.png"/>
+                                            <img class="tester_loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>
+                                            <img class="tester_status" style="display:none;" src="/assets/common/images/icons/delete.png"/>
                                         </td>
                                         <td>
                                             <span class="tester_message"> </span>
@@ -613,7 +613,7 @@
                                     <br/>
                                     <br/>
                                     <a href="https://mariadb.org/" target="_blank">
-                                        <img src="/skins/icons/Mariadb-big.png" style="width:100%;" />
+                                        <img src="/assets/common/images/icons/Mariadb-big.png" style="width:100%;" />
                                     </a>
                                 </p>
                             </td>
@@ -727,8 +727,8 @@
                                     <tr style="height:40px;">
                                         <td style="text-align:center;">
                                             <button class="db_tester error">{{ 'boutton::tester' | trans }}</button>
-                                            <img class="tester_loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>
-                                            <img class="tester_status" style="display:none;" src="/skins/icons/delete.png"/>
+                                            <img class="tester_loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>
+                                            <img class="tester_status" style="display:none;" src="/assets/common/images/icons/delete.png"/>
                                         </td>
                                         <td>
                                             <span class="tester_message"> </span>
@@ -810,7 +810,7 @@
     </form>
     <div id="install_wait" style="display:none;" title="{{ 'Install in progess' | trans }}">
         <p>
-            <img src="/skins/icons/loader111111.gif"/>
+            <img src="/assets/common/images/icons/loader111111.gif"/>
             {% trans %}Installation is currenlty processing, please wait...{% endtrans %}
         </p>
     </div>

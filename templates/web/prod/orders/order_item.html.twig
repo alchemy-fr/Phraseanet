@@ -68,17 +68,17 @@
                                 {% set title_send %}
                                     {% trans %}Forcer l'envoi du document{% endtrans %}
                                 {% endset %}
-                                <img style="cursor:help;" src="/skins/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                                <img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                                <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
                             {% else %}
                                 {% set title %}
                                     {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
                                 {% endset %}
-                                <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
                             {% endif %}
                         {% endif %}
                         <div style="position:absolute;bottom:4px;right:4px;">
-                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/skins/icons/info.gif"/>
+                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>
                             <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>
                             <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>
                         </div>
@@ -94,7 +94,7 @@
         <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
         <button class="btn deny">{{ 'Deny' | trans }}</button>
         <button class="order_launcher btn">{{ 'Retour aux commandes' | trans }}</button>
-        <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
     </div>
 </div>

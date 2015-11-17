@@ -31,7 +31,7 @@
     <li>
         {{ 'admin::base: Alias' | trans }} : <span id="viewname">{{ databox.get_label(app['locale']) }}</span>
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
-            <img src="/skins/icons/edit_0.gif" id="show-view-name" />
+            <img src="/assets/common/images/icons/edit_0.gif" id="show-view-name" />
             <div class="well well-small" id="change-view-name" style="display:none;">
                 <form method="post" action="{{ path('admin_database_rename', {'databox_id': databox.get_sbas_id()}) }}">
                     <div class="input-append">
@@ -92,7 +92,7 @@
                     {% endfor %}
                     <div class="span2">
                         <button class="btn" type="submit">
-                            <img src="/skins/icons/edit_0.gif" />
+                            <img src="/assets/common/images/icons/edit_0.gif" />
                             {{ 'Set labels' | trans }}
                         </button>
                     </div>
@@ -103,35 +103,35 @@
 
     <div class="well well-small">
         <a style="display:inline-block; margin-right:3px; text-decoration: none;" target="right" class="ajax btn" href="{{ path('admin_database_display_new_collection_form', {'databox_id': databox.get_sbas_id()}) }}">
-            <img src="/skins/icons/create_coll.png" />
+            <img src="/assets/common/images/icons/create_coll.png" />
             {{ "admin::base:collection: Creer une collection" | trans }}
         </a>
 
         <form style="display:inline;" method="post" action="{{ path('admin_database_clear_logs', {'databox_id': databox.get_sbas_id()}) }}">
             <button type="button" class="btn submiter confirm"
                     data-confirm-msg="{{ 'admin::base: Confirmer la suppression de tous les logs' | trans }}">
-                <img src="/skins/icons/clearLogs.png" />
+                <img src="/assets/common/images/icons/clearLogs.png" />
                 {{ "admin::base: supprimer tous les logs" | trans }}
             </button>
         </form>
 
         <form style="display:inline;" method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
             <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer vous l\'arret de la publication de la base' | trans }}">
-                <img src="/skins/icons/db-remove.png" />
+                <img src="/assets/common/images/icons/db-remove.png" />
                 {{ "admin::base: arreter la publication de la base" | trans }}
             </button>
         </form>
 
         <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
             <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer le vidage complet de la base' | trans }}">
-                <img src="/skins/icons/trash.png" />
+                <img src="/assets/common/images/icons/trash.png" />
                 {{ "admin::base: vider la base" | trans }}
             </button>
         </form>
 
          <form style="display:inline;" method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
             <button type="button" class="btn submiter confirm reload-tree" data-confirm-msg="{{ 'admin::base: Confirmer la suppression de la base' | trans }}">
-                <img src="/skins/icons/delete.gif" />
+                <img src="/assets/common/images/icons/delete.gif" />
                 {{ "admin::base: supprimer la base" | trans }}
             </button>
          </form>
@@ -146,7 +146,7 @@
     {% if databox.get_mountable_colls()| length > 0 %}
         <div class="well well-small">
             <a href="#" class="btn" id="show-mount-coll">
-                <img src="/skins/icons/create_coll.png" />
+                <img src="/assets/common/images/icons/create_coll.png" />
                 {{ "admin::base:collection: Monter une collection" | trans }}
             </a>
             <div class="well well-small" id="mount-coll" style="display:none;">
@@ -165,7 +165,7 @@
                                 </select>
                             {% endif %}
                             <a href="#" class="btn btn-mini submiter">
-                                <img src="/skins/icons/create_coll.png" />
+                                <img src="/assets/common/images/icons/create_coll.png" />
                                 {{ "admin::base:collection: Monter une collection" | trans }}
                             </a>
                         </form>
@@ -180,7 +180,7 @@
     {% if databox.get_activable_colls()| length > 0 %}
         <div class="well well-small">
             <a href="#" class="btn" id="show-activate-coll">
-                <img src="/skins/icons/create_coll.png"/>
+                <img src="/assets/common/images/icons/create_coll.png"/>
                 {{ "Activer une collection" | trans }}
             </a>
             <div class="well well-small" id="activate-coll" style="display:none;">

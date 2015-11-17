@@ -124,7 +124,7 @@
                     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.getId()}}">
                         <td style="text-align: center;">
                             {% if usr.isTemplate() %}
-                                <img title="{{ 'This is a template' | trans }}" src="/skins/icons/template.png"/>
+                                <img title="{{ 'This is a template' | trans }}" src="/assets/common/images/icons/template.png"/>
                             {% else %}
                                 {% if app.getAclForUser(usr).is_phantom() %}
                                     <img title="{{ 'This user has no rights' | trans }}" src="/assets/admin/images/ghost.png"/>

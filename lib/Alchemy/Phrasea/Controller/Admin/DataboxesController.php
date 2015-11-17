@@ -37,7 +37,7 @@ class DataboxesController extends Controller
         foreach ($sbasIds as $sbasId) {
             $sbas[$sbasId] = [
                 'version'     => 'unknown',
-                'image'       => '/skins/icons/db-remove.png',
+                'image'       => '/assets/common/images/icons/db-remove.png',
                 'server_info' => '',
                 'name'        => $this->app->trans('Unreachable server')
             ];
@@ -49,7 +49,7 @@ class DataboxesController extends Controller
                 $pdoConnection = $databox->get_connection()->getWrappedConnection();
                 $sbas[$sbasId] = [
                     'version'     => $databox->get_version(),
-                    'image'       => '/skins/icons/foldph20close_0.gif',
+                    'image'       => '/assets/common/images/icons/foldph20close_0.gif',
                     'server_info' => $pdoConnection->getAttribute(\PDO::ATTR_SERVER_VERSION),
                     'name'        => \phrasea::sbas_labels($sbasId, $this->app)
                 ];

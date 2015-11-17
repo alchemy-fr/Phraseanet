@@ -19,7 +19,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function icon_url()
     {
-        return '/skins/icons/user.png';
+        return '/assets/common/images/icons/user.png';
     }
 
     /**

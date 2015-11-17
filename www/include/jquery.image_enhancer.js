@@ -25,7 +25,7 @@
                     if (settings.display_full_screen) {
                         $image.parent()
                             .append('<div class="image_enhance_titlebar" style="display:none;">\n\
-                <div class="image_enhance_title_options"><span class="full"><img src="/skins/icons/fullscreen.gif" /></span></div>\n\
+                <div class="image_enhance_title_options"><span class="full"><img src="/assets/common/images/icons/fullscreen.gif" /></span></div>\n\
                 <div class="image_enhance_title_bg"></div></div>');
 
                         var $titlebar = $('.image_enhance_titlebar', $this);

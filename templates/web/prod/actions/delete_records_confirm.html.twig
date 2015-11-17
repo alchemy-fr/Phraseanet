@@ -23,7 +23,7 @@
             <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }} ({{ nbEligibleDocuments }})</button>
             <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
             <span class="form-action-loader" style="display:none;">
-                <img src="../skins/icons/loader000.gif" />
+                <img src="../assets/common/images/icons/loader000.gif" />
             </span>
         </div>
     </form>
@@ -58,7 +58,7 @@
                         stories = $('.STORY_'+n);
                         $('.doc_infos', imgt).remove();
                         imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
-                        imgt.find(".thumb img").attr("src","/skins/icons/deleted.png").css({
+                        imgt.find(".thumb img").attr("src","/assets/common/images/icons/deleted.png").css({
                             width:'100%',
                             height:'auto',
                             margin: '0 10px',

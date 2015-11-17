@@ -230,7 +230,7 @@ function editField(evt, meta_struct_id) {
 
             $('#idEditZTextArea, #EditTextMultiValued').bind('keyup.maxLength',function () {
                 var remaining = Math.max((p4.edit.T_fields[meta_struct_id].maxLength - $(this).val().length), 0);
-                idexplain.html("<span class='metadatas_restrictionsTips' tooltipsrc='../prod/tooltip/metas/restrictionsInfos/" + p4.edit.sbas_id + "/" + meta_struct_id + "/'><img src='/skins/icons/help32.png' /><!--<img src='/skins/icons/alert.png' />--> Caracteres restants : " + (remaining) + "</span>");
+                idexplain.html("<span class='metadatas_restrictionsTips' tooltipsrc='../prod/tooltip/metas/restrictionsInfos/" + p4.edit.sbas_id + "/" + meta_struct_id + "/'><img src='/assets/common/images/icons/help32.png' /><!--<img src='/assets/common/images/icons/alert.png' />--> Caracteres restants : " + (remaining) + "</span>");
                 $('.metadatas_restrictionsTips', idexplain).tooltip();
             }).trigger('keyup.maxLength');
         }
@@ -364,7 +364,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId) {
         var word = value.getValue();
         var key = value.getVocabularyId() + '%' + word;
 
-        var extra = value.getVocabularyId() ? '<img src="/skins/icons/ressource16.png" /> ' : '';
+        var extra = value.getVocabularyId() ? '<img src="/assets/common/images/icons/ressource16.png" /> ' : '';
 
         if (i > 0) {
             if (value.getVocabularyId() !== null && p4.edit.T_mval[i - 1].getVocabularyId() == value.getVocabularyId()) {
@@ -385,8 +385,8 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId) {
             + '<span class="value" vocabId="' + (value.getVocabularyId() ? value.getVocabularyId() : '') + '">'
             + $('<div/>').text(word).html()
             + "</span></td><td class='options'>"
-            + '<a href="#" class="add_all"><img src="/skins/icons/plus11.png"/></a> '
-            + '<a href="#" class="remove_all"><img src="/skins/icons/minus11.png"/></a>'
+            + '<a href="#" class="add_all"><img src="/assets/common/images/icons/plus11.png"/></a> '
+            + '<a href="#" class="remove_all"><img src="/assets/common/images/icons/minus11.png"/></a>'
             + "</td></tr></table>"
             + "</div>";
     }

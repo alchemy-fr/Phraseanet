@@ -7,14 +7,14 @@
         <tr>
             <th class='col'>
                 {% if app['request'].query.get('sort') == 'col' %}
-                    <img src="/skins/icons/tsort_desc.gif">
+                    <img src="/assets/common/images/icons/tsort_desc.gif">
                 {% endif %}
                 {{ 'Collection' | trans }}
             </th>
 
             <th class="obj">
                 {% if app['request'].query.get('sort') == 'obj' %}
-                    <img src="/skins/icons/tsort_desc.gif">
+                    <img src="/assets/common/images/icons/tsort_desc.gif">
                 {% endif %}
                 {{ 'Subdef' | trans }}
             </th>

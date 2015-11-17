@@ -16,9 +16,9 @@
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
               {% if not basket.getIsRead() %}
-                <img src='/skins/icons/basket_push_unread.png' title=''/>
+                <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
               {% endif %}
-              <img src='/skins/icons/basket.png' title=''/>
+              <img src='/assets/common/images/icons/basket.png' title=''/>
               {{basket.getName()}}
             </span>
           </a>
@@ -29,7 +29,7 @@
                           <img
                               title="{{ 'Vous avez recu une demande de validation de document sur ce panier' | trans }}"
                               class="basketTips"
-                              src="/skins/icons/valid.png"
+                              src="/assets/common/images/icons/valid.png"
                             />
                       </td>
                       <td>
@@ -89,15 +89,15 @@
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               {% if basket.getValidation() %}
-                <img src='/skins/icons/basket_validation.png' title=''/>
+                <img src='/assets/common/images/icons/basket_validation.png' title=''/>
               {% elseif basket.getPusher() %}
                 {% if not basket.getIsRead() %}
-                  <img src='/skins/icons/basket_push_unread.png' title=''/>
+                  <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
                 {% else %}
-                  <img src='/skins/icons/basket_push.png' title=''/>
+                  <img src='/assets/common/images/icons/basket_push.png' title=''/>
                 {% endif %}
               {% else %}
-                <img src='/skins/icons/basket.png' title=''/>
+                <img src='/assets/common/images/icons/basket.png' title=''/>
               {% endif %}
               {{basket.getName()}}
             </span>
@@ -112,7 +112,7 @@
                                     style="display:inline;padding:0;margin:0;"
                                     title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"
                                     class="basketTips"
-                                    src="/skins/icons/myvalid.png"
+                                    src="/assets/common/images/icons/myvalid.png"
                                 />
                             </td>
                         {% endif %}
@@ -122,7 +122,7 @@
                                 <img
                                     class="basketTips"
                                     title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
-                                    src="/skins/icons/push16.png"/>
+                                    src="/assets/common/images/icons/push16.png"/>
                             </td>
                         {% endif %}
                       -->
@@ -207,7 +207,7 @@
           <a class="workzone-menu-title" href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
             <span>
             {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
-            <img src='/skins/icons/story.png' title=''/>
+            <img src='/assets/common/images/icons/story.png' title=''/>
             {{ story.getRecord(app).get_title() }}
             </span>
           </a>
@@ -355,17 +355,17 @@
                                         {% if choice.getAgreement() == true %}
                                             <img style="cursor:help;" src='/assets/lightbox/images/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
                                         {% elseif choice.getAgreement() is null %}
-                                            <img style="cursor:help;" src='/skins/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
                                             <img style="cursor:help;" src='/assets/lightbox/images/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                                         {% endif %}
                                   {% else %}
-                                        <img style="cursor:help;" src='/skins/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
+                                        <img style="cursor:help;" src='/assets/common/images/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">
                                   {% if choice.getNote() != '' %}
-                                       <img style="cursor:help;" src='/skins/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
+                                       <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
                                   {% endif %}
                                   </td>
                               </tr>

@@ -54,7 +54,7 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('bas_chupub') %}
   <li class="">
     <a target="right" href="{{ path('admin_feeds_list') }}" class="ajax">
-      <img src="/skins/icons/rss16.png" />
+      <img src="/assets/common/images/icons/rss16.png" />
       <span>{{ 'Publications' | trans }}</span>
     </a>
   </li>
@@ -113,37 +113,37 @@
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
           <li>
             <a target="right" class="ajax" href="{{ path('database_display_stucture', { 'databox_id' : sbas_id }) }}">
-              <img src="/skins/icons/miniadjust01.gif"/>
+              <img src="/assets/common/images/icons/miniadjust01.gif"/>
               <span>{{ 'admin::structure: reglage de la structure' | trans }}</span>
             </a>
           </li>
           <li>
             <a target="right" href="{{ path('admin_fields', {'sbas_id': sbas_id}) }}" class="ajax">
-              <img src="/skins/icons/miniadjust01.gif"/>
+              <img src="/assets/common/images/icons/miniadjust01.gif"/>
               <span>{{ 'CHAMPS' | trans }}</span>
             </a>
           </li>
           <li>
             <a target="right" href="{{ path('admin_subdefs_subdef', { 'sbas_id' : sbas_id } ) }}">
-              <img src="/skins/icons/miniadjust01.gif"/>
+              <img src="/assets/common/images/icons/miniadjust01.gif"/>
               <span>{{ 'SUBDEFS' | trans }}</span>
             </a>
           </li>
           <li>
             <a target="right" href="{{ path('database_display_statusbit', { 'databox_id' : sbas_id } ) }}" class="ajax">
-              <img src="/skins/icons/miniadjust02.gif"/>
+              <img src="/assets/common/images/icons/miniadjust02.gif"/>
               <span>{{ 'admin::status: reglage des status' | trans }}</span>
             </a>
           </li>
           <li>
             <a target="right" href="{{ path('admin_database_display_cgus', { 'databox_id' : sbas_id } ) }}" class="ajax">
-              <img src="/skins/icons/miniadjust02.gif"/>
+              <img src="/assets/common/images/icons/miniadjust02.gif"/>
               <span>{{ 'Terms of use' | trans }}</span>
             </a>
           </li>
           <li>
               <a target="right" href="{{ path('admin_database_display_collections_order', { 'databox_id' : sbas_id } ) }}" class="ajax">
-              <img src="/skins/icons/miniadjust03.gif"/>
+              <img src="/assets/common/images/icons/miniadjust03.gif"/>
               <span>{{ 'admin::collection: ordre des collections' | trans }}</span>
             </a>
           </li>
@@ -188,7 +188,7 @@
             {% if (app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
               <li>
                 <a target="right" href="{{ path('admin_collection_display_suggested_values', { 'bas_id' : collection.get_base_id() }) }}" class="ajax">
-                  <img src="/skins/icons/foldph20open_0.gif"/>
+                  <img src="/assets/common/images/icons/foldph20open_0.gif"/>
                   <span>{{ 'admin::base: preferences de collection' | trans }}</span>
                 </a>
               </li>
@@ -218,7 +218,7 @@
 
   {% for databox in off_databoxes %}
   <li>
-    <img src="/skins/icons/db-remove.png"/>
+    <img src="/assets/common/images/icons/db-remove.png"/>
     {{ databox.get_dbname() }} ({{ databox.get_host() }} {{ databox.get_port() }})
   </li>
   {% endfor %}

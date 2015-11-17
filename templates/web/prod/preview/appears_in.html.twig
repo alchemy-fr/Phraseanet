@@ -18,7 +18,7 @@
 {% for basket in baskets %}
   <li onclick="openPreview('BASK',0,'{{basket.getId()}}',true); return(false);"
                    class="otherBaskToolTip" title="{{basket.getDescription()}}">
-    <img style="vertical-align:middle;" title="" src="/skins/icons/basket.gif"/>
+    <img style="vertical-align:middle;" title="" src="/assets/common/images/icons/basket.gif"/>
     <span class="title">{{basket.getName()}}</span>
   </li>
 {% endfor %}

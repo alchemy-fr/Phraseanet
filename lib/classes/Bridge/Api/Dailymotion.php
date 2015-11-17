@@ -108,7 +108,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function get_icon_url()
     {
-        return '/skins/icons/dailymotion-small.gif';
+        return '/assets/common/images/icons/dailymotion-small.gif';
     }
 
     /**
@@ -117,7 +117,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function get_image_url()
     {
-        return '/skins/icons/dailymotion-logo.png';
+        return '/assets/common/images/icons/dailymotion-logo.png';
     }
 
     /**

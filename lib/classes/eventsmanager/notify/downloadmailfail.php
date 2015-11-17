@@ -22,7 +22,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      */
     public function icon_url()
     {
-        return '/skins/icons/user.png';
+        return '/assets/common/images/icons/user.png';
     }
 
     /**

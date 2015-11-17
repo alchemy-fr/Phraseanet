@@ -15,9 +15,9 @@
                     }
                     $this.data('path_file_tests', {});
 
-                    $this.after('<img class="loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>');
-                    $this.after('<img class="reload" src="/skins/icons/reload.png"/>');
-                    $this.after('<img class="status" src="/skins/icons/delete.png"/>');
+                    $this.after('<img class="loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>');
+                    $this.after('<img class="reload" src="/assets/common/images/icons/reload.png"/>');
+                    $this.after('<img class="status" src="/assets/common/images/icons/delete.png"/>');
 
 
                     $this.bind('keyup blur', function () {
@@ -65,28 +65,28 @@
                                     $this.addClass('field_error');
                                 }
                                 if ($this.hasClass('test_executable') && (data.executable === false || data.file !== true)) {
-                                    el_status.attr('src', '/skins/icons/delete.png').css('visibility', 'visible');
+                                    el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                                     return;
                                 }
                                 if ($this.hasClass('test_writeable') && data.writeable === false) {
-                                    el_status.attr('src', '/skins/icons/delete.png').css('visibility', 'visible');
+                                    el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                                     return;
                                 }
                                 if ($this.hasClass('test_readable') && data.readable === false) {
-                                    el_status.attr('src', '/skins/icons/delete.png').css('visibility', 'visible');
+                                    el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                                     return;
                                 }
-                                el_status.attr('src', '/skins/icons/ok.png').css('visibility', 'visible');
+                                el_status.attr('src', '/assets/common/images/icons/ok.png').css('visibility', 'visible');
                                 $this.removeClass('field_error');
                                 return;
                             },
                             timeout: function () {
                                 el_loader.css('visibility', 'hidden');
-                                el_status.attr('src', '/skins/icons/delete.png').css('visibility', 'visible');
+                                el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                             },
                             error: function () {
                                 el_loader.css('visibility', 'hidden');
-                                el_status.attr('src', '/skins/icons/delete.png').css('visibility', 'visible');
+                                el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                             }
                         });
                         $this.data('ajax_path_test', ajax);
@@ -137,9 +137,9 @@
                     }
                     $this.data('url_tests', {});
 
-                    $this.after('<img class="loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>');
-                    $this.after('<img class="reload" src="/skins/icons/reload.png"/>');
-                    $this.after('<img class="status" src="/skins/icons/delete.png"/>');
+                    $this.after('<img class="loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>');
+                    $this.after('<img class="reload" src="/assets/common/images/icons/reload.png"/>');
+                    $this.after('<img class="status" src="/assets/common/images/icons/delete.png"/>');
 
                     $this.bind('keyup blur', function () {
                         var el_loader = $(this).nextAll('.loader');
@@ -152,11 +152,11 @@
                         var value = $.trim($this.val());
 
                         if (!required && value === '') {
-                            el_status.attr('src', '/skins/icons/ok.png');
+                            el_status.attr('src', '/assets/common/images/icons/ok.png');
                             return;
                         }
                         if (required && value === '') {
-                            el_status.attr('src', '/skins/icons/delete.png');
+                            el_status.attr('src', '/assets/common/images/icons/delete.png');
                             return;
                         }
                         if (same_domain && value.substring(0, 1) != '/') {
@@ -182,24 +182,24 @@
                             success: function (datas) {
                                 el_loader.css('visibility', 'hidden');
                                 if (datas.code === 404) {
-                                    el_status.attr('src', '/skins/icons/delete.png');
+                                    el_status.attr('src', '/assets/common/images/icons/delete.png');
                                     return;
                                 }
                                 if (!listable && datas.code === 403) {
-                                    el_status.attr('src', '/skins/icons/ok.png');
+                                    el_status.attr('src', '/assets/common/images/icons/ok.png');
                                 }
                                 else {
-                                    el_status.attr('src', '/skins/icons/delete.png');
+                                    el_status.attr('src', '/assets/common/images/icons/delete.png');
                                 }
                                 return;
                             },
                             timeout: function () {
                                 el_loader.css('visibility', 'hidden');
-                                el_status.attr('src', '/skins/icons/delete.png');
+                                el_status.attr('src', '/assets/common/images/icons/delete.png');
                             },
                             error: function (datas) {
                                 el_loader.css('visibility', 'hidden');
-                                el_status.attr('src', '/skins/icons/delete.png');
+                                el_status.attr('src', '/assets/common/images/icons/delete.png');
                             }
                         });
                         $this.data('ajax_url_test', ajax);

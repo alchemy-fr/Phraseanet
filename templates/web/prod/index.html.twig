@@ -93,7 +93,7 @@
             <div style="margin:0 10px 10px; font-family:Helvetica,Arial,sans-serif; font-size:18px; color:#1A1A1A; text-align:left;">Phraseanet</div>
             <div style="text-align:center;">{{ 'Chargement' | trans }}</div>
             <div style="width:220px; height:19px; margin:20px auto;">
-                <div id="loader_bar" style="height:19px;width:10%;background-image:url('/skins/icons/main-loader.gif')"></div>
+                <div id="loader_bar" style="height:19px;width:10%;background-image:url('/assets/common/images/icons/main-loader.gif')"></div>
             </div>
         </div>
     </div>
@@ -136,7 +136,7 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'action:: nouveau panier' | trans }}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
-                                <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
                                 {{ 'action:: nouveau panier' | trans }}
                             </a>
                         </div>
@@ -148,7 +148,7 @@
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
-                                    <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
+                                    <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
                                     {{ 'action:: nouveau reportage' | trans }}
                                 </a>
                             </div>
@@ -156,13 +156,13 @@
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
-                            <img style="cursor:pointer;" src="/skins/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
+                            <img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
                             {{ 'phraseanet:: tri par date' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
-                            <img style="cursor:pointer;" src="/skins/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
+                            <img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
                             {{ 'phraseanet:: tri par nom' | trans }}
                         </div>
                     </li>
@@ -187,7 +187,7 @@
                             <div class="input-append">
                                 <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query danger_indicator" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                                 <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
-                                    <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
+                                    <img src="/assets/common/images/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                                 </a>
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>

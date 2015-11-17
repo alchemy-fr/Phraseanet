@@ -68,7 +68,7 @@
                     {# drop down options #}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
                         <a style="float:right;padding:0;cursor:pointer;" class="contextMenuTrigger" id="contextTrigger_{{record.id}}">
-                            <img src="/skins/icons/contextMenuTrigger.png" height="10" />
+                            <img src="/assets/common/images/icons/contextMenuTrigger.png" height="10" />
                             &#9660;
                         </a>
                         <table cellspacing="0" cellpadding="0" style="display:none;" id="answerContext_{{record.id}}" class="contextMenu answercontextmenu">
@@ -125,7 +125,7 @@
                         {% endif %}
 
                         {% if settings.technical_display == '1' %}
-                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" src="/skins/icons/info.gif"/>
+                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" src="/assets/common/images/icons/info.gif"/>
                         {% endif %}
                     </td>
                 </tr>

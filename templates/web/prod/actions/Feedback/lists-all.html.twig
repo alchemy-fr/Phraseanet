@@ -17,7 +17,7 @@
                 {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                   <img src="/assets/prod/images/Push/list-icon.png" />
                 {% else %}
-                  <img src="/skins/icons/SHARE16.png" />
+                  <img src="/assets/common/images/icons/SHARE16.png" />
                 {% endif %}
                 {{ list.getName() }}
                 ({{ length }})

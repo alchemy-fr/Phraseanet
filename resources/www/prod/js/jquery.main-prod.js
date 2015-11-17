@@ -2665,7 +2665,7 @@ function doDelete(lst) {
                     imgt.draggable("destroy");
                 }
 
-                imgt.find(".thumb img").attr("src", "/skins/icons/deleted.png").css({
+                imgt.find(".thumb img").attr("src", "/assets/common/images/icons/deleted.png").css({
                     width: '100%',
                     height: 'auto',
                     margin: '0 10px',

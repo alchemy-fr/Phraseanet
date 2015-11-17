@@ -60,25 +60,25 @@
     margin:0 auto;
   }
   div.no_switch{
-    background-image:url(/skins/icons/ccoch5.gif);
+    background-image:url(/assets/common/images/icons/ccoch5.gif);
   }
   div.switch_quota.mixed,
   div.switch_masks.mixed,
   div.switch_time.mixed,
   div.switch_right.mixed{
-    background-image:url(/skins/icons/ccoch2.gif);
+    background-image:url(/assets/common/images/icons/ccoch2.gif);
   }
   div.switch_quota.checked,
   div.switch_masks.checked,
   div.switch_time.checked,
   div.switch_right.checked{
-    background-image:url(/skins/icons/ccoch1.gif);
+    background-image:url(/assets/common/images/icons/ccoch1.gif);
   }
   div.switch_quota.unchecked,
   div.switch_masks.unchecked,
   div.switch_time.unchecked,
   div.switch_right.unchecked{
-    background-image:url(/skins/icons/ccoch0.gif);
+    background-image:url(/assets/common/images/icons/ccoch0.gif);
   }
   td.users_col{
     vertical-align:middle;
@@ -241,7 +241,7 @@
                 </td>
                 <td class="users_col">
                   <div class="time_trigger time_sbas_{{rights['sbas_id']}}">
-                    <img src="/skins/icons/user_details_gray.png" />
+                    <img src="/assets/common/images/icons/user_details_gray.png" />
                     <input type="hidden" name="time_sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
@@ -364,9 +364,9 @@
                 <td class="users_col case_right_quota" title="{{ 'Set download quotas' | trans }}">
                   <div class="quota_trigger quota_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['restrict_dwnld'] > 0 %}
-                    <img src="/skins/icons/user_details_on.png" />
+                    <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
-                    <img src="/skins/icons/user_details_off.png" />
+                    <img src="/assets/common/images/icons/user_details_off.png" />
                     {% endif %}
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -374,9 +374,9 @@
                 <td class="users_col case_right_time" title="{{ 'Set time restrictions' | trans }}">
                   <div class="time_trigger time_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['time_limited'] > 0 %}
-                    <img src="/skins/icons/user_details_on.png" />
+                    <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
-                    <img src="/skins/icons/user_details_off.png" />
+                    <img src="/assets/common/images/icons/user_details_off.png" />
                     {% endif %}
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -384,9 +384,9 @@
                 <td class="users_col case_right_masks" title="{{ 'Set statuses restrictions' | trans }}">
                   <div class="masks_trigger quotatime_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['masks'] > 0 %}
-                    <img src="/skins/icons/user_details_on.png" />
+                    <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
-                    <img src="/skins/icons/user_details_off.png" />
+                    <img src="/assets/common/images/icons/user_details_off.png" />
                     {% endif %}
                     <input type="hidden" name="masks_base_id" value="{{rights['base_id']}}"/>
                   </div>

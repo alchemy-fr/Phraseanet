@@ -68,7 +68,7 @@
                                         <div class="feed {% if loop.index is odd%}odd{% endif %}">
                                             <span>{{ feed.getTitle() }}</span>
                                             {% if feed.isPublic() %}
-                                                <img src="/skins/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
+                                                <img src="/assets/common/images/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
                                             {% endif %}
                                             <input type="hidden" name="feed_proposal[]" value="{{ feed.getId() }}"/>
                                         </div>

@@ -17,9 +17,9 @@
         <div class="PNB10 LeftColumn">
             <div class="PNB" style="height:130px; text-align:center;">
                 {% if context == 'Push' %}
-                    <img style="margin:30px 0;" src="/skins/icons/push64.png"/>
+                    <img style="margin:30px 0;" src="/assets/common/images/icons/push64.png"/>
                 {% else %}
-                    <img style="margin:30px 0;" src="/skins/icons/Feedback60.png"/>
+                    <img style="margin:30px 0;" src="/assets/common/images/icons/Feedback60.png"/>
                 {% endif %}
             </div>
             <div class="PNB content" style="top:150px; overflow-y:auto;">
@@ -65,7 +65,7 @@
                                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                                         <img src="/assets/prod/images/Push/list-icon.png" />
                                     {% else %}
-                                        <img src="/skins/icons/SHARE16.png" />
+                                        <img src="/assets/common/images/icons/SHARE16.png" />
                                     {% endif %}
                                     {{ list.getName() }}
                                     ({{ list.getEntries().count() }})
@@ -136,7 +136,7 @@
                                     {% for user in RecommendedUsers %}
                                         <tr>
                                             <td>
-                                                <img src="/skins/icons/user.png"/>
+                                                <img src="/assets/common/images/icons/user.png"/>
                                             </td>
                                             <td>
                                                 {{ user.getDisplayName() }}

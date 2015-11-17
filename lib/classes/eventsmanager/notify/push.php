@@ -19,7 +19,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      */
     public function icon_url()
     {
-        return '/skins/icons/push16.png';
+        return '/assets/common/images/icons/push16.png';
     }
 
     /**
