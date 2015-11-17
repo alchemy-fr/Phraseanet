@@ -40,17 +40,24 @@ class ToolsController extends Controller
         $recordAccessibleSubdefs = array();
 
         if (count($records) == 1) {
+            /** @var \record_adapter $record */
             $record = $records->first();
 
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
 
-            foreach ($subdefs as $subdef) {
-                $permalink = $subdef->get_permalink();
-                $recordAccessibleSubdefs[] = array(
-                  'name' => $subdef->get_name(),
-                  'state' => $permalink->get_is_activated()
-                );
+            $acl = $this->getAclForUser();
+
+            if ($acl->is_admin()) {
+                foreach ($subdefs as $subdef) {
+                    if (null === $permalink = $subdef->get_permalink()) {
+                        continue;
+                    }
+                    $recordAccessibleSubdefs[] = array(
+                        'name' => $subdef->get_name(),
+                        'state' => $permalink->get_is_activated()
+                    );
+                }
             }
 
             if (!$record->isStory()) {
@@ -69,7 +76,7 @@ class ToolsController extends Controller
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'   => $records,
             'record'    => $record,
-          'recordSubdefs' => $recordAccessibleSubdefs,
+            'recordSubdefs' => $recordAccessibleSubdefs,
             'metadatas' => $metadata,
         ]);
     }
