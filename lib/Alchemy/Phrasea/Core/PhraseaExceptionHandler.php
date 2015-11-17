@@ -110,25 +110,25 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
 
         switch ($exception->getStatusCode()) {
             case 403:
-                $errorImg = '/skins/error-pages/403.png';
+                $errorImg = '/assets/common/images/error-pages/403.png';
                 break;
             case 404:
-                $errorImg = '/skins/error-pages/404.png';
+                $errorImg = '/assets/common/images/error-pages/404.png';
                 break;
             case 500:
-                $errorImg = '/skins/error-pages/500.png';
+                $errorImg = '/assets/common/images/error-pages/500.png';
                 break;
             case 503:
-                $errorImg = '/skins/error-pages/503.png';
+                $errorImg = '/assets/common/images/error-pages/503.png';
                 break;
             default:
-                $errorImg = '/skins/error-pages/error.png';
+                $errorImg = '/assets/common/images/error-pages/error.png';
                 break;
         }
 
         return <<<EOF
             html {
-                background-image:url("/skins/error-pages/background.png");
+                background-image:url("/assets/common/images/error-pages/background.png");
                 background-repeat:repeat;
                 padding-top:0px;
             }

@@ -9,9 +9,9 @@
           <div class="display_id">{{record.getNumber()}}</div>
           {% if basket.getValidation() %}
             <div class="agreement">
-              <img src="/skins/lightbox/agree.png"
+              <img src="/assets/lightbox/images/agree.png"
                 class="agree_button {%if element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false or element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
-              <img src="/skins/lightbox/disagree.png"
+              <img src="/assets/lightbox/images/disagree.png"
                 class="disagree_button {%if element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true or element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
             </div>
           {% endif %}

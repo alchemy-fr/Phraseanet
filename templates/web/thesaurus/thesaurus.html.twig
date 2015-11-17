@@ -151,7 +151,7 @@
 
         <div class="menu" id="flagsMenu" style="z-index:50">
             {% for code, language in flags %}
-                <img id='flagMenu_{{ code }}' src='/skins/lng/{{ code }}_flag_18.gif' />
+                <img id='flagMenu_{{ code }}' src='/assets/common/images/lng/{{ code }}_flag_18.gif' />
             {% endfor %}
         </div>
         <div class="menu" id="kctermMenu" style="z-index:50; width:240px;">
@@ -280,7 +280,7 @@
                                 {% for code, language in flags %}
                                     <span style="display:inline-block">
                                     <input type="radio" {% if code == piv %}checked{% endif %} name="lng" value="{{ code }}" id="lng_{{ code }}">
-                                    <label for="lng_{{ code }}"><img src="/skins/lng/{{ code }}_flag_18.gif" />({{ language }})</label>
+                                    <label for="lng_{{ code }}"><img src="/assets/common/images/lng/{{ code }}_flag_18.gif" />({{ language }})</label>
                                 </span>
                                     &nbsp;&nbsp;
                                 {% endfor %}
@@ -331,7 +331,7 @@
                     html += "<tr>";
                     if(lng)
                         if(tFlags[lng])
-                            html += "<td><img width='"+tFlags[lng].w+"' height='"+tFlags[lng].h+"' src='/skins/lng/"+lng+"_flag_18.gif'></td>";
+                            html += "<td><img width='"+tFlags[lng].w+"' height='"+tFlags[lng].h+"' src='/assets/common/images/lng/"+lng+"_flag_18.gif'></td>";
                     else
                         html += "<td><span style='background-color:#cccccc'>&nbsp;"+lng+"&nbsp;</span></td>";
                     else

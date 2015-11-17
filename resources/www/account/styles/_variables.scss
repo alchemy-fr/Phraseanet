@@ -14,8 +14,8 @@
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $colorButton), color-stop(100%, hsl(hue($colorButton), saturation($colorButton), $colorHsl)));  /*Safari 4+, Chrome 2+*/
     background: -webkit-linear-gradient($colorButton, hsl(hue($colorButton), saturation($colorButton), $colorHsl)); /* Safari 5.1+, Chrome 10+ */
     background: -o-linear-gradient($colorButton, hsl(hue($colorButton), saturation($colorButton), $colorHsl)); /* Opera 11.10 */
-/*    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#ffffff');  IE6 & IE7
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#ffffff')";  IE8+ */
+    /*    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#ffffff');  IE6 & IE7
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#ffffff')";  IE8+ */
     background: linear-gradient($colorButton, hsl(hue($colorButton), saturation($colorButton), $colorHsl)); /* the standard */
 }
 
@@ -132,7 +132,7 @@ $btnBackgroundHighlight:            darken($white, 10%);
 $btnBorder:                         #bbb;
 
 $btnPrimaryBackground:              $linkColor;
-$btnPrimaryBackgroundHighlight:     spin($btnPrimaryBackground, 20%);
+$btnPrimaryBackgroundHighlight:     darken($btnPrimaryBackground, 20%);
 
 $btnInfoBackground:                 #3d8fa8;
 $btnInfoBackgroundHighlight:        #0d4461;
@@ -194,8 +194,8 @@ $zindexModal:             1050;
 
 // Sprite icons path
 // -------------------------
-$iconSpritePath:          "/skins/build/bootstrap/img/glyphicons-halflings.png";
-$iconWhiteSpritePath:     "/skins/build/bootstrap/img/glyphicons-halflings-white.png";
+$iconSpritePath:          "/assets/vendors/bootstrap/img/glyphicons-halflings.png";
+$iconWhiteSpritePath:     "/assets/vendors/bootstrap/img/glyphicons-halflings-white.png";
 
 
 // Input placeholder text color

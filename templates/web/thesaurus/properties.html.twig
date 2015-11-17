@@ -42,7 +42,7 @@
         <div class="menu" id="flagsMenu" style="z-index:50">
             {% for code, language in languages %}
                 <a id='flagMenu_{{ code }}' href='javascript:void(0)' class=''>
-                <img src='/skins/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
+                <img src='/assets/common/images/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
             {% endfor %}
         </div>
         <div class="menu" id="syMenu" style="z-index:50">
@@ -102,7 +102,7 @@
                                 {% endif %}
                                 </td>
                                 {% if data['lng'] %}
-                                    <td id='FLG_{{ data['id'] }}'><img src='/skins/lng/{{ data['lng'] }}_flag_18.gif' /></td>
+                                    <td id='FLG_{{ data['id'] }}'><img src='/assets/common/images/lng/{{ data['lng'] }}_flag_18.gif' /></td>
                                 {% else %}
                                     <td id='FLG_{{ data['id'] }}'><img src='/assets/thesaurus/images/noflag.gif' /></td>
                                 {% endif %}
@@ -277,7 +277,7 @@
                 td.id = "FLG_"+(nsy+1);
                 // td.innerText = n.getAttribute("lng");
                 img = td.appendChild(document.createElement("img"));
-                img.setAttribute("src", "/skins/lng/"+n.getAttribute("lng")+"_flag_18.gif");
+                img.setAttribute("src", "/assets/common/images/lng/"+n.getAttribute("lng")+"_flag_18.gif");
 
                 td = tr.appendChild(document.createElement("td"));
                 // td.colSpan = "2";

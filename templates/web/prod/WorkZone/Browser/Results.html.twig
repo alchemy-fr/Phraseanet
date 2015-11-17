@@ -15,7 +15,7 @@
       <td class="paginator">
         {% if Page - 1  > 0 %}
         <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
-          <img src="/skins/prod/Basket/Browser/left.png" />
+          <img src="/assets/prod/images/Basket/Browser/left.png" />
         </a>
         {% endif %}
         <span>
@@ -23,7 +23,7 @@
         </span>
         {% if Page + 1  <= MaxPage %}
         <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
-          <img src="/skins/prod/Basket/Browser/right.png" />
+          <img src="/assets/prod/images/Basket/Browser/right.png" />
         </a>
         {% endif %}
       </td>
@@ -49,16 +49,16 @@
             </td>
             <td class="content">
               <h1 class="title">
-                <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
+                <img class="loader" src="/assets/prod/images/Basket/Browser/loader.gif" />
                 {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app.getAuthenticatedUser()) %}
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   <span>
-                    <img src="/skins/prod/Basket/Browser/archive.png"/>
+                    <img src="/assets/prod/images/Basket/Browser/archive.png"/>
                   </span>
                 </a>
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
                   <span>
-                    <img src="/skins/prod/Basket/Browser/archived.png"/>
+                    <img src="/assets/prod/images/Basket/Browser/archived.png"/>
                   </span>
                 </a>
                 {% endif %}
@@ -118,7 +118,7 @@
         <td class="paginator">
           {% if Page - 1  > 0 %}
           <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
-            <img src="/skins/prod/Basket/Browser/left.png" />
+            <img src="/assets/prod/images/Basket/Browser/left.png" />
           </a>
           {% endif %}
           <span>
@@ -126,7 +126,7 @@
           </span>
           {% if Page + 1  <= MaxPage %}
           <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
-            <img src="/skins/prod/Basket/Browser/right.png" />
+            <img src="/assets/prod/images/Basket/Browser/right.png" />
           </a>
           {% endif %}
         </td>

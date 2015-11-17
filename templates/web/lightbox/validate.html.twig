@@ -85,8 +85,8 @@
             <div id="right_column" class="PNB">
                 <div class="right_column_title title15 unselectable">
                 {% if basket.getValidation() %}
-                    <img class="collapsed" src="/skins/lightbox/collapsed.png"/>
-                    <img class="expanded" src="/skins/lightbox/expanded.png"/>
+                    <img class="collapsed" src="/assets/lightbox/images/collapsed.png"/>
+                    <img class="expanded" src="/assets/lightbox/images/expanded.png"/>
                 {% endif %}
                     {{ 'notice' | trans }}
                 </div>
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div id="right_column_validation_toggle" class="PNB ui-corner-all title15">
-                    <img src="/skins/lightbox/toexpand.png"/>
+                    <img src="/assets/lightbox/images/toexpand.png"/>
                     {{ 'VALIDATION' | trans }}
                 </div>
                 <div id="basket_options" class="PNB ui-corner-all unselectable">
@@ -124,7 +124,7 @@
                         </td>
                         {% if basket.getValidation() %}
                             <td style="width:50px;">
-                                <img title="{{ 'lightbox::recaptitulatif' | trans }}" class="report" src="/skins/lightbox/retour.png"/>
+                                <img title="{{ 'lightbox::recaptitulatif' | trans }}" class="report" src="/assets/lightbox/images/retour.png"/>
                             </td>
                         {% endif %}
                         <td style="width:220px;">
@@ -149,7 +149,7 @@
                         </td>
                         <td style="width:50px;">
                             <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
-                               <img src="/skins/lightbox/save.png"/>
+                               <img src="/assets/lightbox/images/save.png"/>
                             </button>
                         </td>
                         <td>

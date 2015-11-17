@@ -4,7 +4,7 @@ var utils = require('../utils.js');
 
 gulp.task('copy-prod-images', function(){
     // @TODO
-    return gulp.src([config.paths.src + 'prod/images/***'])
+    return gulp.src([config.paths.src + 'prod/images/**/*'])
         .pipe(gulp.dest( config.paths.build + 'prod/images'));
 });
 
@@ -40,19 +40,19 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.dist + 'include/js/jquery.Selection.js',
         config.paths.dist + 'include/js/jquery.Edit.js',
         config.paths.dist + 'include/js/jquery.lists.js',
-        config.paths.dist + 'skins/prod/jquery.Prod.js',
-        config.paths.dist + 'skins/prod/jquery.Feedback.js',
-        config.paths.dist + 'skins/prod/jquery.Results.js',
-        config.paths.dist + 'skins/prod/jquery.main-prod.js',
-        config.paths.dist + 'skins/prod/jquery.WorkZone.js',
-        config.paths.dist + 'skins/prod/jquery.Alerts.js',
-        config.paths.dist + 'skins/prod/jquery.Upload.js',
+        config.paths.src + 'prod/js/jquery.Prod.js',
+        config.paths.src + 'prod/js/jquery.Feedback.js',
+        config.paths.src + 'prod/js/jquery.Results.js',
+        config.paths.src + 'prod/js/jquery.main-prod.js',
+        config.paths.src + 'prod/js/jquery.WorkZone.js',
+        config.paths.src + 'prod/js/jquery.Alerts.js',
+        config.paths.src + 'prod/js/jquery.Upload.js',
         config.paths.dist + 'include/jslibs/pixastic.custom.js',
-        config.paths.dist + 'skins/prod/ThumbExtractor.js',
-        config.paths.dist + 'skins/prod/publicator.js',
+        config.paths.src + 'prod/js/ThumbExtractor.js',
+        config.paths.src + 'prod/js/publicator.js',
         config.paths.dist + 'include/jslibs/jquery.sprintf.1.0.3.js',
         config.paths.dist + 'include/jquery.p4.preview.js',
-        config.paths.dist + 'skins/prod/jquery.edit.js',
+        config.paths.src + 'prod/js/jquery.edit.js',
         config.paths.dist + 'include/jslibs/jquery.color.animation.js',
         config.paths.dist + 'include/jquery.image_enhancer.js',
         config.paths.vendors + 'jquery.treeview/jquery.treeview.js',

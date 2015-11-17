@@ -1,9 +1,10 @@
 $fontAwesomePath:   "../../common/font"; // dist path
 $iconsPath: '../../../skins/icons/';
 @import '../../../../www/bower_components/normalize-css/normalize'; // not extension for inline import
-@import '../../shared/styles/bootstrap';
+@import '../../vendors/bootstrap/bootstrap';
 // @TODO enable importation of: @import "../../../../plugins/login.less";
 @import 'variables';
+
 @import 'skin';
 @import '../../shared/styles/skin/geonames';
 @import '../../../../www/bower_components/font-awesome/sass/font-awesome.scss';

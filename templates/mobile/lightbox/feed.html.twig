@@ -2,7 +2,7 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
+  <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block stylesheet %}

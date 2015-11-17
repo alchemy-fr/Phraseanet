@@ -55,7 +55,7 @@
                     <form class="list_saver">
                         <div class="btn-toolbar">
                             <input type="text" name="name" placeholder="{{ 'Save this list' | trans }}" />
-                            <button class="btn"><img src="/skins/prod/Push/save_list_as.png" /></button>
+                            <button class="btn"><img src="/assets/prod/images/Push/save_list_as.png" /></button>
                         </div>
                     </form>
                     <ul class="list">
@@ -63,7 +63,7 @@
                             <li class="list" style="padding:2px;">
                                 <a class="list_loader" href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}">
                                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                                        <img src="/skins/prod/Push/list-icon.png" />
+                                        <img src="/assets/prod/images/Push/list-icon.png" />
                                     {% else %}
                                         <img src="/skins/icons/SHARE16.png" />
                                     {% endif %}

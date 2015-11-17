@@ -18,7 +18,7 @@
                 <td style="text-align:right;white-space:nowrap;">
                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                         <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{{ 'Share the list' | trans }}" class="list_sharer">
-                            <img src="/skins/prod/Push/list-icon.png" />
+                            <img src="/assets/prod/images/Push/list-icon.png" />
                             {{ "Set sharing permission" | trans }}
                         </a>
                     {% endif %}

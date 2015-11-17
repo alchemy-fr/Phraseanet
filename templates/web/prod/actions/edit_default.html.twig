@@ -78,7 +78,7 @@
         {% set i = field.get_id() %}
         {% if field.is_readonly() is empty %}
             <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
-                <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/skins/prod/{{cssfile}}/images/suggested.gif" />
+                <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/assets/prod/images/{{cssfile}}/images/suggested.gif" />
                 <img src="/skins/icons/info.gif" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" class="fieldTips" alt=""/>
                 {% if field.get_dces_element %}
                     <img src="/skins/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{{ 'Ce champ est decrit comme un element DublinCore' | trans }}" class="DCESTips" />

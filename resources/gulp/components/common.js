@@ -38,7 +38,7 @@ gulp.task('build-common', ['copy-common-images', 'build-common-css'], function()
         config.paths.dist + 'include/jslibs/jquery.contextmenu_scroll.js',
         config.paths.dist + 'include/jquery.common.js',
         config.paths.dist + 'include/jquery.tooltip.js',
-        config.paths.dist + 'skins/prod/jquery.Dialog.js',
+        config.paths.src + 'common/js/jquery.Dialog.js',
         config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
         config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
     ];

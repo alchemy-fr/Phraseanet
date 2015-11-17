@@ -1,8 +1,8 @@
 /**
  * Common stylesheet, builded into assets/common/styles/common.css
  */
-@import '../../shared/styles/bootstrap.scss';
-@import '../../shared/styles/bootstrap-responsive.scss';
+@import '../../vendors/bootstrap/bootstrap';
+@import '../../vendors/bootstrap/responsive';
 $fontAwesomePath:   "../font"; // dist path
 $iconsPath: '../../../skins/icons/';
 @import '../../../../www/bower_components/font-awesome/sass/font-awesome.scss';

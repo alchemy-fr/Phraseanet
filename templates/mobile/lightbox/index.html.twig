@@ -1,7 +1,7 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
+    <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block icon %}
-<link rel="shortcut icon" type="image/x-icon" href="/skins/lightbox/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="/assets/lightbox/images/favicon.ico">
 {% endblock %}
 
 {% macro valid_baskets_length(baskets) %}

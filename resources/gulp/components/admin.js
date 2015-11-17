@@ -17,11 +17,7 @@ gulp.task('build-admin', ['copy-admin-images', 'build-admin-css'], function(){
         config.paths.vendors + 'underscore-amd/underscore.js',
         config.paths.vendors + 'jquery.treeview/jquery.treeview.js',
         config.paths.dist +  'include/jquery.kb-event.js',
-        config.paths.dist +  'skins/admin/template-dialogs.js',
-        // loaded via requirejs
-        // config.paths.vendors + 'blueimp-load-image/js/load-image.js',
-        // config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
-        // config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
+        config.paths.src +  'admin/js/template-dialogs.js',
         config.paths.vendors + 'requirejs/require.js',
         config.paths.dist +  'scripts/apps/admin/require.config.js',
         config.paths.dist +  'scripts/apps/admin/main/main.js'

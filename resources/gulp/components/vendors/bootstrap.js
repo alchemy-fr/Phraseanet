@@ -36,6 +36,7 @@ gulp.task('bootstrap-assets', function () {
 
 });
 gulp.task('build-bootstrap', ['bootstrap-assets', 'bootstrap-js'], function () {
+    // build standalone version (not used, see: Common Component)
     gulp.src(config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/css/'))

@@ -353,11 +353,11 @@
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}
-                                            <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/lightbox/images/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
                                         {% elseif choice.getAgreement() is null %}
                                             <img style="cursor:help;" src='/skins/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
-                                            <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/lightbox/images/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                                         {% endif %}
                                   {% else %}
                                         <img style="cursor:help;" src='/skins/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />

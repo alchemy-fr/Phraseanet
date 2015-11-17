@@ -1,6 +1,6 @@
 {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
     <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
-    <img src="/skins/lightbox/envoyer.png"/>
+    <img src="/assets/lightbox/images/envoyer.png"/>
     {{ 'validation::envoyer mon rapport' | trans }}
     <img src="/skins/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
     </button>
