@@ -21,9 +21,10 @@ gulp.task('build-report-css', ['build-report-print-css'], function(){
 
 gulp.task('build-report', ['copy-report-images', 'build-report-css'], function(){
     var reportGroup = [
-        config.paths.dist + 'include/jslibs/jquery.print.js',
-        config.paths.dist + 'include/jslibs/jquery.cluetip.js',
-        config.paths.dist + 'include/jquery.nicoslider.js',
+        config.paths.src + 'report/js/jquery.print.js',
+        config.paths.src + 'report/js/jquery.cluetip.js',
+        config.paths.src + 'report/js/jquery.nicoslider.js',
+        config.paths.src + 'report/js/jquery.gvChart-0.1.js',
         config.paths.src + 'report/js/report.js'
     ];
     return utils.buildJsGroup(reportGroup, 'report', 'report/js');
