@@ -14,7 +14,7 @@ gulp.task('copy-common-fonts',function(){
 
 gulp.task('build-common-font-css', ['copy-common-fonts'],function(){
     return gulp.src([config.paths.vendors + 'font-awesome/css/font-awesome-ie7.min.css'])
-        .pipe(gulp.dest( config.paths.distVendors + 'common/css'));
+        .pipe(gulp.dest( config.paths.build + 'common/css'));
 });
 
 gulp.task('build-common-css', ['build-common-font-css'],function(){

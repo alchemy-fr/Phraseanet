@@ -24,9 +24,10 @@
     "tinymce": "~4.0",
     "jquery-galleria": "1.2.9",
     "jquery.cookie": "~1.4",
-    "jquery.treeview": "1.4.1",
     "fancytree": "~2.7",
-    "bootstrap-sass": "v2.3.2.2"
+    "bootstrap-sass": "v2.3.2.2",
+    "jquery.lazyload": "~1.9.7",
+    "jquery-treeview": "~1.4.2"
   },
   "devDependencies": {
     "mocha": "latest",

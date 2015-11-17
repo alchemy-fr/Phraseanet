@@ -59,5 +59,6 @@ gulp.task('build-vendors', [
     'build-geonames-server-jquery-plugin',
     'build-jquery-cookie',
     'build-requirejs',
-    'build-jquery-treeview'
+    'build-jquery-treeview',
+    'build-jquery-lazyload'
     ], function() {});

@@ -30,12 +30,13 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
     var prodGroup = [
         config.paths.vendors +  'underscore-amd/underscore.js',
         config.paths.dist + 'include/jslibs/colorpicker/js/colorpicker.js',
-        config.paths.dist + 'include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js',
+        config.paths.vendors +  'jquery.lazyload/jquery.lazyload.js',
+        // config.paths.dist + 'include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js',
         config.paths.vendors + 'humane-js/humane.js', // @TODO > extra files
         config.paths.vendors + 'blueimp-load-image/js/load-image.js', // @TODO > extra files
         config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
         config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
-        config.paths.dist + 'include/jslibs/jquery.form.2.49.js',
+        config.paths.src + 'prod/js/jquery.form.2.49.js',
         config.paths.src + 'prod/js/jquery.Selection.js',
         config.paths.src + 'prod/js/jquery.Edit.js',
         config.paths.src + 'prod/js/jquery.lists.js',
@@ -51,10 +52,10 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.dist + 'include/jslibs/jquery.sprintf.1.0.3.js',
         config.paths.dist + 'include/jquery.p4.preview.js',
         config.paths.src + 'prod/js/record.editor.js',
-        config.paths.dist + 'include/jslibs/jquery.color.animation.js',
+        config.paths.src + 'prod/js/jquery.color.animation.js',
         config.paths.dist + 'include/jquery.image_enhancer.js',
-        config.paths.vendors + 'jquery.treeview/jquery.treeview.js',
-        config.paths.vendors + 'jquery.treeview/jquery.treeview.async.js',
+        config.paths.vendors + 'jquery-treeview/jquery.treeview.js',
+        config.paths.vendors + 'jquery-treeview/jquery.treeview.async.js',
         config.paths.vendors + 'fancytree/dist/jquery.fancytree-all.min.js'
     ];
     return utils.buildJsGroup(prodGroup, 'prod', 'prod/js');

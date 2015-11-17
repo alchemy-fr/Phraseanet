@@ -369,7 +369,7 @@ span.ww_winTitle {
   vertical-align: middle;
   padding: 0;
   border-radius: 0;
-  background: $col1 url('#{$skinsPath}icons/icon_magnify.png') 50% no-repeat;
+  background: $col1 url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
   border: none;
   margin: 0;
   outline:none;
@@ -390,7 +390,7 @@ span.ww_winTitle {
   line-height: 50px;
   padding: 0;
   border-radius: 0;
-  background: url('#{$skinsPath}icons/icon_clear_search.png') 50% no-repeat;
+  background: url('#{$iconsPath}icon_clear_search.png') 50% no-repeat;
   border: none;
   outline: none;
   box-shadow: none;
@@ -414,7 +414,7 @@ span.ww_winTitle {
 
 .treeview>li.expandable>.hitarea {
   height: 51px;
-  background: url('#{$skinsPath}icons/sprite_tree_first.png') 99% 22px no-repeat;
+  background: url('#{$iconsPath}sprite_tree_first.png') 99% 22px no-repeat;
   border-left: 5px $col1 solid;
 }
 
@@ -436,7 +436,7 @@ span.ww_winTitle {
 }
 
 .treeview ul li .hitarea {
-  background: url('#{$skinsPath}icons/icon_tree.png') 0 0 no-repeat;
+  background: url('#{$iconsPath}/icon_tree.png') 0 0 no-repeat;
   position: relative;
   height: 9px;
   width: 9px;
@@ -650,7 +650,7 @@ span.ww_winTitle {
 }
 
 .ui-accordion .ui-accordion-content.loading {
-  background-image: url('#{$skinsPath}icons/loader000.gif');
+  background-image: url('#{$iconsPath}loader000.gif');
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -1019,7 +1019,7 @@ div.diapo {
 }
 
 #idFrameT #selectCase {
-  background: url('#{$skinsPath}icons/ccoch0.gif') no-repeat center center;
+  background: url('#{$iconsPath}ccoch0.gif') no-repeat center center;
   padding-left: 16px;
 }
 
@@ -1581,30 +1581,30 @@ form.phrasea_query input.query {
 }
 
 .history-collection {
-  background-image: url('#{$skinsPath}icons/chgcoll_history.png');
+  background-image: url('#{$iconsPath}chgcoll_history.png');
 }
 
 .history-status {
-  background-image: url('#{$skinsPath}icons/chgstatus_history.png');
+  background-image: url('#{$iconsPath}chgstatus_history.png');
 }
 
 .history-print {
-  background-image: url('#{$skinsPath}icons/print_history.png');
+  background-image: url('#{$iconsPath}print_history.png');
 }
 
 .history-substit, .history-publish {
-  background-image: url('#{$skinsPath}icons/imgtools_history.png');
+  background-image: url('#{$iconsPath}imgtools_history.png');
 }
 
 .history-download, .history-mail, .history-ftp {
-  background-image: url('#{$skinsPath}icons/disktt_history.png');
+  background-image: url('#{$iconsPath}disktt_history.png');
 }
 .history-edit {
-  background-image: url('#{$skinsPath}icons/ppen_history.png');
+  background-image: url('#{$iconsPath}ppen_history.png');
 }
 
 .history-validate, .history-push {
-  background-image: url('#{$skinsPath}icons/push16.png');
+  background-image: url('#{$iconsPath}push16.png');
 }
 
 .history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push {
@@ -1854,7 +1854,7 @@ input.input-button.hover {
 
 input.search {
   padding-left: 25px;
-  background-image: url('#{$skinsPath}icons/search.png');
+  background-image: url('#{$iconsPath}search.png');
   background-repeat: no-repeat;
   background-position: 3px center;
 }
@@ -2947,7 +2947,7 @@ DIV.thesaurus U.w {
 
 #idFrameE .ui-datepicker-inline {
   background-color: #111111;
-  background-image: url('#{$skinsPath}prod/000000/images/ui-bg_gloss-wave_20_111111_500x100.png');
+  background-image: url('../images/000000/images/ui-bg_gloss-wave_20_111111_500x100.png');
   background-repeat: repeat-x;
   background-position: 50% top;
 }
@@ -3266,7 +3266,7 @@ DIV.thesaurus U.w {
 }
 
 #mainMenu .PNB.right li.user {
-  background: url('#{$skinsPath}icons/icon_user.png') 15px 7px no-repeat;
+  background: url('#{$iconsPath}icon_user.png') 15px 7px no-repeat;
   padding-left: 41px;
 }
 
@@ -4101,7 +4101,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .ui-tabs .ui-tabs-panel.loading {
-  background-image: url('#{$skinsPath}icons/loader000.gif');
+  background-image: url('#{$iconsPath}loader000.gif');
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -4196,7 +4196,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #dialog_publicator .api_infos {
   top: auto;
   height: 25px;
-  background-image: url('#{$skinsPath}icons/api_info.png');
+  background-image: url('#{$iconsPath}api_info.png');
   background-repeat: repeat-x;
   background-position: 0 0;
   color: #999999;
@@ -4222,15 +4222,15 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #ul_main_pub_tabs li.bridge_Youtube {
-  background-image: url('#{$skinsPath}icons/youtube-small.gif');
+  background-image: url('#{$iconsPath}youtube-small.gif');
 }
 
 #ul_main_pub_tabs li.bridge_Dailymotion {
-  background-image: url('#{$skinsPath}icons/dailymotion-small.gif');
+  background-image: url('#{$iconsPath}dailymotion-small.gif');
 }
 
 #ul_main_pub_tabs li.bridge_Flickr {
-  background-image: url('#{$skinsPath}icons/flickr-small.gif');
+  background-image: url('#{$iconsPath}flickr-small.gif');
 }
 
 #dialog_publicator .diapo .thumb_wrapper {

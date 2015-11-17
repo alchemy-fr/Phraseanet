@@ -13,7 +13,7 @@ require.config({
         "underscore": "../assets/underscore-amd/underscore",
         "jquery.ui.widget": "../assets/jquery-file-upload/jquery.ui.widget",
         "jquery.cookie": "../assets/jquery.cookie/jquery.cookie",
-        "jquery.treeview": "../assets/jquery.treeview/jquery.treeview",
+        "jquery.treeview": "../assets/vendors/jquery-treeview/jquery.treeview",
         "jquery.tooltip": "../include/jquery.tooltip",
         "blueimp.loadimage" : "../assets/blueimp-load-image/load-image",
         "jfu.iframe-transport": "../assets/jquery-file-upload/jquery.iframe-transport",

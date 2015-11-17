@@ -17,7 +17,7 @@ require.config({
         backbone: "../assets/vendors/backbone/backbone.min",
         "jquery.ui.widget": "../assets/vendors/jquery-file-upload/jquery.ui.widget.min",
         "jquery.cookie": "../assets/vendors/jquery.cookie/jquery.cookie.min",
-        "jquery.treeview": "../assets/vendors/jquery.treeview/jquery.treeview",
+        "jquery.treeview": "../assets/vendors/jquery-treeview/jquery.treeview",
         "jquery.tooltip": "../include/jquery.tooltip",
         "blueimp.loadimage" : "../assets/vendors/blueimp-load-image/load-image",
         "jfu.iframe-transport": "../assets/vendors/jquery-file-upload/jquery.iframe-transport",
