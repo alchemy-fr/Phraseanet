@@ -36,7 +36,6 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
         config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
         config.paths.dist + 'include/jslibs/jquery.form.2.49.js',
-        config.paths.dist + 'include/jslibs/jquery.vertical.buttonset.js',
         config.paths.src + 'prod/js/jquery.Selection.js',
         config.paths.src + 'prod/js/jquery.Edit.js',
         config.paths.src + 'prod/js/jquery.lists.js',
@@ -47,7 +46,6 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.src + 'prod/js/jquery.WorkZone.js',
         config.paths.src + 'prod/js/jquery.Alerts.js',
         config.paths.src + 'prod/js/jquery.Upload.js',
-        // config.paths.dist + 'include/jslibs/pixastic.custom.js', //@TODO double check usage
         config.paths.src + 'prod/js/ThumbExtractor.js',
         config.paths.src + 'prod/js/publicator.js',
         config.paths.dist + 'include/jslibs/jquery.sprintf.1.0.3.js',
