@@ -2,8 +2,29 @@ var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
 
+
+// prod submodule
+gulp.task('build-uploadFlash',  function(){
+    var uploadFlashGroup = [
+        config.paths.dist + 'include/jslibs/SWFUpload/swfupload.js',
+        config.paths.dist + 'include/jslibs/SWFUpload/plugins/swfupload.queue.js'
+    ];
+    return utils.buildJsGroup(uploadFlashGroup, 'uploadFlash', 'upload/js');
+});
+
+// prod submodule
+gulp.task('build-permaview',  function(){
+    var permaviewGroup =  [
+        config.paths.src + 'vendors/jquery-mousewheel/js/jquery.mousewheel.js',
+        config.paths.src + 'vendors/jquery-image-enhancer/js/jquery.image_enhancer.js',
+        config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
+        config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
+    ];
+    return utils.buildJsGroup(permaviewGroup, 'permaview', 'permaview/js');
+});
+
+
 gulp.task('copy-prod-images', function(){
-    // @TODO
     return gulp.src([config.paths.src + 'prod/images/**/*'])
         .pipe(gulp.dest( config.paths.build + 'prod/images'));
 });
@@ -29,9 +50,8 @@ gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey'], f
 gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
     var prodGroup = [
         config.paths.vendors +  'underscore-amd/underscore.js',
-        config.paths.dist + 'include/jslibs/colorpicker/js/colorpicker.js',
+        config.paths.src + 'vendors/colorpicker/js/colorpicker.js',
         config.paths.vendors +  'jquery.lazyload/jquery.lazyload.js',
-        // config.paths.dist + 'include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js',
         config.paths.vendors + 'humane-js/humane.js', // @TODO > extra files
         config.paths.vendors + 'blueimp-load-image/js/load-image.js', // @TODO > extra files
         config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
@@ -49,11 +69,11 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.src + 'prod/js/jquery.Upload.js',
         config.paths.src + 'prod/js/ThumbExtractor.js',
         config.paths.src + 'prod/js/publicator.js',
-        config.paths.dist + 'include/jslibs/jquery.sprintf.1.0.3.js',
-        config.paths.dist + 'include/jquery.p4.preview.js',
+        config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',
+        config.paths.src + 'prod/js/jquery.p4.preview.js',
         config.paths.src + 'prod/js/record.editor.js',
         config.paths.src + 'prod/js/jquery.color.animation.js',
-        config.paths.dist + 'include/jquery.image_enhancer.js',
+        config.paths.src + 'vendors/jquery-image-enhancer/js/jquery.image_enhancer.js',
         config.paths.vendors + 'jquery-treeview/jquery.treeview.js',
         config.paths.vendors + 'jquery-treeview/jquery.treeview.async.js',
         config.paths.vendors + 'fancytree/dist/jquery.fancytree-all.min.js'

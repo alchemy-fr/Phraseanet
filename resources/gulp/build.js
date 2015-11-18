@@ -6,28 +6,11 @@ var fs = require('fs');
 var utils = require('./utils.js');
 
 
-//@TODO > submodule of prod
-gulp.task('build-uploadFlash',  function(){
-    var uploadFlashGroup = [
-        config.paths.dist + 'include/jslibs/SWFUpload/swfupload.js',
-        config.paths.dist + 'include/jslibs/SWFUpload/plugins/swfupload.queue.js'
-    ];
-    return utils.buildJsGroup(uploadFlashGroup, 'uploadFlash', 'upload/js');
-});
 
-//@TODO > submodule of prod
-gulp.task('build-permaview',  function(){
-    var permaviewGroup =  [
-        config.paths.dist + 'include/jslibs/jquery.mousewheel.js',
-        config.paths.dist + 'include/jquery.image_enhancer.js',
-        config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
-        config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
-    ];
-    return utils.buildJsGroup(permaviewGroup, 'permaview', 'permaview/js');
-});
 
 gulp.task('build', ['build-vendors'], function(){
     gulp.start('build-common');
+    gulp.start('build-oauth');
     gulp.start('build-prod');
     gulp.start('build-thesaurus');
     gulp.start('build-uploadFlash');
@@ -43,11 +26,13 @@ gulp.task('build', ['build-vendors'], function(){
 // standalone vendors used across application
 gulp.task('build-vendors', [
     'build-bootstrap',
+    'build-colorpicker',
     'build-jquery',
-    'build-jquery-ui',
+    'build-jquery-ui', // will build themes too
     'build-jquery-mobile',
     'build-jquery-galleria',
     'build-jquery-file-upload',
+    // 'build-jquery-image-enhancer', //bundled in prod only
     'build-json2',
     'build-modernizr',
     'build-zxcvbn',

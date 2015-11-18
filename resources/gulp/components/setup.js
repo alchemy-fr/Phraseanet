@@ -15,9 +15,9 @@ gulp.task('build-setup-css', function(){
 gulp.task('build-setup', ['copy-setup-images', 'build-setup-css'], function(){
     var setupGroup = [
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
-        config.paths.dist + 'include/jslibs/jquery-validation/jquery.validate.js',
-        config.paths.dist + 'include/jslibs/jquery-validate.password/jquery.validate.password.js',
-        config.paths.dist + 'include/path_files_tests.jquery.js'
+        config.paths.src + 'vendors/jquery-validation/js/jquery.validate.js',
+        config.paths.src + 'vendors/jquery-validate.password/js/jquery.validate.password.js',
+        config.paths.src + 'setup/js/path_files_tests.jquery.js'
     ];
     return utils.buildJsGroup(setupGroup, 'setup', 'setup/js');
 });

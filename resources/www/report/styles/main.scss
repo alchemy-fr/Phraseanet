@@ -1,6 +1,6 @@
 $sharedIconPath: '../../../assets/common/images/icons/';
 @import '../../shared/styles/skin/main';
-@import '../../shared/styles/jquery.contextmenu';
+@import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 
 $imagesPath: '../images/';
 @import './tables';

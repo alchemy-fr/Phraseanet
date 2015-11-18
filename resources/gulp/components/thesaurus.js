@@ -14,6 +14,7 @@ gulp.task('build-thesaurus-css', function(){
 
 gulp.task('build-thesaurus', ['copy-thesaurus-images', 'build-thesaurus-css'], function(){
     var thesaurusGroup = [
+        config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',
         config.paths.src + 'thesaurus/js/win.js',
         config.paths.src + 'thesaurus/js/xmlhttp.js',
         config.paths.src + 'thesaurus/js/thesaurus.js',

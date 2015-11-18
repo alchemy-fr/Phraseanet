@@ -26,7 +26,7 @@ gulp.task('build-common-css', ['build-common-font-css'],function(){
 gulp.task('build-common', ['copy-common-images', 'build-common-css'], function(){
     var commonGroup = [
         // config.paths.dist + 'assets/bootstrap/js/bootstrap.js', // should append no conflict
-        config.paths.dist + 'include/jslibs/jquery.mousewheel.js',
+        config.paths.src + 'vendors/jquery-mousewheel/js/jquery.mousewheel.js',
         // jquery ui date picker langs
         config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-ar.js',
         config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-de.js',
@@ -35,9 +35,9 @@ gulp.task('build-common', ['copy-common-images', 'build-common-css'], function()
         config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-nl.js',
         config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-en-GB.js',
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
-        config.paths.dist + 'include/jslibs/jquery.contextmenu_scroll.js',
-        config.paths.dist + 'include/jquery.common.js',
-        config.paths.dist + 'include/jquery.tooltip.js',
+        config.paths.src + 'vendors/jquery-contextmenu/js/jquery.contextmenu_custom.js',
+        config.paths.src + 'common/js/jquery.common.js',
+        config.paths.src + 'common/js/jquery.tooltip.js',
         config.paths.src + 'common/js/jquery.Dialog.js',
         config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
         config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)

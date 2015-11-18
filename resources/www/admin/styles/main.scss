@@ -3,7 +3,7 @@ $iconsPath: '../../../assets/common/images/icons/';
 
 @import '../../vendors/jquery-treeview/jquery.treeview'; // to inline import css file, don't put extension
 @import '../../../../www/bower_components/jquery-file-upload/css/jquery.fileupload-ui'; // to inline import css file, don't put extension
-@import '../../shared/styles/jquery.contextmenu';
+@import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 @import '../../shared/styles/skin/main';
 @import '../../shared/styles/skin/geonames';
 

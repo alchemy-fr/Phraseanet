@@ -2,7 +2,7 @@ $imagesPath: '';
 $col1: #3b3b3b;
 $col2: #1a1a1a;
 $imagesPath: '../../../skins/prod/000000/images/';
-$skinsPath: '../../../skins/';
+$skinsImagesPath: '../../../assets/vendors/jquery-ui/images/dark-hive/';
 $iconsPath: '../../../assets/common/images/icons/';
 /******* GLOBAL PROD **********************************************************/
 
@@ -240,11 +240,11 @@ span.ww_winTitle {
   text-align: center;
   line-height: 70px;
   margin-bottom: -20px;
-  background: url("/assets/common/images/icons/workzoneEscamote.png") 30px 36px no-repeat;
+  background: url('#{$iconsPath}workzoneEscamote.png') 30px 36px no-repeat;
 }
 
 #idFrameC.closed #retractableButton {
-  background: url("/assets/common/images/icons/workzoneEscamote_on.png") 30px 30px no-repeat;
+  background: url('#{$iconsPath}workzoneEscamote_on.png') 30px 30px no-repeat;
 }
 
 #idFrameC .wrapper {
@@ -525,7 +525,7 @@ span.ww_winTitle {
 
 #idFrameC .icon-menu .WZbasketTab {
   display: block;
-  background-image: url("/assets/common/images/icons/workzone32.png");
+  background-image: url('#{$iconsPath}workzone32.png');
   background-repeat: no-repeat;
   background-position: 9px 21px;
   width: 70px;
@@ -641,7 +641,7 @@ span.ww_winTitle {
 }
 
 .ui-state-active .ui-icon {
-  background-image: url('/include/jslibs/jquery-ui-1.10.3/css/dark-hive/images/ui-icons_cccccc_256x240.png');
+  background-image: url('#{$skinsImagesPath}ui-icons_cccccc_256x240.png');
 }
 
 #baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
