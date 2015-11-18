@@ -48,14 +48,31 @@ class ToolsController extends Controller
 
             $acl = $this->getAclForUser();
 
-            if ($acl->is_admin()) {
+            if ($acl->has_right('bas_chupub')
+                && $acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
+                && $acl->has_right_on_base($record->getBaseId(), 'imgtools')
+            ) {
+                $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+
                 foreach ($subdefs as $subdef) {
+                    $label = $subdefName = $subdef->get_name();
                     if (null === $permalink = $subdef->get_permalink()) {
                         continue;
                     }
+
+                    if ('document' == $subdefName) {
+                        $label = $this->app->trans('prod::tools: document');
+                    } elseif (isset($databoxSubdefs[$subdefName])) {
+                        if (!$acl->has_access_to_subdef($record, $subdefName)) {
+                            continue;
+                        }
+
+                        $label = $databoxSubdefs[$subdefName]->get_label($this->app['locale']);
+                    }
                     $recordAccessibleSubdefs[] = array(
                         'name' => $subdef->get_name(),
-                        'state' => $permalink->get_is_activated()
+                        'state' => $permalink->get_is_activated(),
+                        'label' => $label,
                     );
                 }
             }
@@ -291,7 +308,6 @@ class ToolsController extends Controller
 
     /**
      * Edit a record share state
-     * @param Application $app
      * @param Request $request
      * @param $base_id
      * @param $record_id
@@ -303,25 +319,26 @@ class ToolsController extends Controller
         $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
         $subdefName = (string)$request->request->get('name');
         $state = $request->request->get('state') == 'true' ? true : false;
-        $return = ['success' => false, 'message' => 'document type not found'];
 
         $acl = $this->getAclForUser();
-        if (!$acl->has_access_to_subdef($record, $subdefName) || !$acl->is_admin()) {
+        if (!$acl->has_right('bas_chupub')
+            || !$acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
+            || !$acl->has_right_on_base($record->getBaseId(), 'imgtools')
+        ) {
             $this->app->abort(403);
         }
 
-        $subdefs = $record->get_subdefs();
+        $subdef = $record->get_subdef($subdefName);
 
-        foreach ($subdefs as $subdef) {
-            if ($subdef->get_name($subdefName) === $subdefName) {
-                $permalink = $subdef->get_permalink();
-                try {
-                    $permalink->set_is_activated($state);
-                    $return = ['success' => true, 'state' => $permalink->get_is_activated()];
-                } catch (\Exception $e) {
-                    $return = ['success' => false, 'state' => $permalink->get_is_activated()];
-                }
-            }
+        if (null === $permalink = $subdef->get_permalink()) {
+            return $this->app->json(['success' => false, 'state' => false], 400);
+        }
+
+        try {
+            $permalink->set_is_activated($state);
+            $return = ['success' => true, 'state' => $permalink->get_is_activated()];
+        } catch (\Exception $e) {
+            $return = ['success' => false, 'state' => $permalink->get_is_activated()];
         }
 
         return $this->app->json($return);

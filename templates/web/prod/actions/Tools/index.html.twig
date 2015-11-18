@@ -308,36 +308,30 @@
         </div>
       {% endfor %}
     {% endif %}
-        {% if selectionLength == 1%}
-            {% if recordSubdefs %}
-                <div id="tools-sharing"  class="tabBox">
-                    <div class="well-large">
-                        {% for subdef in recordSubdefs %}
-                            <div class="row-fluid">
-                                <div class="span6">
-                        <span class="status-marker {%  if subdef.state %}status-active{% else %}status-inactive
-            {% endif %}"></span>{{ subdef.name }}
-                                </div>
-                                <div class="span6">
-                                    <p class="text-right">
-                                        {%  if subdef.state %}
-                                            <button type="button"
-                                                    class="stateChange_button btn btn-inverse text-right"
-                                                    data-name="{{ subdef.name }}"
-                                                    data-state="{{ subdef.state }}">{{ "Disable document type sharing" | trans }}</button>
-
-                                        {% else %}
-                                            <button type="button" class="stateChange_button btn btn-inverse text-right"
-                                                    data-name="{{ subdef.name }}"
-                                                    data-state="{{ subdef.state }}">{{ "Enable document type sharing" | trans }}</button>
-                                        {% endif %}
-                                    </p>
-                                </div>
+        {% if selectionLength == 1 and recordSubdefs is not empty %}
+            <div id="tools-sharing" class="tabBox">
+                <div class="well-large">
+                    {% for subdef in recordSubdefs %}
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <span class="status-marker {{ subdef.state ? 'status-active' : 'status-inactive' }}"></span>{{ subdef.label }}
                             </div>
-                        {% endfor %}
-                    </div>
+                            <div class="span6">
+                                <p class="text-right">
+                                    <button type="button" class="stateChange_button btn btn-inverse text-right"
+                                            data-name="{{ subdef.name }}" data-state="{{ subdef.state }}">
+                                        {% if subdef.state %}
+                                            {{- "Disable document type sharing"|trans -}}
+                                        {% else %}
+                                            {{- "Enable document type sharing"|trans -}}
+                                        {% endif %}
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endif %}
+            </div>
         {% endif %}
   </div>
 
