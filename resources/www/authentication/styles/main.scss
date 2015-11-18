@@ -1,1 +1,10 @@
-@import '../../account/styles/main';
+// @import '../../account/styles/main';
+// @import '../../../../www/bower_components/normalize-css/normalize'; // not extension for inline import
+@import '../../_shared/styles/variables';
+@import 'variables';
+@import '../../vendors/bootstrap/bootstrap';
+@import '../../account/styles/skin';
+@import '../../../../plugins/login.scss';
+
+@import '../../../../www/bower_components/font-awesome/sass/font-awesome.scss';
+@import '../../../../www/bower_components/jquery-ui/themes/base/jquery.ui.autocomplete'; // not extension for inline import

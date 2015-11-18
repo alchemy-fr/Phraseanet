@@ -99,6 +99,29 @@ ul {
 
 /** Button style */
 
+.btn {
+    $glow: inset 0 1px 0 rgba(255, 255, 255, 0.2),  0 1px 7px rgba(0, 0, 0, 1);
+    @include glow($glow);
+    @include border-radius($borderRadiusSmall);
+    text-shadow : 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.btn-success {
+    @include gradient ($btnSuccessBackground, 0.7);
+}
+
+.btn-info {
+    @include gradient ($btnInfoBackground, 0.7);
+}
+
+.btn-success:hover {
+    @include gradient ($btnSuccessBackgroundHighlight, 0.7);
+}
+
+.btn-info:hover {
+    @include gradient ($btnInfoBackgroundHighlight, 0.7);
+}
+
 .btn-flat {
     filter:progid:DXImageTransform.Microsoft.gradient(enabled='false');
     -webkit-box-shadow: none;
@@ -271,6 +294,30 @@ ul {
    padding: 9px 5px;
 }
 
+/** blockquote style */
+
+blockquote {
+    page-break-inside: avoid;
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+    color: #333;
+}
+
+blockquote:before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+}
+
+blockquote p {
+    display: inline;
+}
 /** app css */
 
 .help-block-error {
@@ -610,8 +657,37 @@ form[name=registerForm] label[for=terms-of-use] input{
     height: 100%;
 }
 
+#main-bar {
+    margin-top: 40px;
+}
+
+.brand .section-title {
+    color: $grayLight;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"] {
+    min-height: 30px;
+}
+
+legend {
+    color: $grayLighter;
+}
+
 .footer {
-    padding: 10px 0;
+    padding: 20px 0px;
 }
 
 .footer-list {
@@ -923,6 +999,69 @@ form[name=registerForm] .multiselect-group {
     .footer .footer-block {
         padding: 15px 0;
     }
+}
+
+
+
+h1, h2, h3, h4 {
+    font-weight: 100;
+}
+
+.content{
+    min-height: 500px;
+}
+
+.url_callback_input input {
+    margin: 0;
+}
+
+.modal {
+    color: $black;
+}
+
+.app-list {
+    border: 1px solid $grayDark;
+    background: lighten($background, 2%);
+    @include border-radius($baseBorderRadius);
+}
+
+.app-list li {
+    padding: 10px;
+    border-top: 1px solid $grayDark;
+}
+
+.app-list li:first-child {
+    border-top:none;
+}
+
+.app-list li .app-row {
+    line-height: $fontSizeLarge * 1.25;
+    padding-bottm: 5px;
+}
+
+.app-list li .app-row a {
+    font-size: $fontSizeLarge * 1.25;
+}
+
+.text-success {
+    color: $green;
+}
+
+.text-error {
+    color: $red;
+}
+
+.control-span {
+    padding-top: 5px;
+    line-height: 20px;
+}
+
+form[name="changeEmail"] .control-label {
+    width: 200px;
+}
+
+form[name="changeEmail"] .controls {
+    margin-left: 220px;
 }
 
 /* Landscape phones and down */
