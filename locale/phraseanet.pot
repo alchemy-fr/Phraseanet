@@ -1,14 +1,15 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Phraseanet 3.8\n"
-"POT-Creation-Date: 2015-09-03 16:49+0200\n"
+"POT-Creation-Date: 2015-11-18 15:24+0100\n"
 "PO-Revision-Date: 2015-06-24 19:22+0100\n"
 "Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
 "Language-Team: Phraseanet TEAM <info@phraseanet.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: bin\n"
@@ -18,8 +19,12 @@ msgstr ""
 "X-Poedit-SearchPath-4: www\n"
 "X-Poedit-SearchPathExcluded-0: www/assets\n"
 
-#: lib/Alchemy/Phrasea/Application.php:607
+#: lib/Alchemy/Phrasea/Application.php:662
 msgid "Open the URL in a new window"
+msgstr ""
+
+#: lib/Alchemy/Phrasea/Authentication/RecoveryService.php:104
+msgid "phraseanet:: Un email vient de vous etre envoye"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Border/Checker/Colorspace.php:65
@@ -76,9 +81,9 @@ msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:457
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:876
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:288
-#: lib/classes/API/V1/adapter.php:876 lib/classes/API/V1/adapter.php:929
-#: lib/classes/API/V1/adapter.php:983 lib/classes/API/V1/adapter.php:1007
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:294
+#: lib/classes/API/V1/adapter.php:895 lib/classes/API/V1/adapter.php:948
+#: lib/classes/API/V1/adapter.php:1002 lib/classes/API/V1/adapter.php:1026
 msgid "An error occurred"
 msgstr ""
 
@@ -121,7 +126,7 @@ msgstr ""
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:934
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:1006
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:161
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:324
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:330
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:68
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:344
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:464
@@ -130,8 +135,8 @@ msgstr ""
 #: lib/Alchemy/Phrasea/Controller/Prod/Order.php:201
 #: lib/Alchemy/Phrasea/Controller/Prod/Order.php:207
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:206
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:122
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:186
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:162
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:226
 msgid "An error occured"
 msgstr ""
 
@@ -241,9 +246,9 @@ msgid "A task has been created, please run it to complete empty collection"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:927
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:168
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:320
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:211
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:170
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:322
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:219
 #: lib/Alchemy/Phrasea/Controller/Root/Developers.php:187
 #: lib/Alchemy/Phrasea/Controller/Root/Developers.php:213
 #: lib/Alchemy/Phrasea/Controller/Root/Developers.php:244
@@ -349,35 +354,35 @@ msgstr ""
 msgid "Unable to add file to Phraseanet"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:172
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:174
 msgid "Missing tests parameter"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:176
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:178
 msgid "Missing path parameter"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:232
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:234
 msgid "Missing \"structure\" parameter"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:274
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:276
 msgid "You do not enough rights to update status"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:277
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:279
 msgid "File is too big : 64k max"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:280
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:282
 msgid "Status icon upload failed : upload error"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:283
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:285
 msgid "Status icon upload failed : can not write on disk"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:286
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:288
 msgid "Something wrong happend"
 msgstr ""
 
@@ -462,48 +467,44 @@ msgstr ""
 msgid "admin::compte-utilisateur activite"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:565
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:581
 msgid ""
 "login::register:email: Vous avez ete accepte sur les collections suivantes : "
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:568
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:585
 msgid ""
 "login::register:email: Vous avez ete refuse sur les collections suivantes : "
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:668
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:685
 #, php-format
 msgid "Login line %d is empty"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:670
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:687
 #, php-format
 msgid "Login %s is already defined in the file at line %d"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:673
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:690
 #, php-format
 msgid "Login %s already exists in database"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:684
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:701
 #, php-format
 msgid "Mail line %d is empty"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:686
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:703
 #, php-format
 msgid "Email '%s' for login '%s' already exists in database"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:696
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:713
 #, php-format
 msgid "Password is empty at line %d"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Api/V1.php:70
-msgid "The use of phraseanet Navigator is not allowed"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Controller/Client/Root.php:267
@@ -599,49 +600,49 @@ msgstr ""
 msgid "Envoie avec succes"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:201
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:207
 msgid "Basket created"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:223
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:229
 msgid "Basket has been deleted"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:257
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:263
 msgid "Record removed from basket"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:282
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:288
 msgid "Basket has been updated"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:284
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:290
 msgid "The requested basket does not exist"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:286
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:292
 msgid "You do not have access to this basket"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:341
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:347
 msgid "Basket updated"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:362
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:368
 msgid "Basket has been archived"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:364
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:370
 msgid "Basket has been unarchived"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:421
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:427
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:144
 #, php-format
 msgid "%d records added"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:455
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:461
 #, php-format
 msgid "%d records moved"
 msgstr ""
@@ -1234,22 +1235,26 @@ msgstr ""
 msgid "Terms of use"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:167
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:70
+msgid "prod::tools: document"
+msgstr ""
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:207
 msgid "Document has been successfully substitued"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:169
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:172
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:223
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:226
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:209
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:212
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:263
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:266
 msgid "file is not valid"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:221
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:261
 msgid "Thumbnail has been successfully substitued"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:250
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:290
 msgid "an error occured"
 msgstr ""
 
@@ -1667,226 +1672,210 @@ msgstr ""
 msgid "report:: module"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:98
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:617
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:105
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:522
 msgid "login::notification: Mise a jour du mot de passe avec succes"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:102
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:110
 msgid "Invalid password provided"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:124
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:132
 msgid "Could not perform request, please contact an administrator."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:130
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:138
 msgid "admin::compte-utilisateur:ftp: Le mot de passe est errone"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:136
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:144
 msgid "forms::l'email semble invalide"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:142
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:150
 msgid "forms::les emails ne correspondent pas"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:154
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:162
 msgid "phraseanet::erreur: echec du serveur de mail"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:165
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:173
 msgid ""
 "admin::compte-utilisateur un email de confirmation vient de vous etre "
 "envoye. Veuillez suivre les instructions contenue pour continuer"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:186
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:194
 msgid "admin::compte-utilisateur: L'email a correctement ete mis a jour"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:190
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:198
 msgid "admin::compte-utilisateur: erreur lors de la mise a jour"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:345
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:353
 msgid "login::notification: Vos demandes ont ete prises en compte"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:413
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:433
 msgid "login::notification: Changements enregistres"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Account.php:416
+#: lib/Alchemy/Phrasea/Controller/Root/Account.php:435
 msgid "forms::erreurs lors de l'enregistrement des modifications"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:224
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:229
 msgid "Please provide a value."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:225
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:230
 #, php-format
 msgid "Please select at least %s choice."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:226
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:231
 msgid "Please provide a valid email address."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:227
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:232
 msgid "Please provide a valid IP address."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:228
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:233
 #, php-format
 msgid "Please provide a longer value. It should have %s character or more."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:229
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:234
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRecoverPasswordForm.php:44
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:50
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRenewPasswordForm.php:36
 msgid "Please provide the same passwords."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:230
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:235
 msgid "Please provide the same emails."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:231
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:236
 msgid "Please accept the terms of use to register."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:232
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:237
 msgid "No collection selected"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:233
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:238
 #, php-format
 msgid "%d collection selected"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:234
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:239
 #, php-format
 msgid "%d collections selected"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:235
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:240
 msgid "Select all collections"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:237
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:242
 msgid "Weak"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:238
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:243
 msgid "Ordinary"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:239
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:244
 msgid "Good"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:240
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:245
 msgid "Great"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:281
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:289
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:299
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:303
 msgid "You tried to register with an unknown provider"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:316
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:314
 msgid "Invalid captcha answer."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:421
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:492
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:331
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:402
 msgid "login::notification: demande de confirmation par mail envoyee"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:424
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:495
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:334
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:405
 msgid "Unable to send your account unlock email."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:485
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:395
 msgid "Invalid link."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:534
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:542
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:550
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:444
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:455
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:468
 msgid "Invalid unlock link."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:556
-msgid "Account is already unlocked, you can login."
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:567
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:578
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:476
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:487
 msgid "Account has been unlocked, you can now login."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:583
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:492
 msgid "Account has been unlocked, you still have to wait for admin approval."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:653
-msgid "phraseanet::erreur: Le compte n'a pas ete trouve"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:659
-msgid "Invalid email address"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:677
-msgid "phraseanet:: Un email vient de vous etre envoye"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:725
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:608
 msgid "Vous etes maintenant deconnecte. A bientot."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:751
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:634
 msgid "login::erreur: No available connection - Please contact sys-admin"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:796
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:679
 msgid "Phraseanet guest-access is disabled"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:917
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:800
 #, php-format
 msgid "Unable to authenticate with %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:941
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:824
 msgid "Unable to retrieve provider identity"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:980
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:863
 msgid "Your identity is not recognized."
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1012
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:895
 msgid ""
 "An unexpected error occured during authentication process, please contact an "
 "admin"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1027
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:910
 msgid "Please fill the captcha"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1031
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:914
 msgid "login::erreur: Vous n'avez pas confirme votre email"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1038
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:921
 msgid "login::erreur: Erreur d'authentification"
 msgstr ""
 
@@ -1912,42 +1901,42 @@ msgstr ""
 msgid "an error occured : %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:429
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:430
 #, php-format
 msgid "thesaurus:: fichier genere le %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:445
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:446
 #, php-format
 msgid "thesaurus:: fichier genere : %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:447
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:448
 msgid "thesaurus:: erreur lors de l'enregsitrement du fichier"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:532
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:533
 msgid "phraseanet::technique:: et"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:607
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:608
 #, php-format
 msgid "over-indent at line %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:614
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:615
 #, php-format
 msgid "bad encoding at line %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:620
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:621
 #, php-format
 msgid "bad character at line %s"
 msgstr ""
 
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:1795
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:1952
-#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:3171
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:1796
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:1953
+#: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:3271
 msgid "thesaurus:: corbeille"
 msgstr ""
 
@@ -1969,6 +1958,10 @@ msgstr ""
 #: lib/Alchemy/Phrasea/Controller/User/Preferences.php:87
 #: lib/Alchemy/Phrasea/Controller/User/Preferences.php:114
 msgid "Preference saved !"
+msgstr ""
+
+#: lib/Alchemy/Phrasea/Core/Event/Listener/OAuthListener.php:91
+msgid "The use of phraseanet Navigator is not allowed"
 msgstr ""
 
 #: lib/Alchemy/Phrasea/Core/Event/Subscriber/ApiOauth2ErrorsSubscriber.php:48
@@ -2589,11 +2582,11 @@ msgstr ""
 msgid "Url non valide"
 msgstr ""
 
-#: lib/classes/API/V1/adapter.php:981
+#: lib/classes/API/V1/adapter.php:1000
 msgid "Record Not Found"
 msgstr ""
 
-#: lib/classes/API/V1/adapter.php:1005
+#: lib/classes/API/V1/adapter.php:1024
 msgid "Story Not Found"
 msgstr ""
 
@@ -2782,17 +2775,17 @@ msgstr ""
 msgid "Service youtube introuvable."
 msgstr ""
 
-#: lib/classes/User/Adapter.php:441
+#: lib/classes/User/Adapter.php:451
 #, php-format
 msgid "A user already exists with email addres %s"
 msgstr ""
 
-#: lib/classes/User/Adapter.php:1426
+#: lib/classes/User/Adapter.php:1473
 #, php-format
 msgid "modele %s"
 msgstr ""
 
-#: lib/classes/User/Adapter.php:1432 lib/classes/module/report/nav.php:470
+#: lib/classes/User/Adapter.php:1479 lib/classes/module/report/nav.php:470
 msgid "phraseanet::utilisateur inconnu"
 msgstr ""
 
@@ -2838,41 +2831,41 @@ msgstr ""
 msgid "Your install might need to build some sub-definitions"
 msgstr ""
 
-#: lib/classes/base.php:288
+#: lib/classes/base.php:304
 #, php-format
 msgid "Updating table %s"
 msgstr ""
 
-#: lib/classes/base.php:301 lib/classes/base.php:523 lib/classes/base.php:737
-#: lib/classes/base.php:750
+#: lib/classes/base.php:317 lib/classes/base.php:539 lib/classes/base.php:753
+#: lib/classes/base.php:766
 #, php-format
 msgid "Erreur lors de la tentative ; errreur : %s"
 msgstr ""
 
-#: lib/classes/base.php:320
+#: lib/classes/base.php:336
 #, php-format
 msgid "Creating table %s"
 msgstr ""
 
-#: lib/classes/base.php:326 lib/classes/base.php:808
+#: lib/classes/base.php:342 lib/classes/base.php:824
 #, php-format
 msgid "Applying patches on %s"
 msgstr ""
 
-#: lib/classes/base.php:767
+#: lib/classes/base.php:783
 msgid "Looking for patches"
 msgstr ""
 
-#: lib/classes/databox.php:1361
+#: lib/classes/databox.php:1446
 msgid "ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name"
 msgstr ""
 
-#: lib/classes/databox.php:1372
+#: lib/classes/databox.php:1457
 msgid ""
 "ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire"
 msgstr ""
 
-#: lib/classes/databox.php:1376
+#: lib/classes/databox.php:1461
 msgid ""
 "ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview"
 "\" ou \"document\""
@@ -3388,7 +3381,7 @@ msgstr ""
 msgid "client::recherche: dans les categories"
 msgstr ""
 
-#: lib/classes/record/adapter.php:949
+#: lib/classes/record/adapter.php:865
 msgid "reponses::document sans titre"
 msgstr ""
 
@@ -3441,7 +3434,7 @@ msgid "Record Mover"
 msgstr ""
 
 #: lib/classes/task/period/RecordMover.php:288
-#: lib/classes/task/period/archive.php:232 lib/classes/task/period/ftp.php:158
+#: lib/classes/task/period/archive.php:232 lib/classes/task/period/ftp.php:180
 #: lib/classes/task/period/ftpPull.php:226
 #: lib/classes/task/period/subdef.php:269
 #: lib/classes/task/period/writemeta.php:180
@@ -3450,7 +3443,7 @@ msgstr ""
 
 #: lib/classes/task/period/RecordMover.php:291
 #: lib/classes/task/period/archive.php:235
-#: lib/classes/task/period/archive.php:242 lib/classes/task/period/ftp.php:161
+#: lib/classes/task/period/archive.php:242 lib/classes/task/period/ftp.php:183
 #: lib/classes/task/period/ftpPull.php:229
 #: lib/classes/task/period/subdef.php:272
 #: lib/classes/task/period/writemeta.php:183
@@ -3591,67 +3584,75 @@ msgstr ""
 msgid "Vidage de collection"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:28
+#: lib/classes/task/period/ftp.php:34
 msgid "task::ftp:FTP Push"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:146 lib/classes/task/period/ftpPull.php:164
+#: lib/classes/task/period/ftp.php:154 lib/classes/task/period/ftpPull.php:164
 msgid "task::ftp:proxy"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:152 lib/classes/task/period/ftpPull.php:170
+#: lib/classes/task/period/ftp.php:160 lib/classes/task/period/ftpPull.php:170
 msgid "task::ftp:proxy port"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:339
+#: lib/classes/task/period/ftp.php:166
+msgid "task::proxy user"
+msgstr ""
+
+#: lib/classes/task/period/ftp.php:172
+msgid "task::ftp:proxy password"
+msgstr ""
+
+#: lib/classes/task/period/ftp.php:367
 #, php-format
 msgid ""
 "task::ftp:Etat d'envoi FTP vers le serveur \"%1$s\" avec le compte \"%2$s\" "
 "et pour destination le dossier : \"%3$s\""
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:350
+#: lib/classes/task/period/ftp.php:378
 #, php-format
 msgid "task::ftp:TENTATIVE no %s, %s"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:477
+#: lib/classes/task/period/ftp.php:508
 #, php-format
 msgid ""
 "task::ftp:File \"%1$s\" (record %2$s) de la base \"%3$s\" (Export du "
 "Document) : Transfert cancelled (le document n'existe plus)"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:617
+#: lib/classes/task/period/ftp.php:648
 msgid "task::ftp:Tous les documents ont ete transferes avec succes"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:627 lib/classes/task/period/ftp.php:633
+#: lib/classes/task/period/ftp.php:658 lib/classes/task/period/ftp.php:664
 #, php-format
 msgid "task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:630
+#: lib/classes/task/period/ftp.php:661
 msgid "Transfert OK"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:636
+#: lib/classes/task/period/ftp.php:667
 msgid "Transfert Annule"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:637
+#: lib/classes/task/period/ftp.php:668
 msgid "task::ftp:Certains documents n'ont pas pu etre tranferes"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:651
+#: lib/classes/task/period/ftp.php:682
 msgid "Des difficultes ont ete rencontres a la connection au serveur distant"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:653
+#: lib/classes/task/period/ftp.php:684
 msgid "La connection vers le serveur distant est OK"
 msgstr ""
 
-#: lib/classes/task/period/ftp.php:666
+#: lib/classes/task/period/ftp.php:697
 msgid "task::ftp:Details des fichiers"
 msgstr ""
 
@@ -3752,1882 +3753,20 @@ msgstr ""
 msgid "task::_common_:records, ou si la memoire depasse"
 msgstr ""
 
-msgid "admin:: demandes en cours"
-msgstr ""
-
-msgid "Requests for the application registrations were recorded successfully"
-msgstr ""
-
-msgid "admin:: refuser l'acces"
-msgstr ""
-
-msgid "admin:: donner les droits de telechargement et consultation de previews"
-msgstr ""
-
-msgid "admin:: donner les droits de telechargements de preview et hd"
-msgstr ""
-
-msgid "admin:: watermarquer les documents"
-msgstr ""
-
-msgid "Informations"
-msgstr ""
-
-msgid "admin::collection"
-msgstr ""
-
-msgid "Models"
-msgstr ""
-
-msgid "admin:: appliquer le modele"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "No application for registration has been recorded"
-msgstr ""
-
-msgid "Ajouter a"
-msgstr ""
-
-msgid "Actions"
-msgstr ""
-
-msgid "The following errors have been detected"
-msgstr ""
-
-msgid "Would you like to continue ?"
-msgstr ""
-
-msgid "Yes"
-msgstr ""
-
-msgid "no"
-msgstr ""
-
-msgid "Apply a model"
-msgstr ""
-
-msgid "Cancel"
-msgstr ""
-
-msgid "You need define a model before importing a list of users"
-msgstr ""
-
-msgid "There is no user to add."
-msgstr ""
-
-msgid "status:: numero de bit"
-msgstr ""
-
-msgid "admin::status: case A"
-msgstr ""
-
-msgid "admin::status: texte a afficher"
-msgstr ""
-
-msgid "Labels"
-msgstr ""
-
-msgid "Symbolized by"
-msgstr ""
-
-msgid "Select files..."
-msgstr ""
-
-msgid "admin::status:: aucun symbole"
-msgstr ""
-
-msgid "admin::status: case B"
-msgstr ""
-
-msgid ""
-"status:: Afficher le status dans les feuilles de reponses pour tous les "
-"utilisateurs"
-msgstr ""
-
-msgid "status:: retrouver sous forme de filtre dans la recherche"
-msgstr ""
-
-msgid "boutton::retour"
-msgstr ""
-
-msgid ""
-"Invalid file type, only (%supported_file_types%) file formats are supported"
-msgstr ""
-
-msgid "thesaurus:: Proprietes"
-msgstr ""
-
-msgid "thesaurus::menu: supprimer"
-msgstr ""
-
-msgid "thesaurus:: %hits% reponses retournees"
-msgstr ""
-
-msgid "thesaurus:: synonymes"
-msgstr ""
-
-msgid "thesaurus:: hits"
-msgstr ""
-
-msgid "thesaurus:: ids"
+#, php-format
+msgid "%basket_length% documents"
 msgstr ""
 
 #, php-format
-msgid "thesaurus:: Confirmer la suppression du terme %s"
+msgid "%entry_length% documents"
 msgstr ""
 
-msgid "Votre recherche ne retourne aucun resultat"
-msgstr ""
-
-msgid "Voulez-vous dire %link% ?"
+msgid "%error%"
 msgstr ""
 
 msgid ""
-"La recherche s'effectue grâce à la boîte de dialogue qui se trouve en haut à "
-"gauche de l'écran."
-msgstr ""
-
-msgid ""
-"Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux "
-"suivants :"
-msgstr ""
-
-msgid ""
-"* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , "
-"LAST , ALL)"
-msgstr ""
-
-msgid "Caractères de troncature"
-msgstr ""
-
-msgid "auto*"
-msgstr ""
-
-msgid "retourne \"automobile\", \"automate\", \"autoroute\", ..."
-msgstr ""
-
-msgid "dé?it"
-msgstr ""
-
-msgid "retourne \"délit\", \"débit\", ..."
-msgstr ""
-
-msgid "Visualiser tous les enregistrements / les derniers enregistrements"
-msgstr ""
-
-msgid "TOUT"
-msgstr ""
-
-msgid "retourne tous les enregistrements des collections selectionnees"
-msgstr ""
-
-msgid "LAST 20"
-msgstr ""
-
-msgid ""
-"retourne les 20 derniers enregistrements archives dans les collections "
-"selectionnees"
-msgstr ""
-
-msgid "Recherche multicritères"
-msgstr ""
-
-msgid ""
-"Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou "
-"DANS"
-msgstr ""
-
-msgid "sport"
-msgstr ""
-
-msgid "automobile"
-msgstr ""
-
-msgid "retourne les documents comprenant les deux mots."
-msgstr ""
-
-msgid "journal OU jt"
-msgstr ""
-
-msgid "retourne les documents comprenant un mot et/ou l'autre."
-msgstr ""
-
-msgid "cannes SAUF festival"
-msgstr ""
-
-msgid "retourne les documents comprenant cannes sans le mot festival."
-msgstr ""
-
-msgid "thalassa DANS titre"
-msgstr ""
-
-msgid ""
-"retourne les documents où le terme est au moins présent dans le titre, en "
-"évitant par exemple celles où le terme est uniquement cité dans la légende."
-msgstr ""
-
-msgid ""
-"pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les "
-"guillemets :"
-msgstr ""
-
-msgid "C dans l'air"
-msgstr ""
-
-msgid "Et Dieu créa la femme"
-msgstr ""
-
-msgid "bijou en or"
-msgstr ""
-
-msgid "tout le sport"
-msgstr ""
-
-msgid "Erreur lors de votre authentification"
-msgstr ""
-
-msgid "Vous etes authentifie avec succes"
-msgstr ""
-
-msgid ""
-"Si cette fenetre ne se ferme pas automatiquement, fermez la, et "
-"raffraichissez votre compte"
-msgstr ""
-
-msgid "Creer"
-msgstr ""
-
-msgid "action : exporter"
-msgstr ""
-
-msgid "action : print"
-msgstr ""
-
-msgid "action : editer"
-msgstr ""
-
-msgid "action : status"
-msgstr ""
-
-msgid "action : collection"
-msgstr ""
-
-msgid "action : push"
-msgstr ""
-
-msgid "action : bridge"
-msgstr ""
-
-msgid "action : publier"
-msgstr ""
-
-msgid "action : outils"
-msgstr ""
-
-msgid "action : supprimer"
-msgstr ""
-
-msgid "Certaines donnees du panier ont change"
-msgstr ""
-
-msgid "rafraichir"
-msgstr ""
-
-msgid "Guest access"
-msgstr ""
-
-msgid "No matches found"
-msgstr ""
-
-msgid "Granted bases"
-msgstr ""
-
-msgid "Upload"
-msgstr ""
-
-msgid "nouveau"
-msgstr ""
-
-msgid "Vers quel API voulez vous vous connecter ?"
-msgstr ""
-
-msgid "Aucun bridge disponible. Veuillez contacter un administrateur."
-msgstr ""
-
-msgid "You are about to delete this account. Would you like to continue ?"
-msgstr ""
-
-msgid "Loading"
-msgstr ""
-
-msgid "Vous n'avez selectionne aucun element"
-msgstr ""
-
-msgid "Vous n'avez pas assez de droits sur les elements selectionnes"
-msgstr ""
-
-msgid "Vous n'avez pas assez de droits sur certains elements selectionnes"
-msgstr ""
-
-msgid "Erreur lors du contact avec le serveur WEB"
-msgstr ""
-
-msgid "Delai depasse lors du contact avec le serveur WEB"
-msgstr ""
-
-msgid "Required"
-msgstr ""
-
-msgid "forms::merci d'entrer une adresse e-mail valide"
-msgstr ""
-
-msgid "forms::ce champ est requis"
-msgstr ""
-
-msgid "forms::les mots de passe ne correspondent pas"
-msgstr ""
-
-msgid "Vous devez specifier une adresse email et un mot de passe valides"
-msgstr ""
-
-msgid "Le nom de base de donnee est incorrect"
-msgstr ""
-
-msgid "Il y a des erreurs, merci de les corriger avant de continuer"
-msgstr ""
-
-msgid "forms::le mot de passe est trop similaire a l'identifiant"
-msgstr ""
-
-msgid "forms::la valeur donnee est trop courte"
-msgstr ""
-
-msgid "forms::le mot de passe est trop simple"
-msgstr ""
-
-msgid "forms::le mot de passe est bon"
-msgstr ""
-
-msgid "forms::le mot de passe est tres bon"
-msgstr ""
-
-msgid "Veuillez corriger les erreurs avant de poursuivre"
-msgstr ""
-
-msgid "Successfull connection"
-msgstr ""
-
-msgid "Warning, this database is not empty"
-msgstr ""
-
-msgid "Connection is OK but database does not exists or can not be accessed"
-msgstr ""
-
-msgid "Unable to connect to MySQL server"
-msgstr ""
-
-msgid "Bonjour, vous etes sur le point d'installer Phraseanet."
-msgstr ""
-
-msgid ""
-"Consultez en ligne les pré-requis et la\n"
-"                                                configuration du serveur web"
-msgstr ""
-
-msgid ""
-"Vous aurez besoin de spécifier un serveur MySQL, des\n"
-"                                                repertoires de stockage pour "
-"vos documents, et de\n"
-"                                                configurer votre serveur web "
-"pour qu'il publie\n"
-"                                                certains de ces dossiers de "
-"stockage."
-msgstr ""
-
-msgid ""
-"Avant de continuer, prenez connaissance des\n"
-"                                                    points ci-dessous. Vous "
-"pouvez continuer sans\n"
-"                                                    corriger ces problèmes."
-msgstr ""
-
-msgid "Review system configuration"
-msgstr ""
-
-msgid "Prerequisite and Configuration"
-msgstr ""
-
-msgid "boutton::suivant"
-msgstr ""
-
-msgid "Executables externes"
-msgstr ""
-
-msgid "Required field"
-msgstr ""
-
-msgid "Phraseanet may require many binaries."
-msgstr ""
-
-msgid ""
-"Some of them are required, like the indexer, Exiftool or ImageMagick "
-"components, some others are optionnal, like FFmpeg which is used to preview "
-"video files."
-msgstr ""
-
-msgid "Don't worry, You can modify your configuration later"
-msgstr ""
-
-msgid "boutton::precedent"
-msgstr ""
-
-msgid "Creation de votre compte"
-msgstr ""
-
-msgid "Votre adresse email"
-msgstr ""
-
-msgid "Votre mot de passe"
-msgstr ""
-
-msgid "Confirmation de votre mot de passe"
-msgstr ""
-
-msgid "admin::compte-utilisateur A propos de la securite des mots de passe :"
-msgstr ""
-
-msgid ""
-"admin::compte-utilisateur Les mots de passe doivent etre clairement "
-"distincts du login et contenir au moins deux types parmis les caracteres "
-"suivants :"
-msgstr ""
-
-msgid "admin::compte-utilisateur::securite caracteres speciaux"
-msgstr ""
-
-msgid "admin::compte-utilisateur::securite caracteres majuscules"
-msgstr ""
-
-msgid "admin::compte-utilisateur::securite caracteres minuscules"
-msgstr ""
-
-msgid "admin::compte-utilisateur::securite caracteres numeriques"
-msgstr ""
-
-msgid "Your email will be used to log in the application."
-msgstr ""
-
-msgid "Please be sure it is still valid and you can access it"
-msgstr ""
-
-msgid "setup::Configuration de la base de compte ApplicationBox"
-msgstr ""
-
-msgid "MySQL database connection parameters"
-msgstr ""
-
-msgid "phraseanet:: adresse"
-msgstr ""
-
-msgid "Database user"
-msgstr ""
-
-msgid "admin::compte-utilisateur mot de passe"
-msgstr ""
-
-msgid "phraseanet:: port"
-msgstr ""
-
-msgid "Database"
-msgstr ""
-
-msgid "boutton::tester"
-msgstr ""
-
-msgid ""
-"Si vous aviez besoin de plus de\n"
-"                                                parametres, %debut_lien"
-"%Afficher d'avantage\n"
-"                                                d'options%fin_lien%"
-msgstr ""
-
-msgid "ApplicationBox is a Mysql database."
-msgstr ""
-
-msgid ""
-"It stores users data, rights, and references to DataBoxes where records are "
-"stored."
-msgstr ""
-
-msgid ""
-"Phraseanet strongly recommends the use of %link_start%\n"
-"                                    MariaDB%link_end% as a replacement for "
-"MySQL."
-msgstr ""
-
-msgid "setup::Configuration des repertoires de stockage"
-msgstr ""
-
-msgid "Repertoire de stockage des fichiers"
-msgstr ""
-
-msgid ""
-"Your medias and their subdefinitions (previews, thumbnails..) will be stored "
-"in these directories."
-msgstr ""
-
-msgid ""
-"Thumbnails directory is mounted to be accessible via HTTP, while other files "
-"are not."
-msgstr ""
-
-msgid ""
-"If you plan to store large files, be sure it will fit in these directories."
-msgstr ""
-
-msgid "setup::Configuration de la base de stockage DataBox"
-msgstr ""
-
-msgid "Ne pas creer de DataBox maintenant"
-msgstr ""
-
-msgid "Modele de donnees"
-msgstr ""
-
-msgid "Creation des taches"
-msgstr ""
-
-msgid ""
-"Phraseanet embarque un moteur de taches pour la lecture / ecriture des "
-"metadonnes, et autre operations"
-msgstr ""
-
-msgid "Creer la tache d'ecriture des metadonnees"
-msgstr ""
-
-msgid "Creer la tache de creation des sous-definitions"
-msgstr ""
-
-msgid "Creer la tache d'indexation"
-msgstr ""
-
-msgid ""
-"Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet "
-"ApplicationBox."
-msgstr ""
-
-msgid "Databoxes store records, metadatas and their classifications"
-msgstr ""
-
-msgid "button::Install"
-msgstr ""
-
-msgid "Install in progess"
-msgstr ""
-
-msgid "Installation is currenlty processing, please wait..."
-msgstr ""
-
-msgid "Acces"
-msgstr ""
-
-msgid "Sessions"
-msgstr ""
-
-msgid "Applications"
-msgstr ""
-
-msgid "Developpeur"
-msgstr ""
-
-msgid "Connection"
-msgstr ""
-
-msgid "Your account is locked, please follow the following link to unlock it"
-msgstr ""
-
-msgid "login:: Envoyer a nouveau le mail de confirmation"
-msgstr ""
-
-msgid "Forgot password?"
-msgstr ""
-
-msgid "Or login with"
-msgstr ""
-
-msgid ""
-"%name% est momentanement indisponible a cause d'un trop grand nombre de "
-"requetes"
-msgstr ""
-
-msgid "le service sera de nouveau disponible dans quelques minutes"
-msgstr ""
-
-msgid "boutton::modifier"
-msgstr ""
-
-msgid "Creer un Photoset"
-msgstr ""
-
-msgid "Titre"
-msgstr ""
-
-msgid "Description"
-msgstr ""
-
-msgid "Photo principale"
-msgstr ""
-
-msgid "Suppression de %n_element% playlists"
-msgstr ""
-
-msgid "Etes vous sur de supprimer %number% playlists ?"
-msgstr ""
-
-msgid "Limite temporelle"
-msgstr ""
-
-msgid "Base %base%"
-msgstr ""
-
-msgid "Activer"
-msgstr ""
-
-msgid "De"
-msgstr ""
-
-msgid "A"
-msgstr ""
-
-msgid "Access history"
-msgstr ""
-
-msgid ""
-"If you notice any unfamiliar devices or locations, click 'End Activity' to "
-"end the session."
-msgstr ""
-
-msgid "Date de connexion"
-msgstr ""
-
-msgid "Dernier access"
-msgstr ""
-
-msgid "IP"
-msgstr ""
-
-msgid "Browser"
-msgstr ""
-
-msgid "End Activity"
-msgstr ""
-
-msgid "Current session"
-msgstr ""
-
-msgid "End session activity"
-msgstr ""
-
-msgid "Do you really want to end the activity of this session?"
-msgstr ""
-
-msgid "yes"
-msgstr ""
-
-msgid "Certaines donnees du reportage ont change"
-msgstr ""
-
-msgid "panier:: nom"
-msgstr ""
-
-msgid "panier:: description"
-msgstr ""
-
-msgid "None of the selected records can be pushed."
-msgstr ""
-
-msgid "None of the selected records can be sent for feedback."
-msgstr ""
-
-msgid "Grant rights"
-msgstr ""
-
-msgid "Contributor"
-msgstr ""
-
-msgid "See others"
-msgstr ""
-
-msgid "HD Download"
-msgstr ""
-
-msgid "Lists"
-msgstr ""
-
-msgid "List Manager"
-msgstr ""
-
-msgid "Save this list"
-msgstr ""
-
-msgid "Select a user in the list"
-msgstr ""
-
-msgid "or"
-msgstr ""
-
-msgid "Add user"
-msgstr ""
-
-msgid "and %n% more peoples"
-msgstr ""
-
-msgid ""
-"Please consider send this push to the following users : %recommendation%"
-msgstr ""
-
-msgid ""
-"Please consider send this validation to the following users : %recommendation"
-"%"
-msgstr ""
-
-msgid "Users suggestion"
-msgstr ""
-
-msgid "Add"
-msgstr ""
-
-msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
-msgstr ""
-
-msgid ""
-"Push::une validation est une demande d'appreciation a d'autres personnes"
-msgstr ""
-
-msgid "You are about to push %nb_push_items% records."
-msgstr ""
-
-msgid ""
-"You are about to push %nb_push_items% records, %nb_not_available% records "
-"can not be processed."
-msgstr ""
-
-msgid "You are about to ask for feedback for %nb_push_items% records."
-msgstr ""
-
-msgid ""
-"You are about to ask for feedback for %nb_push_items% records, "
-"%nb_not_available% records can not be processed."
-msgstr ""
-
-msgid "Select all"
-msgstr ""
-
-msgid "Deselect all"
-msgstr ""
-
-msgid "Back to Push"
-msgstr ""
-
-msgid "Back to Feedback"
-msgstr ""
-
-msgid "Welcome to the ListManager !"
-msgstr ""
-
-msgid "Start by creating one by using the \"add\" button on the left !"
-msgstr ""
-
-msgid "Select a list on the left and edit it !"
-msgstr ""
-
-msgid "En attente"
-msgstr ""
-
-msgid "En cours d'envoi"
-msgstr ""
-
-msgid "Fichiers envoyes"
-msgstr ""
-
-msgid "phraseanet:: deconnection"
-msgstr ""
-
-msgid "Terms of service"
-msgstr ""
-
-msgid "Nom du nouveau panier"
-msgstr ""
-
-msgid "paniers::description du nouveau panier"
-msgstr ""
-
-msgid "Ajouter ma selection courrante"
-msgstr ""
-
-msgid "report::Heures"
-msgstr ""
-
-msgid "from"
-msgstr ""
-
-msgid "to"
-msgstr ""
-
-msgid "Generate"
-msgstr ""
-
-msgid ""
-"Report generation may take a long time to generate, depending on the number "
-"of collections and the period selected."
-msgstr ""
-
-msgid "Generate dashboard"
-msgstr ""
-
-msgid "report:: 3 - Type de report"
-msgstr ""
-
-msgid "report:: (connexions) Par utilisateurs"
-msgstr ""
-
-msgid "report:: Grouper par"
-msgstr ""
-
-msgid "report:: (connexions) Globales"
-msgstr ""
-
-msgid "report:: (connexions) OS et navigateurs"
-msgstr ""
-
-msgid "report:: par utilisateurs"
-msgstr ""
-
-msgid "report:: (telechargement) Global"
-msgstr ""
-
-msgid "report:: (telechargement) Par jours base par base"
-msgstr ""
-
-msgid "report:: (telechargement) Par documents sur la base"
-msgstr ""
-
-msgid "report::aucune precision"
-msgstr ""
-
-msgid "report::la description contient"
-msgstr ""
-
-msgid "report:: recordid"
-msgstr ""
-
-msgid "report:: toutes les questions"
-msgstr ""
-
-msgid "report:: Les questions les plus posees"
-msgstr ""
-
-msgid "report:: activite du site"
-msgstr ""
-
-msgid "report:: pushe"
-msgstr ""
-
-msgid "report:: ajoute"
-msgstr ""
-
-msgid "report:: edite"
-msgstr ""
-
-msgid "report:: valide"
-msgstr ""
-
-msgid "Sent"
-msgstr ""
-
-msgid "regeneration of sub-definitions"
-msgstr ""
-
-msgid "video tool"
-msgstr ""
-
-msgid "Document Type Sharing"
-msgstr ""
-
-msgid "Disable document type sharing"
-msgstr ""
-
-msgid "Enable document type sharing"
-msgstr ""
-
-msgid "image tool"
-msgstr ""
-
-msgid "substitution"
-msgstr ""
-
-msgid "meta-datas"
-msgstr ""
-
-msgid "Reconstruire les sous definitions"
-msgstr ""
-
-msgid "Attention, certain documents ont des sous-definitions substituees"
-msgstr ""
-
-msgid ""
-"Forcer la reconstruction sur les enregistrements ayant des thumbnails "
-"substituees"
-msgstr ""
-
-msgid "validate"
-msgstr ""
-
-msgid "cancel"
-msgstr ""
-
-msgid "screenshot video"
-msgstr ""
-
-msgid "No preview available"
-msgstr ""
-
-msgid "take a screenshot"
-msgstr ""
-
-msgid "To take a screenshot click on camera"
-msgstr ""
-
-msgid "brightness settings"
-msgstr ""
-
-msgid "contrast settings"
-msgstr ""
-
-msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-msgstr ""
-
-msgid "image rotation"
-msgstr ""
-
-msgid "rotation 90 degres horaire"
-msgstr ""
-
-msgid "rotation 90 degres anti-horaires"
-msgstr ""
-
-msgid "Substitution is not possible for this kind of record"
-msgstr ""
-
-msgid "substitution HD"
-msgstr ""
-
-msgid "mettre a jour le nom original de fichier apres substitution"
-msgstr ""
-
-msgid "substitution SD"
-msgstr ""
-
-msgid "alert"
-msgstr ""
-
-msgid "no image selected"
-msgstr ""
-
-msgid "processing"
-msgstr ""
-
-msgid "thumbnail validation"
-msgstr ""
-
-msgid "Login to link your account"
-msgstr ""
-
-msgid "No account yet?"
-msgstr ""
-
-msgid "Register"
-msgstr ""
-
-msgid "Rights"
-msgstr ""
-
-msgid "Infos"
-msgstr ""
-
-msgid "Reglages:: reglages d acces guest"
-msgstr ""
-
-msgid "Reglages:: reglages d inscitpition automatisee"
-msgstr ""
-
-msgid "Edition des droits de %display_name%"
-msgstr ""
-
-msgid "Edition des droits de %number% utilisateurs"
-msgstr ""
-
-msgid "Apply a template"
-msgstr ""
-
-msgid "boutton::choisir"
-msgstr ""
-
-msgid "Delete all users rights"
-msgstr ""
-
-msgid "Allowed to publish"
-msgstr ""
-
-msgid "Manage Thesaurus"
-msgstr ""
-
-msgid "Manage Database"
-msgstr ""
-
-msgid "Manage DB fields"
-msgstr ""
-
-msgid "Access"
-msgstr ""
-
-msgid "Active"
-msgstr ""
-
-msgid "Allowed to add in basket"
-msgstr ""
-
-msgid "Access to preview"
-msgstr ""
-
-msgid "Remove watermark"
-msgstr ""
-
-msgid "Access to HD"
-msgstr ""
-
-msgid "Allowed to order"
-msgstr ""
-
-msgid "Set download quotas"
-msgstr ""
-
-msgid "Set time restrictions"
-msgstr ""
-
-msgid "Set statuses restrictions"
-msgstr ""
-
-msgid "Allowed to add"
-msgstr ""
-
-msgid "Allowed to edit"
-msgstr ""
-
-msgid "Allowed to change statuses"
-msgstr ""
-
-msgid "Allowed to delete"
-msgstr ""
-
-msgid "Access to image tools"
-msgstr ""
-
-msgid "Manage users"
-msgstr ""
-
-msgid "Allowed to access report"
-msgstr ""
-
-msgid "Allowed to push"
-msgstr ""
-
-msgid "Manage collection"
-msgstr ""
-
-msgid "Manage values lists"
-msgstr ""
-
-msgid "Are you sure you want to reset rights?"
-msgstr ""
-
-msgid "SphinxSearch search-engine configuration"
-msgstr ""
-
-msgid "Sphinx Search connection configuration"
-msgstr ""
-
-msgid "Sphinx Search server"
-msgstr ""
-
-msgid "Sphinx Search RealTime server"
-msgstr ""
-
-msgid "Charset to use for indexation"
-msgstr ""
-
-msgid "Date fields available for search"
-msgstr ""
-
-msgid "Edition"
-msgstr ""
-
-msgid "Sous-titre"
-msgstr ""
-
-msgid "Short description"
-msgstr ""
-
-msgid "Etendue de la publication"
-msgstr ""
-
-msgid "Non-Restreinte (publique)"
-msgstr ""
-
-msgid "Publique"
-msgstr ""
-
-msgid "Liste des personnes habilitees a publier sur ce fil"
-msgstr ""
-
-msgid "Id"
-msgstr ""
-
-msgid "Email"
-msgstr ""
-
-msgid "Owner"
-msgstr ""
-
-msgid "Ajouter un publisher"
-msgstr ""
-
-msgid "Name or email"
-msgstr ""
-
-msgid "You are not the feed owner"
-msgstr ""
-
-msgid "%nb_records% records"
-msgstr ""
-
-msgid "Refresh"
-msgstr ""
-
-msgid "(%length%)"
-msgstr ""
-
-msgid "Tableau de bord"
-msgstr ""
-
-msgid "Setup"
-msgstr ""
-
-msgid "SearchEngine settings"
-msgstr ""
-
-msgid "admin::utilisateurs: utilisateurs connectes"
-msgstr ""
-
-msgid "admin::utilisateurs: utilisateurs"
-msgstr ""
-
-msgid "admin::utilisateurs: demandes en cours"
-msgstr ""
-
-msgid "Publications"
-msgstr ""
-
-msgid "admin::utilisateurs: gestionnaire de taches"
-msgstr ""
-
-msgid "admin::utilisateurs: bases de donnees"
-msgstr ""
-
-msgid "admin::structure: reglage de la structure"
-msgstr ""
-
-msgid "CHAMPS"
-msgstr ""
-
-msgid "SUBDEFS"
-msgstr ""
-
-msgid "admin::status: reglage des status"
-msgstr ""
-
-msgid "admin:: CGUs"
-msgstr ""
-
-msgid "admin::collection: ordre des collections"
-msgstr ""
-
-msgid "admin::base: preferences de collection"
-msgstr ""
-
-msgid ""
-"Pour des raisons techniques cette interface n'est plus maintenue et serta "
-"bientôt rendue\n"
-"                     inacessible. Nous vous invitons si vous le souhaitez à "
-"utiliser production dés maintenant."
-msgstr ""
-
-msgid "Production "
-msgstr ""
-
-msgid "client:: recherche"
-msgstr ""
-
-msgid "client:: recherche avancee"
-msgstr ""
-
-msgid "client:: topics"
-msgstr ""
-
-msgid "phraseanet::technique:: or"
-msgstr ""
-
-msgid "phraseanet::technique:: except"
-msgstr ""
-
-msgid "client::recherche: rechercher dans les bases :"
-msgstr ""
-
-msgid "client::recherche: rechercher dans toutes les bases"
-msgstr ""
-
-msgid "phraseanet:: presentation des resultats"
-msgstr ""
-
-msgid "phraseanet::type:: documents"
-msgstr ""
-
-msgid "phraseanet::type:: reportages"
-msgstr ""
-
-msgid "phraseanet:: collections"
-msgstr ""
-
-msgid ""
-"client::recherche: cliquez ici pour desactiver tous les filtres de toutes "
-"base"
-msgstr ""
-
-msgid "phraseanet:: propositions"
-msgstr ""
-
-msgid "phraseanet:: historique"
-msgstr ""
-
-msgid "boutton:: selectionner toutes les bases"
-msgstr ""
-
-msgid "boutton:: selectionner aucune base"
-msgstr ""
-
-msgid ""
-"client::recherche: cliquez ici pour desactiver tous les filtres de cette base"
-msgstr ""
-
-msgid "phraseanet::time:: de"
-msgstr ""
-
-msgid "phraseanet::time:: a"
-msgstr ""
-
-msgid "client::recherche: filter sur"
-msgstr ""
-
-msgid "client::recherche: filtrer par dates"
-msgstr ""
-
-msgid "client::recherche: filtrer par status"
-msgstr ""
-
-msgid "client::recherche: filtrer par champs"
-msgstr ""
-
-msgid "client::recherche: filtrer par champs : tous les champs"
-msgstr ""
-
-msgid "preview:: Description"
-msgstr ""
-
-msgid "preview:: Historique"
-msgstr ""
-
-msgid "preview:: Popularite"
-msgstr ""
-
-msgid "admin::tasks: nom de la tache"
-msgstr ""
-
-msgid "admin::tasks: lancer au demarrage du scheduler"
-msgstr ""
-
-msgid "admin::tasks: Nombre de crashes : "
-msgstr ""
-
-msgid "admin::tasks: reinitialiser el compteur de crashes"
-msgstr ""
-
-msgid "boutton::vue xml"
-msgstr ""
-
-msgid "boutton::vue graphique"
-msgstr ""
-
-msgid "validation:: votre note"
-msgstr ""
-
-msgid "boutton::enregistrer"
-msgstr ""
-
-msgid "Forgotten password"
-msgstr ""
-
-msgid "Forgot your password?"
-msgstr ""
-
-msgid "Enter your e-mail address to retrieve your password"
-msgstr ""
-
-msgid "Loading database documentary structure ..."
-msgstr ""
-
-msgid "Notify users about this publication"
-msgstr ""
-
-msgid "publication : titre"
-msgstr ""
-
-msgid "publication : sous titre"
-msgstr ""
-
-msgid "publication : autheur"
-msgstr ""
-
-msgid "publication : email autheur"
-msgstr ""
-
-msgid "Fils disponibles"
-msgstr ""
-
-msgid "This feed is public"
-msgstr ""
-
-msgid "boutton::publier"
-msgstr ""
-
-msgid "Aucune notification"
-msgstr ""
-
-msgid "toutes les notifications"
-msgstr ""
-
-msgid "erreur avec la valeur %name%"
-msgstr ""
-
-msgid "Reordonner automatiquement"
-msgstr ""
-
-msgid "Choisir"
-msgstr ""
-
-msgid "Re-initialiser"
-msgstr ""
-
-msgid "Re-ordonner"
-msgstr ""
-
-msgid "Inverser"
-msgstr ""
-
-msgid ""
-"prod::thesaurusTab:dlg:Remplacement du candidat \"%(from)s\" par \"%(to)s\""
-msgstr ""
-
-msgid "prod::thesaurusTab:dlg:Remplacement en cours."
-msgstr ""
-
-msgid "prod::thesaurusTab:dlg:Acceptation en cours."
-msgstr ""
-
-msgid "prod::thesaurusTab:dlg:Suppression en cours."
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:dlg:accepter le terme candidat \"%s\" ?"
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:dlg:accepter les %d termes candidats ?"
-msgstr ""
-
-#, php-format
-msgid ""
-"prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat \"%s\""
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats"
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :"
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :"
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:dlg:supprimer le terme \"%s\" des fiches ?"
-msgstr ""
-
-#, php-format
-msgid "prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?"
-msgstr ""
-
-msgid "prod::thesaurusTab:tree:loading"
-msgstr ""
-
-msgid "prod::thesaurusTab:tmenu:Accepter comme terme specifique"
-msgstr ""
-
-msgid "prod::thesaurusTab:tmenu:Accepter comme synonyme"
-msgstr ""
-
-msgid "prod::thesaurusTab:cmenu:Accepter en %lng_code%"
-msgstr ""
-
-msgid "prod::thesaurusTab:cmenu:Remplacer par..."
-msgstr ""
-
-msgid "report:: Dashboard"
-msgstr ""
-
-msgid "Download of documents"
-msgstr ""
-
-msgid ""
-"Please wait while your files are being gathered for the download, this "
-"operation may take a few minutes."
-msgstr ""
-
-msgid ""
-"Your documents are ready. If the download does not start, %before_link%click "
-"here%after_link%"
-msgstr ""
-
-msgid "The file contains the following elements"
-msgstr ""
-
-msgid "Base"
-msgstr ""
-
-msgid "Sub definition"
-msgstr ""
-
-msgid "Size"
-msgstr ""
-
-msgid "Thumbnail"
-msgstr ""
-
-msgid "thesaurus:: export en topics"
-msgstr ""
-
-msgid "thesaurus:: exporter"
-msgstr ""
-
-msgid "thesaurus:: exporter vers topics pour toutes les langues"
-msgstr ""
-
-msgid "thesaurus:: exporter a l'ecran pour la langue %piv%"
-msgstr ""
-
-msgid "phraseanet:: tri"
-msgstr ""
-
-msgid "phraseanet:: tri par date"
-msgstr ""
-
-msgid "thesaurus:: recherche"
-msgstr ""
-
-msgid "thesaurus:: recherche thesaurus *:\"query\""
-msgstr ""
-
-msgid "thesaurus:: recherche fulltext"
-msgstr ""
-
-msgid "thesaurus:: question complete (avec operateurs)"
-msgstr ""
-
-msgid "thesaurus:: presentation"
-msgstr ""
-
-msgid "thesaurus:: presentation : branches refermables"
-msgstr ""
-
-msgid "thesaurus:: presentation : branche ouvertes"
-msgstr ""
-
-msgid "thesaurus:: tout deployer - refermable"
-msgstr ""
-
-msgid "thesaurus:: tout deployer - statique"
-msgstr ""
-
-msgid "thesaurus:: tout fermer"
-msgstr ""
-
-msgid "Aucun statut editable"
-msgstr ""
-
-msgid ""
-"Les status de certains documents ne sont pas accessibles par manque de droits"
-msgstr ""
-
-msgid "boutton::remplacer"
-msgstr ""
-
-msgid "boutton::ajouter"
-msgstr ""
-
-msgid "phraseanet:: thesaurus"
-msgstr ""
-
-msgid "phraseanet:: presse-papier"
-msgstr ""
-
-msgid "phraseanet:: preview"
-msgstr ""
-
-msgid "prod::editing: rechercher-remplacer"
-msgstr ""
-
-msgid "prod::editing: modeles de fiches"
-msgstr ""
-
-msgid "prod::editing::replace: remplacer dans le champ"
-msgstr ""
-
-msgid "prod::editing::replace: remplacer dans tous les champs"
-msgstr ""
-
-msgid "prod::editing:replace: chaine a rechercher"
-msgstr ""
-
-msgid "prod::editing:remplace: chaine remplacante"
-msgstr ""
-
-msgid "prod::editing:remplace: options de remplacement"
-msgstr ""
-
-msgid "prod::editing:remplace::option : utiliser une expression reguliere"
-msgstr ""
-
-msgid "Aide sur les expressions regulieres"
-msgstr ""
-
-msgid "prod::editing:remplace::option: remplacer toutes les occurences"
-msgstr ""
-
-msgid "prod::editing:remplace::option: rester insensible a la casse"
-msgstr ""
-
-msgid "prod::editing:remplace::option la valeur du cahmp doit etre exacte"
-msgstr ""
-
-msgid "prod::editing:remplace::option la valeur est comprise dans le champ"
-msgstr ""
-
-msgid "prod::editing:remplace::option respecter la casse"
-msgstr ""
-
-msgid "prod::editing:indexation en cours"
-msgstr ""
-
-msgid "prod::editing: valider ou annuler les modifications"
-msgstr ""
-
-msgid "edit::preset:: titre"
-msgstr ""
-
-msgid "Edition impossible"
-msgstr ""
-
-msgid ""
-"prod::edit: Impossible d'editer simultanement des documents provenant de "
-"bases differentes"
-msgstr ""
-
-msgid ""
-"prod::editing: aucun documents ne peuvent etre edites car vos droits sont "
-"induffisants"
-msgstr ""
-
-msgid ""
-"prod::editing: %not_actionable% documents ne peuvent etre edites car vos "
-"droits sont induffisants"
-msgstr ""
-
-msgid ""
-"prod::editing: 1 document ne peut etre edite car vos droits sont induffisants"
-msgstr ""
-
-msgid "edit::Certains champs doivent etre remplis pour valider cet editing"
-msgstr ""
-
-msgid "edit: chosiir limage du regroupement"
-msgstr ""
-
-msgid "prod::editing::fields: status "
-msgstr ""
-
-msgid "Ce champ est decrit comme un element DublinCore"
-msgstr ""
-
-msgid "This field represents the title of the document"
-msgstr ""
-
-msgid "No results"
-msgstr ""
-
-msgid "1 result"
-msgstr ""
-
-msgid "%Total% results"
-msgstr ""
-
-msgid "Delete basket"
-msgstr ""
-
-msgid "Received from %user_name%"
-msgstr ""
-
-msgid "Sent for validation to %list_participants%"
-msgstr ""
-
-msgid "Apparait aussi dans ces reportages"
-msgstr ""
-
-msgid "Apparait aussi dans ces paniers"
-msgstr ""
-
-msgid "report:: Du (date)"
-msgstr ""
-
-msgid "report:: Au (date)"
-msgstr ""
-
-msgid "Par %author%"
-msgstr ""
-
-msgid "boutton::editer"
-msgstr ""
-
-msgid "Derniere mise a jour le %updated_on%"
-msgstr ""
-
-msgid "dans %feed_name%"
-msgstr ""
-
-msgid "Vous avez recu un nouveau panier"
-msgstr ""
-
-msgid "Vous avez recu une demande de validation de document sur ce panier"
-msgstr ""
-
-msgid "action::exporter"
-msgstr ""
-
-msgid "action::editer"
-msgstr ""
-
-msgid "action::Valider"
-msgstr ""
-
-msgid "Vous avez envoye une demande de validation de document sur ce panier"
-msgstr ""
-
-msgid "paniers:: panier recu de %pusher%"
-msgstr ""
-
-msgid "action::renommer"
-msgstr ""
-
-msgid "Archive"
-msgstr ""
-
-msgid "action::detacher"
-msgstr ""
-
-msgid "delete"
-msgstr ""
-
-msgid "panier:: ordre du panier"
-msgstr ""
-
-msgid "panier:: ordre Validation ascendante"
-msgstr ""
-
-msgid "panier:: ordre Validation descendante"
-msgstr ""
-
-msgid "L'utilisateur approuve ce document"
-msgstr ""
-
-msgid "L'utilisateur n'a pas encore donne son avis sur ce document"
-msgstr ""
-
-msgid "L'utilisateur desapprouve ce document"
-msgstr ""
-
-msgid "This user does not participate to the validation but is only viewer."
-msgstr ""
-
-msgid "Phrasea search-engine configuration"
-msgstr ""
-
-msgid "Stemming"
-msgstr ""
-
-msgid "Enable stemming"
-msgstr ""
-
-msgid "Default sort"
-msgstr ""
-
-msgid "thesaurus:: Importer"
-msgstr ""
-
-msgid "thesaurus:: langue par default"
-msgstr ""
-
-msgid "Fichier ASCII tabule"
-msgstr ""
-
-msgid "thesaurus:: supprimer les liens des champs tbranch"
-msgstr ""
-
-msgid "thesaurus:: reindexer la base apres l'import"
-msgstr ""
-
-msgid "Oups ! something went wrong !"
-msgstr ""
-
-msgid "boutton::retry"
-msgstr ""
-
-msgid "Creer une playlist"
-msgstr ""
-
-msgid "Your %provider_name% account matchs a Phraseanet account"
-msgstr ""
-
-msgid "These informations do not match?"
-msgstr ""
-
-msgid "Use my Phraseanet account"
-msgstr ""
-
-msgid "Terms Of Use"
-msgstr ""
-
-msgid ""
-"admin::CGU Les utilisateurs doivent imperativement revalider ces conditions"
-msgstr ""
-
-msgid "Mettre a jour"
-msgstr ""
-
-msgid "client::answers: rapport de questions par bases"
-msgstr ""
-
-msgid "client::answers: %available_results% reponses"
-msgstr ""
-
-msgid "action : ajouter au panier"
-msgstr ""
-
-msgid "login:: Mon compte"
-msgstr ""
-
-msgid "Informations personnelles"
-msgstr ""
-
-msgid "login:: Changer mon adresse email"
-msgstr ""
-
-msgid "admin::compte-utilisateur changer mon mot de passe"
-msgstr ""
-
-msgid "Notification par email"
-msgstr ""
-
-msgid "FTP"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp: Activer le compte FTP"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp:  repertoire de destination ftp"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp: Utiliser le mode passif"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp: Nombre d'essais max"
-msgstr ""
-
-msgid "Details"
-msgstr ""
-
-msgid "Collection"
-msgstr ""
-
-msgid "Subdef"
-msgstr ""
-
-msgid "Number"
-msgstr ""
-
-msgid "Weight"
-msgstr ""
-
-msgid "Total"
-msgstr ""
-
-msgid "Cumulative total"
-msgstr ""
-
-msgid "Granted third party applications"
-msgstr ""
-
-msgid "Vous avez autorise ces applications a acceder a votre compte"
-msgstr ""
-
-msgid "Revoquer l'access"
-msgstr ""
-
-msgid "Authoriser l'access"
-msgstr ""
-
-msgid "par %user_name%"
-msgstr ""
-
-msgid "Not Allowed"
+"A third-party application is a product developed apart from Phraseanet and "
+"that would access Phraseanet data."
 msgstr ""
 
 msgid "Allowed"
@@ -5636,297 +3775,24 @@ msgstr ""
 msgid "Aucune application n'a accés à vos données."
 msgstr ""
 
-msgid "Third-party applications"
+msgid "Authoriser l'access"
+msgstr ""
+
+msgid "Autorisation d'acc&egrave;s"
+msgstr ""
+
+msgid "Autoriser"
 msgstr ""
 
 msgid ""
-"A third-party application is a product developed apart from Phraseanet and "
-"that would access Phraseanet data."
+"Autorisez-vous l'application \"<span>%application_name%</span>\" &agrave; "
+"acc&eacute;der &agrave; votre contenu sur %home_title% ?"
 msgstr ""
 
-msgid "Developpeurs"
+msgid "Back"
 msgstr ""
 
-msgid ""
-"Les developpeurs peuvent editer l'enregistrement de leurs application grace "
-"a l'onglet 'developpeurs' ci-dessus"
-msgstr ""
-
-msgid "preview:: demarrer le diaporama"
-msgstr ""
-
-msgid "preview:: arreter le diaporama"
-msgstr ""
-
-msgid "Masks"
-msgstr ""
-
-msgid "Inscription"
-msgstr ""
-
-msgid "Complete the fields below to register on %instance_title%!"
-msgstr ""
-
-msgid "I have read the terms of use"
-msgstr ""
-
-msgid "Request access"
-msgstr ""
-
-msgid "%nb_elements% elements"
-msgstr ""
-
-msgid "Imagette indisponible"
-msgstr ""
-
-msgid "Aucune description."
-msgstr ""
-
-msgid "dans %category%"
-msgstr ""
-
-msgid "Confidentialite : privee"
-msgstr ""
-
-msgid "Confidentialite : publique"
-msgstr ""
-
-msgid "Caption"
-msgstr ""
-
-msgid ""
-"report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%"
-msgstr ""
-
-msgid ""
-"report::Demande de validation vers %n_user% utilisateurs depuis lapplication "
-"box %appbox%"
-msgstr ""
-
-msgid "report::Edition des meta-donnees"
-msgstr ""
-
-msgid "report::Changement de collection vers : %coll_name%"
-msgstr ""
-
-msgid "report::Edition des status"
-msgstr ""
-
-msgid "report::Impression des formats : %format%"
-msgstr ""
-
-msgid "report::Substitution de %dest%"
-msgstr ""
-
-msgid "report::Publication de %dest%"
-msgstr ""
-
-msgid "report::Telechargement de %dest%"
-msgstr ""
-
-msgid "Envoi par mail a %dest% de %content%"
-msgstr ""
-
-msgid "Envoi par ftp a %dest% de %content%"
-msgstr ""
-
-msgid "report::supression du document"
-msgstr ""
-
-msgid "report::ajout du documentt"
-msgstr ""
-
-msgid "report::Modification du document -- je ne me souviens plus de quoi..."
-msgstr ""
-
-msgid "report:: par %user_infos%"
-msgstr ""
-
-msgid "You do not have rights to remove all selected documents. Are you sure ?"
-msgstr ""
-
-msgid "These records will be definitely deleted and can not be recovered"
-msgstr ""
-
-msgid "Also delete records that rely on groupings."
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "No document selected"
-msgstr ""
-
-msgid "You do not have rights to remove selected documents"
-msgstr ""
-
-msgid "thesaurus:: export au format texte"
-msgstr ""
-
-msgid "Deplacement %n_element% elements"
-msgstr ""
-
-msgid "Which photosets you want to put you %number% photos into ?"
-msgstr ""
-
-msgid "Quarantine"
-msgstr ""
-
-msgid "maximum : %maxFileSizeReadable%"
-msgstr ""
-
-msgid "You are using the Flash uploader."
-msgstr ""
-
-msgid ""
-"This version does not allow you to access all the features offered by the "
-"HTML5 uploader"
-msgstr ""
-
-msgid "Use the HTML5 uploader"
-msgstr ""
-
-msgid "upload:: Destination (collection) :"
-msgstr ""
-
-msgid "upload:: Status :"
-msgstr ""
-
-msgid "You can not upload files"
-msgstr ""
-
-msgid "Selected files"
-msgstr ""
-
-msgid "Clear list"
-msgstr ""
-
-msgid "Transmited files"
-msgstr ""
-
-msgid "Cancel all"
-msgstr ""
-
-msgid "You have attempted to queue too many files"
-msgstr ""
-
-msgid "Unknow Error"
-msgstr ""
-
-msgid "Cannot upload Zero Byte files"
-msgstr ""
-
-msgid "Invalid file type"
-msgstr ""
-
-msgid "Unhandled Error"
-msgstr ""
-
-msgid "Unknow reason"
-msgstr ""
-
-msgid "Bad request, please contact an admin"
-msgstr ""
-
-msgid "Upload URL is not set, please contact an admin"
-msgstr ""
-
-msgid "Connection terminates unexpetecdly, please retry"
-msgstr ""
-
-msgid "The upload violates a security restriction, please retry"
-msgstr ""
-
-msgid "File upload limit (%maxFileSizeReadable%) has been reached"
-msgstr ""
-
-msgid "Could not initiate upload, please retry"
-msgstr ""
-
-msgid ""
-"Could not retrieve the file ID, please retry or contact an admin if problem "
-"persist"
-msgstr ""
-
-msgid "File validation failed"
-msgstr ""
-
-msgid "File upload has been cancelled"
-msgstr ""
-
-msgid "File upload has been stopped"
-msgstr ""
-
-msgid "Error while uploading"
-msgstr ""
-
-msgid "Please select at least one valid file"
-msgstr ""
-
-msgid "Search baskets"
-msgstr ""
-
-msgid "See"
-msgstr ""
-
-msgid "My baskets"
-msgstr ""
-
-msgid "Received baskets"
-msgstr ""
-
-msgid "Validations sent"
-msgstr ""
-
-msgid "Validations received"
-msgstr ""
-
-msgid "When"
-msgstr ""
-
-msgid "Any time"
-msgstr ""
-
-msgid "This year"
-msgstr ""
-
-msgid "Past year"
-msgstr ""
-
-msgid "Something wrong happened, please retry or contact an admin."
-msgstr ""
-
-msgid "You are about to delete this basket. Would you like to continue ?"
-msgstr ""
-
-msgid "More"
-msgstr ""
-
-msgid "thesaurus:: Editer le thesaurus"
-msgstr ""
-
-msgid "phraseanet:: choisir"
-msgstr ""
-
-msgid "thesaurus:: langue pivot"
-msgstr ""
-
-msgid "thesaurus:: Vous n'avez acces a aucune base"
-msgstr ""
-
-msgid "Fail"
-msgstr ""
-
-msgid "Success"
-msgstr ""
-
-msgid "Hello %username%"
-msgstr ""
-
-msgid "Erreur"
-msgstr ""
-
-msgid "%error%"
+msgid "Bonjour, veuillez vous identifier sur %home_title% :"
 msgstr ""
 
 msgid "Code d'acces"
@@ -5937,405 +3803,303 @@ msgid ""
 "&agrave l'endroit requis :"
 msgstr ""
 
-msgid ""
-"Mettez à jour votre navigateur ou téléchargez un navigateur plus récent."
+msgid "Deconnexion"
 msgstr ""
 
-msgid ""
-"Si vous ne pouvez pas installer un autre navigateur, utilisez Google Chrome "
-"Frame."
+msgid "Developpeurs"
 msgstr ""
 
-msgid "Installer Google Chrome"
+msgid "Erreur"
 msgstr ""
 
-msgid "Installer Google Chrome Frame"
+msgid "Erreur !"
+msgstr ""
+
+msgid "Erreur de login / mot de passe"
+msgstr ""
+
+msgid "FTP"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "Granted bases"
+msgstr ""
+
+msgid "Granted third party applications"
+msgstr ""
+
+msgid "Hello %username%"
 msgstr ""
 
 msgid "Home"
 msgstr ""
 
-msgid "Help"
+msgid "Informations personnelles"
 msgstr ""
 
-msgid "Security"
-msgstr ""
-
-msgid "Suppression de %n_element% photosets"
-msgstr ""
-
-msgid "Etes vous sur de supprimer %number% photosets ?"
-msgstr ""
-
-msgid "Chargement"
-msgstr ""
-
-msgid "Close the WorkZone"
-msgstr ""
-
-msgid "prod::thesaurusTab:thesaurus"
-msgstr ""
-
-msgid "prod::thesaurusTab:candidats"
-msgstr ""
-
-msgid "prod::thesaurusTab:wizard:accepter le terme candidat"
-msgstr ""
-
-msgid "prod::thesaurusTab:wizard:remplacer par le terme"
-msgstr ""
-
-msgid "chargement"
-msgstr ""
-
-msgid "action:: nouveau panier"
-msgstr ""
-
-msgid "Browse Baskets"
-msgstr ""
-
-msgid "action:: nouveau reportage"
-msgstr ""
-
-msgid "phraseanet:: tri par nom"
-msgstr ""
-
-msgid "Preferences"
-msgstr ""
-
-msgid "Advanced Search"
-msgstr ""
-
-msgid "Tout type"
-msgstr ""
-
-msgid "Image"
-msgstr ""
-
-msgid "Video"
-msgstr ""
-
-msgid "Audio"
-msgstr ""
-
-msgid "Document"
-msgstr ""
-
-msgid "Flash"
-msgstr ""
-
-msgid "Trier par "
-msgstr ""
-
-msgid "rechercher par stemme"
-msgstr ""
-
-msgid "Les termes apparaissent dans le(s) champs"
-msgstr ""
-
-msgid "rechercher dans tous les champs"
-msgstr ""
-
-msgid "Status des documents a rechercher"
-msgstr ""
-
-msgid "Rechercher dans un champ date"
-msgstr ""
-
-msgid "YYYY/MM/DD"
-msgstr ""
-
-msgid "reponses:: selectionner tout"
-msgstr ""
-
-msgid "reponses:: selectionner rien"
-msgstr ""
-
-msgid "phraseanet::type:: images"
-msgstr ""
-
-msgid "phraseanet::type:: videos"
-msgstr ""
-
-msgid "phraseanet::type:: audios"
-msgstr ""
-
-msgid "raccourci :: a propos des raccourcis claviers"
-msgstr ""
-
-msgid "Raccourcis claviers en cours de recherche : "
-msgstr ""
-
-msgid "Raccourcis:: ctrl-a : tout selectionner "
-msgstr ""
-
-msgid "Raccourcis:: ctrl-p : imprimer la selection "
-msgstr ""
-
-msgid "Raccourcis:: ctrl-e : editer la selection "
-msgstr ""
-
-msgid "Raccourcis::fleche gauche : page precedente "
-msgstr ""
-
-msgid "Raccourcis::fleche droite : page suivante "
-msgstr ""
-
-msgid "Raccourcis::fleche haut : scroll vertical "
-msgstr ""
-
-msgid "Raccourcis::fleche bas : scroll vertical "
-msgstr ""
-
-msgid "Raccourcis claviers de la zone des paniers : "
-msgstr ""
-
-msgid "Raccourcis claviers en cours de editing : "
-msgstr ""
-
-msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
-msgstr ""
-
-msgid "Raccourcis claviers en cours de preview : "
-msgstr ""
-
-msgid "Raccourcis::fleche gauche : en avant "
-msgstr ""
-
-msgid "Raccourcis::fleche gauche : en arriere "
-msgstr ""
-
-msgid "Raccourcis::espace : arreter/demarrer le diaporama "
+msgid "Le panier demande nexiste plus"
 msgstr ""
 
 msgid ""
-"Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
+"Les developpeurs peuvent editer l'enregistrement de leurs application grace "
+"a l'onglet 'developpeurs' ci-dessus"
 msgstr ""
 
-msgid "raccourcis :: ne plus montrer cette aide"
+msgid "Ne pas autoriser"
 msgstr ""
 
-msgid "Affichage"
+msgid "Not Allowed"
 msgstr ""
 
-msgid "Configuration"
-msgstr ""
-
-msgid "Use latest search settings on Production loading"
-msgstr ""
-
-msgid "Mode de presentation"
-msgstr ""
-
-msgid "reponses:: mode vignettes"
-msgstr ""
-
-msgid "reponses:: mode liste"
-msgstr ""
-
-msgid "Theme"
-msgstr ""
-
-msgid "Selecteur de theme"
-msgstr ""
-
-msgid "Presentation de vignettes"
-msgstr ""
-
-msgid "Iconographe (description au rollover)"
-msgstr ""
-
-msgid "Graphiste (preview au rollover)"
-msgstr ""
-
-msgid "Display technical data"
-msgstr ""
-
-msgid "In the answer grid"
-msgstr ""
-
-msgid "After metadata"
-msgstr ""
-
-msgid "Do not display"
-msgstr ""
-
-msgid "Type de documents"
-msgstr ""
-
-msgid "Afficher une icone"
-msgstr ""
-
-msgid "reponses:: images par pages : "
-msgstr ""
-
-msgid "reponses:: taille des images : "
-msgstr ""
-
-msgid "Couleur de selection"
-msgstr ""
-
-msgid "choisir"
-msgstr ""
-
-msgid "Affichage au demarrage"
-msgstr ""
-
-msgid "Ma derniere question"
-msgstr ""
-
-msgid "Une question personnelle"
-msgstr ""
-
-msgid "Aide"
-msgstr ""
-
-msgid "Presentation de vignettes de panier"
-msgstr ""
-
-msgid "Afficher les status"
-msgstr ""
-
-msgid "Afficher la fiche descriptive"
-msgstr ""
-
-msgid "Afficher le titre"
-msgstr ""
-
-msgid "Rechercher"
-msgstr ""
-
-msgid ""
-"Taper ici les termes de recherche afin de retrouver les documents souhaités."
-msgstr ""
-
-msgid "Recherche Avancée"
-msgstr ""
-
-msgid ""
-"Séléctionner les champs et les collections sur lesquels vous voulez "
-"rechercher."
-msgstr ""
-
-msgid "Types de documents"
-msgstr ""
-
-msgid "Séléctionner ici le type de document que vous souhaitez rechercher."
-msgstr ""
-
-msgid "Barre d'outils"
-msgstr ""
-
-msgid ""
-"Utilisez la barre d'outils pour télécharger les documents ou pour agir sur "
-"ces documents."
-msgstr ""
-
-msgid "Sélection et Prévisualisation de documents"
-msgstr ""
-
-msgid ""
-"Sélectionner les documents en cliquant dessus.\n"
-"                        Pour sélectionner plusieurs documents, maintenez la "
-"touche maj enfoncée et\n"
-"                        cliquez sur les documents souhaités.\n"
-"                        Pour prévisualier un document cliquez dessus."
+msgid "Notification par email"
 msgstr ""
 
 msgid "Paniers"
 msgstr ""
 
+msgid "Par %author%"
+msgstr ""
+
+msgid "Probl&egrave;mes de connexion ?"
+msgstr ""
+
+msgid "Retour a l'accueil"
+msgstr ""
+
+msgid "Revoquer l'access"
+msgstr ""
+
+msgid "Se connecter"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Third-party applications"
+msgstr ""
+
+msgid "Validations"
+msgstr ""
+
+msgid "Voici vos paniers"
+msgstr ""
+
+msgid "Voici vos validations en cours"
+msgstr ""
+
+msgid "Vous avez autorise ces applications a acceder a votre compte"
+msgstr ""
+
+msgid "a propos"
+msgstr ""
+
+msgid "admin::compte-utilisateur changer mon mot de passe"
+msgstr ""
+
+msgid "admin::compte-utilisateur mot de passe"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp:  repertoire de destination ftp"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp: Activer le compte FTP"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp: Nombre d'essais max"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp: Utiliser le mode passif"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp"
+msgstr ""
+
+msgid "login:: Changer mon adresse email"
+msgstr ""
+
+msgid "login:: Mon compte"
+msgstr ""
+
+msgid "par %user_name%"
+msgstr ""
+
+msgid "phraseanet:: adresse"
+msgstr ""
+
+msgid "validation:: NON"
+msgstr ""
+
+msgid "validation:: OUI"
+msgstr ""
+
+msgid "validation:: editer ma note"
+msgstr ""
+
+msgid "validation:: note"
+msgstr ""
+
+msgid "validation::envoyer mon rapport"
+msgstr ""
+
+msgid "Acces"
+msgstr ""
+
+msgid "Access history"
+msgstr ""
+
+msgid "Add an admin"
+msgstr ""
+
+msgid "An error occured, please retry or contact an admin if problem persist"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
+msgid "Browser"
+msgstr ""
+
+msgid "Change my email address"
+msgstr ""
+
+msgid "Choose a new password"
+msgstr ""
+
+msgid "Current session"
+msgstr ""
+
+msgid "Date de connexion"
+msgstr ""
+
+msgid "Dernier access"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Developpeur"
+msgstr ""
+
+msgid "Do not forget to restart the tasks scheduler"
+msgstr ""
+
+msgid "Do you really want to end the activity of this session?"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Email test result : %email_status%"
+msgstr ""
+
+msgid "End Activity"
+msgstr ""
+
+msgid "End session activity"
+msgstr ""
+
+msgid "General settings"
+msgstr ""
+
+msgid "IP"
+msgstr ""
+
 msgid ""
-"Consulter et administrer vos paniers dans cet onglet.\n"
-"                        Pour créer un panier et affichez le menu déroulant "
-"en cliquant sue la\n"
-"                        flèche blanche."
+"If you notice any unfamiliar devices or locations, click 'End Activity' to "
+"end the session."
 msgstr ""
 
-msgid "Ajouter au panier"
+msgid "Informations"
+msgstr ""
+
+msgid "Invalid file type"
 msgstr ""
 
 msgid ""
-"Ajoutez des médias simplement en les faisant glisser vers le panier\n"
-"                        désiré et en relachant au dessus."
+"Invalid file type, only (%supported_file_types%) file formats are supported"
 msgstr ""
 
-msgid "forms::operation effectuee OK"
+msgid "Mettre a jour"
 msgstr ""
 
-msgid "admin::base: Alias"
+msgid "Propositions de modifications des tables"
 msgstr ""
 
-msgid "Rename"
+msgid "Recommendations"
 msgstr ""
 
-msgid "admin::base: nombre d'enregistrements sur la base :"
+msgid "Reorder collections"
 msgstr ""
 
-msgid "phraseanet:: details"
+msgid "Requirements"
 msgstr ""
 
-msgid "admin::base: subdefs to be created :"
+msgid "Reset cache"
 msgstr ""
 
-msgid "admin::base: nombre de mots uniques sur la base : "
+msgid "Save"
 msgstr ""
 
-msgid "admin::base: nombre de mots indexes sur la base"
+msgid "Select files..."
 msgstr ""
 
-msgid "admin::base: nombre de termes de Thesaurus indexes :"
+msgid "Session persistente"
 msgstr ""
 
-msgid "admin::base: document indexes en utilisant la fiche xml"
-msgstr ""
-
-msgid "admin::base: document indexes en utilisant le thesaurus"
-msgstr ""
-
-msgid "admin::base: Cette base est indexable"
+msgid "Sessions"
 msgstr ""
 
 msgid "Set labels"
 msgstr ""
 
+msgid "Stamp logo"
+msgstr ""
+
+msgid "Suggested values"
+msgstr ""
+
+msgid "Terms Of Use"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Watermark"
+msgstr ""
+
+msgid ""
+"admin:: La collection n'a pas ete creee : vous devez donner un nom a votre "
+"collection"
+msgstr ""
+
+msgid ""
+"admin::CGU Les utilisateurs doivent imperativement revalider ces conditions"
+msgstr ""
+
+msgid "admin::base: Monter une base"
+msgstr ""
+
+msgid "admin::base: Version"
+msgstr ""
+
+msgid "admin::base: creer une base"
+msgstr ""
+
+msgid "admin::base: nombre"
+msgstr ""
+
+msgid "admin::base: objet"
+msgstr ""
+
+msgid "admin::base: poids"
+msgstr ""
+
 msgid "admin::base:collection: Creer une collection"
 msgstr ""
 
-msgid "admin::base: Confirmer la suppression de tous les logs"
-msgstr ""
-
-msgid "admin::base: supprimer tous les logs"
-msgstr ""
-
-msgid "admin::base: Confirmer vous l'arret de la publication de la base"
-msgstr ""
-
-msgid "admin::base: arreter la publication de la base"
-msgstr ""
-
-msgid "admin::base: Confirmer le vidage complet de la base"
-msgstr ""
-
-msgid "admin::base: vider la base"
-msgstr ""
-
-msgid "admin::base: Confirmer la suppression de la base"
-msgstr ""
-
-msgid "admin::base: supprimer la base"
-msgstr ""
-
-msgid "Confirmez-vous la re-indexation de la base ?"
-msgstr ""
-
-msgid "base:: re-indexer"
-msgstr ""
-
-msgid "admin::base:collection: Monter une collection"
-msgstr ""
-
-msgid "Monter la collection %name%"
+msgid "admin::base:collection: Nom de la nouvelle collection : "
 msgstr ""
 
 msgid ""
@@ -6343,284 +4107,16 @@ msgid ""
 "donenr des acces "
 msgstr ""
 
-msgid "Activer une collection"
-msgstr ""
-
-msgid "admin::base: logo impression PDF"
-msgstr ""
-
-msgid "admin::base:collection: supprimer le logo"
+msgid "admin::base:collection: activer la collection"
 msgstr ""
 
 msgid "admin::base:collection: aucun fichier (minilogo, watermark ...)"
 msgstr ""
 
-msgid "admin::base: envoyer un logo (jpeg 35px de hauteur max)"
-msgstr ""
-
-msgid "thesaurus:: Lier la branche de thesaurus"
-msgstr ""
-
-msgid "thesaurus:: suppression du lien du champ %field%"
-msgstr ""
-
-msgid ""
-"thesaurus:: suppression de la branche de mot candidats pour le champ %field%"
-msgstr ""
-
-msgid "thesaurus:: enregistrement de la liste modifiee des mots candidats."
-msgstr ""
-
-msgid ""
-"thesaurus:: suppression des indexes vers le thesaurus pour le champ %field%"
-msgstr ""
-
-msgid "thesaurus:: reindexer tous les enregistrements"
-msgstr ""
-
-msgid "reportage"
-msgstr ""
-
-msgid "animation flash"
-msgstr ""
-
-msgid "boutton::demarrer"
-msgstr ""
-
-msgid "boutton::pause"
-msgstr ""
-
-msgid "boutton::telecharger"
-msgstr ""
-
-msgid "report:: Volumetrie des questions posees sur %home_title%"
-msgstr ""
-
-msgid ""
-"prod::Les enregistrements ne provienent pas tous de la meme base et ne "
-"peuvent donc etre traites ensemble"
-msgstr ""
-
-msgid "prod::Vous n'avez le droit d'effectuer l'operation sur aucun document"
-msgstr ""
-
-msgid "erreur : Vous n'avez pas les droits"
-msgstr ""
-
-msgid "One document can not be modified."
-msgstr ""
-
-#, php-format
-msgid "%countable% documents can not be modified."
-msgstr ""
-
-msgid "Move one record to the chosen collection in the list."
-msgstr ""
-
-msgid "Move %countable% records to the chosen collection in the list."
-msgstr ""
-
-msgid ""
-"prod::collection deplacer egalement les documents rattaches a ce(s) "
-"regroupement(s)"
-msgstr ""
-
-msgid "Choose a new password"
-msgstr ""
-
-msgid "Save"
-msgstr ""
-
-msgid "admin::monitor: total des utilisateurs uniques : "
-msgstr ""
-
-msgid "admin::monitor: utilisateur"
-msgstr ""
-
-msgid "admin::monitor: modules"
-msgstr ""
-
-msgid "admin::monitor: date de connexion"
-msgstr ""
-
-msgid "admin::monitor: dernier access"
-msgstr ""
-
-msgid "admin::monitor: bases sur lesquelles l'utilisateur est connecte : "
-msgstr ""
-
-msgid "Session persistente"
-msgstr ""
-
-msgid "Les elements ne peuvent etre uploades (problemes de type ou de droit)"
-msgstr ""
-
-msgid "Le bridge Youtube ne prend en charge que les videos"
-msgstr ""
-
-msgid "Vous ne pouvez uploader des elements sur Youtube qu'un par un"
-msgstr ""
-
-msgid "100 caracteres maximum"
-msgstr ""
-
-msgid "2000 caracteres maximum"
-msgstr ""
-
-msgid "Categorie"
-msgstr ""
-
-msgid "Tags"
-msgstr ""
-
-msgid "500 caracteres maximum"
-msgstr ""
-
-msgid "separe par un espace"
-msgstr ""
-
-msgid "Confidentialite"
-msgstr ""
-
-msgid "prive"
-msgstr ""
-
-msgid "public"
-msgstr ""
-
-msgid ""
-"En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour "
-"le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu "
-"accessible au public sur YouTube, et qu'il est autrement conforme aux "
-"Conditions d'utilisation de YouTubesitue a %lien_term_youtube%"
-msgstr ""
-
-msgid "Retour"
-msgstr ""
-
-msgid "Erreur !"
-msgstr ""
-
-msgid "Le panier demande nexiste plus"
-msgstr ""
-
-msgid "Retour a l'accueil"
-msgstr ""
-
-msgid "admin::monitor: production"
-msgstr ""
-
-msgid "Commandes"
-msgstr ""
-
-msgid "Notifications"
-msgstr ""
-
-msgid "Guest"
-msgstr ""
-
-msgid "phraseanet:: aide"
-msgstr ""
-
-msgid "phraseanet:: raccourcis clavier"
-msgstr ""
-
-msgid "phraseanet:: a propos"
-msgstr ""
-
-msgid "Cocher toute la colonne"
-msgstr ""
-
-msgid "Decocher toute la colonne"
-msgstr ""
-
-msgid "Creer un model"
-msgstr ""
-
-msgid "Creer un utilisateur"
-msgstr ""
-
-msgid "This field is required"
-msgstr ""
-
-msgid "Reset and apply"
-msgstr ""
-
-msgid "Confirm reset users rights before applying template"
-msgstr ""
-
-msgid "Rights will be erased before applying template, do you confirm?"
-msgstr ""
-
-msgid "Reset and apply template"
-msgstr ""
-
-msgid "Apply template"
-msgstr ""
-
-msgid "Reset rights before applying template?"
-msgstr ""
-
-msgid "Would you like to reset rights before applying the template?"
-msgstr ""
-
-msgid "Successful install"
-msgstr ""
-
-msgid "Ajouter un nouvel utilisateur"
-msgstr ""
-
-msgid "Adresse email du nouvel utilisateur"
-msgstr ""
-
-msgid "Send an email to the user to setup his password"
-msgstr ""
-
-msgid "Require email validation to activate the account"
-msgstr ""
-
-msgid "Creer un modele"
-msgstr ""
-
-msgid "Nom du nouveau modele"
-msgstr ""
-
-msgid "phraseanet:: collection"
-msgstr ""
-
-msgid "admin::base:collection: numero de collection distante"
-msgstr ""
-
-msgid "admin::base:collection: etat de la collection"
-msgstr ""
-
-msgid "admin::base:collection: activer la collection"
-msgstr ""
-
 msgid "admin::base:collection: descativer la collection"
 msgstr ""
 
-msgid "admin::collection:: Gestionnaires des commandes"
-msgstr ""
-
-msgid "setup:: ajouter un administrateur des commandes"
-msgstr ""
-
-msgid ""
-"admin::collection:: presentation des elements lors de la diffusion aux "
-"utilisateurs externes (publications)"
-msgstr ""
-
-msgid "admin::colelction::presentation des elements : rien"
-msgstr ""
-
-msgid "admin::colelction::presentation des elements : watermark"
-msgstr ""
-
-msgid "admin::colelction::presentation des elements : stamp"
-msgstr ""
-
-msgid "admin::base:collection: renommer la collection"
+msgid "admin::base:collection: etat de la collection"
 msgstr ""
 
 msgid ""
@@ -6634,1580 +4130,51 @@ msgstr ""
 msgid "admin::base:collection: etes vous sur de vider la collection ?"
 msgstr ""
 
-msgid "admin::base:collection: vider la collection"
-msgstr ""
-
-msgid "admin::collection: Confirmez vous la suppression de cette collection ?"
-msgstr ""
-
 msgid "admin::base:collection: minilogo actuel"
 msgstr ""
 
-msgid "Watermark"
+msgid "admin::base:collection: numero de collection distante"
 msgstr ""
 
-msgid "Stamp logo"
+msgid "admin::base:collection: renommer la collection"
 msgstr ""
 
-msgid "validation::envoyer mon rapport"
-msgstr ""
-
-msgid "Apply to all selected documents"
-msgstr ""
-
-msgid "Apply changes"
-msgstr ""
-
-msgid "notice"
-msgstr ""
-
-msgid "boutton::telecharger tous les documents"
-msgstr ""
-
-msgid "Unauthorized action"
-msgstr ""
-
-msgid "Guest, you must be authenticated to have the right to download."
-msgstr ""
-
-msgid "Les documents ne peuvent pas etre exportes"
-msgstr ""
-
-msgid "export:: telechargement"
-msgstr ""
-
-msgid "export:: envoi par mail"
-msgstr ""
-
-msgid "export:: commande"
-msgstr ""
-
-msgid "export:: FTP"
-msgstr ""
-
-msgid "Documents indisponibles"
-msgstr ""
-
-msgid "Include Business-fields in caption"
-msgstr ""
-
-msgid ""
-"By checking this box, you accept %beginning_link% Terms of Use %end_link%"
-msgstr ""
-
-msgid "export::mail: destinataire"
-msgstr ""
-
-msgid "Recevoir un accuse de reception a %my_email%"
-msgstr ""
-
-msgid ""
-"Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
-msgstr ""
-
-msgid "Entrez plusieurs adresses email en les separant par des points-virgules"
-msgstr ""
-
-msgid "export::mail: contenu du mail"
-msgstr ""
-
-msgid "export::mail: fichiers joint"
-msgstr ""
-
-msgid "La sous resolution n'est pas disponible pour les documents suivants"
-msgstr ""
-
-msgid "boutton::envoyer"
-msgstr ""
-
-msgid "Un document commande"
-msgstr ""
-
-#, php-format
-msgid "%docs_orderable% documents commandes"
-msgstr ""
-
-msgid "Un document ne peut etre commande"
-msgstr ""
-
-#, php-format
-msgid "%docs_not_orderable% documents ne peuvent pas etre commandes"
-msgstr ""
-
-msgid "commande::utilisation prevue"
-msgstr ""
-
-msgid "commande::deadline"
-msgstr ""
-
-msgid "Civility"
-msgstr ""
-
-msgid "boutton::commander"
-msgstr ""
-
-msgid "phraseanet:: prereglages"
-msgstr ""
-
-msgid "boutton::essayer"
-msgstr ""
-
-msgid "You must agree to the Terms of Use to continue."
-msgstr ""
-
-msgid "Warning !"
-msgstr ""
-
-msgid "Certains champs sont obligatoires, veuillez les remplir"
-msgstr ""
-
-msgid "Vous devez selectionner un type de sous definitions"
-msgstr ""
-
-msgid ""
-"You can not directly download more than %max_download% Mo ; time to package "
-"all documents is too long"
-msgstr ""
-
-msgid "You can alternatively receive an email when the download is ready."
-msgstr ""
-
-msgid "Would you like to receive an e-mail when your download is ready ?"
-msgstr ""
-
-msgid "Success !"
-msgstr ""
-
-msgid "phraseanet:: utiliser SSL"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp: creer un dossier"
-msgstr ""
-
-msgid "admin::compte-utilisateur:ftp: ecrire un fichier de log"
-msgstr ""
-
-msgid "Nom des fichiers a l'export"
-msgstr ""
-
-msgid "export::titre: titre du documument"
-msgstr ""
-
-msgid "export::titre: nom original du document"
-msgstr ""
-
-msgid "boutton::mettre a jour"
-msgstr ""
-
-msgid "VALIDATION"
-msgstr ""
-
-msgid "lightbox::recaptitulatif"
-msgstr ""
-
-msgid "validation:: OUI"
-msgstr ""
-
-msgid "validation:: NON"
-msgstr ""
-
-msgid "Playlist"
-msgstr ""
-
-msgid "Hi, Please log in"
-msgstr ""
-
-msgid "Toutes les publications"
-msgstr ""
-
-msgid "publications:: s'abonner aux publications"
-msgstr ""
-
-msgid "Aller a"
-msgstr ""
-
-msgid "Aucune entree pour le moment"
-msgstr ""
-
-msgid "charger d'avantage de publications"
-msgstr ""
-
-msgid "Retour a laccueil"
-msgstr ""
-
-msgid "report:: activite par jour"
-msgstr ""
-
-msgid "Ajouter une publication"
-msgstr ""
-
-msgid "Feed name"
-msgstr ""
-
-msgid "Date Creation"
-msgstr ""
-
-msgid "Restriction"
-msgstr ""
-
-msgid "Public"
-msgstr ""
-
-msgid ""
-"Une fois la publication supprimee, les donnees publiees seront "
-"definitivement perdues. Continuer ?"
-msgstr ""
-
-msgid "validation:: editer ma note"
-msgstr ""
-
-msgid "Story_id"
-msgstr ""
-
-msgid "Record_id"
-msgstr ""
-
-msgid "Nom Original"
-msgstr ""
-
-msgid "Camera Model"
-msgstr ""
-
-msgid "Color space"
-msgstr ""
-
-msgid "Channels"
-msgstr ""
-
-msgid "Color Depth"
-msgstr ""
-
-msgid "ISO sensibility"
-msgstr ""
-
-msgid "Shutter speed"
-msgstr ""
-
-msgid "Aperture"
-msgstr ""
-
-msgid "Focal length"
-msgstr ""
-
-msgid "Hyperfocal distance"
-msgstr ""
-
-msgid "Light Value"
-msgstr ""
-
-msgid "Duree"
-msgstr ""
-
-msgid "Images par secondes"
-msgstr ""
-
-msgid "Codec Audio"
-msgstr ""
-
-msgid "Codec Video"
-msgstr ""
-
-msgid "Frequence d'echantillonage"
-msgstr ""
-
-msgid "admin::base: objet"
-msgstr ""
-
-msgid "admin::base: nombre"
-msgstr ""
-
-msgid "admin::base: poids"
-msgstr ""
-
-msgid "thesaurus:: Lier la branche de thesaurus au champ"
-msgstr ""
-
-msgid "thesaurus:: Lier la branche de thesaurus au champ %branch%"
-msgstr ""
-
-msgid "Updated structure"
-msgstr ""
-
-msgid "Structure has been successfully updated"
-msgstr ""
-
-msgid "Structure errors"
-msgstr ""
-
-msgid "admin::base: xml invalide, les changements ne seront pas appliques"
-msgstr ""
-
-msgid "admin::base: structure"
-msgstr ""
-
-#, php-format
-msgid "%entry_length% documents"
-msgstr ""
-
-msgid ""
-"admin:: La collection n'a pas ete creee : vous devez donner un nom a votre "
-"collection"
-msgstr ""
-
-msgid "An error occured, please retry or contact an admin if problem persist"
-msgstr ""
-
-msgid "admin::base:collection: Nom de la nouvelle collection : "
-msgstr ""
-
-msgid "thesaurus:: accepter..."
-msgstr ""
-
-msgid "thesaurus:: removed_src"
-msgstr ""
-
-msgid "thesaurus:: refresh"
-msgstr ""
-
-msgid "thesaurus:: removed tgt"
-msgstr ""
-
-msgid "thesaurus:: Accepter le terme comme"
-msgstr ""
-
-msgid "thesaurus:: comme terme specifique"
-msgstr ""
-
-msgid "thesaurus:: comme synonyme de %fullpath_tgt_raw%"
-msgstr ""
-
-msgid "thesaurus:: Accepter la branche comme"
-msgstr ""
-
-msgid ""
-"thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% "
-"ne peut etre accepte"
-msgstr ""
-
-msgid "First/Last Name"
-msgstr ""
-
-msgid "Company"
-msgstr ""
-
-msgid "E-Mail"
-msgstr ""
-
-msgid "Country"
-msgstr ""
-
-msgid "Last Template"
-msgstr ""
-
-msgid "Creation date"
-msgstr ""
-
-msgid "%length% peoples"
-msgstr ""
-
-msgid "Previous"
-msgstr ""
-
-msgid "Next"
-msgstr ""
-
-msgid "About Roles : "
-msgstr ""
-
-msgid "Admin can edit shares, modify content"
-msgstr ""
-
-msgid "Editor can modify content"
-msgstr ""
-
-msgid "Access user have readonly access"
-msgstr ""
-
-msgid "Find a user"
-msgstr ""
-
-msgid "You are Admin"
-msgstr ""
-
-msgid "Role"
-msgstr ""
-
-msgid "Editor"
-msgstr ""
-
-msgid "Admin"
-msgstr ""
-
-msgid "Remove"
-msgstr ""
-
-msgid "Notify"
-msgstr ""
-
-msgid "Incorrect please try again"
-msgstr ""
-
-msgid "veuillez choisir au minimum une collection"
-msgstr ""
-
-msgid "report::Nombre de connexions"
-msgstr ""
-
-msgid "report:: Heures"
-msgstr ""
-
-msgid "report::Nombre de document ajoute"
-msgstr ""
-
-msgid "report::Nombre de document edite"
-msgstr ""
-
-msgid "phraseanet::status bit"
-msgstr ""
-
-msgid "status:: nom"
-msgstr ""
-
-msgid "status:: cherchable par tous"
-msgstr ""
-
-msgid "status:: Affichable pour tous"
-msgstr ""
-
-msgid "oui"
-msgstr ""
-
-msgid "non"
-msgstr ""
-
-msgid "Client applications"
-msgstr ""
-
-msgid "Mes applications"
-msgstr ""
-
-msgid "button::supprimer"
-msgstr ""
-
-msgid "Are you sure you want to delete this application?"
-msgstr ""
-
-msgid "No"
-msgstr ""
-
-msgid "Aucune application creee."
-msgstr ""
-
-msgid "Decouvrez la documentation"
-msgstr ""
-
-msgid "Demarrer avec l'API Phraseanet"
-msgstr ""
-
-msgid "Creez une application pour commencer a utiliser l'API Phraseanet"
-msgstr ""
-
-msgid "Creer une nouvelle applications"
-msgstr ""
-
-msgid "language"
-msgstr ""
-
-msgid "publications:: dernieres publications"
-msgstr ""
-
-msgid "publications:: derniere mise a jour"
-msgstr ""
-
-msgid "Suppression de %n_element% videos"
-msgstr ""
-
-msgid "Etes vous sur de supprimer %number% videos ?"
-msgstr ""
-
-msgid "thesaurus has been updated"
-msgstr ""
-
-msgid ""
-"Thesaurus ou CTerms invalide\n"
-" effacer (OK) ou quitter (Annuler) ?"
-msgstr ""
-
-msgid "Authorization code"
-msgstr ""
-
-msgid "Access code"
-msgstr ""
-
-msgid ""
-"Copy the code below, return to your application and paste the code to the "
-"right place."
-msgstr ""
-
-msgid "Do not forget to restart the tasks scheduler"
-msgstr ""
-
-msgid "version"
-msgstr ""
-
-msgid "admin::base: Version"
-msgstr ""
-
-msgid "update::Votre application necessite une mise a jour vers : "
-msgstr ""
-
-msgid "update::Votre version est a jour : "
-msgstr ""
-
-msgid "Propositions de modifications des tables"
-msgstr ""
-
-msgid "update::Verifier els tables"
-msgstr ""
-
-msgid "admin::base: creer une base"
-msgstr ""
-
-msgid ""
-"phraseanet:: Creer une base sur un serveur different de l'application box"
-msgstr ""
-
-msgid "phraseanet:: hostname"
-msgstr ""
-
-msgid "phraseanet:: user"
-msgstr ""
-
-msgid "phraseanet:: password"
-msgstr ""
-
-msgid "phraseanet:: dbname"
-msgstr ""
-
-msgid "phraseanet:: Modele de donnees"
-msgstr ""
-
-msgid "admin::base: Monter une base"
-msgstr ""
-
-msgid ""
-"phraseanet:: Monter une base provenant d'un serveur different de "
-"l'application box"
-msgstr ""
-
-msgid "boutton::monter"
-msgstr ""
-
-msgid ""
-"Vous etes actuellement deconnecte de votre compte, vous devez vous connecter "
-"pour continuer"
-msgstr ""
-
-msgid "login:: connexion"
-msgstr ""
-
-msgid "boutton::refresh"
-msgstr ""
-
-msgid "Page"
-msgstr ""
-
-msgid "new client application"
-msgstr ""
-
-msgid "Nom"
-msgstr ""
-
-msgid "Site web"
-msgstr ""
-
-msgid "Type d'application"
-msgstr ""
-
-msgid "Application web"
-msgstr ""
-
-msgid "Application desktop"
-msgstr ""
-
-msgid "URL de callback"
-msgstr ""
-
-msgid "Back to basket list"
-msgstr ""
-
-msgid "No records"
-msgstr ""
-
-msgid "1 record"
-msgstr ""
-
-msgid "%ElementsCount% records"
-msgstr ""
-
-msgid "An error occured, please retry or contact an admin if problem persists"
-msgstr ""
-
-msgid "Page %page%"
-msgstr ""
-
-msgid "Utilisateur"
-msgstr ""
-
-msgid "Date de demande"
-msgstr ""
-
-msgid "Deadline"
-msgstr ""
-
-msgid "Utilisation prevue"
-msgstr ""
-
-msgid "Statut"
-msgstr ""
-
-msgid "Aucune"
-msgstr ""
-
-msgid "Quotas"
-msgstr ""
-
-msgid "Collection %collection%"
-msgstr ""
-
-msgid "Restrictions de telechargement"
-msgstr ""
-
-msgid "Droits"
-msgstr ""
-
-msgid "par mois"
-msgstr ""
-
-msgid "Reste"
-msgstr ""
-
-msgid "validation:: note"
-msgstr ""
-
-msgid "report :: configurer le tableau"
-msgstr ""
-
-msgid "report :: imprimer le tableau"
-msgstr ""
-
-msgid "CSV export"
-msgstr ""
-
-msgid "%total_count% results"
-msgstr ""
-
-msgid "Trier"
-msgstr ""
-
-msgid "Filtrer"
-msgstr ""
-
-msgid "report :: filtrer"
-msgstr ""
-
-msgid "Grouper"
-msgstr ""
-
-msgid "report :: grouper"
-msgstr ""
-
-msgid "report :: aucun resultat trouve"
-msgstr ""
-
-msgid "General settings"
-msgstr ""
-
-msgid "your configuration"
-msgstr ""
-
-msgid "all caches services have been flushed"
-msgstr ""
-
-msgid "setup:: administrateurs de l'application"
-msgstr ""
-
-msgid "Add an admin"
-msgstr ""
-
-msgid "setup:: Reinitialisation des droits admins"
-msgstr ""
-
-msgid "boutton::reinitialiser"
-msgstr ""
-
-msgid "setup::Tests d'envois d'emails"
-msgstr ""
-
-msgid "Email test result : %email_status%"
-msgstr ""
-
-msgid "Reset cache"
-msgstr ""
-
-msgid "Requirements"
-msgstr ""
-
-msgid "Recommendations"
-msgstr ""
-
-msgid "Validations"
-msgstr ""
-
-msgid "Voici vos validations en cours"
-msgstr ""
-
-msgid "(validation) session terminee"
-msgstr ""
-
-msgid "(validation) envoyee"
-msgstr ""
-
-msgid "(validation) a envoyer"
-msgstr ""
-
-#, php-format
-msgid "%basket_length% documents"
-msgstr ""
-
-msgid "Voici vos paniers"
-msgstr ""
-
-msgid "Edition de 1 element"
-msgstr ""
-
-msgid "First Name"
-msgstr ""
-
-msgid "Last Name"
-msgstr ""
-
-msgid "Email Name"
-msgstr ""
-
-msgid "Job"
-msgstr ""
-
-msgid "City"
-msgstr ""
-
-msgid "Authorization Access"
-msgstr ""
-
-msgid ""
-"Do you authorize the application %application_name% to access to your "
-"Phraseanet content?"
-msgstr ""
-
-msgid "Authorize"
-msgstr ""
-
-msgid "Deny"
-msgstr ""
-
-msgid "a propos"
-msgstr ""
-
-msgid "Deconnexion"
-msgstr ""
-
-msgid "Back"
-msgstr ""
-
-msgid "report:: Enlever le filtre"
-msgstr ""
-
-msgid "privé"
-msgstr ""
-
-msgid "Ce champ est decrit comme l'element DublinCore %element_name%"
-msgstr ""
-
-msgid "Pour davantage d'informations, consulter le lien suivant %lien%"
-msgstr ""
-
-msgid "Le bridge Dailymotion ne prend en charge que les videos"
-msgstr ""
-
-msgid "Vous ne pouvez uploader des elements sur Dailymotion qu'un par un"
-msgstr ""
-
-msgid "255 caracteres maximum"
-msgstr ""
-
-msgid "1000 caracteres maximum"
-msgstr ""
-
-msgid "250 caracteres maximum"
-msgstr ""
-
-msgid "10 tags maximum"
-msgstr ""
-
-msgid "Séparez les tags par un espace: Paris vacances restaurant"
-msgstr ""
-
-msgid "Groupez 2 ou plusieurs mots avec des guillemets: \"Michael Jackson\""
-msgstr ""
-
-msgid ""
-"Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le "
-"contenu de la vidéo que vous allez mettre en ligne est conforme aux "
-"conditions d'utilisations"
-msgstr ""
-
-msgid "Records Statut"
-msgstr ""
-
-msgid "Records type"
-msgstr ""
-
-msgid "You have selected one record."
-msgstr ""
-
-msgid "You have selected %nbReceivedDocuments% records."
-msgstr ""
-
-msgid "None of the records can be modified."
-msgstr ""
-
-msgid "Only one record can be modified."
-msgstr ""
-
-msgid "Only %nbEditableDocuments% records can be modified."
-msgstr ""
-
-msgid "Stories status edition"
-msgstr ""
-
-msgid "Records status edition"
-msgstr ""
-
-msgid "Apply status on stories children."
-msgstr ""
-
-msgid "Apply status on story children."
-msgstr ""
-
-msgid "Suggested values"
-msgstr ""
-
-msgid "admin::sugval: Valeurs suggerees/Preferences de la collection"
-msgstr ""
-
-msgid "admin::sugval: champs"
-msgstr ""
-
-msgid "admin::base:collorder: monter"
+msgid "admin::base:collection: vider la collection"
 msgstr ""
 
 msgid "admin::base:collorder: descendre"
 msgstr ""
 
+msgid "admin::base:collorder: monter"
+msgstr ""
+
 msgid "admin::base:collorder: reinitialiser en ordre alphabetique"
 msgstr ""
 
-msgid ""
-"admin::sugval: Attention, passer en mode graphique implique la perte des "
-"modifications du xml si vous n'appliquez pas les changements avant.\n"
-"Continuer quand meme"
+msgid "admin::colelction::presentation des elements : rien"
 msgstr ""
 
-msgid "Completion of your registration"
+msgid "admin::colelction::presentation des elements : stamp"
 msgstr ""
 
-msgid "Please complete the information to complete your registration"
+msgid "admin::colelction::presentation des elements : watermark"
 msgstr ""
 
-msgid "Mandatory fields"
+msgid "admin::collection: Confirmez vous la suppression de cette collection ?"
 msgstr ""
 
-msgid "Resquest access"
-msgstr ""
-
-msgid "Vous devez remplir les champs requis"
-msgstr ""
-
-msgid "reponses:: partager"
-msgstr ""
-
-msgid "Remove from basket"
-msgstr ""
-
-msgid "element(s)"
-msgstr ""
-
-msgid "Force authentication"
+msgid "admin::collection:: Gestionnaires des commandes"
 msgstr ""
 
 msgid ""
-"The parameter \"force authentication\" forces the recipient(s) of the push "
-"to possess a Phraseanet account\n"
-"                    to see its contents.\n"
-"                    This avoids anonymous users to access to the content of "
-"the push if they were able to get the display\n"
-"                    url through a forwarded mail for example."
-msgstr ""
-
-msgid "Le bridge FlickR ne prend en charge que les photos"
-msgstr ""
-
-msgid "%n_elements% elements ne peuvent etre uploades"
-msgstr ""
-
-#, php-format
-msgid "Upload sur Flickr de %elements_length% elements"
-msgstr ""
-
-msgid "2000 caracteres maximum, separe par des espaces"
-msgstr ""
-
-msgid "Type texte"
-msgstr ""
-
-msgid "Type nombre"
-msgstr ""
-
-msgid "Type date"
-msgstr ""
-
-msgid "Source"
-msgstr ""
-
-msgid "Ce champ n'est pas indexe"
-msgstr ""
-
-msgid "Ce champ est multivalue"
-msgstr ""
-
-msgid "Ce champ est en lecture seule"
-msgstr ""
-
-msgid "Ce champ est relie a une branche de thesaurus"
-msgstr ""
-
-msgid "Ce champ est utilise en titre a l'affichage"
-msgstr ""
-
-msgid "Ce champ est requis"
-msgstr ""
-
-msgid "Ce champ est decrit comme element du %DublinCoreElementSet%"
-msgstr ""
-
-msgid ""
-"Si cet email contient des liens non cliquables, copiez/collez ces liens dans "
-"votre navigateur."
-msgstr ""
-
-msgid "Ce lien est valable jusqu'au"
-msgstr ""
-
-msgid "Le contenu de cet email est confidentiel, ne le divulguez pas."
-msgstr ""
-
-msgid "Message automatique de Phraseanet"
-msgstr ""
-
-msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
-msgstr ""
-
-msgid "Stop"
-msgstr ""
-
-msgid "Empty quarantine"
-msgstr ""
-
-msgid "No document in quarantine"
-msgstr ""
-
-msgid "You do not have enough rights to access quarantine"
-msgstr ""
-
-msgid ""
-"Empty quarantine will remove all items, are you sure you want to continue ?"
-msgstr ""
-
-msgid "Last uploaded version"
-msgstr ""
-
-msgid "Filename"
-msgstr ""
-
-msgid "Date"
-msgstr ""
-
-msgid "Uploaded by : %username%"
-msgstr ""
-
-msgid "Substitute"
-msgstr ""
-
-msgid "A record matches the unique identifier :"
-msgstr ""
-
-msgid "%record_count% records match the unique identifier :"
-msgstr ""
-
-msgid "thesaurus:: options d'export : "
-msgstr ""
-
-msgid "thesaurus:: example"
-msgstr ""
-
-msgid "thesaurus:: exporter avec les synonymes sur la meme ligne"
-msgstr ""
-
-msgid "thesaurus:: exporter avec une ligne par synonyme"
-msgstr ""
-
-msgid "thesaurus:: export : numeroter les lignes "
-msgstr ""
-
-msgid "thesaurus:: export : inclure la langue"
-msgstr ""
-
-msgid "thesaurus:: export : inclure les hits"
-msgstr ""
-
-msgid "thesaurus:: Nouveau terme specifique"
-msgstr ""
-
-msgid "thesaurus:: Nouveau synonyme"
-msgstr ""
-
-msgid "thesaurus:: le terme %term% avec contexte %context%"
-msgstr ""
-
-msgid "thesaurus:: le terme %term% sans contexte"
-msgstr ""
-
-msgid "thesaurus:: est deja candidat en provenance du champ acceptable : "
-msgstr ""
-
-msgid "thesaurus:: est deja candidat en provenance des champs acceptables : "
-msgstr ""
-
-msgid "thesaurus:: selectionner la provenance a accepter"
-msgstr ""
-
-msgid ""
-"thesaurus:: est candidat en provenance des champs mais ne peut etre accepte "
-"a cet emplacement du thesaurus"
-msgstr ""
-
-msgid "thesaurus:: n'est pas present dans les candidats"
-msgstr ""
-
-msgid "thesaurus:: attention :"
-msgstr ""
-
-msgid "thesaurus:: Ajouter le terme dans reindexer"
-msgstr ""
-
-msgid "thesaurus:: ajouter le terme et reindexer"
-msgstr ""
-
-msgid "Which playlist you want to put you %number% elements into ?"
-msgstr ""
-
-msgid "Save all changes"
-msgstr ""
-
-msgid "Close"
-msgstr ""
-
-msgid "Ok"
-msgstr ""
-
-msgid "Live search"
-msgstr ""
-
-msgid "Add a new field"
-msgstr ""
-
-msgid "Multivalued"
-msgstr ""
-
-msgid "Order"
-msgstr ""
-
-msgid "DCES"
-msgstr ""
-
-msgid "Advanced field parameters"
-msgstr ""
-
-msgid "Thesaurus branch"
-msgstr ""
-
-msgid "Type"
-msgstr ""
-
-msgid "Vocabulary type"
-msgstr ""
-
-msgid "Limited vocabulary"
-msgstr ""
-
-msgid "Business Fields"
-msgstr ""
-
-msgid "Separator"
-msgstr ""
-
-msgid "Display & action settings"
-msgstr ""
-
-msgid "Mandatory"
-msgstr ""
-
-msgid "Indexable"
-msgstr ""
-
-msgid "Read-only"
-msgstr ""
-
-msgid "Report"
-msgstr ""
-
-msgid "Display thumbnails"
-msgstr ""
-
-msgid "Tous"
-msgstr ""
-
-msgid "Aucun"
-msgstr ""
-
-msgid "Current configuration contains some errors"
-msgstr ""
-
-msgid "%nb_view% vue"
-msgstr ""
-
-msgid "%nb_view% vues"
-msgstr ""
-
-msgid "Story name"
-msgstr ""
-
-msgid "Le champ doit contenir %minLength% caracteres minimum."
-msgstr ""
-
-msgid "Le champ ne peut contenir plus de %maxLength% caracteres."
-msgstr ""
-
-msgid "Les indications donnees ci dessous sont a titre informatif."
-msgstr ""
-
-msgid ""
-"Si vous ne les respectez pas, les documents seront correctement indexes, "
-"mais les metadonnees inscrites risquent d'etre erronnees"
-msgstr ""
-
-msgid ""
-"Ces informations sont directement fournies par la norme de metadonnees de ce "
-"champ : %norm_name%"
-msgstr ""
-
-msgid "You are using the HTML5 uploader."
-msgstr ""
-
-msgid "Your browser does not support all HTML5 features properly."
-msgstr ""
-
-msgid "Use the Flash uploader"
-msgstr ""
-
-msgid "%quantity%selected files"
-msgstr ""
-
-msgid "report:: activite document ajoute"
-msgstr ""
-
-msgid "report:: activite document edite"
-msgstr ""
-
-msgid "report:: Cumul telechargements & connexions"
-msgstr ""
-
-msgid "report::Connexion"
-msgstr ""
-
-msgid "report:: Utilisateurs les plus actifs"
-msgstr ""
-
-msgid "report:: telechargements document"
-msgstr ""
-
-msgid "report:: telechargements preview"
-msgstr ""
-
-msgid "report:: poids document"
-msgstr ""
-
-msgid "report:: poids preview"
-msgstr ""
-
-msgid "report:: documents les plus telecharges"
-msgstr ""
-
-msgid "report:: preview les plus telecharges"
-msgstr ""
-
-msgid "report:: site d'ou les photo sont les plus consultees"
-msgstr ""
-
-msgid "report:: site"
-msgstr ""
-
-msgid "report:: nombre de vue"
-msgstr ""
-
-msgid "print:: image de choix seulement"
-msgstr ""
-
-msgid "print:: image de choix et description"
-msgstr ""
-
-msgid "print:: image de choix et description avec planche contact"
-msgstr ""
-
-msgid "print:: imagette"
-msgstr ""
-
-msgid "print:: liste d'imagettes"
-msgstr ""
-
-msgid "print:: planche contact (mosaique)"
-msgstr ""
-
-msgid "boutton::imprimer"
-msgstr ""
-
-msgid "None of the selected records can be printed"
-msgstr ""
-
-msgid "export:: erreur : aucun document selectionne"
-msgstr ""
-
-msgid "List Name"
-msgstr ""
-
-msgid "Share the list"
-msgstr ""
-
-msgid "Set sharing permission"
-msgstr ""
-
-msgid "Edit"
-msgstr ""
-
-msgid "View"
-msgstr ""
-
-msgid "Push::filter on login"
-msgstr ""
-
-msgid "Push::filter on name"
-msgstr ""
-
-msgid "Push::filter on countries"
-msgstr ""
-
-msgid "Push::filter on companies"
-msgstr ""
-
-msgid "Push::filter on emails"
-msgstr ""
-
-msgid "Push::filter on templates"
-msgstr ""
-
-msgid "Push::filter starts"
-msgstr ""
-
-msgid "Activite"
-msgstr ""
-
-msgid "Template"
-msgstr ""
-
-msgid "Position"
-msgstr ""
-
-msgid "Chercher"
-msgstr ""
-
-msgid "thesaurus::menu: proprietes"
-msgstr ""
-
-msgid "thesaurus::menu: refuser"
-msgstr ""
-
-msgid "thesaurus::menu: accepter"
-msgstr ""
-
-msgid "thesaurus::menu: supprimer les candidats a 0 hits"
-msgstr ""
-
-msgid "thesaurus::menu: chercher"
-msgstr ""
-
-msgid "thesaurus::menu: exporter"
-msgstr ""
-
-msgid "thesaurus::menu: importer"
-msgstr ""
-
-msgid "thesaurus::menu: Nouveau terme"
-msgstr ""
-
-msgid "thesaurus::menu: Nouveau synonyme"
-msgstr ""
-
-msgid "thesaurus::menu: export topics"
-msgstr ""
-
-msgid "thesaurus::menu: lier au champ"
-msgstr ""
-
-msgid "thesaurus:: onglet stock"
-msgstr ""
-
-msgid "thesaurus:: afficher les termes refuses"
-msgstr ""
-
-msgid "thesaurus:: onglet thesaurus"
-msgstr ""
-
-msgid "thesaurus:: le terme"
-msgstr ""
-
-msgid "thesaurus:: est egal a "
-msgstr ""
-
-msgid "thesaurus:: commence par"
-msgstr ""
-
-msgid "thesaurus:: contient"
-msgstr ""
-
-msgid "thesaurus:: contexte"
-msgstr ""
-
-msgid "phraseanet:: language"
-msgstr ""
-
-msgid ""
-"thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront "
-"en candidats a la prochaine indexation)"
-msgstr ""
-
-msgid ""
-"thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer "
-"quand meme ?&#10;(les termes concernes remonteront en candidats a la "
-"prochaine indexation)"
-msgstr ""
-
-msgid "thesaurus:: Tous les termes ont des hits"
-msgstr ""
-
-msgid ""
-"thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les "
-"supprimer ?"
-msgstr ""
-
-msgid "thesaurus:: terme"
-msgstr ""
-
-msgid "thesaurus:: synonyme"
-msgstr ""
-
-msgid "thesaurus:: Nouveau terme"
-msgstr ""
-
-msgid "thesaurus:: deplacer le terme dans la corbeille ?"
-msgstr ""
-
-msgid "paniers:: %nb_basket_elements% documents dans le panier"
-msgstr ""
-
-msgid "paniers::categories: mes paniers"
-msgstr ""
-
-msgid "paniers::categories: paniers recus"
-msgstr ""
-
-msgid "action : ouvrir dans le comparateur"
-msgstr ""
-
-msgid "paniers:: panier emis par %pusher_name%"
-msgstr ""
-
-msgid "paniers:: vous avez de nouveaux paniers non consultes"
-msgstr ""
-
-msgid "Create new subdef"
-msgstr ""
-
-msgid "Delete the subdef ?"
-msgstr ""
-
-msgid ""
-"These subdef will be permanently deleted and cannot be recovered. Are you "
-"sure?"
-msgstr ""
-
-msgid "Subdef name"
-msgstr ""
-
-msgid "classe d'acces"
-msgstr ""
-
-msgid "preview"
-msgstr ""
-
-msgid "tout le monde"
-msgstr ""
-
-msgid "Telechargeable"
-msgstr ""
-
-msgid "classe"
-msgstr ""
-
-msgid "Write Metas"
-msgstr ""
-
-msgid "mediatype"
-msgstr ""
-
-msgid "The user has been created."
-msgstr ""
-
-#, php-format
-msgid "%user_count% users have been created."
-msgstr ""
-
-msgid "admin::user: nouvel utilisateur"
-msgstr ""
-
-msgid "admin::user: nouveau template"
-msgstr ""
-
-msgid "admin::user: import d'utilisateurs"
-msgstr ""
-
-msgid "admin::user: export d'utilisateurs"
-msgstr ""
-
-msgid "Filter"
-msgstr ""
-
-msgid "Last applied template"
-msgstr ""
-
-msgid "boutton::appliquer"
-msgstr ""
-
-msgid "admin::compte-utilisateur id utilisateur"
-msgstr ""
-
-msgid "admin::compte-utilisateur dernier modele applique"
-msgstr ""
-
-msgid "admin::compte-utilisateur date de creation"
-msgstr ""
-
-msgid "This is a template"
-msgstr ""
-
-msgid "This user has no rights"
-msgstr ""
-
-msgid "%n_par_page% par page"
-msgstr ""
-
-msgid "Supprimer"
-msgstr ""
-
-msgid "boutton::exporter"
-msgstr ""
-
-msgid "select at least one user"
-msgstr ""
-
-msgid "Are you sure you want delete users rights ?"
-msgstr ""
-
-msgid "users rights have been reseted"
-msgstr ""
-
-msgid "Erreur de login / mot de passe"
-msgstr ""
-
-msgid "Bonjour, veuillez vous identifier sur %home_title% :"
-msgstr ""
-
-msgid "Se connecter"
-msgstr ""
-
-msgid "Probl&egrave;mes de connexion ?"
-msgstr ""
-
-msgid "Autorisation d'acc&egrave;s"
-msgstr ""
-
-msgid ""
-"Autorisez-vous l'application \"<span>%application_name%</span>\" &agrave; "
-"acc&eacute;der &agrave; votre contenu sur %home_title% ?"
-msgstr ""
-
-msgid "Autoriser"
-msgstr ""
-
-msgid "Ne pas autoriser"
-msgstr ""
-
-msgid "Technical Informations"
-msgstr ""
-
-msgid ""
-"Cochez les cases correspondantes aux colonnes que vous desirez voire "
-"apparaitre dans le report"
-msgstr ""
-
-msgid "cocher tout"
-msgstr ""
-
-msgid "tout decocher"
-msgstr ""
-
-msgid "preview::statistiques de visualisation pour le lien"
-msgstr ""
-
-msgid "preview::statistiques de telechargement"
-msgstr ""
-
-msgid "Change my email address"
-msgstr ""
-
-msgid "admin::compte-utilisateur nouvelle adresse email"
+"admin::collection:: presentation des elements lors de la diffusion aux "
+"utilisateurs externes (publications)"
 msgstr ""
 
 msgid "admin::compte-utilisateur confirmer la nouvelle adresse email"
+msgstr ""
+
+msgid "admin::compte-utilisateur nouvelle adresse email"
 msgstr ""
 
 msgid ""
@@ -8221,224 +4188,558 @@ msgid ""
 "important que vous soyez la seule personne a pouvoir la changer."
 msgstr ""
 
-msgid "Client application"
+msgid "admin::monitor: bases sur lesquelles l'utilisateur est connecte : "
 msgstr ""
 
-msgid "Application"
+msgid "admin::monitor: date de connexion"
 msgstr ""
 
-msgid "settings OAuth"
+msgid "admin::monitor: dernier access"
 msgstr ""
 
-msgid "Les parametres oauth de votre application."
+msgid "admin::monitor: modules"
 msgstr ""
 
-msgid "Modify"
+msgid "admin::monitor: total des utilisateurs uniques : "
 msgstr ""
 
-msgid "Activer le grant_type de type password pour votre application"
-msgstr ""
-
-msgid "Define a webhook URL"
+msgid "admin::monitor: utilisateur"
 msgstr ""
 
 msgid ""
-"Gives the option to your application to communicate with Phraseanet. This "
-"webhook can be used to trigger some actions on your application side."
+"admin::sugval: Attention, passer en mode graphique implique la perte des "
+"modifications du xml si vous n'appliquez pas les changements avant.\n"
+"Continuer quand meme"
 msgstr ""
 
-msgid "Votre token d'access"
+msgid "admin::sugval: Valeurs suggerees/Preferences de la collection"
 msgstr ""
 
-msgid "Les paramétres oauth de votre application."
+msgid "admin::sugval: champs"
 msgstr ""
 
-msgid "Token"
+msgid "admin::utilisateurs: utilisateurs connectes"
 msgstr ""
 
-msgid "Le token n'a pas encore ete genere"
+msgid "all caches services have been flushed"
 msgstr ""
 
-msgid "boutton::generer"
+msgid "boutton::ajouter"
 msgstr ""
 
-msgid "thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch%"
+msgid "boutton::monter"
 msgstr ""
 
-msgid "thesaurus:: nouvelle branche"
+msgid "boutton::reinitialiser"
 msgstr ""
 
-msgid ""
-"thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et "
-"candidats seront supprimes"
+msgid "boutton::retour"
 msgstr ""
 
-msgid ""
-"thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base "
-"est necessaire"
+msgid "boutton::vue graphique"
 msgstr ""
 
-msgid ""
-"thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la "
-"base est necessaire"
+msgid "boutton::vue xml"
 msgstr ""
 
-msgid "thesaurus:: reindexation necessaire"
+msgid "choisir"
 msgstr ""
 
-msgid "thesaurus:: pas de reindexation"
-msgstr ""
-
-msgid "report:: 1 - Periode"
-msgstr ""
-
-msgid "report:: 2 - Bases"
-msgstr ""
-
-msgid "%value% like"
-msgstr ""
-
-msgid "%value% likes"
-msgstr ""
-
-msgid "%nb_rating% like"
-msgstr ""
-
-msgid "%nb_rating% likes"
-msgstr ""
-
-msgid "Upload a csv file for users creation"
-msgstr ""
-
-msgid "An error occured while upload the file. Please retry"
-msgstr ""
-
-msgid "Row login is missing, script has stopped"
-msgstr ""
-
-msgid "Row password is missing, script has stopped"
-msgstr ""
-
-msgid "Row mail is missing, script has stopped"
-msgstr ""
-
-msgid "The file does not contains any user to add"
-msgstr ""
-
-msgid "You can  download an example by clicking here"
-msgstr ""
-
-msgid "You can download the documentation here"
-msgstr ""
-
-msgid "Suppression de %n_element% photos"
-msgstr ""
-
-msgid "Etes vous sur de supprimer %number% photos ?"
-msgstr ""
-
-msgid "admin::tasks: planificateur de taches"
-msgstr ""
-
-msgid "Last update at"
-msgstr ""
-
-msgid "admin::tasks: statut de la tache"
-msgstr ""
-
-msgid "admin::tasks: process_id de la tache"
-msgstr ""
-
-msgid "admin::tasks: etat de progression de la tache"
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "Logs"
-msgstr ""
-
-msgid "admin::tasks: Nouvelle tache"
-msgstr ""
-
-msgid "admin::tasks: supprimer la tache ?"
-msgstr ""
-
-msgid "No preview available."
-msgstr ""
-
-msgid "No permalink available."
-msgstr ""
-
-msgid "Send to Twitter"
-msgstr ""
-
-msgid "Send to Facebook"
-msgstr ""
-
-msgid "Resource URL"
-msgstr ""
-
-msgid "Detailed view URL"
-msgstr ""
-
-msgid "Embed code"
-msgstr ""
-
-msgid "No URL available"
-msgstr ""
-
-msgid "you are about to change the  representation thumbnail of your video"
-msgstr ""
-
-msgid "do you want to validate"
-msgstr ""
-
-msgid "%displayName% wants to place an order"
-msgstr ""
-
-msgid "Destinataire"
-msgstr ""
-
-msgid "Date de commande"
-msgstr ""
-
-msgid "Nombre total d'element commandes"
+msgid "no"
 msgstr ""
 
 msgid ""
-"Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  "
-"elements correspondants aux collections sur lesquelles vous gerez les "
-"commandes"
+"phraseanet:: Creer une base sur un serveur different de l'application box"
 msgstr ""
 
-msgid "Document refuse par %name%"
-msgstr ""
-
-msgid "Forcer l'envoi du document"
-msgstr ""
-
-msgid "Document envoye par %name%"
-msgstr ""
-
-msgid "Selectionnez des documents et "
-msgstr ""
-
-msgid "Retour aux commandes"
-msgstr ""
-
-msgid "Reorder collections"
-msgstr ""
-
-msgid "Create an account manually"
+msgid "phraseanet:: Modele de donnees"
 msgstr ""
 
 msgid ""
-"Le connecteur API requis n'est pas configure correctement, veuillez "
-"contacter un administrateur"
+"phraseanet:: Monter une base provenant d'un serveur different de "
+"l'application box"
 msgstr ""
 
-msgid "admin::plugins: plugins"
+msgid "phraseanet:: collection"
+msgstr ""
+
+msgid "phraseanet:: dbname"
+msgstr ""
+
+msgid "phraseanet:: details"
+msgstr ""
+
+msgid "phraseanet:: hostname"
+msgstr ""
+
+msgid "phraseanet:: password"
+msgstr ""
+
+msgid "phraseanet:: port"
+msgstr ""
+
+msgid "phraseanet:: user"
+msgstr ""
+
+msgid "setup:: Reinitialisation des droits admins"
+msgstr ""
+
+msgid "setup:: administrateurs de l'application"
+msgstr ""
+
+msgid "setup:: ajouter un administrateur des commandes"
+msgstr ""
+
+msgid "setup::Tests d'envois d'emails"
+msgstr ""
+
+msgid "update::Verifier els tables"
+msgstr ""
+
+msgid "update::Votre application necessite une mise a jour vers : "
+msgstr ""
+
+msgid "update::Votre version est a jour : "
+msgstr ""
+
+msgid "version"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "your configuration"
+msgstr ""
+
+msgid "A"
+msgstr ""
+
+msgid "Access"
+msgstr ""
+
+msgid "Access to HD"
+msgstr ""
+
+msgid "Access to image tools"
+msgstr ""
+
+msgid "Access to preview"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Activer"
+msgstr ""
+
+msgid "Activer une collection"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add a new field"
+msgstr ""
+
+msgid "Adresse email du nouvel utilisateur"
+msgstr ""
+
+msgid "Advanced field parameters"
+msgstr ""
+
+msgid "Ajouter un nouvel utilisateur"
+msgstr ""
+
+msgid "Ajouter un publisher"
+msgstr ""
+
+msgid "Ajouter une publication"
+msgstr ""
+
+msgid "Allowed to access report"
+msgstr ""
+
+msgid "Allowed to add"
+msgstr ""
+
+msgid "Allowed to add in basket"
+msgstr ""
+
+msgid "Allowed to change statuses"
+msgstr ""
+
+msgid "Allowed to delete"
+msgstr ""
+
+msgid "Allowed to edit"
+msgstr ""
+
+msgid "Allowed to order"
+msgstr ""
+
+msgid "Allowed to publish"
+msgstr ""
+
+msgid "Allowed to push"
+msgstr ""
+
+msgid "Apply a template"
+msgstr ""
+
+msgid "Apply template"
+msgstr ""
+
+msgid "Are you sure you want to reset rights?"
+msgstr ""
+
+msgid "Aucun"
+msgstr ""
+
+msgid "Base %base%"
+msgstr ""
+
+msgid "Business Fields"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Cocher toute la colonne"
+msgstr ""
+
+msgid "Collection"
+msgstr ""
+
+msgid "Collection %collection%"
+msgstr ""
+
+msgid "Confirm reset users rights before applying template"
+msgstr ""
+
+msgid "Confirmez-vous la re-indexation de la base ?"
+msgstr ""
+
+msgid "Creer un model"
+msgstr ""
+
+msgid "Creer un modele"
+msgstr ""
+
+msgid "Creer un utilisateur"
+msgstr ""
+
+msgid "Cumulative total"
+msgstr ""
+
+msgid "Current configuration contains some errors"
+msgstr ""
+
+msgid "DCES"
+msgstr ""
+
+msgid "Date Creation"
+msgstr ""
+
+msgid "De"
+msgstr ""
+
+msgid "Decocher toute la colonne"
+msgstr ""
+
+msgid "Delete all users rights"
+msgstr ""
+
+msgid "Display & action settings"
+msgstr ""
+
+msgid "Display thumbnails"
+msgstr ""
+
+msgid "Droits"
+msgstr ""
+
+msgid "Edition"
+msgstr ""
+
+msgid "Edition des droits de %display_name%"
+msgstr ""
+
+msgid "Edition des droits de %number% utilisateurs"
+msgstr ""
+
+msgid "Etendue de la publication"
+msgstr ""
+
+msgid "Feed name"
+msgstr ""
+
+msgid "Id"
+msgstr ""
+
+msgid "Indexable"
+msgstr ""
+
+msgid "Infos"
+msgstr ""
+
+msgid "Limite temporelle"
+msgstr ""
+
+msgid "Limited vocabulary"
+msgstr ""
+
+msgid "Liste des personnes habilitees a publier sur ce fil"
+msgstr ""
+
+msgid "Live search"
+msgstr ""
+
+msgid "Loading database documentary structure ..."
+msgstr ""
+
+msgid "Manage DB fields"
+msgstr ""
+
+msgid "Manage Database"
+msgstr ""
+
+msgid "Manage Thesaurus"
+msgstr ""
+
+msgid "Manage collection"
+msgstr ""
+
+msgid "Manage users"
+msgstr ""
+
+msgid "Manage values lists"
+msgstr ""
+
+msgid "Mandatory"
+msgstr ""
+
+msgid "Masks"
+msgstr ""
+
+msgid "Monter la collection %name%"
+msgstr ""
+
+msgid "Multivalued"
+msgstr ""
+
+msgid "Name or email"
+msgstr ""
+
+msgid "Nom du nouveau modele"
+msgstr ""
+
+msgid "Non-Restreinte (publique)"
+msgstr ""
+
+msgid "Number"
+msgstr ""
+
+msgid "Ok"
+msgstr ""
+
+msgid "Order"
+msgstr ""
+
+msgid "Owner"
+msgstr ""
+
+msgid "Public"
+msgstr ""
+
+msgid "Publications"
+msgstr ""
+
+msgid "Publique"
+msgstr ""
+
+msgid "Quotas"
+msgstr ""
+
+msgid "Read-only"
+msgstr ""
+
+msgid "Reglages:: reglages d acces guest"
+msgstr ""
+
+msgid "Reglages:: reglages d inscitpition automatisee"
+msgstr ""
+
+msgid "Remove watermark"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Report"
+msgstr ""
+
+msgid "Require email validation to activate the account"
+msgstr ""
+
+msgid "Reset and apply"
+msgstr ""
+
+msgid "Reset and apply template"
+msgstr ""
+
+msgid "Reset rights before applying template?"
+msgstr ""
+
+msgid "Reste"
+msgstr ""
+
+msgid "Restriction"
+msgstr ""
+
+msgid "Restrictions de telechargement"
+msgstr ""
+
+msgid "Rights"
+msgstr ""
+
+msgid "Rights will be erased before applying template, do you confirm?"
+msgstr ""
+
+msgid "Save all changes"
+msgstr ""
+
+msgid "Send an email to the user to setup his password"
+msgstr ""
+
+msgid "Separator"
+msgstr ""
+
+msgid "Set download quotas"
+msgstr ""
+
+msgid "Set statuses restrictions"
+msgstr ""
+
+msgid "Set time restrictions"
+msgstr ""
+
+msgid "Short description"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Sous-titre"
+msgstr ""
+
+msgid "Subdef"
+msgstr ""
+
+msgid "Successful install"
+msgstr ""
+
+msgid "Thesaurus branch"
+msgstr ""
+
+msgid "This feed is public"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "Titre"
+msgstr ""
+
+msgid "Tous"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid ""
+"Une fois la publication supprimee, les donnees publiees seront "
+"definitivement perdues. Continuer ?"
+msgstr ""
+
+msgid "Vocabulary type"
+msgstr ""
+
+msgid "Vous devez remplir les champs requis"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "Would you like to reset rights before applying the template?"
+msgstr ""
+
+msgid "You are not the feed owner"
+msgstr ""
+
+msgid "admin::base: Alias"
+msgstr ""
+
+msgid "admin::base: Cette base est indexable"
+msgstr ""
+
+msgid "admin::base: Confirmer la suppression de la base"
+msgstr ""
+
+msgid "admin::base: Confirmer la suppression de tous les logs"
+msgstr ""
+
+msgid "admin::base: Confirmer le vidage complet de la base"
+msgstr ""
+
+msgid "admin::base: Confirmer vous l'arret de la publication de la base"
+msgstr ""
+
+msgid "admin::base: arreter la publication de la base"
+msgstr ""
+
+msgid "admin::base: document indexes en utilisant la fiche xml"
+msgstr ""
+
+msgid "admin::base: document indexes en utilisant le thesaurus"
+msgstr ""
+
+msgid "admin::base: envoyer un logo (jpeg 35px de hauteur max)"
+msgstr ""
+
+msgid "admin::base: logo impression PDF"
+msgstr ""
+
+msgid "admin::base: nombre d'enregistrements sur la base :"
+msgstr ""
+
+msgid "admin::base: nombre de mots indexes sur la base"
+msgstr ""
+
+msgid "admin::base: nombre de mots uniques sur la base : "
+msgstr ""
+
+msgid "admin::base: nombre de termes de Thesaurus indexes :"
+msgstr ""
+
+msgid "admin::base: subdefs to be created :"
+msgstr ""
+
+msgid "admin::base: supprimer la base"
+msgstr ""
+
+msgid "admin::base: supprimer tous les logs"
+msgstr ""
+
+msgid "admin::base: vider la base"
+msgstr ""
+
+msgid "admin::base:collection: Monter une collection"
+msgstr ""
+
+msgid "admin::base:collection: supprimer le logo"
 msgstr ""
 
 msgid "admin::plugins: about"
@@ -8447,12 +4748,3647 @@ msgstr ""
 msgid "admin::plugins: name"
 msgstr ""
 
-msgid "admin::plugins: version"
+msgid "admin::plugins: plugins"
 msgstr ""
 
 msgid "admin::plugins: retrieveConfigurationError"
 msgstr ""
 
-msgid "prod::tools: document"
+msgid "admin::plugins: version"
 msgstr ""
 
+msgid "base:: re-indexer"
+msgstr ""
+
+msgid "boutton::choisir"
+msgstr ""
+
+msgid "forms::operation effectuee OK"
+msgstr ""
+
+msgid "par mois"
+msgstr ""
+
+msgid "plugin.name"
+msgstr ""
+
+msgid "%n_par_page% par page"
+msgstr ""
+
+#, php-format
+msgid "%user_count% users have been created."
+msgstr ""
+
+msgid "An error occured while upload the file. Please retry"
+msgstr ""
+
+msgid "Apply a model"
+msgstr ""
+
+msgid "Are you sure you want delete users rights ?"
+msgstr ""
+
+msgid "CHAMPS"
+msgstr ""
+
+msgid "Charset to use for indexation"
+msgstr ""
+
+msgid "Choisir"
+msgstr ""
+
+msgid "Create new subdef"
+msgstr ""
+
+msgid "Date fields available for search"
+msgstr ""
+
+msgid "Default sort"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete the subdef ?"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Enable stemming"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "First/Last Name"
+msgstr ""
+
+msgid "Labels"
+msgstr ""
+
+msgid "Last applied template"
+msgstr ""
+
+msgid "Last update at"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Models"
+msgstr ""
+
+msgid "No application for registration has been recorded"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Phrasea search-engine configuration"
+msgstr ""
+
+msgid "Push::filter on companies"
+msgstr ""
+
+msgid "Push::filter on countries"
+msgstr ""
+
+msgid "Push::filter on emails"
+msgstr ""
+
+msgid "Push::filter on login"
+msgstr ""
+
+msgid "Push::filter starts"
+msgstr ""
+
+msgid "Requests for the application registrations were recorded successfully"
+msgstr ""
+
+msgid "Row login is missing, script has stopped"
+msgstr ""
+
+msgid "Row mail is missing, script has stopped"
+msgstr ""
+
+msgid "Row password is missing, script has stopped"
+msgstr ""
+
+msgid "SUBDEFS"
+msgstr ""
+
+msgid "SearchEngine settings"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Sphinx Search RealTime server"
+msgstr ""
+
+msgid "Sphinx Search connection configuration"
+msgstr ""
+
+msgid "Sphinx Search server"
+msgstr ""
+
+msgid "SphinxSearch search-engine configuration"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Stemming"
+msgstr ""
+
+msgid "Stop"
+msgstr ""
+
+msgid "Structure errors"
+msgstr ""
+
+msgid "Structure has been successfully updated"
+msgstr ""
+
+msgid "Subdef name"
+msgstr ""
+
+msgid "Supprimer"
+msgstr ""
+
+msgid "Symbolized by"
+msgstr ""
+
+msgid "Tableau de bord"
+msgstr ""
+
+msgid "Telechargeable"
+msgstr ""
+
+msgid "The file does not contains any user to add"
+msgstr ""
+
+msgid "The following errors have been detected"
+msgstr ""
+
+msgid "The user has been created."
+msgstr ""
+
+msgid "There is no user to add."
+msgstr ""
+
+msgid ""
+"These subdef will be permanently deleted and cannot be recovered. Are you "
+"sure?"
+msgstr ""
+
+msgid "This is a template"
+msgstr ""
+
+msgid "This user has no rights"
+msgstr ""
+
+msgid "Updated structure"
+msgstr ""
+
+msgid "Upload a csv file for users creation"
+msgstr ""
+
+msgid "Would you like to continue ?"
+msgstr ""
+
+msgid "Write Metas"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "You can  download an example by clicking here"
+msgstr ""
+
+msgid "You can download the documentation here"
+msgstr ""
+
+msgid "You need define a model before importing a list of users"
+msgstr ""
+
+msgid "admin:: CGUs"
+msgstr ""
+
+msgid "admin:: appliquer le modele"
+msgstr ""
+
+msgid "admin:: demandes en cours"
+msgstr ""
+
+msgid "admin:: donner les droits de telechargement et consultation de previews"
+msgstr ""
+
+msgid "admin:: donner les droits de telechargements de preview et hd"
+msgstr ""
+
+msgid "admin:: refuser l'acces"
+msgstr ""
+
+msgid "admin:: watermarquer les documents"
+msgstr ""
+
+msgid "admin::base: preferences de collection"
+msgstr ""
+
+msgid "admin::base: structure"
+msgstr ""
+
+msgid "admin::base: xml invalide, les changements ne seront pas appliques"
+msgstr ""
+
+msgid "admin::collection"
+msgstr ""
+
+msgid "admin::collection: ordre des collections"
+msgstr ""
+
+msgid "admin::compte-utilisateur date de creation"
+msgstr ""
+
+msgid "admin::compte-utilisateur dernier modele applique"
+msgstr ""
+
+msgid "admin::compte-utilisateur id utilisateur"
+msgstr ""
+
+msgid "admin::status: case A"
+msgstr ""
+
+msgid "admin::status: case B"
+msgstr ""
+
+msgid "admin::status: reglage des status"
+msgstr ""
+
+msgid "admin::status: texte a afficher"
+msgstr ""
+
+msgid "admin::status:: aucun symbole"
+msgstr ""
+
+msgid "admin::structure: reglage de la structure"
+msgstr ""
+
+msgid "admin::tasks: Nombre de crashes : "
+msgstr ""
+
+msgid "admin::tasks: Nouvelle tache"
+msgstr ""
+
+msgid "admin::tasks: etat de progression de la tache"
+msgstr ""
+
+msgid "admin::tasks: lancer au demarrage du scheduler"
+msgstr ""
+
+msgid "admin::tasks: nom de la tache"
+msgstr ""
+
+msgid "admin::tasks: planificateur de taches"
+msgstr ""
+
+msgid "admin::tasks: process_id de la tache"
+msgstr ""
+
+msgid "admin::tasks: reinitialiser el compteur de crashes"
+msgstr ""
+
+msgid "admin::tasks: statut de la tache"
+msgstr ""
+
+msgid "admin::tasks: supprimer la tache ?"
+msgstr ""
+
+msgid "admin::user: export d'utilisateurs"
+msgstr ""
+
+msgid "admin::user: import d'utilisateurs"
+msgstr ""
+
+msgid "admin::user: nouveau template"
+msgstr ""
+
+msgid "admin::user: nouvel utilisateur"
+msgstr ""
+
+msgid "admin::utilisateurs: bases de donnees"
+msgstr ""
+
+msgid "admin::utilisateurs: demandes en cours"
+msgstr ""
+
+msgid "admin::utilisateurs: gestionnaire de taches"
+msgstr ""
+
+msgid "admin::utilisateurs: utilisateurs"
+msgstr ""
+
+msgid "boutton::appliquer"
+msgstr ""
+
+msgid "boutton::exporter"
+msgstr ""
+
+msgid "boutton::modifier"
+msgstr ""
+
+msgid "classe"
+msgstr ""
+
+msgid "classe d'acces"
+msgstr ""
+
+msgid "erreur avec la valeur %name%"
+msgstr ""
+
+msgid "mediatype"
+msgstr ""
+
+msgid "non"
+msgstr ""
+
+msgid "oui"
+msgstr ""
+
+msgid "phraseanet::status bit"
+msgstr ""
+
+msgid "preview"
+msgstr ""
+
+msgid "select at least one user"
+msgstr ""
+
+msgid "status:: Affichable pour tous"
+msgstr ""
+
+msgid ""
+"status:: Afficher le status dans les feuilles de reponses pour tous les "
+"utilisateurs"
+msgstr ""
+
+msgid "status:: cherchable par tous"
+msgstr ""
+
+msgid "status:: nom"
+msgstr ""
+
+msgid "status:: numero de bit"
+msgstr ""
+
+msgid "status:: retrouver sous forme de filtre dans la recherche"
+msgstr ""
+
+msgid "tout le monde"
+msgstr ""
+
+msgid "users rights have been reseted"
+msgstr ""
+
+#, php-format
+msgid "%docs_not_orderable% documents ne peuvent pas etre commandes"
+msgstr ""
+
+#, php-format
+msgid "%docs_orderable% documents commandes"
+msgstr ""
+
+msgid ""
+"Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
+msgstr ""
+
+msgid ""
+"By checking this box, you accept %beginning_link% Terms of Use %end_link%"
+msgstr ""
+
+msgid "Certains champs sont obligatoires, veuillez les remplir"
+msgstr ""
+
+msgid "Civility"
+msgstr ""
+
+msgid "Commandes"
+msgstr ""
+
+msgid "Documents indisponibles"
+msgstr ""
+
+msgid "Entrez plusieurs adresses email en les separant par des points-virgules"
+msgstr ""
+
+msgid "Guest"
+msgstr ""
+
+msgid "Guest, you must be authenticated to have the right to download."
+msgstr ""
+
+msgid "Include Business-fields in caption"
+msgstr ""
+
+msgid "Incorrect please try again"
+msgstr ""
+
+msgid "La sous resolution n'est pas disponible pour les documents suivants"
+msgstr ""
+
+msgid "Les documents ne peuvent pas etre exportes"
+msgstr ""
+
+msgid "Nom des fichiers a l'export"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid ""
+"Pour des raisons techniques cette interface n'est plus maintenue et serta "
+"bientôt rendue\n"
+"                     inacessible. Nous vous invitons si vous le souhaitez à "
+"utiliser production dés maintenant."
+msgstr ""
+
+msgid "Production "
+msgstr ""
+
+msgid "Recevoir un accuse de reception a %my_email%"
+msgstr ""
+
+msgid "Security"
+msgstr ""
+
+msgid "Success !"
+msgstr ""
+
+msgid "Un document commande"
+msgstr ""
+
+msgid "Un document ne peut etre commande"
+msgstr ""
+
+msgid "Unauthorized action"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Vous devez selectionner un type de sous definitions"
+msgstr ""
+
+msgid "Warning !"
+msgstr ""
+
+msgid "Would you like to receive an e-mail when your download is ready ?"
+msgstr ""
+
+msgid "You can alternatively receive an email when the download is ready."
+msgstr ""
+
+msgid ""
+"You can not directly download more than %max_download% Mo ; time to package "
+"all documents is too long"
+msgstr ""
+
+msgid "You must agree to the Terms of Use to continue."
+msgstr ""
+
+msgid "action : ajouter au panier"
+msgstr ""
+
+msgid "action : exporter"
+msgstr ""
+
+msgid "action : ouvrir dans le comparateur"
+msgstr ""
+
+msgid "action : print"
+msgstr ""
+
+msgid "action : supprimer"
+msgstr ""
+
+msgid "action:: nouveau panier"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp: creer un dossier"
+msgstr ""
+
+msgid "admin::compte-utilisateur:ftp: ecrire un fichier de log"
+msgstr ""
+
+msgid "admin::monitor: production"
+msgstr ""
+
+msgid "animation flash"
+msgstr ""
+
+msgid "boutton:: selectionner aucune base"
+msgstr ""
+
+msgid "boutton:: selectionner toutes les bases"
+msgstr ""
+
+msgid "boutton::commander"
+msgstr ""
+
+msgid "boutton::envoyer"
+msgstr ""
+
+msgid "boutton::essayer"
+msgstr ""
+
+msgid "boutton::telecharger"
+msgstr ""
+
+msgid "client:: recherche"
+msgstr ""
+
+msgid "client:: recherche avancee"
+msgstr ""
+
+msgid "client:: topics"
+msgstr ""
+
+msgid "client::answers: %available_results% reponses"
+msgstr ""
+
+msgid "client::answers: rapport de questions par bases"
+msgstr ""
+
+msgid ""
+"client::recherche: cliquez ici pour desactiver tous les filtres de cette base"
+msgstr ""
+
+msgid ""
+"client::recherche: cliquez ici pour desactiver tous les filtres de toutes "
+"base"
+msgstr ""
+
+msgid "client::recherche: filter sur"
+msgstr ""
+
+msgid "client::recherche: filtrer par champs"
+msgstr ""
+
+msgid "client::recherche: filtrer par champs : tous les champs"
+msgstr ""
+
+msgid "client::recherche: filtrer par dates"
+msgstr ""
+
+msgid "client::recherche: filtrer par status"
+msgstr ""
+
+msgid "client::recherche: rechercher dans les bases :"
+msgstr ""
+
+msgid "client::recherche: rechercher dans toutes les bases"
+msgstr ""
+
+msgid "commande::deadline"
+msgstr ""
+
+msgid "commande::utilisation prevue"
+msgstr ""
+
+msgid "export:: FTP"
+msgstr ""
+
+msgid "export:: commande"
+msgstr ""
+
+msgid "export:: envoi par mail"
+msgstr ""
+
+msgid "export:: telechargement"
+msgstr ""
+
+msgid "export::mail: contenu du mail"
+msgstr ""
+
+msgid "export::mail: destinataire"
+msgstr ""
+
+msgid "export::mail: fichiers joint"
+msgstr ""
+
+msgid "export::titre: nom original du document"
+msgstr ""
+
+msgid "export::titre: titre du documument"
+msgstr ""
+
+msgid "paniers:: %nb_basket_elements% documents dans le panier"
+msgstr ""
+
+msgid "paniers:: panier emis par %pusher_name%"
+msgstr ""
+
+msgid "paniers:: vous avez de nouveaux paniers non consultes"
+msgstr ""
+
+msgid "paniers::categories: mes paniers"
+msgstr ""
+
+msgid "paniers::categories: paniers recus"
+msgstr ""
+
+msgid "phraseanet:: a propos"
+msgstr ""
+
+msgid "phraseanet:: aide"
+msgstr ""
+
+msgid "phraseanet:: collections"
+msgstr ""
+
+msgid "phraseanet:: deconnection"
+msgstr ""
+
+msgid "phraseanet:: historique"
+msgstr ""
+
+msgid "phraseanet:: prereglages"
+msgstr ""
+
+msgid "phraseanet:: presentation des resultats"
+msgstr ""
+
+msgid "phraseanet:: propositions"
+msgstr ""
+
+msgid "phraseanet:: raccourcis clavier"
+msgstr ""
+
+msgid "phraseanet:: utiliser SSL"
+msgstr ""
+
+msgid "phraseanet::technique:: except"
+msgstr ""
+
+msgid "phraseanet::technique:: or"
+msgstr ""
+
+msgid "phraseanet::time:: a"
+msgstr ""
+
+msgid "phraseanet::time:: de"
+msgstr ""
+
+msgid "phraseanet::type:: documents"
+msgstr ""
+
+msgid "phraseanet::type:: reportages"
+msgstr ""
+
+msgid "preview:: Description"
+msgstr ""
+
+msgid "preview:: Historique"
+msgstr ""
+
+msgid "preview:: Popularite"
+msgstr ""
+
+msgid "publications:: derniere mise a jour"
+msgstr ""
+
+msgid "publications:: dernieres publications"
+msgstr ""
+
+msgid "reponses:: partager"
+msgstr ""
+
+msgid "reportage"
+msgstr ""
+
+msgid "Activer le grant_type de type password pour votre application"
+msgstr ""
+
+msgid "Aperture"
+msgstr ""
+
+msgid "Application"
+msgstr ""
+
+msgid "Application desktop"
+msgstr ""
+
+msgid "Application web"
+msgstr ""
+
+msgid "Are you sure you want to delete this application?"
+msgstr ""
+
+msgid "Aucune application creee."
+msgstr ""
+
+msgid "Camera Model"
+msgstr ""
+
+msgid "Ce lien est valable jusqu'au"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
+msgid "Client application"
+msgstr ""
+
+msgid "Client applications"
+msgstr ""
+
+msgid "Codec Audio"
+msgstr ""
+
+msgid "Codec Video"
+msgstr ""
+
+msgid "Color Depth"
+msgstr ""
+
+msgid "Color space"
+msgstr ""
+
+msgid "Creer une nouvelle applications"
+msgstr ""
+
+msgid "Creez une application pour commencer a utiliser l'API Phraseanet"
+msgstr ""
+
+msgid "Decouvrez la documentation"
+msgstr ""
+
+msgid "Define a webhook URL"
+msgstr ""
+
+msgid "Demarrer avec l'API Phraseanet"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Duree"
+msgstr ""
+
+msgid "Flash"
+msgstr ""
+
+msgid "Focal length"
+msgstr ""
+
+msgid "Frequence d'echantillonage"
+msgstr ""
+
+msgid ""
+"Gives the option to your application to communicate with Phraseanet. This "
+"webhook can be used to trigger some actions on your application side."
+msgstr ""
+
+msgid "Hyperfocal distance"
+msgstr ""
+
+msgid "ISO sensibility"
+msgstr ""
+
+msgid "Images par secondes"
+msgstr ""
+
+msgid "Le contenu de cet email est confidentiel, ne le divulguez pas."
+msgstr ""
+
+msgid "Le token n'a pas encore ete genere"
+msgstr ""
+
+msgid "Les parametres oauth de votre application."
+msgstr ""
+
+msgid "Les paramétres oauth de votre application."
+msgstr ""
+
+msgid "Light Value"
+msgstr ""
+
+msgid "Mes applications"
+msgstr ""
+
+msgid "Message automatique de Phraseanet"
+msgstr ""
+
+msgid "Modify"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "No matches found"
+msgstr ""
+
+msgid "Nom"
+msgstr ""
+
+msgid "Nom Original"
+msgstr ""
+
+msgid "Pour gérer l'envoi d'email automatique, connectez-vous à %link%"
+msgstr ""
+
+msgid "Record_id"
+msgstr ""
+
+msgid "Shutter speed"
+msgstr ""
+
+msgid ""
+"Si cet email contient des liens non cliquables, copiez/collez ces liens dans "
+"votre navigateur."
+msgstr ""
+
+msgid "Site web"
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Story_id"
+msgstr ""
+
+msgid "Token"
+msgstr ""
+
+msgid "Type d'application"
+msgstr ""
+
+msgid "URL de callback"
+msgstr ""
+
+msgid "VALIDATION"
+msgstr ""
+
+msgid "Votre token d'access"
+msgstr ""
+
+msgid "boutton::generer"
+msgstr ""
+
+msgid "boutton::telecharger tous les documents"
+msgstr ""
+
+msgid "button::supprimer"
+msgstr ""
+
+msgid "lightbox::recaptitulatif"
+msgstr ""
+
+msgid "new client application"
+msgstr ""
+
+msgid "notice"
+msgstr ""
+
+msgid "settings OAuth"
+msgstr ""
+
+msgid "(validation) a envoyer"
+msgstr ""
+
+msgid "(validation) envoyee"
+msgstr ""
+
+msgid "(validation) session terminee"
+msgstr ""
+
+msgid "Retour a laccueil"
+msgstr ""
+
+msgid "boutton::demarrer"
+msgstr ""
+
+msgid "boutton::enregistrer"
+msgstr ""
+
+msgid "boutton::pause"
+msgstr ""
+
+msgid "boutton::precedent"
+msgstr ""
+
+msgid "boutton::suivant"
+msgstr ""
+
+msgid "validation:: votre note"
+msgstr ""
+
+msgid "Enter your e-mail address to retrieve your password"
+msgstr ""
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "Forgotten password"
+msgstr ""
+
+msgid "Guest access"
+msgstr ""
+
+msgid "No account yet?"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "Access code"
+msgstr ""
+
+msgid "Authorization Access"
+msgstr ""
+
+msgid "Authorization code"
+msgstr ""
+
+msgid "Authorize"
+msgstr ""
+
+msgid "Complete the fields below to register on %instance_title%!"
+msgstr ""
+
+msgid "Completion of your registration"
+msgstr ""
+
+msgid "Connection"
+msgstr ""
+
+msgid ""
+"Copy the code below, return to your application and paste the code to the "
+"right place."
+msgstr ""
+
+msgid "Create an account manually"
+msgstr ""
+
+msgid "Deny"
+msgstr ""
+
+msgid ""
+"Do you authorize the application %application_name% to access to your "
+"Phraseanet content?"
+msgstr ""
+
+msgid "Forgot password?"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Hi, Please log in"
+msgstr ""
+
+msgid "I have read the terms of use"
+msgstr ""
+
+msgid "Inscription"
+msgstr ""
+
+msgid "Installer Google Chrome"
+msgstr ""
+
+msgid "Installer Google Chrome Frame"
+msgstr ""
+
+msgid "Login to link your account"
+msgstr ""
+
+msgid "Mandatory fields"
+msgstr ""
+
+msgid ""
+"Mettez à jour votre navigateur ou téléchargez un navigateur plus récent."
+msgstr ""
+
+msgid "More"
+msgstr ""
+
+msgid "Or login with"
+msgstr ""
+
+msgid "Please complete the information to complete your registration"
+msgstr ""
+
+msgid "Request access"
+msgstr ""
+
+msgid "Resquest access"
+msgstr ""
+
+msgid ""
+"Si vous ne pouvez pas installer un autre navigateur, utilisez Google Chrome "
+"Frame."
+msgstr ""
+
+msgid "These informations do not match?"
+msgstr ""
+
+msgid "Use my Phraseanet account"
+msgstr ""
+
+msgid "Your %provider_name% account matchs a Phraseanet account"
+msgstr ""
+
+msgid "Your account is locked, please follow the following link to unlock it"
+msgstr ""
+
+msgid "login:: Envoyer a nouveau le mail de confirmation"
+msgstr ""
+
+msgid "%nb_records% records"
+msgstr ""
+
+msgid "Ajouter ma selection courrante"
+msgstr ""
+
+msgid "Caption"
+msgstr ""
+
+msgid "Ce champ est decrit comme element du %DublinCoreElementSet%"
+msgstr ""
+
+msgid "Ce champ est decrit comme l'element DublinCore %element_name%"
+msgstr ""
+
+msgid "Ce champ est en lecture seule"
+msgstr ""
+
+msgid "Ce champ est multivalue"
+msgstr ""
+
+msgid "Ce champ est relie a une branche de thesaurus"
+msgstr ""
+
+msgid "Ce champ est requis"
+msgstr ""
+
+msgid "Ce champ est utilise en titre a l'affichage"
+msgstr ""
+
+msgid "Ce champ n'est pas indexe"
+msgstr ""
+
+msgid ""
+"Ces informations sont directement fournies par la norme de metadonnees de ce "
+"champ : %norm_name%"
+msgstr ""
+
+msgid "Detailed view URL"
+msgstr ""
+
+msgid "Embed code"
+msgstr ""
+
+msgid "Inverser"
+msgstr ""
+
+msgid "Le champ doit contenir %minLength% caracteres minimum."
+msgstr ""
+
+msgid "Le champ ne peut contenir plus de %maxLength% caracteres."
+msgstr ""
+
+msgid "Les indications donnees ci dessous sont a titre informatif."
+msgstr ""
+
+msgid "No URL available"
+msgstr ""
+
+msgid "No permalink available."
+msgstr ""
+
+msgid "No preview available."
+msgstr ""
+
+msgid "Nom du nouveau panier"
+msgstr ""
+
+msgid "Pour davantage d'informations, consulter le lien suivant %lien%"
+msgstr ""
+
+msgid "Re-initialiser"
+msgstr ""
+
+msgid "Re-ordonner"
+msgstr ""
+
+msgid "Reordonner automatiquement"
+msgstr ""
+
+msgid "Resource URL"
+msgstr ""
+
+msgid "Send to Facebook"
+msgstr ""
+
+msgid "Send to Twitter"
+msgstr ""
+
+msgid ""
+"Si vous ne les respectez pas, les documents seront correctement indexes, "
+"mais les metadonnees inscrites risquent d'etre erronnees"
+msgstr ""
+
+msgid "Story name"
+msgstr ""
+
+msgid "Type date"
+msgstr ""
+
+msgid "Type nombre"
+msgstr ""
+
+msgid "Type texte"
+msgstr ""
+
+msgid "panier:: description"
+msgstr ""
+
+msgid "panier:: nom"
+msgstr ""
+
+msgid "paniers::description du nouveau panier"
+msgstr ""
+
+msgid "%ElementsCount% records"
+msgstr ""
+
+msgid "%Total% results"
+msgstr ""
+
+msgid "1 record"
+msgstr ""
+
+msgid "1 result"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Ajouter a"
+msgstr ""
+
+msgid "Any time"
+msgstr ""
+
+msgid "Archive"
+msgstr ""
+
+msgid "Back to basket list"
+msgstr ""
+
+msgid "Certaines donnees du panier ont change"
+msgstr ""
+
+msgid "Certaines donnees du reportage ont change"
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "Company"
+msgstr ""
+
+msgid "Creer"
+msgstr ""
+
+msgid "Delete basket"
+msgstr ""
+
+msgid "Email Name"
+msgstr ""
+
+msgid "First Name"
+msgstr ""
+
+msgid "Job"
+msgstr ""
+
+msgid "L'utilisateur approuve ce document"
+msgstr ""
+
+msgid "L'utilisateur desapprouve ce document"
+msgstr ""
+
+msgid "L'utilisateur n'a pas encore donne son avis sur ce document"
+msgstr ""
+
+msgid "Last Name"
+msgstr ""
+
+msgid "My baskets"
+msgstr ""
+
+msgid "No records"
+msgstr ""
+
+msgid "No results"
+msgstr ""
+
+msgid "Past year"
+msgstr ""
+
+msgid "Playlist"
+msgstr ""
+
+msgid "Received baskets"
+msgstr ""
+
+msgid "Received from %user_name%"
+msgstr ""
+
+msgid "Search baskets"
+msgstr ""
+
+msgid "See"
+msgstr ""
+
+msgid "Sent for validation to %list_participants%"
+msgstr ""
+
+msgid "Something wrong happened, please retry or contact an admin."
+msgstr ""
+
+msgid "Technical Informations"
+msgstr ""
+
+msgid "This user does not participate to the validation but is only viewer."
+msgstr ""
+
+msgid "This year"
+msgstr ""
+
+msgid "Validations received"
+msgstr ""
+
+msgid "Validations sent"
+msgstr ""
+
+msgid "Vous avez envoye une demande de validation de document sur ce panier"
+msgstr ""
+
+msgid "Vous avez recu un nouveau panier"
+msgstr ""
+
+msgid "Vous avez recu une demande de validation de document sur ce panier"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "You are about to delete this basket. Would you like to continue ?"
+msgstr ""
+
+msgid "action : bridge"
+msgstr ""
+
+msgid "action : collection"
+msgstr ""
+
+msgid "action : editer"
+msgstr ""
+
+msgid "action : outils"
+msgstr ""
+
+msgid "action : publier"
+msgstr ""
+
+msgid "action : push"
+msgstr ""
+
+msgid "action : status"
+msgstr ""
+
+msgid "action::Valider"
+msgstr ""
+
+msgid "action::detacher"
+msgstr ""
+
+msgid "action::editer"
+msgstr ""
+
+msgid "action::exporter"
+msgstr ""
+
+msgid "action::renommer"
+msgstr ""
+
+msgid "delete"
+msgstr ""
+
+msgid "panier:: ordre Validation ascendante"
+msgstr ""
+
+msgid "panier:: ordre Validation descendante"
+msgstr ""
+
+msgid "panier:: ordre du panier"
+msgstr ""
+
+msgid "paniers:: panier recu de %pusher%"
+msgstr ""
+
+msgid "rafraichir"
+msgstr ""
+
+msgid "%nb_rating% like"
+msgstr ""
+
+msgid "%nb_rating% likes"
+msgstr ""
+
+msgid "%nb_view% vue"
+msgstr ""
+
+msgid "%nb_view% vues"
+msgstr ""
+
+msgid "10 tags maximum"
+msgstr ""
+
+msgid "1000 caracteres maximum"
+msgstr ""
+
+msgid "250 caracteres maximum"
+msgstr ""
+
+msgid "255 caracteres maximum"
+msgstr ""
+
+msgid "Categorie"
+msgstr ""
+
+msgid "Confidentialite"
+msgstr ""
+
+msgid "Creer un Photoset"
+msgstr ""
+
+msgid "Creer une playlist"
+msgstr ""
+
+msgid "Deplacement %n_element% elements"
+msgstr ""
+
+msgid "Edition de 1 element"
+msgstr ""
+
+msgid "Etes vous sur de supprimer %number% photos ?"
+msgstr ""
+
+msgid "Etes vous sur de supprimer %number% playlists ?"
+msgstr ""
+
+msgid "Etes vous sur de supprimer %number% videos ?"
+msgstr ""
+
+msgid "Groupez 2 ou plusieurs mots avec des guillemets: \"Michael Jackson\""
+msgstr ""
+
+msgid "Le bridge Dailymotion ne prend en charge que les videos"
+msgstr ""
+
+msgid "Les elements ne peuvent etre uploades (problemes de type ou de droit)"
+msgstr ""
+
+msgid ""
+"Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le "
+"contenu de la vidéo que vous allez mettre en ligne est conforme aux "
+"conditions d'utilisations"
+msgstr ""
+
+msgid "Photo principale"
+msgstr ""
+
+msgid "Suppression de %n_element% photos"
+msgstr ""
+
+msgid "Suppression de %n_element% playlists"
+msgstr ""
+
+msgid "Suppression de %n_element% videos"
+msgstr ""
+
+msgid "Séparez les tags par un espace: Paris vacances restaurant"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Vous n'avez selectionne aucun element"
+msgstr ""
+
+msgid "Vous ne pouvez uploader des elements sur Dailymotion qu'un par un"
+msgstr ""
+
+msgid "Which photosets you want to put you %number% photos into ?"
+msgstr ""
+
+msgid "Which playlist you want to put you %number% elements into ?"
+msgstr ""
+
+msgid "prive"
+msgstr ""
+
+msgid "privé"
+msgstr ""
+
+msgid "public"
+msgstr ""
+
+msgid "%n_elements% elements ne peuvent etre uploades"
+msgstr ""
+
+msgid ""
+"%name% est momentanement indisponible a cause d'un trop grand nombre de "
+"requetes"
+msgstr ""
+
+msgid "%value% like"
+msgstr ""
+
+msgid "%value% likes"
+msgstr ""
+
+msgid "100 caracteres maximum"
+msgstr ""
+
+msgid "2000 caracteres maximum"
+msgstr ""
+
+msgid "2000 caracteres maximum, separe par des espaces"
+msgstr ""
+
+msgid "500 caracteres maximum"
+msgstr ""
+
+msgid ""
+"En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour "
+"le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu "
+"accessible au public sur YouTube, et qu'il est autrement conforme aux "
+"Conditions d'utilisation de YouTubesitue a %lien_term_youtube%"
+msgstr ""
+
+msgid "Erreur lors de votre authentification"
+msgstr ""
+
+msgid "Etes vous sur de supprimer %number% photosets ?"
+msgstr ""
+
+msgid "Le bridge FlickR ne prend en charge que les photos"
+msgstr ""
+
+msgid "Le bridge Youtube ne prend en charge que les videos"
+msgstr ""
+
+msgid "Retour"
+msgstr ""
+
+msgid ""
+"Si cette fenetre ne se ferme pas automatiquement, fermez la, et "
+"raffraichissez votre compte"
+msgstr ""
+
+msgid "Suppression de %n_element% photosets"
+msgstr ""
+
+#, php-format
+msgid "Upload sur Flickr de %elements_length% elements"
+msgstr ""
+
+msgid ""
+"Vous etes actuellement deconnecte de votre compte, vous devez vous connecter "
+"pour continuer"
+msgstr ""
+
+msgid "Vous etes authentifie avec succes"
+msgstr ""
+
+msgid "Vous ne pouvez uploader des elements sur Youtube qu'un par un"
+msgstr ""
+
+msgid "boutton::refresh"
+msgstr ""
+
+msgid "le service sera de nouveau disponible dans quelques minutes"
+msgstr ""
+
+msgid "login:: connexion"
+msgstr ""
+
+msgid "separe par un espace"
+msgstr ""
+
+msgid "%length% peoples"
+msgstr ""
+
+msgid "%nb_elements% elements"
+msgstr ""
+
+msgid "(%length%)"
+msgstr ""
+
+msgid "About Roles : "
+msgstr ""
+
+msgid "Access user have readonly access"
+msgstr ""
+
+msgid "Activite"
+msgstr ""
+
+msgid "Admin"
+msgstr ""
+
+msgid "Admin can edit shares, modify content"
+msgstr ""
+
+msgid "Apply changes"
+msgstr ""
+
+msgid "Apply status on stories children."
+msgstr ""
+
+msgid "Apply status on story children."
+msgstr ""
+
+msgid "Apply to all selected documents"
+msgstr ""
+
+msgid "Aucun bridge disponible. Veuillez contacter un administrateur."
+msgstr ""
+
+msgid "Aucune description."
+msgstr ""
+
+msgid "Base"
+msgstr ""
+
+msgid "Confidentialite : privee"
+msgstr ""
+
+msgid "Confidentialite : publique"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Creation date"
+msgstr ""
+
+msgid "Download of documents"
+msgstr ""
+
+msgid "E-Mail"
+msgstr ""
+
+msgid "Editor"
+msgstr ""
+
+msgid "Editor can modify content"
+msgstr ""
+
+msgid "En attente"
+msgstr ""
+
+msgid "En cours d'envoi"
+msgstr ""
+
+msgid "Fichiers envoyes"
+msgstr ""
+
+msgid "Find a user"
+msgstr ""
+
+msgid "Imagette indisponible"
+msgstr ""
+
+msgid "Last Template"
+msgstr ""
+
+msgid ""
+"Le connecteur API requis n'est pas configure correctement, veuillez "
+"contacter un administrateur"
+msgstr ""
+
+msgid "List Name"
+msgstr ""
+
+msgid "Lists"
+msgstr ""
+
+msgid "Loading"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "None of the records can be modified."
+msgstr ""
+
+msgid "Notify"
+msgstr ""
+
+msgid "Only %nbEditableDocuments% records can be modified."
+msgstr ""
+
+msgid "Only one record can be modified."
+msgstr ""
+
+msgid "Oups ! something went wrong !"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid ""
+"Please wait while your files are being gathered for the download, this "
+"operation may take a few minutes."
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Push::filter on name"
+msgstr ""
+
+msgid "Push::filter on templates"
+msgstr ""
+
+msgid "Records Statut"
+msgstr ""
+
+msgid "Records status edition"
+msgstr ""
+
+msgid "Records type"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Set sharing permission"
+msgstr ""
+
+msgid "Share the list"
+msgstr ""
+
+msgid "Stories status edition"
+msgstr ""
+
+msgid "Sub definition"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid "Terms of service"
+msgstr ""
+
+msgid "The file contains the following elements"
+msgstr ""
+
+msgid "Thumbnail"
+msgstr ""
+
+msgid "Vers quel API voulez vous vous connecter ?"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Vous n'avez pas assez de droits sur certains elements selectionnes"
+msgstr ""
+
+msgid "Vous n'avez pas assez de droits sur les elements selectionnes"
+msgstr ""
+
+msgid "You are Admin"
+msgstr ""
+
+msgid "You are about to delete this account. Would you like to continue ?"
+msgstr ""
+
+msgid "You have selected %nbReceivedDocuments% records."
+msgstr ""
+
+msgid "You have selected one record."
+msgstr ""
+
+msgid ""
+"Your documents are ready. If the download does not start, %before_link%click "
+"here%after_link%"
+msgstr ""
+
+msgid "boutton::retry"
+msgstr ""
+
+msgid "dans %category%"
+msgstr ""
+
+msgid "nouveau"
+msgstr ""
+
+#, php-format
+msgid "%countable% documents can not be modified."
+msgstr ""
+
+msgid "Add user"
+msgstr ""
+
+msgid "Advanced Search"
+msgstr ""
+
+msgid "Affichage"
+msgstr ""
+
+msgid "Affichage au demarrage"
+msgstr ""
+
+msgid "Afficher la fiche descriptive"
+msgstr ""
+
+msgid "Afficher le titre"
+msgstr ""
+
+msgid "Afficher les status"
+msgstr ""
+
+msgid "Afficher une icone"
+msgstr ""
+
+msgid "After metadata"
+msgstr ""
+
+msgid "Aide"
+msgstr ""
+
+msgid "Aide sur les expressions regulieres"
+msgstr ""
+
+msgid "Ajouter au panier"
+msgstr ""
+
+msgid ""
+"Ajoutez des médias simplement en les faisant glisser vers le panier\n"
+"                        désiré et en relachant au dessus."
+msgstr ""
+
+msgid "Aller a"
+msgstr ""
+
+msgid "Also delete records that rely on groupings."
+msgstr ""
+
+msgid "An error occured, please retry or contact an admin if problem persists"
+msgstr ""
+
+msgid "Attention, certain documents ont des sous-definitions substituees"
+msgstr ""
+
+msgid "Aucun statut editable"
+msgstr ""
+
+msgid "Aucune"
+msgstr ""
+
+msgid "Aucune entree pour le moment"
+msgstr ""
+
+msgid "Aucune notification"
+msgstr ""
+
+msgid "Audio"
+msgstr ""
+
+msgid "Back to Feedback"
+msgstr ""
+
+msgid "Back to Push"
+msgstr ""
+
+msgid "Barre d'outils"
+msgstr ""
+
+msgid "Browse Baskets"
+msgstr ""
+
+msgid "Ce champ est decrit comme un element DublinCore"
+msgstr ""
+
+msgid ""
+"Changes for rotation will be applied only on the sub-definitions of \"image"
+"\" type."
+msgstr ""
+
+msgid "Chargement"
+msgstr ""
+
+msgid "Close the WorkZone"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid ""
+"Consulter et administrer vos paniers dans cet onglet.\n"
+"                        Pour créer un panier et affichez le menu déroulant "
+"en cliquant sue la\n"
+"                        flèche blanche."
+msgstr ""
+
+msgid "Contributor"
+msgstr ""
+
+msgid "Couleur de selection"
+msgstr ""
+
+msgid "Date de demande"
+msgstr ""
+
+msgid "Deadline"
+msgstr ""
+
+msgid "Derniere mise a jour le %updated_on%"
+msgstr ""
+
+msgid "Deselect all"
+msgstr ""
+
+msgid "Disable document type sharing"
+msgstr ""
+
+msgid "Display technical data"
+msgstr ""
+
+msgid "Do not display"
+msgstr ""
+
+msgid "Document"
+msgstr ""
+
+msgid "Document Type Sharing"
+msgstr ""
+
+msgid "Edition impossible"
+msgstr ""
+
+msgid "Enable document type sharing"
+msgstr ""
+
+msgid "Fils disponibles"
+msgstr ""
+
+msgid ""
+"Forcer la reconstruction sur les enregistrements ayant des thumbnails "
+"substituees"
+msgstr ""
+
+msgid "Grant rights"
+msgstr ""
+
+msgid "Graphiste (preview au rollover)"
+msgstr ""
+
+msgid "HD Download"
+msgstr ""
+
+msgid "Iconographe (description au rollover)"
+msgstr ""
+
+msgid "Image"
+msgstr ""
+
+msgid "In the answer grid"
+msgstr ""
+
+msgid ""
+"Les status de certains documents ne sont pas accessibles par manque de droits"
+msgstr ""
+
+msgid "Les termes apparaissent dans le(s) champs"
+msgstr ""
+
+msgid "List Manager"
+msgstr ""
+
+msgid "Ma derniere question"
+msgstr ""
+
+msgid "Mode de presentation"
+msgstr ""
+
+msgid "Move %countable% records to the chosen collection in the list."
+msgstr ""
+
+msgid "Move one record to the chosen collection in the list."
+msgstr ""
+
+msgid "No document selected"
+msgstr ""
+
+msgid "No preview available"
+msgstr ""
+
+msgid "None of the selected records can be printed"
+msgstr ""
+
+msgid "None of the selected records can be pushed."
+msgstr ""
+
+msgid "None of the selected records can be sent for feedback."
+msgstr ""
+
+msgid "Notify users about this publication"
+msgstr ""
+
+msgid "One document can not be modified."
+msgstr ""
+
+msgid "Page %page%"
+msgstr ""
+
+msgid ""
+"Please consider send this push to the following users : %recommendation%"
+msgstr ""
+
+msgid ""
+"Please consider send this validation to the following users : %recommendation"
+"%"
+msgstr ""
+
+msgid "Preferences"
+msgstr ""
+
+msgid "Presentation de vignettes"
+msgstr ""
+
+msgid "Presentation de vignettes de panier"
+msgstr ""
+
+msgid ""
+"Push::une validation est une demande d'appreciation a d'autres personnes"
+msgstr ""
+
+msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
+msgstr ""
+
+msgid "Raccourcis claviers de la zone des paniers : "
+msgstr ""
+
+msgid "Raccourcis claviers en cours de editing : "
+msgstr ""
+
+msgid "Raccourcis claviers en cours de preview : "
+msgstr ""
+
+msgid "Raccourcis claviers en cours de recherche : "
+msgstr ""
+
+msgid "Raccourcis:: ctrl-a : tout selectionner "
+msgstr ""
+
+msgid "Raccourcis:: ctrl-e : editer la selection "
+msgstr ""
+
+msgid "Raccourcis:: ctrl-p : imprimer la selection "
+msgstr ""
+
+msgid "Raccourcis::espace : arreter/demarrer le diaporama "
+msgstr ""
+
+msgid "Raccourcis::fleche bas : scroll vertical "
+msgstr ""
+
+msgid "Raccourcis::fleche droite : page suivante "
+msgstr ""
+
+msgid "Raccourcis::fleche gauche : en arriere "
+msgstr ""
+
+msgid "Raccourcis::fleche gauche : en avant "
+msgstr ""
+
+msgid "Raccourcis::fleche gauche : page precedente "
+msgstr ""
+
+msgid "Raccourcis::fleche haut : scroll vertical "
+msgstr ""
+
+msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
+msgstr ""
+
+msgid "Recherche Avancée"
+msgstr ""
+
+msgid "Rechercher"
+msgstr ""
+
+msgid "Rechercher dans un champ date"
+msgstr ""
+
+msgid "Reconstruire les sous definitions"
+msgstr ""
+
+msgid "Save this list"
+msgstr ""
+
+msgid "See others"
+msgstr ""
+
+msgid "Select a list on the left and edit it !"
+msgstr ""
+
+msgid "Select a user in the list"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Selecteur de theme"
+msgstr ""
+
+msgid "Start by creating one by using the \"add\" button on the left !"
+msgstr ""
+
+msgid "Status des documents a rechercher"
+msgstr ""
+
+msgid "Statut"
+msgstr ""
+
+msgid "Substitution is not possible for this kind of record"
+msgstr ""
+
+msgid "Sélection et Prévisualisation de documents"
+msgstr ""
+
+msgid ""
+"Sélectionner les documents en cliquant dessus.\n"
+"                        Pour sélectionner plusieurs documents, maintenez la "
+"touche maj enfoncée et\n"
+"                        cliquez sur les documents souhaités.\n"
+"                        Pour prévisualier un document cliquez dessus."
+msgstr ""
+
+msgid "Séléctionner ici le type de document que vous souhaitez rechercher."
+msgstr ""
+
+msgid ""
+"Séléctionner les champs et les collections sur lesquels vous voulez "
+"rechercher."
+msgstr ""
+
+msgid ""
+"Taper ici les termes de recherche afin de retrouver les documents souhaités."
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
+msgid "These records will be definitely deleted and can not be recovered"
+msgstr ""
+
+msgid "This field represents the title of the document"
+msgstr ""
+
+msgid "To take a screenshot click on camera"
+msgstr ""
+
+msgid "Tout type"
+msgstr ""
+
+msgid "Toutes les publications"
+msgstr ""
+
+msgid "Trier par "
+msgstr ""
+
+msgid "Type de documents"
+msgstr ""
+
+msgid "Types de documents"
+msgstr ""
+
+msgid "Une question personnelle"
+msgstr ""
+
+msgid "Use latest search settings on Production loading"
+msgstr ""
+
+msgid "Users suggestion"
+msgstr ""
+
+msgid "Utilisateur"
+msgstr ""
+
+msgid "Utilisation prevue"
+msgstr ""
+
+msgid ""
+"Utilisez la barre d'outils pour télécharger les documents ou pour agir sur "
+"ces documents."
+msgstr ""
+
+msgid "Video"
+msgstr ""
+
+msgid ""
+"Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
+msgstr ""
+
+msgid "Welcome to the ListManager !"
+msgstr ""
+
+msgid "YYYY/MM/DD"
+msgstr ""
+
+msgid ""
+"You are about to ask for feedback for %nb_push_items% records, "
+"%nb_not_available% records can not be processed."
+msgstr ""
+
+msgid "You are about to ask for feedback for %nb_push_items% records."
+msgstr ""
+
+msgid ""
+"You are about to push %nb_push_items% records, %nb_not_available% records "
+"can not be processed."
+msgstr ""
+
+msgid "You are about to push %nb_push_items% records."
+msgstr ""
+
+msgid "You do not have rights to remove all selected documents. Are you sure ?"
+msgstr ""
+
+msgid "You do not have rights to remove selected documents"
+msgstr ""
+
+msgid "action:: nouveau reportage"
+msgstr ""
+
+msgid "alert"
+msgstr ""
+
+msgid "and %n% more peoples"
+msgstr ""
+
+msgid "boutton::editer"
+msgstr ""
+
+msgid "boutton::imprimer"
+msgstr ""
+
+msgid "boutton::mettre a jour"
+msgstr ""
+
+msgid "boutton::publier"
+msgstr ""
+
+msgid "boutton::remplacer"
+msgstr ""
+
+msgid "cancel"
+msgstr ""
+
+msgid "chargement"
+msgstr ""
+
+msgid "charger d'avantage de publications"
+msgstr ""
+
+msgid "dans %feed_name%"
+msgstr ""
+
+msgid "do you want to validate"
+msgstr ""
+
+msgid "edit: chosiir limage du regroupement"
+msgstr ""
+
+msgid "edit::Certains champs doivent etre remplis pour valider cet editing"
+msgstr ""
+
+msgid "edit::preset:: titre"
+msgstr ""
+
+msgid "erreur : Vous n'avez pas les droits"
+msgstr ""
+
+msgid "export:: erreur : aucun document selectionne"
+msgstr ""
+
+msgid "image rotation"
+msgstr ""
+
+msgid "image tool"
+msgstr ""
+
+msgid "meta-datas"
+msgstr ""
+
+msgid "mettre a jour le nom original de fichier apres substitution"
+msgstr ""
+
+msgid "no image selected"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "phraseanet:: plugin.workzone"
+msgstr ""
+
+msgid "phraseanet:: presse-papier"
+msgstr ""
+
+msgid "phraseanet:: preview"
+msgstr ""
+
+msgid "phraseanet:: thesaurus"
+msgstr ""
+
+msgid "phraseanet:: tri par date"
+msgstr ""
+
+msgid "phraseanet:: tri par nom"
+msgstr ""
+
+msgid "phraseanet::type:: audios"
+msgstr ""
+
+msgid "phraseanet::type:: images"
+msgstr ""
+
+msgid "phraseanet::type:: videos"
+msgstr ""
+
+msgid "print:: image de choix et description"
+msgstr ""
+
+msgid "print:: image de choix et description avec planche contact"
+msgstr ""
+
+msgid "print:: image de choix seulement"
+msgstr ""
+
+msgid "print:: imagette"
+msgstr ""
+
+msgid "print:: liste d'imagettes"
+msgstr ""
+
+msgid "print:: planche contact (mosaique)"
+msgstr ""
+
+msgid "processing"
+msgstr ""
+
+msgid ""
+"prod::Les enregistrements ne provienent pas tous de la meme base et ne "
+"peuvent donc etre traites ensemble"
+msgstr ""
+
+msgid "prod::Vous n'avez le droit d'effectuer l'operation sur aucun document"
+msgstr ""
+
+msgid ""
+"prod::collection deplacer egalement les documents rattaches a ce(s) "
+"regroupement(s)"
+msgstr ""
+
+msgid ""
+"prod::edit: Impossible d'editer simultanement des documents provenant de "
+"bases differentes"
+msgstr ""
+
+msgid ""
+"prod::editing: %not_actionable% documents ne peuvent etre edites car vos "
+"droits sont induffisants"
+msgstr ""
+
+msgid ""
+"prod::editing: 1 document ne peut etre edite car vos droits sont induffisants"
+msgstr ""
+
+msgid ""
+"prod::editing: aucun documents ne peuvent etre edites car vos droits sont "
+"induffisants"
+msgstr ""
+
+msgid "prod::editing: modeles de fiches"
+msgstr ""
+
+msgid "prod::editing: rechercher-remplacer"
+msgstr ""
+
+msgid "prod::editing: valider ou annuler les modifications"
+msgstr ""
+
+msgid "prod::editing::fields: status "
+msgstr ""
+
+msgid "prod::editing::replace: remplacer dans le champ"
+msgstr ""
+
+msgid "prod::editing::replace: remplacer dans tous les champs"
+msgstr ""
+
+msgid "prod::editing:indexation en cours"
+msgstr ""
+
+msgid "prod::editing:remplace: chaine remplacante"
+msgstr ""
+
+msgid "prod::editing:remplace: options de remplacement"
+msgstr ""
+
+msgid "prod::editing:remplace::option : utiliser une expression reguliere"
+msgstr ""
+
+msgid "prod::editing:remplace::option la valeur du cahmp doit etre exacte"
+msgstr ""
+
+msgid "prod::editing:remplace::option la valeur est comprise dans le champ"
+msgstr ""
+
+msgid "prod::editing:remplace::option respecter la casse"
+msgstr ""
+
+msgid "prod::editing:remplace::option: remplacer toutes les occurences"
+msgstr ""
+
+msgid "prod::editing:remplace::option: rester insensible a la casse"
+msgstr ""
+
+msgid "prod::editing:replace: chaine a rechercher"
+msgstr ""
+
+msgid "prod::thesaurusTab:candidats"
+msgstr ""
+
+msgid "prod::thesaurusTab:thesaurus"
+msgstr ""
+
+msgid "prod::thesaurusTab:wizard:accepter le terme candidat"
+msgstr ""
+
+msgid "prod::thesaurusTab:wizard:remplacer par le terme"
+msgstr ""
+
+msgid "publication : autheur"
+msgstr ""
+
+msgid "publication : email autheur"
+msgstr ""
+
+msgid "publication : sous titre"
+msgstr ""
+
+msgid "publication : titre"
+msgstr ""
+
+msgid "publications:: s'abonner aux publications"
+msgstr ""
+
+msgid "raccourci :: a propos des raccourcis claviers"
+msgstr ""
+
+msgid "raccourcis :: ne plus montrer cette aide"
+msgstr ""
+
+msgid "rechercher dans tous les champs"
+msgstr ""
+
+msgid "rechercher par stemme"
+msgstr ""
+
+msgid "regeneration of sub-definitions"
+msgstr ""
+
+msgid "reponses:: images par pages : "
+msgstr ""
+
+msgid "reponses:: mode liste"
+msgstr ""
+
+msgid "reponses:: mode vignettes"
+msgstr ""
+
+msgid "reponses:: selectionner rien"
+msgstr ""
+
+msgid "reponses:: selectionner tout"
+msgstr ""
+
+msgid "reponses:: taille des images : "
+msgstr ""
+
+msgid "rotation 90 degres anti-horaires"
+msgstr ""
+
+msgid "rotation 90 degres horaire"
+msgstr ""
+
+msgid "screenshot video"
+msgstr ""
+
+msgid "substitution"
+msgstr ""
+
+msgid "substitution HD"
+msgstr ""
+
+msgid "substitution SD"
+msgstr ""
+
+msgid "take a screenshot"
+msgstr ""
+
+msgid "thumbnail validation"
+msgstr ""
+
+msgid "toutes les notifications"
+msgstr ""
+
+msgid "validate"
+msgstr ""
+
+msgid "video tool"
+msgstr ""
+
+msgid "you are about to change the  representation thumbnail of your video"
+msgstr ""
+
+msgid "%displayName% wants to place an order"
+msgstr ""
+
+msgid ""
+"* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , "
+"LAST , ALL)"
+msgstr ""
+
+msgid "Apparait aussi dans ces paniers"
+msgstr ""
+
+msgid "Apparait aussi dans ces reportages"
+msgstr ""
+
+msgid "C dans l'air"
+msgstr ""
+
+msgid "Caractères de troncature"
+msgstr ""
+
+msgid "Date de commande"
+msgstr ""
+
+msgid "Destinataire"
+msgstr ""
+
+msgid "Document envoye par %name%"
+msgstr ""
+
+msgid "Document refuse par %name%"
+msgstr ""
+
+msgid "Envoi par ftp a %dest% de %content%"
+msgstr ""
+
+msgid "Envoi par mail a %dest% de %content%"
+msgstr ""
+
+msgid "Et Dieu créa la femme"
+msgstr ""
+
+msgid "Forcer l'envoi du document"
+msgstr ""
+
+msgid ""
+"Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  "
+"elements correspondants aux collections sur lesquelles vous gerez les "
+"commandes"
+msgstr ""
+
+msgid "LAST 20"
+msgstr ""
+
+msgid ""
+"La recherche s'effectue grâce à la boîte de dialogue qui se trouve en haut à "
+"gauche de l'écran."
+msgstr ""
+
+msgid "Nombre total d'element commandes"
+msgstr ""
+
+msgid "Recherche multicritères"
+msgstr ""
+
+msgid "Remove from basket"
+msgstr ""
+
+msgid "Retour aux commandes"
+msgstr ""
+
+msgid ""
+"Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux "
+"suivants :"
+msgstr ""
+
+msgid "Selectionnez des documents et "
+msgstr ""
+
+msgid "TOUT"
+msgstr ""
+
+msgid "Visualiser tous les enregistrements / les derniers enregistrements"
+msgstr ""
+
+msgid "Votre recherche ne retourne aucun resultat"
+msgstr ""
+
+msgid "Voulez-vous dire %link% ?"
+msgstr ""
+
+msgid ""
+"Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou "
+"DANS"
+msgstr ""
+
+msgid "auto*"
+msgstr ""
+
+msgid "automobile"
+msgstr ""
+
+msgid "bijou en or"
+msgstr ""
+
+msgid "cannes SAUF festival"
+msgstr ""
+
+msgid "dé?it"
+msgstr ""
+
+msgid "journal OU jt"
+msgstr ""
+
+msgid ""
+"pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les "
+"guillemets :"
+msgstr ""
+
+msgid "preview:: arreter le diaporama"
+msgstr ""
+
+msgid "preview:: demarrer le diaporama"
+msgstr ""
+
+msgid "preview::statistiques de telechargement"
+msgstr ""
+
+msgid "preview::statistiques de visualisation pour le lien"
+msgstr ""
+
+msgid "report:: par %user_infos%"
+msgstr ""
+
+msgid "report::Changement de collection vers : %coll_name%"
+msgstr ""
+
+msgid ""
+"report::Demande de validation vers %n_user% utilisateurs depuis lapplication "
+"box %appbox%"
+msgstr ""
+
+msgid "report::Edition des meta-donnees"
+msgstr ""
+
+msgid "report::Edition des status"
+msgstr ""
+
+msgid "report::Impression des formats : %format%"
+msgstr ""
+
+msgid "report::Modification du document -- je ne me souviens plus de quoi..."
+msgstr ""
+
+msgid "report::Publication de %dest%"
+msgstr ""
+
+msgid ""
+"report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%"
+msgstr ""
+
+msgid "report::Substitution de %dest%"
+msgstr ""
+
+msgid "report::Telechargement de %dest%"
+msgstr ""
+
+msgid "report::ajout du documentt"
+msgstr ""
+
+msgid "report::supression du document"
+msgstr ""
+
+msgid "retourne \"automobile\", \"automate\", \"autoroute\", ..."
+msgstr ""
+
+msgid "retourne \"délit\", \"débit\", ..."
+msgstr ""
+
+msgid ""
+"retourne les 20 derniers enregistrements archives dans les collections "
+"selectionnees"
+msgstr ""
+
+msgid "retourne les documents comprenant cannes sans le mot festival."
+msgstr ""
+
+msgid "retourne les documents comprenant les deux mots."
+msgstr ""
+
+msgid "retourne les documents comprenant un mot et/ou l'autre."
+msgstr ""
+
+msgid ""
+"retourne les documents où le terme est au moins présent dans le titre, en "
+"évitant par exemple celles où le terme est uniquement cité dans la légende."
+msgstr ""
+
+msgid "retourne tous les enregistrements des collections selectionnees"
+msgstr ""
+
+msgid "sport"
+msgstr ""
+
+msgid "thalassa DANS titre"
+msgstr ""
+
+msgid "tout le sport"
+msgstr ""
+
+msgid "%quantity%selected files"
+msgstr ""
+
+msgid "%record_count% records match the unique identifier :"
+msgstr ""
+
+msgid "A record matches the unique identifier :"
+msgstr ""
+
+msgid "Bad request, please contact an admin"
+msgstr ""
+
+msgid "Cancel all"
+msgstr ""
+
+msgid "Cannot upload Zero Byte files"
+msgstr ""
+
+msgid "Clear list"
+msgstr ""
+
+msgid "Connection terminates unexpetecdly, please retry"
+msgstr ""
+
+msgid "Could not initiate upload, please retry"
+msgstr ""
+
+msgid ""
+"Could not retrieve the file ID, please retry or contact an admin if problem "
+"persist"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Empty quarantine"
+msgstr ""
+
+msgid ""
+"Empty quarantine will remove all items, are you sure you want to continue ?"
+msgstr ""
+
+msgid "Error while uploading"
+msgstr ""
+
+msgid "File upload has been cancelled"
+msgstr ""
+
+msgid "File upload has been stopped"
+msgstr ""
+
+msgid "File upload limit (%maxFileSizeReadable%) has been reached"
+msgstr ""
+
+msgid "File validation failed"
+msgstr ""
+
+msgid "Filename"
+msgstr ""
+
+msgid "Force authentication"
+msgstr ""
+
+msgid "Last uploaded version"
+msgstr ""
+
+msgid "No document in quarantine"
+msgstr ""
+
+msgid "Please select at least one valid file"
+msgstr ""
+
+msgid "Quarantine"
+msgstr ""
+
+msgid "Selected files"
+msgstr ""
+
+msgid "Substitute"
+msgstr ""
+
+msgid ""
+"The parameter \"force authentication\" forces the recipient(s) of the push "
+"to possess a Phraseanet account\n"
+"                    to see its contents.\n"
+"                    This avoids anonymous users to access to the content of "
+"the push if they were able to get the display\n"
+"                    url through a forwarded mail for example."
+msgstr ""
+
+msgid "The upload violates a security restriction, please retry"
+msgstr ""
+
+msgid ""
+"This version does not allow you to access all the features offered by the "
+"HTML5 uploader"
+msgstr ""
+
+msgid "Transmited files"
+msgstr ""
+
+msgid "Unhandled Error"
+msgstr ""
+
+msgid "Unknow Error"
+msgstr ""
+
+msgid "Unknow reason"
+msgstr ""
+
+msgid "Upload URL is not set, please contact an admin"
+msgstr ""
+
+msgid "Uploaded by : %username%"
+msgstr ""
+
+msgid "Use the Flash uploader"
+msgstr ""
+
+msgid "Use the HTML5 uploader"
+msgstr ""
+
+msgid "You are using the Flash uploader."
+msgstr ""
+
+msgid "You are using the HTML5 uploader."
+msgstr ""
+
+msgid "You can not upload files"
+msgstr ""
+
+msgid "You do not have enough rights to access quarantine"
+msgstr ""
+
+msgid "You have attempted to queue too many files"
+msgstr ""
+
+msgid "Your browser does not support all HTML5 features properly."
+msgstr ""
+
+msgid "element(s)"
+msgstr ""
+
+msgid "maximum : %maxFileSizeReadable%"
+msgstr ""
+
+msgid "report:: 1 - Periode"
+msgstr ""
+
+msgid "report:: 2 - Bases"
+msgstr ""
+
+msgid "report:: Au (date)"
+msgstr ""
+
+msgid "report:: Cumul telechargements & connexions"
+msgstr ""
+
+msgid "report:: Dashboard"
+msgstr ""
+
+msgid "report:: Du (date)"
+msgstr ""
+
+msgid "report:: Enlever le filtre"
+msgstr ""
+
+msgid "report:: Heures"
+msgstr ""
+
+msgid "report:: Les questions les plus posees"
+msgstr ""
+
+msgid "report:: Utilisateurs les plus actifs"
+msgstr ""
+
+msgid "report:: Volumetrie des questions posees sur %home_title%"
+msgstr ""
+
+msgid "report:: activite document ajoute"
+msgstr ""
+
+msgid "report:: activite document edite"
+msgstr ""
+
+msgid "report:: activite par jour"
+msgstr ""
+
+msgid "report:: documents les plus telecharges"
+msgstr ""
+
+msgid "report:: nombre de vue"
+msgstr ""
+
+msgid "report:: poids document"
+msgstr ""
+
+msgid "report:: poids preview"
+msgstr ""
+
+msgid "report:: preview les plus telecharges"
+msgstr ""
+
+msgid "report:: site"
+msgstr ""
+
+msgid "report:: site d'ou les photo sont les plus consultees"
+msgstr ""
+
+msgid "report:: telechargements document"
+msgstr ""
+
+msgid "report:: telechargements preview"
+msgstr ""
+
+msgid "report::Connexion"
+msgstr ""
+
+msgid "report::Heures"
+msgstr ""
+
+msgid "report::Nombre de connexions"
+msgstr ""
+
+msgid "report::Nombre de document ajoute"
+msgstr ""
+
+msgid "report::Nombre de document edite"
+msgstr ""
+
+msgid "upload:: Destination (collection) :"
+msgstr ""
+
+msgid "upload:: Status :"
+msgstr ""
+
+msgid "veuillez choisir au minimum une collection"
+msgstr ""
+
+msgid "%total_count% results"
+msgstr ""
+
+msgid "ApplicationBox is a Mysql database."
+msgstr ""
+
+msgid ""
+"Avant de continuer, prenez connaissance des\n"
+"                                                    points ci-dessous. Vous "
+"pouvez continuer sans\n"
+"                                                    corriger ces problèmes."
+msgstr ""
+
+msgid "Bonjour, vous etes sur le point d'installer Phraseanet."
+msgstr ""
+
+msgid "CSV export"
+msgstr ""
+
+msgid ""
+"Cochez les cases correspondantes aux colonnes que vous desirez voire "
+"apparaitre dans le report"
+msgstr ""
+
+msgid "Confirmation de votre mot de passe"
+msgstr ""
+
+msgid "Connection is OK but database does not exists or can not be accessed"
+msgstr ""
+
+msgid ""
+"Consultez en ligne les pré-requis et la\n"
+"                                                configuration du serveur web"
+msgstr ""
+
+msgid "Creation de votre compte"
+msgstr ""
+
+msgid "Creation des taches"
+msgstr ""
+
+msgid "Creer la tache d'ecriture des metadonnees"
+msgstr ""
+
+msgid "Creer la tache d'indexation"
+msgstr ""
+
+msgid "Creer la tache de creation des sous-definitions"
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "Database user"
+msgstr ""
+
+msgid "Databoxes store records, metadatas and their classifications"
+msgstr ""
+
+msgid "Delai depasse lors du contact avec le serveur WEB"
+msgstr ""
+
+msgid "Don't worry, You can modify your configuration later"
+msgstr ""
+
+msgid "Erreur lors du contact avec le serveur WEB"
+msgstr ""
+
+msgid "Executables externes"
+msgstr ""
+
+msgid "Fichier ASCII tabule"
+msgstr ""
+
+msgid "Filtrer"
+msgstr ""
+
+msgid "Generate"
+msgstr ""
+
+msgid "Generate dashboard"
+msgstr ""
+
+msgid "Grouper"
+msgstr ""
+
+msgid ""
+"If you plan to store large files, be sure it will fit in these directories."
+msgstr ""
+
+msgid "Il y a des erreurs, merci de les corriger avant de continuer"
+msgstr ""
+
+msgid "Install in progess"
+msgstr ""
+
+msgid "Installation is currenlty processing, please wait..."
+msgstr ""
+
+msgid ""
+"It stores users data, rights, and references to DataBoxes where records are "
+"stored."
+msgstr ""
+
+msgid "Le nom de base de donnee est incorrect"
+msgstr ""
+
+msgid "Modele de donnees"
+msgstr ""
+
+msgid "MySQL database connection parameters"
+msgstr ""
+
+msgid "Ne pas creer de DataBox maintenant"
+msgstr ""
+
+msgid ""
+"Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet "
+"ApplicationBox."
+msgstr ""
+
+msgid ""
+"Phraseanet embarque un moteur de taches pour la lecture / ecriture des "
+"metadonnes, et autre operations"
+msgstr ""
+
+msgid "Phraseanet may require many binaries."
+msgstr ""
+
+msgid ""
+"Phraseanet strongly recommends the use of %link_start%\n"
+"                                    MariaDB%link_end% as a replacement for "
+"MySQL."
+msgstr ""
+
+msgid "Please be sure it is still valid and you can access it"
+msgstr ""
+
+msgid "Prerequisite and Configuration"
+msgstr ""
+
+msgid "Repertoire de stockage des fichiers"
+msgstr ""
+
+msgid ""
+"Report generation may take a long time to generate, depending on the number "
+"of collections and the period selected."
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Required field"
+msgstr ""
+
+msgid "Review system configuration"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid ""
+"Si vous aviez besoin de plus de\n"
+"                                                parametres, %debut_lien"
+"%Afficher d'avantage\n"
+"                                                d'options%fin_lien%"
+msgstr ""
+
+msgid ""
+"Some of them are required, like the indexer, Exiftool or ImageMagick "
+"components, some others are optionnal, like FFmpeg which is used to preview "
+"video files."
+msgstr ""
+
+msgid "Successfull connection"
+msgstr ""
+
+msgid ""
+"Thumbnails directory is mounted to be accessible via HTTP, while other files "
+"are not."
+msgstr ""
+
+msgid "Trier"
+msgstr ""
+
+msgid "Unable to connect to MySQL server"
+msgstr ""
+
+msgid "Veuillez corriger les erreurs avant de poursuivre"
+msgstr ""
+
+msgid "Votre adresse email"
+msgstr ""
+
+msgid "Votre mot de passe"
+msgstr ""
+
+msgid ""
+"Vous aurez besoin de spécifier un serveur MySQL, des\n"
+"                                                repertoires de stockage pour "
+"vos documents, et de\n"
+"                                                configurer votre serveur web "
+"pour qu'il publie\n"
+"                                                certains de ces dossiers de "
+"stockage."
+msgstr ""
+
+msgid "Vous devez specifier une adresse email et un mot de passe valides"
+msgstr ""
+
+msgid "Warning, this database is not empty"
+msgstr ""
+
+msgid "Your email will be used to log in the application."
+msgstr ""
+
+msgid ""
+"Your medias and their subdefinitions (previews, thumbnails..) will be stored "
+"in these directories."
+msgstr ""
+
+msgid "admin::compte-utilisateur A propos de la securite des mots de passe :"
+msgstr ""
+
+msgid ""
+"admin::compte-utilisateur Les mots de passe doivent etre clairement "
+"distincts du login et contenir au moins deux types parmis les caracteres "
+"suivants :"
+msgstr ""
+
+msgid "admin::compte-utilisateur::securite caracteres majuscules"
+msgstr ""
+
+msgid "admin::compte-utilisateur::securite caracteres minuscules"
+msgstr ""
+
+msgid "admin::compte-utilisateur::securite caracteres numeriques"
+msgstr ""
+
+msgid "admin::compte-utilisateur::securite caracteres speciaux"
+msgstr ""
+
+msgid "boutton::tester"
+msgstr ""
+
+msgid "button::Install"
+msgstr ""
+
+msgid "cocher tout"
+msgstr ""
+
+msgid "forms::ce champ est requis"
+msgstr ""
+
+msgid "forms::la valeur donnee est trop courte"
+msgstr ""
+
+msgid "forms::le mot de passe est bon"
+msgstr ""
+
+msgid "forms::le mot de passe est tres bon"
+msgstr ""
+
+msgid "forms::le mot de passe est trop similaire a l'identifiant"
+msgstr ""
+
+msgid "forms::le mot de passe est trop simple"
+msgstr ""
+
+msgid "forms::les mots de passe ne correspondent pas"
+msgstr ""
+
+msgid "forms::merci d'entrer une adresse e-mail valide"
+msgstr ""
+
+msgid "from"
+msgstr ""
+
+msgid "phraseanet:: tri"
+msgstr ""
+
+msgid "report :: aucun resultat trouve"
+msgstr ""
+
+msgid "report :: configurer le tableau"
+msgstr ""
+
+msgid "report :: filtrer"
+msgstr ""
+
+msgid "report :: grouper"
+msgstr ""
+
+msgid "report :: imprimer le tableau"
+msgstr ""
+
+msgid "report:: (connexions) Globales"
+msgstr ""
+
+msgid "report:: (connexions) OS et navigateurs"
+msgstr ""
+
+msgid "report:: (connexions) Par utilisateurs"
+msgstr ""
+
+msgid "report:: (telechargement) Global"
+msgstr ""
+
+msgid "report:: (telechargement) Par documents sur la base"
+msgstr ""
+
+msgid "report:: (telechargement) Par jours base par base"
+msgstr ""
+
+msgid "report:: 3 - Type de report"
+msgstr ""
+
+msgid "report:: Grouper par"
+msgstr ""
+
+msgid "report:: activite du site"
+msgstr ""
+
+msgid "report:: ajoute"
+msgstr ""
+
+msgid "report:: edite"
+msgstr ""
+
+msgid "report:: par utilisateurs"
+msgstr ""
+
+msgid "report:: pushe"
+msgstr ""
+
+msgid "report:: recordid"
+msgstr ""
+
+msgid "report:: toutes les questions"
+msgstr ""
+
+msgid "report:: valide"
+msgstr ""
+
+msgid "report::aucune precision"
+msgstr ""
+
+msgid "report::la description contient"
+msgstr ""
+
+msgid "setup::Configuration de la base de compte ApplicationBox"
+msgstr ""
+
+msgid "setup::Configuration de la base de stockage DataBox"
+msgstr ""
+
+msgid "setup::Configuration des repertoires de stockage"
+msgstr ""
+
+msgid ""
+"thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% "
+"ne peut etre accepte"
+msgstr ""
+
+msgid "thesaurus:: Accepter la branche comme"
+msgstr ""
+
+msgid "thesaurus:: Accepter le terme comme"
+msgstr ""
+
+msgid "thesaurus:: Importer"
+msgstr ""
+
+msgid "thesaurus:: accepter..."
+msgstr ""
+
+msgid "thesaurus:: comme synonyme de %fullpath_tgt_raw%"
+msgstr ""
+
+msgid "thesaurus:: comme terme specifique"
+msgstr ""
+
+msgid "thesaurus:: example"
+msgstr ""
+
+msgid "thesaurus:: export : inclure la langue"
+msgstr ""
+
+msgid "thesaurus:: export : inclure les hits"
+msgstr ""
+
+msgid "thesaurus:: export : numeroter les lignes "
+msgstr ""
+
+msgid "thesaurus:: export au format texte"
+msgstr ""
+
+msgid "thesaurus:: export en topics"
+msgstr ""
+
+msgid "thesaurus:: exporter"
+msgstr ""
+
+msgid "thesaurus:: exporter a l'ecran pour la langue %piv%"
+msgstr ""
+
+msgid "thesaurus:: exporter avec les synonymes sur la meme ligne"
+msgstr ""
+
+msgid "thesaurus:: exporter avec une ligne par synonyme"
+msgstr ""
+
+msgid "thesaurus:: exporter vers topics pour toutes les langues"
+msgstr ""
+
+msgid "thesaurus:: langue par default"
+msgstr ""
+
+msgid "thesaurus:: options d'export : "
+msgstr ""
+
+msgid "thesaurus:: presentation"
+msgstr ""
+
+msgid "thesaurus:: presentation : branche ouvertes"
+msgstr ""
+
+msgid "thesaurus:: presentation : branches refermables"
+msgstr ""
+
+msgid "thesaurus:: question complete (avec operateurs)"
+msgstr ""
+
+msgid "thesaurus:: recherche"
+msgstr ""
+
+msgid "thesaurus:: recherche fulltext"
+msgstr ""
+
+msgid "thesaurus:: recherche thesaurus *:\"query\""
+msgstr ""
+
+msgid "thesaurus:: refresh"
+msgstr ""
+
+msgid "thesaurus:: reindexer la base apres l'import"
+msgstr ""
+
+msgid "thesaurus:: removed tgt"
+msgstr ""
+
+msgid "thesaurus:: removed_src"
+msgstr ""
+
+msgid "thesaurus:: supprimer les liens des champs tbranch"
+msgstr ""
+
+msgid "thesaurus:: tout deployer - refermable"
+msgstr ""
+
+msgid "thesaurus:: tout deployer - statique"
+msgstr ""
+
+msgid "thesaurus:: tout fermer"
+msgstr ""
+
+msgid "to"
+msgstr ""
+
+msgid "tout decocher"
+msgstr ""
+
+msgid "Chercher"
+msgstr ""
+
+msgid ""
+"Thesaurus ou CTerms invalide\n"
+" effacer (OK) ou quitter (Annuler) ?"
+msgstr ""
+
+msgid "phraseanet:: choisir"
+msgstr ""
+
+msgid "phraseanet:: language"
+msgstr ""
+
+msgid "thesaurus has been updated"
+msgstr ""
+
+msgid "thesaurus:: %hits% reponses retournees"
+msgstr ""
+
+msgid "thesaurus:: Ajouter le terme dans reindexer"
+msgstr ""
+
+msgid "thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch%"
+msgstr ""
+
+#, php-format
+msgid "thesaurus:: Confirmer la suppression du terme %s"
+msgstr ""
+
+msgid ""
+"thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer "
+"quand meme ?&#10;(les termes concernes remonteront en candidats a la "
+"prochaine indexation)"
+msgstr ""
+
+msgid ""
+"thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les "
+"supprimer ?"
+msgstr ""
+
+msgid "thesaurus:: Editer le thesaurus"
+msgstr ""
+
+msgid "thesaurus:: Lier la branche de thesaurus"
+msgstr ""
+
+msgid "thesaurus:: Lier la branche de thesaurus au champ"
+msgstr ""
+
+msgid "thesaurus:: Lier la branche de thesaurus au champ %branch%"
+msgstr ""
+
+msgid "thesaurus:: Nouveau synonyme"
+msgstr ""
+
+msgid "thesaurus:: Nouveau terme"
+msgstr ""
+
+msgid "thesaurus:: Nouveau terme specifique"
+msgstr ""
+
+msgid "thesaurus:: Proprietes"
+msgstr ""
+
+msgid ""
+"thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront "
+"en candidats a la prochaine indexation)"
+msgstr ""
+
+msgid "thesaurus:: Tous les termes ont des hits"
+msgstr ""
+
+msgid "thesaurus:: Vous n'avez acces a aucune base"
+msgstr ""
+
+msgid "thesaurus:: afficher les termes refuses"
+msgstr ""
+
+msgid "thesaurus:: ajouter le terme et reindexer"
+msgstr ""
+
+msgid "thesaurus:: attention :"
+msgstr ""
+
+msgid ""
+"thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base "
+"est necessaire"
+msgstr ""
+
+msgid ""
+"thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et "
+"candidats seront supprimes"
+msgstr ""
+
+msgid "thesaurus:: commence par"
+msgstr ""
+
+msgid "thesaurus:: contexte"
+msgstr ""
+
+msgid "thesaurus:: contient"
+msgstr ""
+
+msgid "thesaurus:: deplacer le terme dans la corbeille ?"
+msgstr ""
+
+msgid "thesaurus:: enregistrement de la liste modifiee des mots candidats."
+msgstr ""
+
+msgid ""
+"thesaurus:: est candidat en provenance des champs mais ne peut etre accepte "
+"a cet emplacement du thesaurus"
+msgstr ""
+
+msgid "thesaurus:: est deja candidat en provenance des champs acceptables : "
+msgstr ""
+
+msgid "thesaurus:: est deja candidat en provenance du champ acceptable : "
+msgstr ""
+
+msgid "thesaurus:: est egal a "
+msgstr ""
+
+msgid "thesaurus:: hits"
+msgstr ""
+
+msgid "thesaurus:: ids"
+msgstr ""
+
+msgid "thesaurus:: langue pivot"
+msgstr ""
+
+msgid ""
+"thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la "
+"base est necessaire"
+msgstr ""
+
+msgid "thesaurus:: le terme"
+msgstr ""
+
+msgid "thesaurus:: le terme %term% avec contexte %context%"
+msgstr ""
+
+msgid "thesaurus:: le terme %term% sans contexte"
+msgstr ""
+
+msgid "thesaurus:: n'est pas present dans les candidats"
+msgstr ""
+
+msgid "thesaurus:: nouvelle branche"
+msgstr ""
+
+msgid "thesaurus:: onglet stock"
+msgstr ""
+
+msgid "thesaurus:: onglet thesaurus"
+msgstr ""
+
+msgid "thesaurus:: pas de reindexation"
+msgstr ""
+
+msgid "thesaurus:: reindexation necessaire"
+msgstr ""
+
+msgid "thesaurus:: reindexer tous les enregistrements"
+msgstr ""
+
+msgid "thesaurus:: selectionner la provenance a accepter"
+msgstr ""
+
+msgid ""
+"thesaurus:: suppression de la branche de mot candidats pour le champ %field%"
+msgstr ""
+
+msgid ""
+"thesaurus:: suppression des indexes vers le thesaurus pour le champ %field%"
+msgstr ""
+
+msgid "thesaurus:: suppression du lien du champ %field%"
+msgstr ""
+
+msgid "thesaurus:: synonyme"
+msgstr ""
+
+msgid "thesaurus:: synonymes"
+msgstr ""
+
+msgid "thesaurus:: terme"
+msgstr ""
+
+msgid "thesaurus::menu: Nouveau synonyme"
+msgstr ""
+
+msgid "thesaurus::menu: Nouveau terme"
+msgstr ""
+
+msgid "thesaurus::menu: accepter"
+msgstr ""
+
+msgid "thesaurus::menu: chercher"
+msgstr ""
+
+msgid "thesaurus::menu: export topics"
+msgstr ""
+
+msgid "thesaurus::menu: exporter"
+msgstr ""
+
+msgid "thesaurus::menu: importer"
+msgstr ""
+
+msgid "thesaurus::menu: lier au champ"
+msgstr ""
+
+msgid "thesaurus::menu: proprietes"
+msgstr ""
+
+msgid "thesaurus::menu: refuser"
+msgstr ""
+
+msgid "thesaurus::menu: supprimer"
+msgstr ""
+
+msgid "thesaurus::menu: supprimer les candidats a 0 hits"
+msgstr ""
