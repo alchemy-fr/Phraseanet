@@ -1,0 +1,201 @@
+
+#PREVIEWBOX, #EDITWINDOW {
+  z-index: 1200;
+  background-color: $backgroudPrimaryColor;
+  display: none;
+  border: 2px solid #666666;
+}
+
+#PREVIEWBOX img {
+  cursor: pointer;
+}
+
+#PREVIEWBOX a.bounce {
+  BORDER-BOTTOM: #ffe000 1px dashed;
+  cursor: pointer;
+}
+
+#PREVIEWBOX #PREVIEWTITLE_COLLNAME {
+  display:none;
+}
+
+.PREVIEW_PIC,.PREVIEW_HD {
+  position: absolute;
+}
+
+#PREVIEWCURRENT li.selected {
+  background-color: #FFFFFF;
+}
+
+#PREVIEWBOX li {
+  list-style-type: none;
+}
+
+#PREVIEWIMGDESC .descBoxes {
+  top: 30px;
+  overflow: auto;
+}
+
+#PREVIEWIMGDESCINNER span.fieldName {
+  font-weight: bold;
+}
+
+#PREVIEWIMGDESC em {
+  background-color: red;
+}
+
+#PREVIEWOTHERS {
+  background-color: $backgroudSecondaryColor;
+  overflow-x: hidden;
+  overflow-y: auto;
+  left: 0;
+}
+
+#PREVIEWOTHERSINNER ul {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  float: left;
+  list-style-type: none;
+  width: 100%;
+}
+
+#PREVIEWOTHERSINNER li {
+  position: relative;
+  float: left;
+  width: 150px;
+  margin: 4px 10px;
+  line-height: 14px;
+}
+
+#PREVIEWOTHERSINNER li.otherRegToolTip {
+  height: 25px;
+  overflow: hidden;
+}
+
+#PREVIEWOTHERSINNER li.title {
+  font-weight: bold;
+  font-size: 13px;
+  margin: 10px 10px 5px;
+}
+
+#PREVIEWOTHERSINNER li.otherRegToolTip,
+#PREVIEWOTHERSINNER li.otherBaskToolTip {
+  background-color: $backgroudSecondaryColor;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#PREVIEWOTHERSINNER li.otherRegToolTip span.title {
+  line-height: 25px;
+  margin-left: 3px;
+}
+
+#PREVIEWOTHERSINNER li .others_img {
+  position: relative;
+  float: left;
+  width: 25px;
+  height: 25px;
+}
+
+#PREVIEWTITLEWRAPPER {
+  background-color: $backgroudSecondaryColor;
+  bottom: 0;
+}
+
+#SPANTITLE {
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: bold;
+}
+
+#PREVIEWCURRENTGLOB, .preview_col_film {
+  height: 96px;
+  width: 100%;
+}
+
+#PREVIEWCURRENT {
+  background-color: $backgroudSecondaryColor;
+}
+
+#PREVIEWCURRENTCONT.group_case {
+  left: 106px;
+}
+
+#PREVIEWCURRENTCONT {
+  right: 130px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar-track
+{
+  border-radius: 0;
+  background-color: #262626;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar {
+  height: 5px;
+  border-radius: 0;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  width: 3px;
+  background-color: #595959;
+}
+
+
+#PREVIEWCURRENTCONT ul {
+  position: relative;
+  height: 80px;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+#PREVIEWCURRENT, #PREVIEWCURRENTGLOB {
+  overflow: hidden;
+}
+
+#PREVMAINREG {
+  float: left;
+  position: relative;
+  width: 96px;
+  height: 96px;
+  text-align: center;
+  background-color: #FFFFFF;
+}
+
+.prevTrainCurrent {
+  text-align: center;
+  position: relative;
+  float: left;
+  height: 80px;
+  width: 80px;
+}
+
+#PREVIEWHD {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  z-index: 6000;
+}
+
+#PREVIEWTOOL {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  text-align: right;
+  width: 56px;
+  height: 60px;
+  top: auto;
+}
+
+
+#PREVIEWTOOL img, #PREVIEWTOOL span {
+  float: left;
+}

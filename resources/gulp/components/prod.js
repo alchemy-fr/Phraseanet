@@ -23,22 +23,35 @@ gulp.task('build-permaview',  function(){
     return utils.buildJsGroup(permaviewGroup, 'permaview', 'permaview/js');
 });
 
+gulp.task('copy-prod-skin-black-images', function(){
+    return gulp.src([
+            config.paths.src + 'prod/skins/000000/images/**/*'
+    ])
+        .pipe(gulp.dest( config.paths.build + 'prod/skins/000000/images'));
+});
+
+gulp.task('copy-prod-skin-grey-images', function(){
+    return gulp.src([
+            config.paths.src + 'prod/skins/959595/images/**/*'
+        ])
+        .pipe(gulp.dest( config.paths.build + 'prod/skins/959595/images'));
+});
 
 gulp.task('copy-prod-images', function(){
     return gulp.src([config.paths.src + 'prod/images/**/*'])
         .pipe(gulp.dest( config.paths.build + 'prod/images'));
 });
 
-gulp.task('build-prod-skin-black', function(){
+gulp.task('build-prod-skin-black', ['copy-prod-skin-black-images'], function(){
     return utils.buildCssGroup([
-        config.paths.src + 'prod/styles/skin-000000.scss'
-    ], 'skin-000000', 'prod/css/');
+        config.paths.src + 'prod/skins/000000/skin-000000.scss'
+    ], 'skin-000000', 'prod/skins/000000/');
 });
 
-gulp.task('build-prod-skin-grey', function(){
+gulp.task('build-prod-skin-grey', ['copy-prod-skin-grey-images'], function(){
     return utils.buildCssGroup([
-        config.paths.src + 'prod/styles/skin-959595.scss'
-    ], 'skin-959595', 'prod/css/');
+        config.paths.src + 'prod/skins/959595/skin-959595.scss'
+    ], 'skin-959595', 'prod/skins/959595/');
 });
 
 gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey'], function(){

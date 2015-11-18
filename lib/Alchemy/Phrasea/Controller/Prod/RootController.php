@@ -45,7 +45,7 @@ class RootController extends Controller
             return $this->app->redirectPath('logout');
         }
 
-        $cssPath = $this->app['root.path'] . '/www/assets/prod/';
+        $cssPath = $this->app['root.path'] . '/www/assets/prod/skins';
 
         $css = [];
 

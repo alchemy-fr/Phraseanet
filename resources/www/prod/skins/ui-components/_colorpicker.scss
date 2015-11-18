@@ -1,0 +1,59 @@
+
+/******* .colorpickerbox ******************************************************/
+.colorpicker_box {
+  border: 1px solid #FFFFFF;
+  cursor: pointer;
+  float: left;
+  margin: 2px;
+  padding: 0;
+}
+
+.colorpickerbox .colorpicker_submit .submiter {
+  padding: 3px 0 0 0;
+}
+
+.colorpickerbox .colorpicker_submit {
+  background-image: none;
+  background-color: black;
+  height: 25px;
+  left: 90px;
+  overflow: hidden;
+  position: absolute;
+  top: 15px;
+  width: 100px;
+  border: 1px solid #404040;
+  cursor: pointer;
+  text-align: center;
+}
+
+.colorpickerbox .colorpicker_focus {
+  border: 1px solid #999999;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.colorpickerbox .colorpicker_current_color,
+.colorpickerbox .colorpicker_field,
+.colorpickerbox .colorpicker_hex {
+  display: none;
+}
+
+.colorpickerbox .colorpicker_color,
+.colorpickerbox .colorpicker_hue {
+  top: 56px;
+}
+
+.colorpickerbox .colorpicker_new_color {
+  left: 14px;
+}
+
+.colorpickerbox .colorpicker {
+  width: 210px;
+  height: 220px;
+}
+
+.colorpickerbox {
+  position: relative;
+  float: left;
+}

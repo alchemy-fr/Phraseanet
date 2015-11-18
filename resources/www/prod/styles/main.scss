@@ -1,14 +1,12 @@
-$iconsPath: '../../../assets/common/images/icons/';
+@import '../../_shared/styles/variables';
 @import '../../../../www/bower_components/fancytree/dist/skin-win8/ui.fancytree'; // to inline import css file, don't put extension
 @import '../../vendors/jquery-treeview/jquery.treeview';
 @import '../../../../www/bower_components/humane-js/themes/libnotify';
 @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 @import '../../vendors/jquery-image-enhancer/styles/jquery.image_enhancer';
 @import '../../vendors/colorpicker/styles/colorpicker';
-@import '../../shared/styles/skin/main';
-@import '../../shared/styles/skin/geonames';
-@import '../../shared/styles/skin/basket';
-@import '../../shared/styles/skin/push';
+@import '../../_shared/styles/main';
+
 
 #idFrameC {
   top: 10px;

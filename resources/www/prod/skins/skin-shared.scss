@@ -1,0 +1,492 @@
+@import '../../_shared/styles/variables';
+
+::-webkit-scrollbar-track
+{
+  border-radius: 0;
+  background-color: #080808;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  width: 3px;
+  background-color: $scrollBgColor;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+*::-moz-selection, *::selection{
+  background: #FFFFFF;
+  color: $textPrimaryColor;
+}
+
+input::selection, textarea::selection,
+input::-moz-selection, textarea::-moz-selection {
+  background: #404040;
+  color: #FFFFFF;
+}
+
+label {
+  color: #FFFFFF;
+}
+
+legend {
+  color: $textPrimaryColor;
+  width: auto;
+  border: none;
+}
+
+
+body {
+  color: $textPrimaryColor;
+  background-color: $col2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+html {
+  border: medium none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+html, body {
+  font-size: 12px;
+  z-index: 1;
+}
+
+#desktop {
+  min-width: 1100px;
+}
+
+EM {
+  FONT-STYLE: normal;
+  BACKGROUND-COLOR: #D82400;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.diapo.selected {
+  cursor: url('#{$iconsPath}cursor-move.png'), -moz-grab;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+  font-weight: normal;
+}
+
+.ui-widget-overlay {
+  background-image: none;
+}
+
+.ui-widget-content.ui-autocomplete {
+  background-color: black;
+  background-image: none;
+  z-index: 650;
+}
+
+.ui-widget-content.ui-autocomplete .ui-state-hover,
+.ui-widget-content.ui-autocomplete .ui-widget-content .ui-state-hover,
+.ui-widget-content.ui-autocomplete .ui-widget-header .ui-state-hover,
+.ui-widget-content.ui-autocomplete .ui-state-focus,
+.ui-widget-content.ui-autocomplete .ui-widget-content .ui-state-focus,
+.ui-widget-content.ui-autocomplete .ui-widget-header .ui-state-focus {
+  border : 1px solid #FFFFFF;
+}
+
+
+#maincontainer {
+  min-width: 970px;
+  min-height: 500px;
+}
+
+#mainContent {
+  top: 40px;
+  min-width: 960px;
+  overflow-x:auto;
+  overflow-y:auto;
+}
+
+.PNB {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#rightFrame {
+  min-width: 660px !important;
+}
+
+.PNB .ui-corner-top {
+  top: 77px;
+}
+
+div#PREVIEWTITLEWRAPPER {
+  top: 10px;
+}
+
+.PNB10 {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+}
+
+.minilogo {
+  max-height: 20px;
+}
+
+.ww_window .ww_content {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.boxCloser {
+  cursor: pointer;
+  color: rgb(204, 204, 204);
+  font-weight: bold;
+  font-size: 12px;
+  text-align: right;
+  text-decoration: underline;
+  height: 16px;
+}
+
+.ww_status {
+  background-image: url('#{$skinsImagesPath}ww_title.gif');
+  background-repeat: repeat-x;
+  color: #0077bc;
+  font-size: 8pt;
+}
+
+span.ww_winTitle {
+  letter-spacing: 1px;
+  color: #0077bc;
+  font-size: 8pt;
+  font-weight: bold;
+}
+
+
+#divpage {
+  background-color: #212121;
+  padding: 10px 0;
+  margin: 0 10px;
+}
+
+.desktop {
+  background-position: center center;
+  left: 0px;
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+}
+
+.ui-helper-reset {
+  line-height: auto;
+}
+
+.ui-tabs .ui-tabs-nav li a {
+  padding: 3px 5px 0;
+}
+
+#idFrameC {
+  top: 0 !important;
+  min-width: 300px;
+  bottom: 0 !important;
+}
+
+#idFrameC.closed {
+  min-width: 0;
+}
+
+
+#idFrameC #retractableButton {
+  cursor: pointer;
+  width: 70px;
+  height: 85px;
+  float: right;
+  text-align: center;
+  line-height: 70px;
+  margin-bottom: -20px;
+  background: url('#{$iconsPath}workzoneEscamote.png') 30px 36px no-repeat;
+}
+
+#idFrameC.closed #retractableButton {
+  background: url('#{$iconsPath}workzoneEscamote_on.png') 30px 30px no-repeat;
+}
+
+#keyboard-dialog h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+  text-align: left;
+}
+
+#keyboard-dialog ul {
+  list-style-type: none;
+  margin: 5px 0 20px 40px;
+}
+
+#keyboard-dialog ul li {
+
+}
+
+
+.cont_infos {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  height: 60px;
+  top: auto;
+  text-align: center;
+  width: 70px;
+  right: 60px;
+}
+
+.cont_infos div {
+  line-height: 20px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.cont_infos span {
+  cursor: pointer;
+  font-size: 10px;
+}
+
+#SPANTITLE img {
+  height: 16px;
+  vertical-align: middle;
+  margin: 0 10px;
+}
+
+.cgu-dialog blockquote p {
+  margin: 10px 30px 10px 0;
+}
+
+.cgu-dialog blockquote {
+  margin: 10px 30px;
+  overflow: auto;
+  max-height: 400px;
+}
+
+
+
+.ui-dialog-titlebar {
+  min-height: 20px;
+}
+
+.chim-wrapper {
+  position: relative;
+  float: left;
+}
+
+#tooltip {
+  position: absolute;
+  z-index: 32000;
+  overflow: hidden;
+}
+
+.otherRegToolTip img {
+  vertical-align: middle;
+}
+
+#ui-datepicker-div {
+  z-index: 2000;
+  background-color: $backgroundAltPrimaryColor;
+  position: absolute;
+}
+
+.ui-selectable-helper {
+  border: 1px dotted #CCCCCC;
+  z-index: 10000;
+}
+
+#BasketBrowser .diapo .title {
+  height: 16px;
+}
+
+#answers .status img {
+  max-width: 16px;
+  max-height: 16px;
+}
+
+#answers #answersNext {
+  width: 150px;
+  margin: 5px;
+  height: 193px;
+  line-height: 193px;
+  font-size: 25px;
+  color: #666666;
+  cursor: pointer;
+}
+
+
+/******* DIALOGS **************************************************************/
+
+#dialog_dwnl h1 {
+  text-align: center;
+}
+
+#dialog_dwnl .buttons_line {
+  margin: 10px 0;
+  text-align: center
+}
+
+#dialog_dwnl .order_input {
+  width: 250px;
+}
+
+#dialog_dwnl .undisposable {
+  float: left;
+  position: relative;
+  width: 100%;
+}
+
+#dialog_dwnl .undisposable .thumb_wrapper {
+  float: left;
+  position: relative;
+  margin: 10px;
+}
+
+#dialog_dwnl .undisposable .thumb {
+  float: left;
+  position: relative;
+}
+
+.ui-dialog-content.dialog-Small select,
+.ui-dialog-content.dialog-Small input[type="text"],
+.ui-dialog-content.dialog-Small textarea {
+  width: 100%;
+}
+
+.ui-dialog-content.dialog-Small textarea {
+  height: 60px;
+}
+
+.ui-dialog-content label {
+  line-height: 18px;
+}
+
+.ui-dialog-content p {
+  line-height: 18px;
+}
+
+/******* ORDER MANAGER ********************************************************/
+
+#order_manager tr.order_row {
+  height: 28px;
+}
+
+#order_manager .order_row.odd {
+  background-color: #404040;
+}
+
+#order_manager .order_list .thumb_wrapper {
+  float: left;
+  position: relative;
+  margin: 10px;
+}
+
+#order_manager .order_list li {
+  display: inline-block;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  border: 1px solid #FFFFFF;
+  margin: 0 5px;
+}
+
+
+#order_manager .order_list .thumb {
+  float: left;
+  position: relative;
+}
+
+#order_manager .order_list .selectable.selected {
+  background-color: #404040;
+}
+
+#order_manager .order_list .selectable {
+  cursor: pointer;
+}
+
+#order_manager .order_list .order_wrapper {
+  float: left;
+  position: relative;
+  margin: 5px;
+}
+
+#order_manager table p {
+  margin: 2px 0;
+}
+
+IFRAME {
+  BORDER-RIGHT: #000000 1px solid;
+  PADDING-RIGHT: 0px;
+  BORDER-TOP: #000000 1px solid;
+  PADDING-LEFT: 0px;
+  PADDING-BOTTOM: 0px;
+  MARGIN: 0px;
+  BORDER-LEFT: #000000 1px solid;
+  PADDING-TOP: 0px;
+  BORDER-BOTTOM: #000000 1px solid
+}
+
+H4 {
+  MARGIN-TOP: 0px;
+  FONT-WEIGHT: normal;
+  FONT-SIZE: 16px;
+  MARGIN-BOTTOM: 0px;
+  MARGIN-LEFT: 5px
+}
+
+
+@media screen and (max-width: 1200px) {
+  #idFrameT .tools button.btn-inverse img {
+    display: none;
+  }
+  #idFrameT .tools #settings {
+    text-indent: -9000px;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: 8px;
+    width: 26px;
+  }
+}
+@import 'ui-components/colorpicker';
+@import 'ui-components/thumb-extractor';
+@import 'ui-components/pagination';
+@import 'ui-components/upload';
+@import 'ui-components/publish-dialog';
+@import 'ui-components/thesaurus';
+@import 'ui-components/baskets';
+@import 'ui-components/proposals';
+@import 'ui-components/actions';
+@import 'ui-components/gui';
+@import 'ui-components/gui-misc';
+@import 'ui-components/preview';
+@import 'ui-components/push';

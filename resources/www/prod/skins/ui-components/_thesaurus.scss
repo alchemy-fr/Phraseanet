@@ -1,0 +1,157 @@
+
+#THPD_T, #THPD_C {
+  margin-top: 10px;
+  margin-left: 0px;
+}
+
+#THPD_WIZARDS .gform .input-append {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid $thesaurusBorder1;
+  border-top: none;
+}
+
+#THPD_WIZARDS .gform .input-append input.input-medium {
+  width: 80%;
+  border-radius: 0;
+  height: 50px;
+  padding: 0 2.5%;
+  background: $thesaurusBg1;
+  border: none;
+  float: left;
+  margin: 0;
+}
+
+#THPD_WIZARDS .gform .input-append .th_ok {
+  width: 15%;
+  line-height: 50px;
+  vertical-align: middle;
+  padding: 0;
+  border-radius: 0;
+  background: $col1 url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
+  border: none;
+  margin: 0;
+  outline:none;
+  float: left;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+
+#THPD_WIZARDS .gform .input-append .th_clear {
+  position: relative;
+  z-index: 1000;
+  float: right;
+  margin: -50px 15% 0 0;
+  display: none;
+  width: 30px;
+  line-height: 50px;
+  padding: 0;
+  border-radius: 0;
+  background: url('#{$iconsPath}icon_clear_search.png') 50% no-repeat;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+}
+
+/******* THESAURUS ************************************************************/
+
+DIV.thesaurus {
+  MARGIN-LEFT: 2px;
+  white-space: nowrap;
+}
+
+DIV.thesaurus P {
+  MARGIN: 0px;
+}
+
+DIV.thesaurus DIV.c {
+  DISPLAY: none
+}
+
+#idFrameE #TH_Ofull, #idFrameTH #TH_Oprop, #idFrameTH #TH_Oclip {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#idFrameE DIV.searchZone {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  PADDING: 0px;
+  MARGIN: 0px;
+  BACKGROUND: $thesaurusBg2;
+  BORDER: #a9a9a9 1px solid;
+}
+
+#idFrameE .onglets SPAN {
+  BORDER-TOP: #a9a9a9 1px solid;
+  BORDER-LEFT: #a9a9a9 1px solid;
+  BORDER-RIGHT: #a9a9a9 1px solid;
+  BORDER-BOTTOM: $thesaurusBorder2 1px solid;
+  COLOR: #FFFFFF;
+}
+
+#idFrameE .onglets SPAN.inactif {
+  BORDER-TOP: #a9a9a9 1px solid;
+  BORDER-LEFT: #a9a9a9 1px solid;
+  BORDER-RIGHT: #a9a9a9 1px solid;
+  BORDER-BOTTOM: #a9a9a9 1px solid;
+  BACKGROUND-COLOR: transparent;
+  COLOR: #a9a9a9;
+}
+
+#idFrameE DIV.thesaurus DIV.c {
+  DISPLAY: none
+}
+
+#idFrameE DIV.thesaurus DIV.o {
+  MARGIN-BOTTOM: 1px;
+  PADDING-BOTTOM: 2px;
+  PADDING-LEFT: 5px;
+  MARGIN-LEFT: 3px;
+  BORDER-LEFT: #a9a9a9 1px solid;
+  BORDER-BOTTOM: #a9a9a9 1px solid;
+}
+
+#idFrameE DIV.thesaurus DIV.h {
+  MARGIN-BOTTOM: 1px;
+  PADDING-BOTTOM: 2px;
+  PADDING-LEFT: 5px;
+  MARGIN-LEFT: 3px;
+  BORDER-LEFT: #a9a9a9 1px solid;
+  BORDER-BOTTOM: #a9a9a9 1px solid;
+}
+
+#idFrameE DIV.thesaurus U {
+  width: 9px;
+  height: 10px;
+  MARGIN-RIGHT: 2px;
+  text-align: center;
+  display: inline-block;
+  font-size: 8px;
+  TEXT-DECORATION: none;
+  BACKGROUND-COLOR: #F0F0F0;
+  cursor: pointer;
+  color: black;
+  line-height:10px;
+}
+
+#idFrameE DIV.thesaurus B {
+  cursor: pointer;
+}
+
+#idFrameE DIV.thesaurus I {
+  FONT-STYLE: normal;
+  cursor: pointer;
+}
+
+DIV.thesaurus U.w {
+  cursor: auto;
+}

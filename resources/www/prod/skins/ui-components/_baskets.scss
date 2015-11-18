@@ -131,3 +131,104 @@
 #BasketBrowser form ul li label{
   margin: 0 0 0 40px;
 }
+
+
+#baskets .SSTT.active {
+  border: 1px solid #b1b1b1;
+}
+
+#baskets .SSTT .title {
+  overflow: hidden;
+  left: 30px;
+  right: 40px;
+  height: 16px;
+  margin: 2px 0;
+  font-size: 12px;
+}
+
+#baskets .SSTT .menu {
+  text-align: right;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 3px;
+  margin: 0 5px 0 0;
+}
+
+#baskets .SSTT .menu table td {
+  width:20px;
+}
+
+#baskets .SSTT .workzone-menu-title {
+  text-overflow: ellipsis;
+  padding-right:65px;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+}
+
+#baskets .menu .contextMenuTrigger {
+  cursor: pointer;
+  display: block;
+  padding: 0;
+  margin: 0;
+  background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
+  height: 45px;
+  width: 13px;
+}
+
+/** hack IE7 only */
+*:first-child+html .workzone-menu-title {
+  margin-right:65px;
+}
+
+#baskets .SSTT img {
+  max-height: 18px;
+  vertical-align: middle;
+  cursor: help;
+  margin-right: 9px;
+}
+
+#baskets .SSTT.grouping.active {
+  border: 1px solid #2f4a6f;
+}
+
+#baskets .SSTT.grouping.active.ui-corner-top {
+  border-bottom: none;
+}
+
+#baskets .SSTT.active.ui-corner-top {
+  border: none;
+  border-top: 1px solid #000;
+  top: 0;
+  background-color: #212121;
+}
+
+.ui-accordion .ui-accordion-header.baskDrop {
+  color: red;
+}
+
+form.phrasea_query input.query {
+  padding-left: 30px;
+  font-size: 16px;
+  margin: 0;
+  width: 59%;
+}
+
+#basket-rename-box .btn, #reorder_box .btn {
+  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#basket-rename-box .btn-inverse, #reorder_box .btn-inverse {
+  *border: 1px solid #515151;
+  color: #AAAAAA;
+}
+
+#basket-rename-box .btn-inverse:hover, #reorder_box .btn-inverse:hover {
+  color: #FFFFFF;
+}

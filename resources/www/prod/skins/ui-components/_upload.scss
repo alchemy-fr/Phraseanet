@@ -1,0 +1,336 @@
+
+
+/******* UPLOAD MANAGER *******************************************************/
+
+#uploadBox {
+  height: 100%;
+}
+
+#uploadBox .clear {
+  clear: both;
+}
+
+#uploadBox .upload-tabs {
+  height: 100%;
+}
+
+#uploadBox .ui-tabs .ui-tabs-panel {
+  padding: 20px;
+}
+
+#uploadBoxLeft, #uploadBoxRight {
+  width: 48.5%;
+  height: 100%;
+  overflow: auto;
+  text-align: center;
+}
+
+#uploadBoxLeft {
+  float: left;
+}
+
+#uploadBoxRight {
+  float: right;
+}
+
+#uploadBox .well {
+  margin: 0;
+  padding: 0.5%;
+  color: $textPrimaryColor;
+}
+
+#uploadBox #fileupload {
+  height: 97%;
+}
+
+#uploadBox h5 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: left;
+}
+
+#uploadBox span.comment {
+  font-style: italic;
+  color: $textSecondaryColor;
+}
+
+#uploadBox button.btn, #uploadBox span.btn {
+  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#uploadBox .btn-inverse {
+  background-color: #D6D6D6;
+  *background-color: #D6D6D6;
+  background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#D6D6D6));
+  background-image: -webkit-linear-gradient(top, #FFFFFF, #D6D6D6);
+  background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
+  background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
+  background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
+  border-color: #D6D6D6 #D6D6D6 #bfbfbf;
+  border-bottom-color: #b3b3b3;
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
+  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+  *border: 1px solid #666666;
+  text-shadow: none;
+  color: #777777;
+  font-weight: bold;
+}
+
+#uploadBox .btn-inverse:hover, #uploadBox .disabled {
+  background-color: #D6D6D6;
+  *background-color: #D6D6D6;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  color: #FFFFFF;
+}
+
+#uploadBox .fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+
+#uploadBox .fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  border: solid transparent;
+  border-width: 0 0 100px 200px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -moz-transform: translate(-300px, 0) scale(4);
+  direction: ltr;
+  cursor: pointer;
+}
+
+#uploadBox .status-tab {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#uploadBox .status-tab td {
+  padding: 2px;
+}
+
+#uploadBox .status-tab-left {
+  width: 48%;
+  padding-right: 5px;
+  text-align: right;
+}
+
+#uploadBox .status-tab-right {
+  width: 48%;
+  padding-left: 5px;
+  text-align: left;
+}
+
+#uploadBox .status-tab-left input, #uploadBox .status-tab-right input {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#uploadBox .thumbnails {
+  margin-left: -20px;
+}
+
+#uploadBox .thumbnails > li {
+  margin-left: 20px;
+}
+
+#uploadBox .upload-record {
+  height: 260px;
+  background-color: $uploadBg1;
+}
+
+#uploadBox .flash-box .upload-record {
+  height: 160px;
+  background-color: $uploadBg2;
+}
+
+#uploadBox .upload-record .canva-wrapper {
+  height: 125px;
+  overflow: auto;
+}
+
+#uploadBox .upload-record .name-doc {
+  height:40px;
+  overflow: hidden;
+  -o-text-overflow: ellipsis; /* pour Opera 9 */
+  text-overflow: ellipsis;
+  font-weight: bold;
+}
+
+#uploadBox .upload-record .infos-doc {
+  overflow: hidden;
+  -o-text-overflow: ellipsis; /* pour Opera 9 */
+  text-overflow: ellipsis;
+  color: #777777;
+  height: 40px;
+}
+
+#uploadBox .upload-record .error, #uploadBox .upload-record .success{
+  height: 55px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+  display: none;
+  overflow: auto;
+}
+
+#uploadBox .upload-record .remove-element {
+  margin: 2px 0;
+}
+
+#uploadBox .upload-record .error {
+  padding: 0;
+  width: 100%;
+}
+
+#uploadBox .select-label {
+  font-style: italic;
+  color: $textSecondaryColor;
+}
+
+#uploadBox .select-row {
+  font-weight: normal;
+  font-style: normal;
+}
+
+#uploadBoxRight .progress {
+  margin-top: 4px;
+  margin-bottom: 10px;
+  height: 10px;
+}
+
+
+#uploadBox .uploader-button{
+  text-align: center;
+  width:50%;
+}
+
+#uploadBox #addFileList {
+  width:100%;
+  table-layout:fixed;
+  border:none;
+}
+
+#uploadBox #addFileList td{
+  vertical-align: middle;
+}
+
+#uploadBox .uploader-icon {
+  width:15%;
+  text-align:left;
+}
+
+#uploadBox .uploader-info {
+  font-size:10px;
+  width:35%;
+  text-align:left;
+}
+
+#uploadBox .uploader-info p {
+  line-height:10px;
+  font-size:10px;
+  word-wrap: break-word;
+}
+
+#uploadBox .uploader-info a {
+  text-decoration: underline;
+  color: darkblue;
+  margin:5px 0;
+}
+
+#uploadBoxRight .progress .progress-bar {
+  height: 10px;
+}
+
+#lazaretBox .loading {
+  background-image: url('#{$iconsPath}#{$uploadLoaderImg}');
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+
+#lazaretBox.container-fluid {
+  margin: 0;
+  padding: 0;
+}
+
+#lazaretBox li.wrapper-item {
+  margin-bottom: 20px;
+}
+
+#lazaretBox .lazaret-file h5,
+#lazaretBox .lazaret-proposals h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+#lazaretBox .lazaret-file p,
+#lazaretBox .lazaret-proposals p {
+  font-weight: bold;
+  overflow: hidden;
+  -o-text-overflow: ellipsis; /* for Opera 9 */
+  text-overflow: ellipsis;
+}
+
+#lazaretBox span.info {
+  display: inline;
+  font-weight: normal;
+}
+
+#lazaretBox .lazaret-file a,
+#lazaretBox .lazaret-proposals a {
+  font-weight: normal;
+  color: $textPrimaryColor;
+}
+
+#lazaretBox .lazaret-file a:hover,
+#lazaretBox .lazaret-proposals a:hover {
+  color: $textSecondaryColor;
+}
+
+
+#lazaretBox .lazaret-file .thumbnails,
+#lazaretBox .lazaret-proposals .thumbnails {
+  margin-left: 0;
+}
+
+#lazaretBox .lazaret-file .thumbnails li {
+  margin: 0;
+}
+
+#lazaretBox .lazaret-proposals .records-subititution {
+  margin: 0 10px 10px 0;
+}
+
+#lazaretBox .lazaret-file .thumbnail,
+#lazaretBox .lazaret-proposals .thumbnail {
+  background-color: #FFFFFF;
+}
+
+#lazaretBox .lazaret-proposals .thumbnail {
+  min-height: 234px;
+}
+
+#lazaretBox .lazaret-proposals .thumbnail .record-thumb {
+  height: 180px;
+}
+
+#lazaretBox .lazaret-file .thumbnail img {
+  max-height: 480px;
+}
+
+#lazaretBox .lazaret-file .thumbnail button {
+  font-weight: normal;
+}
+
+#lazaretBox .lazaret-file .thumbnail button img {
+  margin-right: 5px;
+}

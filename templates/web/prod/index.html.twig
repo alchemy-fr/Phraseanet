@@ -68,7 +68,7 @@
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/prod/css/prod{% if not app.debug %}.min{% endif %}.css">
-    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/css/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/skins/{{ cssfile  }}/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
     <style title="color_selection" type="text/css">
         /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
             color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
@@ -770,7 +770,7 @@
         };
 
         function setCss(color) {
-            $("#skinCss").attr("href","/assets/prod/css/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
+            $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
             $.post("{{ path('save_pref') }}", {
                 prop: "css",
                 value: color,

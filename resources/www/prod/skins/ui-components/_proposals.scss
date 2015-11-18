@@ -1,0 +1,180 @@
+/******* PROPOSALS ************************************************************/
+
+#proposals {
+  border-top: 1px solid #303030;
+  top: 87px !important;
+}
+
+#proposals ul li {
+  line-height: 17px;
+  font-size: 13px;
+}
+
+#proposals ul ul {
+  background-color: #292929;
+}
+
+#proposals *:focus {
+  outline: none;
+}
+
+#proposals UL.fancytree-container {
+  background-color: $col1;
+  border: 0px none transparent;
+  overflow-x: hidden;
+  padding-left: 0;
+  padding-top: 0;
+}
+
+#proposals UL.fancytree-container UL {
+  padding: 17px 0;
+  overflow: auto;
+  width: 101%;
+  max-height: 400px;
+  overflow-x: hidden;
+}
+
+#proposals UL.fancytree-container UL li {
+  padding-left: 30px;
+  line-height: 25px;
+}
+
+#proposals UL.fancytree-container UL li:hover {
+  background-color: #4c5d84;
+}
+
+#proposals .fancytree-folder {
+  font-weight: bold;
+  height: 49px;
+  line-height: 49px;
+  margin-left: 0;
+  border-left: 4px solid $col1;
+  border-bottom: 1px solid #303030;
+}
+
+#proposals .fancytree-folder:hover {
+  border-left: 4px solid #4c5d84;
+  color: #FFFFFF;
+}
+
+#proposals .fancytree-folder:hover .fancytree-title {
+  color: #FFFFFF;
+}
+
+#proposals .fancytree-folder .fancytree-title {
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+#proposals .fancytree-expander {
+  position: absolute;
+  right: 10px;
+  background-image: none;
+  margin: 0px;
+  padding: 0px;
+  width: auto;
+  height: auto;
+  font-weight: normal;
+  font-size: 65%;
+}
+
+#proposals UL.fancytree-container UL li {
+  white-space: pre-line !important;
+}
+
+#proposals .fancytree-folder .fancytree-expander:before {
+  content: '\25C0'; /* U+25C0 BLACK LEFT-POINTING TRIANGLE */
+  color: #a0a0a0;
+}
+
+#proposals .fancytree-expanded .fancytree-expander:before {
+  content: '\25BC'; /* U+25BC BLACK BLACK DOWN-POINTING TRIANGLE */
+  color: #ffffff;
+}
+
+#proposals .fancytree-folder .fancytree-expander:hover:before {
+  /* display: none; */
+  color: #076882;
+}
+
+#proposals .fancytree-title {
+  font-size: 12px;
+  color: #A6A6A6;
+  background-color: transparent;
+  border: 0px none transparent;
+}
+
+#proposals UL.fancytree-container UL li:hover .fancytree-title {
+  color: #FFFFFF;
+}
+
+#proposals .facetFilter {
+  font-weight: normal;
+  position: absolute;
+  width: 127px;
+  height: 25px;
+  line-height: 25px;
+  vertical-align: middle;
+  border-radius: 4px;
+  right: 28px;
+  background-color: #4c5d84;
+  padding-left: 13px;
+  padding-right: 13px;
+  margin-top: 11px;
+}
+
+#proposals .facetFilter-label {
+  position: absolute;
+  left: 13px;
+  right: 14px;
+  overflow: hidden;
+  cursor: default;
+}
+
+#proposals .facetFilter-gradient {
+  position: absolute;
+  width: 20px;
+  right: 0px;
+}
+
+#proposals .facetFilter-closer {
+  position: absolute;
+  right: 13px;
+  cursor: pointer;
+}
+
+#proposals .facetFilter-closer {
+  background: url('#{$iconsPath}bgd_facetFilter.png') 0 5px no-repeat;
+  height: 25px;
+  width: 14px;
+}
+
+/******* /PROPOSALS ************************************************************/
+
+.proposals { /*** page proposals.php ***/
+  POSITION: relative;
+  LEFT: 5px;
+}
+
+.proposals A { /*** page proposals.php ***/
+  FONT-SIZE: 11px;
+}
+
+.proposals H1, .proposals H2 { /*** page proposals.php ***/
+  FONT-SIZE: 10px;
+  POSITION: relative;
+  PADDING: 3px;
+  MARGIN: 0px;
+  MARGIN-TOP: 10px;
+  MARGIN-BOTTOM: 5px;
+}
+
+.proposals HR { /*** page proposals.php ***/
+  POSITION: relative;
+  HEIGHT: 1px;
+  PADDING: 0px;
+  MARGIN: 0px;
+  BACKGROUND-COLOR: #d0d0d0;
+  BORDER-TOP: #808080 1px solid;
+  TEXT-DECORATION: none;
+}
