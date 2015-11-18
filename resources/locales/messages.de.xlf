@@ -10971,7 +10971,7 @@
       </trans-unit>
       <trans-unit id="6ad73c8fd370f62ccd3bf50cd9cc3563aed5273c" resname="prod::tools: document">
         <source>prod::tools: document</source>
-        <target state="new">prod::tools: document</target>
+        <target state="new">Dokument</target>
         <jms:reference-file line="64">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
