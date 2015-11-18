@@ -45,6 +45,7 @@ class Tools implements ControllerProviderInterface
             $recordAccessibleSubdefs = array();
 
             if (count($records) == 1) {
+                /** @var \record_adapter $record */
                 $record = $records->first();
 
                 // fetch subdef list:
@@ -53,14 +54,32 @@ class Tools implements ControllerProviderInterface
                 /** @var \ACL $acl */
                 $acl = $app['authentication']->getUser()->ACL();
 
-                foreach ($subdefs as $subdef) {
-                    $subdefName = $subdef->get_name();
+                if ($acl->has_right('bas_chupub')
+                    && $acl->has_right_on_base($record->get_base_id(), 'canmodifrecord')
+                    && $acl->has_right_on_base($record->get_base_id(), 'imgtools')
+                ) {
+                    $databoxSubdefs = $record->get_databox()->get_subdef_structure()->getSubdefGroup($record->get_type());
 
-                    if ($acl->has_access_to_subdef($record, $subdefName) && $acl->is_admin()) {
-                        $permalink = $subdef->get_permalink();
+                    foreach ($subdefs as $subdef) {
+                        $label = $subdefName = $subdef->get_name();
+                        if (null === $permalink = $subdef->get_permalink()) {
+                            continue;
+                        }
+
+                        if ('document' == $subdefName) {
+                            $label = _('prod::tools: document');
+                        } elseif (isset($databoxSubdefs[$subdefName])) {
+                            if (!$acl->has_access_to_subdef($record, $subdefName)) {
+                                continue;
+                            }
+
+                            $label = $databoxSubdefs[$subdefName]->get_label($app['locale.I18n']);
+                        }
+
                         $recordAccessibleSubdefs[] = array(
-                          'name' => $subdefName,
-                          'state' => $permalink->get_is_activated()
+                            'name'  => $subdefName,
+                            'state' => $permalink->get_is_activated(),
+                            'label' => $label,
                         );
                     }
                 }
@@ -345,15 +364,14 @@ class Tools implements ControllerProviderInterface
 
     /**
      * Edit a record share state
-     * @param Application $app
+     * @param \Alchemy\Phrasea\Application $app
      * @param Request $request
      * @param $base_id
      * @param $record_id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function editRecordSharing(Application $app, Request $request, $base_id, $record_id)
+    public function editRecordSharing(\Alchemy\Phrasea\Application $app, Request $request, $base_id, $record_id)
     {
-
         $record = new \record_adapter($app, \phrasea::sbasFromBas($app, $base_id), $record_id);
         $subdefName = (string)$request->request->get('name');
         $state = $request->request->get('state') == 'true' ? true : false;
@@ -361,7 +379,10 @@ class Tools implements ControllerProviderInterface
         /** @var \ACL $acl */
         $acl = $app['authentication']->getUser()->ACL();
 
-        if (!$acl->has_access_to_subdef($record, $subdefName) || !$acl->is_admin()) {
+        if (!$acl->has_right('bas_chupub')
+            || !$acl->has_right_on_base($record->get_base_id(), 'canmodifrecord')
+            || !$acl->has_right_on_base($record->get_base_id(), 'imgtools')
+        ) {
             $app->abort(403);
         }
 
@@ -372,8 +393,7 @@ class Tools implements ControllerProviderInterface
 
         $changedState = $permalink->get_is_activated();
 
-        return $app->json(array('success' => true, 'state' => $changedState),
-          200);
+        return $app->json(array('success' => true, 'state' => $changedState), 200);
     }
 
     /**
