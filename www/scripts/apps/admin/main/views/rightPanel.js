@@ -11,7 +11,6 @@ define([
     "jquery",
     "underscore",
     "backbone",
-    "jquery.tooltip",
     "blueimp.loadimage",
     "jfu.iframe-transport",
     "jfu.fileupload",

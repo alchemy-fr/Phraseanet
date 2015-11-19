@@ -1,0 +1,180 @@
+.ui-dialog .ui-dialog-content.loading, .loading {
+  background-image: url('#{$iconsPath}#{$dialogLoaderImg}');
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+
+.ui-tabs {
+  background-color: transparent;
+  padding: 0;
+  border-style: none;
+}
+
+.ui-tabs .ui-tabs-nav {
+  border: none;
+  padding: 0px;
+}
+
+.ui-widget-header {
+  background: none;
+  border: transparent 0px none;
+}
+
+.ui-tabs .ui-tabs-nav li {
+  background-color: $tabsNavBg;
+  height: 30px;
+  border: none;
+  overflow: hidden;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+  background-color: $tabsNavBgActive;
+  border: none;
+}
+
+.ui-tabs .ui-tabs-nav li a {
+  padding: 10px 8px;
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+.ui-tabs .ui-tabs-nav li.ui-state-processing a {
+  cursor: pointer;
+  color: $workzoneColor1
+}
+
+.ui-tabs .ui-tabs-nav li a,
+.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
+  cursor: pointer;
+  color: $workzoneColor2;
+}
+
+.ui-tabs .ui-tabs-panel {
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: block;
+  border-width: 0;
+  padding: 0px;
+  background-color: $col1;
+}
+
+.ui-tabs .ui-tabs-panel.tabBox {
+  height: 405px;
+  overflow: auto;
+  position: relative;
+  padding: 10px;
+
+}
+
+.ui-tabs .ui-tabs-hide {
+  display: none !important;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default {
+  background: none;
+}
+
+.ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a {
+  color: $workzoneColor3;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+  background: none;
+}
+
+.ui-widget-content {
+  background-image: none;
+  background-color: transparent;
+  color: $widgetContentColor;
+}
+
+.ui-dialog.ui-widget-content {
+  background-color: $uiColor1;
+}
+
+.ui-accordion .ui-accordion-content {
+  padding: 0;
+  min-height: 120px;
+  border: none !important;
+  border-radius: 0;
+}
+
+.ui-accordion-icons .ui-accordion-header,
+.ui-accordion-icons .ui-accordion-header a {
+  overflow: hidden;
+}
+
+.ui-accordion-icons .ui-accordion-header a {
+  padding: 2px 25px;
+  white-space: nowrap;
+}
+
+.ui-state-active .ui-icon {
+  background-image: url('#{$skinsImagesPath}#{$activeStateIcon}.png');
+}
+
+
+
+.ui-accordion .ui-accordion-content.loading {
+  background-image: url('#{$iconsPath}#{$accordionLoaderImg}');
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.ui-accordion .ui-accordion-header, .ui-accordion .ui-accordion-content {
+  margin: 3px 0;
+}
+
+.ui-accordion .ui-accordion-header {
+  border: none;
+  background-repeat: repeat-x;
+  margin-bottom: 0;
+  height: 44px;
+  line-height: 44px;
+  background-color: $col1;
+  border-bottom: 1px solid $accordionBorderColor;
+  border-radius: 0;
+}
+
+.ui-accordion>div {
+  border-top: 1px solid $accordionBorderColor;
+}
+
+.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.ui-accordion .ui-accordion-header.unread {
+  background-image: url('#{$iconsPath}bask_new_back_light.png');
+}
+
+.ui-accordion .ui-accordion-header.header {
+  padding-bottom: 0;
+  padding-right: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.ui-accordion .ui-accordion-header.header:hover {
+  background-color: $accordionBgHeaderHover;
+}
+
+
+.ui-accordion .ui-accordion-content {
+  background-color: $accordionBgContent;
+  border-top: none;
+  margin-top: -1px;
+  margin-bottom: 0;
+}
+
+.ui-accordion .ui-accordion-content.grouping {
+  border: 1px solid #2f4a6f;
+  border-top: none;
+}
+

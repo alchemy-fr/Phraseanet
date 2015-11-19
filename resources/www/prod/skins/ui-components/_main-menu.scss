@@ -1,0 +1,48 @@
+/*******  MAINMENU ************************************************************/
+
+#mainMenu {
+  height: 40px;
+  line-height: 40px;
+  vertical-align: middle;
+}
+
+#mainMenu #mainLogo {
+  margin:0 10px;
+  margin-top: -4px;
+}
+
+#mainMenu li, #mainMenu li span {
+  height: 40px;
+  line-height: 40px;
+  color: $mainMenuColor;
+}
+
+#mainMenu .PNB.right li {
+  border-left: 1px solid $mainMenuRightListBorderLeft;
+}
+
+#mainMenu .PNB.right li span {
+  padding: 0 15px;
+}
+
+#mainMenu .PNB.right li.user {
+  background: url('#{$iconsPath}icon_user.png') 15px 7px no-repeat;
+  padding-left: 41px;
+}
+
+#mainMenu .PNB.right li.user:hover {
+  background-color: #FFFFFF;
+  color: black;
+}
+
+#mainMenu, .publi_group {
+  background-color: $col1;
+}
+
+.context-menu-item a {
+  color: #75ABFF;
+}
+
+.context-menu-item-hover a {
+  color: #212121;
+}

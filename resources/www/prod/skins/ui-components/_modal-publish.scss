@@ -319,3 +319,46 @@
 #dialog_publicator .api_content .element table .informations {
   width: 296px;
 }
+
+#modal_feed form .feeds {
+  color: $publishFeedColor;
+  overflow: auto;
+}
+
+#modal_feed form .feeds .list {
+  margin: 10px 0;
+}
+
+#modal_feed form .feeds .feed {
+  width: 95%;
+  height: 18px;
+  padding: 5px 0;
+  border: 1px solid $publishFeedBorder;
+  color: $publishFeedColor;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#modal_feed form .feeds .feed.odd {
+  background-color: $publishFeedOddBg;
+  color: $publishFeedOddColor;
+}
+
+#modal_feed form .feeds .feed.hover {
+  background-color: $publishFeedHoverBg;
+  color: $publishFeedHoverColor;
+}
+
+#modal_feed form .feeds .feed.selected {
+  background-color: $publishFeedSelectedBg;
+  color: $publishFeedSelectedColor;
+}
+
+#modal_feed form .feeds .feed span {
+  margin: 0 10px;
+}
+
+#modal_feed form input.error,
+#modal_feed form textarea.error {
+  border: 1px solid red;
+}

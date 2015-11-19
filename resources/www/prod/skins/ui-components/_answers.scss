@@ -1,0 +1,322 @@
+#TOPIC_UL li {
+  float: none;
+  margin: 0;
+}
+
+.contextMenuTrigger {
+  color: #FFFFFF;
+  font-size: 10px;
+  margin-left: 5px;
+  line-height: 18px;
+  vertical-align: middle;
+}
+
+.contextMenuTrigger:hover {
+  color: #FFFFFF;
+}
+
+.captionRolloverTips, .previewTips, .infoTips,
+.baskAdder, .printer, .downloader, .baskDeleter {
+  background-image: url('#{$iconsPath}zoom.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 18px;
+  height: 18px;
+  float: right;
+  cursor: pointer;
+}
+
+.captionRolloverTips {
+  background-image: url('#{$iconsPath}mode_list.gif');
+}
+
+.infoTips {
+  background-image: url('#{$iconsPath}info.gif');
+}
+
+.baskAdder {
+  background-image: url('#{$iconsPath}basket.gif');
+}
+
+.baskDeleter {
+  background-image: url('#{$iconsPath}delete.gif');
+}
+
+.printer {
+  background-image: url('#{$iconsPath}print.gif');
+}
+
+.downloader {
+  background-image: url('#{$iconsPath}download.gif');
+}
+
+#tool_navigate input {
+  text-align: center;
+}
+
+#tool_navigate a {
+  padding: 1px 5px;
+  margin: 0 4px;
+  background-color: #0077BC;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.diapo div.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+div.diapo {
+  position: relative;
+  display: block;
+  float: left;
+  border: 1px solid #404040;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  text-align: center;
+  margin: 8px 5px;
+}
+
+#idFrameT #answers {
+  background-color: $answersBg;
+  border: 1px solid $answersBorderTop;
+  top: 55px;
+  bottom: 0;
+  margin-right: 8px;
+  overflow-y: hidden;
+  padding-left: 10px;
+}
+
+#idFrameT #answers:hover {
+  overflow-y: auto;
+}
+
+#answers_status{
+  position: absolute;
+  bottom: 0px;
+  left: 10px;
+  height: 60px;
+  width: 400px;
+  z-index: 1000;
+}
+
+#answers_status table{
+  width: 100%;
+}
+
+#answers_status table tr{
+  height: 20px;
+  vertical-align: middle;
+}
+
+#answers_status table tr td.navigation{
+  text-align: right;
+}
+
+#answers_status .infos {
+  text-align: left;
+  line-height: 18px;
+  font-size: 11px;
+  color: #949494;
+  height: 60px;
+}
+
+#answers_status .infos .infoDialog {
+  float: left;
+  background: $answersInfoDialogBg;
+  color: $answersInfoDialogColor;
+  padding: 0 25px;
+  font-size: 11px;
+  padding-top: 24px;
+  margin-right: 10px;
+  height: 36px;
+}
+
+#answers_status .infos .infoDialog span {
+  font-size: 22px;
+  margin-bottom: 3px;
+  float: left;
+  margin-right: 10px;
+}
+
+#answers_status #docInfo {
+  height: 40px;
+  background: $answersDocInfoBg;
+  color: $answersDocInfoColor;
+  padding: 0 25px;
+  padding-top: 20px;
+  float: left;
+  min-width: 105px;
+  font-size: 11px;
+  line-height: 12px;
+  border-right: 1px solid $answersDocInfoBorder;
+}
+
+
+#answers_status .infos #nbrecsel {
+  font-size: 22px;
+  margin-top: 7px;
+  float: left;
+  margin-right: 7px;
+  display: block;
+  height: 40px;
+}
+
+#answers .list {
+  position: relative;
+  float: left;
+  margin: 10px;
+  width: 600px;
+  overflow: hidden;
+  border: 3px solid #404040;
+}
+
+/******* FEEDS ****************************************************************/
+
+#answers .feed {
+  margin: 10px;
+}
+
+#answers .feed .btn {
+  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+
+
+#answers .feed .btn-inverse:hover {
+  color: #FFFFFF;
+}
+
+#answers .feed .btn-group.open .btn-inverse.dropdown-toggle {
+  background-color: $answersFeedBtnGrpBg;
+  background-image: none;
+}
+
+#answers .feed .headblock {
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+#answers .feed .headblock table {
+  width: 100%;
+}
+
+#answers .feed .headblock h1 {
+  font-size: 22px;
+}
+
+#answers .feed .headblock h1 img {
+  margin-right: 15px;
+}
+
+#answers .feed .headblock a.subscribe_rss {
+  font-size: 14px;
+  margin-left: 15px;
+}
+
+#answers .feed .entry {
+  margin: 0 0 30px;
+  padding: 10px;
+  border: 3px solid $answersFeedEntryBorder;
+  background-color: $answersFeedEntryBg;
+  float: left;
+}
+
+#answers .feed .entry.hover {
+  border: 3px solid $answersFeedEntryBorderHover;
+}
+
+#answers .feed .entry table.head {
+  vertical-align: middle;
+  margin: 10px 0;
+  width: 600px;
+}
+
+#answers .feed .entry table a.tools {
+  display: none;
+}
+
+#answers .feed .entry.hover table a.tools {
+  display: inline;
+}
+
+#answers .feed h1,
+#answers .feed .post_date {
+  width: 100%;
+}
+
+#answers .feed,
+#answers .feed .entry,
+#answers .feed h1,
+#answers .feed p,
+#answers .feed .contents,
+#answers .feed .see_more,
+#answers .feed .post_date {
+  position: relative;
+  clear: left;
+}
+
+#answers .feed .see_more {
+  height: 60px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  background-position: center bottom;
+}
+
+#answers .feed .contents {
+  clear: left;
+}
+
+#answers .feed .post_date {
+  text-align: right;
+  font-style: italic;
+  max-width: 600px;
+  *width: 600px;
+  margin-bottom: 20px;
+}
+
+#answers .feed h1 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+#answers .feed h1 .author {
+  font-size: 12px;
+  font-weight: normal;
+  margin-left: 15px;
+}
+
+#answers .feed .entry h1 {
+  margin-bottom: 0;
+}
+
+#answers .feed p {
+  max-width: 600px;
+  line-height: 18px;
+  margin: 5px 0;
+  text-align: justify;
+}
+
+#answers .feed .dropdown-menu {
+  background-color: $answersFeedDropMenuBg;
+  border: 1px solid $answersFeedDropMenuBorder;
+}
+
+#answers .feed .dropdown-menu a {
+  color: $answersFeedDropMenuColor;
+}
+
+#answers .feed img {
+  vertical-align: middle;
+}

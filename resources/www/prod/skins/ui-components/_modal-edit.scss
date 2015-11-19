@@ -1,0 +1,393 @@
+/******* EDITION **************************************************************/
+
+#EDIT_ALL {
+  white-space: normal;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#EDIT_TOP {
+  background-color: $backgroudSecondaryColor;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: visible;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+}
+
+#EDIT_MENU {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  overflow: hidden;
+}
+
+.GRP_IMAGE_REP {
+  margin: 5px;
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 146px;
+  height: 156px;
+}
+
+#EDIT_GRPDIAPO {
+  position: absolute;
+}
+
+#EDIT_FILM2 {
+  border: 1px solid $editCarouselBorder;
+  background-color: $editCarouselBg;
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  bottom: 10px;
+  right: 10px;
+  overflow: auto;
+}
+
+#EDIT_ZOOMSLIDER {
+  position: absolute;
+  top: 7px;
+  width: 80px;
+  right: 7px;
+  z-index: 9999;
+}
+
+#EDIT_MID {
+  position: absolute;
+  left: 0;
+  bottom: 32px;
+  width: 100%;
+  border: none;
+  overflow: hidden;
+}
+
+#EDIT_MID_L, #EDIT_MID_R {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  overflow: visible;
+}
+
+#EDIT_MID_L {
+  background-color: $backgroudSecondaryColor;
+  width: 700px;
+  left: 0;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+}
+
+#EDIT_MID_R {
+  width: 400px;
+  right: 0;
+}
+
+#EDIT_MID_R .ui-tabs-panel {
+  background-color: $backgroudSecondaryColor;
+}
+
+#EDIT_MID_R li.ui-tabs-active,
+#EDIT_MID_R li.ui-state-active {
+  background-color: $backgroudSecondaryColor;
+}
+
+#divS_wrapper {
+  overflow-x: visible;
+  overflow-y: visible;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  bottom: 10px;
+  width: 390px;
+}
+
+#divS {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 10px;
+}
+
+#divS div.edit_field {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 2px;
+  margin-right: 10px;
+  position: relative;
+}
+
+#divS div.edit_field.odd {
+  background-color: $editStatusFieldOdd;
+}
+
+#divS div.edit_field.hover, #divS div.edit_field.active {
+  background-color: $editStatusFieldHover;
+  color: #404040;
+}
+
+#divS div.edit_field.active {
+  border: 1px solid $editStatusFieldActive;
+}
+
+#divS span.fieldvalue {
+  white-space: normal;
+  font-weight: normal;
+}
+
+#idEditZone {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  left: 420px;
+}
+
+#idFieldNameEdit {
+  width: 80px;
+  text-align: center;
+  overflow: hidden;
+}
+
+#idEditZTextArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 99%;
+  height: 99%;
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+}
+
+#idEditDateZone {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  display: none;
+}
+
+#ZTextMultiValued {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+#ZTextStatus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+#idFrameE .ui-datepicker-inline {
+  background-color: #111111;
+  background-image: url('../images/000000/images/ui-bg_gloss-wave_20_111111_500x100.png');
+  background-repeat: repeat-x;
+  background-position: 50% top;
+}
+
+#idExplain {
+  top: auto;
+  height: 20px;
+  color: #FFB300;
+  text-align: right;
+}
+
+#idExplain img {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+
+#idExplain .metadatas_restrictionsTips {
+  cursor: help;
+}
+
+#idDivButtons {
+  bottom: 30px;
+  top: auto;
+  height: 20px;
+  display: none;
+  text-align: center;
+}
+
+#EditSearch, #EditReplace {
+  width: 100%;
+  height: 45px;
+  font-size: 14px;
+}
+
+#buttonEditing {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 28px;
+  overflow: hidden;
+  text-align: center;
+}
+
+#EDIT_WORKING {
+  position: absolute;
+  top: 100px;
+  left: 1px;
+  width: 100%;
+  display: none;
+}
+
+#EDIT_EDIT {
+  top: 35px;
+  bottom: 60px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#EDIT_TOP .diapo div.titre {
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: auto;
+  text-align: center;
+  z-index: 10;
+}
+
+#Edit_copyPreset_dlg form span {
+  color: #FFFFFF;
+}
+
+.Edit_preset_item {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 550px;
+  height: 250px;
+  overflow: auto;
+  color: $textSecondaryColor;
+}
+
+
+#ZTextMultiValued_values {
+  background-color: $editTextMultiValueBg;
+  border: 1px solid $editTextMultiValueBorder;
+  position: absolute;
+  top: 30px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  overflow-x: auto;
+  overflow-y: scroll;
+}
+
+#idFrameE #ZTextMultiValued_values div {
+  cursor: pointer;
+  height: 20px;
+  padding: 2px 14px 2px 2px;
+}
+
+#idFrameE #ZTextMultiValued_values div table {
+  width: 100%;
+  border: none;
+}
+
+#idFrameE #ZTextMultiValued_values div table td {
+  vertical-align: middle;
+}
+
+#idFrameE #ZTextMultiValued_values div table td.options {
+  width: 40px;
+  text-align: right;
+}
+
+#idFrameE #ZTextMultiValued_values div table td.options .add_all {
+  display: none;
+}
+
+#idFrameE #ZTextMultiValued_values div.hetero table td.options .add_all {
+  display: inline;
+}
+
+#idFrameE .hetero {
+  color: #ff8000;
+}
+
+#idFrameE #ZTextMultiValued_values DIV.hilighted {
+  background-color: $editTextMultiValueHighlightBg;
+}
+
+#idFrameE #ZTextMultiValued_values DIV I {
+  color: #FFFF00;
+  font-style: normal;
+  font-weight: 700;
+  background-color: #222222;
+}
+
+#idFrameE .EDIT_presets_list {
+  padding-left: 3px;
+  padding-right: 6px;
+}
+
+#idFrameE .EDIT_presets_list LI {
+  margin: 0px;
+}
+
+#idFrameE .EDIT_presets_list DIV {
+  display: none;
+  padding-left: 15px;
+  padding-bottom: 5px;
+}
+
+#idFrameE .EDIT_presets_list DIV P {
+  font-size: 9px;
+  padding: 0px;
+  margin: 0px;
+}
+
+#idFrameE .EDIT_presets_list LI.opened DIV {
+  display: block;
+}
+
+#idFrameE .EDIT_presets_list H1 {
+  margin: 0px;
+  padding: 0px;
+  font-size: 12px;
+}
+
+#idFrameE .EDIT_presets_list H1 A.delete {
+  font-weight: 100;
+  font-size: 10px;
+}
+
+#idFrameE .EDIT_presets_list LI .triDown {
+  display: none;
+}
+
+#idFrameE .EDIT_presets_list LI.opened .triRight {
+  display: none;
+}
+
+#idFrameE .EDIT_presets_list LI.opened .triDown {
+  display: inherit;
+}

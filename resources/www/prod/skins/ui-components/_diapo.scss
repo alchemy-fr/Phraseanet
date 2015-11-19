@@ -1,0 +1,48 @@
+/**
+ * Diapo are reused in answers, baskets,
+ */
+
+#reorder_box .diapo {
+  height: 130px;
+  width: 100px;
+}
+
+#reorder_box .diapo.ui-sortable-placeholder,
+#reorder_box .diapo.ui-sortable-placeholderfollow {
+  background-color: orange;
+}
+
+#reorder_box .CHIM.diapo img {
+  z-index: 1000;
+  position: relative;
+  margin:0;
+}
+
+#reorder_dialog .ui-sortable-placeholder,
+#reorder_dialog .ui-sortable-placeholderfollow {
+  width: 100px;
+  height: 130px;
+  background-color: #414141;
+}
+
+.diapo .thumb {
+  overflow: hidden;
+  position: relative;
+}
+
+.diapo .thumb .record {
+  position: relative;
+  margin: 0 auto;
+}
+
+.diapo.CHIM .thumb_wrapper {
+  padding: 6px 9px;
+}
+
+.diapo.IMGT .thumb_wrapper {
+  padding: 0 11px;
+}
+
+.diapo .bottom {
+  position: absolute; bottom: 0px;
+}

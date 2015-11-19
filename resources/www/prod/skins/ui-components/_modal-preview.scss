@@ -199,3 +199,19 @@
 #PREVIEWTOOL img, #PREVIEWTOOL span {
   float: left;
 }
+
+.prevTrainCurrent .doc_infos, .diapo .doc_infos {
+  position: absolute;
+  float: left;
+  padding: 3px;
+  z-index: 97;
+}
+
+.prevTrainCurrent .doc_infos img,.diapo .doc_infos img {
+  vertical-align: middle;
+}
+
+.prevTrainCurrent .duration, .diapo .duration {
+  background-color: black;
+  color: #FFFFFF;
+}

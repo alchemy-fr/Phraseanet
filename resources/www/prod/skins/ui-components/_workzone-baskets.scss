@@ -232,3 +232,54 @@ form.phrasea_query input.query {
 #basket-rename-box .btn-inverse:hover, #reorder_box .btn-inverse:hover {
   color: #FFFFFF;
 }
+
+#baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  color: #FFFFFF;
+  font-size: 1em;
+}
+#basket_menu_trigger {
+  padding: 32px 7px 0 0;
+  float: right;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+
+.CHIM.diapo {
+  width: 100px;
+  overflow: hidden;
+}
+
+.CHIM.diapo .title, .CHIM.diapo .status {
+  position: relative;
+  height: 20px;
+  z-index: 15;
+  font-size: 0.8em
+}
+
+.CHIM.diapo .title {
+  height: 15px;
+  margin: 2px 0;
+  overflow: hidden;
+}
+
+.CHIM.diapo .bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 15;
+  vertical-align: middle;
+}
+
+.CHIM.diapo .bottom span,.CHIM.diapo .bottom img {
+  cursor: pointer;
+  vertical-align: middle;
+  color: $textPrimaryColor;
+  font-size: 10px;
+}
+
+.CHIM.diapo img {
+  margin-top: 9px;
+  z-index: 14;
+  position: relative;
+}

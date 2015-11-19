@@ -1,0 +1,22 @@
+#pub_tabs .btn-group.open .btn-inverse.dropdown-toggle {
+  background-color: $bridgeDropdownToggleBg;
+  background-image: none;
+}
+
+#dialog_publicator .dropdown-menu {
+  min-width: 95px;
+  background-color: $bridgeDropdownMenuBg;
+  *border: 1px solid $bridgeDropdownMenuBorder;
+}
+
+#dialog_publicator .dropdown-menu a {
+  padding: 3px 10px;
+  font-size: 12px;
+  color: $bridgeDropdownMenuColor;
+  cursor: pointer;
+}
+
+#dialog_publicator .dropdown-menu a:hover {
+  background-color: $bridgeDropdownMenuHoverBg;
+  color: $bridgeDropdownMenuHoverColor;
+}

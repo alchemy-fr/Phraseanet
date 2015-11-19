@@ -1,0 +1,70 @@
+@import '../../../../../www/bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/_mixins.scss';
+.btn {
+  //font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  //font-size: 12px;
+  //font-weight: bold;
+  // soften button edges:
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.btn.btn-inverse {
+  @include buttonBackground($btnInverseBackground, $btnInverseBackgroundHighlight, $btnInverseColor);
+}
+
+// @TODO .btn-primary
+
+.ui-dialog .btn {
+  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.input-append button.btn {
+  border-left: 1px solid $btnGrpSeparatorColor;
+}
+
+
+
+// not used:
+.history-collection {
+  background-image: url('#{$iconsPath}chgcoll_history.png');
+}
+
+.history-status {
+  background-image: url('#{$iconsPath}chgstatus_history.png');
+}
+
+.history-print {
+  background-image: url('#{$iconsPath}print_history.png');
+}
+
+.history-substit, .history-publish {
+  background-image: url('#{$iconsPath}imgtools_history.png');
+}
+
+.history-download, .history-mail, .history-ftp {
+  background-image: url('#{$iconsPath}disktt_history.png');
+}
+.history-edit {
+  background-image: url('#{$iconsPath}ppen_history.png');
+}
+
+.history-validate, .history-push {
+  background-image: url('#{$iconsPath}push16.png');
+}
+
+.history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push {
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-size: 16px 16px;
+  padding-left: 24px;
+  min-height: 16px;
+}
+
+@media	only screen and (-webkit-min-device-pixel-ratio: 1.3),
+only screen and (-o-min-device-pixel-ratio: 13/10),
+only screen and (min-resolution: 120dpi)
+{
+  .history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push {
+    background-size: 16px 16px;
+  }
+}
