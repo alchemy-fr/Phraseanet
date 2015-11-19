@@ -20,7 +20,7 @@
 <div id='prod-tool-box' class="PNB10">
 
     {# jquery Tabs #}
-    <div id="tool-tabs">
+    <div id="tool-tabs"  class="tabs">
         {# jquery menu #}
         <div>
             <ul>
@@ -58,6 +58,15 @@
                             {{ "meta-datas" | trans }}
                         </a>
                     </li>
+                {% endif %}
+                {% if selectionLength == 1%}
+                    {% if recordSubdefs %}
+                        <li>
+                            <a href="#tools-sharing">
+                                {{ "Document Type Sharing" | trans }}
+                            </a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>
@@ -299,6 +308,31 @@
         </div>
       {% endfor %}
     {% endif %}
+        {% if selectionLength == 1 and recordSubdefs is not empty %}
+            <div id="tools-sharing" class="tabBox">
+                <div class="well-large">
+                    {% for subdef in recordSubdefs %}
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <span class="status-marker {{ subdef.state ? 'status-active' : 'status-inactive' }}"></span>{{ subdef.label }}
+                            </div>
+                            <div class="span6">
+                                <p class="text-right">
+                                    <button type="button" class="stateChange_button btn btn-inverse text-right"
+                                            data-name="{{ subdef.name }}" data-state="{{ subdef.state }}">
+                                        {% if subdef.state %}
+                                            {{- "Disable document type sharing"|trans -}}
+                                        {% else %}
+                                            {{- "Enable document type sharing"|trans -}}
+                                        {% endif %}
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
   </div>
 
   {# hidden iframe to handle upload #}
@@ -315,9 +349,8 @@
 
 $(document).ready(function(){
     var scope = $("#prod-tool-box");
+    var tabs = $("#tool-tabs", scope).tabs();
     var width = 0;
-
-    $("#tool-tabs", scope).tabs();
 
     $(".iframe_submiter", scope).bind("click", function(){
         var form = $(this).closest("form");
@@ -585,5 +618,30 @@ $(document).ready(function(){
         //not supported
         $("#thumbExtractor").empty().append(language.browserFeatureSupport);
     }
+
+    {% if selectionLength == 1%}
+    $('#tools-sharing .stateChange_button').bind('click',function(event){
+        var $btn = $(event.currentTarget),
+                state = true;
+
+        // inverse state
+        if( $btn.data('state') == 1) {
+            state = false;
+        }
+
+        // submit changes
+        $.post('tools/sharing-editor/{{record.get_base_id}}/{{record.get_record_id}}/', {
+            name: $btn.data('name'),
+            state: state
+        }).done(function(data) {
+            // self reload tab with current active tab:
+            var activeTab = tabs.tabs('option', 'active');
+            toolREFACTOR($dialog.getOption('contextArgs'), activeTab);
+        }).error(function(err) {
+            alert('forbidden action')
+        });
+        return false;
+    });
+    {% endif %}
 });
 </script>

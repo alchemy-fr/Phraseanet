@@ -66,6 +66,8 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/thumb-extractor/apply/', 'controller.prod.tools:applyThumbnailExtractionAction');
 
+        $controllers->post('/sharing-editor/{base_id}/{record_id}/', 'controller.prod.tools:editRecordSharing');
+
         return $controllers;
     }
 }

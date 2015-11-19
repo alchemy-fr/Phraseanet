@@ -1875,7 +1875,7 @@ function feedbackThis(sstt_id, lst, story) {
     });
 }
 
-function toolREFACTOR(datas) {
+function toolREFACTOR(datas, activeTab) {
 
     var dialog = p4.Dialog.Create({
         size: 'Medium',
@@ -1887,10 +1887,16 @@ function toolREFACTOR(datas) {
         , datas
         , function (data) {
             dialog.setContent(data);
+            dialog.setOption('contextArgs', datas);
+            var tabs = $('.tabs', dialog.getDomElement()).tabs();
+
+            // activate tab if exists:
+            if( activeTab !== undefined ) {
+                tabs.tabs('option', 'active', activeTab);
+            }
             return;
         }
     );
-
 }
 
 function activeIcons() {

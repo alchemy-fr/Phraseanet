@@ -37,9 +37,46 @@ class ToolsController extends Controller
 
         $metadata = false;
         $record = null;
+        $recordAccessibleSubdefs = array();
 
         if (count($records) == 1) {
+            /** @var \record_adapter $record */
             $record = $records->first();
+
+            // fetch subdef list:
+            $subdefs = $record->get_subdefs();
+
+            $acl = $this->getAclForUser();
+
+            if ($acl->has_right('bas_chupub')
+                && $acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
+                && $acl->has_right_on_base($record->getBaseId(), 'imgtools')
+            ) {
+                $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+
+                foreach ($subdefs as $subdef) {
+                    $label = $subdefName = $subdef->get_name();
+                    if (null === $permalink = $subdef->get_permalink()) {
+                        continue;
+                    }
+
+                    if ('document' == $subdefName) {
+                        $label = $this->app->trans('prod::tools: document');
+                    } elseif (isset($databoxSubdefs[$subdefName])) {
+                        if (!$acl->has_access_to_subdef($record, $subdefName)) {
+                            continue;
+                        }
+
+                        $label = $databoxSubdefs[$subdefName]->get_label($this->app['locale']);
+                    }
+                    $recordAccessibleSubdefs[] = array(
+                        'name' => $subdef->get_name(),
+                        'state' => $permalink->get_is_activated(),
+                        'label' => $label,
+                    );
+                }
+            }
+
             if (!$record->isStory()) {
                 try {
                     $metadata = $this->getExifToolReader()
@@ -56,6 +93,7 @@ class ToolsController extends Controller
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'   => $records,
             'record'    => $record,
+            'recordSubdefs' => $recordAccessibleSubdefs,
             'metadatas' => $metadata,
         ]);
     }
@@ -263,6 +301,44 @@ class ToolsController extends Controller
             $return = ['success' => true, 'message' => ''];
         } catch (\Exception $e) {
             $return = ['success' => false, 'message' => $e->getMessage()];
+        }
+
+        return $this->app->json($return);
+    }
+
+    /**
+     * Edit a record share state
+     * @param Request $request
+     * @param $base_id
+     * @param $record_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function editRecordSharing(Request $request, $base_id, $record_id)
+    {
+
+        $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
+        $subdefName = (string)$request->request->get('name');
+        $state = $request->request->get('state') == 'true' ? true : false;
+
+        $acl = $this->getAclForUser();
+        if (!$acl->has_right('bas_chupub')
+            || !$acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
+            || !$acl->has_right_on_base($record->getBaseId(), 'imgtools')
+        ) {
+            $this->app->abort(403);
+        }
+
+        $subdef = $record->get_subdef($subdefName);
+
+        if (null === $permalink = $subdef->get_permalink()) {
+            return $this->app->json(['success' => false, 'state' => false], 400);
+        }
+
+        try {
+            $permalink->set_is_activated($state);
+            $return = ['success' => true, 'state' => $permalink->get_is_activated()];
+        } catch (\Exception $e) {
+            $return = ['success' => false, 'state' => $permalink->get_is_activated()];
         }
 
         return $this->app->json($return);
