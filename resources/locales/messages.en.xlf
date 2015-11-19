@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2015-11-19T12:47:12Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -134,9 +134,9 @@
         <jms:reference-file line="7">Bridge/Flickr/element_informations.html.twig</jms:reference-file>
         <jms:reference-file line="7">Bridge/Youtube/element_informations.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes">
+      <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
         <source><![CDATA[%number% documents<br/>selectionnes]]></source>
-        <target state="new"><![CDATA[%number% documents<br/>selectionnes]]></target>
+        <target state="translated">%number% documents&lt;br/&gt;selected</target>
         <jms:reference-file line="154">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac5c6fe2979cfa2496c95dcb218f135fd916040d" resname="%quantity% Stories attached to the WorkZone" approved="yes">
