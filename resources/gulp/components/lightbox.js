@@ -32,6 +32,10 @@ gulp.task('build-lightbox-css', ['build-lightbox-mobile-css', 'build-lightbox-ie
     ], 'lightbox', 'lightbox/css/')
 });
 
+gulp.task('watch-lightbox', function() {
+    gulp.watch(config.paths.src + 'lightbox/**/*.scss', ['build-lightbox-css']);
+});
+
 gulp.task('build-lightbox', ['copy-lightbox-images', 'build-lightbox-css', 'build-lightbox-mobile-js'], function(){
     var lightboxGroup = [
         config.paths.src + 'lightbox/js/jquery.lightbox.js'

@@ -19,6 +19,10 @@ gulp.task('build-report-css', ['build-report-print-css'], function(){
     ], 'report', 'report/css/');
 });
 
+gulp.task('watch-report', function() {
+    gulp.watch(config.paths.src + 'report/**/*.scss', ['build-report-css']);
+});
+
 gulp.task('build-report', ['copy-report-images', 'build-report-css'], function(){
     var reportGroup = [
         config.paths.src + 'report/js/jquery.print.js',

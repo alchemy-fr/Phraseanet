@@ -60,6 +60,10 @@ gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey'], f
     ], 'prod', 'prod/css/');
 });
 
+gulp.task('watch-prod', function() {
+    return gulp.watch(config.paths.src + 'prod/**/*.scss', ['build-prod-css']);
+});
+
 gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
     var prodGroup = [
         config.paths.vendors +  'underscore-amd/underscore.js',

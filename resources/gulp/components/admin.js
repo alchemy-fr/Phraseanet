@@ -12,6 +12,10 @@ gulp.task('build-admin-css', function(){
     ], 'admin', 'admin/css/');
 });
 
+gulp.task('watch-admin', function() {
+    gulp.watch(config.paths.src + 'admin/**/*.scss', ['build-admin-css']);
+});
+
 gulp.task('build-admin', ['copy-admin-images', 'build-admin-css'], function(){
     var adminGroup = [
         config.paths.vendors + 'underscore-amd/underscore.js',

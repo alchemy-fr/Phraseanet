@@ -23,6 +23,10 @@ gulp.task('build-common-css', ['build-common-font-css'],function(){
     ], 'common', 'common/css/')
 });
 
+gulp.task('watch-common', function() {
+    gulp.watch(config.paths.src + 'common/**/*.scss', ['build-common-css']);
+});
+
 gulp.task('build-common', ['copy-common-images', 'build-common-css'], function(){
     var commonGroup = [
         // config.paths.dist + 'assets/bootstrap/js/bootstrap.js', // should append no conflict

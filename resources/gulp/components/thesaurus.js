@@ -12,6 +12,10 @@ gulp.task('build-thesaurus-css', function(){
     ], 'thesaurus', 'thesaurus/css/');
 });
 
+gulp.task('watch-thesaurus', function() {
+    gulp.watch(config.paths.src + 'thesaurus/**/*.scss', ['build-thesaurus-css']);
+});
+
 gulp.task('build-thesaurus', ['copy-thesaurus-images', 'build-thesaurus-css'], function(){
     var thesaurusGroup = [
         config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',

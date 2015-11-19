@@ -12,6 +12,10 @@ gulp.task('build-authentication-css', function(){
     ], 'authentication', 'authentication/css/');
 });
 
+gulp.task('watch-authentication', function() {
+    gulp.watch(config.paths.src + 'authentication/**/*.scss', ['build-authentication-css']);
+});
+
 gulp.task('build-authentication', ['copy-authentication-images', 'build-authentication-css'], function(){
     var authenticationGroup = [
         config.paths.vendors + 'requirejs/require.js',

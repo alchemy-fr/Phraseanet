@@ -12,6 +12,10 @@ gulp.task('build-account-css', function(){
     ], 'account', 'account/css/');
 });
 
+gulp.task('watch-account', function() {
+    gulp.watch(config.paths.src + 'account/**/*.scss', ['build-account-css']);
+});
+
 gulp.task('build-account', ['copy-account-images', 'build-account-css'], function(){
     var accountGroup = [
         config.paths.vendors + 'requirejs/require.js',

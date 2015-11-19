@@ -12,6 +12,10 @@ gulp.task('build-setup-css', function(){
     ], 'setup', 'setup/css/');
 });
 
+gulp.task('watch-setup', function() {
+    gulp.watch(config.paths.src + 'setup/**/*.scss', ['build-setup-css']);
+});
+
 gulp.task('build-setup', ['copy-setup-images', 'build-setup-css'], function(){
     var setupGroup = [
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',

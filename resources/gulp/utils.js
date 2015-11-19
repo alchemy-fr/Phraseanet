@@ -7,6 +7,7 @@ var cssmin = require('gulp-cssmin');
 var sass = require('gulp-sass');
 var config = require('./config.js');
 var debug = require('gulp-debug');
+var autoprefixer = require('gulp-autoprefixer');
 var fs = require('fs');
 
 
@@ -34,6 +35,7 @@ exports.buildCssGroup = function(srcGroup, name, dest){
     // console.log('building group:', name, ' > ', config.paths.build + dest)
     return gulp.src(srcGroup)
         .pipe(sass().on('error', sass.logError))
+        .pipe(autoprefixer())
         .pipe(rename(name + '.css'))
         .pipe(gulp.dest(config.paths.build + dest))
         .pipe(cssmin())
