@@ -711,7 +711,7 @@ class Application extends SilexApplication
     /**
      * Return available language for phraseanet
      *
-     * @return Array
+     * @return array
      */
     public static function getAvailableLanguages()
     {
