@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2015-11-18T19:40:24Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2015-11-19T12:47:12Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1138,7 +1138,7 @@
       <trans-unit id="007810133a83b7b3afb91124c6251b20b8b6d670" resname="Aucune description." approved="yes">
         <source>Aucune description.</source>
         <target state="translated">No caption</target>
-        <jms:reference-file line="70">actions/Bridge/element_list.html.twig</jms:reference-file>
+        <jms:reference-file line="69">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4024cf49635467f91f0bcd4f703e0440602a9e76" resname="Aucune entree pour le moment" approved="yes">
         <source>Aucune entree pour le moment</source>
@@ -1781,12 +1781,12 @@
       <trans-unit id="6e9445beaddb548587c6f275e49da38e9fc7b785" resname="Confidentialite : privee" approved="yes">
         <source>Confidentialite : privee</source>
         <target state="translated">Private</target>
-        <jms:reference-file line="86">actions/Bridge/element_list.html.twig</jms:reference-file>
+        <jms:reference-file line="85">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c45b1287fc853dd348acfba612f3229746dc4f0" resname="Confidentialite : publique" approved="yes">
         <source>Confidentialite : publique</source>
         <target state="translated">Public</target>
-        <jms:reference-file line="88">actions/Bridge/element_list.html.twig</jms:reference-file>
+        <jms:reference-file line="87">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="754164850f38c1ecdaf6b8ed894cb192bc36c5f4" resname="Configuration" approved="yes">
         <source>Configuration</source>
@@ -9557,7 +9557,7 @@
       <trans-unit id="fc97186645dc71dae8e3221c8ce53c56e6d611bf" resname="dans %category%" approved="yes">
         <source>dans %category%</source>
         <target state="translated">in %category%</target>
-        <jms:reference-file line="80">actions/Bridge/element_list.html.twig</jms:reference-file>
+        <jms:reference-file line="79">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dbfe8cf37a8d7b4941dd9f89e79302038b2bedef" resname="dans %feed_name%" approved="yes">
         <source>dans %feed_name%</source>
@@ -12895,6 +12895,11 @@
         <source>unknown</source>
         <target state="new">unknown</target>
         <jms:reference-file line="34">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9f273e321a1d1ea40251ab0a45f8ca8cbdd135da" resname="untitled">
+        <source>untitled</source>
+        <target state="new">untitled</target>
+        <jms:reference-file line="58">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="38ed031ff1a2d3f63b6415db3993741c54e41087" resname="update::Votre application necessite une mise a jour vers :" approved="yes">
         <source>update::Votre application necessite une mise a jour vers :</source>

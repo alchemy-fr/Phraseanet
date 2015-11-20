@@ -1,7 +1,7 @@
 ;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define([''], factory);
+        define(['jquery.geonames'], factory);
     } else {
         root.geonames = factory();
     }

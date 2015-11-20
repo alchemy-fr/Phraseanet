@@ -55,8 +55,7 @@
                 <a href='{{element.get_url}}' target="_blank">
                 {% endif %}
                   <span class="title">
-                    {% set no_title = "untitled" %}
-                    {{element.get_title|default(no_title|trans)}}
+                    {{element.get_title|default('untitled'|trans)}}
                   </span>
                 {% if element.get_url != '' %}
                 </a>

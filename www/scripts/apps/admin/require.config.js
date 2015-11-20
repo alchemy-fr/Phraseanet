@@ -17,6 +17,7 @@ require.config({
         backbone: "../assets/backbone-amd/backbone",
         "jquery.ui.widget": "../assets/jquery-file-upload/jquery.ui.widget",
         "jquery.cookie": "../assets/jquery.cookie/jquery.cookie",
+        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames",
         "jquery.treeview": "../assets/jquery.treeview/jquery.treeview",
         "jquery.tooltip": "../include/jquery.tooltip",
         "blueimp.loadimage" : "../assets/blueimp-load-image/load-image",
@@ -36,6 +37,10 @@ require.config({
         "jquery.cookie": {
             deps: ["jquery"],
             exports: '$.fn.cookie'
+        },
+        "jquery.geonames": {
+            deps: ["jquery"],
+            exports: '$.fn.geocompleter'
         },
         "jquery.tooltip": {
             deps: ["jquery"],
