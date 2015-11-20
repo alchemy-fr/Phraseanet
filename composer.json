@@ -76,7 +76,7 @@
         "simple-bus/jms-serializer-bridge": "^1.0",
         "pagerfanta/pagerfanta": "^1.0",
         "simple-bus/doctrine-orm-bridge": "^4.0",
-        "alchemy/symfony-cors": "master@dev"
+        "alchemy/symfony-cors": "^0.1.0"
     },
     "require-dev": {
         "doctrine/data-fixtures"           : "~1.0.0",

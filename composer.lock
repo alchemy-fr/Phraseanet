@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "10946690aa8850dd8fd46da6b05d830c",
-    "content-hash": "687cd09860d240360788f63e9a4a2e45",
+    "hash": "412eefa3d01e5d9fa99509eba963f4ce",
+    "content-hash": "3f4d04e0d33cb127082b3c2e2a978ff9",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -304,7 +304,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/a0e2c2b8a1d2c9c405fc9663b698f56a20831946",
                 "reference": "833effa4531684827b086cd46755146ff6010256",
                 "shasum": ""
             },
@@ -347,11 +347,11 @@
         },
         {
             "name": "alchemy/symfony-cors",
-            "version": "dev-master",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/symfony-cors",
-                "reference": "88f2d4089e252153946e283ac89631e78b4d73a5"
+                "reference": "8aafaff26e29fdd57358062d20724109a349def5"
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -361,6 +361,11 @@
                 "silex/silex": "^1.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Alchemy\\Cors\\": "src/Component/",
@@ -383,7 +388,7 @@
                 }
             ],
             "description": "A library that adds CORS services to Silex/Symfony Applications",
-            "time": "2015-10-12 11:04:31"
+            "time": "2015-11-20 17:55:08"
         },
         {
             "name": "beberlei/assert",
@@ -4762,8 +4767,7 @@
         "phpexiftool/phpexiftool": 20,
         "twig/extensions": 20,
         "willdurand/negotiation": 15,
-        "alchemy/rest-bundle": 20,
-        "alchemy/symfony-cors": 20
+        "alchemy/rest-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
