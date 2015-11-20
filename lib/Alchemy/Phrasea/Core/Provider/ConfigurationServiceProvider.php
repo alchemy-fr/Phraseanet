@@ -11,11 +11,11 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Yaml\Yaml;
 use Alchemy\Phrasea\Core\Event\Subscriber\TrustedProxySubscriber;
 
@@ -23,10 +23,10 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
 {
     public function register(SilexApplication $app)
     {
-        $app['phraseanet.configuration.yaml-parser'] = $app->share(function (SilexApplication $app) {
+        $app['phraseanet.configuration.yaml-parser'] = $app->share(function () {
             return new Yaml();
         });
-        $app['phraseanet.configuration.compiler'] = $app->share(function (SilexApplication $app) {
+        $app['phraseanet.configuration.compiler'] = $app->share(function () {
             return new Compiler();
         });
         $app['phraseanet.configuration.config-path'] = $app['root.path'] . '/config/configuration.yml';
@@ -49,7 +49,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
     public function boot(SilexApplication $app)
     {
         $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function ($dispatcher, SilexApplication $app) {
+            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, SilexApplication $app) {
                 $dispatcher->addSubscriber(new TrustedProxySubscriber($app['phraseanet.configuration']));
 
                 return $dispatcher;

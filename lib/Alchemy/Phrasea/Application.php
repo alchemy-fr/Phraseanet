@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Cors\Options\DefaultProvider;
+use Alchemy\CorsProvider\CorsServiceProvider;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
 use Alchemy\Phrasea\Controller\Api\V1;
 use Alchemy\Phrasea\Controller\Lightbox;
@@ -127,6 +129,7 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -325,6 +328,29 @@ class Application extends SilexApplication
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
         $this->register(new ContentNegotiationServiceProvider());
+        $this->register(new CorsServiceProvider(), [
+            'alchemy_cors.debug' => $this['debug'],
+            'alchemy_cors.cache_path' => function (Application $app) {
+                return rtrim($app['cache.path'], '/\\') . '/alchemy_cors.cache.php';
+            },
+        ]);
+        $this['phraseanet.api_cors.options_provider'] = function (Application $app) {
+            $paths = [];
+
+            if (isset($app['phraseanet.configuration']['api_cors'])) {
+                $config = $app['phraseanet.configuration']['api_cors'];
+
+                if (isset($config['enabled']) && $config['enabled']) {
+                    unset($config['enabled']);
+
+                    $paths['/api/v\d+/'] = $config;
+                }
+            }
+
+            return new DefaultProvider($paths, []);
+        };
+
+        $this['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
         // allow access to oauth service from standard application scope
         $this->register(new V1());
 
@@ -416,7 +442,7 @@ class Application extends SilexApplication
         );
 
         $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function ($dispatcher, Application $app) {
+            $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
                 $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
