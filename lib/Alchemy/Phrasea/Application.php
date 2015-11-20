@@ -337,10 +337,10 @@ class Application extends SilexApplication
         $this['phraseanet.api_cors.options_provider'] = function (Application $app) {
             $paths = [];
 
-            if (isset($app['phraseanet.configuration']['api_cors']['enabled'])) {
+            if (isset($app['phraseanet.configuration']['api_cors'])) {
                 $config = $app['phraseanet.configuration']['api_cors'];
 
-                if ($config['enabled']) {
+                if (isset($config['enabled']) && $config['enabled']) {
                     unset($config['enabled']);
 
                     $paths['/api/v\d+/'] = $config;
