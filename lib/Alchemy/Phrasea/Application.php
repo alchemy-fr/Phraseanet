@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Cors\Options\DefaultProvider;
+use Alchemy\CorsProvider\CorsServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
@@ -267,6 +269,29 @@ class Application extends SilexApplication
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
         $this->register(new ContentNegotiationServiceProvider());
+        $this->register(new CorsServiceProvider(), [
+            'alchemy_cors.debug' => $this['debug'],
+            'alchemy_cors.cache_path' => function (Application $app) {
+                return rtrim($app['cache.path'], '/\\') . '/alchemy_cors.cache.php';
+            },
+        ]);
+        $this['phraseanet.api_cors.options_provider'] = function (Application $app) {
+            $paths = [];
+
+            if (isset($app['phraseanet.configuration']['api_cors'])) {
+                $config = $app['phraseanet.configuration']['api_cors'];
+
+                if (isset($config['enabled']) && $config['enabled']) {
+                    unset($config['enabled']);
+
+                    $paths['/api/v\d+/'] = $config;
+                }
+            }
+
+            return new DefaultProvider($paths, []);
+        };
+
+        $this['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
         $this->register(new LocaleServiceProvider());
         $this->setupEventDispatcher();
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
