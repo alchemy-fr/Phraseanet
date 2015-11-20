@@ -350,7 +350,9 @@ class Application extends SilexApplication
             return new DefaultProvider($paths, []);
         };
 
-        $this['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
+        if ($this['phraseanet.configuration-tester']->isInstalled()) {
+            $this['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
+        }
         // allow access to oauth service from standard application scope
         $this->register(new V1());
 
