@@ -1,6 +1,6 @@
 {
   "name": "phraseanet",
-  "version": "3.9.0",
+  "version": "4.0.0",
   "devDependencies": {
     "bower": "~1.3",
     "grunt": "~0.4.1",
