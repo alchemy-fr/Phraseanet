@@ -620,6 +620,7 @@ function loadFacets(facets) {
         });
         // Facet
         return {
+            name: facet.name,
             title: facet.label,
             folder: true,
             children: values,
@@ -629,7 +630,7 @@ function loadFacets(facets) {
 
     treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base', 'Collection', 'Type']);
+    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
 
     return getFacetsTree().reload(treeSource);
 }
