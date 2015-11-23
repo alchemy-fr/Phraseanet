@@ -37,7 +37,7 @@
         this.$container.addClass('selectionnable');
 
         jQuery(this.options.selector, this.$container)
-            .live('click', function (event) {
+            .on('click', function (event) {
 
                 if (typeof $this.options.selectStart === 'function') {
                     $this.options.selectStart(jQuery.extend(jQuery.Event('selectStart'), event), $this);

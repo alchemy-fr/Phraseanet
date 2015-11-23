@@ -58,7 +58,7 @@ $(document).ready(function () {
                 + ' name="oauth_callback" size="50" type="text"/>'
             );
 
-        $(".url_callback").die();
+        $(".url_callback").off();
 
         // save new callback
         saveBtn.bind("click", function (e) {
@@ -100,7 +100,7 @@ $(document).ready(function () {
                 + ' name="oauth_webhook" size="50" type="text"/>'
             );
 
-        $(".url_webhook").die();
+        $(".url_webhook").off();
 
         // save new callback
         saveBtn.bind("click", function (e) {

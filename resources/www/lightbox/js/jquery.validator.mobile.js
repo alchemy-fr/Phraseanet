@@ -3,7 +3,7 @@ $(document).ready(function () {
         return;
 
 
-    $('.confirm_report').live('click', function () {
+    $('.confirm_report').on('click', function () {
         var $this = $(this);
 
         $('.loader', $this).css({
@@ -40,7 +40,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.agreement_radio').live('vmousedown', function () {
+    $('.agreement_radio').on('vmousedown', function () {
         var sselcont_id = $(this).attr('for').split('_').pop();
         var agreement = $('#' + $(this).attr('for')).val() == 'yes' ? '1' : '-1';
 
@@ -84,7 +84,7 @@ $(document).ready(function () {
         return false;
 
     });
-    $('.note_area_validate').live('click', function () {
+    $('.note_area_validate').on('click', function () {
         var sselcont_id = $(this).closest('form').find('input[name="sselcont_id"]').val();
 
         $.mobile.loading();

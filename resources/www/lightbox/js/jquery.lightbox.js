@@ -246,7 +246,7 @@ function display_basket() {
     var sc_wrapper = $('#sc_wrapper');
     var basket_options = $('#basket_options');
 
-    $('.report').live('click',function () {
+    $('.report').on('click',function () {
         load_report();
         return false;
     }).addClass('clickable');

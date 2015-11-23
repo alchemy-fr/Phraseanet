@@ -1017,7 +1017,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.adv_search_button').live('click', function () {
+    $('.adv_search_button').on('click', function () {
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();
 
@@ -1073,7 +1073,7 @@ $(document).ready(function () {
         return gogo;
     });
 
-    $('.basket_refresher').live('click', function () {
+    $('.basket_refresher').on('click', function () {
         return p4.WorkZone.refresh('current');
         return false;
     });
@@ -1142,19 +1142,19 @@ $(document).ready(function () {
         $(this).highlight('#CCCCCC');
     });
 
-    $('#answers .see_more a').live('click', function (event) {
+    $('#answers .see_more a').on('click', function (event) {
         $see_more = $(this).closest('.see_more');
         $see_more.addClass('loading');
     });
 
-    $('#answers .feed .entry').live('mouseover', function () {
+    $('#answers .feed .entry').on('mouseover', function () {
         $(this).addClass('hover');
     });
-    $('#answers .feed .entry').live('mouseout', function () {
+    $('#answers .feed .entry').on('mouseout', function () {
         $(this).removeClass('hover');
     });
 
-    $('a.ajax_answers').live('click', function (event) {
+    $('a.ajax_answers').on('click', function (event) {
         event.stopPropagation();
         var $this = $(this);
 
@@ -1201,7 +1201,7 @@ $(document).ready(function () {
     });
 
 
-    $('a.subscribe_rss').live('click', function (event) {
+    $('a.subscribe_rss').on('click', function (event) {
 
         var $this = $(this);
 
@@ -1258,13 +1258,13 @@ $(document).ready(function () {
         return false;
     });
 
-    $('#search_submit').live('mousedown', function (event) {
+    $('#search_submit').on('mousedown', function (event) {
         return false;
     });
 
-    $('#history-queries ul li').live('mouseover',function () {
+    $('#history-queries ul li').on('mouseover',function () {
         $(this).addClass('hover');
-    }).live('mouseout', function () {
+    }).on('mouseout', function () {
             $(this).removeClass('hover');
         });
 
@@ -1668,17 +1668,17 @@ $(document).ready(function () {
         }
     });
 
-    $('input.input_select_copy').live('focus', function () {
+    $('input.input_select_copy').on('focus', function () {
         $(this).select();
     });
-    $('input.input_select_copy').live('blur', function () {
+    $('input.input_select_copy').on('blur', function () {
         $(this).deselect();
     });
-    $('input.input_select_copy').live('click', function () {
+    $('input.input_select_copy').on('click', function () {
         $(this).select();
     });
 
-    $('#answers .feed .entry a.options').live('click', function () {
+    $('#answers .feed .entry a.options').on('click', function () {
         var $this = $(this);
         $.ajax({
             type: "GET",
@@ -1690,7 +1690,7 @@ $(document).ready(function () {
         });
         return false;
     });
-    $('#answers .feed .entry a.feed_delete').live('click', function () {
+    $('#answers .feed .entry a.feed_delete').on('click', function () {
         if (!confirm('etes vous sur de vouloir supprimer cette entree ?'))
             return false;
         var $this = $(this);
@@ -1940,7 +1940,7 @@ function toolREFACTOR(datas, activeTab) {
 }
 
 function activeIcons() {
-    $('.TOOL_print_btn').live('click', function () {
+    $('.TOOL_print_btn').on('click', function () {
         var value = "";
 
         if ($(this).hasClass('results_window')) {
@@ -1979,7 +1979,7 @@ function activeIcons() {
         }
     });
 
-    $('.TOOL_bridge_btn').live('click', function (e) {
+    $('.TOOL_bridge_btn').on('click', function (e) {
         e.preventDefault();
         var $button = $(this);
         var datas = {};
@@ -2021,7 +2021,7 @@ function activeIcons() {
     });
 
 
-    $('.TOOL_trash_btn').live('click', function () {
+    $('.TOOL_trash_btn').on('click', function () {
         var type = "";
         var el = false;
 
@@ -2058,7 +2058,7 @@ function activeIcons() {
         }
     });
 
-    $('.TOOL_ppen_btn').live('click', function () {
+    $('.TOOL_ppen_btn').on('click', function () {
         var value = "";
         var type = "";
 
@@ -2107,7 +2107,7 @@ function activeIcons() {
         }
     });
 
-    $('.TOOL_publish_btn').live('click', function () {
+    $('.TOOL_publish_btn').on('click', function () {
         var value = "";
         var type = "";
 
@@ -2187,7 +2187,7 @@ function activeIcons() {
         return;
     }
 
-    $('.TOOL_chgcoll_btn').live('click', function () {
+    $('.TOOL_chgcoll_btn').on('click', function () {
         var value = {};
 
         if ($(this).hasClass('results_window')) {
@@ -2228,7 +2228,7 @@ function activeIcons() {
         alert(language.nodocselected);
     });
 
-    $('.TOOL_chgstatus_btn').live('click', function () {
+    $('.TOOL_chgstatus_btn').on('click', function () {
         var params = {};
         var $this = $(this);
 
@@ -2266,7 +2266,7 @@ function activeIcons() {
         }
     });
 
-    $('.TOOL_pushdoc_btn').live('click', function () {
+    $('.TOOL_pushdoc_btn').on('click', function () {
         var value = "", type = "", sstt_id = "", story = "";
         if ($(this).hasClass('results_window')) {
             if (p4.Results.Selection.length() > 0)
@@ -2304,7 +2304,7 @@ function activeIcons() {
     });
 
 
-    $('.TOOL_feedback_btn').live('click', function () {
+    $('.TOOL_feedback_btn').on('click', function () {
         var value = "", type = "", sstt_id = "", story = '';
         if ($(this).hasClass('results_window')) {
             if (p4.Results.Selection.length() > 0)
@@ -2342,7 +2342,7 @@ function activeIcons() {
     });
 
 
-    $('.TOOL_imgtools_btn').live('click', function () {
+    $('.TOOL_imgtools_btn').on('click', function () {
         var datas = {};
 
         if ($(this).hasClass('results_window')) {
@@ -2382,7 +2382,7 @@ function activeIcons() {
     });
 
 
-    $('.TOOL_disktt_btn').live('click', function () {
+    $('.TOOL_disktt_btn').on('click', function () {
         var datas = {};
 
         if ($(this).hasClass('results_window')) {

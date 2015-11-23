@@ -199,7 +199,7 @@
 
         $('.user_content .badges', this.container).disableSelection();
 
-        $('.user_content .badges .badge .toggle', this.container).die('click').live('click', function (event) {
+        $('.user_content .badges .badge .toggle', this.container).off('click').on('click', function (event) {
 
             var $this = $(this);
 
@@ -228,7 +228,7 @@
             return false;
         });
 
-        $('.user_content .badges .badge .deleter', this.container).live('click', function (event) {
+        $('.user_content .badges .badge .deleter', this.container).on('click', function (event) {
             var $elem = $(this).closest('.badge');
             $elem.fadeOut(function () {
                 $elem.remove();
@@ -424,7 +424,7 @@
             return false;
         });
 
-        $('a.list_sharer', this.container).die('click').live('click', function () {
+        $('a.list_sharer', this.container).off('click').on('click', function () {
 
             var $this = $(this),
                 options = {
@@ -662,7 +662,7 @@
 
         initLeft();
 
-        $('.badges a.deleter', this.container).live('click', function () {
+        $('.badges a.deleter', this.container).on('click', function () {
 
             var badge = $(this).closest('.badge');
 

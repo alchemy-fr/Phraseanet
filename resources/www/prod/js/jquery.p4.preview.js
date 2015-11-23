@@ -41,7 +41,7 @@ function openPreview(env, pos, contId, reload) {
 
         justOpen = true;
 
-        if (!$.browser.msie) {
+        if (!( navigator.userAgent.match(/msie/i))) {
             $('#PREVIEWBOX').css({
                 'display': 'block',
                 'opacity': 0

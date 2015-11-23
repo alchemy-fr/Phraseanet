@@ -21,7 +21,7 @@ $(document).ready(function () {
     $.datepicker.setDefaults({showMonthAfterYear: false});
     $.datepicker.setDefaults($.datepicker.regional[jq_date]);
 
-    $('a.infoDialog,div.infoDialog').live('click', function (event) {
+    $('a.infoDialog,div.infoDialog').on('click', function (event) {
         infoDialog($(this));
     });
 
@@ -65,10 +65,10 @@ $(document).ready(function () {
         event.stopPropagation();
     });
 
-    $('#notification_box div.notification').live('mouseover', function () {
+    $('#notification_box div.notification').on('mouseover', function () {
         $(this).addClass('hover');
     });
-    $('#notification_box div.notification').live('mouseout', function () {
+    $('#notification_box div.notification').on('mouseout', function () {
         $(this).removeClass('hover');
     });
 
@@ -481,7 +481,7 @@ function showOverlay(n, appendto, callback, zIndex) {
     $('#' + div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click', function () {
         (callback)();
     });
-    if ($.browser.msie && $.browser.version == '6.0') {
+    if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {
         $('select').css({
             visibility: 'hidden'
         });
@@ -496,7 +496,7 @@ function hideDwnl() {
 }
 
 function hideOverlay(n) {
-    if ($.browser.msie && $.browser.version == '6.0') {
+    if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {
         $('select').css({
             visibility: 'visible'
         });

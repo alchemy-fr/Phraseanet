@@ -66,7 +66,7 @@ var p4 = p4 || {};
         });
     }
 
-    $("#baskets div.content select[name=valid_ord]").live('change', function () {
+    $("#baskets div.content select[name=valid_ord]").on('change', function () {
         var active = $('#baskets .SSTT.ui-state-active');
         if (active.length === 0) {
             return;
@@ -531,7 +531,7 @@ var p4 = p4 || {};
     $(document).ready(function () {
         activeBaskets();
 
-        $('a.story_unfix').live('click', function () {
+        $('a.story_unfix').on('click', function () {
             unfix($(this).attr('href'));
 
             return false;
