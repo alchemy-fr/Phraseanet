@@ -19,7 +19,7 @@ gulp.task('watch-admin', function() {
 gulp.task('build-admin', ['copy-admin-images', 'build-admin-css'], function(){
     var adminGroup = [
         config.paths.vendors + 'underscore-amd/underscore.js',
-        config.paths.vendors + 'jquery.treeview/jquery.treeview.js',
+        config.paths.vendors + 'jquery-treeview/jquery.treeview.js',
         config.paths.src +  'admin/js/jquery.kb-event.js',
         config.paths.src +  'admin/js/template-dialogs.js',
         config.paths.vendors + 'requirejs/require.js',
