@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2015-11-23T15:43:56Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -942,7 +942,7 @@
       </trans-unit>
       <trans-unit id="a45ff91e0c1ebb94d62f5daaad1e708278ba484e" resname="An unexpected error occurred during authentication process, please contact an admin" approved="yes">
         <source>An unexpected error occurred during authentication process, please contact an admin</source>
-        <target state="translated">An unexpected error occurred during authentication process, please contact an admin</target>
+        <target state="translated">An unexpected error has occured during authentication process. Please contact an admin</target>
         <jms:reference-file line="761">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2063ba5ce348f48f77284c961f2291da1fdd79a5" resname="An upload on %bridge_adapter% failed, the resaon is : %reason%" approved="yes">
@@ -1251,7 +1251,7 @@
       </trans-unit>
       <trans-unit id="b0f9d3132d4759c2fd88c394935503435cebbc79" resname="Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?" approved="yes">
         <source>Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?</source>
-        <target state="translated">Allow application %application_name% to access content on %home_title% ?</target>
+        <target state="translated">Allow application %application_name% to access content on %home_title%?</target>
         <jms:reference-file line="73">api/auth/end_user_authorization.html.twig</jms:reference-file>
         <jms:reference-file line="74">api/auth/end_user_authorization.html.twig</jms:reference-file>
       </trans-unit>
@@ -1364,7 +1364,7 @@
       </trans-unit>
       <trans-unit id="c48c84e06158df748917de8c0cc13ea830636970" resname="Bonjour, veuillez vous identifier sur %home_title% :" approved="yes">
         <source>Bonjour, veuillez vous identifier sur %home_title% :</source>
-        <target state="translated">Hi, please identify on %home_title% :</target>
+        <target state="translated">Hi, please identify on %home_title%:</target>
         <jms:reference-file line="46">api/auth/end_user_authorization.html.twig</jms:reference-file>
         <jms:reference-file line="47">api/auth/end_user_authorization.html.twig</jms:reference-file>
       </trans-unit>
