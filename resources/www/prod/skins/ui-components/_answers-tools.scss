@@ -91,7 +91,7 @@
 
 #idFrameT .tools .dropdown-menu a:hover {
   background-color: $answersToolsBtnHoverBg;
-  color: $answersToolsBtnHoverColor;
+  color: $highlightTextColor; //$answersToolsBtnHoverColor;
 }
 
 #idFrameT .tools .dropdown-menu img {

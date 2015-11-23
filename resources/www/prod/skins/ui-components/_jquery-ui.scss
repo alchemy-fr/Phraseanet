@@ -1,5 +1,5 @@
 .ui-dialog .ui-dialog-content.loading, .loading {
-  background-image: url('#{$iconsPath}#{$dialogLoaderImg}');
+  background-image: url('#{$iconsPath}#{$contentLoaderImg}');
   background-position: center center;
   background-repeat: no-repeat;
 }

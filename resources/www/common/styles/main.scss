@@ -1,9 +1,10 @@
 /**
  * Common stylesheet, builded into assets/common/styles/common.css
  */
+@import '../../_shared/styles/variables';
 @import '../../vendors/bootstrap/bootstrap';
 @import '../../vendors/bootstrap/responsive';
-@import '../../_shared/styles/variables';
+@import '../../_shared/styles/override-bootstrap';
 @import '../../../../www/bower_components/font-awesome/sass/font-awesome.scss';
 
 @import '../../_shared/styles/main';

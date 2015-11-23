@@ -7,7 +7,7 @@ $basketsColor: #076882;
 ::-webkit-scrollbar-track
 {
   border-radius: 0;
-  background-color: #080808;
+  background-color: $backgroudPrimaryColor;
 }
 
 ::-webkit-scrollbar {
@@ -54,7 +54,7 @@ legend {
 
 body {
   color: $textPrimaryColor;
-  background-color: $col2;
+  background-color: $backgroudPrimaryColor;
   position: absolute;
   top: 0;
   left: 0;
@@ -101,9 +101,6 @@ EM {
   cursor: pointer;
 }
 
-.diapo.selected {
-  cursor: url('#{$iconsPath}cursor-move.png'), -moz-grab;
-}
 
 .ui-state-default, .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
@@ -226,32 +223,6 @@ span.ww_winTitle {
   padding: 3px 5px 0;
 }
 
-#idFrameC {
-  top: 0 !important;
-  min-width: 300px;
-  bottom: 0 !important;
-}
-
-#idFrameC.closed {
-  min-width: 0;
-}
-
-
-#idFrameC #retractableButton {
-  cursor: pointer;
-  width: 70px;
-  height: 85px;
-  float: right;
-  text-align: center;
-  line-height: 70px;
-  margin-bottom: -20px;
-  background: url('#{$iconsPath}workzoneEscamote.png') 30px 36px no-repeat;
-}
-
-#idFrameC.closed #retractableButton {
-  background: url('#{$iconsPath}workzoneEscamote_on.png') 30px 30px no-repeat;
-}
-
 #keyboard-dialog h1 {
   font-size: 14px;
   font-weight: bold;
@@ -335,25 +306,6 @@ span.ww_winTitle {
 .ui-selectable-helper {
   border: 1px dotted #CCCCCC;
   z-index: 10000;
-}
-
-#BasketBrowser .diapo .title {
-  height: 16px;
-}
-
-#answers .status img {
-  max-width: 16px;
-  max-height: 16px;
-}
-
-#answers #answersNext {
-  width: 150px;
-  margin: 5px;
-  height: 193px;
-  line-height: 193px;
-  font-size: 25px;
-  color: #666666;
-  cursor: pointer;
 }
 
 

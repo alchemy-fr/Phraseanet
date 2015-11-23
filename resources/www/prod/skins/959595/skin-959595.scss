@@ -1,23 +1,21 @@
-$col1: #B1B1B1;
-$col2: #D9D9D9;
+
 $skinsImagesPath: '/assets/vendors/jquery-ui/images/ui-lightness/';
 
-$defaultBorderColor: #666666;
+$defaultBorderColor: #999999;
 $defaultBorderRadius: 2px;
-
-
-// @TODO borders:
-// $hardBorder: #333333;
-// $softBorder: #666666;
-
-$backgroudPrimaryColor: #D9D9D9;
-$backgroudSecondaryColor: #D9D9D9;
+$backgroudPrimaryColor: #F1F1F1;
+$backgroudSecondaryColor: #B2B2B2; //#D9D9D9;
 $backgroundAltPrimaryColor: #1a1a1a;
 $textPrimaryColor: #333333;
 $textPrimaryHoverColor: #1a1a1a;
 $textPrimaryActiveColor: #1a1a1a;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
+
+$highlightTextColor: #FFFFFF;
+$highlightColor: #076882;
+$hightlightLighterColor: #005580;
+$highlightDarkerColor: #0c4554;
 
 // inverse
 $textInverseColor: #000;
@@ -28,7 +26,7 @@ $bgInverseHoverColor: #FFF;
 $mainMenuColor: #FFF;
 $mainMenuRightListBorderLeft: #999;
 
-$scrollBgColor: #3b3b3b;
+$scrollBgColor: $backgroudSecondaryColor; //#3b3b3b;
 
 $paginateBorderColor: #999999;
 $paginateBorder2Color: #999999;
@@ -38,7 +36,7 @@ $paginateBg2: #999;
 
 $uploadBg1: #FFFFFF;
 $uploadBg2: transparent;
-$uploadLoaderImg: 'loaderB1B1B1.gif';
+$uploadLoaderImg: 'loader-black.gif';
 
 $bridgeDialogBg: #D9D9D9;
 $bridgeDialogBg2: #B1B1B1;
@@ -141,7 +139,7 @@ $preferencesLabelColor: #333333;
 
 $uiColor1: #D9D9D9;
 $activeStateIcon: 'ui-icons_ffffff_256x240.png';
-$accordionLoaderImg: 'loaderd9d9d9.gif';
+$accordionLoaderImg: 'loader-black.gif';
 $accordionBorderColor: $defaultBorderColor;
 $accordionBgHeaderHover: #999;
 $accordionBgContent: #D9D9D9;
@@ -159,9 +157,9 @@ $dropdownDividerBorder: #404040;
 $overlayBg: #B1B1B1;
 
 $tabsNavBg: #999999;
-$tabsNavBgActive: #D9D9D9;
+$tabsNavBgActive: #B2B2B2; //#D9D9D9;
 $sliderBg: #1a1a1a;
-$dialogLoaderImg: 'loaderd9d9d9.gif';
+$contentLoaderImg: 'loader-black.gif';
 
 $btnBackground: #444444; //#B9B9B9;
 $btnBackgroundHighlight: #393939;

@@ -28,8 +28,7 @@ $gg: #292929;
 $gg: #076882;
 $gg: #0088CC;
 */
-$col1: #3b3b3b;
-$col2: #1a1a1a;
+
 $skinsImagesPath: '/assets/vendors/jquery-ui/images/dark-hive/';
 
 $defaultBorderColor: #303030;
@@ -39,16 +38,22 @@ $backgroudSecondaryColor: #3b3b3b;
 $backgroudAltColor: #404040;
 $backgroundAltPrimaryColor: #1a1a1a;
 
-$textPrimaryColor: #b1b1b1;
+$textPrimaryColor: #FFFFFF; //#b1b1b1;
 $textPrimaryHoverColor: #FFFFFF;
 $textPrimaryActiveColor: #FFFFFF;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
 
+$highlightTextColor: #FFFFFF;
+$highlightColor: #076882;
+$hightlightLighterColor: #005580;
+$highlightDarkerColor: #0c4554;
+
 // inverse
 $textInverseColor: #FFFFFF;
 $textInverseHoverColor: #000;
 $bgInverseHoverColor: #FFF;
+
 /******* GLOBAL PROD **********************************************************/
 
 $mainMenuColor: #b1b1b1;
@@ -57,15 +62,16 @@ $mainMenuRightListBorderLeft: #292929;
 $scrollBgColor: #3b3b3b;
 
 $paginateBorderColor: #3b3b3b;
-$paginateBorder2Color: #076882;
-$paginateTextColor: #FFFFFF;
+$paginateBorder2Color: $highlightColor;
+$paginateTextColor: $highlightTextColor;
 $paginateBg1: #141414;
-$paginateBg2: #076882;
+$paginateBg2: $highlightColor;
+$contextMenuBgHover: $highlightDarkerColor;
 
 
 $uploadBg1: #FFFFFF;
 $uploadBg2: #FFFFFF;
-$uploadLoaderImg: 'loaderFFF.gif';
+$uploadLoaderImg: 'loader-black.gif';
 
 $bridgeDialogBg: #000000;
 $bridgeDialogBg2: #404040;
@@ -170,7 +176,7 @@ $preferencesLabelColor: #999999;
 
 $uiColor1: #111111;
 $activeStateIcon: 'ui-icons_cccccc_256x240.png';
-$accordionLoaderImg: 'loader000.gif';
+$accordionLoaderImg: 'loader-white.gif';
 $accordionBorderColor: $defaultBorderColor;
 $accordionBgHeaderHover: #474747;
 $accordionBgContent: #212121;
@@ -189,9 +195,9 @@ $dropdownDividerBorder: #404040;
 $overlayBg: #111111;
 
 $tabsNavBg: #666666;
-$tabsNavBgActive: #404040;
+$tabsNavBgActive: $backgroudSecondaryColor;
 $sliderBg: #1a1a1a;
-$dialogLoaderImg: 'loader000.gif';
+$contentLoaderImg: 'loader-white.gif';
 
 $btnBackground: #EAEAEA;
 $btnBackgroundHighlight: #D6D6D6;

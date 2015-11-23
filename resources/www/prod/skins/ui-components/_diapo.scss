@@ -15,7 +15,7 @@
 #reorder_box .CHIM.diapo img {
   z-index: 1000;
   position: relative;
-  margin:0;
+  margin: 0;
 }
 
 #reorder_dialog .ui-sortable-placeholder,
@@ -25,14 +25,36 @@
   background-color: $backgroudSecondaryColor;
 }
 
-.diapo .thumb {
-  overflow: hidden;
+.diapo {
   position: relative;
-}
+  display: block;
+  float: left;
+  border: 1px solid #404040;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  text-align: center;
+  margin: 8px 5px;
+  &.selected {
+    cursor: url('#{$iconsPath}cursor-move.png'), -moz-grab;
+  }
 
-.diapo .thumb .record {
-  position: relative;
-  margin: 0 auto;
+  .thumb {
+    overflow: hidden;
+    position: relative;
+    .record {
+      position: relative;
+      margin: 0 auto;
+    }
+  }
+  .bottom {
+    position: absolute;
+    bottom: 0px;
+  }
+  div.title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .diapo.CHIM .thumb_wrapper {
@@ -41,8 +63,4 @@
 
 .diapo.IMGT .thumb_wrapper {
   padding: 0 11px;
-}
-
-.diapo .bottom {
-  position: absolute; bottom: 0px;
 }

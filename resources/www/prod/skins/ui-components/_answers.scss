@@ -38,23 +38,21 @@
   background-image: url('#{$iconsPath}download.gif');
 }
 
-.diapo div.title {
-  overflow: hidden;
-  text-overflow: ellipsis;
+#answers .status img {
+  max-width: 16px;
+  max-height: 16px;
 }
 
-
-div.diapo {
-  position: relative;
-  display: block;
-  float: left;
-  border: 1px solid #404040;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  text-align: center;
-  margin: 8px 5px;
+#answers #answersNext {
+  width: 150px;
+  margin: 5px;
+  height: 193px;
+  line-height: 193px;
+  font-size: 25px;
+  color: #666666;
+  cursor: pointer;
 }
+
 
 #idFrameT #answers {
   background-color: $answersBg;

@@ -1,4 +1,26 @@
+/**
+ * Workzone
+ */
 #idFrameC {
+  top: 0 !important;
+  min-width: 300px;
+  bottom: 0 !important;
+  &.closed {
+    min-width: 0;
+    #retractableButton {
+      background: url('#{$iconsPath}workzoneEscamote_on.png') 30px 30px no-repeat;
+    }
+  }
+  #retractableButton {
+    cursor: pointer;
+    width: 70px;
+    height: 85px;
+    float: right;
+    text-align: center;
+    line-height: 70px;
+    margin-bottom: -20px;
+    background: url('#{$iconsPath}workzoneEscamote.png') 30px 36px no-repeat;
+  }
   .wrapper {
     background-color: $workzoneBg;
     right: 10px;
