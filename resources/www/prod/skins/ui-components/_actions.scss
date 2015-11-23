@@ -122,3 +122,15 @@
   background-position: center center;
   background-repeat: no-repeat;
 }
+
+.contextMenuTrigger {
+  color: $textPrimaryColor;
+  font-size: 10px;
+  margin-left: 5px;
+  line-height: 18px;
+  vertical-align: middle;
+}
+
+.contextMenuTrigger:hover {
+  color: $textPrimaryColor;
+}

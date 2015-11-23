@@ -9,7 +9,7 @@
         {% if module is defined and module != "lightbox" and app.getAuthenticator().isAuthenticated() %}
           <li>
               <a target="_blank" href="{{ path('prod') }}">
-                <span class="">
+                <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
                   {{ 'admin::monitor: production' | trans }}
                 </span>
               </a>

@@ -1,206 +1,151 @@
-#idFrameC .wrapper {
-  background-color: $workzoneBg;
-  right: 10px;
-  border-top: 1px solid $workzoneBorderTop;
+#idFrameC {
+  .wrapper {
+    background-color: $workzoneBg;
+    right: 10px;
+    border-top: 1px solid $workzoneBorderTop;
+  }
+
+  .ui-tabs {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0;
+    .ui-tabs-nav {
+      li {
+        width: auto;
+        height: 85px;
+        display: inline-block;
+        background-color: $backgroudSecondaryColor;
+        z-index: 10;
+        border-radius: 0;
+        &.proposals_WZ {
+          &.ui-state-active {
+            a {
+              border-bottom: 3px solid $proposalColor;
+            }
+          }
+          &.active {
+            img.proposals_off {
+              display: none;
+            }
+          }
+          img.proposals_on {
+            display: none;
+          }
+        }
+
+        /*&.proposals_WZ.ui-state-active a {
+          border-bottom: 3px solid #4c5d84;
+        }*/
+        &.thesaurus.ui-state-active a {
+          border-bottom: 3px solid $thesaurusColor;
+        }
+        &.baskets.ui-state-active a {
+          border-bottom: 3px solid $basketsColor;
+        }
+        a {
+          padding: 0;
+          margin: 0;
+          border-radius: 0;
+          &.escamote {
+            margin: 25px 25px 0 0;
+          }
+        }
+        &:hover {
+          a {
+            background-color: $workzoneTabBgHover;
+            border-bottom: 3px solid $workzoneTabBgHover;
+          }
+        }
+        &.ui-state-active {
+          a {
+            background-color: $workzoneTabBgActive;
+            border-bottom: 1px solid $thesaurusColor;
+            height: 82px;
+          }
+        }
+      }
+    }
+    #thesaurus_tab {
+      li {
+        a {
+          color: $textPrimaryColor;
+        }
+        &.th_tab {
+          height: 43px;
+          margin: 0;
+          .ui-state-active {
+            border-bottom: 1px solid $thesaurusColor;
+          }
+          a {
+            height: 43px;
+            line-height: 43px;
+            vertical-align: middle;
+            margin: 0;
+            padding: 0 20px;
+            display: block;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+  ul.icon-menu {
+    width: 100%;
+  }
+  .icon-menu {
+    .WZtabs {
+      display: block;
+      width: 70px;
+      height: 82px;
+      line-height: 82px;
+      vertical-align: middle;
+      text-align: center;
+    }
+    .WZbasketTab {
+      display: block;
+      background-image: url('#{$iconsPath}workzone32.png');
+      background-repeat: no-repeat;
+      background-position: 9px 21px;
+      width: 70px;
+      height: 82px;
+    }
+  }
+  .closed {
+    .icon-menu li {
+      clear: left;
+    }
+  }
+  .ui-tabs-panel,
+  .ui-resizable-handle {
+    display: none;
+  }
+  .tools {
+    //text-align: center;
+    text-align: left !important;
+    button {
+      background-color: transparent;
+      border: none;
+      width: 16px;
+      height: 22px;
+      cursor: pointer;
+      padding: 0px;
+    }
+    label {
+      display: inline;
+      margin: 0 15px 0 0;
+      float: left;
+      font-size: 11px;
+      color: $workzoneToolsLabelColor;
+      line-height: 22px;
+      vertical-align: middle;
+    }
+  }
 }
 
-
-#idFrameC .ui-tabs .ui-tabs-nav li {
-  width: auto;
-  height: 85px;
-  display: inline-block;
-  background-color: $col1;
-  z-index: 10;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li.proposals_WZ.ui-state-active a {
-  border-bottom: 3px solid #4c5d84;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li.thesaurus.ui-state-active a {
-  border-bottom: 3px solid #884c92;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li.baskets.ui-state-active a {
-  border-bottom: 3px solid #076882;
-}
-
-
-#idFrameC .ui-tabs #thesaurus_tab li a {
-  color: #FFFFFF;
-}
-
-#idFrameC .ui-tabs #thesaurus_tab li.th_tab a {
-  height: 43px;
-  line-height: 43px;
-  vertical-align: middle;
-  margin: 0;
-  padding: 0 20px;
-  display: block;
-  text-decoration: none;
-}
-
-#idFrameC .ui-tabs #thesaurus_tab li.th_tab .ui-state-active {
-  border-bottom: 1px solid #884c92;
-}
-
-#idFrameC .ui-tabs #thesaurus_tab li.th_tab {
-  height: 43px;
-  margin: 0;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li {
-  border-radius: 0;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li a {
-  padding: 0;
-  margin: 0;
-  border-radius: 0;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li a.escamote {
-  margin:25px 25px 0 0;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li:hover a {
-  background-color: $workzoneTabBgHover;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a {
-  background-color: $workzoneTabBgActive;
-  border-bottom: 1px solid #884c92;
-  height: 82px;
-}
-
-#idFrameC ul.icon-menu {
-  width: 100%;
-}
-
-#idFrameC .icon-menu .WZbasketTab {
-  display: block;
-  background-image: url('#{$iconsPath}workzone32.png');
-  background-repeat: no-repeat;
-  background-position: 9px 21px;
-  width: 70px;
-  height: 82px;
-}
-
-#idFrameC .icon-menu .WZtabs {
-  display: block;
-  width: 70px;
-  height: 82px;
-  line-height: 82px;
-  vertical-align: middle;
-  text-align: center;
-}
-
-#idFrameC.closed .icon-menu li {
-  clear: left;
-}
-
-#idFrameC.closed .ui-tabs-panel,
-#idFrameC.closed .ui-resizable-handle {
-  display: none;
-}
-
-#idFrameC li.proposals_WZ.active img.proposals_off,
-#idFrameC li.proposals_WZ img.proposals_on {
-  display: none;
-}
-
-/******* BASKETS **************************************************************/
-
-#idFrameC .tools {
-  text-align: center;
-}
-
-#idFrameC .tools button {
-  background-color:  transparent;
-  border: none;
-  width: 16px;
-  height: 22px;
-  cursor: pointer;
-  padding: 0px;
-}
-
-#idFrameC #baskets .alert_datas_changed {
-  position: absolute;
-  top: 5px;
-  height: 20px;
-  right: 26px;
-  left: 10px;
-  background-color: $workzoneBasketAlertDataBg;
-  color: $workzoneBasketAlertDataColor;
-  text-align: center;
-  font-weight: bold;
-  font-size: 12px;
-  display: none;
-  z-index: 5000;
-}
-
-#idFrameC #baskets .content.grouping .alert_datas_changed,
-#idFrameC #baskets .content.basket .alert_datas_changed {
-  position: relative;
-  margin: 10px 0;
-  right: 0;
-  left: 0;
-}
-
-#idFrameC #baskets .bloc {
-  position: absolute;
-  top: 31px;
-  left: 0pt;
-  right: 1px;
-  bottom: 0px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#baskets .insidebloc {
-  top: 0;
-}
-
-#baskets .top-scroller,
-#baskets .bottom-scroller {
-  height: 80px;
-  position: absolute;
-  border: none;
-  top: 0px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-#baskets .top-scroller {
-  bottom: auto;
-}
-
-#baskets .bottom-scroller {
-  top: auto;
-}
-
-#idFrameC #baskets .bloc.groupDrop {
-  border: 3px solid #a00;
-}
-
-#idFrameC .ui-tabs {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0;
-}
-
-#idFrameE .ui-tabs {
-  position: absolute;
-  top: 0px;
-  left: 10px;
-  bottom: 0px;
-  right: 0;
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav,#idFrameE .ui-tabs .ui-tabs-nav {
+#idFrameC .ui-tabs .ui-tabs-nav,
+#idFrameE .ui-tabs .ui-tabs-nav {
   background-color: transparent;
   top: 0px;
   left: 10px;
@@ -212,7 +157,8 @@
   border-bottom: 1px solid $workzoneTabBorderBottom;
 }
 
-#idFrameC .ui-tabs .ui-tabs-panel,#idFrameE .ui-tabs .ui-tabs-panel {
+#idFrameC .ui-tabs .ui-tabs-panel,
+#idFrameE .ui-tabs .ui-tabs-panel {
   position: absolute;
   top: 56px;
   left: 0px;
@@ -221,21 +167,6 @@
 }
 
 .alert_datas_changed a {
-  color: #414141;
+  color: #404040;
   text-decoration: underline;
 }
-
-#idFrameC .tools {
-  text-align: left !important;
-}
-
-#idFrameC .tools label {
-  display: inline;
-  margin: 0 15px 0 0;
-  float: left;
-  font-size: 11px;
-  color: $workzoneToolsLabelColor;
-  line-height: 22px;
-  vertical-align: middle;
-}
-

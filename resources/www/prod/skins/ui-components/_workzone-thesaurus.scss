@@ -1,12 +1,10 @@
-.treeview li {
-  color: #a1a1a1;
-  vertical-align: middle;
-  background-image: none;
-  .hitarea {
-    background: none;
-    width: 100%;
-    height: 100%;
-    position: absolute;
+
+.treeview {
+
+  li {
+    color: #a1a1a1;
+    vertical-align: middle;
+    background-image: none;
   }
   > li.expandable {
     min-height: 50px;
@@ -20,20 +18,21 @@
     > .hitarea {
       height: 51px;
       background: url('#{$iconsPath}sprite_tree_first.png') 99% 22px no-repeat;
-      border-left: 5px $col1 solid;
+      border-left: 5px $backgroudSecondaryColor solid;
       &:hover,
-      &.active{
-        border-left: 5px #884c93 solid;
+      &.active {
+        border-left: 5px $thesaurusColor solid;
       }
     }
   }
-}
-.treeview {
+  .hitarea {
+    background: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
   ul {
     li {
-      &:hover {
-        color: $textPrimaryColor;
-      }
       .hitarea {
         background: url('#{$iconsPath}icon_tree.png') 0 0 no-repeat;
         position: relative;
@@ -41,11 +40,14 @@
         width: 9px;
         margin-top: 5px;
       }
-      span.h {
-        color: #884c92 !important;
+      &:hover {
+        color: $textPrimaryColor;
       }
       span {
         color: #a6a6a6;
+        &.h {
+          color: $thesaurusColor !important;
+        }
       }
     }
   }
@@ -81,12 +83,12 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #THPD_tabs {
   right: 0;
-  .ui-tabs-nav{
+  .ui-tabs-nav {
     .ui-state-default A {
       color: $thesaurusContextMenuColor;
     }
     .ui-tabs-active A {
-      color: #FFFFFF;
+      color: $textPrimaryActiveColor;
       text-decoration: underline;
     }
   }
@@ -119,8 +121,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
   }
 
   .treeview LI.selected SPAN {
-    background-color: #884c92 !important;
-    color: #FFFFFF !important;
+    background-color: $thesaurusColor !important;
+    color: $textPrimaryActiveColor !important;
   }
 
   .treeview LI.selected SPAN {
@@ -136,11 +138,11 @@ dans l'onglet thesaurus : arbres, menus contextuels
   }
 }
 
-
 #THPD_T, #THPD_C {
   margin-top: 10px;
   margin-left: 0px;
 }
+
 #THPD_WIZARDS {
   .gform {
     .input-append {
@@ -165,7 +167,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
         vertical-align: middle;
         padding: 0;
         border-radius: 0;
-        background: $col1 url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
+        background: $backgroudSecondaryColor url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
         border: none;
         margin: 0;
         outline: none;
@@ -194,84 +196,3 @@ dans l'onglet thesaurus : arbres, menus contextuels
   }
 }
 
-/******* THESAURUS ************************************************************/
-
-div.thesaurus {
-  margin-left: 2px;
-  white-space: nowrap;
-  p {
-    margin: 0;
-  }
-  div.c {
-    display: none
-  }
-}
-
-#idFrameE #TH_Ofull, #idFrameTH #TH_Oprop, #idFrameTH #TH_Oclip {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-#idFrameE {
-  div.searchZone {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    PADDING: 0px;
-    MARGIN: 0px;
-    BACKGROUND: $thesaurusBg2;
-    BORDER: #a9a9a9 1px solid;
-  }
-
-  div.thesaurus div.c {
-    DISPLAY: none
-  }
-
-  div.thesaurus div.o {
-    MARGIN-BOTTOM: 1px;
-    PADDING-BOTTOM: 2px;
-    PADDING-LEFT: 5px;
-    MARGIN-LEFT: 3px;
-    BORDER-LEFT: #a9a9a9 1px solid;
-    BORDER-BOTTOM: #a9a9a9 1px solid;
-  }
-
-  div.thesaurus div.h {
-    MARGIN-BOTTOM: 1px;
-    PADDING-BOTTOM: 2px;
-    PADDING-LEFT: 5px;
-    MARGIN-LEFT: 3px;
-    BORDER-LEFT: #a9a9a9 1px solid;
-    BORDER-BOTTOM: #a9a9a9 1px solid;
-  }
-
-  div.thesaurus u {
-    width: 9px;
-    height: 10px;
-    MARGIN-RIGHT: 2px;
-    text-align: center;
-    display: inline-block;
-    font-size: 8px;
-    TEXT-DECORATION: none;
-    BACKGROUND-COLOR: #F0F0F0;
-    cursor: pointer;
-    color: black;
-    line-height: 10px;
-  }
-
-  div.thesaurus b {
-    cursor: pointer;
-  }
-
-  div.thesaurus i {
-    FONT-STYLE: normal;
-    cursor: pointer;
-  }
-
-  div.thesaurus u.w {
-    cursor: auto;
-  }
-}

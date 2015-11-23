@@ -24,7 +24,7 @@
 }
 
 #PREVIEWCURRENT li.selected {
-  background-color: #FFFFFF;
+  background-color: $bgInverseHoverColor;
 }
 
 #PREVIEWBOX li {
@@ -213,5 +213,5 @@
 
 .prevTrainCurrent .duration, .diapo .duration {
   background-color: black;
-  color: #FFFFFF;
+  color: $textPrimaryColor;
 }

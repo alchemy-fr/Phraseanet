@@ -27,7 +27,7 @@
                         <table id="addFileList">
                             <tr>
                                 <td class='uploader-button'>
-                                    <span class="btn btn-inverse fileinput-button input-medium">
+                                    <span class="btn fileinput-button input-medium">
                                         <span>{{ 'Select files...' | trans }}</span>
                                         <input type="file" name="files[]" multiple>
                                     </span>
@@ -100,8 +100,8 @@
                         <div class='upload-box' style="display: none;">
                             {% set quantity = '<span class="number-files">0</span>' %}
                             <h5>{% trans with {'%quantity%' : quantity} %}%quantity% selected files{% endtrans %}</h5>
-                            <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Clear list' | trans }}</button>
-                            <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Send' | trans }}</button>
+                            <button type="button" class="clear-queue btn input-medium" style="margin-bottom: 10px;">{{ 'Clear list' | trans }}</button>
+                            <button type="button" class="upload-submitter btn input-medium" style="margin-bottom: 10px;">{{ 'Send' | trans }}</button>
                             <div class="clear"></div>
                             <div class='upload-box-addedfiles'></div>
                             <div class="clear"></div>

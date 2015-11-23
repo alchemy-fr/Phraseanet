@@ -13,14 +13,14 @@
   font-weight: bold;
   font-size: 14px;
   line-height: 18px;
-  color: #FFFFFF;
+  color: $textPrimaryColor;
   text-decoration: none;
 }
 
 #printBox label, #download label,
 #sendmail label, #ftp label {
   line-height: 18px;
-  color: #FFFFFF;
+  color: $textPrimaryColor;
 }
 
 #sendmail p, #ftp p,

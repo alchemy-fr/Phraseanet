@@ -140,7 +140,7 @@
 }
 
 #thumbExtractor #thumb_wrapper img.selected {
-  border: 2px solid #FFFFFF;
+  border: 2px solid $bgInverseHoverColor;
 }
 
 #thumbExtractor #thumb_camera_button {

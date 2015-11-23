@@ -73,6 +73,7 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.vendors + 'blueimp-load-image/js/load-image.js', // @TODO > extra files
         config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
         config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
+        config.paths.vendors + 'geonames-server-jquery-plugin/jquery.geonames.js',
         config.paths.src + 'prod/js/jquery.form.2.49.js',
         config.paths.src + 'prod/js/jquery.Selection.js',
         config.paths.src + 'prod/js/jquery.Edit.js',

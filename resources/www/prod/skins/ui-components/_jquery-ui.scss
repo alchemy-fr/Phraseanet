@@ -20,57 +20,57 @@
   background: none;
   border: transparent 0px none;
 }
+.ui-tabs {
+  .ui-tabs-nav {
+    li {
+      background-color: $tabsNavBg;
+      height: 30px;
+      border: none;
+      overflow: hidden;
+      a {
+        padding: 5px 8px;
+        font-size: 0.8em;
+        font-weight: normal;
+      }
+      &.ui-tabs-active {
+        background-color: $tabsNavBgActive;
+        border: none;
+      }
+      &.ui-tabs-active a,
+      &.ui-state-disabled a,
+      &.ui-state-processing a {
+        cursor: pointer;
+        color: $workzoneColor1
+      }
 
-.ui-tabs .ui-tabs-nav li {
-  background-color: $tabsNavBg;
-  height: 30px;
-  border: none;
-  overflow: hidden;
+    }
+  }
+  .ui-tabs-panel {
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
+    border-width: 0;
+    padding: 0px;
+    background-color: $backgroudSecondaryColor;
+    &.tabBox {
+      height: 405px;
+      overflow: auto;
+      position: relative;
+      padding: 10px;
+
+    }
+  }
+  .ui-tabs-hide {
+    display: none !important;
+  }
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-active {
-  background-color: $tabsNavBgActive;
-  border: none;
-}
 
-.ui-tabs .ui-tabs-nav li a {
-  padding: 10px 8px;
-  font-size: 0.8em;
-  font-weight: normal;
-}
-
-.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
-.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
-.ui-tabs .ui-tabs-nav li.ui-state-processing a {
-  cursor: pointer;
-  color: $workzoneColor1
-}
 
 .ui-tabs .ui-tabs-nav li a,
 .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
   cursor: pointer;
   color: $workzoneColor2;
-}
-
-.ui-tabs .ui-tabs-panel {
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: block;
-  border-width: 0;
-  padding: 0px;
-  background-color: $col1;
-}
-
-.ui-tabs .ui-tabs-panel.tabBox {
-  height: 405px;
-  overflow: auto;
-  position: relative;
-  padding: 10px;
-
-}
-
-.ui-tabs .ui-tabs-hide {
-  display: none !important;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default {
@@ -115,7 +115,7 @@
 }
 
 .ui-state-active .ui-icon {
-  background-image: url('#{$skinsImagesPath}#{$activeStateIcon}.png');
+  background-image: url('#{$skinsImagesPath}#{$activeStateIcon}');
 }
 
 
@@ -136,13 +136,9 @@
   margin-bottom: 0;
   height: 44px;
   line-height: 44px;
-  background-color: $col1;
+  background-color: $backgroudSecondaryColor;
   border-bottom: 1px solid $accordionBorderColor;
   border-radius: 0;
-}
-
-.ui-accordion>div {
-  border-top: 1px solid $accordionBorderColor;
 }
 
 .ui-accordion .ui-accordion-header.unread .workzone-menu-title {
@@ -178,3 +174,52 @@
   border-top: none;
 }
 
+// override jqurey ui theme value:
+.ui-corner-all, .ui-corner-br {
+  border-radius: $defaultBorderRadius;
+}
+.ui-corner-top {
+  border-top-left-radius: $defaultBorderRadius;
+  border-top-right-radius: $defaultBorderRadius;
+}
+.ui-corner-bottom {
+  border-bottom-right-radius: $defaultBorderRadius;
+  border-bottom-left-radius: $defaultBorderRadius;
+}
+.ui-corner-right {
+  border-top-right-radius: $defaultBorderRadius;
+  border-bottom-right-radius: $defaultBorderRadius;
+}
+.ui-corner-left {
+  border-top-left-radius: $defaultBorderRadius;
+  border-bottom-left-radius: $defaultBorderRadius;
+}
+
+.ui-dialog.ui-widget-content {
+  border: $modalBorder;
+  background: $modalBackground;
+  //background: #000000 url("../images/dark-hive/ui-bg_loop_25_000000_21x21.png") 50% 50% repeat;
+  // color: #ffffff;
+}
+
+.ui-dialog-titlebar {
+  min-height: 20px;
+}
+
+.ui-dialog-content.dialog-Small select,
+.ui-dialog-content.dialog-Small input[type="text"],
+.ui-dialog-content.dialog-Small textarea {
+  width: 100%;
+}
+
+.ui-dialog-content.dialog-Small textarea {
+  height: 60px;
+}
+
+.ui-dialog-content label {
+  line-height: 18px;
+}
+
+.ui-dialog-content p {
+  line-height: 18px;
+}

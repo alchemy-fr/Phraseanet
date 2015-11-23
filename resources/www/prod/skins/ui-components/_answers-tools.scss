@@ -14,7 +14,7 @@
 #idFrameT .btn-toolbar {
   margin-bottom: 0px;
   margin-top: 0px;
-  background-color: $col1;
+  background-color: $backgroudSecondaryColor;
   font-size:10px;
   z-index:100;
   height:45px;
@@ -47,7 +47,7 @@
 #idFrameT .tools .classicButton button.btn-inverse,
 #idFrameT .tools .dropdownButton button.btn-inverse {
   background-image: none;
-  background-color: $col1;
+  background-color: $backgroudSecondaryColor;
   border-radius: 0;
   margin: 0;
   height: 45px;
@@ -67,7 +67,7 @@
 #idFrameT .tools .dropdownButton button.btn-inverse:hover {
   background-color: $answersToolsBtnBg;
   *background-color: $answersToolsBtnBg;
-  color: #FFFFFF;
+  color: $textPrimaryHoverColor;
 }
 
 #idFrameT .tools .classicButton button.btn-inverse img,
@@ -102,14 +102,27 @@
   display: block;
   float: right;
   line-height: 45px;
-  padding-right: 30px;
+  padding-right: 51px;
   padding-left: 21px;
-  margin-right: 21px;
+  margin-right: 0;
   color: $answersToolsBtnSettingsColor;
   background: url('#{$iconsPath}icone_settings.png') right 15px no-repeat;
+  background-position: right 21px top 15px;
   border-left: 1px solid $answersToolsBtnSettingsBorder;
 }
 
 #idFrameT .tools #settings:hover {
   background-color: $answersToolsBtnSettingsHoverBg;
+}
+@media screen and (max-width: 1200px) {
+  #idFrameT .tools button.btn-inverse img {
+    display: none;
+  }
+  #idFrameT .tools #settings {
+    text-indent: -9000px;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: 8px;
+    width: 26px;
+  }
 }

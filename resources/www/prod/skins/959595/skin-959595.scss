@@ -2,6 +2,8 @@ $col1: #B1B1B1;
 $col2: #D9D9D9;
 $skinsImagesPath: '/assets/vendors/jquery-ui/images/ui-lightness/';
 
+$defaultBorderColor: #666666;
+$defaultBorderRadius: 2px;
 
 
 // @TODO borders:
@@ -12,8 +14,15 @@ $backgroudPrimaryColor: #D9D9D9;
 $backgroudSecondaryColor: #D9D9D9;
 $backgroundAltPrimaryColor: #1a1a1a;
 $textPrimaryColor: #333333;
+$textPrimaryHoverColor: #1a1a1a;
+$textPrimaryActiveColor: #1a1a1a;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
+
+// inverse
+$textInverseColor: #000;
+$textInverseHoverColor: #000;
+$bgInverseHoverColor: #FFF;
 
 /******* GLOBAL PROD **********************************************************/
 $mainMenuColor: #FFF;
@@ -31,10 +40,10 @@ $uploadBg1: #FFFFFF;
 $uploadBg2: transparent;
 $uploadLoaderImg: 'loaderB1B1B1.gif';
 
-$publishDialogBg: #D9D9D9;
-$publishDialogBg2: #B1B1B1;
-$publishDialogBg3: #B1B1B1;
-$publishDialogBg4: #D9D9D9;
+$bridgeDialogBg: #D9D9D9;
+$bridgeDialogBg2: #B1B1B1;
+$bridgeDialogBg3: #B1B1B1;
+$bridgeDialogBg4: #D9D9D9;
 $publishFeedBorder: #959595;
 $publishFeedColor: #333333;
 $publishFeedOddBg: #959595;
@@ -59,7 +68,7 @@ $thesaurusBg2: #FFFFFF;
 
 $thesaurusContextMenuColor: #FFFFFF;
 $proposalsBg: #999;
-$proposalsBorder: #666666;
+$proposalsBorder: $defaultBorderColor;
 $proposalsTitle: #FFFFFF;
 $proposalsTitleBorder: #666666;
 
@@ -133,7 +142,7 @@ $preferencesLabelColor: #333333;
 $uiColor1: #D9D9D9;
 $activeStateIcon: 'ui-icons_ffffff_256x240.png';
 $accordionLoaderImg: 'loaderd9d9d9.gif';
-$accordionBorderColor: #999;
+$accordionBorderColor: $defaultBorderColor;
 $accordionBgHeaderHover: #999;
 $accordionBgContent: #D9D9D9;
 
@@ -141,6 +150,8 @@ $popoverBg: #999999;
 $popoverBorder: #444;
 $popoverColor: $textPrimaryColor;
 $popoverInnerBg: #D9D9D9;
+$modalBorder: 1px solid #444;
+$modalBackground: #D9D9D9;
 
 $dropdownDividerBg: #515151;
 $dropdownDividerBorder: #404040;
@@ -152,10 +163,16 @@ $tabsNavBgActive: #D9D9D9;
 $sliderBg: #1a1a1a;
 $dialogLoaderImg: 'loaderd9d9d9.gif';
 
+$btnBackground: #444444; //#B9B9B9;
+$btnBackgroundHighlight: #393939;
+$btnColor: #AAAAAA;
+$btnTextShadow: 0 -1px 0 rgba(0,0,0,.25);
+
 $btnInverseBackground: #B9B9B9;
 $btnInverseBackgroundHighlight: #A4A4A4;
 $btnInverseColor: #EAEAEA;
-$btnGrpSeparatorColor: #999999;
+$btnInverseTextShadow: 0 -1px 0 rgba(0,0,0,.25);
+$btnGrpSeparatorColor: $defaultBorderColor;
 
 $widgetContentColor: $textPrimaryInverseColor;
 

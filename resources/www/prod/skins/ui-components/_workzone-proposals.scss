@@ -17,7 +17,7 @@
       font-size: 13px;
     }
     &.fancytree-container {
-      background-color: $col1;
+      background-color: $backgroudSecondaryColor;
       border: 0px none transparent;
       overflow-x: hidden;
       padding-left: 0;
@@ -33,9 +33,9 @@
           line-height: 25px;
           white-space: pre-line !important;
           &:hover {
-            background-color: #4c5d84;
+            background-color: $proposalColor;
             .fancytree-title {
-              color: #FFFFFF;
+              color: $textPrimaryHoverColor;
             }
           }
         }
@@ -47,17 +47,17 @@
     height: 49px;
     line-height: 49px;
     margin-left: 0;
-    border-left: 4px solid $col1;
+    border-left: 4px solid $backgroudSecondaryColor;
     border-bottom: 1px solid $proposalsTitleBorder;
     .fancytree-title {
       font-size: 12px;
       margin-left: 10px;
     }
     &:hover {
-      border-left: 4px solid #4c5d84;
-      color: #FFFFFF;
+      border-left: 4px solid $proposalColor;
+      color: $textPrimaryHoverColor;
       .fancytree-title {
-        color: #FFFFFF;
+        color: $textPrimaryHoverColor;
       }
     }
     .fancytree-expander {
@@ -67,7 +67,7 @@
       }
       &:hover {
         &:before {
-          color: #076882;
+          color: $basketsColor;
         }
       }
 
@@ -76,7 +76,7 @@
   .fancytree-expanded {
     .fancytree-expander:before {
       content: '\25BC'; /* U+25BC BLACK BLACK DOWN-POINTING TRIANGLE */
-      color: #ffffff;
+      color: $textPrimaryHoverColor;
     }
   }
 
@@ -108,7 +108,7 @@
     vertical-align: middle;
     border-radius: 4px;
     right: 28px;
-    background-color: #4c5d84;
+    background-color: $proposalColor;
     padding-left: 13px;
     padding-right: 13px;
     margin-top: 11px;

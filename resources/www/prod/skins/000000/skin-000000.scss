@@ -1,15 +1,56 @@
+/**
+// @TODO define base colors
+$black: #000000;
+$gg: #111111;
+$gg: #141414;
+$gg: #1a1a1a;
+$gg: #292929;
+$gg: #303030;
+$gg: lighten(#000000, 23); //#3b3b3b; // primary color
+$gg: #404040;
+$gg: #606060;
+$gg: #666666;
+$gg: #999999;
+$gg: #b1b1b1; // text color
+$gg: #EAEAEA;
+$gg: #FFFFFF;
+
+
+$gg: #222222;
+$gg: #393939;
+$gg: #515151;
+$gg: #aaaaaa;
+$gg: #313131;
+
+// color themed:
+$gg: #b1b1b1;
+$gg: #292929;
+$gg: #076882;
+$gg: #0088CC;
+*/
 $col1: #3b3b3b;
 $col2: #1a1a1a;
 $skinsImagesPath: '/assets/vendors/jquery-ui/images/dark-hive/';
 
+$defaultBorderColor: #303030;
+$defaultBorderRadius: 2px;
 $backgroudPrimaryColor: #1A1A1A;
-$backgroudSecondaryColor: #404040;
+$backgroudSecondaryColor: #3b3b3b;
+$backgroudAltColor: #404040;
 $backgroundAltPrimaryColor: #1a1a1a;
-$textPrimaryColor: #FFFFFF;
+
+$textPrimaryColor: #b1b1b1;
+$textPrimaryHoverColor: #FFFFFF;
+$textPrimaryActiveColor: #FFFFFF;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
 
+// inverse
+$textInverseColor: #FFFFFF;
+$textInverseHoverColor: #000;
+$bgInverseHoverColor: #FFF;
 /******* GLOBAL PROD **********************************************************/
+
 $mainMenuColor: #b1b1b1;
 $mainMenuRightListBorderLeft: #292929;
 
@@ -21,17 +62,18 @@ $paginateTextColor: #FFFFFF;
 $paginateBg1: #141414;
 $paginateBg2: #076882;
 
+
 $uploadBg1: #FFFFFF;
 $uploadBg2: #FFFFFF;
 $uploadLoaderImg: 'loaderFFF.gif';
 
-$publishDialogBg: #000000;
-$publishDialogBg2: #414141;
-$publishDialogBg3: #404040;
-$publishDialogBg4: #111111;
-$publishFeedBorder: #414141;
+$bridgeDialogBg: #000000;
+$bridgeDialogBg2: #404040;
+$bridgeDialogBg3: #404040;
+$bridgeDialogBg4: #111111;
+$publishFeedBorder: #404040;
 $publishFeedColor: #FFFFFF;
-$publishFeedOddBg: #414141;
+$publishFeedOddBg: #404040;
 $publishFeedOddColor: #FFFFFF;
 $publishFeedHoverBg: #606060;
 $publishFeedHoverColor: #FFFFFF;
@@ -53,7 +95,7 @@ $thesaurusBg2: #404040;
 
 $thesaurusContextMenuColor: #c0c0c0;
 $proposalsBg: #292929;
-$proposalsBorder: #303030;
+$proposalsBorder: $defaultBorderColor;
 $proposalsTitle: #A6A6A6;
 $proposalsTitleBorder: #303030;
 
@@ -65,12 +107,12 @@ $basketsBg1: #212121;
 $guiSplitterImg: 'vsplitter2.png';
 
 $workzoneBg: #3b3b3b;
-$workzoneBorderTop: #000;
+$workzoneBorderTop: $defaultBorderColor;
 $workzoneColor1: inherit;
 $workzoneColor2: inherit;
 $workzoneColor3: #EAEAEA;
 $workzoneTabBgHover: #666666;
-$workzoneTabBgActive: #333;
+$workzoneTabBgActive: #333333;
 $workzoneTabBorderTop: #303030;
 $workzoneTabBorderBottom: #303030;
 $workzoneBasketAlertDataBg: #fff190;
@@ -117,7 +159,7 @@ $searchSbasListSelectedBorder: #404040;
 
 $editCarouselBg: #1a1a1a;
 $editCarouselBorder: #B1B1B1;
-$editStatusFieldOdd: #5F5F5F;
+$editStatusFieldOdd: #606060;
 $editStatusFieldHover: #B1B1B1;
 $editStatusFieldActive: #FEFEFE;
 $editTextMultiValueBg: #444444;
@@ -129,7 +171,7 @@ $preferencesLabelColor: #999999;
 $uiColor1: #111111;
 $activeStateIcon: 'ui-icons_cccccc_256x240.png';
 $accordionLoaderImg: 'loader000.gif';
-$accordionBorderColor: #000;
+$accordionBorderColor: $defaultBorderColor;
 $accordionBgHeaderHover: #474747;
 $accordionBgContent: #212121;
 
@@ -137,6 +179,9 @@ $popoverBg: #000;
 $popoverBorder: #444;
 $popoverColor: $textPrimaryColor;
 $popoverInnerBg: #000;
+$modalBorder: 1px solid #555555;
+$modalBackground: #212121;
+
 
 $dropdownDividerBg: #515151;
 $dropdownDividerBorder: #404040;
@@ -148,14 +193,23 @@ $tabsNavBgActive: #404040;
 $sliderBg: #1a1a1a;
 $dialogLoaderImg: 'loader000.gif';
 
+$btnBackground: #EAEAEA;
+$btnBackgroundHighlight: #D6D6D6;
+$btnColor: #8e8e8e;
+$btnTextShadow: 0 -1px 0 rgba(0,0,0,0);
+
 $btnInverseBackground: #444444;
 $btnInverseBackgroundHighlight: #393939;
 $btnInverseColor: #AAAAAA;
+$btnInverseTextShadow: 0 -1px 0 rgba(0,0,0,.25);
 $btnGrpSeparatorColor: #242424;
 
 $widgetContentColor: $textPrimaryColor;
 
 $linkDefaultColor: #b1b1b1;
 $linkDefaultHover: #838383;
+
+
+
 
 @import '../skin-shared';

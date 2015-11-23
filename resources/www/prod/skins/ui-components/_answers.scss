@@ -3,18 +3,6 @@
   margin: 0;
 }
 
-.contextMenuTrigger {
-  color: #FFFFFF;
-  font-size: 10px;
-  margin-left: 5px;
-  line-height: 18px;
-  vertical-align: middle;
-}
-
-.contextMenuTrigger:hover {
-  color: #FFFFFF;
-}
-
 .captionRolloverTips, .previewTips, .infoTips,
 .baskAdder, .printer, .downloader, .baskDeleter {
   background-image: url('#{$iconsPath}zoom.gif');
@@ -48,23 +36,6 @@
 
 .downloader {
   background-image: url('#{$iconsPath}download.gif');
-}
-
-#tool_navigate input {
-  text-align: center;
-}
-
-#tool_navigate a {
-  padding: 1px 5px;
-  margin: 0 4px;
-  background-color: #0077BC;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .diapo div.title {
@@ -194,7 +165,7 @@ div.diapo {
 
 
 #answers .feed .btn-inverse:hover {
-  color: #FFFFFF;
+  color: $textPrimaryHoverColor;
 }
 
 #answers .feed .btn-group.open .btn-inverse.dropdown-toggle {

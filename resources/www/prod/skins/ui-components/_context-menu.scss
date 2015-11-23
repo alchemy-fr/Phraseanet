@@ -33,7 +33,7 @@ Menu contextuel
 
 .context-menu-theme-default .context-menu-item-hover {
   background-color: #0A246A;
-  color: #FFFFFF;
+  color: $textPrimaryHoverColor;
 }
 
 .context-menu-theme-default .context-menu-item-disabled-hover {

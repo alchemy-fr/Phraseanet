@@ -4,18 +4,34 @@
 
 #uploadBox {
   height: 100%;
-}
-
-#uploadBox .clear {
-  clear: both;
-}
-
-#uploadBox .upload-tabs {
-  height: 100%;
-}
-
-#uploadBox .ui-tabs .ui-tabs-panel {
-  padding: 20px;
+  h5 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+  }
+  .clear {
+    clear: both;
+  }
+  .upload-tabs {
+    height: 100%;
+  }
+  .ui-tabs .ui-tabs-panel {
+    padding: 20px;
+  }
+  .well {
+    margin: 0;
+    padding: 0.5%;
+    color: $textPrimaryInverseColor;
+  }
+  #fileupload {
+    height: 97%;
+  }
+  span.comment {
+    font-style: italic;
+    color: $textSecondaryColor;
+  }
 }
 
 #uploadBoxLeft, #uploadBoxRight {
@@ -31,64 +47,6 @@
 
 #uploadBoxRight {
   float: right;
-}
-
-#uploadBox .well {
-  margin: 0;
-  padding: 0.5%;
-  color: $textPrimaryInverseColor;
-}
-
-#uploadBox #fileupload {
-  height: 97%;
-}
-
-#uploadBox h5 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 13px;
-  font-weight: bold;
-  text-align: left;
-}
-
-#uploadBox span.comment {
-  font-style: italic;
-  color: $textSecondaryColor;
-}
-
-#uploadBox button.btn, #uploadBox span.btn {
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 12px;
-  font-weight: bold;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-#uploadBox .btn-inverse {
-  background-color: #D6D6D6;
-  *background-color: #D6D6D6;
-  background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#D6D6D6));
-  background-image: -webkit-linear-gradient(top, #FFFFFF, #D6D6D6);
-  background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
-  background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
-  background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-  border-color: #D6D6D6 #D6D6D6 #bfbfbf;
-  border-bottom-color: #b3b3b3;
-  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-  *border: 1px solid #666666;
-  text-shadow: none;
-  color: #777777;
-  font-weight: bold;
-}
-
-#uploadBox .btn-inverse:hover, #uploadBox .disabled {
-  background-color: #D6D6D6;
-  *background-color: #D6D6D6;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  color: #FFFFFF;
 }
 
 #uploadBox .fileinput-button {

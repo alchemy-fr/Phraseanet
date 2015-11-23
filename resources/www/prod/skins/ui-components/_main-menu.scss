@@ -1,8 +1,10 @@
+@import '../../../_shared/styles/variables';
+@import '../../../_shared/styles/main-menu';
 /*******  MAINMENU ************************************************************/
 
 #mainMenu {
-  height: 40px;
-  line-height: 40px;
+  height: $mainMenuHeight;
+  line-height: $mainMenuLineHeight;
   vertical-align: middle;
 }
 
@@ -13,7 +15,7 @@
 
 #mainMenu li, #mainMenu li span {
   height: 40px;
-  line-height: 40px;
+  line-height: $mainMenuLineHeight;
   color: $mainMenuColor;
 }
 
@@ -31,12 +33,12 @@
 }
 
 #mainMenu .PNB.right li.user:hover {
-  background-color: #FFFFFF;
-  color: black;
+  background-color: $bgInverseHoverColor;
+  color: $textInverseHoverColor;
 }
 
 #mainMenu, .publi_group {
-  background-color: $col1;
+  background-color: $backgroudSecondaryColor;
 }
 
 .context-menu-item a {

@@ -1,4 +1,22 @@
 
+#tool_navigate input {
+  text-align: center;
+}
+
+#tool_navigate a {
+  padding: 1px 5px;
+  margin: 0 4px;
+  background-color: #0077BC;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
 #paginate {
   float: right;
   margin: 0 65px 15px 0;

@@ -1,4 +1,10 @@
 /******* FORMULAIRE DE RECHERCHE **********************************************/
+form.phrasea_query input.query {
+  padding-left: 30px;
+  font-size: 16px;
+  margin: 0;
+  width: 59%;
+}
 
 .searchFormWrapper {
   margin: 30px 0 0 5px;

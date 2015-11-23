@@ -1,3 +1,7 @@
+$proposalColor: #4c5d84;
+$thesaurusColor: #884c92;
+$basketsColor: #076882;
+
 @import '../../_shared/styles/variables';
 
 ::-webkit-scrollbar-track
@@ -34,11 +38,11 @@
 input::selection, textarea::selection,
 input::-moz-selection, textarea::-moz-selection {
   background: #404040;
-  color: #FFFFFF;
+  color: $textInverseColor;
 }
 
 label {
-  color: #FFFFFF;
+  color: $textInverseColor;
 }
 
 legend {
@@ -305,9 +309,7 @@ span.ww_winTitle {
 
 
 
-.ui-dialog-titlebar {
-  min-height: 20px;
-}
+
 
 .chim-wrapper {
   position: relative;
@@ -387,23 +389,7 @@ span.ww_winTitle {
   position: relative;
 }
 
-.ui-dialog-content.dialog-Small select,
-.ui-dialog-content.dialog-Small input[type="text"],
-.ui-dialog-content.dialog-Small textarea {
-  width: 100%;
-}
 
-.ui-dialog-content.dialog-Small textarea {
-  height: 60px;
-}
-
-.ui-dialog-content label {
-  line-height: 18px;
-}
-
-.ui-dialog-content p {
-  line-height: 18px;
-}
 
 /******* ORDER MANAGER ********************************************************/
 
@@ -494,7 +480,7 @@ H4 {
   font-weight: bold;
   line-height: 14px;
   text-align: center;
-  color: #FFFFFF;
+  color: $textInverseColor;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   float: left;
 }
@@ -515,18 +501,7 @@ H4 {
 
 
 
-@media screen and (max-width: 1200px) {
-  #idFrameT .tools button.btn-inverse img {
-    display: none;
-  }
-  #idFrameT .tools #settings {
-    text-indent: -9000px;
-    padding-right: 0px;
-    padding-left: 0px;
-    margin-right: 8px;
-    width: 26px;
-  }
-}
+
 /******* POPOVERS *************************************************************/
 
 #tooltip .popover {

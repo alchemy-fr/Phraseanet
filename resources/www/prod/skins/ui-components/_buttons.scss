@@ -1,13 +1,14 @@
 @import '../../../../../www/bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/_mixins.scss';
-.btn {
+button, .btn, input[type="file"] {
   //font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
   //font-size: 12px;
   //font-weight: bold;
   // soften button edges:
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  @include buttonBackground($btnBackground, $btnBackgroundHighlight, $btnColor, $btnTextShadow);
 }
 .btn.btn-inverse {
-  @include buttonBackground($btnInverseBackground, $btnInverseBackgroundHighlight, $btnInverseColor);
+  @include buttonBackground($btnInverseBackground, $btnInverseBackgroundHighlight, $btnInverseColor, $btnInverseTextShadow);
 }
 
 // @TODO .btn-primary
