@@ -26,6 +26,11 @@ gulp.task('build-dependencies', ['install-bower-dependencies'], function(){
     gulp.start('build');
     gulp.start('build-css');
 });
+gulp.task('init-plugins-folder', function(){
+    if( !config.checkPath('plugins', true)) {
+        // something to do in plugins folder?
+    }
+});
 
 
 /**
@@ -37,5 +42,8 @@ gulp.task('install-assets', function(){
 });
 
 gulp.task('install', ['clean:assetsPath'], function(){
+
+    // ensure plugins path exists
+    gulp.start('init-plugins-folder');
     gulp.start('build-dependencies');
 });
