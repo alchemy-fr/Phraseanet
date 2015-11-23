@@ -20,7 +20,6 @@ use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Permalink;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
-use Alchemy\Phrasea\Core\Event\Subscriber\ApiCorsSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -30,6 +29,7 @@ use Monolog\Processor\WebProcessor;
 use Silex\Application as SilexApplication;
 use Silex\Provider\WebProfilerServiceProvider;
 use Sorien\Provider\DoctrineProfilerServiceProvider;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -85,7 +85,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         ));
     }, PhraseaApplication::EARLY_EVENT);
 
-    $app->after(function(Request $request, Response $response) use ($app) {
+    $app->after(function(Request $request, Response $response) {
         if ($request->getRequestFormat(Result::FORMAT_JSON) === Result::FORMAT_JSONP && !$response->isOk() && !$response->isServerError()) {
             $response->setStatusCode(200);
         }
@@ -148,7 +148,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         }
     }
 
-    $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
+    $app['dispatcher'] = $app->share($app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, PhraseaApplication $app) {
         $dispatcher->addSubscriber(new ApiOauth2ErrorsSubscriber($app['phraseanet.exception_handler'], $app['translator']));
 
         return $dispatcher;
@@ -156,7 +156,6 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->after(function (Request $request, Response $response) use ($app) {
         $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
     });
-    $app['dispatcher']->addSubscriber(new ApiCorsSubscriber($app));
 
     return $app;
 }, isset($environment) ? $environment : PhraseaApplication::ENV_PROD);

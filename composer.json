@@ -40,7 +40,7 @@
         "alchemy/oauth2php":                     "1.0.0",
         "alchemy/phlickr":                       "0.2.9",
         "alchemy/rest-bundle":                   "master@dev",
-        "alchemy/symfony-cors":                  "master@dev",
+        "alchemy/symfony-cors":                  "^0.1.0",
         "alchemy/task-manager":                  "2.0.x-dev@dev",
         "alchemy/zippy":                         "0.2.x-dev@dev",
         "beberlei/assert":                       "^2.3",
