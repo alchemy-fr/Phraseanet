@@ -383,7 +383,9 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks("grunt-contrib");
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-bower-postinst");
