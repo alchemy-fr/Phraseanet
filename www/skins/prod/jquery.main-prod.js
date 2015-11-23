@@ -620,7 +620,7 @@ function loadFacets(facets) {
         });
         // Facet
         return {
-            title: facet.name,
+            title: facet.label,
             folder: true,
             children: values,
             expanded: _.isUndefined(selectedFacetValues[facet.name])

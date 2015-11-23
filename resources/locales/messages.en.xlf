@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2015-11-19T12:47:12Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2015-11-23T15:43:56Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -136,7 +136,7 @@
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
         <source><![CDATA[%number% documents<br/>selectionnes]]></source>
-        <target state="translated">%number% documents&lt;br/&gt;selected</target>
+        <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="154">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac5c6fe2979cfa2496c95dcb218f135fd916040d" resname="%quantity% Stories attached to the WorkZone" approved="yes">
@@ -10836,6 +10836,21 @@
         <source>prod::editing:replace: chaine a rechercher</source>
         <target state="translated">Find</target>
         <jms:reference-file line="280">prod/actions/edit_default.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label">
+        <source>prod::facet:base_label</source>
+        <target state="new">Base</target>
+        <jms:reference-file line="188">Controller/Prod/QueryController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label">
+        <source>prod::facet:collection_label</source>
+        <target state="new">Collection</target>
+        <jms:reference-file line="189">Controller/Prod/QueryController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label">
+        <source>prod::facet:doctype_label</source>
+        <target state="new">Document Type</target>
+        <jms:reference-file line="190">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
         <source>prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.</source>
