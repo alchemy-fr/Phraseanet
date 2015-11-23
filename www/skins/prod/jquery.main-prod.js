@@ -627,7 +627,46 @@ function loadFacets(facets) {
         };
     });
 
+    treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
+
+    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base', 'Collection', 'Type']);
+
     return getFacetsTree().reload(treeSource);
+}
+
+function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
+    var filteredSource = source,
+        ordered = [];
+
+    _.forEach(predefinedFieldOrder, function(fieldValue, index){
+        _.forEach(source, function(facet, facetIndex) {
+            if (facet[field] === fieldValue) {
+                ordered.push(facet);
+                // remove from filtered
+                filteredSource.splice(facetIndex, 1);
+
+            }
+        });
+    });
+    // push reordoned objects on top of array:
+    // walk backward
+    var olen = ordered.length;
+    for(var i = olen-1; i>=0; i--) {
+        filteredSource.unshift(ordered[i]);
+    }
+
+    return filteredSource;
+
+}
+// from stackoverflow
+// http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects/979325#979325
+function sortFacets(field, reverse, primer) {
+    var key = function (x) {return primer ? primer(x[field]) : x[field]};
+
+    return function (a,b) {
+        var A = key(a), B = key(b);
+        return ( (A < B) ? -1 : ((A > B) ? 1 : 0) ) * [-1,1][+!!reverse];
+    }
 }
 
 function getFacetsTree() {
