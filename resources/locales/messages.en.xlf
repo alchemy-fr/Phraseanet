@@ -10000,9 +10000,9 @@
         <target state="translated">Registration process report</target>
         <jms:reference-file line="29">Notification/Mail/MailSuccessAccessRequest.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="27931bffd4d47208fcd74a5462a7d4ce48b86a1e" resname="login::register:email: Votre compte %application%">
+      <trans-unit id="27931bffd4d47208fcd74a5462a7d4ce48b86a1e" resname="login::register:email: Votre compte %application%" approved="yes">
         <source>login::register:email: Votre compte %application%</source>
-        <target state="new">login::register:email: Votre compte %application%</target>
+        <target state="translated">Your account %application%</target>
         <jms:reference-file line="21">Notification/Mail/MailSuccessAccessRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ace8a8481cf18b9b69c30aa34a65135ed2d75277" resname="login::register:email: Vous avez ete accepte sur les collections suivantes : ">
