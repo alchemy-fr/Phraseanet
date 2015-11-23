@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2015-11-18T19:42:05Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -713,9 +713,9 @@
         <target state="translated">Dans l'infobulle de description, après les métadonnées</target>
         <jms:reference-file line="639">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b9ba037c0e4c06d192c83e08070b15787f07daaa" resname="Aggregation">
+      <trans-unit id="b9ba037c0e4c06d192c83e08070b15787f07daaa" resname="Aggregation" approved="yes">
         <source>Aggregation</source>
-        <target state="new">Aggregation</target>
+        <target state="translated">Agrégation</target>
         <jms:reference-file line="181">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40a1dd8272b48953d037ba565c6189e9ef5cd06b" resname="Aide">
@@ -940,9 +940,9 @@
         <target state="translated">Une erreur est survenue à la lecture de ce fichier</target>
         <jms:reference-file line="93">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a45ff91e0c1ebb94d62f5daaad1e708278ba484e" resname="An unexpected error occurred during authentication process, please contact an admin">
+      <trans-unit id="a45ff91e0c1ebb94d62f5daaad1e708278ba484e" resname="An unexpected error occurred during authentication process, please contact an admin" approved="yes">
         <source>An unexpected error occurred during authentication process, please contact an admin</source>
-        <target state="new">An unexpected error occurred during authentication process, please contact an admin</target>
+        <target state="translated">Une erreur est survenue lors de l'authentification. Veuillez contacter un Administrateur</target>
         <jms:reference-file line="761">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2063ba5ce348f48f77284c961f2291da1fdd79a5" resname="An upload on %bridge_adapter% failed, the resaon is : %reason%" approved="yes">
@@ -980,9 +980,9 @@
         <target state="translated">L'ApplicationBox est inaccessible</target>
         <jms:reference-file line="119">Phrasea/Controller/SetupController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b291beb8793f4f3308c463951165dad483715a6c" resname="Application">
+      <trans-unit id="b291beb8793f4f3308c463951165dad483715a6c" resname="Application" approved="yes">
         <source>Application</source>
-        <target>Application</target>
+        <target state="translated">Application</target>
         <jms:reference-file line="12">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="498778131fed5b01b06132a7c29c2d29829410c4" resname="Application description" approved="yes">
@@ -1010,9 +1010,9 @@
         <target state="translated">l'ApplicationBox est une base de données  Mysql .</target>
         <jms:reference-file line="604">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="76c74bd071dd73f01696fddbbffc77712a479faf" resname="Applications">
+      <trans-unit id="76c74bd071dd73f01696fddbbffc77712a479faf" resname="Applications" approved="yes">
         <source>Applications</source>
-        <target>Applications</target>
+        <target state="translated">Applications</target>
         <jms:reference-file line="54">web/account/base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7dcbf97d352327fd4566c6fd1ea2dc557e682c0a" resname="Apply a model" approved="yes">
