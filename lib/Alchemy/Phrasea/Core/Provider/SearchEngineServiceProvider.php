@@ -70,13 +70,13 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             );
         });
 
-        $app['search_engine.structure'] = $app->share(function ($app) {
+        $app['search_engine.structure'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
             $databoxes = $app->getDataboxes();
             return GlobalStructure::createFromDataboxes($databoxes);
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
-            return new FacetsResponse(new Escaper(), $response);
+            return new FacetsResponse(new Escaper(), $response, $app['search_engine.structure']);
         });
 
 

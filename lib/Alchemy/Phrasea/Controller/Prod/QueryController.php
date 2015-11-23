@@ -184,7 +184,30 @@ class QueryController extends Controller
             $json['parsed_query'] = $result->getQuery();
             /** End debug */
 
-            $json['facets'] = $result->getFacets();
+            $fieldLabels = [
+                'Base_Name' => $this->app->trans('prod::facet:base_label'),
+                'Collection_Name' => $this->app->trans('prod::facet:collection_label'),
+                'Type_Name' => $this->app->trans('prod::facet:doctype_label'),
+            ];
+            foreach ($this->app->getDataboxes() as $databox) {
+                foreach ($databox->get_meta_structure() as $field) {
+                    if (!isset($fieldLabels[$field->get_name()])) {
+                        $fieldLabels[$field->get_name()] = $field->get_label($this->app['locale']);
+                    }
+                }
+            }
+
+            $facets = [];
+
+            foreach ($result->getFacets() as $facet) {
+                $facetName = $facet['name'];
+
+                $facet['label'] = isset($fieldLabels[$facetName]) ? $fieldLabels[$facetName] : $facetName;
+
+                $facets[] = $facet;
+            }
+
+            $json['facets'] = $facets;
             $json['phrasea_props'] = $proposals;
             $json['total_answers'] = (int) $result->getAvailable();
             $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;

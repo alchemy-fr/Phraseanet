@@ -422,17 +422,17 @@ class ElasticSearchEngine implements SearchEngineInterface
         // We always want a collection facet right now
         $collection_facet_agg = array();
         $collection_facet_agg['terms']['field'] = 'collection_name';
-        $aggs['Collection'] = $collection_facet_agg;
+        $aggs['Collection_Name'] = $collection_facet_agg;
 
         // We always want a base facet right now
         $base_facet_agg = array();
         $base_facet_agg['terms']['field'] = 'databox_name';
-        $aggs['Base'] = $base_facet_agg;
+        $aggs['Base_Name'] = $base_facet_agg;
 
         // We always want a type facet right now
         $base_facet_agg = array();
         $base_facet_agg['terms']['field'] = 'type';
-        $aggs['Type'] = $base_facet_agg;
+        $aggs['Type_Name'] = $base_facet_agg;
 
         $structure = $this->context_factory->getLimitedStructure($options);
         foreach ($structure->getFacetFields() as $name => $field) {

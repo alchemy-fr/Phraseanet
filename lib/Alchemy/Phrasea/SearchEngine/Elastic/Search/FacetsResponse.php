@@ -3,11 +3,11 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
-use JsonSerializable;
 
-class FacetsResponse implements JsonSerializable
+class FacetsResponse
 {
     private $escaper;
     private $facets = array();
@@ -71,14 +71,14 @@ class FacetsResponse implements JsonSerializable
     private function buildQuery($name, $value)
     {
         switch($name) {
-            case 'Collection':
+            case 'Collection_Name':
                 return sprintf('collection:%s', $this->escaper->escapeWord($value));
-            case 'Base':
+            case 'Base_Name':
                 return sprintf('database:%s', $this->escaper->escapeWord($value));
-            case 'Type':
+            case 'Type_Name':
                 return sprintf('type:%s', $this->escaper->escapeWord($value));
             default:
-                return sprintf('%s = %s',
+                return sprintf('field.%s = %s',
                     $this->escaper->escapeWord($name),
                     $this->escaper->escapeWord($value));
         }
@@ -89,7 +89,10 @@ class FacetsResponse implements JsonSerializable
         throw new RuntimeException('Invalid aggregation response');
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array
+     */
+    public function toArray()
     {
         return $this->facets;
     }

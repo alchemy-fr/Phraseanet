@@ -27,6 +27,7 @@ class SearchEngineResult
     protected $suggestions;
     protected $propositions;
     protected $indexes;
+    /** @var FacetsResponse */
     protected $facets;
 
     public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error,
@@ -182,6 +183,6 @@ class SearchEngineResult
      */
     public function getFacets()
     {
-        return $this->facets;
+        return $this->facets->toArray();
     }
 }
