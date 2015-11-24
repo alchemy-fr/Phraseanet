@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,12 +17,17 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
      */
     public function testSerialize()
     {
-        $options = new SearchEngineOptions(self::$DI['app']);
-        $options->onCollections([self::$DI['collection']]);
+        /** @var Application $app */
+        $app = self::$DI['app'];
+        /** @var \collection $collection */
+        $collection = self::$DI['collection'];
 
-        $options->allowBusinessFieldsOn([self::$DI['collection']]);
+        $options = new SearchEngineOptions($app);
+        $options->onCollections([$collection]);
 
-        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $field) {
+        $options->allowBusinessFieldsOn([$collection]);
+
+        foreach ($collection->get_databox()->get_meta_structure() as $field) {
             $options->setFields([$field]);
             $options->setDateFields([$field]);
             break;
@@ -35,7 +41,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
 
         $serialized = $options->serialize();
 
-        $this->assertEquals($options, SearchEngineOptions::hydrate(self::$DI['app'], $serialized));
+        $this->assertEquals($options, SearchEngineOptions::hydrate($app, $serialized));
     }
 
     /**
@@ -43,14 +49,16 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
      */
     public function testFromRequest()
     {
-        $this->authenticate(self::$DI['app']);
+        /** @var Application $app */
+        $app = self::$DI['app'];
+        $this->authenticate($app);
 
         foreach ($this->provideRequestData() as $pack) {
             list ($query, $request, $field, $dateField) = $pack;
 
             $httpRequest = new Request($query, $request);
 
-            $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
+            $options = SearchEngineOptions::fromRequest($app, $httpRequest);
 
             // Check done this way because returned array can be indexed differently
             $collections = $options->getCollections();
@@ -116,7 +124,9 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
     {
         $field = $dateField = null;
 
-        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $db_field) {
+        /** @var \collection $collection */
+        $collection = self::$DI['collection'];
+        foreach ($collection->get_databox()->get_meta_structure() as $db_field) {
             if (!$field) {
                 $field = $db_field;
             } elseif (!$dateField) {
@@ -131,8 +141,8 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         }
 
         $data = [
-            'bases' => [self::$DI['collection']->get_base_id()],
-            'status' => ['4' => ['on' => [self::$DI['collection']->get_databox()->get_sbas_id()]]],
+            'bases' => [$collection->get_base_id()],
+            'status' => ['4' => ['on' => [$collection->get_databox()->get_sbas_id()]]],
             'fields' => [$field->get_name()],
             'record_type' => 'video',
             'search_type' => '1',
@@ -143,9 +153,6 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
             'sort' => 'topinambour',
             'stemme' => 'true',
         ];
-
-        $dataWithoutBases = $data;
-        unset($dataWithoutBases['bases']);
 
         return [
             [[], $data, $field, $dateField],
