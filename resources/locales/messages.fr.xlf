@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2015-12-04T11:41:01Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -6360,9 +6360,9 @@
         <target state="translated">Il n'y a pas d'utilisateur à ajouter.</target>
         <jms:reference-file line="52">user/import/view.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3fc5195b4a6ff8dc205dbbad17104fa93db88281" resname="Thesaurus Min score">
+      <trans-unit id="3fc5195b4a6ff8dc205dbbad17104fa93db88281" resname="Thesaurus Min score" approved="yes">
         <source>Thesaurus Min score</source>
-        <target state="new">Thesaurus Min score</target>
+        <target state="translated">Hits minimum du Thésaurus</target>
         <jms:reference-file line="42">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="163fc70a23cf29331bab9896c9a8a0cb0b113bd6" resname="Thesaurus branch" approved="yes">
@@ -10489,19 +10489,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rechercher</target>
         <jms:reference-file line="288">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label">
+      <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="no">
         <source>prod::facet:base_label</source>
-        <target state="new">prod::facet:base_label</target>
+        <target state="needs-translation">Bases</target>
         <jms:reference-file line="188">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label">
+      <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label" approved="no">
         <source>prod::facet:collection_label</source>
-        <target state="new">prod::facet:collection_label</target>
+        <target state="needs-translation">Collections</target>
         <jms:reference-file line="189">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label">
+      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="no">
         <source>prod::facet:doctype_label</source>
-        <target state="new">prod::facet:doctype_label</target>
+        <target state="needs-translation">Types de documents</target>
         <jms:reference-file line="190">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
@@ -12553,9 +12553,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Inconnu</target>
         <jms:reference-file line="34">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9f273e321a1d1ea40251ab0a45f8ca8cbdd135da" resname="untitled">
+      <trans-unit id="9f273e321a1d1ea40251ab0a45f8ca8cbdd135da" resname="untitled" approved="yes">
         <source>untitled</source>
-        <target state="new">untitled</target>
+        <target state="translated">Sans titre</target>
         <jms:reference-file line="58">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="38ed031ff1a2d3f63b6415db3993741c54e41087" resname="update::Votre application necessite une mise a jour vers :" approved="yes">
