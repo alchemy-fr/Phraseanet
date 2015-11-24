@@ -7110,9 +7110,9 @@
         <target state="translated">Des champs requis sont vides</target>
         <jms:reference-file line="29">admin/publications/wrapper.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d30e482b31f235fe321d5b4ef3a7d729334a96b6" resname="Vous devez selectionner un type de sous definitions" approved="yes">
+      <trans-unit id="d30e482b31f235fe321d5b4ef3a7d729334a96b6" resname="Vous devez selectionner un type de sous definitions" approved="no">
         <source>Vous devez selectionner un type de sous definitions</source>
-        <target state="translated">Vous devez sélectionner un type de sous résolution</target>
+        <target state="needs-translation">Vous devez sélectionner un type de sous-définitions</target>
         <jms:reference-file line="579">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd7d9b9fe8ae83d942ba82a7800b4e73266e5b42" resname="Vous devez specifier une adresse email et un mot de passe valides" approved="yes">
@@ -7620,7 +7620,7 @@
       </trans-unit>
       <trans-unit id="b52fed35cf7cfe73dd34f6f347a21b7b6fdcf75f" resname="Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories." approved="yes">
         <source>Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.</source>
-        <target state="translated">Vos documents et leurs sous résolutions (sous définitions, vignettes...) seront stockés dans ces répertoires</target>
+        <target state="translated">Vos documents et leurs sous résolutions (vignettes, prévisualisations et autres sous-définitions) sont stockés dans ces répertoires</target>
         <jms:reference-file line="671">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="257253d658fdcbe73c4f4d02d2a3442ea8e4011d" resname="Your registration requests have been taken into account." approved="yes">
@@ -11195,7 +11195,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="e29ea3e14febc313f90283459d28f04a05ec19a7" resname="report:: nombre de preview" approved="yes">
         <source>report:: nombre de preview</source>
-        <target state="translated">Nombre de sous définitions</target>
+        <target state="translated">Nombre de sous-définitions</target>
         <jms:reference-file line="84">Controller/Report/ActivityController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="52a2c7c51c95719594e526c51995fec2cff55c9a" resname="report:: nombre de reponses" approved="yes">
@@ -11289,7 +11289,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="e8f9a2fcac1f24e878349bd855fd00cd2014dd1d" resname="report:: preview" approved="yes">
         <source>report:: preview</source>
-        <target state="translated">Sous définitions</target>
+        <target state="translated">Sous-définitions</target>
         <jms:reference-file line="291">Controller/Report/ActivityController.php</jms:reference-file>
         <jms:reference-file line="62">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
@@ -11968,7 +11968,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="22521932c9bec018c03aa532fbe27ad677c93c7d" resname="task::subdef:creation des sous definitions des documents d'origine" approved="yes">
         <source>task::subdef:creation des sous definitions des documents d'origine</source>
-        <target state="translated">Création des sous définitions des documents</target>
+        <target state="translated">Création des sous-définitions des documents</target>
         <jms:reference-file line="42">TaskManager/Job/SubdefsJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6461a8ed4547d1f7b576964b65ff0d1630ff3894" resname="task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)" approved="yes">
