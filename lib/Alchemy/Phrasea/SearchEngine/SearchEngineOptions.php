@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class SearchEngineOptions
 {
@@ -599,6 +600,10 @@ class SearchEngineOptions
 
         /** @var \collection[] $bas */
         $bas = array_filter($bas, $filter);
+
+        if (!empty($selected_bases) && empty($bas)) {
+            throw new BadRequestHttpException('No collections match your criteria');
+        }
 
         $options->onCollections($bas);
 
