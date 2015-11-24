@@ -775,7 +775,7 @@ function doThesSearch(type, sbid, term, field)
   if(type=='T')
     v = '[' + term + ']';
   else
-    v = '"' + term + '" IN ' + field;
+    v = field + '= "' + term + '"';
   selectedFacetValues = [];
   $('#EDIT_query').val(v);
   checkFilters();
