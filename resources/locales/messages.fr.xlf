@@ -2555,17 +2555,17 @@
       </trans-unit>
       <trans-unit id="201b9ab150a2ab3e5641814c373f8db1949199d0" resname="ElasticSearch index name" approved="yes">
         <source>ElasticSearch index name</source>
-        <target state="translated">Nom de l'index Elastic</target>
+        <target state="translated">Nom de l'index Elasticsearch</target>
         <jms:reference-file line="30">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b89586db0b00163ce75ae7426f06aa2e2a57b223" resname="ElasticSearch server host" approved="yes">
         <source>ElasticSearch server host</source>
-        <target state="translated">Hôte du serveur Elastic</target>
+        <target state="translated">Hôte du serveur Elasticsearch</target>
         <jms:reference-file line="23">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18fd7d0c79d71cd9317190ae98dccdb1f7cf8b76" resname="ElasticSearch service port" approved="yes">
         <source>ElasticSearch service port</source>
-        <target state="translated">Port de service Elastic</target>
+        <target state="translated">Port de service Elasticsearch</target>
         <jms:reference-file line="26">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="84add5b2952787581cb9a8851eef63d1ec75d22b" resname="Email" approved="yes">
