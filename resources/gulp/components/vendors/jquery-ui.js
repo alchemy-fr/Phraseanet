@@ -7,10 +7,11 @@ gulp.task('copy-jquery-ui-images', function(){
         .pipe(gulp.dest( config.paths.build + 'vendors/jquery-ui/images'));
 });
 
+// DEPRECATED > theme is loaded in skin 000000
 gulp.task('copy-jquery-ui-theme1', function(){
     utils.buildCssGroup([config.paths.src + 'vendors/jquery-ui/dark-hive.scss'], 'dark-hive', 'vendors/jquery-ui/css/');
 });
-
+// DEPRECATED > theme is loaded in skin 959595
 gulp.task('copy-jquery-ui-theme2', function(){
     utils.buildCssGroup([config.paths.src + 'vendors/jquery-ui/ui-lightness.scss'], 'ui-lightness', 'vendors/jquery-ui/css/');
 });

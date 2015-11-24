@@ -14,46 +14,42 @@ form.phrasea_query input.query {
 #searchForm {
   width: 100%;
   float: left;
+  .input-append {
+    float: left;
+    width: 50%;
+    .btn {
+      border:none;
+    }
+    a.btn {
+      height: 22px;
+      width: 20px;
+    }
+    button.btn {
+      height: 30px;
+      width: 110px;
+    }
+  }
+  .control-group {
+    float: right;
+    margin-left: 0;
+  }
+  .danger .danger_indicator,
+  .danger.danger_indicator {
+    border-color: #c9c900;
+    background-color: #FCEC98;
+    color: #000000;
+  }
+
 }
-
-#searchForm .input-append {
-  float: left;
-  width: 50%;
-}
-
-#searchForm .control-group {
-  float: right;
-  margin-left: 0;
-}
-
-#searchForm .input-append .btn {
-  border:none;
-}
-
-#searchForm .input-append a.btn {
-  height: 22px;
-  width: 20px;
-}
-
-#searchForm .input-append button.btn {
-  height: 30px;
-  width: 110px;
-}
-
-#searchForm .danger .danger_indicator,
-#searchForm .danger.danger_indicator {
-  border-color: #c9c900;
-  background-color: #FCEC98;
-  color: #000000;
-}
-
-
-#adv_search table.colllist {
-  width: 290px;
-}
-
-#adv_search table.filterlist {
-  width: 600px;
+#adv_search {
+  table {
+    &.colllist {
+      width: 290px;
+    }
+    &.filterlist {
+      width: 600px;
+    }
+  }
 }
 
 /******* SEARCH ***************************************************************/
@@ -61,7 +57,7 @@ form.phrasea_query input.query {
 #adv_search .sbasglob,
 .adv_options .sbasglob,
 #sbasfiltercont {
-  color: $searchSbasFilterColor;
+  color: $lightTextColor;
   margin: 0 0 0 10px;
 }
 
@@ -89,8 +85,8 @@ form.phrasea_query input.query {
 
 #adv_search .sbasglob .sbas_list.selected,
 .adv_options .sbasglob .sbas_list.selected {
-  border: 2px solid $searchSbasListSelectedBorder;
-  background-color: $searchSbasListSelectedBg;
+  border: 2px solid $lightBorderSelectedColor;
+  background-color: $lightBackgroundSelectedColor;
 }
 
 .sbasglob .btn-toolbar,
@@ -99,21 +95,15 @@ form.phrasea_query input.query {
   text-align: center;
 }
 
-.sbaslist {
+/*.sbaslist {
   background-color: $searchSbasListBg;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
-}
+}*/
 
 .sbas_list label {
-  color: $searchSbasListColor;
-}
-
-.clksbas span {
-  cursor: pointer;
-  font-weight: bold;
-  margin: 0 5px;
+  color: $lightTextColor;
 }
 
 .clkbas {
@@ -124,6 +114,11 @@ form.phrasea_query input.query {
   -o-column-break-inside:avoid;
   -ms-column-break-inside:avoid;
   column-break-inside:avoid;
+  span {
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0 5px;
+  }
 }
 
 #searchForm .clkbas label {

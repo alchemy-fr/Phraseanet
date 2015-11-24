@@ -1,5 +1,9 @@
+$colorpickerBoxBorder: #FFFFFF;
+$colorpickerSubmitBorder: #404040;
+$colorpickerFocusBorder: #999999;
+
 .colorpicker_box {
-  border: 1px solid #FFFFFF;
+  border: 1px solid $colorpickerBoxBorder;
   cursor: pointer;
   float: left;
   margin: 2px;
@@ -24,12 +28,12 @@
     position: absolute;
     top: 15px;
     width: 100px;
-    border: 1px solid #404040;
+    border: 1px solid $colorpickerSubmitBorder;
     cursor: pointer;
     text-align: center;
   }
   .colorpicker_focus {
-    border: 1px solid #999999;
+    border: 1px solid $colorpickerFocusBorder;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;

@@ -10,7 +10,7 @@
 }
 
 #EDIT_TOP {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   position: absolute;
   top: 0;
   left: 0;
@@ -45,8 +45,8 @@
 }
 
 #EDIT_FILM2 {
-  border: 1px solid $editCarouselBorder;
-  background-color: $editCarouselBg;
+  border: 1px solid $darkerBorderColor;
+  background-color: $darkerBackgroundColor;
   position: absolute;
   top: 30px;
   left: 10px;
@@ -80,7 +80,7 @@
 }
 
 #EDIT_MID_L {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   width: 700px;
   left: 0;
   -webkit-border-radius: 6px;
@@ -92,13 +92,13 @@
   width: 400px;
   right: 0;
   .ui-tabs-panel {
-    background-color: $backgroudSecondaryColor;
+    background-color: $mediumBackgroundColor;
   }
 }
 
 #EDIT_MID_R li.ui-tabs-active,
 #EDIT_MID_R li.ui-state-active {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
 }
 
 #divS_wrapper {
@@ -127,14 +127,15 @@
     position: relative;
   }
   div.edit_field.odd {
-    background-color: $editStatusFieldOdd;
+    background-color: $darkBackgroundColor;
   }
-  div.edit_field.hover, #divS div.edit_field.active {
-    background-color: $editStatusFieldHover;
-    color: #404040;
+  div.edit_field.hover {
+    background-color: $lightBackgroundColor;
+    color: $lightTextColor;
   }
   div.edit_field.active {
-    border: 1px solid $editStatusFieldActive;
+    background-color: $lightBackgroundActiveColor;
+    border: 1px solid $lightBorderActiveColor;
   }
   span.fieldvalue {
     white-space: normal;
@@ -407,7 +408,7 @@ div.thesaurus {
     height: 100%;
     padding: 0px;
     margin: 0px;
-    background: $thesaurusBg2;
+    background: $darkerBackgroundColor;
     border: $thesaurusBorderColor 1px solid;
   }
   div.thesaurus {

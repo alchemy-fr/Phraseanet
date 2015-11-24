@@ -22,9 +22,9 @@
     background: url('#{$iconsPath}workzoneEscamote.png') 30px 36px no-repeat;
   }
   .wrapper {
-    background-color: $workzoneBg;
+    background-color: $mediumBackgroundColor;
     right: 10px;
-    border-top: 1px solid $workzoneBorderTop;
+    border-top: 1px solid $mediumBorderColor; //$workzoneBorderTop;
   }
 
   .ui-tabs {
@@ -38,7 +38,7 @@
         width: auto;
         height: 85px;
         display: inline-block;
-        background-color: $backgroudSecondaryColor;
+        background-color: $mediumBackgroundColor;
         z-index: 10;
         border-radius: 0;
         &.proposals_WZ {

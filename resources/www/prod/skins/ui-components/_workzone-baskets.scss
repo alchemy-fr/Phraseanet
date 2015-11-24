@@ -187,21 +187,21 @@
 
 #baskets {
   > div {
-    border-top: 1px solid $proposalsBorder;
+    border-top: 1px solid $mediumBorderColor;
   }
   .SSTT {
     &.active {
       border: 1px solid #b1b1b1;
       &.ui-corner-top {
         border: none;
-        border-top: 1px solid #000;
+        border-top: 1px solid $mediumBorderColor;
         top: 0;
-        background-color: #212121;
+        background-color: $mediumBackgroundColor;
       }
     }
     &.grouping {
       &.active {
-        border: 1px solid #2f4a6f;
+        // border: 1px solid #2f4a6f;
         &.ui-corner-top {
           border-bottom: none;
         }

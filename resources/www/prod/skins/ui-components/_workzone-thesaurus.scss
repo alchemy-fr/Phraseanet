@@ -2,7 +2,7 @@
 .treeview {
 
   li {
-    color: #a1a1a1;
+    color: $mediumTextColor;
     vertical-align: middle;
     background-image: none;
   }
@@ -14,11 +14,11 @@
     background: none;
     padding-top: 0;
     padding-bottom: 0;
-    border-bottom: 1px solid $treeviewBorderExpandable;
+    border-bottom: 1px solid $mediumBorderColor;
     > .hitarea {
       height: 51px;
       background: url('#{$iconsPath}sprite_tree_first.png') 99% 22px no-repeat;
-      border-left: 5px $backgroudSecondaryColor solid;
+      border-left: 5px $mediumBackgroundColor solid;
       &:hover,
       &.active {
         border-left: 5px $thesaurusColor solid;
@@ -44,7 +44,7 @@
         color: $textPrimaryColor;
       }
       span {
-        color: #a6a6a6;
+        color: $mediumTextColor;
         &.h {
           color: $thesaurusColor !important;
         }
@@ -94,7 +94,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   }
   .treeview {
     ul {
-      background-color: $proposalsBg;
+      background-color: $darkBackgroundColor;
       margin-left: -16px;
       padding-left: 16px;
       li {
@@ -149,14 +149,14 @@ dans l'onglet thesaurus : arbres, menus contextuels
       width: 100%;
       margin: 0;
       padding: 0;
-      border: 1px solid $thesaurusBorder1;
+      border: 1px solid $mediumBorderColor;
       border-top: none;
       input.input-medium {
         width: 80%;
         border-radius: 0;
         height: 50px;
         padding: 0 2.5%;
-        background: $thesaurusBg1;
+        background: $thesaurusInputBackground;
         border: none;
         float: left;
         margin: 0;
@@ -167,7 +167,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
         vertical-align: middle;
         padding: 0;
         border-radius: 0;
-        background: $backgroudSecondaryColor url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
+        background: $mediumBackgroundColor url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
         border: none;
         margin: 0;
         outline: none;

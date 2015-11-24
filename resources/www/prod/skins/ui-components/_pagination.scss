@@ -35,7 +35,7 @@
 #paginate #tool_navigate #PREV_PAGE:hover,
 #paginate #tool_navigate #last:hover,
 #paginate #tool_navigate #first:hover {
-  background-color: $paginateBg2;
+  background-color: $highlightBackgroundColor;
 }
 
 #paginate #tool_navigate #NEXT_PAGE {
@@ -99,6 +99,6 @@
 
 #paginate #tool_navigate input,
 #paginate #tool_navigate a:hover {
-  color: $paginateTextColor;
-  background: $paginateBorder2Color;
+  color: $highlightTextColor;
+  background: $highlightBackgroundColor;
 }

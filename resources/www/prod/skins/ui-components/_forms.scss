@@ -1,6 +1,7 @@
+
 /******* INPUTS ***************************************************************/
 input.input-button.hover {
-  color: #FEFEFE;
+  color: $inputButtonHoverColor;
 }
 
 input.search {
@@ -13,7 +14,7 @@ input.search {
 input, select, textarea {
   margin: 2px;
   padding: 2px;
-  *border: 1px solid #b1b1b1;
+  *border: 1px solid $inputFallbackBorderColor;
   font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 

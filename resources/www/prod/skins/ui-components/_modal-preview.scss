@@ -1,9 +1,9 @@
 
 #PREVIEWBOX, #EDITWINDOW {
   z-index: 1200;
-  background-color: $backgroudPrimaryColor;
+  background-color: $darkerBackgroundColor;
   display: none;
-  border: 2px solid #666666;
+  border: 2px solid $darkerBorderColor;
 }
 
 #PREVIEWBOX img {
@@ -45,7 +45,7 @@
 }
 
 #PREVIEWOTHERS {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   overflow-x: hidden;
   overflow-y: auto;
   left: 0;
@@ -81,7 +81,7 @@
 
 #PREVIEWOTHERSINNER li.otherRegToolTip,
 #PREVIEWOTHERSINNER li.otherBaskToolTip {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -101,7 +101,7 @@
 }
 
 #PREVIEWTITLEWRAPPER {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   bottom: 0;
 }
 
@@ -117,7 +117,7 @@
 }
 
 #PREVIEWCURRENT {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
 }
 
 #PREVIEWCURRENTCONT.group_case {
@@ -211,7 +211,7 @@
   vertical-align: middle;
 }
 
-.prevTrainCurrent .duration, .diapo .duration {
-  background-color: black;
-  color: $textPrimaryColor;
+.prevTrainCurrent .duration {
+  background-color: darken($darkerBackgroundColor, 10);
+  color: $darkerTextColor;
 }

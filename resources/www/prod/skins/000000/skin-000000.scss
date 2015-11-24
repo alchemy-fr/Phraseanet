@@ -1,42 +1,7 @@
-/**
-// @TODO define base colors
-$black: #000000;
-$gg: #111111;
-$gg: #141414;
-$gg: #1a1a1a;
-$gg: #292929;
-$gg: #303030;
-$gg: lighten(#000000, 23); //#3b3b3b; // primary color
-$gg: #404040;
-$gg: #606060;
-$gg: #666666;
-$gg: #999999;
-$gg: #b1b1b1; // text color
-$gg: #EAEAEA;
-$gg: #FFFFFF;
-
-
-$gg: #222222;
-$gg: #393939;
-$gg: #515151;
-$gg: #aaaaaa;
-$gg: #313131;
-
-// color themed:
-$gg: #b1b1b1;
-$gg: #292929;
-$gg: #076882;
-$gg: #0088CC;
-*/
-
 $skinsImagesPath: '/assets/vendors/jquery-ui/images/dark-hive/';
 
 $defaultBorderColor: #303030;
 $defaultBorderRadius: 2px;
-$backgroudPrimaryColor: #1A1A1A;
-$backgroudSecondaryColor: #3b3b3b;
-$backgroudAltColor: #404040;
-$backgroundAltPrimaryColor: #1a1a1a;
 
 $textPrimaryColor: #FFFFFF; //#b1b1b1;
 $textPrimaryHoverColor: #FFFFFF;
@@ -44,10 +9,36 @@ $textPrimaryActiveColor: #FFFFFF;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
 
-$highlightTextColor: #FFFFFF;
-$highlightColor: #076882;
-$hightlightLighterColor: #005580;
 $highlightDarkerColor: #0c4554;
+
+$highlightBackgroundColor: #076882;
+$highlightBackgroundAltColor: #0c4554;
+$highlightBorderColor: #0c4554;
+$highlightTextColor: #FFFFFF;
+
+$darkerBackgroundColor: #1A1A1A;
+$darkerBorderColor: #404040;
+$darkerTextColor: #FFFFFF;
+
+$darkBackgroundColor: #292929;
+$darkBorderColor: #303030;
+$darkTextColor: #A6A6A6;
+
+$mediumBackgroundColor: #3b3b3b;
+$mediumBackgroundHoverColor: #666666;
+$mediumBorderColor: #303030; //#404040; //
+$mediumBorderHighlightColor: $darkerBorderColor; //#666666;
+$mediumTextColor: #a1a1a1;
+$mediumTextHoverColor: #EAEAEA;
+$mediumTextActiveColor: #EAEAEA;
+
+$lightBackgroundColor: #404040;
+$lightBackgroundSelectedColor: lighten($lightBackgroundColor, 10);
+$lightBackgroundActiveColor: lighten($lightBackgroundColor, 10);
+$lightBorderColor: #404040;
+$lightBorderSelectedColor: lighten($lightBorderColor, 10);
+$lightBorderActiveColor: lighten($lightBorderColor, 10);
+$lightTextColor: #FFFFFF;
 
 // inverse
 $textInverseColor: #FFFFFF;
@@ -62,29 +53,13 @@ $mainMenuRightListBorderLeft: #292929;
 $scrollBgColor: #3b3b3b;
 
 $paginateBorderColor: #3b3b3b;
-$paginateBorder2Color: $highlightColor;
-$paginateTextColor: $highlightTextColor;
 $paginateBg1: #141414;
-$paginateBg2: $highlightColor;
 $contextMenuBgHover: $highlightDarkerColor;
 
 
 $uploadBg1: #FFFFFF;
 $uploadBg2: #FFFFFF;
 $uploadLoaderImg: 'loader-black.gif';
-
-$bridgeDialogBg: #000000;
-$bridgeDialogBg2: #404040;
-$bridgeDialogBg3: #404040;
-$bridgeDialogBg4: #111111;
-$publishFeedBorder: #404040;
-$publishFeedColor: #FFFFFF;
-$publishFeedOddBg: #404040;
-$publishFeedOddColor: #FFFFFF;
-$publishFeedHoverBg: #606060;
-$publishFeedHoverColor: #FFFFFF;
-$publishFeedSelectedBg: #0088CC;
-$publishFeedSelectedColor: #FFFFFF;
 
 $bridgeDropdownToggleBg: #222222;
 $bridgeDropdownMenuBg: #393939;
@@ -93,30 +68,16 @@ $bridgeDropdownMenuColor: #aaaaaa;
 $bridgeDropdownMenuHoverBg: #313131;
 $bridgeDropdownMenuHoverColor: #FFFFFF;
 
-$thesaurusBorder1: #303030;
-$thesaurusBg1: #ededed;
-
-$thesaurusBorder2: #404040;
-$thesaurusBg2: #404040;
+$thesaurusInputBackground: #ededed;
 
 $thesaurusContextMenuColor: #c0c0c0;
-$proposalsBg: #292929;
-$proposalsBorder: $defaultBorderColor;
 $proposalsTitle: #A6A6A6;
 $proposalsTitleBorder: #303030;
 
-$basketsBorder: #b1b1b1;
-$basketsBorder2: #515151;
 $basketsTextColor: #AAAAAA;
-$basketsBg1: #212121;
 
 $guiSplitterImg: 'vsplitter2.png';
 
-$workzoneBg: #3b3b3b;
-$workzoneBorderTop: $defaultBorderColor;
-$workzoneColor1: inherit;
-$workzoneColor2: inherit;
-$workzoneColor3: #EAEAEA;
 $workzoneTabBgHover: #666666;
 $workzoneTabBgActive: #333333;
 $workzoneTabBorderTop: #303030;
@@ -124,8 +85,6 @@ $workzoneTabBorderBottom: #303030;
 $workzoneBasketAlertDataBg: #fff190;
 $workzoneBasketAlertDataColor: #1a1a1a;
 $workzoneToolsLabelColor: #7f7f7f;
-
-$treeviewBorderExpandable: #303030;
 
 $answersToolsBtnSeparatorBorder: #474747;
 $answersToolsBtnBg: #393939;
@@ -141,62 +100,27 @@ $answersToolsBtnSettingsBorder: #474747;
 
 
 
-$answersBg: #111111;
-$answersBorderTop: #111111;
-$answersInfoDialogBg: #0c4554;
-$answersInfoDialogColor: #FFFFFF;
-$answersDocInfoBg: #0c4554;
-$answersDocInfoBorder: #000;
-$answersDocInfoColor: #FFFFFF;
-
-$answersFeedBtnGrpBg: #222222;
-$answersFeedEntryBg: #666666;
-$answersFeedEntryBorder: #212121;
-$answersFeedEntryBorderHover: #404040;
-$answersFeedDropMenuBg: #000000;
-$answersFeedDropMenuBorder: #404040;
-$answersFeedDropMenuColor: #EAEAEA;
-
-$searchSbasListBg: #404040;
-$searchSbasListColor: #FFFFFF;
-$searchSbasFilterColor: #FFFFFF;
-$searchSbasListSelectedBg: #404040;
-$searchSbasListSelectedBorder: #404040;
-
-$editCarouselBg: #1a1a1a;
-$editCarouselBorder: #B1B1B1;
-$editStatusFieldOdd: #606060;
-$editStatusFieldHover: #B1B1B1;
-$editStatusFieldActive: #FEFEFE;
 $editTextMultiValueBg: #444444;
 $editTextMultiValueBorder: #999999;
 $editTextMultiValueHighlightBg: #222222;
 
 $preferencesLabelColor: #999999;
 
-$uiColor1: #111111;
 $activeStateIcon: 'ui-icons_cccccc_256x240.png';
 $accordionLoaderImg: 'loader-white.gif';
-$accordionBorderColor: $defaultBorderColor;
 $accordionBgHeaderHover: #474747;
-$accordionBgContent: #212121;
 
-$popoverBg: #000;
-$popoverBorder: #444;
-$popoverColor: $textPrimaryColor;
-$popoverInnerBg: #000;
-$modalBorder: 1px solid #555555;
-$modalBackground: #212121;
+$inputButtonHoverColor: #FEFEFE;
+$inputFallbackBorderColor: #b1b1b1;
 
 
 $dropdownDividerBg: #515151;
-$dropdownDividerBorder: #404040;
+$dropdownDividerBorder: $darkerBorderColor;
 
 $overlayBg: #111111;
 
 $tabsNavBg: #666666;
-$tabsNavBgActive: $backgroudSecondaryColor;
-$sliderBg: #1a1a1a;
+$tabsNavBgActive: $mediumBackgroundColor;
 $contentLoaderImg: 'loader-white.gif';
 
 $btnBackground: #EAEAEA;
@@ -216,6 +140,5 @@ $linkDefaultColor: #b1b1b1;
 $linkDefaultHover: #838383;
 
 
-
-
+@import '../../../_shared/styles/jquery-ui/dark-hive';
 @import '../skin-shared';

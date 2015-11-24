@@ -1,21 +1,44 @@
-
 $skinsImagesPath: '/assets/vendors/jquery-ui/images/ui-lightness/';
 
 $defaultBorderColor: #999999;
 $defaultBorderRadius: 2px;
-$backgroudPrimaryColor: #F1F1F1;
-$backgroudSecondaryColor: #B2B2B2; //#D9D9D9;
-$backgroundAltPrimaryColor: #1a1a1a;
+
 $textPrimaryColor: #333333;
 $textPrimaryHoverColor: #1a1a1a;
 $textPrimaryActiveColor: #1a1a1a;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
 
-$highlightTextColor: #FFFFFF;
-$highlightColor: #076882;
-$hightlightLighterColor: #005580;
 $highlightDarkerColor: #0c4554;
+
+$highlightBackgroundColor: #076882;
+$highlightBackgroundAltColor: #0c4554;
+$highlightBorderColor: #0c4554;
+$highlightTextColor: #FFFFFF;
+
+
+$darkerBackgroundColor: #D9D9D9; // #F1F1F1 <- to try
+$darkerBorderColor: darken(#D9D9D9, 10);
+$darkerTextColor: #333333;
+
+$darkBackgroundColor: #9c9c9c; //B1B1B1;
+$darkBorderColor: darken($darkBackgroundColor, 10);
+$darkTextColor: #FFFFFF;
+
+$mediumBackgroundColor: #a6a6a6; // B2B2B2 <- to try
+$mediumBorderColor: darken($mediumBackgroundColor, 10);
+$mediumBorderHighlightColor: #666666;
+$mediumTextColor: $textPrimaryColor;
+$mediumTextHoverColor: #EAEAEA;
+$mediumTextActiveColor: #EAEAEA;
+
+$lightBackgroundColor: #B1B1B1;
+$lightBackgroundSelectedColor: darken($lightBackgroundColor, 10);
+$lightBackgroundActiveColor: darken($lightBackgroundColor, 10);
+$lightBorderColor: #B1B1B1;
+$lightBorderSelectedColor: darken($lightBorderColor, 10);
+$lightBorderActiveColor: darken($lightBorderColor, 10);
+$lightTextColor: #3b3b3b;
 
 // inverse
 $textInverseColor: #000;
@@ -26,30 +49,16 @@ $bgInverseHoverColor: #FFF;
 $mainMenuColor: #FFF;
 $mainMenuRightListBorderLeft: #999;
 
-$scrollBgColor: $backgroudSecondaryColor; //#3b3b3b;
+$scrollBgColor: $mediumBackgroundColor; //#3b3b3b;
 
 $paginateBorderColor: #999999;
-$paginateBorder2Color: #999999;
-$paginateTextColor: #FFFFFF;
+// $paginateBorder2Color: #999999;
+// $paginateTextColor: #FFFFFF;
 $paginateBg1: #D9D9D9;
-$paginateBg2: #999;
 
 $uploadBg1: #FFFFFF;
 $uploadBg2: transparent;
 $uploadLoaderImg: 'loader-black.gif';
-
-$bridgeDialogBg: #D9D9D9;
-$bridgeDialogBg2: #B1B1B1;
-$bridgeDialogBg3: #B1B1B1;
-$bridgeDialogBg4: #D9D9D9;
-$publishFeedBorder: #959595;
-$publishFeedColor: #333333;
-$publishFeedOddBg: #959595;
-$publishFeedOddColor: #FFFFFF;
-$publishFeedHoverBg: #606060;
-$publishFeedHoverColor: #FFFFFF;
-$publishFeedSelectedBg: #0088CC;
-$publishFeedSelectedColor: #FFFFFF;
 
 $bridgeDropdownToggleBg: #E6E6E6;
 $bridgeDropdownMenuBg: #A4A4A4;
@@ -58,30 +67,17 @@ $bridgeDropdownMenuColor: #EAEAEA;
 $bridgeDropdownMenuHoverBg: #666666;
 $bridgeDropdownMenuHoverColor: #FFFFFF;
 
-$thesaurusBorder1: #999;
-$thesaurusBg1: #d4d4d4;
+$thesaurusInputBackground: #d4d4d4;
 
-$thesaurusBorder2: #FFFFFF;
-$thesaurusBg2: #FFFFFF;
 
 $thesaurusContextMenuColor: #FFFFFF;
-$proposalsBg: #999;
-$proposalsBorder: $defaultBorderColor;
 $proposalsTitle: #FFFFFF;
 $proposalsTitleBorder: #666666;
 
-$basketsBorder: #B1B1B1;
-$basketsBorder2: #666666;
 $basketsTextColor: #777777;
-$basketsBg1: #B1B1B1;
 
 $guiSplitterImg: 'vsplitter2-959595.png';
 
-$workzoneBg: #B1B1B1;
-$workzoneBorderTop: #B1B1B1;
-$workzoneColor1: $textPrimaryColor;
-$workzoneColor2: #000;
-$workzoneColor3: #B2B2B2;
 $workzoneTabBgHover: #999;
 $workzoneTabBgActive: #999;
 $workzoneTabBorderTop: #999;
@@ -90,7 +86,6 @@ $workzoneBasketAlertDataBg: #fff190;
 $workzoneBasketAlertDataColor: #1a1a1a;
 $workzoneToolsLabelColor: #FFFFFF;
 
-$treeviewBorderExpandable: #B2B2B2;
 
 $answersToolsBtnSeparatorBorder: #999;
 $answersToolsBtnBg: #A4A4A4;
@@ -104,61 +99,28 @@ $answersToolsBtnSettingsHoverBg: #393939;
 $answersToolsBtnSettingsHoverColor: lighten($answersToolsBtnColor, 10);
 $answersToolsBtnSettingsBorder: #999;
 
-$answersBg: #D9D9D9;
-$answersBorderTop: #D9D9D9;
-$answersInfoDialogBg: #999;
-$answersInfoDialogColor: #FFFFFF;
-$answersDocInfoBg: #999;
-$answersDocInfoBorder: #999;
-$answersDocInfoColor: #FFFFFF;
+// $diapoBorderColor: $darkerBorderColor;
 
-$answersFeedBtnGrpBg: #E6E6E6;
-$answersFeedEntryBg: #EEEEEE;
-$answersFeedEntryBorder: #D9D9D9;
-$answersFeedEntryBorderHover: #666666;
-$answersFeedDropMenuBg: #E6E6E6;
-$answersFeedDropMenuBorder: #B1B1B1;
-$answersFeedDropMenuColor: $textPrimaryColor;
-
-$searchSbasListBg: #404040;
-$searchSbasListColor: #555555;
-$searchSbasFilterColor: #555555;
-$searchSbasListSelectedBg: #404040;
-$searchSbasListSelectedBorder: #404040;
-
-$editCarouselBg: #B1B1B1;
-$editCarouselBorder: #666666;
-$editStatusFieldOdd: #B1B1B1;
-$editStatusFieldHover: #B1B1B1;
-$editStatusFieldActive: #FEFEFE;
 $editTextMultiValueBg: #FFFFFF;
 $editTextMultiValueBorder: #999999;
 $editTextMultiValueHighlightBg: #d0d0d0;
 
 $preferencesLabelColor: #333333;
 
-$uiColor1: #D9D9D9;
 $activeStateIcon: 'ui-icons_ffffff_256x240.png';
 $accordionLoaderImg: 'loader-black.gif';
-$accordionBorderColor: $defaultBorderColor;
 $accordionBgHeaderHover: #999;
-$accordionBgContent: #D9D9D9;
 
-$popoverBg: #999999;
-$popoverBorder: #444;
-$popoverColor: $textPrimaryColor;
-$popoverInnerBg: #D9D9D9;
-$modalBorder: 1px solid #444;
-$modalBackground: #D9D9D9;
+$inputButtonHoverColor: #FEFEFE;
+$inputFallbackBorderColor: #b1b1b1;
 
-$dropdownDividerBg: #515151;
-$dropdownDividerBorder: #404040;
+$dropdownDividerBg: $darkerBorderColor;
+$dropdownDividerBorder: $darkerBorderColor;
 
 $overlayBg: #B1B1B1;
 
 $tabsNavBg: #999999;
 $tabsNavBgActive: #B2B2B2; //#D9D9D9;
-$sliderBg: #1a1a1a;
 $contentLoaderImg: 'loader-black.gif';
 
 $btnBackground: #444444; //#B9B9B9;
@@ -177,4 +139,11 @@ $widgetContentColor: $textPrimaryInverseColor;
 $linkDefaultColor: #444444;
 $linkDefaultHover: #444444;
 
+// override jquery ui theme colors:
+$uiTextContentColor: $mediumTextColor;
+$uiTextTitleColor: $mediumTextColor;
+$uiLinkColor: $darkTextColor;
+$uiLinkFocusColor: $darkTextColor;
+$uiLinkActiveColor: $darkTextColor;
+@import '../../../_shared/styles/jquery-ui/ui-lightness';
 @import '../skin-shared';

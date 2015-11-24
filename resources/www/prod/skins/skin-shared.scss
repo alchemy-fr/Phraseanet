@@ -7,7 +7,7 @@ $basketsColor: #076882;
 ::-webkit-scrollbar-track
 {
   border-radius: 0;
-  background-color: $backgroudPrimaryColor;
+  background-color: $darkerBackgroundColor;
 }
 
 ::-webkit-scrollbar {
@@ -53,8 +53,8 @@ legend {
 
 
 body {
-  color: $textPrimaryColor;
-  background-color: $backgroudPrimaryColor;
+  color: $darkerTextColor;
+  background-color: $darkerBackgroundColor;
   position: absolute;
   top: 0;
   left: 0;
@@ -299,7 +299,7 @@ span.ww_winTitle {
 
 #ui-datepicker-div {
   z-index: 2000;
-  background-color: $backgroundAltPrimaryColor;
+  background-color: $darkerBackgroundColor;
   position: absolute;
 }
 
@@ -446,7 +446,7 @@ H4 {
 
 #sizeAns_slider .ui-slider-handle, #nperpage_slider .ui-slider-handle,
 #EDIT_ZOOMSLIDER  .ui-slider-handle {
-  background-color: $sliderBg;
+  background-color: $darkerBackgroundColor;
   width: 8px;
   cursor: col-resize;
 }
@@ -461,20 +461,24 @@ H4 {
 }
 
 .popover-inner {
-  background-color: $popoverBg;
-  border: 2px solid $popoverBorder;
+  background-color: $darkerBackgroundColor;
+  border: 2px solid $darkerBorderColor;
   padding: 0px;
-  color: $textPrimaryColor;
+  color: $darkerTextColor;
   border-radius: 4px;
 }
 
 .popover-inner .popover-title {
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   border-radius: 0;
 }
 
 .popover-inner .popover-content {
-  background-color: $popoverInnerBg;
+  background-color: $darkerBackgroundColor;
+  hr {
+    background-color: $darkerTextColor;
+    border-color: $darkerBorderColor;
+  }
 }
 .dragover {
   BACKGROUND-COLOR: #fff100
@@ -531,5 +535,4 @@ H4 {
 @import 'ui-components/modal-preview';
 @import 'ui-components/modal-push';
 @import 'ui-components/diapo';
-@import 'ui-components/modal-tools';
 @import 'ui-components/modal-preferences';

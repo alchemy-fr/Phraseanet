@@ -1,3 +1,11 @@
+$answersInfoDialogBg: $highlightBackgroundAltColor !default;
+$answersInfoDialogColor: $highlightTextColor !default;
+$answersDocInfoBg: $highlightBackgroundAltColor !default;
+$answersDocInfoBorder: #000 !default;
+$answersDocInfoColor: $highlightTextColor !default;
+$answersLinkColor: #666666 !default;
+$answersInfoLabelColor: #949494 !default;
+
 #TOPIC_UL li {
   float: none;
   margin: 0;
@@ -37,35 +45,45 @@
 .downloader {
   background-image: url('#{$iconsPath}download.gif');
 }
-
-#answers .status img {
-  max-width: 16px;
-  max-height: 16px;
+#answers {
+  .status {
+    img {
+      max-width: 16px;
+      max-height: 16px;
+    }
+  }
+  #answersNext {
+    width: 150px;
+    margin: 5px;
+    height: 193px;
+    line-height: 193px;
+    font-size: 25px;
+    color: $answersLinkColor;
+    cursor: pointer;
+  }
+  .list {
+    position: relative;
+    float: left;
+    margin: 10px;
+    width: 600px;
+    overflow: hidden;
+    border: 3px solid #404040;
+  }
 }
 
-#answers #answersNext {
-  width: 150px;
-  margin: 5px;
-  height: 193px;
-  line-height: 193px;
-  font-size: 25px;
-  color: #666666;
-  cursor: pointer;
-}
-
-
-#idFrameT #answers {
-  background-color: $answersBg;
-  border: 1px solid $answersBorderTop;
-  top: 55px;
-  bottom: 0;
-  margin-right: 8px;
-  overflow-y: hidden;
-  padding-left: 10px;
-}
-
-#idFrameT #answers:hover {
-  overflow-y: auto;
+#idFrameT {
+  #answers {
+    background-color: $darkerBackgroundColor;
+    border: 1px solid $darkerBorderColor;
+    top: 55px;
+    bottom: 0;
+    margin-right: 8px;
+    overflow-y: hidden;
+    padding-left: 10px;
+    &:hover {
+      overflow-y: auto;
+    }
+  }
 }
 
 #answers_status{
@@ -75,217 +93,180 @@
   height: 60px;
   width: 400px;
   z-index: 1000;
-}
-
-#answers_status table{
-  width: 100%;
-}
-
-#answers_status table tr{
-  height: 20px;
-  vertical-align: middle;
-}
-
-#answers_status table tr td.navigation{
-  text-align: right;
-}
-
-#answers_status .infos {
-  text-align: left;
-  line-height: 18px;
-  font-size: 11px;
-  color: #949494;
-  height: 60px;
-}
-
-#answers_status .infos .infoDialog {
-  float: left;
-  background: $answersInfoDialogBg;
-  color: $answersInfoDialogColor;
-  padding: 0 25px;
-  font-size: 11px;
-  padding-top: 24px;
-  margin-right: 10px;
-  height: 36px;
-}
-
-#answers_status .infos .infoDialog span {
-  font-size: 22px;
-  margin-bottom: 3px;
-  float: left;
-  margin-right: 10px;
-}
-
-#answers_status #docInfo {
-  height: 40px;
-  background: $answersDocInfoBg;
-  color: $answersDocInfoColor;
-  padding: 0 25px;
-  padding-top: 20px;
-  float: left;
-  min-width: 105px;
-  font-size: 11px;
-  line-height: 12px;
-  border-right: 1px solid $answersDocInfoBorder;
-}
-
-
-#answers_status .infos #nbrecsel {
-  font-size: 22px;
-  margin-top: 7px;
-  float: left;
-  margin-right: 7px;
-  display: block;
-  height: 40px;
-}
-
-#answers .list {
-  position: relative;
-  float: left;
-  margin: 10px;
-  width: 600px;
-  overflow: hidden;
-  border: 3px solid #404040;
+  table{
+    width: 100%;
+    tr{
+      height: 20px;
+      vertical-align: middle;
+      td.navigation{
+        text-align: right;
+      }
+    }
+  }
+  .infos {
+    text-align: left;
+    line-height: 18px;
+    font-size: 11px;
+    color: $answersInfoDialogColor;
+    height: 60px;
+    .infoDialog {
+      float: left;
+      background: $answersInfoDialogBg;
+      color: $answersInfoDialogColor;
+      padding: 0 25px;
+      font-size: 11px;
+      padding-top: 24px;
+      margin-right: 10px;
+      height: 36px;
+      span {
+        font-size: 22px;
+        margin-bottom: 3px;
+        float: left;
+        margin-right: 10px;
+      }
+    }
+    #nbrecsel {
+      font-size: 22px;
+      margin-top: 7px;
+      float: left;
+      margin-right: 7px;
+      display: block;
+      height: 40px;
+    }
+  }
+  #docInfo {
+    height: 40px;
+    background: $answersDocInfoBg;
+    color: $answersDocInfoColor;
+    padding: 0 25px;
+    padding-top: 20px;
+    float: left;
+    min-width: 105px;
+    font-size: 11px;
+    line-height: 12px;
+    border-right: 1px solid $answersDocInfoBorder;
+  }
 }
 
 /******* FEEDS ****************************************************************/
+#answers {
+  .feed {
+    position: relative;
+    clear: left;
+    margin: 10px;
+    .btn {
+      font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .btn-inverse:hover {
+      color: $textPrimaryHoverColor;
+    }
+    .btn-group.open .btn-inverse.dropdown-toggle {
+      background-color: $darkerBackgroundColor;
+      background-image: none;
+    }
+    .headblock {
+      max-width: 800px;
+      margin-bottom: 20px;
+      table {
+        width: 100%;
+      }
+      h1 {
+        font-size: 22px;
+        img {
+          margin-right: 15px;
+        }
+      }
+      a.subscribe_rss {
+        font-size: 14px;
+        margin-left: 15px;
+      }
+    }
+    .entry {
+      margin: 0 0 30px;
+      padding: 10px;
+      border: 1px solid $mediumBorderColor; //$answersFeedEntryBorder;
+      background-color: $mediumBackgroundColor; //$answersFeedEntryBg;
+      float: left;
+      &.hover {
+        border: 1px solid $mediumBorderHighlightColor;
+      }
+      h1 {
+        margin-bottom: 0;
+      }
+      table{
+        &.head {
+          vertical-align: middle;
+          margin: 10px 0;
+          width: 600px;
+        }
+        a.tools {
+          display: none;
+        }
+      }
+      &.hover{
+        table a.tools {
+          display: inline;
+        }
+      }
+    }
+    h1 {
+      font-weight: bold;
+      font-size: 20px;
+      .author {
+        font-size: 12px;
+        font-weight: normal;
+        margin-left: 15px;
+      }
+    }
+    h1,
+    .post_date {
+      width: 100%;
+    }
+    p {
+      max-width: 600px;
+      line-height: 18px;
+      margin: 5px 0;
+      text-align: justify;
+    }
+    img {
+      vertical-align: middle;
+    }
 
-#answers .feed {
-  margin: 10px;
-}
+    .entry,
+    h1,
+    p,
+    .contents,
+    .see_more,
+    .post_date {
+      position: relative;
+      clear: left;
+    }
+    .see_more {
+      height: 60px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 13px;
+      background-position: center bottom;
+    }
+    .contents {
+      clear: left;
+    }
+    .post_date {
+      text-align: right;
+      font-style: italic;
+      max-width: 600px;
+      *width: 600px;
+      margin-bottom: 20px;
+    }
 
-#answers .feed .btn {
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-
-
-#answers .feed .btn-inverse:hover {
-  color: $textPrimaryHoverColor;
-}
-
-#answers .feed .btn-group.open .btn-inverse.dropdown-toggle {
-  background-color: $answersFeedBtnGrpBg;
-  background-image: none;
-}
-
-#answers .feed .headblock {
-  max-width: 800px;
-  margin-bottom: 20px;
-}
-
-#answers .feed .headblock table {
-  width: 100%;
-}
-
-#answers .feed .headblock h1 {
-  font-size: 22px;
-}
-
-#answers .feed .headblock h1 img {
-  margin-right: 15px;
-}
-
-#answers .feed .headblock a.subscribe_rss {
-  font-size: 14px;
-  margin-left: 15px;
-}
-
-#answers .feed .entry {
-  margin: 0 0 30px;
-  padding: 10px;
-  border: 3px solid $answersFeedEntryBorder;
-  background-color: $answersFeedEntryBg;
-  float: left;
-}
-
-#answers .feed .entry.hover {
-  border: 3px solid $answersFeedEntryBorderHover;
-}
-
-#answers .feed .entry table.head {
-  vertical-align: middle;
-  margin: 10px 0;
-  width: 600px;
-}
-
-#answers .feed .entry table a.tools {
-  display: none;
-}
-
-#answers .feed .entry.hover table a.tools {
-  display: inline;
-}
-
-#answers .feed h1,
-#answers .feed .post_date {
-  width: 100%;
-}
-
-#answers .feed,
-#answers .feed .entry,
-#answers .feed h1,
-#answers .feed p,
-#answers .feed .contents,
-#answers .feed .see_more,
-#answers .feed .post_date {
-  position: relative;
-  clear: left;
-}
-
-#answers .feed .see_more {
-  height: 60px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 13px;
-  background-position: center bottom;
-}
-
-#answers .feed .contents {
-  clear: left;
-}
-
-#answers .feed .post_date {
-  text-align: right;
-  font-style: italic;
-  max-width: 600px;
-  *width: 600px;
-  margin-bottom: 20px;
-}
-
-#answers .feed h1 {
-  font-weight: bold;
-  font-size: 20px;
-}
-
-#answers .feed h1 .author {
-  font-size: 12px;
-  font-weight: normal;
-  margin-left: 15px;
-}
-
-#answers .feed .entry h1 {
-  margin-bottom: 0;
-}
-
-#answers .feed p {
-  max-width: 600px;
-  line-height: 18px;
-  margin: 5px 0;
-  text-align: justify;
-}
-
-#answers .feed .dropdown-menu {
-  background-color: $answersFeedDropMenuBg;
-  border: 1px solid $answersFeedDropMenuBorder;
-}
-
-#answers .feed .dropdown-menu a {
-  color: $answersFeedDropMenuColor;
-}
-
-#answers .feed img {
-  vertical-align: middle;
+    .dropdown-menu {
+      background-color: $darkerBackgroundColor;
+      border: 1px solid $darkerBorderColor;
+      a {
+        color: $darkerTextColor;
+      }
+    }
+  }
 }

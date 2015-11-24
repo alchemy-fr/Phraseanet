@@ -1,13 +1,13 @@
 
 /******* GUI ******************************************************************/
 
-.gui_grip {
+/*.gui_grip {
   background-image: url('#{$skinsImagesPath}grip.gif');
   background-position: 0 0;
   background-repeat: no-repeat;
   height: 19px;
   width: 5px;
-}
+}*/
 
 .gui_vsplitter,.ui-resizable-e {
   top: 50%;
@@ -16,7 +16,7 @@
   height: 54px;
   position: absolute;
   background-image:  url('#{$iconsPath}vsplitter.png');
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
   background-position:  center center;
   background-repeat:  no-repeat;
   right: 0;
@@ -50,7 +50,7 @@
   background-repeat: no-repeat;
   cursor: row-resize;
 }
-
+/*
 .gui_hslider {
   position: absolute;
   height: 0px;
@@ -67,7 +67,7 @@
   background-color: #959595;
   background-image: url('#{$skinsImagesPath}vsplitter.gif');
   cursor: pointer;
-}
+}*/
 
 .gui_ckbox_0 {
   display: block;

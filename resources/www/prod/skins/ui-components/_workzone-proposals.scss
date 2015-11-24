@@ -3,21 +3,21 @@
 #proposals {
   position: relative;
   left: 5px;
-  border-top: 1px solid $proposalsBorder;
+  border-top: 1px solid $darkBorderColor;
   top: 87px !important;
   *:focus {
     outline: none;
   }
   ul {
     ul {
-      background-color: $proposalsBg;
+      background-color: $darkBackgroundColor;
     }
     li {
       line-height: 17px;
       font-size: 13px;
     }
     &.fancytree-container {
-      background-color: $backgroudSecondaryColor;
+      background-color: $mediumBackgroundColor;
       border: 0px none transparent;
       overflow-x: hidden;
       padding-left: 0;
@@ -47,23 +47,23 @@
     height: 49px;
     line-height: 49px;
     margin-left: 0;
-    border-left: 4px solid $backgroudSecondaryColor;
-    border-bottom: 1px solid $proposalsTitleBorder;
+    border-left: 4px solid $mediumBackgroundColor;
+    border-bottom: 1px solid $mediumBorderColor;
     .fancytree-title {
       font-size: 12px;
       margin-left: 10px;
     }
     &:hover {
       border-left: 4px solid $proposalColor;
-      color: $textPrimaryHoverColor;
+      color: $mediumTextHoverColor;
       .fancytree-title {
-        color: $textPrimaryHoverColor;
+        color: $mediumTextHoverColor;
       }
     }
     .fancytree-expander {
       &:before {
         content: '\25C0'; /* U+25C0 BLACK LEFT-POINTING TRIANGLE */
-        color: #a0a0a0;
+        color: $mediumTextColor;
       }
       &:hover {
         &:before {

@@ -1,3 +1,5 @@
+$diapoBorderColor: $darkerBorderColor !default;
+
 /**
  * Diapo are reused in answers, baskets,
  */
@@ -22,14 +24,14 @@
 #reorder_dialog .ui-sortable-placeholderfollow {
   width: 100px;
   height: 130px;
-  background-color: $backgroudSecondaryColor;
+  background-color: $mediumBackgroundColor;
 }
 
 .diapo {
   position: relative;
   display: block;
   float: left;
-  border: 1px solid #404040;
+  border: 1px solid $diapoBorderColor;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -47,13 +49,20 @@
       margin: 0 auto;
     }
   }
+
   .bottom {
     position: absolute;
     bottom: 0px;
   }
+
   div.title {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .duration {
+    background-color: darken($darkerBackgroundColor, 10);
+    color: $darkerTextColor;
   }
 }
 
