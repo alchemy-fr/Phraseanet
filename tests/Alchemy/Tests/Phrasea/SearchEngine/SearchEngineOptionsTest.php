@@ -84,6 +84,13 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         foreach ($this->provideRequestData() as $pack) {
             list ($query, $request, $field, $dateField) = $pack;
 
+            // Do not request a specific collection as there are no access defined and request is then invalid
+            if (isset($query['bases'])) {
+                $query['bases'] = [];
+            }
+            if (isset($request['bases'])) {
+                $request['bases'] = [];
+            }
             $httpRequest = new Request($query, $request);
 
             $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
