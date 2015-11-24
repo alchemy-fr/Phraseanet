@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2015-11-23T15:43:56Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2015-11-24T15:43:13Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -10025,7 +10025,7 @@
         <target state="translated">March</target>
         <jms:reference-file line="716">classes/module/report.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="520593b5cc1a6e328e74717650c586fb1dbfa265" resname="maximum : %maxFileSizeReadable%" approved="no">
+      <trans-unit id="520593b5cc1a6e328e74717650c586fb1dbfa265" resname="maximum : %maxFileSizeReadable%">
         <source>maximum : %maxFileSizeReadable%</source>
         <target state="needs-translation">Maximum: %maxFileSizeReadable%</target>
         <jms:reference-file line="33">prod/upload/upload-flash.html.twig</jms:reference-file>
@@ -10882,7 +10882,7 @@
         <target state="translated">Accepting...</target>
         <jms:reference-file line="280">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2d9f07413ce3c8d519eca3f10f280eb14f7402cf" resname="prod::thesaurusTab:dlg:Remplacement du candidat &quot;%(from)s&quot; par &quot;%(to)s&quot;" approved="no">
+      <trans-unit id="2d9f07413ce3c8d519eca3f10f280eb14f7402cf" resname="prod::thesaurusTab:dlg:Remplacement du candidat &quot;%(from)s&quot; par &quot;%(to)s&quot;">
         <source>prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"</source>
         <target state="needs-translation">Replace "%(from)s" by "%(to)s"</target>
         <jms:reference-file line="102">web/prod/thesaurus.js.twig</jms:reference-file>
@@ -10897,7 +10897,7 @@
         <target state="translated">Deleting...</target>
         <jms:reference-file line="363">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="27810e2a525948061c8b88e13ebc6b61a4c5f6dc" resname="prod::thesaurusTab:dlg:accepter le terme candidat &quot;%s&quot; ?" approved="no">
+      <trans-unit id="27810e2a525948061c8b88e13ebc6b61a4c5f6dc" resname="prod::thesaurusTab:dlg:accepter le terme candidat &quot;%s&quot; ?">
         <source>prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?</source>
         <target state="needs-translation">Accept "%s" in Thesaurus?</target>
         <jms:reference-file line="427">web/prod/thesaurus.js.twig</jms:reference-file>
@@ -10927,7 +10927,7 @@
         <target state="translated">Delete %d terms from caption(s)</target>
         <jms:reference-file line="556">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="735bd738f9e75e066751d9444eedf6e1f27a1f58" resname="prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)" approved="no">
+      <trans-unit id="735bd738f9e75e066751d9444eedf6e1f27a1f58" resname="prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)">
         <source>prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)</source>
         <target state="needs-translation">Too many records to update (%number% selected, maximum limit is %maximum%)</target>
         <jms:reference-file line="1458">Controller/Thesaurus/ThesaurusXmlHttpController.php</jms:reference-file>
@@ -10958,7 +10958,7 @@
         <target state="translated">Accept candidate</target>
         <jms:reference-file line="17">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3806a60cb1ce106090ffcafcf629703164dd7a70" resname="prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat &quot;%s&quot;" approved="no">
+      <trans-unit id="3806a60cb1ce106090ffcafcf629703164dd7a70" resname="prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat &quot;%s&quot;">
         <source>prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"</source>
         <target state="needs-translation">Right-click / Accept term "%s"</target>
         <jms:reference-file line="495">web/prod/thesaurus.js.twig</jms:reference-file>
@@ -11044,12 +11044,12 @@
         <jms:reference-file line="243">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="267">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="70e2a7238a2b25916f8dda4ca72e2b8617edde67" resname="push::mail:: Rapport de validation de %user% pour %title%" approved="no">
+      <trans-unit id="70e2a7238a2b25916f8dda4ca72e2b8617edde67" resname="push::mail:: Rapport de validation de %user% pour %title%">
         <source>push::mail:: Rapport de validation de %user% pour %title%</source>
         <target state="needs-translation">Feedback report from %user% about %title%</target>
         <jms:reference-file line="56">Notification/Mail/MailInfoValidationDone.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12991ffb59907b07fcef52165eece660466abb78" resname="push::mail:: Reception de votre commande %title%" approved="no">
+      <trans-unit id="12991ffb59907b07fcef52165eece660466abb78" resname="push::mail:: Reception de votre commande %title%">
         <source>push::mail:: Reception de votre commande %title%</source>
         <target state="needs-translation">Order delivery %title%</target>
         <jms:reference-file line="54">Notification/Mail/MailInfoOrderDelivered.php</jms:reference-file>
@@ -11299,7 +11299,7 @@
         <target state="translated">Information on user %name%</target>
         <jms:reference-file line="472">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7bb81e9fb8897f3004a039b7bf7d3acca32a0381" resname="report:: Information sur le navigateur %name%" approved="no">
+      <trans-unit id="7bb81e9fb8897f3004a039b7bf7d3acca32a0381" resname="report:: Information sur le navigateur %name%">
         <source>report:: Information sur le navigateur %name%</source>
         <target state="needs-translation">Information about browser %name%</target>
         <jms:reference-file line="536">module/report/nav.php</jms:reference-file>
