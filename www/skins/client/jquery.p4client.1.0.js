@@ -576,7 +576,7 @@ function doThesSearch(type, sbid, term, field) {
     if (type == 'T')
         v = '*:"' + term.replace("(", "[").replace(")", "]") + '"';
     else
-        v = field ':"' + term + '"';
+        v = field '="' + term + '"';
     doSpecialSearch(v, true);
 }
 
