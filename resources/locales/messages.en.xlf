@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2015-12-04T11:38:07Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9733,9 +9733,9 @@
         <target state="translated">March</target>
         <jms:reference-file line="716">classes/module/report.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="520593b5cc1a6e328e74717650c586fb1dbfa265" resname="maximum : %maxFileSizeReadable%">
+      <trans-unit id="520593b5cc1a6e328e74717650c586fb1dbfa265" resname="maximum : %maxFileSizeReadable%" approved="yes">
         <source>maximum : %maxFileSizeReadable%</source>
-        <target state="needs-translation">Maximum: %maxFileSizeReadable%</target>
+        <target state="translated">Maximum filesize: %maxFileSizeReadable%</target>
         <jms:reference-file line="33">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="36">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
@@ -10578,9 +10578,9 @@
         <target state="translated">Delete %d terms from caption(s)</target>
         <jms:reference-file line="556">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="735bd738f9e75e066751d9444eedf6e1f27a1f58" resname="prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)">
+      <trans-unit id="735bd738f9e75e066751d9444eedf6e1f27a1f58" resname="prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)" approved="yes">
         <source>prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)</source>
-        <target state="needs-translation">Too many records to update (%number% selected, maximum limit is %maximum%)</target>
+        <target state="translated">Too many records to update (%number% selected, maximum limit is %maximum%)</target>
         <jms:reference-file line="1458">Controller/Thesaurus/ThesaurusXmlHttpController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f6ab998dc34b364aa453a71a312e13df837849c" resname="prod::thesaurusTab:thesaurus" approved="yes">
@@ -10609,9 +10609,9 @@
         <target state="translated">Accept candidate</target>
         <jms:reference-file line="17">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3806a60cb1ce106090ffcafcf629703164dd7a70" resname="prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat &quot;%s&quot;">
+      <trans-unit id="3806a60cb1ce106090ffcafcf629703164dd7a70" resname="prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat &quot;%s&quot;" approved="yes">
         <source>prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"</source>
-        <target state="needs-translation">Right-click / Accept term "%s"</target>
+        <target state="translated">Right-click / Accept term "%s"</target>
         <jms:reference-file line="495">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c168c3ca1b5c31a68c5a17e18c1d8e78c155c80e" resname="prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" approved="yes">
@@ -10685,14 +10685,14 @@
         <jms:reference-file line="243">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="267">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="70e2a7238a2b25916f8dda4ca72e2b8617edde67" resname="push::mail:: Rapport de validation de %user% pour %title%">
+      <trans-unit id="70e2a7238a2b25916f8dda4ca72e2b8617edde67" resname="push::mail:: Rapport de validation de %user% pour %title%" approved="yes">
         <source>push::mail:: Rapport de validation de %user% pour %title%</source>
-        <target state="needs-translation">Feedback report from %user% about %title%</target>
+        <target state="translated">Feedback report from %user% about %title%</target>
         <jms:reference-file line="56">Notification/Mail/MailInfoValidationDone.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12991ffb59907b07fcef52165eece660466abb78" resname="push::mail:: Reception de votre commande %title%">
+      <trans-unit id="12991ffb59907b07fcef52165eece660466abb78" resname="push::mail:: Reception de votre commande %title%" approved="yes">
         <source>push::mail:: Reception de votre commande %title%</source>
-        <target state="needs-translation">Order delivery %title%</target>
+        <target state="translated">Order delivery %title%</target>
         <jms:reference-file line="54">Notification/Mail/MailInfoOrderDelivered.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5b266e914018a52d7c3639636262b6f6efd1df01" resname="push::mail:: Refus d'elements de votre commande" approved="yes">
@@ -10940,9 +10940,9 @@
         <target state="translated">Information on user %name%</target>
         <jms:reference-file line="472">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7bb81e9fb8897f3004a039b7bf7d3acca32a0381" resname="report:: Information sur le navigateur %name%">
+      <trans-unit id="7bb81e9fb8897f3004a039b7bf7d3acca32a0381" resname="report:: Information sur le navigateur %name%" approved="yes">
         <source>report:: Information sur le navigateur %name%</source>
-        <target state="needs-translation">Information about browser %name%</target>
+        <target state="translated">Information about %name% browser</target>
         <jms:reference-file line="536">module/report/nav.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="89811d9751fd829a756832ca75039990b3b5a792" resname="report:: Information sur les utilisateurs correspondant a %critere%" approved="yes">
@@ -11358,14 +11358,14 @@
         <jms:reference-file line="427">Controller/Report/RootController.php</jms:reference-file>
         <jms:reference-file line="217">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c137593838c7cdfab2c2e386539151b90b4e45ed" resname="report:: site">
+      <trans-unit id="c137593838c7cdfab2c2e386539151b90b4e45ed" resname="report:: site" approved="yes">
         <source>report:: site</source>
-        <target state="new">report:: site</target>
+        <target state="translated">Site</target>
         <jms:reference-file line="79">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4b47102c55ce755def67c13bd17568180f253c83" resname="report:: site d'ou les photo sont les plus consultees">
+      <trans-unit id="4b47102c55ce755def67c13bd17568180f253c83" resname="report:: site d'ou les photo sont les plus consultees" approved="yes">
         <source>report:: site d'ou les photo sont les plus consultees</source>
-        <target state="new">report:: site d'ou les photo sont les plus consultees</target>
+        <target state="translated">Consultation site</target>
         <jms:reference-file line="78">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44139fc886784bf1efa8198f67265ce6e84a286d" resname="report:: societe" approved="yes">
@@ -11399,9 +11399,9 @@
         <jms:reference-file line="63">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
         <jms:reference-file line="9">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="26297a76b38e5df1ac25352f5f3063349e94992b" resname="report:: telechargements document">
+      <trans-unit id="26297a76b38e5df1ac25352f5f3063349e94992b" resname="report:: telechargements document" approved="yes">
         <source>report:: telechargements document</source>
-        <target state="new">report:: telechargements document</target>
+        <target state="translated">Downloads for documents</target>
         <jms:reference-file line="33">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="338e3b26caf39e2f5a23b29047a353b99655817d" resname="report:: telechargements par jour" approved="yes">
@@ -11409,9 +11409,9 @@
         <target state="translated">Downloads</target>
         <jms:reference-file line="269">module/report/activity.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46b1963bc2dee84ba3e8dbe3aa1beb05e5f1bc8c" resname="report:: telechargements preview">
+      <trans-unit id="46b1963bc2dee84ba3e8dbe3aa1beb05e5f1bc8c" resname="report:: telechargements preview" approved="yes">
         <source>report:: telechargements preview</source>
-        <target state="new">report:: telechargements preview</target>
+        <target state="translated">Downloads for previews</target>
         <jms:reference-file line="39">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdf87efee0312793d6f07abe5dfd8017a8d2cdab" resname="report:: telephone" approved="yes">
@@ -11486,9 +11486,9 @@
         <target state="translated">documents moved to : %coll_name%</target>
         <jms:reference-file line="27">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="19b4d8a8be30b7ffef27c51a9821d3d6415e9f2d" resname="report::Connexion">
+      <trans-unit id="19b4d8a8be30b7ffef27c51a9821d3d6415e9f2d" resname="report::Connexion" approved="yes">
         <source>report::Connexion</source>
-        <target state="new">report::Connexion</target>
+        <target state="translated">Connection</target>
         <jms:reference-file line="27">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="419829b982162d12659c70a94a0aa6aafaa8df13" resname="report::Connexions" approved="yes">
@@ -11624,19 +11624,19 @@
         <jms:reference-file line="191">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="207">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="55655edb5e7b23c00fe3fe0509be09e674138da6" resname="resultat numero %number%">
+      <trans-unit id="55655edb5e7b23c00fe3fe0509be09e674138da6" resname="resultat numero %number%" approved="yes">
         <source>resultat numero %number%</source>
-        <target state="new">resultat numero %number%</target>
+        <target state="translated">Result number %number%</target>
         <jms:reference-file line="280">classes/record/preview.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c6548f49ad54d65a5add4b639443bb3f514494b1" resname="retourne &quot;automobile&quot;, &quot;automate&quot;, &quot;autoroute&quot;, ...">
+      <trans-unit id="c6548f49ad54d65a5add4b639443bb3f514494b1" resname="retourne &quot;automobile&quot;, &quot;automate&quot;, &quot;autoroute&quot;, ..." approved="yes">
         <source>retourne "automobile", "automate", "autoroute", ...</source>
-        <target state="new">retourne "automobile", "automate", "autoroute", ...</target>
+        <target state="translated">return "automobile", "automate", "autoroute", ...</target>
         <jms:reference-file line="23">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e4f636787386b4982837e27e94efcbfc38f1cf79" resname="retourne &quot;délit&quot;, &quot;débit&quot;, ...">
+      <trans-unit id="e4f636787386b4982837e27e94efcbfc38f1cf79" resname="retourne &quot;délit&quot;, &quot;débit&quot;, ..." approved="yes">
         <source>retourne "délit", "débit", ...</source>
-        <target state="new">retourne "délit", "débit", ...</target>
+        <target state="translated">return "délit", "débit", ...</target>
         <jms:reference-file line="27">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ed099d557fe7237d337757c528c2ea5c65d6e5d7" resname="retourne les 20 derniers enregistrements archives dans les collections selectionnees" approved="yes">
@@ -11679,9 +11679,9 @@
         <target state="translated">Rotate 90 degrees clockwise</target>
         <jms:reference-file line="186">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2be8dbf0a1ca487e47fe126c995102dcf17e251e" resname="scheduled status">
+      <trans-unit id="2be8dbf0a1ca487e47fe126c995102dcf17e251e" resname="scheduled status" approved="yes">
         <source>scheduled status</source>
-        <target state="new">scheduled status</target>
+        <target state="translated">Scheduled status</target>
         <jms:reference-file line="26">admin/task-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="584d9f9b8a0c51aa1805a1c0ed427c366d11ea5e" resname="screenshot video" approved="yes">
@@ -11744,9 +11744,9 @@
         <target state="translated">E-mails send test</target>
         <jms:reference-file line="129">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8ab6a8a0cf069e3783c6f59163ad03a051310556" resname="sport">
+      <trans-unit id="8ab6a8a0cf069e3783c6f59163ad03a051310556" resname="sport" approved="yes">
         <source>sport</source>
-        <target>sport</target>
+        <target state="translated">sport</target>
         <jms:reference-file line="47">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="98693e37d002821e032bfc91ffc5091c3b6d76da" resname="status:: Affichable pour tous" approved="yes">
@@ -11861,9 +11861,9 @@
         <target state="translated">Details for file(s)</target>
         <jms:reference-file line="387">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c28528f993cb07c3716f88b03f1235750bfc6055" resname="task::ftp:Etat d'envoi FTP vers le serveur &quot;%server%&quot; avec le compte &quot;%username%&quot; et pour destination le dossier : &quot;%directory%&quot;">
+      <trans-unit id="c28528f993cb07c3716f88b03f1235750bfc6055" resname="task::ftp:Etat d'envoi FTP vers le serveur &quot;%server%&quot; avec le compte &quot;%username%&quot; et pour destination le dossier : &quot;%directory%&quot;" approved="yes">
         <source>task::ftp:Etat d'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"</source>
-        <target state="new">task::ftp:Etat d'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"</target>
+        <target state="translated">FTP sending state to host "%server%" using account "%username%" and remote folder "%directory%"</target>
         <jms:reference-file line="110">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9c22d9454175a7d9635068f39d78d100642f6ad" resname="task::ftp:FTP Pull" approved="yes">
@@ -11871,26 +11871,26 @@
         <target state="translated">FTP Pull</target>
         <jms:reference-file line="24">TaskManager/Job/FtpPullJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="45e13d4a98d29746203b8174e32db990b6860b06" resname="task::ftp:File &quot;%file%&quot; (record %record_id%) de la base &quot;%basename%&quot; (Export du Document) : Transfert cancelled (le document n'existe plus)">
+      <trans-unit id="45e13d4a98d29746203b8174e32db990b6860b06" resname="task::ftp:File &quot;%file%&quot; (record %record_id%) de la base &quot;%basename%&quot; (Export du Document) : Transfert cancelled (le document n'existe plus)" approved="yes">
         <source>task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n'existe plus)</source>
-        <target state="new">task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n'existe plus)</target>
+        <target state="translated">Transfert cancelled for file "%file%" (record_id "%record_id%" in databox "%basename%"): document no longer exists</target>
         <jms:reference-file line="255">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="80a29136ce99f9c32aba5f2118e942909b9c2014" resname="task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%">
+      <trans-unit id="80a29136ce99f9c32aba5f2118e942909b9c2014" resname="task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%" approved="yes">
         <source>task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</source>
-        <target state="new">task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</target>
+        <target state="translated">Record %recordid% - %filename% (databox %databoxname% - collection %collectionname%) - %subdefname%</target>
         <jms:reference-file line="353">TaskManager/Job/FtpJob.php</jms:reference-file>
         <jms:reference-file line="362">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b8af196a1703cd1c3079eebef88a1b540ede06ea" resname="task::ftp:Status about your FTP transfert from %application% to %server%">
+      <trans-unit id="b8af196a1703cd1c3079eebef88a1b540ede06ea" resname="task::ftp:Status about your FTP transfert from %application% to %server%" approved="yes">
         <source>task::ftp:Status about your FTP transfert from %application% to %server%</source>
-        <target state="new">task::ftp:Status about your FTP transfert from %application% to %server%</target>
+        <target state="translated">FTP transfert status from %application% to %server%</target>
         <jms:reference-file line="40">Notification/Mail/MailSuccessFTPReceiver.php</jms:reference-file>
         <jms:reference-file line="40">Notification/Mail/MailSuccessFTPSender.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3442bca4992e5cd06a67f05beebf5721383d1653" resname="task::ftp:TENTATIVE no %number%, %date%">
+      <trans-unit id="3442bca4992e5cd06a67f05beebf5721383d1653" resname="task::ftp:TENTATIVE no %number%, %date%" approved="yes">
         <source>task::ftp:TENTATIVE no %number%, %date%</source>
-        <target state="new">task::ftp:TENTATIVE no %number%, %date%</target>
+        <target state="translated">Try number %number% on %date%</target>
         <jms:reference-file line="119">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0c408a4355fd00097aba861dd9bb650acdff3d96" resname="task::ftp:Tous les documents ont ete transferes avec succes" approved="yes">
@@ -11898,19 +11898,19 @@
         <target state="translated">All files transferred</target>
         <jms:reference-file line="348">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f0dea9613c9721ad0a2afadccba858183856338b" resname="task::ftp:chemin distant">
+      <trans-unit id="f0dea9613c9721ad0a2afadccba858183856338b" resname="task::ftp:chemin distant" approved="yes">
         <source>task::ftp:chemin distant</source>
-        <target state="new">task::ftp:chemin distant</target>
+        <target state="translated">Remote path</target>
         <jms:reference-file line="41">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="976aada729e5816528fa6f91302befa68bc7716e" resname="task::ftp:host">
+      <trans-unit id="976aada729e5816528fa6f91302befa68bc7716e" resname="task::ftp:host" approved="yes">
         <source>task::ftp:host</source>
-        <target state="new">task::ftp:host</target>
+        <target state="translated">Host</target>
         <jms:reference-file line="17">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="069aca72b0cac398985a7c3c478ba797d489bc41" resname="task::ftp:localpath">
+      <trans-unit id="069aca72b0cac398985a7c3c478ba797d489bc41" resname="task::ftp:localpath" approved="yes">
         <source>task::ftp:localpath</source>
-        <target state="new">task::ftp:localpath</target>
+        <target state="translated">Local path</target>
         <jms:reference-file line="47">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e6194c741ce2bbb999f040cde7e8755db8b5d451" resname="task::ftp:mode passif" approved="yes">
@@ -11918,14 +11918,14 @@
         <target state="translated">Passive mode</target>
         <jms:reference-file line="53">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="701ace064a01bfc934965ee792ac07a99993799b" resname="task::ftp:password">
+      <trans-unit id="701ace064a01bfc934965ee792ac07a99993799b" resname="task::ftp:password" approved="yes">
         <source>task::ftp:password</source>
-        <target state="new">task::ftp:password</target>
+        <target state="translated">FTP Password</target>
         <jms:reference-file line="35">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="380bb8e183965c374747eccca402fba658af073c" resname="task::ftp:port">
+      <trans-unit id="380bb8e183965c374747eccca402fba658af073c" resname="task::ftp:port" approved="yes">
         <source>task::ftp:port</source>
-        <target state="new">task::ftp:port</target>
+        <target state="translated">FTP port</target>
         <jms:reference-file line="23">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8eadb101df19fb4960c791cf1afaa49d3516feb" resname="task::ftp:proxy" approved="yes">
@@ -11934,9 +11934,9 @@
         <jms:reference-file line="5">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
         <jms:reference-file line="5">task-manager/task-editor/ftp.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d50701eb37a2e5b7dfe3358ba91ff9a1cc6f10ef" resname="task::ftp:proxy password">
+      <trans-unit id="d50701eb37a2e5b7dfe3358ba91ff9a1cc6f10ef" resname="task::ftp:proxy password" approved="yes">
         <source>task::ftp:proxy password</source>
-        <target state="new">task::ftp:proxy password</target>
+        <target state="translated">FTP proxy password</target>
         <jms:reference-file line="23">task-manager/task-editor/ftp.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7e5c84ff2404f76423afe64d0f5b8fbea07c024" resname="task::ftp:proxy port" approved="yes">
@@ -11945,14 +11945,14 @@
         <jms:reference-file line="11">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
         <jms:reference-file line="11">task-manager/task-editor/ftp.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17d927a070b462263321072111c64cc0505c9d14" resname="task::ftp:proxy user">
+      <trans-unit id="17d927a070b462263321072111c64cc0505c9d14" resname="task::ftp:proxy user" approved="yes">
         <source>task::ftp:proxy user</source>
-        <target state="new">task::ftp:proxy user</target>
+        <target state="translated">FTP User</target>
         <jms:reference-file line="17">task-manager/task-editor/ftp.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c30de79b8e449c5c6ce2747da8e834bd7ffe941e" resname="task::ftp:user">
+      <trans-unit id="c30de79b8e449c5c6ce2747da8e834bd7ffe941e" resname="task::ftp:user" approved="yes">
         <source>task::ftp:user</source>
-        <target state="new">task::ftp:user</target>
+        <target state="translated">FTP User</target>
         <jms:reference-file line="29">task-manager/task-editor/ftp-pull.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4c7f5f89b2c8e7635eb2fb87814a75feefb4b7d8" resname="task::ftp:utiliser SSL" approved="yes">
@@ -11975,9 +11975,9 @@
         <target state="translated">Rewrite metadatas from documents and subviews.</target>
         <jms:reference-file line="47">TaskManager/Job/WriteMetadataJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22491d773a2881a5cacdf18b4c2757888dc31010" resname="task::writemeta:Compatibilité MWG">
+      <trans-unit id="22491d773a2881a5cacdf18b4c2757888dc31010" resname="task::writemeta:Compatibilité MWG" approved="yes">
         <source>task::writemeta:Compatibilité MWG</source>
-        <target state="new">task::writemeta:Compatibilité MWG</target>
+        <target state="translated">Enable MWG metadata compatibility</target>
         <jms:reference-file line="16">task-manager/task-editor/write-metadata.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f4ac8271bc12ef93247d85791e31228d08d7c47" resname="task::writemeta:ecriture des metadatas" approved="yes">
@@ -12025,9 +12025,9 @@
         <target state="translated">Add term without re indexation</target>
         <jms:reference-file line="78">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="97b59723dc7ad155e3f36da086a162c4a716903e" resname="thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}">
+      <trans-unit id="97b59723dc7ad155e3f36da086a162c4a716903e" resname="thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}" approved="yes">
         <source>thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}</source>
-        <target state="new">thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}</target>
+        <target state="translated">Field has been changed ; previous branch is: %old_branch% }}</target>
         <jms:reference-file line="42">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8722fc011f51b468cf4205d8e3b8f8984f2de548" resname="thesaurus:: Confirmer la suppression du terme %s" approved="yes">
@@ -12190,9 +12190,9 @@
         <target state="translated">is already a candidate from valid field</target>
         <jms:reference-file line="29">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ad27b4c77e544111b921db376cc43959c6a2ea98" resname="thesaurus:: est egal a ">
+      <trans-unit id="ad27b4c77e544111b921db376cc43959c6a2ea98" resname="thesaurus:: est egal a " approved="yes">
         <source>thesaurus:: est egal a </source>
-        <target state="new">thesaurus:: est egal a </target>
+        <target state="translated">is equal to</target>
         <jms:reference-file line="246">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f3eb6935355ad9ba531d6bddae4f2d19e0e4d70" resname="thesaurus:: example" approved="yes">
@@ -12253,14 +12253,14 @@
         <target state="translated">Export for all languages</target>
         <jms:reference-file line="75">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c50ff0eefeb602b1ffa90df63dde715db856f0ef" resname="thesaurus:: fichier genere : %filename%">
+      <trans-unit id="c50ff0eefeb602b1ffa90df63dde715db856f0ef" resname="thesaurus:: fichier genere : %filename%" approved="yes">
         <source>thesaurus:: fichier genere : %filename%</source>
-        <target state="new">thesaurus:: fichier genere : %filename%</target>
+        <target state="translated">Generated file: %filename%</target>
         <jms:reference-file line="382">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ea946fc27f82708da50b8c7860974830c7673cf1" resname="thesaurus:: fichier genere le %date%">
+      <trans-unit id="ea946fc27f82708da50b8c7860974830c7673cf1" resname="thesaurus:: fichier genere le %date%" approved="yes">
         <source>thesaurus:: fichier genere le %date%</source>
-        <target state="new">thesaurus:: fichier genere le %date%</target>
+        <target state="translated">Generated file on %date%</target>
         <jms:reference-file line="354">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9eea030ece6cc7f8d7bf5b6eda81a71e4a658fd2" resname="thesaurus:: hits" approved="yes">
@@ -12363,9 +12363,9 @@
         <target state="translated">Fulltext</target>
         <jms:reference-file line="103">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c2e18dc86801eb9d226012069865ed2f230ab868" resname="thesaurus:: recherche thesaurus *:&quot;query&quot;">
+      <trans-unit id="c2e18dc86801eb9d226012069865ed2f230ab868" resname="thesaurus:: recherche thesaurus *:&quot;query&quot;" approved="yes">
         <source>thesaurus:: recherche thesaurus *:"query"</source>
-        <target state="new">thesaurus:: recherche thesaurus *:"query"</target>
+        <target state="translated">Thesaurus query *:"query"</target>
         <jms:reference-file line="99">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d337dbb54de979f01957eae496c562e68b93ffec" resname="thesaurus:: refresh" approved="yes">
@@ -12520,9 +12520,9 @@
         <target state="translated">Confirm thumbnail</target>
         <jms:reference-file line="588">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4374aaee247fb237ce6c97d5c8d64bbe474d16de" resname="to">
+      <trans-unit id="4374aaee247fb237ce6c97d5c8d64bbe474d16de" resname="to" approved="yes">
         <source>to</source>
-        <target state="new">to</target>
+        <target state="translated">to</target>
         <jms:reference-file line="15">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="19">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
@@ -12547,14 +12547,14 @@
         <target state="translated">All Notifications</target>
         <jms:reference-file line="9">web/prod/notifications.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="50d8b4a941c26b89482c94ab324b5a274f9ced66" resname="unknown">
+      <trans-unit id="50d8b4a941c26b89482c94ab324b5a274f9ced66" resname="unknown" approved="yes">
         <source>unknown</source>
-        <target state="new">unknown</target>
+        <target state="translated">Unknown</target>
         <jms:reference-file line="34">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9f273e321a1d1ea40251ab0a45f8ca8cbdd135da" resname="untitled">
+      <trans-unit id="9f273e321a1d1ea40251ab0a45f8ca8cbdd135da" resname="untitled" approved="yes">
         <source>untitled</source>
-        <target state="new">untitled</target>
+        <target state="translated">Untitled</target>
         <jms:reference-file line="58">actions/Bridge/element_list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="38ed031ff1a2d3f63b6415db3993741c54e41087" resname="update::Votre application necessite une mise a jour vers :" approved="yes">
@@ -12641,9 +12641,9 @@
         <target state="translated">At least one collection must be selected</target>
         <jms:reference-file line="19">web/report/all_content.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ffbaf58f1231628f9ac2a583f038b51719006ec6" resname="video">
+      <trans-unit id="ffbaf58f1231628f9ac2a583f038b51719006ec6" resname="video" approved="yes">
         <source>video</source>
-        <target state="new">video</target>
+        <target state="translated">Video</target>
         <jms:reference-file line="22">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f579f302357e60409bbfb73a4caa4700c4d8be5" resname="video tool" approved="yes">
@@ -12663,9 +12663,9 @@
         <target state="translated">You are about to change the  representation thumbnail of your video</target>
         <jms:reference-file line="14">actions/Tools/confirm.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1699a031168043698a8b36ca94bd3ef9207725a9" resname="your configuration">
+      <trans-unit id="1699a031168043698a8b36ca94bd3ef9207725a9" resname="your configuration" approved="yes">
         <source>your configuration</source>
-        <target>your configuration</target>
+        <target state="translated">Your configuration</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
     </body>
