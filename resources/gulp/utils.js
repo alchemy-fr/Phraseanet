@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var util = require('gulp-util');
+var gutil = require('gulp-util');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -11,13 +11,23 @@ var autoprefixer = require('gulp-autoprefixer');
 var fs = require('fs');
 
 
-exports.buildJsGroup = function(srcGroup, name, dest){
+exports.buildJsGroup = function(srcGroup, name, dest, debugMode){
     if( dest === undefined ) {
         dest = name;
     }
     // ensure all required files exists:
     srcGroup.forEach(fs.statSync); //will trow an error if file not found
     // console.log('building group:', name, ' > ', config.paths.build + dest)
+
+
+    if( debugMode === true ) {
+        gutil.log(gutil.colors.red('[DEBUG MODE]'), ' "' + name + '" minified version has not been generated');
+        return gulp.src(srcGroup)
+            .pipe(concat(name + '.js', {newLine: ';'}))
+            .pipe(gulp.dest( config.paths.build + dest))
+            .pipe(gulp.dest( config.paths.build + dest))
+    }
+
     return gulp.src(srcGroup)
         .pipe(concat(name + '.js', {newLine: ';'}))
         .pipe(gulp.dest( config.paths.build + dest))
@@ -26,13 +36,24 @@ exports.buildJsGroup = function(srcGroup, name, dest){
         .pipe(gulp.dest( config.paths.build + dest))
 };
 
-exports.buildCssGroup = function(srcGroup, name, dest){
+exports.buildCssGroup = function(srcGroup, name, dest, debugMode){
     if( dest === undefined ) {
         dest = name;
     }
     // ensure all required files exists:
     srcGroup.forEach(fs.statSync); //will trow an error if file not found
     // console.log('building group:', name, ' > ', config.paths.build + dest)
+
+
+    if( debugMode === true ) {
+        gutil.log(gutil.colors.red('[DEBUG MODE]'), ' "' + name + '" minified version has not been generated');
+        return gulp.src(srcGroup)
+            .pipe(sass().on('error', sass.logError))
+            .pipe(autoprefixer())
+            .pipe(rename(name + '.css'))
+            .pipe(gulp.dest(config.paths.build + dest))
+    }
+
     return gulp.src(srcGroup)
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer())

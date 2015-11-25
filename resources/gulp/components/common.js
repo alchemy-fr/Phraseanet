@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
+var debugMode = false;
 
 gulp.task('copy-common-images', function(){
     return gulp.src([config.paths.src + 'common/images/**/*'])
@@ -20,7 +21,7 @@ gulp.task('build-common-font-css', ['copy-common-fonts'],function(){
 gulp.task('build-common-css', ['build-common-font-css'],function(){
     return utils.buildCssGroup([
         config.paths.src + 'common/styles/main.scss'
-    ], 'common', 'common/css/')
+    ], 'common', 'common/css/', debugMode)
 });
 
 gulp.task('build-common-js', function(){
@@ -42,17 +43,20 @@ gulp.task('build-common-js', function(){
         config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
         config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
     ];
-    return utils.buildJsGroup(commonGroup, 'common', 'common/js');
+    return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });
 
 gulp.task('watch-common-js', function() {
+    debugMode = true;
     return gulp.watch(config.paths.src + 'common/**/*.js', ['build-common-js']);
 });
 
 gulp.task('watch-common-css', function() {
+    debugMode = true;
     gulp.watch(config.paths.src + 'common/**/*.scss', ['build-common-css']);
 });
 
 gulp.task('build-common', ['copy-common-images', 'build-common-css'], function(){
+    debugMode = false;
     return gulp.start('build-common-js');
 });

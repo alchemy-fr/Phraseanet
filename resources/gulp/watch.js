@@ -48,4 +48,5 @@ gulp.task('sync', ['watch'], function(){
         proxy: "phraseanet-php55-nginx"
     });
     gulp.watch(config.paths.build + '**/*.css').on('change', browserSync.reload);
+    gulp.watch(config.paths.build + '**/*.js').on('change', browserSync.reload);
 });

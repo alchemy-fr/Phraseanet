@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
+var debugMode = false;
 
 
 // prod submodule
@@ -20,7 +21,7 @@ gulp.task('build-permaview',  function(){
         config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
         config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
     ];
-    return utils.buildJsGroup(permaviewGroup, 'permaview', 'permaview/js');
+    return utils.buildJsGroup(permaviewGroup, 'permaview', 'permaview/js', debugMode);
 });
 
 gulp.task('copy-prod-skin-black-images', function(){
@@ -45,19 +46,19 @@ gulp.task('copy-prod-images', function(){
 gulp.task('build-prod-skin-black', ['copy-prod-skin-black-images'], function(){
     return utils.buildCssGroup([
         config.paths.src + 'prod/skins/000000/skin-000000.scss'
-    ], 'skin-000000', 'prod/skins/000000/');
+    ], 'skin-000000', 'prod/skins/000000/', debugMode);
 });
 
 gulp.task('build-prod-skin-grey', ['copy-prod-skin-grey-images'], function(){
     return utils.buildCssGroup([
         config.paths.src + 'prod/skins/959595/skin-959595.scss'
-    ], 'skin-959595', 'prod/skins/959595/');
+    ], 'skin-959595', 'prod/skins/959595/', debugMode);
 });
 
 gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey'], function(){
     return utils.buildCssGroup([
         config.paths.src + 'prod/styles/main.scss'
-    ], 'prod', 'prod/css/');
+    ], 'prod', 'prod/css/', debugMode);
 });
 gulp.task('build-prod-js', function(){
     var prodGroup = [
@@ -91,16 +92,19 @@ gulp.task('build-prod-js', function(){
         config.paths.vendors + 'jquery-treeview/jquery.treeview.async.js',
         config.paths.vendors + 'fancytree/dist/jquery.fancytree-all.min.js'
     ];
-    return utils.buildJsGroup(prodGroup, 'prod', 'prod/js');
+    return utils.buildJsGroup(prodGroup, 'prod', 'prod/js', debugMode);
 });
 gulp.task('watch-prod-js', function() {
+    debugMode = true;
     return gulp.watch(config.paths.src + 'prod/**/*.js', ['build-prod-js']);
 });
 
 gulp.task('watch-prod-css', function() {
+    debugMode = true;
     return gulp.watch(config.paths.src + 'prod/**/*.scss', ['build-prod-css']);
 });
 
 gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
+    debugMode = false;
     return gulp.start('build-prod-js');
 });

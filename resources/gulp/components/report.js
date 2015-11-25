@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
+var debugMode = false;
 
 gulp.task('copy-report-images', function(){
     return gulp.src([config.paths.src + 'report/images/**/*'])
@@ -10,13 +11,13 @@ gulp.task('copy-report-images', function(){
 gulp.task('build-report-print-css', function(){
     return utils.buildCssGroup([
         config.paths.src + 'report/styles/main-print.scss'
-    ], 'print', 'report/css/');
+    ], 'print', 'report/css/', debugMode);
 });
 
 gulp.task('build-report-css', ['build-report-print-css'], function(){
     return utils.buildCssGroup([
         config.paths.src + 'report/styles/main.scss'
-    ], 'report', 'report/css/');
+    ], 'report', 'report/css/', debugMode);
 });
 
 gulp.task('build-report-js', function(){
@@ -27,14 +28,16 @@ gulp.task('build-report-js', function(){
         config.paths.src + 'report/js/jquery.gvChart-0.1.js',
         config.paths.src + 'report/js/report.js'
     ];
-    return utils.buildJsGroup(reportGroup, 'report', 'report/js');
+    return utils.buildJsGroup(reportGroup, 'report', 'report/js', debugMode);
 });
 
 gulp.task('watch-report-js', function() {
+    debugMode = true;
     return gulp.watch(config.paths.src + 'report/**/*.js', ['build-report-js']);
 });
 
 gulp.task('watch-report-css', function() {
+    debugMode = true;
     gulp.watch(config.paths.src + 'report/**/*.scss', ['build-report-css']);
 });
 

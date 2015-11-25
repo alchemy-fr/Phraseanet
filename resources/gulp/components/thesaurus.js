@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
+var debugMode = false;
 
 gulp.task('copy-thesaurus-images', function(){
     return gulp.src([config.paths.src + 'thesaurus/images/**/*'])
@@ -9,7 +10,7 @@ gulp.task('copy-thesaurus-images', function(){
 gulp.task('build-thesaurus-css', function(){
     return utils.buildCssGroup([
         config.paths.src + 'thesaurus/styles/main.scss'
-    ], 'thesaurus', 'thesaurus/css/');
+    ], 'thesaurus', 'thesaurus/css/', debugMode);
 });
 
 gulp.task('build-thesaurus-js', function(){
@@ -20,14 +21,16 @@ gulp.task('build-thesaurus-js', function(){
         config.paths.src + 'thesaurus/js/thesaurus.js',
         config.paths.src + 'thesaurus/js/sprintf.js'
     ];
-    return utils.buildJsGroup(thesaurusGroup, 'thesaurus', 'thesaurus/js');
+    return utils.buildJsGroup(thesaurusGroup, 'thesaurus', 'thesaurus/js', debugMode);
 });
 
 gulp.task('watch-thesaurus-js', function() {
+    debugMode = true;
     return gulp.watch(config.paths.src + 'thesaurus/**/*.js', ['build-thesaurus-js']);
 });
 
 gulp.task('watch-thesaurus-css', function() {
+    debugMode = true;
     gulp.watch(config.paths.src + 'thesaurus/**/*.scss', ['build-thesaurus-css']);
 });
 
