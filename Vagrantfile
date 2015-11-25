@@ -3,6 +3,7 @@ require 'yaml'
 unless Vagrant.has_plugin?("vagrant-hostsupdater")
   raise 'vagrant-hostmanager is not installed! please run "vagrant plugin install vagrant-hostsupdater'
 end
+$root = File.dirname(File.expand_path(__FILE__))
 
 root = File.dirname(File.expand_path(__FILE__))
 
@@ -36,11 +37,42 @@ Vagrant.configure("2") do |config|
             
             if port['guest'] != '' && port['host'] != ''
               node.vm.network :forwarded_port, guest: port['guest'].to_i, host: port['host'].to_i
+=======
+def config_net(config)
+    config.hostmanager.aliases = [
+        $hostname + ".vb",
+        "www." + $hostname + ".vb",
+        "dev." + $hostname + ".vb"
+    ]
+
+    #config.vm.network :public_network, type: "dhcp", bridge: "en0: Ethernet"
+
+    # Assign static IP if present in network config
+    if File.file?($root + "/.network.conf")
+        ipAddress = File.read($root + "/.network.conf")
+        config.vm.network :private_network, ip: ipAddress
+    else
+        # vboxnet0 can be changed to use a specific private_network
+        config.vm.network :private_network, type: "dhcp"
+        config.vm.provider "virtualbox" do |vb|
+          vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
+        end
+        config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
+            if vm.id
+                `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+>>>>>>> f1dccd0... WIP ansible
             end
         end
+    end
+end
 
+<<<<<<< HEAD
         if Vagrant.has_plugin?('vagrant-hostsupdater')
             hosts = Array.new()
+=======
+# By default, the name of the VM is the project's directory name
+$hostname = File.basename($root).downcase
+>>>>>>> f1dccd0... WIP ansible
 
             if !configValues['apache']['install'].nil? &&
                 configValues['apache']['install'].to_i == 1 &&
@@ -60,6 +92,7 @@ Vagrant.configure("2") do |config|
               configValues['nginx']['vhosts'].each do |i, vhost|
                 hosts.push(vhost['server_name'])
 
+<<<<<<< HEAD
                 if vhost['server_aliases'].is_a?(Array)
                   vhost['server_aliases'].each do |x, vhost_alias|
                     hosts.push(vhost_alias)
@@ -190,6 +223,7 @@ Vagrant.configure("2") do |config|
                     "provisioner_type" => ENV['VAGRANT_DEFAULT_PROVIDER'],
                     "vm_target_key"    => 'vagrantfile-local',
                 }
+<<<<<<< HEAD
                 puppet.manifests_path = "#{data['vm']['provision']['puppet']['manifests_path']}"
                 puppet.manifest_file = "#{data['vm']['provision']['puppet']['manifest_file']}"
                 puppet.module_path = "#{data['vm']['provision']['puppet']['module_path']}"

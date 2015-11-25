@@ -1,0 +1,14 @@
+---
+- name: Create mailcatcher user
+  user: name={{ mailcatcher_user }} comment='Mailcatcher Mock Smtp Service User' home='/var/spool/mailcatcher' shell='/bin/true'
+
+- name: Create mailcatcher log directory
+  file: path={{ mailcatcher_log_path }} owner=mailcatcher mode=0755 state=directory
+
+- name: Install Mailcatcher
+  gem: name={{ mailcatcher_gem }} user_install=no state=latest
+  notify: restart mailcatcher
+
+- name: Install mailcatcher supervisord conf
+  template: src='program_mailcatcher.conf.j2' dest='/etc/supervisor/conf.d/program_mailcatcher.conf'
+  notify: restart mailcatcher
