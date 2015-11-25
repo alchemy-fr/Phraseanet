@@ -12,11 +12,7 @@ gulp.task('build-setup-css', function(){
     ], 'setup', 'setup/css/');
 });
 
-gulp.task('watch-setup', function() {
-    gulp.watch(config.paths.src + 'setup/**/*.scss', ['build-setup-css']);
-});
-
-gulp.task('build-setup', ['copy-setup-images', 'build-setup-css'], function(){
+gulp.task('build-setup-js', function(){
     var setupGroup = [
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
         config.paths.src + 'vendors/jquery-validation/js/jquery.validate.js',
@@ -24,4 +20,16 @@ gulp.task('build-setup', ['copy-setup-images', 'build-setup-css'], function(){
         config.paths.src + 'setup/js/path_files_tests.jquery.js'
     ];
     return utils.buildJsGroup(setupGroup, 'setup', 'setup/js');
+});
+
+gulp.task('watch-setup-js', function() {
+    return gulp.watch(config.paths.src + 'setup/**/*.js', ['build-setup-js']);
+});
+
+gulp.task('watch-setup-css', function() {
+    gulp.watch(config.paths.src + 'setup/**/*.scss', ['build-setup-css']);
+});
+
+gulp.task('build-setup', ['copy-setup-images', 'build-setup-css'], function(){
+    return gulp.start('build-setup-js');
 });

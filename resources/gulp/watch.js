@@ -5,22 +5,43 @@ var debug = require('gulp-debug');
 var fs = require('fs');
 var utils = require('./utils.js');
 
-gulp.task('watch', function(){
-    gulp.start('watch-common');
-    gulp.start('watch-oauth');
-    gulp.start('watch-prod');
-    gulp.start('watch-thesaurus');
+gulp.task('watch-css', function(){
+    gulp.start('watch-common-css');
+    gulp.start('watch-oauth-css');
+    gulp.start('watch-prod-css');
+    gulp.start('watch-thesaurus-css');
     //gulp.start('watch-uploadFlash');
-    gulp.start('watch-lightbox');
-    gulp.start('watch-admin');
-    gulp.start('watch-report');
-    gulp.start('watch-account');
+    gulp.start('watch-lightbox-css');
+    gulp.start('watch-admin-css');
+    gulp.start('watch-report-css');
+    gulp.start('watch-account-css');
     // gulp.start('watch-permaview');
-    gulp.start('watch-setup');
-    gulp.start('watch-authentication');
+    gulp.start('watch-setup-css');
+    gulp.start('watch-authentication-css');
+});
+
+gulp.task('watch-js', function(){
+    gulp.start('watch-common-js');
+    // gulp.start('watch-oauth-js');
+    gulp.start('watch-prod-js');
+    gulp.start('watch-thesaurus-js');
+    //gulp.start('watch-uploadFlash');
+    gulp.start('watch-lightbox-js');
+    gulp.start('watch-admin-js');
+    gulp.start('watch-report-js');
+    gulp.start('watch-account-js');
+    // gulp.start('watch-permaview');
+    gulp.start('watch-setup-js');
+    gulp.start('watch-authentication-js');
+});
+
+gulp.task('watch', function(){
+    gulp.start('watch-css');
+    gulp.start('watch-js');
 });
 
 var browserSync = require('browser-sync').create();
+
 gulp.task('sync', ['watch'], function(){
     // will open browser in http://localhost:3000/
     browserSync.init({

@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
 
-gulp.task('watch-oauth', function() {
+gulp.task('watch-oauth-css', function() {
     gulp.watch(config.paths.src + 'oauth/**/*.scss', ['build-oauth']);
 });
 

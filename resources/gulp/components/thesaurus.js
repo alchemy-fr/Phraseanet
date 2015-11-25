@@ -12,11 +12,7 @@ gulp.task('build-thesaurus-css', function(){
     ], 'thesaurus', 'thesaurus/css/');
 });
 
-gulp.task('watch-thesaurus', function() {
-    gulp.watch(config.paths.src + 'thesaurus/**/*.scss', ['build-thesaurus-css']);
-});
-
-gulp.task('build-thesaurus', ['copy-thesaurus-images', 'build-thesaurus-css'], function(){
+gulp.task('build-thesaurus-js', function(){
     var thesaurusGroup = [
         config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',
         config.paths.src + 'thesaurus/js/win.js',
@@ -25,4 +21,16 @@ gulp.task('build-thesaurus', ['copy-thesaurus-images', 'build-thesaurus-css'], f
         config.paths.src + 'thesaurus/js/sprintf.js'
     ];
     return utils.buildJsGroup(thesaurusGroup, 'thesaurus', 'thesaurus/js');
+});
+
+gulp.task('watch-thesaurus-js', function() {
+    return gulp.watch(config.paths.src + 'thesaurus/**/*.js', ['build-thesaurus-js']);
+});
+
+gulp.task('watch-thesaurus-css', function() {
+    gulp.watch(config.paths.src + 'thesaurus/**/*.scss', ['build-thesaurus-css']);
+});
+
+gulp.task('build-thesaurus', ['copy-thesaurus-images', 'build-thesaurus-css'], function(){
+    return gulp.start('build-thesaurus-js');
 });

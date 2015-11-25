@@ -59,12 +59,7 @@ gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey'], f
         config.paths.src + 'prod/styles/main.scss'
     ], 'prod', 'prod/css/');
 });
-
-gulp.task('watch-prod', function() {
-    return gulp.watch(config.paths.src + 'prod/**/*.scss', ['build-prod-css']);
-});
-
-gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
+gulp.task('build-prod-js', function(){
     var prodGroup = [
         config.paths.vendors +  'underscore-amd/underscore.js',
         config.paths.src + 'vendors/colorpicker/js/colorpicker.js',
@@ -97,4 +92,15 @@ gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
         config.paths.vendors + 'fancytree/dist/jquery.fancytree-all.min.js'
     ];
     return utils.buildJsGroup(prodGroup, 'prod', 'prod/js');
+});
+gulp.task('watch-prod-js', function() {
+    return gulp.watch(config.paths.src + 'prod/**/*.js', ['build-prod-js']);
+});
+
+gulp.task('watch-prod-css', function() {
+    return gulp.watch(config.paths.src + 'prod/**/*.scss', ['build-prod-css']);
+});
+
+gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
+    return gulp.start('build-prod-js');
 });

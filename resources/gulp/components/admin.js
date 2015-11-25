@@ -12,11 +12,7 @@ gulp.task('build-admin-css', function(){
     ], 'admin', 'admin/css/');
 });
 
-gulp.task('watch-admin', function() {
-    gulp.watch(config.paths.src + 'admin/**/*.scss', ['build-admin-css']);
-});
-
-gulp.task('build-admin', ['copy-admin-images', 'build-admin-css'], function(){
+gulp.task('build-admin-js', function(){
     var adminGroup = [
         config.paths.vendors + 'underscore-amd/underscore.js',
         config.paths.vendors + 'jquery-treeview/jquery.treeview.js',
@@ -27,4 +23,16 @@ gulp.task('build-admin', ['copy-admin-images', 'build-admin-css'], function(){
         config.paths.dist +  'scripts/apps/admin/main/main.js'
     ];
     utils.buildJsGroup(adminGroup, 'admin', 'admin/js');
+});
+
+gulp.task('watch-admin-js', function() {
+    return gulp.watch(config.paths.src + 'admin/**/*.js', ['build-admin-js']);
+});
+
+gulp.task('watch-admin-css', function() {
+    gulp.watch(config.paths.src + 'admin/**/*.scss', ['build-admin-css']);
+});
+
+gulp.task('build-admin', ['copy-admin-images', 'build-admin-css'], function(){
+    return gulp.start('build-admin-js');
 });

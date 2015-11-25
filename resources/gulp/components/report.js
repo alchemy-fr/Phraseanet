@@ -19,11 +19,7 @@ gulp.task('build-report-css', ['build-report-print-css'], function(){
     ], 'report', 'report/css/');
 });
 
-gulp.task('watch-report', function() {
-    gulp.watch(config.paths.src + 'report/**/*.scss', ['build-report-css']);
-});
-
-gulp.task('build-report', ['copy-report-images', 'build-report-css'], function(){
+gulp.task('build-report-js', function(){
     var reportGroup = [
         config.paths.src + 'report/js/jquery.print.js',
         config.paths.src + 'report/js/jquery.cluetip.js',
@@ -32,4 +28,16 @@ gulp.task('build-report', ['copy-report-images', 'build-report-css'], function()
         config.paths.src + 'report/js/report.js'
     ];
     return utils.buildJsGroup(reportGroup, 'report', 'report/js');
+});
+
+gulp.task('watch-report-js', function() {
+    return gulp.watch(config.paths.src + 'report/**/*.js', ['build-report-js']);
+});
+
+gulp.task('watch-report-css', function() {
+    gulp.watch(config.paths.src + 'report/**/*.scss', ['build-report-css']);
+});
+
+gulp.task('build-report', ['copy-report-images', 'build-report-css'], function(){
+    return gulp.start('build-report-js');
 });

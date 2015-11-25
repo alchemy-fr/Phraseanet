@@ -12,14 +12,22 @@ gulp.task('build-authentication-css', function(){
     ], 'authentication', 'authentication/css/');
 });
 
-gulp.task('watch-authentication', function() {
-    gulp.watch(config.paths.src + 'authentication/**/*.scss', ['build-authentication-css']);
-});
-
-gulp.task('build-authentication', ['copy-authentication-images', 'build-authentication-css'], function(){
+gulp.task('build-authentication-js', function(){
     var authenticationGroup = [
         config.paths.vendors + 'requirejs/require.js',
         config.paths.dist + 'scripts/apps/login/home/config.js'
     ];
     return utils.buildJsGroup(authenticationGroup, 'authentication', 'authentication/js');
+});
+
+gulp.task('watch-authentication-js', function() {
+    return gulp.watch(config.paths.src + 'authentication/**/*.js', ['build-authentication-js']);
+});
+
+gulp.task('watch-authentication-css', function() {
+    gulp.watch(config.paths.src + 'authentication/**/*.scss', ['build-authentication-css']);
+});
+
+gulp.task('build-authentication', ['copy-authentication-images', 'build-authentication-css'], function(){
+    return gulp.start('build-authentication-js');
 });
