@@ -80,10 +80,37 @@
 /* ==================================
 dans l'onglet thesaurus : arbres, menus contextuels
 ===================================== */
+.ui-tabs {
+  #thesaurus_tab {
+    top: 87px !important;
 
+  }
+}
 #THPD_tabs {
   right: 0;
+
   .ui-tabs-nav {
+    li.th_tab {
+      a {
+        color: $textPrimaryColor;
+      }
+      &.th_tab {
+        height: 43px;
+        margin: 0;
+        .ui-state-active {
+          border-bottom: 1px solid $thesaurusColor;
+        }
+        a {
+          height: 43px;
+          line-height: 43px;
+          vertical-align: middle;
+          margin: 0;
+          padding: 0 20px;
+          display: block;
+          text-decoration: none;
+        }
+      }
+    }
     .ui-state-default A {
       color: $thesaurusContextMenuColor;
     }
@@ -137,9 +164,15 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-color: #ff0000;
   }
 }
+#idFrameC .ui-tabs  {
+  #THPD_C.ui-tabs-panel,
+  #THPD_T.ui-tabs-panel{
+    top: 46px;
+  }
+}
 
 #THPD_T, #THPD_C {
-  margin-top: 10px;
+  // margin-top: 10px;
   margin-left: 0px;
 }
 

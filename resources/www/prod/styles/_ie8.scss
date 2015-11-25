@@ -8,4 +8,18 @@
   {
     width:580px;
   }
+  .btn-image {
+    width: 16px;
+    height: 16px;
+    // border: 1px solid #FF0000;
+  }
+  #idFrameC {
+    .ui-tabs {
+      .ui-tabs-nav {
+        li {
+          margin-top: -20px;
+        }
+      }
+    }
+  }
 }

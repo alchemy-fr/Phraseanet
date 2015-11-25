@@ -329,7 +329,7 @@
 
 #QuickAddUser input {
   border: 1px solid #CCCCCC;
-  border-radius: 4px 4px 4px 4px;
+  border-radius: $defaultBorderRadius;
   box-shadow: 0 1px 1px #EEEEEE;
   display: inline-block;
   margin: 0 5px 0 0;

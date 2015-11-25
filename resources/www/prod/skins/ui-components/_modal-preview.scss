@@ -1,9 +1,10 @@
 
 #PREVIEWBOX, #EDITWINDOW {
   z-index: 1200;
-  background-color: $darkerBackgroundColor;
+  background-color: $modalBackground;
   display: none;
-  border: 2px solid $darkerBorderColor;
+  border: $modalBorder; //1px solid $darkerBorderColor;
+  border-radius: $defaultBorderRadius;
 }
 
 #PREVIEWBOX img {
@@ -82,9 +83,7 @@
 #PREVIEWOTHERSINNER li.otherRegToolTip,
 #PREVIEWOTHERSINNER li.otherBaskToolTip {
   background-color: $mediumBackgroundColor;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  border-radius: $defaultBorderRadius;
   cursor: pointer;
 }
 

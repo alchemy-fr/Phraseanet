@@ -33,7 +33,18 @@
     left: 0px;
     bottom: 0px;
     right: 0;
+    margin: 0;
+    padding: 0;
     .ui-tabs-nav {
+      background-color: transparent;
+      top: 0;
+      left: 10px;
+      right: 10px;
+      //margin-top: 21px;
+      border-top: 1px solid $workzoneTabBorderTop;
+      border-radius: 0;
+      height: 43px;
+      border-bottom: 1px solid $workzoneTabBorderBottom;
       li {
         width: auto;
         height: 85px;
@@ -41,6 +52,7 @@
         background-color: $mediumBackgroundColor;
         z-index: 10;
         border-radius: 0;
+        margin: 0;
         &.proposals_WZ {
           &.ui-state-active {
             a {
@@ -89,29 +101,14 @@
         }
       }
     }
-    #thesaurus_tab {
-      li {
-        a {
-          color: $textPrimaryColor;
-        }
-        &.th_tab {
-          height: 43px;
-          margin: 0;
-          .ui-state-active {
-            border-bottom: 1px solid $thesaurusColor;
-          }
-          a {
-            height: 43px;
-            line-height: 43px;
-            vertical-align: middle;
-            margin: 0;
-            padding: 0 20px;
-            display: block;
-            text-decoration: none;
-          }
-        }
-      }
+    .ui-tabs-panel {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      bottom: 0;
+      right: 0;
     }
+
   }
   ul.icon-menu {
     width: 100%;
@@ -164,28 +161,6 @@
       vertical-align: middle;
     }
   }
-}
-
-#idFrameC .ui-tabs .ui-tabs-nav,
-#idFrameE .ui-tabs .ui-tabs-nav {
-  background-color: transparent;
-  top: 0px;
-  left: 10px;
-  right: 10px;
-  margin-top: 21px;
-  border-top: 1px solid $workzoneTabBorderTop;
-  border-radius: 0;
-  height: 43px;
-  border-bottom: 1px solid $workzoneTabBorderBottom;
-}
-
-#idFrameC .ui-tabs .ui-tabs-panel,
-#idFrameE .ui-tabs .ui-tabs-panel {
-  position: absolute;
-  top: 56px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
 }
 
 .alert_datas_changed a {

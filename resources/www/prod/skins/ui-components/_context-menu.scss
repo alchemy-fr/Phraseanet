@@ -62,12 +62,8 @@ Menu contextuel
 .context-menu-theme-vista {
   background-image: none;
   background-color: #212121;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-bottomright: 3px;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: $defaultBorderRadius;
+  border-bottom-right-radius: $defaultBorderRadius;
 }
 
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner.published {

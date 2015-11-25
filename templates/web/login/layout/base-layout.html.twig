@@ -1,15 +1,12 @@
 {% if form is defined %}
 {% form_theme form 'login/common/fields.html.twig' %}
 {% endif %}
-
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>
-<!-->
-<html class="no-js">
-<!--<![endif]-->
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if gt IE 8]><!--><html lang="{{ app['locale'] }}" class="no-js "> <!--<![endif]-->
+<html>
     <head>
         {% block header %}
             <title>{% block title %}Phraseanet{% endblock title %}</title>
@@ -26,7 +23,7 @@
             {% block header_rss %}{% endblock %}
 
             {% block favicon %}
-                <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+                <link rel="shortcut icon" type="image/x-icon" href="/assets/authentication/images/favicon.ico" />
             {% endblock favicon %}
 
             {% block header_stylesheet %}

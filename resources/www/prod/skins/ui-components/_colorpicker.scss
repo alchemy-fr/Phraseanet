@@ -34,9 +34,7 @@ $colorpickerFocusBorder: #999999;
   }
   .colorpicker_focus {
     border: 1px solid $colorpickerFocusBorder;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+    border-radius: $defaultBorderRadius;
   }
   .colorpicker_current_color,
   .colorpicker_field,

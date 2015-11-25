@@ -78,9 +78,7 @@ form.phrasea_query input.query {
 #adv_search .sbasglob .sbas_list,
 .adv_options .sbasglob .sbas_list {
   padding: 5px 0;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  border-radius: $defaultBorderRadius;
 }
 
 #adv_search .sbasglob .sbas_list.selected,
@@ -94,13 +92,6 @@ form.phrasea_query input.query {
   margin: 10px;
   text-align: center;
 }
-
-/*.sbaslist {
-  background-color: $searchSbasListBg;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}*/
 
 .sbas_list label {
   color: $lightTextColor;

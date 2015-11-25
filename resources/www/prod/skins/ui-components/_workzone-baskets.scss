@@ -1,259 +1,129 @@
-/* workzone brower - DEPRECATED - #BasketBrowser {
-  h1 {
-    font-size: 14px;
-    line-height: 20px;
-    margin: 0;
-    padding: 0;
-  }
-  .Browser{
-    background-color: #111111;
-  }
-  .Basket{
-    background-color: #111111;
-    display:none;
-    .thumb_wrapper {
-      margin:5px;
+
+#idFrameC {
+  #baskets {
+    > div {
+      border-top: 1px solid $mediumBorderColor;
     }
-  }
-  .result{
-    position:relative;
-    height:100px;
-    &.odd{
-      background-color:#404040;
-    }
-    .PNB10 {
-      overflow: hidden;
-    }
-    .datas{
-      top:50px;
-      bottom:50px;
-      overflow-y:auto;
-      overflow-x:hidden;
-    }
-    .footer,
-    .header{
-      height:50px;
-    }
-    .header{
-      bottom:auto;
-    }
-    .footer{
-      top:auto;
-    }
-    table{
-      height:80px;
-    }
-    td {
-      &.content{
-        width:390px;
-        vertical-align:top;
-      }
-      &.thumbnail{
-        display: table-cell;
-        width: 105px;
-        height: 80px;
-        padding: 0;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-        line-height: 18px;
-        text-align: center;
-        vertical-align:top;
-        .counter{
-          bottom: 18px;
-          font-size: 14px;
-          position: relative;
-          right: 5px;
-          text-align: right;
-        }
+    .bloc {
+      position: absolute;
+      top: 31px;
+      left: 0pt;
+      right: 1px;
+      bottom: 0px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      &.groupDrop {
+        border: 3px solid #a00;
       }
     }
-  }
-  h1.title{
-    font-size:14px;
-    .loader{
-      display:none;
-      margin:4px;
-    }
-  }
-  img{
-    vertical-align: middle;
-  }
-  table{
-    width:100%;
-    border:none;
-    vertical-align:top;
-    td.paginator{
-      text-align:right;
-    }
-  }
-  label {
-    cursor:pointer;
-    color:#9a9a9a;
-  }
-  input {
-    display:none;
-    &.Query {
-      padding: 3px;
-      display: block;
-      border-radius: 4px;
-      width: 155px;
-      padding-left: 25px;
-    }
-  }
-  input:checked + label,
-  label.selected {
-    color: #d18827;
-  }
-  form {
-    h1{
-      margin:10px 0;
-    }
-    ul {
-
-      li{
-        padding:5px 0;
-        border-top:1px solid #9A9A9A;
-        &.first{
-          border-top:none;
-        }
-        label{
-          margin: 0 0 0 40px;
-        }
+    .content {
+      &.grouping .alert_datas_changed,
+      &.basket .alert_datas_changed {
+        position: relative;
+        margin: 10px 0;
+        right: 0;
+        left: 0;
       }
     }
-  }
-}*/
-
-#idFrameC #baskets .alert_datas_changed {
-  position: absolute;
-  top: 5px;
-  height: 20px;
-  right: 26px;
-  left: 10px;
-  background-color: $workzoneBasketAlertDataBg;
-  color: $workzoneBasketAlertDataColor;
-  text-align: center;
-  font-weight: bold;
-  font-size: 12px;
-  display: none;
-  z-index: 5000;
-}
-
-#idFrameC #baskets .content.grouping .alert_datas_changed,
-#idFrameC #baskets .content.basket .alert_datas_changed {
-  position: relative;
-  margin: 10px 0;
-  right: 0;
-  left: 0;
-}
-
-#idFrameC #baskets .bloc {
-  position: absolute;
-  top: 31px;
-  left: 0pt;
-  right: 1px;
-  bottom: 0px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#baskets .insidebloc {
-  top: 0;
-}
-
-#baskets .top-scroller,
-#baskets .bottom-scroller {
-  height: 80px;
-  position: absolute;
-  border: none;
-  top: 0px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-#baskets .top-scroller {
-  bottom: auto;
-}
-
-#baskets .bottom-scroller {
-  top: auto;
-}
-
-#idFrameC #baskets .bloc.groupDrop {
-  border: 3px solid #a00;
-}
-
-#baskets {
-  > div {
-    border-top: 1px solid $mediumBorderColor;
-  }
-  .SSTT {
-    &.active {
-      border: 1px solid #b1b1b1;
-      &.ui-corner-top {
-        border: none;
-        border-top: 1px solid $mediumBorderColor;
-        top: 0;
-        background-color: $mediumBackgroundColor;
-      }
-    }
-    &.grouping {
-      &.active {
-        // border: 1px solid #2f4a6f;
-        &.ui-corner-top {
-          border-bottom: none;
-        }
-      }
-    }
-    .title {
-      overflow: hidden;
-      left: 30px;
-      right: 40px;
-      height: 16px;
-      margin: 2px 0;
+    .alert_datas_changed {
+      position: absolute;
+      top: 5px;
+      height: 20px;
+      right: 26px;
+      left: 10px;
+      background-color: $workzoneBasketAlertDataBg;
+      color: $workzoneBasketAlertDataColor;
+      text-align: center;
+      font-weight: bold;
       font-size: 12px;
+      display: none;
+      z-index: 5000;
+    }
+    .insidebloc {
+      top: 0;
+    }
+    .top-scroller, .bottom-scroller {
+      height: 80px;
+      position: absolute;
+      border: none;
+      top: 0px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .top-scroller {
+      bottom: auto;
+    }
+
+    .bottom-scroller {
+      top: auto;
+    }
+    .SSTT {
+      &.active {
+        border: 1px solid #b1b1b1;
+        &.ui-corner-top {
+          border: none;
+          border-top: 1px solid $mediumBorderColor;
+          top: 0;
+          background-color: $mediumBackgroundColor;
+        }
+      }
+      &.grouping {
+        &.active {
+          // border: 1px solid #2f4a6f;
+          &.ui-corner-top {
+            border-bottom: none;
+          }
+        }
+      }
+      .title {
+        overflow: hidden;
+        left: 30px;
+        right: 40px;
+        height: 16px;
+        margin: 2px 0;
+        font-size: 12px;
+      }
+      .menu {
+        text-align: right;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 3px;
+        margin: 0 5px 0 0;
+        table td {
+          width: 20px;
+        }
+      }
+      .workzone-menu-title {
+        text-overflow: ellipsis;
+        padding-right: 65px;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+      }
+      img {
+        max-height: 18px;
+        vertical-align: middle;
+        cursor: help;
+        margin-right: 9px;
+      }
     }
     .menu {
-      text-align: right;
-      position: absolute;
-      right: 0;
-      top: 0;
-      padding: 3px;
-      margin: 0 5px 0 0;
-      table td {
-        width: 20px;
+      .contextMenuTrigger {
+        cursor: pointer;
+        display: block;
+        padding: 0;
+        margin: 0;
+        background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
+        height: 45px;
+        width: 13px;
       }
     }
-    .workzone-menu-title {
-      text-overflow: ellipsis;
-      padding-right: 65px;
-      overflow: hidden;
-      white-space: nowrap;
-      display: block;
+    .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+      color: $textPrimaryActiveColor;
+      font-size: 1em;
     }
-    img {
-      max-height: 18px;
-      vertical-align: middle;
-      cursor: help;
-      margin-right: 9px;
-    }
-  }
-  .menu {
-    .contextMenuTrigger {
-      cursor: pointer;
-      display: block;
-      padding: 0;
-      margin: 0;
-      background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
-      height: 45px;
-      width: 13px;
-    }
-  }
-  .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-    color: $textPrimaryActiveColor;
-    font-size: 1em;
   }
 }
 

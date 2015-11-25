@@ -2,9 +2,7 @@
 
 #printBox {
   background-color: $mediumBackgroundColor;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+  border-radius: $defaultBorderRadius;
 }
 
 #printBox h4, #download h4,

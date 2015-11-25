@@ -7,6 +7,14 @@
   left: 0;
   right: 0;
   bottom: 0;
+  .content-wrapper {
+    margin: 10px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 }
 
 #EDIT_TOP {
@@ -16,9 +24,7 @@
   left: 0;
   width: 100%;
   overflow: visible;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+  border-radius: $defaultBorderRadius;
 }
 
 #EDIT_MENU {
@@ -83,9 +89,7 @@
   background-color: $mediumBackgroundColor;
   width: 700px;
   left: 0;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+  border-radius: $defaultBorderRadius;
 }
 
 #EDIT_MID_R {
@@ -451,11 +455,29 @@ div.thesaurus {
       cursor: pointer;
     }
   }
-}
-#idFrameE .ui-tabs {
-  position: absolute;
-  top: 0px;
-  left: 10px;
-  bottom: 0px;
-  right: 0;
+  .ui-tabs {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    bottom: 0px;
+    right: 0;
+    .ui-tabs-nav {
+      background-color: transparent;
+      top: 0px;
+      left: 10px;
+      right: 10px;
+      margin-top: 21px;
+      border-top: 1px solid $workzoneTabBorderTop;
+      border-radius: 0;
+      height: 43px;
+      border-bottom: 1px solid $workzoneTabBorderBottom;
+    }
+    .ui-tabs-panel {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  }
 }
