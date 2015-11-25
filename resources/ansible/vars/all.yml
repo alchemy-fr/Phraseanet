@@ -1,0 +1,35 @@
+---
+server:
+    install: '1'
+    packages: [vim, git, imagemagick, htop, nodejs, npm, iotop, pkg-config, libzmq3-dev]
+    timezone: UTC
+    locale: fr_FR.UTF-8
+vagrant_local:
+    install: '1'
+    vm: { base_box: trusty64, hostname: phraseanet.dev, ip: 192.168.56.101, memory: '4096', sharedfolder: ./, useVagrantCloud: '1', syncType: nfs }
+nginx:
+    install: '1'
+    docroot: /vagrant
+    servername: master.phraseanet.vb
+mariadb:
+    install: '1'
+    root_password: toor
+    database: ab_master
+    user: phraseanet
+    password: phraseanet
+    dump: ''
+elasticsearch:
+    install: '1'
+    port: '9200'
+    version: 1.5.2
+php:
+    install: '1'
+    ppa: php5
+    packages: [php5-cli, php5-intl, php5-mcrypt, php5-enchant, php5-gd, php5-imagick, php5-memcache, php5-memcached, php5-curl, php5-mysql, php5-sqlite]
+    pecl_packages:
+        - {name: zmq, package: zmq-beta}
+xdebug:
+    install: '1'
+composer:
+    install: '1'
+
