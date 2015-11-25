@@ -1300,16 +1300,16 @@ function replace() {
 
     var where = $("[name=EditSR_Where]:checked", p4.edit.editBox).val();
     var commut = "";
-    var rgxp = $("#EditSROptionRX", p4.edit.editBox).attr('checked') ? true : false;
+    var rgxp = $("#EditSROptionRX", p4.edit.editBox).prop('checked') ? true : false;
 
     var r_search;
     if (rgxp) {
         r_search = search;
-        commut = ($("#EditSR_RXG", p4.edit.editBox).attr('checked') ? "g" : "")
-            + ($("#EditSR_RXI", p4.edit.editBox).attr('checked') ? "i" : "");
+        commut = ($("#EditSR_RXG", p4.edit.editBox).prop('checked') ? "g" : "")
+            + ($("#EditSR_RXI", p4.edit.editBox).prop('checked') ? "i" : "");
     }
     else {
-        commut = $("#EditSR_case", p4.edit.editBox).attr('checked') ? "g" : "gi";
+        commut = $("#EditSR_case", p4.edit.editBox).prop('checked') ? "g" : "gi";
         r_search = "";
         for (i = 0; i < search.length; i++) {
             var c = search.charAt(i);

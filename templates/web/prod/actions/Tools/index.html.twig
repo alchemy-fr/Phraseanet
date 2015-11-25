@@ -374,7 +374,7 @@ $(document).ready(function(){
             dataType : 'json',
             data : form.serializeArray(),
             beforeSend: function(){
-                $this.attr('disabled', true);
+                $this.prop('disabled', true);
             },
             success : function(data){
                 if(!data.success){
@@ -385,7 +385,7 @@ $(document).ready(function(){
                 }
             },
             complete: function(){
-                $this.attr('disabled', false);
+                $this.prop('disabled', false);
             }
         });
 
@@ -439,7 +439,7 @@ $(document).ready(function(){
         });
 
 
-        $("img", sliderWrapper).live("click", function(){
+        $("img", sliderWrapper).on("click", function(){
             $('.selected', sliderWrapper).removeClass('selected');
             $(this).addClass('selected');
 
@@ -464,7 +464,7 @@ $(document).ready(function(){
             .appendTo(sliderWrapper);
         });
 
-        $("#thumb_canvas").live('tool_event', function(){
+        $("#thumb_canvas").on('tool_event', function(){
             var thumbnail = $('.selected', sliderWrapper);
 
             if(thumbnail.length === 0)

@@ -64,12 +64,12 @@
         }
 
         function startAjax(button){
-            button.closest(".btn-group").find('button').attr('disabled', true);
+            button.closest(".btn-group").find('button').prop('disabled', true);
             button.closest(".btn-group").addClass('loading');
         }
 
         function stopAjax(button){
-            button.closest(".btn-group").find('button').attr('disabled', false);
+            button.closest(".btn-group").find('button').prop('disabled', false);
             button.closest(".btn-group").removeClass('loading');
         }
 

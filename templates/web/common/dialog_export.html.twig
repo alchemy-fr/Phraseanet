@@ -494,10 +494,10 @@
                         $('#ftp .ftp_form').hide();
                         $('#ftp .ftp_form_'+$(this).val()).show();
                             $('.ftp_folder_check', p4.Dialog.get(1).getDomElement()).unbind('change').bind('change', function(){
-                                if($(this).attr('checked'))
-                                    $(this).next().removeAttr('disabled');
+                                if($(this).prop('checked'))
+                                    $(this).next().prop('disabled',false);
                                 else
-                                    $(this).next().attr('disabled','disabled');
+                                    $(this).next().prop('disabled',true);
                             });
                         }).trigger('change');
                     });
@@ -511,7 +511,7 @@
         function check_TOU(container)
         {
             var checkbox = $('input[name="TOU_accept"]', $(container));
-            var go = checkbox.length === 0 || checkbox.attr('checked');
+            var go = checkbox.length === 0 || checkbox.prop('checked');
 
             if(!go)
             {
@@ -538,7 +538,7 @@
             var go = required = false;
 
             $('input[name="obj[]"]', $(container)).each(function(){
-                if($(this).attr('checked'))
+                if($(this).prop('checked'))
                 {
                     go = true;
                 }
@@ -689,11 +689,11 @@
                 var options = $('#order form').serialize();
 
                 var $this = $(this);
-                $this.attr('disabled', true).addClass('disabled');
+                $this.prop('disabled', true).addClass('disabled');
                 $.post("../prod/order/"
                     , options
                     , function(data){
-                        $this.attr('disabled', false).removeClass('disabled');
+                        $this.prop('disabled', false).removeClass('disabled');
 
                         $('#order .order_button_loader').css('visibility','hidden');
 
@@ -742,11 +742,11 @@
                 var options_addr = $('#ftp_form_stock form:visible').serialize();
                 var options_join = $('#ftp_joined').serialize();
 
-                $this.attr('disabled','disabled');
+                $this.prop('disabled',true);
                 $.post("../prod/export/ftp/"
                     , options_addr + '&' + options_join
                     , function(data){
-                        $this.removeAttr('disabled');
+                        $this.prop('disabled', false);
                         $('#ftp .ftp_button_loader').hide();
 
                         if(data.success) {
@@ -771,7 +771,7 @@
             $('#ftp .tryftp_button').bind('click',function(){
                 $('#ftp .tryftp_button_loader').css('visibility','visible');
                 var $this = $(this);
-                $this.attr('disabled','disabled');
+                $this.prop('disabled',true)
                 var options_addr = $('#ftp_form_stock form:visible').serialize();
 
                 $.post("../prod/export/ftp/test/"
@@ -787,7 +787,7 @@
 
                         p4.Dialog.Create(options, 3).setContent(data.message);
 
-                        $this.removeAttr('disabled');
+                        $this.prop('disabled', false);
 
                         return;
                     }

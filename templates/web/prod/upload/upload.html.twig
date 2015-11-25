@@ -250,7 +250,7 @@ $(document).ready(function () {
     });
 
     //Remove an element from the upload box
-    $("button.remove-element", UploaderManager.getUploadBox()).live("click", function(){
+    $("button.remove-element", UploaderManager.getUploadBox()).on("click", function(){
         var container = $(this).closest("li");
         var uploadIndex = container.find("input[name=uploadIndex]").val();
         UploaderManager.removeData(uploadIndex);

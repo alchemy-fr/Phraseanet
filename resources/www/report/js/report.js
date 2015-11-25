@@ -44,14 +44,21 @@ $(document).ready(function () {
         $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).attr("checked", false);
     });
 
-    $(".multiselect-group").toggle(function () {
-        var $this = $(this);
-        var groupId = $this.data('group-id');
-        $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", true);
-    }, function () {
-        var $this = $(this);
-        var groupId = $this.data('group-id');
-        $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", false);
+    // toggle is deprecated:
+    var hasMultiSelectionGroup = false;
+    $(".multiselect-group").on('click', function () {
+
+        if( hasMultiSelectionGroup === true) {
+            var $this = $(this);
+            var groupId = $this.data('group-id');
+            $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", false);
+            hasMultiSelectionGroup = false;
+        } else {
+            var $this = $(this);
+            var groupId = $this.data('group-id');
+            $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", true);
+            hasMultiSelectionGroup = true;
+        }
     });
 });
 //#############END DOCUMENT READY ######################################//

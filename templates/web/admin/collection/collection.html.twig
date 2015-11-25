@@ -302,7 +302,7 @@
                 url: form.attr('action'),
                 data: form.serializeArray(),
                 beforeSend : function() {
-                    submitLink.attr('disabled', true).addClass('disabled');
+                    submitLink.prop('disabled', true).addClass('disabled');
                 },
                 success: function(datas) {
                     if(datas.success) {
@@ -320,7 +320,7 @@
                     }
                 },
                 complete: function() {
-                    submitLink.attr('disabled', false).removeClass('disabled');
+                    submitLink.prop('disabled', false).removeClass('disabled');
                 }
             });
         }

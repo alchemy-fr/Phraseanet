@@ -8,8 +8,8 @@
         $('.databox_create').bind('change', function(){
             var $this = $(this);
             var $current = $this.closest('.steps');
-            $('.databox_creation_input', $current).attr('disabled', $this.attr('checked'));
-            $('.db_tester', $current).attr('disabled', $this.attr('checked')).toggleClass( "ui-state-disabled", $this.attr('checked') );
+            $('.databox_creation_input', $current).prop('disabled', $this.prop('checked'));
+            $('.db_tester', $current).prop('disabled', $this.prop('checked')).toggleClass( "ui-state-disabled", $this.prop('checked') );
         });
         $('.ab_opt_toggler').bind('click', function(){
             $('.optional_ab_datas').fadeToggle();
@@ -110,7 +110,7 @@
                 var callback = function(){
                     if(window.console)
                         console.log('Processing install....');
-                    $(this).attr('disabled', 'disabled');
+                    $(this)..prop('disabled', true);
                     var dialog = $('#install_wait');
                     dialog.dialog({
                         modal:true,

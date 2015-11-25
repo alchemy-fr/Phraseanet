@@ -61,10 +61,10 @@
     });
 
     $('#edit_pub_public').bind('change', function(){
-      if($(this).attr('checked') === true)
-        $('#edit_pub_base_id').attr('disabled', 'disabled');
+      if($(this).prop('checked') === true)
+        $('#edit_pub_base_id').prop('disabled', true);
       else
-        $('#edit_pub_base_id').removeAttr('disabled');
+        $('#edit_pub_base_id').prop('disabled', false);
     });
   });
 </script>

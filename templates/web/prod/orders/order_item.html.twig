@@ -190,7 +190,7 @@ function do_send_documents(order_id, elements_ids, force)
     var dialog = p4.Dialog.get(1);
     var cont = dialog.getDomElement();
 
-    $('button.deny, button.send', cont).attr('disabled','disabled');
+    $('button.deny, button.send', cont).prop('disabled', true);
     $('.activity_indicator', cont).show();
 
     $.ajax({
@@ -212,11 +212,11 @@ function do_send_documents(order_id, elements_ids, force)
             dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=send');
         },
         error: function(){
-            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('button.deny, button.send', cont).prop('disabled', false);
             $('.activity_indicator', cont).hide();
         },
         timeout: function(){
-            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('button.deny, button.send', cont).prop('disabled', false);
             $('.activity_indicator', cont).hide();
         }
     });
@@ -240,7 +240,7 @@ function deny_documents(order_id)
         return;
     }
 
-    $('button.deny, button.send', cont).attr('disabled','disabled');
+    $('button.deny, button.send', cont).prop('disabled', true);
     $('.activity_indicator', cont).show();
 
     $.ajax({
@@ -261,11 +261,11 @@ function deny_documents(order_id)
             dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=deny');
         },
         error: function(){
-            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('button.deny, button.send', cont).prop('disabled', false);
             $('.activity_indicator', cont).hide();
         },
         timeout: function(){
-            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('button.deny, button.send', cont).prop('disabled', false);
             $('.activity_indicator', cont).hide();
         }
     });

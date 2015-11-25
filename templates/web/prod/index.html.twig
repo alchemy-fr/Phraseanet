@@ -7,7 +7,7 @@
             <div class="clksbas">
                 <span  onclick="deploy(this, '.sbascont_{{sbas_id}}' );" class="deployer_closed" ></span>
                 <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
-                       onchange="clksbas(this, {{sbas_id}});" />
+                       onchange="clksbas(this, {{sbas_id}});" />AAAA
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox danger_indicator" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <span>{{sbas_id|sbas_labels(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
@@ -516,7 +516,7 @@
                     <div class="" style="float:left; width:100%;margin-top:20px;">
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'advanced_search_reload') %}
                         <label class="checkbox inline" for="user_settings_advanced_search_reload">
-                            <input onchange="setPref('advanced_search_reload',$(this).attr('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
+                            <input onchange="setPref('advanced_search_reload',$(this).prop('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
                             {{ 'Use latest search settings on Production loading' | trans }}
                         </label>
                     </div>
@@ -574,7 +574,7 @@
                     {% set doctype_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'doctype_display') %}
                     <h1>{{'Type de documents'  | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
-                        <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
+                        <input onchange="setPref('doctype_display',($(this).prop('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
                         {{ 'Afficher une icone' | trans }}
                     </label>
 
@@ -700,7 +700,7 @@
             <div>
                 {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
-                    <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'));"
+                    <input onchange="setPref('basket_status_display',($(this).prop('checked') ? '1' :'0'));"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher les status' | trans }}
@@ -709,7 +709,7 @@
             <div>
                 {% set basket_caption_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
-                    <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'));"
+                    <input onchange="setPref('basket_caption_display',($(this).prop('checked') ? '1' :'0'));"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
                     id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher la fiche descriptive' | trans }}
@@ -718,7 +718,7 @@
             <div>
                 {% set basket_title_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
-                    <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'));"
+                    <input onchange="setPref('basket_title_display',($(this).prop('checked') ? '1' :'0'));"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
                     id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher le titre' | trans }}

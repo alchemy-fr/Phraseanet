@@ -207,7 +207,7 @@ function checkFilters(save) {
         var nbSelectedColls = 0;
         $this.find('.checkbas').each(function (idx, el) {
             nbCols++;
-            if($(this).attr("checked")) {
+            if($(this).prop('checked')) {
                 nbSelectedColls++;
                 nbTotalSelectedColls++;
                 search.bases[sbas_id].push($(this).val());
@@ -2780,8 +2780,7 @@ function deploy(deployer, todeploy_selector)
 }
 
 function clksbas(el, sbas_id) {
-    var bool = $(el).attr('checked');
-
+    var bool = $(el).prop('checked');
     $.each($('.sbascont_' + sbas_id + ' :checkbox'), function () {
         this.checked = bool;
     });
@@ -3055,16 +3054,16 @@ function set_up_feed_box(data) {
             data: $form.serializeArray(),
             dataType: 'json',
             beforeSend: function () {
-                $('button', dialog.getDomElement()).attr('disabled', 'disabled');
+                $('button', dialog.getDomElement()).prop('disabled', true);
             },
             error: function () {
-                $('button', dialog.getDomElement()).removeAttr('disabled');
+                $('button', dialog.getDomElement()).prop('disabled', false);
             },
             timeout: function () {
-                $('button', dialog.getDomElement()).removeAttr('disabled');
+                $('button', dialog.getDomElement()).prop('disabled', false);
             },
             success: function (data) {
-                $('button', dialog.getDomElement()).removeAttr('disabled');
+                $('button', dialog.getDomElement()).prop('disabled', false);
                 if (data.error === true) {
                     alert(data.message);
                     return;

@@ -313,7 +313,7 @@
 
         $('#is_indexable').bind('change', function(){
             var form = $(this).closest('form');
-            var checked = !!$(this).attr('checked');
+            var checked = !!$(this).prop('checked');
 
             $.ajax({
                 dataType: 'json',
@@ -366,7 +366,7 @@
                 url: form.attr('action'),
                 data: form.serializeArray(),
                 before : function() {
-                    submitLink.attr('disabled', true).addClass('disabled');
+                    submitLink.prop('disabled', true).addClass('disabled');
                 },
                 success: function(datas) {
                     if(datas.success) {
@@ -380,7 +380,7 @@
                     }
                 },
                 complete: function() {
-                    submitLink.attr('disabled', false).removeClass('disabled');
+                    submitLink.prop('disabled', false).removeClass('disabled');
                 }
             });
         }

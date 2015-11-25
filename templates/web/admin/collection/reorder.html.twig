@@ -83,7 +83,7 @@
                 data: {order: order},
                 url: '{{ path('admin_database_submit_collections_order', {'databox_id': app['request'].attributes.get('databox_id')}) }}',
                 beforeSend : function() {
-                    $this.attr('disabled', true);
+                    $this.prop('disabled',true)
                 },
                 success : function(datas) {
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
@@ -92,7 +92,7 @@
                     $('#notification').html(html);
                 },
                 complete : function() {
-                    $this.attr('disabled', false);
+                    $this.prop('disabled',false)
                 }
             });
         });
@@ -118,15 +118,15 @@
         var selectedIndex = select.prop("selectedIndex");
         if(selectedIndex !== -1 ) {
             if (selectedIndex === 0) {
-                upButton.attr('disabled', true);
+                upButton.prop('disabled', true)
             } else {
-                upButton.attr('disabled', false);
+                upButton.prop('disabled', false)
             }
 
             if (selectedIndex + 1 === select.find('option').length) {
-                downButton.attr('disabled', true);
+                downButton.prop('disabled', true)
             } else {
-                downButton.attr('disabled', false);
+                downButton.prop('disabled', false)
             }
         }
     }
