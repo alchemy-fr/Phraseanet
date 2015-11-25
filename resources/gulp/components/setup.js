@@ -18,7 +18,7 @@ gulp.task('build-setup-js', function(){
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
         config.paths.src + 'vendors/jquery-validation/js/jquery.validate.js',
         config.paths.src + 'vendors/jquery-validate.password/js/jquery.validate.password.js',
-        config.paths.src + 'setup/js/path_files_tests.jquery.js'
+        config.paths.src + 'vendors/jquery-test-paths/jquery.test-paths.js'
     ];
     return utils.buildJsGroup(setupGroup, 'setup', 'setup/js', debugMode);
 });

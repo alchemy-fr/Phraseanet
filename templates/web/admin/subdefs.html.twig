@@ -2,7 +2,7 @@
 {% extends "admin/common/iframe_wrap.html.twig" %}
 
 {% block stylesheet %}
-<link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/ui-lightness{% if not app.debug %}.min{% endif %}.css">
+{#<link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/ui-lightness{% if not app.debug %}.min{% endif %}.css">#}
 <style>
     body{
       overflow:auto;
@@ -11,9 +11,10 @@
 {% endblock %}
 
 {% block javascript %}
+
     <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/path_files_tests.jquery.js' }) }}"></script>
+    <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
       $('.path_testable').path_file_test();

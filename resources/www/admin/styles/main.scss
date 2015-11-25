@@ -5,6 +5,14 @@
 @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 @import '../../_shared/styles/main';
 
+// override jquery ui theme colors:
+$uiTextContentColor: #333333;
+$uiTextTitleColor: #333333;
+$uiLinkColor: #333333;
+$uiLinkFocusColor: #333333;
+$uiLinkActiveColor: #333333;
+@import '../../_shared/styles/jquery-ui/ui-lightness';
+
 /******* GLOBAL CSS for ADMIN *************************************************/
 body {
   margin: 0;
@@ -115,6 +123,9 @@ div.finder div.content div.title {
 }
 #mainMenu span.selected {
   border-top: 3px solid #000000;
+}
+#mainContent {
+  margin-top: $mainMenuHeight;
 }
 /******* LEFT SIDE ************************************************************/
 #left {
