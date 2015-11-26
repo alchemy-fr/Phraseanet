@@ -8,4 +8,10 @@ $imagesPath: '../images/';
 @import './jquery-ui/report-base';
 @import './jquery-ui/report-detailed';
 
-
+$mainMenuBackgroundColor: #c7c7c7; //BFBFBF;
+$mainMenuBottomBorder: 1px solid #c7c7c7;
+$mainMenuLinkColor: #212121;
+$mainMenuLinkHoverColor: #BFBFBF;
+$mainMenuLinkActiveColor: #BFBFBF;
+// $mainMenuMarginBottom: 30px;
+@import '../../_shared/styles/main-menu';

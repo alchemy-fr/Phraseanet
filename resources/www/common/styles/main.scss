@@ -6,5 +6,54 @@
 @import '../../vendors/bootstrap/responsive';
 @import '../../_shared/styles/override-bootstrap';
 @import '../../../../www/bower_components/font-awesome/sass/font-awesome.scss';
-
 @import '../../_shared/styles/main';
+
+$mainMenuBackgroundColor: #212121; //BFBFBF;
+$mainMenuBottomBorder: none;
+$mainMenuLinkColor: #b1b1b1;
+$mainMenuLinkHoverColor: #FFFFFF;
+$mainMenuLinkActiveColor: #b1b1b1;
+$mainMenuLinkBackgroundHoverColor: transparent;
+// $mainMenuMarginBottom: 30px;
+@import '../../_shared/styles/main-menu';
+
+
+#mainContent {
+  margin-top: $mainMenuHeight;
+  #page {
+    background-color: #414141;
+  }
+}
+
+body {
+  color: #FFFFFF;
+  background-color: #212121;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  overflow: auto;
+  min-height: 100%;
+  width: 100%;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: bold;
+  padding: 50px 0 20px;
+}
+
+#page {
+  width: 860px;
+  background-color: #414141;
+  padding: 0 20px;
+  margin: 0 auto;
+  height: 100%;
+  position: relative !important;
+}
+
+.preview .thumb_wrapper {
+  overflow: hidden;
+}
+
+.caption {
+  padding: 50px 0 20px;
+}

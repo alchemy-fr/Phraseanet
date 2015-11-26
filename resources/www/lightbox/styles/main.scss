@@ -2,6 +2,14 @@
 $lightboxPath: '../images/';
 @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 
+$mainMenuBackgroundColor: #c7c7c7; //BFBFBF;
+$mainMenuBottomBorder: 1px solid #c7c7c7;
+$mainMenuLinkColor: #212121;
+$mainMenuLinkHoverColor: #000000;
+$mainMenuLinkActiveColor: #BFBFBF;
+$mainMenuLinkBackgroundHoverColor: transparent;
+@import '../../_shared/styles/main-menu';
+
 body {
   background-color: #BFBFBF;
   color: #212121;
@@ -11,10 +19,6 @@ body {
 
 #mainContent {
   top: 30px;
-}
-
-#mainMenu .title, #mainMenu a, #mainMenu b, #mainMenu span {
-  color: #212121;
 }
 
 a, a:hover, a:visited {

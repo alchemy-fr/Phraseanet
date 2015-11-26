@@ -48,6 +48,56 @@ define([
             }
         });
     };
+    window.enableForms = function (forms) {
+        forms.bind('submit', function(event){
+            var method = $(this).attr('method');
+            var url = $(this).attr('action');
+            var datas = $(this).serializeArray();
+
+            if(!method) {
+                method = 'GET';
+            }
+            $('#right-ajax').empty().addClass('loading');
+            if(url) {
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: datas,
+                    success: enableFormsCallback
+                });
+                return false;
+            }
+        });
+    };
+
+    window.enableFormsCallback = function (datas)
+    {
+        $('#right-ajax').removeClass('loading').html(datas);
+        enableForms($('#right-ajax form:not(.no-ajax)'));
+
+        $.each($('#right-ajax a:not(.no-ajax)'),function(i, el){
+            enableLink($(el));
+        });
+        return;
+    };
+
+    window.enableLink = function (link) {
+        console.log('enable link')
+        $(link).bind('click',function(event){
+
+            var dest = link.attr('href');
+
+            if(dest && dest.indexOf('#') !== 0) {
+                $('#right-ajax').empty().addClass('loading').parent().show();
+
+                $.get(dest, function(data) {
+                    enableFormsCallback(data);
+                });
+                return false;
+            }
+
+        });
+    };
 
     var create = function() {
         AdminApp.LeftView = new LeftPanel({

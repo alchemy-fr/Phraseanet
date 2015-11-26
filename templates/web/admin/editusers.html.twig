@@ -103,7 +103,7 @@
       </li>
       {% endif %}
     </ul>
-    <div id="rights_tab" class="PNB" style="top:40px;">
+    <div id="rights_tab" class="" style="top:40px;">
       <form id="users_rights_form" method="post" action="{{ path('admin_users_rights_apply') }}">
         <input type="hidden" name="users" value="{{users_serial}}"/>
         <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
@@ -138,7 +138,7 @@
             </td>
           </tr>
         </table>
-        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="PNB10">
+        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="">
           <thead>
             <tr>
               <th style="width:122px;">
@@ -160,7 +160,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="PNB10" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
+        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
           <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
       <!--      <thead>
               <tr>
@@ -436,7 +436,7 @@
     </div>
 
     {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
-    <div id="user_infos_tab" class="PNB" style="top:40px;overflow:auto;">
+    <div id="user_infos_tab" class="" style="top:40px;overflow:auto;">
       <form id="user_infos_form">
         <table>
           <tr>
@@ -1105,10 +1105,14 @@
     "jquery",
     "common/geonames"
   ], function ($, geonames) {
-    geonames.init($('#user_infos_tab input.geoname_field'), {
+    var geocompleter = geonames.init($('#user_infos_tab input.geoname_field'), {
       "server": "{{ app['geonames.server-uri'] }}",
       "limit": 40
     });
+    /*console.log(geocompleter);
+    geocompleter.autocompleter("on", "geotocompleter.request.error", function(jqXhr, status, error) {
+      console.log('has failed', jqXhr, status, error );
+    });*/
 
   });
 

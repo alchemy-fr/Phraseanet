@@ -11,6 +11,7 @@ $uiTextTitleColor: #333333;
 $uiLinkColor: #333333;
 $uiLinkFocusColor: #333333;
 $uiLinkActiveColor: #333333;
+$uiLinkBorderFocusColor: #c77405; //#333333;
 @import '../../_shared/styles/jquery-ui/ui-lightness';
 
 /******* GLOBAL CSS for ADMIN *************************************************/
@@ -109,21 +110,14 @@ div.finder div.content div.title {
   overflow: hidden;
 }
 /******* MAIN MENU ************************************************************/
-#mainMenu {
-  background-color: #fceb3f;
-}
-#mainMenu a,
-#mainMenu b,
-#mainMenu .title,
-#mainMenu span {
-  color: #000000;
-}
-#mainMenu a:hover span {
-  background-color: #fffbcd;
-}
-#mainMenu span.selected {
-  border-top: 3px solid #000000;
-}
+
+
+$mainMenuBackgroundColor: #fceb3f;
+$mainMenuLinkColor: #000000;
+$mainMenuLinkHoverColor: #fffbcd;
+$mainMenuLinkActiveColor: #000000;
+@import '../../_shared/styles/main-menu';
+
 #mainContent {
   margin-top: $mainMenuHeight;
 }
@@ -178,6 +172,7 @@ div.finder div.content div.title {
   background-color: #4d4d4d;
   color: #ffffff;
 }
+
 /******* EDIT USERS ***********************************************************/
 div.no_switch {
   width: 12px;
@@ -187,6 +182,7 @@ div.no_switch {
   background-repeat: no-repeat;
   background-position: center center;
 }
+
 div.switch_quota,
 div.switch_masks,
 div.switch_time,

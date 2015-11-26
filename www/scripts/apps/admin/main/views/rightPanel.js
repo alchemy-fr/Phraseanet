@@ -14,7 +14,8 @@ define([
     "blueimp.loadimage",
     "jfu.iframe-transport",
     "jfu.fileupload",
-    "jquery.ui"
+    "jquery.ui",
+    "bootstrap"
 ], function ($, _, Backbone) {
     var RightPanelView = Backbone.View.extend({
         initialize: function (options) {

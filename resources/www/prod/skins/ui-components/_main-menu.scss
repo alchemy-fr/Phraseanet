@@ -1,35 +1,15 @@
 @import '../../../_shared/styles/variables';
-@import '../../../_shared/styles/main-menu';
-/*******  MAINMENU ************************************************************/
+$mainMenuBottomBorder: none;
 
-#mainMenu {
-  height: $mainMenuHeight;
-  line-height: $mainMenuLineHeight;
-  vertical-align: middle;
-  background-color: $mediumBackgroundColor;
-  #mainLogo {
-    margin:0 10px;
-    margin-top: -4px;
-  }
-  li , li span {//
-    height: 40px;
-    line-height: $mainMenuLineHeight;
-    color: $mainMenuColor;
-  }
-  .right {
-    li {
-      border-left: 1px solid $mainMenuRightListBorderLeft;
-      span {
-        padding: 0 15px;
-      }
-      &.user {
-        background: url('#{$iconsPath}icon_user.png') 15px 7px no-repeat;
-        padding-left: 41px;
-        &:hover {
-          background-color: $bgInverseHoverColor;
-          color: $textInverseHoverColor;
-        }
-      }
-    }
-  }
-}
+$mainMenuBackgroundColor: $mediumBackgroundColor; //BFBFBF;
+$mainMenuBottomBorder: none;
+$mainMenuMarginBottom: 0;
+
+$mainMenuLinkColor: $mainMenuLinkColor;
+$mainMenuLinkBackgroundHoverColor: $bgInverseHoverColor;
+$mainMenuLinkHoverColor: $textInverseHoverColor;
+
+// already defined $mainMenuLinkColor: #212121;
+//$mainMenuLinkHoverColor: #BFBFBF;
+//$mainMenuLinkActiveColor: #BFBFBF;
+@import '../../../_shared/styles/main-menu';

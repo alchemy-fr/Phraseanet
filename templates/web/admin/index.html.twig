@@ -14,6 +14,7 @@
 
 {% block javascript %}
     {% include "common/templates.html.twig" %}
+    <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
     {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
     <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
@@ -57,7 +58,6 @@
     </script>
     {#<script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>#}
 {% endblock %}
-
 {% block content %}
     <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}" data-notif-url="{{ path('list_notifications') }}">
     <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">

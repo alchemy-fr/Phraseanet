@@ -7,10 +7,11 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['conf'].get(['registry', 'general', 'title']) }} {% if module_name is defined %} - {{ module_name }} {% endif %}</title>
+        {% block icon %}{% endblock %}
 
         {#<link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/{{ jquery_theme|default('ui-lightness') }}{% if not app.debug %}.min{% endif %}.css">#}
         <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css">
-
+        {% block stylesheet %}{% endblock %}
         <!--[if lte IE 8]>
             <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
             <script type="text/javascript" src="/assets/vendors/json2/json2{% if not app.debug %}.min{% endif %}.js"></script>
@@ -24,11 +25,10 @@
         </script>
         <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript">
+            // jQuery.noConflict();
             var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
             $.fn.btn = btn; // assigns bootstrap button functionality to $.fn.btn
         </script>
-        {% block stylesheet %}{% endblock %}
-        {% block icon %}{% endblock %}
         {% block rss %}{% endblock %}
         {% block javascript %}{% endblock %}
     </head>
@@ -40,6 +40,7 @@
             </div>
         </div>
         {% block extra_content %}{% endblock %}
+        {% block bodyJavascript %}{% endblock %}
         {% include 'common/analytics.html.twig' %}
     </body>
 </html>

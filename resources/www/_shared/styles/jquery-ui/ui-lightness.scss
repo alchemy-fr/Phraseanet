@@ -4,7 +4,7 @@ $uiTextTitleColor: #333333 !default;
 $uiLinkColor: #ffffff !default;
 $uiLinkFocusColor: #c77405 !default;
 $uiLinkActiveColor: #eb8f00 !default;
-$uiLinkBorderFocusColor: $uiLinkFocusColor;
+$uiLinkBorderFocusColor: $uiLinkFocusColor !default;
 @import './shared';
 
 .ui-widget-content {

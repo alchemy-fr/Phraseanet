@@ -1,20 +1,20 @@
 
-{% extends "admin/common/iframe_wrap.html.twig" %}
+{#{% extends "admin/common/iframe_wrap.html.twig" %}#}
 
-{% block stylesheet %}
-{#<link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/ui-lightness{% if not app.debug %}.min{% endif %}.css">#}
+{#{% block stylesheet %}
+&#123;&#35;<link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/ui-lightness{% if not app.debug %}.min{% endif %}.css">&#35;&#125;
 <style>
     body{
       overflow:auto;
     }
   </style>
-{% endblock %}
+{% endblock %}#}
 
 {% block javascript %}
-
-    <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
+    {#<script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>#}
   <script type="text/javascript">
     $(document).ready(function(){
       $('.path_testable').path_file_test();
@@ -129,13 +129,13 @@
       });
 
       $( "#create-subdef" )
-      .button()
+      // .button()
       .click(function() {
         $( "#dialog-form" ).dialog( "open" );
       });
 
       $('.subdef_deleter')
-      .button()
+      // .button()
       .click(function(){
         delete_subdef($(this).next('input[name="subdef"]').val());
 
@@ -168,7 +168,9 @@
 {% endblock %}
 
 {% block content %}
-<button id="create-subdef" class="btn btn-warning">{{ 'Create new subdef' | trans }}</button>
+<p>
+    <button id="create-subdef" class="btn btn-warning">{{ 'Create new subdef' | trans }}</button>
+</p>
 <div id="dialog-delete-subdef" title="{{ 'Delete the subdef ?' | trans }}" style="display:none;">
     <p>
         <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
@@ -209,7 +211,7 @@
                     <tbody>
                         <tr>
                             <td style="width:120px;">
-                                <h2>{{subdefname}}</h2><button class="subdef_deleter">{{ 'boutton::supprimer' | trans }}</button>
+                                <h2>{{subdefname}}</h2><button class="subdef_deleter btn btn-danger btn-mini">{{ 'boutton::supprimer' | trans }}</button>
                                 <input type="hidden" name="subdef" value="{{subdefgroup}}_{{subdefname}}"/>
                             </td>
                             <td style="width:250px;"></td>
@@ -316,7 +318,9 @@
                                     <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
                                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
                                     {% for pot_value, selected in option.Value(true) %}
-                                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/><label>{{ pot_value }}</label>
+                                <label class="checkbox inline">
+                                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
+                                    </label>
                                     {% endfor %}
                                 {% endif %}
                             </td>
@@ -339,7 +343,9 @@
     <input type="hidden" name="add_subdef[group]" value=""/>
     <input type="hidden" name="add_subdef[name]" value=""/>
     <input type="hidden" name="add_subdef[class]" value=""/>
-    <button type="submit" class="btn btn-primary">{{ 'boutton::valider' | trans }}</button>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ 'boutton::valider' | trans }}</button>
+    </div>
 </form>
 
 <div style="display:none;">

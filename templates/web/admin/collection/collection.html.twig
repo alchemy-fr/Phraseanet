@@ -232,6 +232,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        // jQuery.noConflict();
         $('#invalid-modal').modal({
             "show": false
         });
@@ -323,7 +324,6 @@
                 }
             });
         }
-
         $('.fileupload').each(function () {
             $(this).fileupload({
                 dataType: 'html',
