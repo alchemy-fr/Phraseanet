@@ -67,6 +67,9 @@ class Tools implements ControllerProviderInterface
                         }
 
                         if ('document' == $subdefName) {
+                            if (!$acl->has_right_on_base($record->get_base_id(), 'candwnldhd')) {
+                                continue;
+                            }
                             $label = _('prod::tools: document');
                         } elseif (isset($databoxSubdefs[$subdefName])) {
                             if (!$acl->has_access_to_subdef($record, $subdefName)) {
