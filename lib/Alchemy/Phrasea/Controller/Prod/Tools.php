@@ -67,6 +67,9 @@ class Tools implements ControllerProviderInterface
                         }
 
                         if ('document' == $subdefName) {
+                            if (!$acl->has_right_on_base($record->get_base_id(), 'candwnldhd')) {
+                                continue;
+                            }
                             $label = _('prod::tools: document');
                         } elseif (isset($databoxSubdefs[$subdefName])) {
                             if (!$acl->has_access_to_subdef($record, $subdefName)) {
@@ -382,6 +385,8 @@ class Tools implements ControllerProviderInterface
         if (!$acl->has_right('bas_chupub')
             || !$acl->has_right_on_base($record->get_base_id(), 'canmodifrecord')
             || !$acl->has_right_on_base($record->get_base_id(), 'imgtools')
+            || ('document' == $subdefName && !$acl->has_right_on_base($record->get_base_id(), 'candwnldhd'))
+            || ('document' != $subdefName && !$acl->has_access_to_subdef($record, $subdefName))
         ) {
             $app->abort(403);
         }
