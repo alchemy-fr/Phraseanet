@@ -28,6 +28,7 @@ define([
         render: function () {
             this.$el.empty();
             this.$el.html(this.template({'scheduler':this.model.toJSON()}));
+            $('.dropdown-toggle').dropdown();
             return this;
         },
         renderConfiguration: function () {
