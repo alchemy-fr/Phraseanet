@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-18 15:44+0100\n"
-"PO-Revision-Date: 2015-11-18 15:45+0100\n"
+"POT-Creation-Date: 2015-11-26 18:29+0100\n"
+"PO-Revision-Date: 2015-11-26 18:30+0100\n"
 "Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -26,7 +26,7 @@ msgstr ""
 "X-Poedit-SearchPath-6: ../lib/Doctrine\n"
 "X-Poedit-SearchPath-7: ../bin\n"
 
-#: lib/Alchemy/Phrasea/Application.php:662
+#: lib/Alchemy/Phrasea/Application.php:690
 msgid "Open the URL in a new window"
 msgstr "Ouvrir le lien dans une nouvelle fenêtre"
 
@@ -144,8 +144,8 @@ msgstr "Suppression effectuée"
 #: lib/Alchemy/Phrasea/Controller/Prod/Order.php:201
 #: lib/Alchemy/Phrasea/Controller/Prod/Order.php:207
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:206
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:162
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:226
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:165
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:229
 msgid "An error occured"
 msgstr "Une erreur est survenue."
 
@@ -1294,26 +1294,26 @@ msgstr "Reportage mis à jour"
 msgid "Terms of use"
 msgstr "Conditions d'utilisation"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:70
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:73
 msgid "prod::tools: document"
 msgstr "Document"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:207
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:210
 msgid "Document has been successfully substitued"
 msgstr "Le document a été substitué"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:209
 #: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:212
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:263
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:215
 #: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:266
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:269
 msgid "file is not valid"
 msgstr "Le fichier n'est pas valide"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:261
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:264
 msgid "Thumbnail has been successfully substitued"
 msgstr "La vignette a été substitué"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:290
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:293
 msgid "an error occured"
 msgstr "une erreur est survenue"
 
@@ -2898,7 +2898,7 @@ msgstr "Modèle %s"
 msgid "phraseanet::utilisateur inconnu"
 msgstr "Utilisateur inconnu"
 
-#: lib/classes/appbox.php:300 lib/classes/appbox.php:385
+#: lib/classes/appbox.php:300 lib/classes/appbox.php:384
 msgid "Flushing cache"
 msgstr "Nettoyage du cache"
 
@@ -2910,36 +2910,36 @@ msgstr "Création de nouvelles tables"
 msgid "Purging directories"
 msgstr "Vidage de Répertoires"
 
-#: lib/classes/appbox.php:343
+#: lib/classes/appbox.php:342
 msgid "Copying files"
 msgstr "Copie des fichiers"
 
-#: lib/classes/appbox.php:362
+#: lib/classes/appbox.php:361
 msgid "Upgrading appbox"
 msgstr "Mise à jour de l'ApplicationBox"
 
-#: lib/classes/appbox.php:370
+#: lib/classes/appbox.php:369
 #, php-format
 msgid "Upgrading %s"
 msgstr "Mise à jour de %s"
 
-#: lib/classes/appbox.php:378
+#: lib/classes/appbox.php:377
 msgid "Post upgrade"
 msgstr "Publier une mise à jour"
 
-#: lib/classes/appbox.php:392 lib/classes/appbox.php:394
+#: lib/classes/appbox.php:391 lib/classes/appbox.php:393
 msgid ""
 "Your install requires data migration, please execute the following command"
 msgstr ""
 "Votre installation requiert une mise à jour, veuillez exécuter la commande "
 "suivante"
 
-#: lib/classes/appbox.php:398
+#: lib/classes/appbox.php:397
 msgid "Your install might need to re-read technical datas"
 msgstr ""
 "Votre installation nécessite probablement une relecture de données techniques"
 
-#: lib/classes/appbox.php:399
+#: lib/classes/appbox.php:398
 msgid "Your install might need to build some sub-definitions"
 msgstr ""
 "Votre installation semble nécessiter la génération de sous-définitions."
@@ -7457,6 +7457,11 @@ msgstr "Accepter le terme candidat"
 
 msgid "prod::thesaurusTab:wizard:remplacer par le terme"
 msgstr "Remplacer le terme"
+
+msgid "prod::tools:subdef_rebuild_confirmation"
+msgstr ""
+"Êtes-vous sûr de vouloir régénérer les sous-définitions des éléments "
+"sélectionnés ?"
 
 msgid "publication : autheur"
 msgstr "Auteur"
