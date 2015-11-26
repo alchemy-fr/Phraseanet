@@ -636,16 +636,17 @@ function loadFacets(facets) {
 }
 
 function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
-    var filteredSource = source,
+    var filteredSource = _.extend([], source),
         ordered = [];
 
     _.forEach(predefinedFieldOrder, function(fieldValue, index){
         _.forEach(source, function(facet, facetIndex) {
-            if (facet[field] === fieldValue) {
-                ordered.push(facet);
-                // remove from filtered
-                filteredSource.splice(facetIndex, 1);
-
+            if( facet[field] !== undefined) {
+                if (facet[field] === fieldValue) {
+                    ordered.push(facet);
+                    // remove from filtered
+                    filteredSource.splice(facetIndex, 1);
+                }
             }
         });
     });

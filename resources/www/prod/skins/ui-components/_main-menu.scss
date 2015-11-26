@@ -6,10 +6,7 @@ $mainMenuBottomBorder: none;
 $mainMenuMarginBottom: 0;
 
 $mainMenuLinkColor: $mainMenuLinkColor;
-$mainMenuLinkBackgroundHoverColor: $bgInverseHoverColor;
-$mainMenuLinkHoverColor: $textInverseHoverColor;
+$mainMenuLinkBackgroundHoverColor: transparent; //$bgInverseHoverColor;
+$mainMenuLinkHoverColor: $textPrimaryHoverColor;
 
-// already defined $mainMenuLinkColor: #212121;
-//$mainMenuLinkHoverColor: #BFBFBF;
-//$mainMenuLinkActiveColor: #BFBFBF;
 @import '../../../_shared/styles/main-menu';

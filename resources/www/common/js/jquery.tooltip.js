@@ -623,8 +623,11 @@
 
     // hide helper and restore added classes and the title
     function hide(event) {
-
-        if( $.tooltip.currentHover && settings($.tooltip.current).isBrowsable ) {
+        var isBrowsable = false;
+        if( $.tooltip.current !== null ) {
+            isBrowsable = settings($.tooltip.current).isBrowsable;
+        }
+        if( $.tooltip.currentHover && isBrowsable ) {
             return;
         }
 

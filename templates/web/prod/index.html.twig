@@ -778,8 +778,9 @@
             }, function(data){
                 return;
             });
-            if ($.browser.msie && $.browser.version === "6.0")
+            if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {
                 $("select").hide().show();
+            }
         }
 
     </script>

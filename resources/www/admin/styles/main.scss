@@ -113,14 +113,17 @@ div.finder div.content div.title {
 
 
 $mainMenuBackgroundColor: #fceb3f;
-$mainMenuLinkColor: #000000;
-$mainMenuLinkHoverColor: #fffbcd;
+$mainMenuLinkColor: #333333;
+$mainMenuLinkHoverColor: #000000;
 $mainMenuLinkActiveColor: #000000;
+$mainMenuLinkBackgroundHoverColor: transparent;
+
 @import '../../_shared/styles/main-menu';
 
 #mainContent {
   margin-top: $mainMenuHeight;
 }
+
 /******* LEFT SIDE ************************************************************/
 #left {
   background-color: #fffbcd;
