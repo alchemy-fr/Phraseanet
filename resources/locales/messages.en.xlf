@@ -10533,9 +10533,9 @@
         <target state="translated">Accepting...</target>
         <jms:reference-file line="280">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2d9f07413ce3c8d519eca3f10f280eb14f7402cf" resname="prod::thesaurusTab:dlg:Remplacement du candidat &quot;%(from)s&quot; par &quot;%(to)s&quot;">
+      <trans-unit id="2d9f07413ce3c8d519eca3f10f280eb14f7402cf" resname="prod::thesaurusTab:dlg:Remplacement du candidat &quot;%(from)s&quot; par &quot;%(to)s&quot;" approved="yes">
         <source>prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"</source>
-        <target state="needs-translation">Replace "%(from)s" by "%(to)s"</target>
+        <target state="translated">Replace "%(from)s" by "%(to)s"</target>
         <jms:reference-file line="102">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a51fb3f172574eb5f645132d2f5de8f3f4400333" resname="prod::thesaurusTab:dlg:Remplacement en cours." approved="yes">
@@ -10548,9 +10548,9 @@
         <target state="translated">Deleting...</target>
         <jms:reference-file line="363">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="27810e2a525948061c8b88e13ebc6b61a4c5f6dc" resname="prod::thesaurusTab:dlg:accepter le terme candidat &quot;%s&quot; ?">
+      <trans-unit id="27810e2a525948061c8b88e13ebc6b61a4c5f6dc" resname="prod::thesaurusTab:dlg:accepter le terme candidat &quot;%s&quot; ?" approved="yes">
         <source>prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?</source>
-        <target state="needs-translation">Accept "%s" in Thesaurus?</target>
+        <target state="translated">Accept "%s" in thesaurus?</target>
         <jms:reference-file line="427">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e830416a4a3e31b8a9f7eeac671ac325acb40e51" resname="prod::thesaurusTab:dlg:accepter les %d termes candidats ?" approved="yes">
