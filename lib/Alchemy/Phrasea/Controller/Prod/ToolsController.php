@@ -61,6 +61,9 @@ class ToolsController extends Controller
                     }
 
                     if ('document' == $subdefName) {
+                        if (!$acl->has_right_on_base($record->getBaseId(), 'candwnldhd')) {
+                            continue;
+                        }
                         $label = $this->app->trans('prod::tools: document');
                     } elseif (isset($databoxSubdefs[$subdefName])) {
                         if (!$acl->has_access_to_subdef($record, $subdefName)) {
@@ -324,6 +327,8 @@ class ToolsController extends Controller
         if (!$acl->has_right('bas_chupub')
             || !$acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
             || !$acl->has_right_on_base($record->getBaseId(), 'imgtools')
+            || ('document' == $subdefName && !$acl->has_right_on_base($record->getBaseId(), 'candwnldhd'))
+            || ('document' != $subdefName && !$acl->has_access_to_subdef($record, $subdefName))
         ) {
             $this->app->abort(403);
         }
