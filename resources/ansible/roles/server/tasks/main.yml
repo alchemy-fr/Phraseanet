@@ -2,6 +2,7 @@
 - name: Update apt
   sudo: yes
   apt: update_cache=yes
+  when: server.prevent_update is defined
 
 - name: Install System Packages
   sudo: yes
@@ -19,13 +20,13 @@
 
 - name: Configure the timezone
   sudo: yes
-  template: src=timezone.tpl dest=/etc/timezone
+  template: src=timezone.j2 dest=/etc/timezone
 
 - name: More Configure the timezone
   sudo: yes
   file: src=/usr/share/zoneinfo/{{server.timezone}} dest=/etc/localtime state=link force=yes backup=yes
 
 - name: Set default system language pack
-  shell: locale-gen {{server.locale}}
+  shell: locale-gen {{server.locales|join(' ')}}
   sudo: yes
 

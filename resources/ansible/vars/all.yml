@@ -1,16 +1,34 @@
 ---
 server:
     install: '1'
-    packages: [vim, git, imagemagick, htop, nodejs, npm, iotop, pkg-config, libzmq3-dev]
+    packages:
+      - vim
+      - git
+      - imagemagick
+      - htop
+      - nodejs
+      - npm
+      - iotop
+      - pkg-config
+      - libzmq3-dev
+      - supervisor
     timezone: UTC
-    locale: fr_FR.UTF-8
+    locales:
+        - en_GB.UTF-8
+        - fr_FR.UTF-8
+        - de_DE.UTF-8
+        - nl_NL.UTF-8
 vagrant_local:
     install: '1'
-    vm: { base_box: trusty64, hostname: phraseanet.dev, ip: 192.168.56.101, memory: '4096', sharedfolder: ./, useVagrantCloud: '1', syncType: nfs }
+    vm:
+        base_box: trusty64
+        memory: '4096'
+        sharedfolder: ./
+        useVagrantCloud: '1'
+        syncType: nfs
 nginx:
     install: '1'
     docroot: /vagrant
-    servername: master.phraseanet.vb
 mariadb:
     install: '1'
     root_password: toor
@@ -21,7 +39,7 @@ mariadb:
 elasticsearch:
     install: '1'
     port: '9200'
-    version: 1.5.2
+    version: '1.7.3'
 php:
     install: '1'
     ppa: php5

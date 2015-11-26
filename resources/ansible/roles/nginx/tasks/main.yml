@@ -5,5 +5,5 @@
 
 - name: Change default nginx site
   sudo: yes
-  template: src=default.tpl dest=/etc/nginx/sites-available/default
+  template: src=default.j2 dest=/etc/nginx/sites-available/default
   notify: restart nginx

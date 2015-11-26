@@ -1,2 +1,2 @@
-; Configuration for php PECL {{ item }} extension
-extension={{ item }}.so
+; Configuration for php PECL {{ item.name }} extension
+extension={{ item.name }}.so

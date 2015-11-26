@@ -20,11 +20,6 @@ def which(cmd)
 end
 
 def config_net(config)
-    # Configure hostmanager
-    config.hostmanager.enabled = true
-    config.hostmanager.manage_host = true
-    config.hostmanager.ignore_private_ip = false
-    config.hostmanager.include_offline = true
     config.hostmanager.aliases = [
         $hostname + ".vb",
         "www." + $hostname + ".vb",
@@ -52,9 +47,17 @@ def config_net(config)
 end
 
 # By default, the name of the VM is the project's directory name
-$hostname = File.basename($root)
+$hostname = File.basename($root).downcase
 
 Vagrant.configure("2") do |config|
+
+    # Configure hostmanager
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+
+    config.vm.hostname = $hostname
 
     config.vm.provider :virtualbox do |v|
         v.name = $hostname
@@ -76,8 +79,8 @@ Vagrant.configure("2") do |config|
     if which('ansible-playbook')
         config.vm.provision "ansible" do |ansible|
             ansible.playbook = "resources/ansible/playbook.yml"
-            #ansible.inventory_path = "ansible/inventories/dev"
             ansible.limit = 'all'
+            ansible.verbose = 'v'
             ansible.extra_vars = {
                 hostname: $hostname,
                 postfix: {
