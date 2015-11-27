@@ -12,5 +12,5 @@
     - php
     - xdebug
     - composer
-    - app
     - mailcatcher
+    - app

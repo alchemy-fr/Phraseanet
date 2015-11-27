@@ -2,16 +2,19 @@
 server:
     install: '1'
     packages:
-      - vim
-      - git
-      - imagemagick
-      - htop
-      - nodejs
-      - npm
-      - iotop
-      - pkg-config
-      - libzmq3-dev
-      - supervisor
+        - vim
+        - git
+        - imagemagick
+        - htop
+        - nodejs
+        - npm
+        - iotop
+        - pkg-config
+        - libzmq3-dev
+        - supervisor
+        - ruby-dev
+        - sqlite3
+        - libsqlite3-dev
     timezone: UTC
     locales:
         - en_GB.UTF-8
@@ -49,5 +52,8 @@ php:
 xdebug:
     install: '1'
 composer:
+    install: '1'
+
+mailcatcher:
     install: '1'
 
