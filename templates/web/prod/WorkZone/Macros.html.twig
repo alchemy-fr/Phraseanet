@@ -309,7 +309,7 @@
               href="#"
             {% endif %}
             class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
-            X
+              <i class="icon-remove"></i>
           </a>
           {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
               <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}"></div>

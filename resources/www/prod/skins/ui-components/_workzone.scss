@@ -141,7 +141,7 @@
     display: none;
   }
   .tools {
-    //text-align: center;
+    padding: 7px 0 7px 0;
     text-align: left !important;
     button {
       background-color: transparent;
@@ -149,7 +149,7 @@
       width: 16px;
       height: 22px;
       cursor: pointer;
-      padding: 0px;
+      padding: 0;
     }
     label {
       display: inline;

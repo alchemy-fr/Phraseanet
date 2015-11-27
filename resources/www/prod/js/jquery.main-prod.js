@@ -1941,7 +1941,9 @@ function toolREFACTOR(datas, activeTab) {
 }
 
 function activeIcons() {
-    $('.TOOL_print_btn').on('click', function () {
+    var $container = $('body');
+    $container.on('click', '.TOOL_print_btn', function (e) {
+        e.preventDefault();
         var value = "";
 
         if ($(this).hasClass('results_window')) {
@@ -1979,11 +1981,11 @@ function activeIcons() {
             alert(language.nodocselected);
         }
     });
-
-    $('.TOOL_bridge_btn').on('click', function (e) {
+    $container.on('click', '.TOOL_bridge_btn', function (e) {
         e.preventDefault();
         var $button = $(this);
         var datas = {};
+        var bridgeHref = $button.attr("href");
 
         if ($button.hasClass('results_window')) {
             if (p4.Results.Selection.length() > 0)
@@ -1991,6 +1993,7 @@ function activeIcons() {
         }
         else {
             if ($button.hasClass('basket_window')) {
+                bridgeHref = $button.attr("data-href");
                 if (p4.WorkZone.Selection.length() > 0)
                     datas.lst = p4.WorkZone.Selection.serialize();
                 else
@@ -2002,6 +2005,7 @@ function activeIcons() {
                 }
                 else {
                     if ($button.hasClass('story_window')) {
+                        bridgeHref = $button.attr("data-href");
                         if (p4.WorkZone.Selection.length() > 0) {
                             datas.lst = p4.WorkZone.Selection.serialize();
                         }
@@ -2014,15 +2018,15 @@ function activeIcons() {
         }
 
         if (datas.ssel || datas.lst || datas.story) {
-            init_publicator($button.attr("href"), datas);
+            init_publicator(bridgeHref, datas);
         }
         else {
             alert(language.nodocselected);
         }
     });
 
+    $container.on('click', '.TOOL_trash_btn', function () {
 
-    $('.TOOL_trash_btn').on('click', function () {
         var type = "";
         var el = false;
 
@@ -2058,8 +2062,8 @@ function activeIcons() {
             alert(language.nodocselected);
         }
     });
+    $container.on('click', '.TOOL_ppen_btn', function () {
 
-    $('.TOOL_ppen_btn').on('click', function () {
         var value = "";
         var type = "";
 
@@ -2107,8 +2111,7 @@ function activeIcons() {
             alert(language.nodocselected);
         }
     });
-
-    $('.TOOL_publish_btn').on('click', function () {
+    $container.on('click', '.TOOL_publish_btn', function () {
         var value = "";
         var type = "";
 
@@ -2188,7 +2191,8 @@ function activeIcons() {
         return;
     }
 
-    $('.TOOL_chgcoll_btn').on('click', function () {
+
+    $container.on('click', '.TOOL_chgcoll_btn', function () {
         var value = {};
 
         if ($(this).hasClass('results_window')) {
@@ -2229,7 +2233,7 @@ function activeIcons() {
         alert(language.nodocselected);
     });
 
-    $('.TOOL_chgstatus_btn').on('click', function () {
+    $container.on('click', '.TOOL_chgstatus_btn', function () {
         var params = {};
         var $this = $(this);
 
@@ -2267,7 +2271,7 @@ function activeIcons() {
         }
     });
 
-    $('.TOOL_pushdoc_btn').on('click', function () {
+    $container.on('click', '.TOOL_pushdoc_btn', function () {
         var value = "", type = "", sstt_id = "", story = "";
         if ($(this).hasClass('results_window')) {
             if (p4.Results.Selection.length() > 0)
@@ -2304,8 +2308,7 @@ function activeIcons() {
         }
     });
 
-
-    $('.TOOL_feedback_btn').on('click', function () {
+    $container.on('click', '.TOOL_feedback_btn', function () {
         var value = "", type = "", sstt_id = "", story = '';
         if ($(this).hasClass('results_window')) {
             if (p4.Results.Selection.length() > 0)
@@ -2342,8 +2345,7 @@ function activeIcons() {
         }
     });
 
-
-    $('.TOOL_imgtools_btn').on('click', function () {
+    $container.on('click', '.TOOL_imgtools_btn', function () {
         var datas = {};
 
         if ($(this).hasClass('results_window')) {
@@ -2382,8 +2384,7 @@ function activeIcons() {
         }
     });
 
-
-    $('.TOOL_disktt_btn').on('click', function () {
+    $container.on('click', '.TOOL_disktt_btn', function () {
         var datas = {};
 
         if ($(this).hasClass('results_window')) {

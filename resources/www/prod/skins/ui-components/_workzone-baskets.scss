@@ -60,17 +60,14 @@
     }
     .SSTT {
       &.active {
-        border: 1px solid #b1b1b1;
         &.ui-corner-top {
           border: none;
-          border-top: 1px solid $mediumBorderColor;
           top: 0;
           background-color: $mediumBackgroundColor;
         }
       }
       &.grouping {
         &.active {
-          // border: 1px solid #2f4a6f;
           &.ui-corner-top {
             border-bottom: none;
           }
@@ -167,6 +164,9 @@
   right: 0;
   z-index: 15;
   vertical-align: middle;
+  .WorkZoneElementRemover {
+    padding: 3px;
+  }
 }
 
 .CHIM.diapo .bottom span, .CHIM.diapo .bottom img {

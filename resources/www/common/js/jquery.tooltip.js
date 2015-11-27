@@ -318,6 +318,7 @@
                 var ratioImage = $(h).width() / $(h).height();
 
                 //position de l'image
+                console.log('$eventTarget', $eventTarget)
                 if ($eventTarget.offset().left > (v.x - $eventTarget.offset().left - $eventTarget.width())) {
                     hor = 'gauche';
                     wiH = $eventTarget.offset().left;
