@@ -2334,7 +2334,7 @@
       </trans-unit>
       <trans-unit id="c5bd0e534d218eb5680d7e83804e69cef318ea3f" resname="Document Type Sharing" approved="yes">
         <source>Document Type Sharing</source>
-        <target state="translated">Partage des sous-définitions</target>
+        <target state="translated">Partage de permaliens</target>
         <jms:reference-file line="66">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c6fda3c9ed3e64a0f20ceff3ba3d71a2c29bb590" resname="Document envoye par %name%" approved="yes">
@@ -2827,9 +2827,9 @@
         <target state="translated">Et Dieu créa la femme</target>
         <jms:reference-file line="68">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="40019ae278d51a265b82e37738989bf1b22157b7" resname="Etendue de la publication">
+      <trans-unit id="40019ae278d51a265b82e37738989bf1b22157b7" resname="Etendue de la publication" approved="yes">
         <source>Etendue de la publication</source>
-        <target>Etendue de la publication</target>
+        <target state="translated">Etendue de la publication</target>
         <jms:reference-file line="100">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="22">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
@@ -5981,9 +5981,9 @@
         <target state="translated">Reportage mis à jour</target>
         <jms:reference-file line="210">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="92822e4942a5e4eee63c1ccbb4dc08a6028c65bb" resname="Story_id">
+      <trans-unit id="92822e4942a5e4eee63c1ccbb4dc08a6028c65bb" resname="Story_id" approved="yes">
         <source>Story_id</source>
-        <target>Story_id</target>
+        <target state="translated">Story_id</target>
         <jms:reference-file line="3">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5affb595319a48a0256a82bbd47f3cc12f36c36d" resname="Structure errors" approved="yes">
@@ -7110,9 +7110,9 @@
         <target state="translated">Des champs requis sont vides</target>
         <jms:reference-file line="29">admin/publications/wrapper.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d30e482b31f235fe321d5b4ef3a7d729334a96b6" resname="Vous devez selectionner un type de sous definitions" approved="no">
+      <trans-unit id="d30e482b31f235fe321d5b4ef3a7d729334a96b6" resname="Vous devez selectionner un type de sous definitions" approved="yes">
         <source>Vous devez selectionner un type de sous definitions</source>
-        <target state="needs-translation">Vous devez sélectionner un type de sous-définitions</target>
+        <target state="translated">Vous devez sélectionner un type de sous-définitions</target>
         <jms:reference-file line="579">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd7d9b9fe8ae83d942ba82a7800b4e73266e5b42" resname="Vous devez specifier une adresse email et un mot de passe valides" approved="yes">
@@ -7620,7 +7620,7 @@
       </trans-unit>
       <trans-unit id="b52fed35cf7cfe73dd34f6f347a21b7b6fdcf75f" resname="Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories." approved="yes">
         <source>Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.</source>
-        <target state="translated">Vos documents et leurs sous résolutions (vignettes, prévisualisations et autres sous-définitions) sont stockés dans ces répertoires</target>
+        <target state="translated">Vos documents et leurs sous-résolutions (vignettes, prévisualisation et autres sous-définitions) sont stockés dans ces répertoires</target>
         <jms:reference-file line="671">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="257253d658fdcbe73c4f4d02d2a3442ea8e4011d" resname="Your registration requests have been taken into account." approved="yes">
@@ -10489,19 +10489,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rechercher</target>
         <jms:reference-file line="288">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="no">
+      <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
         <source>prod::facet:base_label</source>
-        <target state="needs-translation">Bases</target>
+        <target state="translated">Bases</target>
         <jms:reference-file line="188">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label" approved="no">
+      <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label" approved="yes">
         <source>prod::facet:collection_label</source>
-        <target state="needs-translation">Collections</target>
+        <target state="translated">Collections</target>
         <jms:reference-file line="189">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="no">
+      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="yes">
         <source>prod::facet:doctype_label</source>
-        <target state="needs-translation">Types de documents</target>
+        <target state="translated">Types de documents</target>
         <jms:reference-file line="190">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
@@ -11877,9 +11877,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Transfert annulé pour le fichier "%file%" (recordid %record_id%) de la base "%basename%" (Export du Document) : le document n'existe plus</target>
         <jms:reference-file line="255">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="80a29136ce99f9c32aba5f2118e942909b9c2014" resname="task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%">
+      <trans-unit id="80a29136ce99f9c32aba5f2118e942909b9c2014" resname="task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%" approved="yes">
         <source>task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</source>
-        <target state="needs-translation">Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</target>
+        <target state="translated">Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</target>
         <jms:reference-file line="353">TaskManager/Job/FtpJob.php</jms:reference-file>
         <jms:reference-file line="362">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
