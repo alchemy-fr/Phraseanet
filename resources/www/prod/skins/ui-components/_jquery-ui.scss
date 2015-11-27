@@ -26,17 +26,20 @@ $modalBackground: $darkerBackgroundColor !default;
 .ui-tabs {
   .ui-tabs-nav {
     li {
-      background-color: $lightBackgroundColor; //$tabsNavBg;
+      background-color: lighten($lightBackgroundColor, 5); //$tabsNavBg;
       height: 30px;
       border: none;
       overflow: hidden;
       a {
         padding: 5px 8px;
         //font-size: 0.8em;
+        font-size: $xmediumFontSize;
         font-weight: normal;
-        color: $lightTextColor; // more contrasted  color
+        color: $mediumTextColor; // more contrasted  color
       }
       &.ui-tabs-active {
+        font-size: $mediumFontSize;
+        color: $lightTextColor;
         background-color: $mediumBackgroundColor; //$tabsNavBgActive;
         border: none;
       }

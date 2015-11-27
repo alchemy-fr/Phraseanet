@@ -1,6 +1,6 @@
 {% if reloadTree %}
     <script type="text/javascript">
-        reloadTree('bases:bases');
+        AdminApp.LeftView.reloadTree('bases:bases');
     </script>
 {% endif %}
 
@@ -371,9 +371,9 @@
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            reloadTree('base:{{ databox.get_sbas_id() }}', true);
+                            AdminApp.LeftView.reloadTree('base:{{ databox.get_sbas_id() }}', true);
                         } else if(submitLink.hasClass('reload-tree')) {
-                            reloadTree('bases:bases', true);
+                            AdminApp.LeftView.reloadTree('bases:bases', true);
                         }
                     } else {
                         alert(datas.msg);

@@ -29,7 +29,7 @@ define([
 
             var $this = this;
             this.eventManager.on("panel:left:success", function(data, click) {
-                $this.render.append(data);
+                $this.render(data);
                 $this.activeTree();
                 if (click) {
                     $this.clickSelected();

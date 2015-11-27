@@ -843,7 +843,7 @@ function updateEditSelectedRecords(evt) {
         }
     }
 
-    $('#idFrameE .ww_status', p4.edit.editBox).html(nrecsel + " record(s) selected for editing");
+    //$('#idFrameE .ww_status', p4.edit.editBox).html(nrecsel + " record(s) selected for editing");
 
     updateFieldDisplay();
 

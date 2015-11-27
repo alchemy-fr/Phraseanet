@@ -1,33 +1,8 @@
 
 /******* ACTIONS **************************************************************/
 
-.toolbutton {
-  float: left;
-  width: 70px;
-  height: 50px;
-  overflow: hidden;
-  margin: 0px;
-  cursor: pointer;
-}
 
-.toolbuttonimg {
-  float: left;
-  width: 50px;
-  margin: 0px 10px 0px;
-  height: 30px;
-  overflow: hidden;
-  text-align: center;
-}
-
-.toolbuttonlabel {
-  float: left;
-  width: 70px;
-  height: 20px;
-  overflow: visible;
-  text-align: center;
-}
-
-#TOOL_disktt {
+/*#TOOL_disktt {
   background-image: url('#{$skinsImagesPath}disktt_0.gif');
   background-position: center center;
   background-repeat: no-repeat;
@@ -122,7 +97,7 @@
   background-position: center center;
   background-repeat: no-repeat;
 }
-
+*/
 .contextMenuTrigger {
   color: $textPrimaryColor;
   font-size: $smallFontSize;

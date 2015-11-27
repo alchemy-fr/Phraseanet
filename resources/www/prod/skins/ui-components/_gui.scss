@@ -1,14 +1,6 @@
 
 /******* GUI ******************************************************************/
 
-/*.gui_grip {
-  background-image: url('#{$skinsImagesPath}grip.gif');
-  background-position: 0 0;
-  background-repeat: no-repeat;
-  height: 19px;
-  width: 5px;
-}*/
-
 .gui_vsplitter,.ui-resizable-e {
   top: 50%;
   width: 13px;
@@ -75,7 +67,7 @@
   width: 12px;
   height: 12px;
   float: left;
-  background-image: url('#{$skinsImagesPath}ccoch0.gif');
+  background-image: url('#{$iconsPath}ccoch0.gif');
   cursor: pointer;
 }
 
@@ -85,7 +77,7 @@
   width: 12px;
   height: 12px;
   float: left;
-  background-image: url('#{$skinsImagesPath}ccoch1.gif');
+  background-image: url('#{$iconsPath}ccoch1.gif');
   cursor: pointer;
 }
 
@@ -95,6 +87,6 @@
   width: 12px;
   height: 12px;
   float: left;
-  background-image: url('#{$skinsImagesPath}ccoch2.gif');
+  background-image: url('#{$iconsPath}ccoch2.gif');
   cursor: pointer;
 }

@@ -86,10 +86,12 @@
                     $this.prop('disabled',true)
                 },
                 success : function(datas) {
+                    console.log('reorder success')
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
                         content:datas.msg
                     });
                     $('#notification').html(html);
+                    AdminApp.LeftView.reloadTree('bases:bases', true);
                 },
                 complete : function() {
                     $this.prop('disabled',false)

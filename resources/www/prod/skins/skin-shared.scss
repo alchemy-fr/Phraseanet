@@ -4,8 +4,7 @@ $basketsColor: #076882;
 
 @import '../../_shared/styles/variables';
 
-::-webkit-scrollbar-track
-{
+::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: $darkerBackgroundColor;
 }
@@ -26,11 +25,12 @@ $basketsColor: #076882;
   height: 0;
   display: none;
 }
+
 ::-webkit-scrollbar-corner {
   background-color: transparent;
 }
 
-*::-moz-selection, *::selection{
+*::-moz-selection, *::selection {
   background: #FFFFFF;
   color: $textPrimaryColor;
 }
@@ -100,7 +100,6 @@ EM {
   cursor: pointer;
 }
 
-
 .ui-state-default, .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
   font-weight: normal;
@@ -122,9 +121,8 @@ EM {
 .ui-widget-content.ui-autocomplete .ui-state-focus,
 .ui-widget-content.ui-autocomplete .ui-widget-content .ui-state-focus,
 .ui-widget-content.ui-autocomplete .ui-widget-header .ui-state-focus {
-  border : 1px solid #FFFFFF;
+  border: 1px solid #FFFFFF;
 }
-
 
 #maincontainer {
   min-width: 970px;
@@ -134,8 +132,8 @@ EM {
 #mainContent {
   // top: 40px;
   min-width: 960px;
-  overflow-x:auto;
-  overflow-y:auto;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .PNB {
@@ -185,12 +183,12 @@ div#PREVIEWTITLEWRAPPER {
   height: 16px;
 }
 
-.ww_status {
+/*.ww_status {
   background-image: url('#{$skinsImagesPath}ww_title.gif');
   background-repeat: repeat-x;
   color: #0077bc;
   font-size: 8pt;
-}
+}*/
 
 span.ww_winTitle {
   letter-spacing: 1px;
@@ -198,7 +196,6 @@ span.ww_winTitle {
   font-size: 8pt;
   font-weight: bold;
 }
-
 
 #divpage {
   background-color: #212121;
@@ -238,28 +235,25 @@ span.ww_winTitle {
 
 }
 
-
 .cont_infos {
   position: absolute;
   bottom: 10px;
-  right: 10px;
   height: 60px;
   top: auto;
   text-align: center;
   width: 70px;
   right: 60px;
+  div {
+    line-height: 20px;
+    font-size: $smallFontSize;
+    font-weight: bold;
+  }
+  span {
+    cursor: pointer;
+    font-size: $smallFontSize;
+  }
 }
 
-.cont_infos div {
-  line-height: 20px;
-  font-size: $smallFontSize;
-  font-weight: bold;
-}
-
-.cont_infos span {
-  cursor: pointer;
-  font-size: $smallFontSize;
-}
 
 #SPANTITLE img {
   height: 16px;
@@ -267,19 +261,14 @@ span.ww_winTitle {
   margin: 0 10px;
 }
 
-.cgu-dialog blockquote p {
-  margin: 10px 30px 10px 0;
-}
-
 .cgu-dialog blockquote {
   margin: 10px 30px;
   overflow: auto;
   max-height: 400px;
+  p {
+    margin: 10px 30px 10px 0;
+  }
 }
-
-
-
-
 
 .chim-wrapper {
   position: relative;
@@ -306,7 +295,6 @@ span.ww_winTitle {
   border: 1px dotted #CCCCCC;
   z-index: 10000;
 }
-
 
 /******* DIALOGS **************************************************************/
 
@@ -340,8 +328,6 @@ span.ww_winTitle {
   position: relative;
 }
 
-
-
 /******* ORDER MANAGER ********************************************************/
 
 #order_manager tr.order_row {
@@ -364,7 +350,6 @@ span.ww_winTitle {
   border: 1px solid #FFFFFF;
   margin: 0 5px;
 }
-
 
 #order_manager .order_list .thumb {
   float: left;
@@ -409,7 +394,6 @@ H4 {
   MARGIN-LEFT: 5px
 }
 
-
 #notification_trigger .counter {
   position: relative;
   *position: static;
@@ -442,19 +426,16 @@ H4 {
 }
 
 #sizeAns_slider .ui-slider-handle, #nperpage_slider .ui-slider-handle,
-#EDIT_ZOOMSLIDER  .ui-slider-handle {
+#EDIT_ZOOMSLIDER .ui-slider-handle {
   background-color: $darkerBackgroundColor;
   width: 8px;
   cursor: col-resize;
 }
 
-
-
-
 /******* POPOVERS *************************************************************/
 
 #tooltip .popover {
-  background-color:inherit;
+  background-color: inherit;
 }
 
 .popover-inner {
@@ -477,6 +458,7 @@ H4 {
     border-color: $darkerBorderColor;
   }
 }
+
 .dragover {
   BACKGROUND-COLOR: #fff100
 }
@@ -520,17 +502,15 @@ H4 {
   display: inline-block;
   margin-right: 8px;
   margin-bottom: 0px;
-  &.status-active{
+  &.status-active {
     background-color: #58d5b5;
     box-shadow: 0 0 6px #69fcd6;
   }
   &.status-inactive {
     background-color: #aaaaaa;
-    box-shadow: inset 1px 1px 2px 0px rgba(0,0,0,0.7);
+    box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.7);
   }
 }
-
-
 
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';

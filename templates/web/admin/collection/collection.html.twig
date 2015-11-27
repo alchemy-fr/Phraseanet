@@ -1,6 +1,6 @@
 {% if reloadTree %}
     <script type="text/javascript">
-        reloadTree('base:{{ collection.get_sbas_id() }}');
+        AdminApp.LeftView.reloadTree('base:{{ collection.get_sbas_id() }}');
     </script>
 {% endif %}
 
@@ -307,9 +307,9 @@
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            reloadTree('collection:{{ collection.get_base_id() }}', true);
+                            AdminApp.LeftView.reloadTree('collection:{{ collection.get_base_id() }}', true);
                         } else if(submitLink.hasClass('reload-tree')) {
-                            reloadTree('bases:bases', true);
+                            AdminApp.LeftView.reloadTree('bases:bases', true);
                         }
 
                         if ("undefined" !== typeof datas.msg) {
