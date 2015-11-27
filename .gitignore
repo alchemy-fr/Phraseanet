@@ -18,3 +18,5 @@ behat.yml
 !/bin/developer
 !/bin/setup
 /tmp-assets
+
+locale/*/LC_MESSAGES/*.mo
