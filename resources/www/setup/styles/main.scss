@@ -1,8 +1,8 @@
 $iconsPath: '../../../assets/common/images/icons/';
-
+@import '../../_shared/styles/variables';
 body, html {
-  font-family: Helvetica, Verdana, Arial, sans-serif;
-  font-size: 13px;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
   color: white;
   background-color: #000000;
 }

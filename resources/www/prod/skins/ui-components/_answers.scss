@@ -154,18 +154,6 @@ $answersInfoLabelColor: #949494 !default;
     position: relative;
     clear: left;
     margin: 10px;
-    .btn {
-      font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
-      font-size: 12px;
-      font-weight: bold;
-    }
-    .btn-inverse:hover {
-      color: $textPrimaryHoverColor;
-    }
-    .btn-group.open .btn-inverse.dropdown-toggle {
-      background-color: $darkerBackgroundColor;
-      background-image: none;
-    }
     .headblock {
       max-width: 800px;
       margin-bottom: 20px;
@@ -215,7 +203,7 @@ $answersInfoLabelColor: #949494 !default;
       font-weight: bold;
       font-size: 20px;
       .author {
-        font-size: 12px;
+        font-size: $mediumFontSize;
         font-weight: normal;
         margin-left: 15px;
       }
@@ -247,7 +235,7 @@ $answersInfoLabelColor: #949494 !default;
       height: 60px;
       text-align: center;
       font-weight: bold;
-      font-size: 13px;
+      font-size: $mediumFontSize;
       background-position: center bottom;
     }
     .contents {

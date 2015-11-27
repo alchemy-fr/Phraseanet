@@ -14,7 +14,7 @@
         background-color: $darkerBackgroundColor;
         border: 1px solid $darkerBorderColor;
         color: $darkerTextColor;
-        font-size: 13px;
+        font-size: $mediumFontSize;
         cursor: pointer;
         &.odd {
           background-color: lighten($darkerBackgroundColor, 5);

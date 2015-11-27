@@ -42,7 +42,7 @@ $mainMenuBottomBorder: none !default;
       display: inline-block;
       color: $mainMenuLinkColor;
       > span {
-        font-size: 12px;
+        font-size: $xmediumFontSize;
         font-weight: normal;
         border-top: 3px solid transparent;
         display: block;

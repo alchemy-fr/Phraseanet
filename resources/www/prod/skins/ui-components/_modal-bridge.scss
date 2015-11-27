@@ -9,7 +9,6 @@
     *border: 1px solid $bridgeDropdownMenuBorder;
     a {
       padding: 3px 10px;
-      font-size: 12px;
       color: $bridgeDropdownMenuColor;
       cursor: pointer;
       &:hover {
@@ -196,7 +195,7 @@
 #dialog_publicator .element_menu .default_action,
 .element_menu .trigger {
   z-index: 444;
-  font-size: 13px;
+  font-size: $mediumFontSize;
   font-weight: normal;
   border-color: #666
 }

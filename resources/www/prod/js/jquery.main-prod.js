@@ -324,7 +324,7 @@ function checkFilters(save) {
         search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
         search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
         search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
-
+        console.log(search.dates.minbound, search.dates.maxbound, search.dates.field)
         if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
             danger = true;
             $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
@@ -1008,8 +1008,11 @@ function HueToRgb(m1, m2, hue) {
 $(document).ready(function () {
 
     $('input[name=search_type]').bind('click', function () {
+        console.log('search bind')
         var $this = $(this);
         var $record_types = $('#recordtype_sel');
+
+        console.log($this.hasClass('mode_type_reg'), $record_types)
         if ($this.hasClass('mode_type_reg')) {
             $record_types.css("visibility", "hidden");  // better than hide because does not change layout
             $record_types.prop("selectedIndex", 0);

@@ -15,7 +15,7 @@
   margin-bottom: 0px;
   margin-top: 0px;
   background-color: $mediumBackgroundColor;
-  font-size:10px;
+  font-size: $smallFontSize;
   z-index:100;
   height:45px;
 }
@@ -38,7 +38,7 @@
 #idFrameT .tools .dropdownButton button.btn {
   height: 30px;
   font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 12px;
+  font-size: $mediumFontSize;
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -84,7 +84,7 @@
 
 #idFrameT .tools .dropdown-menu a {
   padding: 3px 10px;
-  font-size: 12px;
+  font-size: $mediumFontSize;
   color: $answersToolsBtnColor;
   cursor: pointer;
 }

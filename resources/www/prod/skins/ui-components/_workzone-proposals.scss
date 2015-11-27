@@ -14,7 +14,7 @@
     }
     li {
       line-height: 17px;
-      font-size: 13px;
+      font-size: $mediumFontSize;
     }
     &.fancytree-container {
       background-color: $mediumBackgroundColor;
@@ -50,7 +50,7 @@
     border-left: 4px solid $mediumBackgroundColor;
     border-bottom: 1px solid $mediumBorderColor;
     .fancytree-title {
-      font-size: 12px;
+      font-size: $xmediumFontSize;
       margin-left: 10px;
     }
     &:hover {
@@ -93,7 +93,7 @@
   }
 
   .fancytree-title {
-    font-size: 12px;
+    font-size: $xmediumFontSize;
     color: $proposalsTitle;
     background-color: transparent;
     border: 0px none transparent;

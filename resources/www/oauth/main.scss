@@ -1,10 +1,11 @@
 /********* Default CSS Oauth pages *********/
 
 /****************** Page *******************/
-
+@import '../_shared/styles/variables';
 html, body {
   background: #000000;
-  font-family: Verdana, sans-serif;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
   color: #FFFFFF;
 }
 

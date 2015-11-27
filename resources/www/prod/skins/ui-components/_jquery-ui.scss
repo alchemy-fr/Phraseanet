@@ -32,7 +32,7 @@ $modalBackground: $darkerBackgroundColor !default;
       overflow: hidden;
       a {
         padding: 5px 8px;
-        font-size: 0.8em;
+        //font-size: 0.8em;
         font-weight: normal;
         color: $lightTextColor; // more contrasted  color
       }
@@ -84,7 +84,7 @@ $modalBackground: $darkerBackgroundColor !default;
 .ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a {
   color: $mediumTextActiveColor;
   font-weight: bold;
-  font-size: 0.8em;
+  //font-size: 0.8em;
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active {

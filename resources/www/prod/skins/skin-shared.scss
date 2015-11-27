@@ -18,7 +18,7 @@ $basketsColor: #076882;
 ::-webkit-scrollbar-thumb {
   border-radius: 0;
   width: 3px;
-  background-color: $scrollBgColor;
+  background-color: lighten($scrollBgColor, 5);
 }
 
 ::-webkit-scrollbar-button {
@@ -51,10 +51,11 @@ legend {
   border: none;
 }
 
-
 body {
   color: $darkerTextColor;
   background-color: $darkerBackgroundColor;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
   position: absolute;
   top: 0;
   left: 0;
@@ -71,11 +72,9 @@ html {
   margin: 0;
   padding: 0;
   z-index: 1;
-}
-
-html, body {
-  font-size: 12px;
-  z-index: 1;
+  body {
+    z-index: 1;
+  }
 }
 
 a {
@@ -180,7 +179,7 @@ div#PREVIEWTITLEWRAPPER {
   cursor: pointer;
   color: rgb(204, 204, 204);
   font-weight: bold;
-  font-size: 12px;
+  font-size: $mediumFontSize;
   text-align: right;
   text-decoration: underline;
   height: 16px;
@@ -253,13 +252,13 @@ span.ww_winTitle {
 
 .cont_infos div {
   line-height: 20px;
-  font-size: 10px;
+  font-size: $smallFontSize;
   font-weight: bold;
 }
 
 .cont_infos span {
   cursor: pointer;
-  font-size: 10px;
+  font-size: $smallFontSize;
 }
 
 #SPANTITLE img {
@@ -426,7 +425,7 @@ H4 {
   border-width: 1px;
   border-radius: 4px 4px 4px 4px;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
-  font-size: 12px;
+  font-size: $xmediumFontSize;
   font-weight: bold;
   line-height: 14px;
   text-align: center;
@@ -503,6 +502,14 @@ H4 {
   background-color: $dropdownDividerBg;
   border-bottom: 1px solid $dropdownDividerBorder;
   margin: 3px 1px 3px 1px;
+}
+
+.close {
+  color: $textPrimaryColor;
+  // box-shadow: inset 1px 1px 2px 0px rgba($darkerBackgroundColor,0.7);
+  &:hover {
+    color: $textPrimaryColor;
+  }
 }
 
 .status-marker {

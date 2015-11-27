@@ -14,7 +14,8 @@ body {
   background-color: #BFBFBF;
   color: #212121;
   /*font-size:11px;*/
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
 }
 
 #mainContent {

@@ -12,11 +12,11 @@
 }
 
 .PushBox .LeftColumn ul {
-  margin:10px 0;
+  margin: 10px 0;
 }
 
 .PushBox .LeftColumn ul li img {
-  margin-right:5px;
+  margin-right: 5px;
   vertical-align: middle;
 }
 
@@ -43,90 +43,90 @@
 }
 
 .PushBox .user_content .badges {
-  top:50px;
-  overflow:auto;
-  height:auto;
-  bottom:50px;
-  left:20px;
-  right:20px;
+  top: 50px;
+  overflow: auto;
+  height: auto;
+  bottom: 50px;
+  left: 20px;
+  right: 20px;
 }
 
 .PushBox .user_content .badges .badge .deleter {
-  float:right;
+  float: right;
 
 }
 
 .PushBox .user_content .badges .badge {
-  width:230px;
-  height:80px;
-  margin:10px;
-  display:inline-block;
+  width: 230px;
+  height: 80px;
+  margin: 10px;
+  display: inline-block;
   background-color: #515150;
-  border:3px solid #515150;
-  padding:3px;
+  border: 3px solid #515150;
+  padding: 3px;
 }
 
 .PushBox .user_content .badges .badge.selected {
-  border:3px solid #EFEFEF;
+  border: 3px solid #EFEFEF;
 }
 
 .PushBox .user_content .badges .badge .toggles .status_on .toggle_off {
-  display:none;
+  display: none;
 }
 
 .PushBox .user_content .badges .badge .toggles .status_off .toggle_on {
-  display:none;
+  display: none;
 }
 
-.PushBox .user_content .badges .badge td{
+.PushBox .user_content .badges .badge td {
   vertical-align: top;
 }
 
-.PushBox .user_content .badges .badge td.toggle{
+.PushBox .user_content .badges .badge td.toggle {
   vertical-align: bottom;
 }
 
-.PushBox .user_content .badges .badge .icon{
-  width:80px;
-  background-color:#404040;
+.PushBox .user_content .badges .badge .icon {
+  width: 80px;
+  background-color: #404040;
 }
 
 .PushBox .user_content .badges .badge .infos {
-  padding-top:3px;
-  padding-left:5px;
+  padding-top: 3px;
+  padding-left: 5px;
 }
 
 .PushBox .user_content .badges .badge table {
-  width:95%;
+  width: 95%;
 }
 
 .PushBox .user_content .badges .badge .infos table {
-  height:75px;
+  height: 75px;
 }
 
 .PushBox .user_content .badges .badge .infos tr {
-  height:20px;
+  height: 20px;
 }
 
 .PushBox .user_content .badges .badge .infos tr.toggles {
-  height:25px;
-  text-align:center;
+  height: 25px;
+  text-align: center;
 }
 
 .PushBox .user_content .badges .badge .icon img {
-  margin:7px;
+  margin: 7px;
 }
 
 .PushBox .user_content .badges .badge .name {
-  font-weight:bold;
-  white-space:pre-line;
-  display:block;
-  font-size:12px;
+  font-weight: bold;
+  white-space: pre-line;
+  display: block;
+  font-size: $mediumFontSize;
 }
 
 .PushBox .user_content .badges .badge .subtite {
-  display:block;
-  font-size:10px;
+  display: block;
+  font-size: 10px;
 }
 
 .PushBox .user_content .header .options {
@@ -134,7 +134,7 @@
 }
 
 .PushBox .all-lists .lists {
-  overflow:auto;
+  overflow: auto;
 }
 
 .PushBox .LeftColumn .content ul.list li:nth-child(odd) {
@@ -162,19 +162,19 @@
 }
 
 .PushBox .lists .list {
-  padding:3px 0;
+  padding: 3px 0;
 }
 
 .PushBox .welcome {
   text-align: center;
   font-size: 16px;
   line-height: 18px;
-  margin : 20px 0;
+  margin: 20px 0;
 }
 
 .PushBox .welcome h1 {
   font-weight: bold;
-  margin:40px 0;
+  margin: 40px 0;
 }
 
 #list-editor-search-results {
@@ -182,14 +182,14 @@
 }
 
 #list-editor-search-results table td {
-  padding:1px 0;
-  overflow:hidden;
+  padding: 1px 0;
+  overflow: hidden;
 }
 
 #list-editor-search-results table tr {
   line-height: 24px;
   vertical-align: middle;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 #list-editor-search-results table tr.odd {
@@ -197,70 +197,66 @@
 }
 
 #list-editor-search-results table tr.selected {
-  background-color:#D18827;
+  background-color: #D18827;
 }
 
-
 #list-editor-search-results table th.sortable span {
-  margin:0 5px;
+  margin: 0 5px;
 }
 
 #list-editor-search-results table th.sortable {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 #list-editor-search-results table th.sortable.hover,
 #list-editor-search-results table th.sortable.sorted {
-  background-color:#F0AD30;
+  background-color: #F0AD30;
 }
 
 #list-editor-search-results table th.sortable span.ord_notifier {
-  display:none;
+  display: none;
 }
 
 #list-editor-search-results table th.sortable.sorted span.ord_notifier {
-  display:inline;
+  display: inline;
 }
 
-
-
 #ListShare table {
-  width:100%;
-  margin:5px;
-  background-color:#505050;
+  width: 100%;
+  margin: 5px;
+  background-color: #505050;
 }
 
 #ListManager .content.readonly .badge {
-  width:250px;
-  display:inline-block;
-  margin:5px;
+  width: 250px;
+  display: inline-block;
+  margin: 5px;
   background-color: #515150;
-  padding:5px;
+  padding: 5px;
 }
 
 #ListManager .content.readonly .badge .deleter {
-  float:right;
+  float: right;
 }
 
-
-#ListManager .content.readonly .badge table{
-  width:auto;
+#ListManager .content.readonly .badge table {
+  width: auto;
   table-layout: fixed;
 }
 
-#ListManager .content.readonly .badge .infos{
-  padding:2px;
+#ListManager .content.readonly .badge .infos {
+  padding: 2px;
 }
 
-#ListManager h1 span.title{
-  font-size:24px;
-  line-height:24px;
-  font-weight:bold;
-  vertical-align:middle;
+#ListManager h1 span.title {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  vertical-align: middle;
 }
 
 #PushBox .general_togglers li {
-  margin-top:5px;
+  margin-top: 5px;
 }
 
 #PushBox .general_togglers button {
@@ -269,11 +265,9 @@
   width: 100%;
 }
 
-
 #PushBox .general_togglers button .ui-button-text {
   font-weight: lighter;
 }
-
 
 #PushBox .content .list_saver {
   padding-top: 20px;
@@ -298,15 +292,15 @@
 }
 
 #ListManager .content .lists span.action {
-  display:block;
-  text-align:center;
+  display: block;
+  text-align: center;
   font-weight: bold;
-  width:100%;
+  width: 100%;
 }
 
 #recommanded-users {
-  margin-top:25px;
-  line-height:15px;
+  margin-top: 25px;
+  line-height: 15px;
 }
 
 #recommanded-users a:last-child {
@@ -315,8 +309,8 @@
 }
 
 #QuickAddUser table {
-  width:100%;
-  table-layout:auto;
+  width: 100%;
+  table-layout: auto;
 }
 
 #QuickAddUser table tr td {

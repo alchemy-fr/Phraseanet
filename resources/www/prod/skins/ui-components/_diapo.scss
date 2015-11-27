@@ -50,7 +50,8 @@ $diapoBorderColor: $darkerBorderColor !default;
 
   .bottom {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
+    z-index: 100;
   }
 
   div.title {

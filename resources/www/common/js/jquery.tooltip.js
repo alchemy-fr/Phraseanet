@@ -300,7 +300,8 @@
                     topOffset = 20,
                     leftOffset = 20;
 
-                if( $eventTarget ) {
+                console.log($eventTarget.length)
+                if( $eventTarget.length > 0 ) {
                     // change offsets:
                     topOffset = -8;
                     leftOffset = -8;
@@ -318,7 +319,7 @@
                 var ratioImage = $(h).width() / $(h).height();
 
                 //position de l'image
-                console.log('$eventTarget', $eventTarget)
+
                 if ($eventTarget.offset().left > (v.x - $eventTarget.offset().left - $eventTarget.width())) {
                     hor = 'gauche';
                     wiH = $eventTarget.offset().left;
@@ -493,6 +494,10 @@
     // delete timeout and show helper
     function show() {
         tID = null;
+        var isBrowsable = false;
+        if( $.tooltip.current !== null ) {
+            isBrowsable = settings($.tooltip.current).isBrowsable;
+        }
 
         if ((!IE || !$.fn.bgiframe) && settings($.tooltip.current).fade) {
             if (helper.parent.is(":animated"))
@@ -507,12 +512,12 @@
             .unbind('mouseenter')
             .unbind('mouseleave')
             .mouseenter(function(){
-                if (settings($.tooltip.current).isBrowsable) {
+                if (isBrowsable) {
                     $.tooltip.currentHover = true;
                 }
             })
             .mouseleave(function () {
-                if (settings($.tooltip.current).isBrowsable) {
+                if (isBrowsable) {
                     // if tooltip has scrollable content or selectionnable text - should be closed on mouseleave:
                     $.tooltip.currentHover = false;
                     helper.parent.hide();

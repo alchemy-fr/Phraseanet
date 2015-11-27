@@ -20,6 +20,8 @@ body {
   padding: 0;
   background-color: #ffffff;
   color: #333333;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
   overflow-y: auto;
 }
 .clear {
