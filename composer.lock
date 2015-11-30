@@ -480,7 +480,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/symfony-cors",
-                "reference": "072bfac17eb9a25b8a4d6ddafef8823e2b8df0fd"
+                "reference": "8aafaff26e29fdd57358062d20724109a349def5"
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -517,7 +517,7 @@
                 }
             ],
             "description": "A library that adds CORS services to Silex/Symfony Applications",
-            "time": "2015-11-20 14:57:34"
+            "time": "2015-11-20 17:55:08"
         },
         {
             "name": "alchemy/task-manager",

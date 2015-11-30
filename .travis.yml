@@ -1,19 +1,25 @@
 language: php
+sudo: require
 env:
   - SETUP_MODE=update TEST_SUITE=1
   - SETUP_MODE=update TEST_SUITE=2
   - SETUP_MODE=install TEST_SUITE=1
   - SETUP_MODE=install TEST_SUITE=2
+
 php:
   - 5.5
   - 5.6
+  - 7.0
 matrix:
   fast_finish: true
+  allow_failures:
+    - php: 7.0
 services:
   - mysql
   - memcached
   - redis
 before_install:
+  - phpenv config-rm xdebug.ini
   - composer self-update --no-progress --no-interaction
   - sudo apt-get purge elasticsearch
   - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.6.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.6.0.deb
