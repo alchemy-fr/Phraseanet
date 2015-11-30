@@ -37,11 +37,11 @@ $(document).ready(function () {
     bindEvents();
 
     $("a.select-all").bind("click", function (e) {
-        $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).attr("checked", true);
+        $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).prop("checked", true);
     });
 
     $("a.deselect-all").bind("click", function (e) {
-        $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).attr("checked", false);
+        $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).prop("checked", false);
     });
 
     // toggle is deprecated:
@@ -51,12 +51,12 @@ $(document).ready(function () {
         if( hasMultiSelectionGroup === true) {
             var $this = $(this);
             var groupId = $this.data('group-id');
-            $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", false);
+            $(".checkbox-" + groupId, $this.closest('.form2')).prop("checked", false);
             hasMultiSelectionGroup = false;
         } else {
             var $this = $(this);
             var groupId = $this.data('group-id');
-            $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", true);
+            $(".checkbox-" + groupId, $this.closest('.form2')).prop("checked", true);
             hasMultiSelectionGroup = true;
         }
     });
@@ -92,7 +92,7 @@ function bindEvents() {
     //reload the content by pressing enter key, it concerns the number of result by report
     $('form .entersubmiter').bind('keypress', function (event) {
         if (event.keyCode == '13') {
-            $("#DOC-input").attr("checked", "checked").trigger('click');
+            $("#DOC-input").prop("checked", "checked").trigger('click');
         }
     });
     //action on table links

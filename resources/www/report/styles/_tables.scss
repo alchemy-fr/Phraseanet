@@ -44,7 +44,7 @@ form.report_form input[type=text] {
 
 .form_csv input[name=submit] {
 
-  background: url('#{$imagesPath}csv.gif') top right no-repeat;
+  background: url('#{$reportImagesPath}csv.gif') top right no-repeat;
   width: 15px;
   height: 16px;
   cursor: pointer;
@@ -107,7 +107,7 @@ iframe {
 }
 
 .answers {
-  background-color: #F6F2F1;
+  background-color: $reportBackgroundColor;
 }
 
 .report-table tr.odd {
@@ -130,7 +130,7 @@ iframe {
 #title_dash {
   float: left;
   font-size: 18px;
-  color: #f6f2f1;
+  color: $reportBackgroundColor;
 }
 
 #periode_dash {
@@ -178,7 +178,7 @@ iframe {
   font-weight: 900;
   padding: 2px;
   text-align: left;
-  background-color: #f6f2f1;
+  background-color: $reportBackgroundColor;
   color: #202020;
   border-bottom: 1px solid #9C9B99;
   border-top: 1px solid #9C9B99;
@@ -204,8 +204,8 @@ iframe {
   text-align: center;
   font-weight: bolder;
   font-size: small;
-  border-bottom: 3px solid #f6f2f1;
-  border-top: 3px solid #f6f2f1;
+  border-bottom: 3px solid $reportBackgroundColor;
+  border-top: 3px solid $reportBackgroundColor;
   background-color: #FF9000;
   min-width: 50px;
   width: auto;
@@ -305,7 +305,7 @@ table.center {
 }
 
 #dashboard.loading {
-  background: url('#{$imagesPath}dash-ajax-loader.gif') #696969 no-repeat center center;
+  background: url('#{$reportImagesPath}dash-ajax-loader.gif') #696969 no-repeat center center;
 }
 
 #dashboard-table table {
@@ -398,19 +398,17 @@ table.center {
   padding-top: 30px;
 }
 
-div.form_titre {
-  padding-bottom: 2px;
-  font-size: large;
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+.form_titre {
+  padding: 10px 5px;
+  font-size: 15px;
   text-align: left;
-  color: #f6f2f1;
+  color: $reportBackgroundColor;
   font-weight: bold;
-  border-bottom: 1px solid #323232;
-  margin-bottom: 3px;
-  margin-left: 10px;
-  margin-right: 10px;
+  // border-bottom: 1px solid #323232;
+  margin: 0;
 }
 
+/*
 .form1 {
   float: left;
   width: 140px;
@@ -430,6 +428,7 @@ div.form_titre {
   width: 420px;
   padding: 3px;
 }
+*/
 
 input {
   font-family: Verdana, sans-serif;
@@ -489,7 +488,7 @@ table.tablesorter tr th.SortDown {
 }
 
 .content {
-  margin: -1px 45px;
+  // margin: -1px 45px;
 }
 
 .onload {
@@ -512,22 +511,21 @@ table.tablesorter tr th.SortDown {
   overflow: auto;
 }
 
-.imgdash table {
-  margin: auto;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  width: 100%;
+.imgdash  {
+  table {
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  td, th {
+    border: 1px solid #bbb;
+    background: #ddd;
+    text-align: center;
+    border-radius: 0.5px;
+  }
+  caption {
+    font-weight: bold;
+  }
 }
-
-.imgdash td, .imgdash th {
-  border: 1px solid #bbb;
-  background: #ddd;
-  text-align: center;
-  border-radius: 0.5px;
-}
-
-.imgdash caption {
-  font-weight: bold;
-}
-
 

@@ -1,4 +1,4 @@
-@import '../../vendors/jquery-ui/dark-hive';
+
 $reportImagesPath: '../images/jquery-ui-theme/report-detailed/images/';
 
 /* Component containers
@@ -18,16 +18,16 @@ $reportImagesPath: '../images/jquery-ui-theme/report-detailed/images/';
   font-size: 1em;
 }
 .answers .ui-widget-content {
-  border: 1px solid #f6f2f1;
-  background: #f6f2f1 url('#{$reportImagesPath}ui-bg_flat_75_f6f2f1_40x100.png') 50% 50% repeat-x;
+  border: 1px solid $reportBackgroundColor;
+  background-color: $reportBackgroundColor; // url('#{$reportImagesPath}ui-bg_flat_75_f6f2f1_40x100.png') 50% 50% repeat-x;
   color: #222222;
 }
 .answers .ui-widget-content a {
   color: #222222;
 }
 .answers .ui-widget-header {
-  border: 1px solid #f6f2f1;
-  background: #f6f2f1 url('#{$reportImagesPath}ui-bg_flat_75_f6f2f1_40x100.png') 50% 50% repeat-x;
+  border: 1px solid $reportBackgroundColor;
+  background: $reportBackgroundColor; // url('#{$reportImagesPath}ui-bg_flat_75_f6f2f1_40x100.png') 50% 50% repeat-x;
   color: #222222;
   font-weight: bold;
 }
@@ -40,7 +40,7 @@ $reportImagesPath: '../images/jquery-ui-theme/report-detailed/images/';
 .answers .ui-state-default,
 .answers .ui-widget-content .ui-state-default,
 .answers .ui-widget-header .ui-state-default {
-  border: 1px solid #f6f2f1;
+  border: 1px solid $reportBackgroundColor;
   background: #d2d1cf url('#{$reportImagesPath}ui-bg_flat_75_d2d1cf_40x100.png') 50% 50% repeat-x;
   font-weight: bold;
   color: #9c9b99;
@@ -72,7 +72,7 @@ $reportImagesPath: '../images/jquery-ui-theme/report-detailed/images/';
 .answers .ui-state-active,
 .answers .ui-widget-content .ui-state-active,
 .answers .ui-widget-header .ui-state-active {
-  border: 1px solid #f6f2f1;
+  border: 1px solid $reportBackgroundColor;
   background: #ff9000 url('#{$reportImagesPath}ui-bg_flat_65_ff9000_40x100.png') 50% 50% repeat-x;
   font-weight: bold;
   color: #ffffff;

@@ -1,17 +1,40 @@
 $sharedIconPath: '../../../assets/common/images/icons/';
 @import '../../_shared/styles/main';
 @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
+@import '../../_shared/styles/jquery-ui/dark-hive';
 
-$imagesPath: '../images/';
+$reportBackgroundColor: #FFFFFF; //#F6F2F1;
+$reportImagesPath: '../images/';
 @import './tables';
 @import './jquery-cluetip';
-@import './jquery-ui/report-base';
 @import './jquery-ui/report-detailed';
 
-$mainMenuBackgroundColor: #c7c7c7; //BFBFBF;
-$mainMenuBottomBorder: 1px solid #c7c7c7;
-$mainMenuLinkColor: #212121;
-$mainMenuLinkHoverColor: #BFBFBF;
-$mainMenuLinkActiveColor: #BFBFBF;
+$mainMenuBackgroundColor: #3b3b3b;
+$mainMenuBottomBorder: none;
+$mainMenuLinkColor: #b1b1b1;
+$mainMenuLinkHoverColor: #FFFFFF;
+$mainMenuLinkActiveColor: #FFFFFF;
 // $mainMenuMarginBottom: 30px;
 @import '../../_shared/styles/main-menu';
+
+
+#mainTabs {
+  background-color: #212121;
+}
+
+#report-activite,
+#report-telechargement,
+#report-connexions {
+  background-color: #555555;
+}
+.ui-widget-content a {
+  &.btn {
+    color: #333;
+  }
+}
+.ui-modal {
+  background-color: #212121;
+  &.ui-widget-content{
+    background-color: #212121;
+  }
+}
