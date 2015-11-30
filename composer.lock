@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "060bc97259e610db725a2f75af4cccc0",
-    "content-hash": "691d34f60fc60114d275eab15a3e9de5",
+    "hash": "78310e5a852d3be5e54e3c85bcd12324",
+    "content-hash": "f815233c7708359a90745a7af44f1f1c",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -14,12 +14,6 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/tcpdf-clone/zipball/2ba0248a7187f1626df6c128750650416267f0e7",
-                "reference": "2ba0248a7187f1626df6c128750650416267f0e7",
-                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -67,10 +61,6 @@
                 "qrcode",
                 "tcpdf"
             ],
-            "support": {
-                "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
-                "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
-            },
             "time": "2013-10-13 16:11:17"
         },
         {
@@ -114,7 +104,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "nlegoff",
+                    "name": "Nicolas Le Goff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -259,6 +249,62 @@
             "time": "2013-08-06 09:10:01"
         },
         {
+            "name": "alchemy/mediavorus",
+            "version": "0.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/MediaVorus.git",
+                "reference": "2df98b5b180c50b1bc7be838e36bc6ecc573e646"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/2df98b5b180c50b1bc7be838e36bc6ecc573e646",
+                "reference": "2df98b5b180c50b1bc7be838e36bc6ecc573e646",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "~1.0",
+                "monolog/monolog": "~1.0",
+                "php": ">=5.3.0",
+                "php-ffmpeg/php-ffmpeg": "~0.3",
+                "phpexiftool/phpexiftool": "~0.1",
+                "symfony/console": "~2.0",
+                "symfony/http-foundation": "~2.0"
+            },
+            "require-dev": {
+                "jms/serializer": "~0.12.0",
+                "phpunit/phpunit": "~3.7",
+                "silex/silex": "~1.0",
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "jms/serializer": "To serialize Medias",
+                "symfony/yaml": "To serialize Medias in Yaml format"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "MediaVorus": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                }
+            ],
+            "description": "MediaVorus",
+            "keywords": [
+                "metadata"
+            ],
+            "time": "2014-08-26 12:32:10"
+        },
+        {
             "name": "alchemy/oauth2php",
             "version": "1.0.0",
             "source": {
@@ -303,6 +349,79 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "time": "2014-12-15 14:27:57"
+        },
+        {
+            "name": "alchemy/phpexiftool",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/PHPExiftool.git",
+                "reference": "2617016dc3e5750f77691efef6bd5f102cc6879c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/2617016dc3e5750f77691efef6bd5f102cc6879c",
+                "reference": "2617016dc3e5750f77691efef6bd5f102cc6879c",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/cache": "~1.0",
+                "doctrine/collections": "~1.0",
+                "monolog/monolog": "~1.3",
+                "php": ">=5.3.3",
+                "phpexiftool/exiftool": "10.07",
+                "symfony/console": "~2.0",
+                "symfony/process": "~2.0"
+            },
+            "replace": {
+                "phpexiftool/phpexiftool": "<0.5.0"
+            },
+            "require-dev": {
+                "jms/serializer": "~0.10",
+                "sami/sami": "~1.0",
+                "silex/silex": "~1.0",
+                "symfony/css-selector": "~2.0",
+                "symfony/dom-crawler": "~2.0",
+                "symfony/finder": "~2.0",
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "jms/serializer": "To serialize tags",
+                "symfony/yaml": "To serialize tags in Yaml format"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PHPExiftool\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                },
+                {
+                    "name": "Benoit Burnichon",
+                    "email": "bburnichon@alchemy.fr",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Exiftool driver for PHP",
+            "keywords": [
+                "exiftool",
+                "metadata"
+            ],
+            "time": "2015-11-30 14:00:23"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -361,7 +480,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/symfony-cors",
-                "reference": "8aafaff26e29fdd57358062d20724109a349def5"
+                "reference": "072bfac17eb9a25b8a4d6ddafef8823e2b8df0fd"
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -398,7 +517,7 @@
                 }
             ],
             "description": "A library that adds CORS services to Silex/Symfony Applications",
-            "time": "2015-11-20 17:55:08"
+            "time": "2015-11-20 14:57:34"
         },
         {
             "name": "alchemy/task-manager",
@@ -1488,12 +1607,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/igorw/evenement.git",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d"
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
-                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -1520,7 +1639,7 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 15:01:08"
+            "time": "2012-05-30 08:01:08"
         },
         {
             "name": "facebook/php-sdk",
@@ -2646,7 +2765,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.6-dev"
+                    "dev-develop": "0.7-dev"
                 }
             },
             "autoload": {
@@ -3370,7 +3489,7 @@
             ],
             "authors": [
                 {
-                    "name": "Steve Clay",
+                    "name": "Stephen Clay",
                     "email": "steve@mrclay.org",
                     "homepage": "http://www.mrclay.org/",
                     "role": "Developer"
@@ -3556,21 +3675,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084"
+                "reference": "0.1.2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
-                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084",
+                "reference": "0.1.2",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": "~1.0"
+                "silex/silex": ">=1.0,<2.0"
             },
             "require-dev": {
-                "symfony/browser-kit": "~2.0"
+                "symfony/browser-kit": ">=2.0,<3.0"
             },
             "type": "library",
             "autoload": {
@@ -4023,20 +4142,17 @@
         },
         {
             "name": "phpexiftool/exiftool",
-            "version": "9.70",
+            "version": "10.07",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/exiftool.git",
-                "reference": "fd7e64947dd628f8b7cc28dc06fd59848f2caca7"
+                "reference": "5efdbe277af9d1218ab8c0e343095ac7d190d3f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/fd7e64947dd628f8b7cc28dc06fd59848f2caca7",
-                "reference": "fd7e64947dd628f8b7cc28dc06fd59848f2caca7",
+                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/5efdbe277af9d1218ab8c0e343095ac7d190d3f9",
+                "reference": "5efdbe277af9d1218ab8c0e343095ac7d190d3f9",
                 "shasum": ""
-            },
-            "require": {
-                "phpexiftool/phpexiftool": "*"
             },
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -4055,69 +4171,7 @@
                 "exiftool",
                 "metadatas"
             ],
-            "time": "2014-09-15 08:05:30"
-        },
-        {
-            "name": "phpexiftool/phpexiftool",
-            "version": "dev-0.4.1-mwg-metadata-copy",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "a83c39a04adb33c1a562f60d5b4d4f391cff212f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/a83c39a04adb33c1a562f60d5b4d4f391cff212f",
-                "reference": "a83c39a04adb33c1a562f60d5b4d4f391cff212f",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/cache": "~1.0",
-                "doctrine/collections": "~1.0",
-                "monolog/monolog": "~1.3",
-                "php": ">=5.3.3",
-                "phpexiftool/exiftool": "9.70",
-                "symfony/console": "~2.0",
-                "symfony/process": "~2.0"
-            },
-            "require-dev": {
-                "jms/serializer": "~0.10",
-                "sami/sami": "~1.0",
-                "silex/silex": "~1.0",
-                "symfony/css-selector": "~2.0",
-                "symfony/dom-crawler": "~2.0",
-                "symfony/finder": "~2.0",
-                "symfony/yaml": "~2.0"
-            },
-            "suggest": {
-                "jms/serializer": "To serialize tags",
-                "symfony/yaml": "To serialize tags in Yaml format"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PHPExiftool": "lib"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Romain Neutron",
-                    "email": "imprec@gmail.com",
-                    "homepage": "http://www.lickmychip.com/"
-                }
-            ],
-            "description": "Exiftool driver for PHP",
-            "keywords": [
-                "exiftool",
-                "metadata"
-            ],
-            "support": {
-                "source": "https://github.com/alchemy-fr/PHPExiftool/tree/0.4.1-mwg-metadata-copy"
-            },
-            "time": "2015-07-07 23:38:46"
+            "time": "2015-11-27 15:28:10"
         },
         {
             "name": "phpoption/phpoption",
@@ -4204,9 +4258,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
@@ -4335,7 +4387,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/e9478830dd1d19ee598ecfb2a6b5e6a4f8f168c2",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/a6a3d39d1f68e3e04555a2d6b43a9df0977d96d9",
                 "reference": "583b8eba0bcc0ac9aa8e7309e5313c068dbfbe30",
                 "shasum": ""
             },
@@ -4840,7 +4892,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -6221,12 +6273,6 @@
             "alias_normalized": "0.6.2.0",
             "version": "dev-alchemy-0.6.2",
             "package": "imagine/imagine"
-        },
-        {
-            "alias": "0.4.1",
-            "alias_normalized": "0.4.1.0",
-            "version": "dev-0.4.1-mwg-metadata-copy",
-            "package": "phpexiftool/phpexiftool"
         }
     ],
     "minimum-stability": "stable",
@@ -6238,7 +6284,6 @@
         "imagine/imagine": 20,
         "jms/translation-bundle": 20,
         "neutron/process-manager": 20,
-        "phpexiftool/phpexiftool": 20,
         "roave/security-advisories": 20,
         "willdurand/negotiation": 15
     },
