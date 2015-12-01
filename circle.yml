@@ -27,8 +27,6 @@ dependencies:
   post:
     - if [[ ! -e elasticsearch-1.6.0 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.6.0.tar.gz && tar -xvf elasticsearch-1.6.0.tar.gz && elasticsearch-1.6.0/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0; fi
     - elasticsearch-1.6.0/bin/elasticsearch: {background: true}
-    - ./node_modules/.bin/grunt install-assets
-    - "./bin/developer assets:compile-less"
 
 
 database:

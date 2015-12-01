@@ -71,7 +71,6 @@ sudo cp -rf * /usr/local/
 
 # npm binaries
 sudo npm install -g recess
-sudo npm install -g grunt-cli
 sudo npm install -g bower
 sudo npm install -g uglify-js
 
@@ -116,8 +115,6 @@ then
     cd /var/www/phraseanet
     sudo -u vagrant composer install -n --prefer-source --dev
     sudo -u vagrant npm install
-    sudo -u vagrant grunt install-assets
-    sudo -u vagrant bin/developer assets:compile-less
     sudo -u vagrant rm -f /var/www/phraseanet/lib/conf.d/configuration.yml
     mv /var/www/phraseanet/lib/conf.d/configuration.yml.bkp /var/www/phraseanet/lib/conf.d/configuration.yml
 fi
