@@ -11,5 +11,5 @@
 
 - name: Disable PHP cache limiter
   lineinfile: dest=/etc/php5/apache2/php.ini
-              regexp='^\(session.cache_limiter = \).*'
+              regexp=';?\s*session.cache_limiter\s*=\s*'
               line='session.cache_limiter = ""'

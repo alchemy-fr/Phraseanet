@@ -6,8 +6,6 @@ server:
         - git
         - imagemagick
         - htop
-        - nodejs
-        - npm
         - iotop
         - pkg-config
         - libzmq3-dev
@@ -16,6 +14,8 @@ server:
         - sqlite3
         - libsqlite3-dev
         - memcached
+        - build-essential
+        - libssl-dev
     timezone: UTC
     locales:
         - en_GB.UTF-8

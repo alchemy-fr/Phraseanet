@@ -13,4 +13,5 @@
     - xdebug
     - composer
     - mailcatcher
+    - node
     - app
