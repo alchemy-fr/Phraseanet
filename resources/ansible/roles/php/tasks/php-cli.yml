@@ -8,3 +8,8 @@
   lineinfile: dest=/etc/php5/cli/php.ini
               regexp=';?opcache.enable_cli=\d'
               line='opcache.enable_cli=1'
+
+- name: Disable PHP cache limiter
+  lineinfile: dest=/etc/php5/cli/php.ini
+              regexp='^\(session.cache_limiter = \).*'
+              line='session.cache_limiter = ""'

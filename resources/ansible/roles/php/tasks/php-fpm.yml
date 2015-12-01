@@ -17,3 +17,8 @@
   lineinfile: dest=/etc/php5/fpm/php.ini
               regexp=';?opcache.enable=\d'
               line='opcache.enable=1'
+
+- name: Disable PHP cache limiter
+  lineinfile: dest=/etc/php5/fpm/php.ini
+              regexp='^\(session.cache_limiter = \).*'
+              line='session.cache_limiter = ""'
