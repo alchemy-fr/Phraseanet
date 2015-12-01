@@ -1,3 +1,23 @@
+$workzoneBackgroundColor: $darkBackgroundColor !default; //$mediumBackgroundColor !default;
+$workzoneTopBorder: none !default;
+$workzoneTabTopBorder: 1px solid $darkBorderColor !default;
+$workzoneBorderTopColor: $mediumBorderColor !default;
+$tabHeight: 86px !default;
+$subTabHeight: 46px !default;
+
+
+$workzoneTabContentBackgroundColor: $workzoneBackgroundColor !default;
+
+$workzoneTabBackgroundColor: $workzoneBackgroundColor !default;
+$workzoneTabTextColor: $mediumTextColor !default;
+
+$workzoneTabActiveBackgroundColor: $tabContentBackgroundColor !default;
+$workzoneTabActiveTextColor: $lightTextColor !default;
+
+$workzoneTabDisabledBackgroundColor: $tabBackgroundColor !default;
+$workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
+
+
 /**
  * Workzone
  */
@@ -7,9 +27,6 @@
   bottom: 0 !important;
   &.closed {
     min-width: 0;
-    #retractableButton {
-      background: url('#{$iconsPath}workzoneEscamote_on.png') 30px 30px no-repeat;
-    }
   }
   #retractableButton {
     cursor: pointer;
@@ -17,14 +34,17 @@
     height: 85px;
     float: right;
     text-align: center;
-    line-height: 70px;
+    line-height: 85px;
     margin-bottom: -20px;
-    background: url('#{$iconsPath}workzoneEscamote.png') 30px 36px no-repeat;
+    i {
+      font-size: 23px;
+      color: $mediumTextColor;
+    }
   }
   .wrapper {
-    background-color: $mediumBackgroundColor;
+    background-color: $workzoneBackgroundColor;
     right: 10px;
-    border-top: 1px solid $mediumBorderColor; //$workzoneBorderTop;
+    border-top: $workzoneTopBorder; //$workzoneBorderTop;
   }
 
   .ui-tabs {
@@ -36,23 +56,25 @@
     margin: 0;
     padding: 0;
     .ui-tabs-nav {
-      background-color: transparent;
+      background-color: $workzoneTabContentBackgroundColor;
       top: 0;
       left: 10px;
       right: 10px;
       //margin-top: 21px;
-      border-top: 1px solid $workzoneTabBorderTop;
+      // border-top: 1px solid $workzoneTabTopBorder;
       border-radius: 0;
-      height: 43px;
+      height: $subTabHeight;
       border-bottom: 1px solid $workzoneTabBorderBottom;
+      box-sizing: border-box;
       li {
         width: auto;
-        height: 85px;
+        height: $tabHeight;
         display: inline-block;
-        background-color: $mediumBackgroundColor;
+        background-color: $workzoneTabBackgroundColor;
         z-index: 10;
         border-radius: 0;
         margin: 0;
+        box-sizing: border-box;
         &.proposals_WZ {
           &.ui-state-active {
             a {
@@ -96,7 +118,7 @@
           a {
             background-color: $workzoneTabBgActive;
             border-bottom: 1px solid $thesaurusColor;
-            height: 82px;
+            // height: 82px;
           }
         }
       }

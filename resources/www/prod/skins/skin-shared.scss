@@ -130,6 +130,7 @@ EM {
 }
 
 #mainContent {
+  margin-top: $mainMenuHeight;
   // top: 40px;
   min-width: 960px;
   overflow-x: auto;
@@ -374,24 +375,18 @@ span.ww_winTitle {
   margin: 2px 0;
 }
 
-IFRAME {
-  BORDER-RIGHT: #000000 1px solid;
-  PADDING-RIGHT: 0px;
-  BORDER-TOP: #000000 1px solid;
-  PADDING-LEFT: 0px;
-  PADDING-BOTTOM: 0px;
-  MARGIN: 0px;
-  BORDER-LEFT: #000000 1px solid;
-  PADDING-TOP: 0px;
-  BORDER-BOTTOM: #000000 1px solid
+iframe {
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
-H4 {
-  MARGIN-TOP: 0px;
-  FONT-WEIGHT: normal;
-  FONT-SIZE: 16px;
-  MARGIN-BOTTOM: 0px;
-  MARGIN-LEFT: 5px
+h4 {
+  margin-top: 0px;
+  font-weight: normal;
+  font-size: 16px;
+  margin-bottom: 0px;
+  margin-left: 5px
 }
 
 #notification_trigger .counter {
@@ -511,6 +506,9 @@ H4 {
     box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.7);
   }
 }
+#loader {
+  color: $textPrimaryInverseColor;
+}
 
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
@@ -528,7 +526,7 @@ H4 {
 @import 'ui-components/modal-edit';
 @import 'ui-components/modal-export';
 @import 'ui-components/modal-bridge';
-@import 'ui-components/main-menu';
+@import '../../_shared/styles/main-menu';
 @import 'ui-components/workzone-thesaurus';
 @import 'ui-components/workzone-baskets';
 @import 'ui-components/workzone-proposals';

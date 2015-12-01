@@ -1,13 +1,13 @@
 $fontAwesomePath:   '/assets/common/font' !default; // dist path
 $iconsPath: '/assets/common/images/icons/' !default;
 
-$mainMenuHeight: 40px;
-$mainMenuLineHeight: 36px;
+$mainMenuHeight: 40px !default;
+$mainMenuLineHeight: 36px !default;
 
 
-$baseBorderRadius:      3px;
-$borderRadiusLarge:     4px;
-$borderRadiusSmall:     2px;
+$baseBorderRadius:      3px !default;
+$borderRadiusLarge:     4px !default;
+$borderRadiusSmall:     2px !default;
 
 
 $defaultFontFamily: Helvetica, Arial, sans-serif;

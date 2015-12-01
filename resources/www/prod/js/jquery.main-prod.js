@@ -1342,6 +1342,7 @@ $(document).ready(function () {
     $('#idFrameC #retractableButton').bind('click', function (event) {
 
         if($('#idFrameC').attr('data-status') != 'closed'){
+            $(this).find('i').removeClass('icon-double-angle-left').addClass('icon-double-angle-right')
             $('#idFrameC').width(80);
             $('#rightFrame').css('left', 80);
             $('#rightFrame').width($(window).width()-80);
@@ -1352,6 +1353,7 @@ $(document).ready(function () {
             $('#idFrameC').addClass('closed');
             previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
         }else{
+            $(this).find('i').removeClass('icon-double-angle-right').addClass('icon-double-angle-left')
             $('#idFrameC').width(300);
             $('#rightFrame').css('left', 300);
             $('#rightFrame').width($(window).width()-300);

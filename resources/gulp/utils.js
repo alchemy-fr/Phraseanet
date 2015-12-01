@@ -31,7 +31,11 @@ exports.buildJsGroup = function(srcGroup, name, dest, debugMode){
     return gulp.src(srcGroup)
         .pipe(concat(name + '.js', {newLine: ';'}))
         .pipe(gulp.dest( config.paths.build + dest))
-        .pipe(uglify().on('error', config.errorHandler('UGLIFY ERROR'))) //util.log))
+        .pipe(uglify({
+            compress: {
+                drop_console: true
+            }
+        }).on('error', config.errorHandler('UGLIFY ERROR'))) //util.log))
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest( config.paths.build + dest))
 };

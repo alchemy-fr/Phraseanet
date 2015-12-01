@@ -43,7 +43,10 @@ gulp.task('build-bootstrap', ['bootstrap-assets', 'bootstrap-js'], function () {
         .pipe(cssmin())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/css'));
-    gulp.src(config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap-responsive.scss')
+    gulp.src([
+        config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap-responsive.scss',
+        config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap/_responsive-utilities.scss'
+    ])
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/css/'))
         .pipe(cssmin())

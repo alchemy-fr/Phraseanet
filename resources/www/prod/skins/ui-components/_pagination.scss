@@ -1,3 +1,4 @@
+$paginationLinkColor: $linkDefaultColor !default;
 
 #tool_navigate input {
   text-align: center;
@@ -12,6 +13,7 @@
   line-height: 14px;
   font-weight: bold;
   cursor: pointer;
+  color: $paginationLinkColor
 }
 
 
@@ -84,7 +86,7 @@
   font-weight: normal;
   text-shadow: none;
   box-shadow: none;
-  color: $paginateBorderColor;
+  color: $paginationLinkColor;
 }
 
 #paginate #tool_navigate:first-child {

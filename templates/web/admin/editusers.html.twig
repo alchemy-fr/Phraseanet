@@ -553,8 +553,8 @@
     </div>
     {% endif %}
   </div>
-  <div class="PNB10" style="top:auto;height:20px;">
-    <button class="users_rights_valid btn">{{ 'boutton::valider' | trans }}</button>
+  <div class="form-actions" style="">
+    <button class="users_rights_valid btn btn-primary">{{ 'boutton::valider' | trans }}</button>
     <a href="{{ path('admin_users_search') }}" class="users_rights_cancel btn" style="text-decoration:none">{{ 'boutton::retour' | trans }}</a>
   </div>
 </div>
@@ -1109,10 +1109,6 @@
       "server": "{{ app['geonames.server-uri'] }}",
       "limit": 40
     });
-    /*console.log(geocompleter);
-    geocompleter.autocompleter("on", "geotocompleter.request.error", function(jqXhr, status, error) {
-      console.log('has failed', jqXhr, status, error );
-    });*/
 
   });
 

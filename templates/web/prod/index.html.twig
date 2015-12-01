@@ -108,7 +108,7 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     {% block tabs_panel %}
-                        <div id="retractableButton"></div>
+                        <div id="retractableButton"><i class="icon-double-angle-left"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
                         <div id="baskets" class="PNB">
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
@@ -631,7 +631,7 @@
         </div>
     </div>
 
-    <div id="PREVIEWBOX" class="PNB10" style="overflow:hidden;">
+    <div id="PREVIEWBOX" class="PNB10 ui-dialog " style="overflow:hidden;">
         <div class="PNB" style="right:180px;">
             <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
                 <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
@@ -680,9 +680,10 @@
         </div>
         <div class="PNB" style="width:180px;left:auto;">
             <div class="PNB10 ui-corner-all" style="height:20px;">
-                <div onclick="closePreview();" style="cursor:pointer;color:#CCCCCC;font-size:14px;font-weight:bold;text-align:center;text-decoration:underline;">
-                    {{ 'boutton::fermer' | trans }}
-                </div>
+
+                <button type="button" onclick="closePreview();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" aria-disabled="false" title="close">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
+                </button>
             </div>
             <div id="PREVIEWOTHERS" style="top:40px;" class="PNB10 ui-corner-all">
                 <div id="PREVIEWOTHERSINNER" style=""></div>

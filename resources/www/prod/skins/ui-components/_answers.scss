@@ -11,8 +11,9 @@ $answersInfoLabelColor: #949494 !default;
   margin: 0;
 }
 
-.captionRolloverTips, .previewTips, .infoTips,
-.baskAdder, .printer, .downloader, .baskDeleter {
+// .captionRolloverTips, .previewTips, .infoTips,
+/*
+.baskAdder {
   background-image: url('#{$iconsPath}zoom.gif');
   background-repeat: no-repeat;
   background-position: center center;
@@ -33,18 +34,9 @@ $answersInfoLabelColor: #949494 !default;
 .baskAdder {
   background-image: url('#{$iconsPath}basket.gif');
 }
+*/
 
-.baskDeleter {
-  background-image: url('#{$iconsPath}delete.gif');
-}
 
-.printer {
-  background-image: url('#{$iconsPath}print.gif');
-}
-
-.downloader {
-  background-image: url('#{$iconsPath}download.gif');
-}
 #answers {
   .status {
     img {
@@ -74,7 +66,6 @@ $answersInfoLabelColor: #949494 !default;
 #idFrameT {
   #answers {
     background-color: $darkerBackgroundColor;
-    border: 1px solid $darkerBorderColor;
     top: 55px;
     bottom: 0;
     margin-right: 8px;

@@ -1,23 +1,7 @@
 <div id="taskBody">
     {% block css %}{% endblock %}
     <div>
-        <form
-            name="task-edit"
-            method="POST"
-            action="{{ path('admin_tasks_task_save', {'task' : task.getId()}) }}"
-            class="form-inline no-ajax"
-        >
-            {% if form.vars.errors|length > 0 %}
-                {{ form_errors(form) }}
-            {% endif %}
 
-            {{ form_rest(form) }}
-
-            <a href="{{ path('admin_tasks_list') }}">{{ 'Cancel' | trans }}</a>
-            <button type="submit" class="btn btn-success btn-trigger " id="taskSaveButton">
-                {{ "Save" | trans }}
-            </button>
-        </form>
 
         <div>
             {{ 'admin::tasks: Nombre de crashes :' | trans }} <span id="crash-counter">{{ task.getCrashed() }}</span>
@@ -47,6 +31,27 @@
             {% endblock %}
         </div>
     </div>
+    <form
+            name="task-edit"
+            method="POST"
+            action="{{ path('admin_tasks_task_save', {'task' : task.getId()}) }}"
+            class="form-inline no-ajax"
+    >
+        {% if form.vars.errors|length > 0 %}
+            {{ form_errors(form) }}
+        {% endif %}
+
+        {{ form_rest(form) }}
+
+        <div class="form-actions">
+
+        <button type="submit" class="btn btn-primary btn-trigger " id="taskSaveButton">
+            {{ "Save" | trans }}
+        </button>
+        <a href="{{ path('admin_tasks_list') }}">{{ 'Cancel' | trans }}</a>
+        </div>
+
+    </form>
 
     {% block javascript %}
     <script type="text/javascript">
@@ -148,7 +153,22 @@
                     , async:false
                     , success:function(data) {
                         if (data.success) {
-                            loadRightAjax("{{ path('admin_tasks_list') }}");
+                            console.log('should go back to list');
+                            //loadRightAjax("{{ path('admin_tasks_list') }}");
+
+
+
+                           /* var $this = $(this);
+                            $('#right-ajax').empty().addClass('loading').parent().show();
+                            $('#right').hide();
+                            $.get($this.attr('href'), function (data) {
+                                $('#right-ajax').removeClass('loading').html(data);
+                            });
+
+                            return false;
+                            */
+
+
                         } else {
                             if (window.console) {
                                 console.log(data.message);

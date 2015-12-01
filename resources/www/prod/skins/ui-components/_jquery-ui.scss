@@ -1,6 +1,14 @@
 $modalBorder: 1px solid $darkerBorderColor !default;
 $modalBackground: $darkerBackgroundColor !default;
 
+$tabContentBackgroundColor: $mediumBackgroundColor !default;
+$tabBackgroundColor: lighten($lightBackgroundColor, 5) !default;
+$tabTextColor: $mediumTextColor !default;
+$tabActiveBackgroundColor: $tabContentBackgroundColor !default;
+$tabActiveTextColor: $lightTextColor !default;
+$tabDisabledBackgroundColor: $tabBackgroundColor !default;
+$tabDisabledTextColor: $mediumTextActiveColor !default;
+
 .ui-dialog .ui-dialog-content.loading, .loading {
   background-image: url('#{$iconsPath}#{$contentLoaderImg}');
   background-position: center center;
@@ -26,7 +34,7 @@ $modalBackground: $darkerBackgroundColor !default;
 .ui-tabs {
   .ui-tabs-nav {
     li {
-      background-color: lighten($lightBackgroundColor, 5); //$tabsNavBg;
+      background-color: $tabBackgroundColor;
       height: 30px;
       border: none;
       overflow: hidden;
@@ -37,13 +45,14 @@ $modalBackground: $darkerBackgroundColor !default;
         font-weight: normal;
         color: $mediumTextColor; // more contrasted  color
       }
+      &.ui-tabs-active a,
       &.ui-tabs-active {
         font-size: $mediumFontSize;
-        color: $lightTextColor;
-        background-color: $mediumBackgroundColor; //$tabsNavBgActive;
+        color: $tabActiveTextColor;
+        background-color: $tabActiveBackgroundColor; //$tabsNavBgActive;
         border: none;
       }
-      &.ui-tabs-active a,
+
       &.ui-state-disabled a,
       &.ui-state-processing a {
         cursor: pointer;
@@ -58,7 +67,7 @@ $modalBackground: $darkerBackgroundColor !default;
     display: block;
     border-width: 0;
     padding: 0px;
-    background-color: $mediumBackgroundColor;
+    background-color: $tabContentBackgroundColor;
     &.tabBox {
       height: 405px;
       overflow: auto;
@@ -77,7 +86,7 @@ $modalBackground: $darkerBackgroundColor !default;
 
 .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
   cursor: pointer;
-  color: $mediumTextColor; //$workzoneColor2;
+  color: $tabTextColor; //$workzoneColor2;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default {
@@ -85,7 +94,7 @@ $modalBackground: $darkerBackgroundColor !default;
 }
 
 .ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a {
-  color: $mediumTextActiveColor;
+  color: $tabActiveTextColor;
   font-weight: bold;
   //font-size: 0.8em;
 }

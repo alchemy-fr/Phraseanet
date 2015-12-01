@@ -1,15 +1,17 @@
 
 #idFrameC {
   #baskets {
+    top: $tabHeight !important;
+    border-top: 1px solid $darkBorderColor;
     > div {
-      border-top: 1px solid $mediumBorderColor;
+      // border-top: 1px solid $mediumBorderColor;
     }
     .bloc {
       position: absolute;
-      top: 31px;
-      left: 0pt;
+      top: 0;
+      left: 0;
       right: 1px;
-      bottom: 0px;
+      bottom: 0;
       overflow-y: auto;
       overflow-x: hidden;
       &.groupDrop {

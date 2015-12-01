@@ -300,7 +300,6 @@
                     topOffset = 20,
                     leftOffset = 20;
 
-                console.log($eventTarget.length)
                 if( $eventTarget.length > 0 ) {
                     // change offsets:
                     topOffset = -8;

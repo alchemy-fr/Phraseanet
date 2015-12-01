@@ -129,6 +129,20 @@
     padding: 2px;
     margin-right: 10px;
     position: relative;
+
+    .icon-stack {
+      font-size: 11px;
+      cursor: pointer;
+      width: 19px;
+      height: 15px;
+      line-height: 14px;
+      .icon-stack-base {
+        color: #777777; //darken($darkerBackgroundColor, 10);
+      }
+      .icon-light {
+        color: $darkerBackgroundColor; //$darkerTextColor;
+      }
+    }
   }
   div.edit_field.odd {
     background-color: $darkBackgroundColor;
@@ -468,7 +482,7 @@ div.thesaurus {
       left: 10px;
       right: 10px;
       margin-top: 21px;
-      border-top: 1px solid $workzoneTabBorderTop;
+      border-top: 1px solid $workzoneTabTopBorder;
       border-radius: 0;
       height: 43px;
       border-bottom: 1px solid $workzoneTabBorderBottom;

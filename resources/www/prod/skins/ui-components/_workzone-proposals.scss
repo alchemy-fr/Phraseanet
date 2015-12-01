@@ -1,10 +1,15 @@
+$proposalsTitleColor: $darkerTextColor !default;
+$proposalsTitleHoverColor: $darkerTextHoverColor !default;
+$proposalsContentTextColor: $darkerTextColor !default;
+$proposalsContentTextColor: $darkerTextColor !default;
 /******* PROPOSALS ************************************************************/
+
 
 #proposals {
   position: relative;
   left: 5px;
   border-top: 1px solid $darkBorderColor;
-  top: 87px !important;
+  top: $tabHeight !important;
   *:focus {
     outline: none;
   }
@@ -44,6 +49,8 @@
   }
   .fancytree-folder {
     font-weight: bold;
+    font-size: $xmediumFontSize;
+    color: $proposalsTitleColor;
     height: 49px;
     line-height: 49px;
     margin-left: 0;
@@ -80,6 +87,7 @@
     }
   }
 
+
   .fancytree-expander {
     position: absolute;
     right: 10px;
@@ -94,9 +102,17 @@
 
   .fancytree-title {
     font-size: $xmediumFontSize;
-    color: $proposalsTitle;
+    color: $proposalsTitleColor;
     background-color: transparent;
     border: 0px none transparent;
+  }
+
+  .fancytree-node {
+    font-size: $xmediumFontSize;
+    color: $proposalsContentTextColor;
+    //background-color: transparent;
+    //border: 0px none transparent;
+    cursor: pointer;
   }
 
   .facetFilter {

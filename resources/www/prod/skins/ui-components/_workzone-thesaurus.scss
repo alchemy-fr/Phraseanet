@@ -1,4 +1,4 @@
-
+$thesaurusTabHeight: $subTabHeight !default;
 .treeview {
 
   li {
@@ -82,7 +82,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
 ===================================== */
 .ui-tabs {
   #thesaurus_tab {
-    top: 87px !important;
+    top: $tabHeight !important;
+    border-top: 1px solid $darkBorderColor;
 
   }
 }
@@ -95,14 +96,16 @@ dans l'onglet thesaurus : arbres, menus contextuels
         color: $textPrimaryColor;
       }
       &.th_tab {
-        height: 43px;
+        height: $thesaurusTabHeight; // in order to display bottom border
         margin: 0;
+        border-bottom: 1px solid transparent;
+        box-sizing: border-box;
         .ui-state-active {
           border-bottom: 1px solid $thesaurusColor;
         }
         a {
-          height: 43px;
-          line-height: 43px;
+          height: $thesaurusTabHeight;
+          line-height: $thesaurusTabHeight;
           vertical-align: middle;
           margin: 0;
           padding: 0 20px;
@@ -200,7 +203,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
         vertical-align: middle;
         padding: 0;
         border-radius: 0;
-        background: $mediumBackgroundColor url('#{$iconsPath}icon_magnify.png') 50% no-repeat;
+        background-color: $mediumBackgroundColor;
+        color: $mediumTextColor;
         border: none;
         margin: 0;
         outline: none;

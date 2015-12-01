@@ -52,11 +52,35 @@ $diapoBorderColor: $darkerBorderColor !default;
     position: absolute;
     bottom: 0;
     z-index: 100;
+    &.actions {
+      /*.action-icon {
+        cursor: pointer;
+        font-size: 12px;
+
+      }*/
+      .icon-stack {
+        font-size: 11px;
+        cursor: pointer;
+        width: 19px;
+        height: 15px;
+        line-height: 12px;
+        //padding: 0;
+        //margin: 0;
+      }
+      .icon-stack-base {
+        color: #777777; //darken($darkerBackgroundColor, 10);
+      }
+      .icon-light {
+        color: $darkerBackgroundColor; //$darkerTextColor;
+      }
+    }
   }
 
-  div.title {
+  .title {
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 14px;
+    font-size: $mediumFontSize;
   }
 
   .duration {
