@@ -15,6 +15,7 @@ server:
         - ruby-dev
         - sqlite3
         - libsqlite3-dev
+        - memcached
     timezone: UTC
     locales:
         - en_GB.UTF-8
@@ -43,6 +44,8 @@ elasticsearch:
     install: '1'
     port: '9200'
     version: '1.7.3'
+    plugins:
+        - {name: 'elasticsearch/elasticsearch-analysis-icu', version: '2.6.0'}
 php:
     install: '1'
     ppa: php5

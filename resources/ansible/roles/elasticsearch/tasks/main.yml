@@ -27,6 +27,13 @@
   apt: deb=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
   when: not is_installed
 
+- name: Install plugins
+  become: yes
+  become_user: elasticsearch
+  shell: /usr/share/elasticsearch/bin/plugin install {{ item.name }}/{{ item.version }}
+  when: not is_installed
+  with_items: "{{ elasticsearch.plugins }}"
+
 - name: Set port
   replace: >
     dest="/etc/elasticsearch/elasticsearch.yml"
