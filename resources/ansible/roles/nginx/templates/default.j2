@@ -28,6 +28,7 @@ server {
         fastcgi_pass unix:/var/run/php5-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH /usr/local/bin:/usr/bin:/bin;
         include fastcgi_params;
     }
 
@@ -65,6 +66,7 @@ server {
         fastcgi_pass unix:/var/run/php5-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH /usr/local/bin:/usr/bin:/bin;
         include fastcgi_params;
     }
 
