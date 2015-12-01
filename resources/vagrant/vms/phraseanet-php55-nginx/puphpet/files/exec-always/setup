@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# stoping iptable
-sudo service iptables-persistent flush
-
-source ~/.bashrc
