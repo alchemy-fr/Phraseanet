@@ -21,7 +21,7 @@ class Version
     /**
      * @var string
      */
-    private $name = 'Herrerasaurus';
+    private $name = 'Itemirus';
 
     /**
      * @return string
