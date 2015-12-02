@@ -4,14 +4,8 @@ var mochaPhantomjs = require('gulp-mocha-phantomjs');
 
 var config = require('./config.js');
 
-var paths = {
-    vendors: 'tmp-assets/',
-    dist: 'www/assets/'
-};
-
-
 gulp.task('mocha_phantomjs', function () {
-    return gulp.src('www/scripts/tests/*.html')
+    return gulp.src('www/scripts/tests/!*.html')
         .pipe(mochaPhantomjs({
             'reporter': 'dot',
             'setting': [
@@ -20,11 +14,11 @@ gulp.task('mocha_phantomjs', function () {
         }));
 });
 
-gulp.task('qunit', function () {
-    return gulp.src('www/include/js/tests/*.html')
-        .pipe(qunit());
+gulp.task('test-components', function () {
+    return gulp.start('test-prod');
 });
 
-
-// js fixtures should be present (./bin/developer phraseanet:generate-js-fixtures)
-gulp.task('test', ['qunit','mocha_phantomjs']);
+// JS fixtures should be present (./bin/developer phraseanet:generate-js-fixtures)
+// Note: fixture are loaded into scripts/tests/fixtures directory using
+// bin/developer phraseanet:regenerate-js-fixtures
+gulp.task('test', ['test-components']);

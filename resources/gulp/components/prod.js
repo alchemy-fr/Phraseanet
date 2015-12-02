@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var config = require('../config.js');
 var utils = require('../utils.js');
+var qunit = require('gulp-qunit');
 var debugMode = false;
 
 
@@ -107,6 +108,12 @@ gulp.task('build-prod-js', function(){
     ];
     return utils.buildJsGroup(prodGroup, 'prod', 'prod/js', debugMode);
 });
+
+gulp.task('test-prod', function () {
+    return gulp.src(config.paths.src + 'prod/js/tests/*.html')
+        .pipe(qunit());
+});
+
 gulp.task('watch-prod-js', function() {
     debugMode = true;
     return gulp.watch(config.paths.src + 'prod/**/*.js', ['build-prod-js']);
