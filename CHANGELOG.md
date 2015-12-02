@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 3.8.8 (2015-12-02)
+
+  - BugFix: Wrong BaseController used when no plugin installed.
+  - BugFix: Mismatch in CORS configuration
+  - BugFix: all subdefs are shown when permalink is available in prod imagetools
+  - BugFix: Empty labels are considered as valid
+  - BugFix: Error 500 on prod imagetools when insufficient rights
+
 ## 3.8.7 (2015-11-09)
 
   - NewFeature: Adding public, temporary links (link generation based on JSON Web Token)
