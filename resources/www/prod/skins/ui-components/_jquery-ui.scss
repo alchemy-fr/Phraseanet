@@ -163,7 +163,8 @@ $tabDisabledTextColor: $mediumTextActiveColor !default;
 }
 
 .ui-accordion .ui-accordion-header.unread {
-  background-image: url('#{$iconsPath}bask_new_back_light.png');
+  background-color: $basketsColor;
+  //background-image: url('#{$iconsPath}bask_new_back_light.png');
 }
 
 .ui-accordion .ui-accordion-header.header {

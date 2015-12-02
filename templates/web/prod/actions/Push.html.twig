@@ -48,7 +48,7 @@
                 <div style="padding:10px;">
                     <h1>{{ 'Lists' | trans }}</h1>
                     <span style="width:100%; display:block; text-align:center;">
-                        <a href="#" class="link list_manager">
+                        <a href="#" class="btn btn-inverse list_manager">
                             <b>{{ 'List Manager' | trans }}</b>
                         </a>
                     </span>
@@ -89,7 +89,7 @@
                                 {{ 'Select a user in the list' | trans }} <br/>
                                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
                                     {{ 'or' | trans }}
-                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{{ 'Add user' | trans }}</a>
+                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder btn btn-mini">{{ 'Add user' | trans }}</a>
                                 {% endif %}
                             </div>
                             <p id="recommanded-users">

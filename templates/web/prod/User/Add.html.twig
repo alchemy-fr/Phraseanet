@@ -1,6 +1,6 @@
 {# designed to be printed in a small box #}
-<div id="QuickAddUser" class="PNB10" callback="{{ callback }}">
-    <form method="POST" action="{{ path('prod_push_do_add_user') }}">
+<div class="PNB10" callback="{{ callback }}">
+    <form  id="quickAddUser" method="POST" action="{{ path('prod_push_do_add_user') }}">
         <table>
             <tr>
                 <td>
@@ -53,59 +53,80 @@
             <tr>
                 <td></td>
                 <td>
-                    <button class="valid btn btn-inverse">{{ 'Add' | trans }}</button>
-                    <button class="cancel btn btn-inverse">{{ 'Cancel' | trans }}</button>
+                    <button class="valid btn btn-inverse" type="submit">{{ 'Add' | trans }}</button>
+                    <button class="cancel btn btn-inverse" type="button">{{ 'Cancel' | trans }}</button>
                 </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="messages"></td>
             </tr>
         </table>
     </form>
 </div>
 
 <script type="text/javascript">
-        define([
-            "jquery",
-            "common/geonames"
-        ], function (geonames) {
-            $(document).ready(function() {
-                geonames.init($('#QuickAddUser input.geoname_field'), {
-                    "server": "{{ app['geonames.server-uri'] }}",
-                    "limit": 40
-                });
 
-                $quickAddUser = $("#QuickAddUser");
+    $addUserForm = $('#quickAddUser');
+    $addUserFormMessages = $addUserForm.find('.messages');
 
-                $("button", $quickAddUser).button();
+    var closeModal = function() {
+        var dialog = $addUserForm.closest('.ui-dialog-content');
+        if (dialog.data("ui-dialog")) {
+            dialog.dialog('destroy').remove();
+        }
+    };
 
-                $("form", $quickAddUser).bind('submit', function() {
-                    return false;
-                });
+    var submitAddUser = function() {
+        console.log('add user');
+        $addUserFormMessages.empty();
+        var method = $addUserForm.attr('method');
 
-                $("form button.cancel", $quickAddUser).bind('click', function() {
-                    var dialog = $(this).closest('.ui-dialog-content');
-                    if (dialog.data("ui-dialog")) {
-                        dialog.dialog('destroy');
+        method = $.inArray(method.toLowerCase(), ['post', 'get']) ? method : 'POST';
+        $.ajax({
+            type : method,
+            url : $addUserForm.attr('action'),
+            data : $addUserForm.serializeArray(),
+            beforeSend : function(){
+                $addUserForm.addClass('loading');
+            },
+            success : function(datas){
+                if( datas.success === true ) {
+                    p4.Feedback.addUser($addUserForm, closeModal);
+                } else {
+                    if( datas.message !== undefined ) {
+                        $addUserFormMessages.empty().append('<div class="alert alert-error">' + datas.message + '</div>');
                     }
-
-                    dialog.remove();
-
-                    return false;
-                });
-
-                $("form button.valid", $quickAddUser).bind('click', function() {
-                    var $form = $(this).closest('form');
-                    var $this = $(this);
-
-                    var callback = function() {
-                        var dialog = $this.closest('.ui-dialog-content');
-                        if (dialog.data("ui-dialog")) {
-                            dialog.dialog('destroy').remove();
-                        }
-                    };
-
-                    p4.Feedback.addUser($form, callback);
-
-                    return false;
-                });
-            });
+                }
+                $addUserForm.removeClass('loading');
+            },
+            error:function(){
+                $addUserForm.removeClass("loading");
+            },
+            timeout:function(){
+                $addUserForm.removeClass("loading");
+            }
         });
+    };
+
+    $addUserForm.find('.geoname_field').geocompleter({
+        "server": "{{ app['geonames.server-uri'] }}",
+        "limit": 40
+    });
+
+    $addUserForm.on('submit', function(event) {
+        event.preventDefault();
+        submitAddUser();
+    });
+
+    $addUserForm.on('click', '.validate', function(event) {
+        event.preventDefault();
+        submitAddUser();
+    });
+
+    $addUserForm.on('click', '.cancel', function(event) {
+        event.preventDefault();
+        closeModal();
+        return false;
+    });
     </script>

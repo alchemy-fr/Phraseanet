@@ -13,11 +13,13 @@
 
 // @TODO .btn-primary
 
-.ui-dialog .btn {
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+.ui-dialog .btn, .ui-widget-content .btn {
+  // font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: $mediumFontSize;
   font-weight: bold;
+  color: $btnColor;
 }
+
 
 .input-append button.btn {
   border-left: 1px solid $btnGrpSeparatorColor;
