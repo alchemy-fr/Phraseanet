@@ -58,7 +58,7 @@ class patch_400alpha3a implements patchInterface
     public function apply(base $databox, Application $app)
     {
         /** @var PropertyAccess $registry */
-        $registry = $app['app.conf'];
+        $registry = $app['conf'];
 
         $registry->remove(['registry', 'classic']);
 
