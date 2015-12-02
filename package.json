@@ -14,7 +14,6 @@
     "gulp-cssmin": "^0.1.7",
     "gulp-debug": "^2.1.2",
     "gulp-install": "^0.6.0",
-    "gulp-mocha-phantomjs": "^0.10.1",
     "gulp-qunit": "^1.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.0",
@@ -22,10 +21,8 @@
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
     "jake": "latest",
-    "mocha-phantomjs": ">=2.0 <3.0",
     "path": "^0.12.7",
     "tmp": "0.0.23",
-    "uglify-js": "latest",
     "wrench": "^1.5.8"
   },
   "engines" : {
