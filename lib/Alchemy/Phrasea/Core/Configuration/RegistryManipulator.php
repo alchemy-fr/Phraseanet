@@ -150,7 +150,7 @@ class RegistryManipulator
             ],
             'searchengine' => [
                 'min-letters-truncation' => 1,
-                'default-query' => 'all',
+                'default-query' => '',
                 'default-query-type' => 0,
             ],
             'email' => [
