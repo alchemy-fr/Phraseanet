@@ -65,7 +65,7 @@
                     <div style="border:1px solid #ccc; width:22px; height:22px; margin:2px;">
                         <a href="{{ path('admin_feeds_feed', { 'id' : feed.getId() }) }}">
                             <img src="{% if feed.getIconUrl() == false %}
-                                 /skins/icons/rss32.gif
+                                 /assets/common/images/icons/rss32.gif
                                  {% else %}
                                  /custom/feed_{{ feed.getId() }}.jpg
                                  {% endif %}" id="pub_icon" style="margin:3px; width:16px; height:16px;"/>
@@ -86,7 +86,7 @@
                 </td>
                 <td valign="center" align="center">
                     {% if feed.isPublic() %}
-                        <img src="/skins/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
+                        <img src="/assets/common/images/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
                     {% endif %}
                 </td>
                 <td valign="center" align="center">

@@ -28,6 +28,7 @@ define([
         render: function () {
             this.$el.empty();
             this.$el.html(this.template({'scheduler':this.model.toJSON()}));
+            $('.dropdown-toggle').dropdown();
             return this;
         },
         renderConfiguration: function () {
@@ -53,7 +54,7 @@ define([
 
             if(url && url.indexOf('#') !== 0) {
                 // This is defined in admin/index.html.twig
-                window.loadRightAjax(url, link.attr("method") || "GET");
+                // window.loadRightAjax(url, link.attr("method") || "GET");
             }
         }
     });

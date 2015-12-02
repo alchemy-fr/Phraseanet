@@ -60,25 +60,25 @@
     margin:0 auto;
   }
   div.no_switch{
-    background-image:url(/skins/icons/ccoch5.gif);
+    background-image:url(/assets/common/images/icons/ccoch5.gif);
   }
   div.switch_quota.mixed,
   div.switch_masks.mixed,
   div.switch_time.mixed,
   div.switch_right.mixed{
-    background-image:url(/skins/icons/ccoch2.gif);
+    background-image:url(/assets/common/images/icons/ccoch2.gif);
   }
   div.switch_quota.checked,
   div.switch_masks.checked,
   div.switch_time.checked,
   div.switch_right.checked{
-    background-image:url(/skins/icons/ccoch1.gif);
+    background-image:url(/assets/common/images/icons/ccoch1.gif);
   }
   div.switch_quota.unchecked,
   div.switch_masks.unchecked,
   div.switch_time.unchecked,
   div.switch_right.unchecked{
-    background-image:url(/skins/icons/ccoch0.gif);
+    background-image:url(/assets/common/images/icons/ccoch0.gif);
   }
   td.users_col{
     vertical-align:middle;
@@ -103,7 +103,7 @@
       </li>
       {% endif %}
     </ul>
-    <div id="rights_tab" class="PNB" style="top:40px;">
+    <div id="rights_tab" class="" style="top:40px;">
       <form id="users_rights_form" method="post" action="{{ path('admin_users_rights_apply') }}">
         <input type="hidden" name="users" value="{{users_serial}}"/>
         <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
@@ -138,14 +138,14 @@
             </td>
           </tr>
         </table>
-        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="PNB10">
+        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="">
           <thead>
             <tr>
               <th style="width:122px;">
 
               </th>
               <th colspan="26">
-                <img src="/skins/lng/inclin-{{app['locale']}}.png" style="width:698px"/>
+                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:698px"/>
               </th>
             </tr>
           </thead>
@@ -160,7 +160,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="PNB10" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
+        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
           <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
       <!--      <thead>
               <tr>
@@ -168,7 +168,7 @@
 
                 </th>
                 <th colspan="26">
-                  <img src="/skins/lng/inclin-{{app['locale']}}.gif" >
+                  <img src="/assets/common/images/lng/inclin-{{app['locale']}}.gif" >
                 </th>
               </tr>
             </thead>-->
@@ -241,7 +241,7 @@
                 </td>
                 <td class="users_col">
                   <div class="time_trigger time_sbas_{{rights['sbas_id']}}">
-                    <img src="/skins/icons/user_details_gray.png" />
+                    <img src="/assets/common/images/icons/user_details_gray.png" />
                     <input type="hidden" name="time_sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
@@ -364,9 +364,9 @@
                 <td class="users_col case_right_quota" title="{{ 'Set download quotas' | trans }}">
                   <div class="quota_trigger quota_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['restrict_dwnld'] > 0 %}
-                    <img src="/skins/icons/user_details_on.png" />
+                    <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
-                    <img src="/skins/icons/user_details_off.png" />
+                    <img src="/assets/common/images/icons/user_details_off.png" />
                     {% endif %}
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -374,9 +374,9 @@
                 <td class="users_col case_right_time" title="{{ 'Set time restrictions' | trans }}">
                   <div class="time_trigger time_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['time_limited'] > 0 %}
-                    <img src="/skins/icons/user_details_on.png" />
+                    <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
-                    <img src="/skins/icons/user_details_off.png" />
+                    <img src="/assets/common/images/icons/user_details_off.png" />
                     {% endif %}
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -384,9 +384,9 @@
                 <td class="users_col case_right_masks" title="{{ 'Set statuses restrictions' | trans }}">
                   <div class="masks_trigger quotatime_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['masks'] > 0 %}
-                    <img src="/skins/icons/user_details_on.png" />
+                    <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
-                    <img src="/skins/icons/user_details_off.png" />
+                    <img src="/assets/common/images/icons/user_details_off.png" />
                     {% endif %}
                     <input type="hidden" name="masks_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -436,7 +436,7 @@
     </div>
 
     {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
-    <div id="user_infos_tab" class="PNB" style="top:40px;overflow:auto;">
+    <div id="user_infos_tab" class="" style="top:40px;overflow:auto;">
       <form id="user_infos_form">
         <table>
           <tr>
@@ -504,7 +504,7 @@
               {{ 'admin::compte-utilisateur ville' | trans }}
             </td>
             <td>
-              <input type="text" value="{{ main_user.getGeonameId() }}" class="geoname_field" name="geonameid" />
+              <input type="text" value="{{ main_user.getGeonameId() }}" class="geoname_field" name="geonameid" autocomplete="off"/>
             </td>
           </tr>
           <tr>
@@ -553,8 +553,8 @@
     </div>
     {% endif %}
   </div>
-  <div class="PNB10" style="top:auto;height:20px;">
-    <button class="users_rights_valid btn">{{ 'boutton::valider' | trans }}</button>
+  <div class="form-actions" style="">
+    <button class="users_rights_valid btn btn-primary">{{ 'boutton::valider' | trans }}</button>
     <a href="{{ path('admin_users_search') }}" class="users_rights_cancel btn" style="text-decoration:none">{{ 'boutton::retour' | trans }}</a>
   </div>
 </div>
@@ -1105,7 +1105,7 @@
     "jquery",
     "common/geonames"
   ], function ($, geonames) {
-    geonames.init($('#user_infos_tab input.geoname_field'), {
+    var geocompleter = geonames.init($('#user_infos_tab input.geoname_field'), {
       "server": "{{ app['geonames.server-uri'] }}",
       "limit": 40
     });

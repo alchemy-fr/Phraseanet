@@ -5,7 +5,7 @@
     <h3 style="text-align:left;">
       {% if is_mine == false and validationDatas.getAgreement() is not null %}
       <img style="vertical-align:middle;"
-           src="/skins/lightbox/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
+           src="/assets/lightbox/images/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
       {% endif %}
       {{ validationDatas.getParticipant().getUser().getDisplayName() }}
     </h3>

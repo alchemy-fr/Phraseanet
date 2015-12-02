@@ -1,23 +1,36 @@
 require.config({
     baseUrl: "../../scripts",
     paths: {
-        "chai"    : "../assets/chai/chai",
-        "fixtures": "../assets/js-fixtures/fixtures",
-        "jquery": "../assets/jquery/jquery",
-        "backbone": "../assets/backbone-amd/backbone",
-        "i18n": "../assets/i18next/i18next.amd-1.6.3",
-        "bootstrap": "../assets/bootstrap/js/bootstrap.min",
-        "sinonchai": "../assets/sinon-chai/sinon-chai",
-        "squire": "../assets/squire/Squire",
-        "jquery.ui": "../assets/jquery.ui/jquery-ui",
-        "underscore": "../assets/underscore-amd/underscore",
-        "jquery.ui.widget": "../assets/jquery-file-upload/jquery.ui.widget",
-        "jquery.cookie": "../assets/jquery.cookie/jquery.cookie",
-        "jquery.treeview": "../assets/jquery.treeview/jquery.treeview",
-        "jquery.tooltip": "../include/jquery.tooltip",
-        "blueimp.loadimage" : "../assets/blueimp-load-image/load-image",
-        "jfu.iframe-transport": "../assets/jquery-file-upload/jquery.iframe-transport",
-        "jfu.fileupload": "../assets/jquery-file-upload/jquery.fileupload"
+        "chai"    : "../bower_components/chai/chai",
+        "fixtures": "../bower_components/js-fixtures/fixtures",
+        jquery: "../assets/vendors/jquery/jquery.min",
+        underscore: "../assets/vendors/underscore/underscore.min",
+        backbone: "../assets/vendors/backbone/backbone.min",
+        i18n: "../assets/vendors/i18next/i18next.min",
+        bootstrap: "../assets/vendors/bootstrap/js/bootstrap.min",
+        "sinonchai": "../bower_components/sinon-chai/lib/sinon-chai",
+        "squire": "../bower_components/squire/src/Squire",
+        "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
+        "jquery.ui.widget": "../assets/vendors/jquery-file-upload/jquery.ui.widget.min",
+        "jquery.cookie": "../assets/vendors/jquery.cookie/jquery.cookie.min",
+        "jquery.treeview": "../assets/vendors/jquery-treeview/jquery.treeview",
+        //"jquery.tooltip": "../include/jquery.tooltip",
+        "blueimp.loadimage" : "../assets/vendors/blueimp-load-image/load-image",
+        "jfu.iframe-transport": "../assets/vendors/jquery-file-upload/jquery.iframe-transport",
+        "jfu.fileupload": "../assets/vendors/jquery-file-upload/jquery.fileupload",
+
+
+        //"jquery.geonames": "../assets/vendors/jquery.geonames/jquery.geonames",
+
+
+
+
+
+        //"jquery.tooltip": "../include/jquery.tooltip",
+
+
+
+
     },
     shim: {
         "jquery.ui": {
@@ -34,13 +47,10 @@ require.config({
             deps: ["jquery"],
             exports: '$.fn.cookie'
         },
-        "jquery.tooltip": {
+        /*"jquery.tooltip": {
             deps: ["jquery"],
             exports: '$.fn.tooltip'
-        },
-        "jquery.ui": {
-            deps: ["jquery"]
-        },
+        },*/
         "jquery.ui.widget": {
             deps: ["jquery"]
         },

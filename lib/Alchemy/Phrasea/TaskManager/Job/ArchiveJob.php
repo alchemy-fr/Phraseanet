@@ -843,7 +843,7 @@ class ArchiveJob extends AbstractJob
             if (!($rep = $node->getAttribute('grp_representation'))) {
 
                 try {
-                    $app['filesystem']->copy($app['root.path'] . '/www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
+                    $app['filesystem']->copy($app['root.path'] . '/www/assets/common/images/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
                 } catch (IOException $e) {
                     $this->log('debug', $e->getMessage());
                 }

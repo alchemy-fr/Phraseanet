@@ -768,9 +768,9 @@ function activer_bout(idBout,val)
 
     if( o.length > 0 ) {
         if (!val) {
-            o.attr("disabled", true);
+            o.prop('disabled', true);
         } else {
-            o.removeAttr("disabled");
+            o.prop('disabled', false);
         }
      }
 }

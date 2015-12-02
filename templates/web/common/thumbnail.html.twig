@@ -53,7 +53,7 @@
     {% else %}
         <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
              style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
-             src="{% if lazyload %}/skins/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
+             src="{% if lazyload %}/assets/common/images/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
         <input type="hidden" name="width" value="{{original_w}}"/>
         <input type="hidden" name="height" value="{{original_h}}"/>
     {% endif %}

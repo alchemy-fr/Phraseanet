@@ -39,13 +39,18 @@
             active:$("#tabs ul li").index($('#tabs ul li.current'))
         });
 
+        if (typeof(tinymce) !== "undefined") {
+            if (tinymce.activeEditor !== null) {
+                tinymce.editors=[]; // remove any existing references
+            }
+        }
         tinymce.init({
-                selector: "textarea",
-                plugins: [
-                        "searchreplace",
-                        "contextmenu paste"
-                ],
-                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+            selector: "textarea",
+            plugins: [
+                    "searchreplace",
+                    "contextmenu paste"
+            ],
+            toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent"
         });
     });
 </script>

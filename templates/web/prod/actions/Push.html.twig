@@ -17,9 +17,9 @@
         <div class="PNB10 LeftColumn">
             <div class="PNB" style="height:130px; text-align:center;">
                 {% if context == 'Push' %}
-                    <img style="margin:30px 0;" src="/skins/icons/push64.png"/>
+                    <img style="margin:30px 0;" src="/assets/common/images/icons/push64.png"/>
                 {% else %}
-                    <img style="margin:30px 0;" src="/skins/icons/Feedback60.png"/>
+                    <img style="margin:30px 0;" src="/assets/common/images/icons/Feedback60.png"/>
                 {% endif %}
             </div>
             <div class="PNB content" style="top:150px; overflow-y:auto;">
@@ -48,14 +48,14 @@
                 <div style="padding:10px;">
                     <h1>{{ 'Lists' | trans }}</h1>
                     <span style="width:100%; display:block; text-align:center;">
-                        <a href="#" class="link list_manager">
+                        <a href="#" class="btn btn-inverse list_manager">
                             <b>{{ 'List Manager' | trans }}</b>
                         </a>
                     </span>
                     <form class="list_saver">
                         <div class="btn-toolbar">
                             <input type="text" name="name" placeholder="{{ 'Save this list' | trans }}" />
-                            <button class="btn"><img src="/skins/prod/Push/save_list_as.png" /></button>
+                            <button class="btn"><img src="/assets/prod/images/Push/save_list_as.png" /></button>
                         </div>
                     </form>
                     <ul class="list">
@@ -63,9 +63,9 @@
                             <li class="list" style="padding:2px;">
                                 <a class="list_loader" href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}">
                                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                                        <img src="/skins/prod/Push/list-icon.png" />
+                                        <img src="/assets/prod/images/Push/list-icon.png" />
                                     {% else %}
-                                        <img src="/skins/icons/SHARE16.png" />
+                                        <img src="/assets/common/images/icons/SHARE16.png" />
                                     {% endif %}
                                     {{ list.getName() }}
                                     ({{ list.getEntries().count() }})
@@ -89,7 +89,7 @@
                                 {{ 'Select a user in the list' | trans }} <br/>
                                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
                                     {{ 'or' | trans }}
-                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{{ 'Add user' | trans }}</a>
+                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder btn btn-mini">{{ 'Add user' | trans }}</a>
                                 {% endif %}
                             </div>
                             <p id="recommanded-users">
@@ -136,7 +136,7 @@
                                     {% for user in RecommendedUsers %}
                                         <tr>
                                             <td>
-                                                <img src="/skins/icons/user.png"/>
+                                                <img src="/assets/common/images/icons/user.png"/>
                                             </td>
                                             <td>
                                                 {{ user.getDisplayName() }}

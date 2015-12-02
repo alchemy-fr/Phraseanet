@@ -161,7 +161,7 @@ define([
 
             fieldBlock.is(":hidden") ? fieldBlock.show() : fieldBlock.hide();
 
-            addBtn.attr('disabled', !fieldBlock.is(":hidden"));
+            addBtn.prop('disabled', !fieldBlock.is(":hidden"));
 
             AdminFieldApp.resizeListBlock();
 

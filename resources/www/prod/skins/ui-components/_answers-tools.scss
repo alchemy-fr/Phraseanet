@@ -1,0 +1,117 @@
+/******* idFrameT CSS *********************************************************/
+
+#idFrameT {
+  margin-left: -20px;
+  margin-right: -20px;
+  #selectCase {
+    background: url('#{$iconsPath}ccoch0.gif') no-repeat center center;
+    padding-left: 16px;
+  }
+  .btn-toolbar {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    background-color: $mediumBackgroundColor;
+    font-size: $smallFontSize;
+    z-index:100;
+    height:45px;
+    box-sizing: border-box;
+    border-bottom: none; //1px solid $darkerBorderColor;
+  }
+  .tools {
+    &:first-child .btn-group {
+      border-right: 1px solid $answersToolsBtnSeparatorBorder;
+    }
+    .btn-group {
+      float: left;
+    }
+    .classicButton button.btn,
+    .dropdownButton {
+      margin: 0;
+    }
+    .classicButton button.btn,
+    .dropdownButton button.btn {
+      height: 30px;
+      font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+      font-size: $mediumFontSize;
+      -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .classicButton button.btn-inverse,
+    .dropdownButton button.btn-inverse {
+      background-image: none;
+      background-color: $mediumBackgroundColor;
+      color: $answersToolsBtnColor;
+      border-radius: 0;
+      margin: 0;
+      height: 45px;
+      border: 0;
+    }
+    .classicButton button.btn-inverse {
+      border-right: 0;
+    }
+    .dropdownButton button.btn-inverse {
+      border-left: 0;
+      border-right: 0;
+    }
+    .classicButton button.btn-inverse:hover,
+    .dropdownButton button.btn-inverse:hover {
+      background-color: $answersToolsBtnBg;
+      *background-color: $answersToolsBtnBg;
+      color: $textPrimaryHoverColor;
+    }
+
+    .classicButton button.btn-inverse img,
+    .dropdownButton button.btn-inverse img {
+      margin: 0 2px;
+      max-width: none;
+    }
+    .dropdown-menu {
+      min-width: 95px;
+      background-color: $answersToolsBtnBg;
+      *border: 1px solid $answersToolsBtnBorder;
+      a {
+        padding: 3px 10px;
+        font-size: $mediumFontSize;
+        color: $answersToolsBtnColor;
+        cursor: pointer;
+        &:hover {
+          background-color: $answersToolsBtnHoverBg;
+          color: $highlightTextColor; //$answersToolsBtnHoverColor;
+        }
+      }
+      img {
+        margin-right: 5px;
+      }
+    }
+    #settings {
+      display: block;
+      float: right;
+      line-height: 45px;
+      padding-right: 51px;
+      padding-left: 21px;
+      margin-right: 0;
+      color: $answersToolsBtnSettingsColor;
+      background: url('#{$iconsPath}icone_settings.png') right 15px no-repeat;
+      background-position: right 21px top 15px;
+      border-left: 1px solid $answersToolsBtnSettingsBorder;
+      &:hover {
+        background-color: $answersToolsBtnSettingsHoverBg;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  #idFrameT .tools button.btn-inverse img {
+    display: none;
+  }
+  #idFrameT .tools #settings {
+    text-indent: -9000px;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: 8px;
+    width: 26px;
+    background-position: right 1px top 15px;
+  }
+}

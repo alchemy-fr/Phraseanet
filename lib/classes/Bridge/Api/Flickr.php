@@ -90,7 +90,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_icon_url()
     {
-        return '/skins/icons/flickr-small.gif';
+        return '/assets/common/images/icons/flickr-small.gif';
     }
 
     /**
@@ -99,7 +99,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_image_url()
     {
-        return '/skins/icons/flickr.gif';
+        return '/assets/common/images/icons/flickr.gif';
     }
 
     /**

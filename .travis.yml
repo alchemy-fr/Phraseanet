@@ -19,6 +19,7 @@ services:
   - memcached
   - redis
 before_install:
+  - nvm install 0.12.0
   - phpenv config-rm xdebug.ini
   - composer self-update --no-progress --no-interaction
   - sudo apt-get purge elasticsearch
@@ -34,8 +35,6 @@ before_install:
 install:
   - travis_retry npm install
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
-  - travis_retry ./node_modules/.bin/grunt install-assets
-  - "./bin/developer assets:compile-less"
 before_script:
   - mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
   - "./bin/developer system:uninstall"
@@ -51,7 +50,7 @@ before_script:
   - "./bin/developer phraseanet:regenerate-sqlite"
   - "./bin/developer phraseanet:generate-js-fixtures"
 script:
-  - "./node_modules/.bin/grunt test"
+  - "./node_modules/.bin/gulp test"
   - |
     if [ "$TEST_SUITE" = "1" ]; then
       "./bin/phpunit" "tests/classes/";

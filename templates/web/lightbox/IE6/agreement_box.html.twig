@@ -41,12 +41,12 @@
                         <td>
                           {% set agreement = basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() %}
                             <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if agreement is null or agreement == false %}not_decided{% endif %}">
-                                <img src="/skins/lightbox/agree-bigie6.gif" style="vertical-align:middle;"/><span>{{ 'validation:: OUI' | trans }}</span>
+                                <img src="/assets/lightbox/images/agree-bigie6.gif" style="vertical-align:middle;"/><span>{{ 'validation:: OUI' | trans }}</span>
                             </div>
                         </td>
                         <td>
                             <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if agreement is null or agreement == true %}not_decided{% endif %}">
-                                <img src="/skins/lightbox/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{{ 'validation:: NON' | trans }}</span>
+                                <img src="/assets/lightbox/images/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{{ 'validation:: NON' | trans }}</span>
                             </div>
                         </td>
                     </tr>

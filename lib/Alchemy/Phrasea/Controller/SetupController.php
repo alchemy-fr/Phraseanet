@@ -169,7 +169,6 @@ class SetupController extends Controller
                 'ffmpeg_binary'      => $request->request->get('binary_ffmpeg'),
                 'mp4box_binary'      => $request->request->get('binary_MP4Box'),
                 'pdftotext_binary'   => $request->request->get('binary_xpdf'),
-                'recess_binary'      => $request->request->get('binary_recess'),
                      ] as $key => $path) {
                 $binaryData[$key] = $path;
             }

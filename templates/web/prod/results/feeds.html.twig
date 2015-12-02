@@ -7,19 +7,19 @@
                     <tr>
                         <td style="width:600px;">
                             <h1>
-                                <img src="{% if feed.iconUrl == false %}/skins/icons/rss32.gif{% else %}{% endif %}" style="height:32px;"/>
+                                <img src="{% if feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}{% endif %}" style="height:32px;"/>
                                 {% if feed.isAggregated %}
                                     {{ 'Toutes les publications' | trans }}
                                     <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_aggregated') }}">
                                         {{ 'publications:: s\'abonner aux publications' | trans }}
                                     </a>
                                     <a class="feed_reload ajax_answers no_scroll" href="{{ path('prod_feeds') }}" >
-                                        <img src="/skins/icons/reload.png" title="{{ 'rafraichir' | trans }}" />
+                                        <img src="/assets/common/images/icons/reload.png" title="{{ 'rafraichir' | trans }}" />
                                     </a>
                                 {% else %}
                                     {{ feed.title }}
                                     <a class="feed_reload ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : feed.id }) }}" >
-                                        <img src="/skins/icons/reload.png" title="{{ 'rafraichir' | trans }}" />
+                                        <img src="/assets/common/images/icons/reload.png" title="{{ 'rafraichir' | trans }}" />
                                     </a>
                                     <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_feed', { 'id' : feed.id }) }}">
                                         {{ 'publications:: s\'abonner aux publications' | trans }}
@@ -38,7 +38,7 @@
                                         {% for aval_feed in feeds %}
                                             <li>
                                                 <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : aval_feed.id }) }}">
-                                                    <img src="{% if aval_feed.iconUrl == false %}/skins/icons/rss32.gif{% else %}/custom/feed_{{ aval_feed.id }}.jpg{% endif %}" style="height:16px;"/> {{ aval_feed.title }}
+                                                    <img src="{% if aval_feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ aval_feed.id }}.jpg{% endif %}" style="height:16px;"/> {{ aval_feed.title }}
                                                 </a>
                                             </li>
                                         {% endfor %}

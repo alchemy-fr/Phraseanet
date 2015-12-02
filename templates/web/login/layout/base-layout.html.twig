@@ -1,15 +1,12 @@
 {% if form is defined %}
 {% form_theme form 'login/common/fields.html.twig' %}
 {% endif %}
-
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>
-<!-->
-<html class="no-js">
-<!--<![endif]-->
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if gt IE 8]><!--><html lang="{{ app['locale'] }}" class="no-js "> <!--<![endif]-->
+<html>
     <head>
         {% block header %}
             <title>{% block title %}Phraseanet{% endblock title %}</title>
@@ -26,26 +23,26 @@
             {% block header_rss %}{% endblock %}
 
             {% block favicon %}
-                <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+                <link rel="shortcut icon" type="image/x-icon" href="/assets/authentication/images/favicon.ico" />
             {% endblock favicon %}
 
             {% block header_stylesheet %}
-                <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
-                <link rel="stylesheet" href="{{ path('minifier', { 'g' : 'authentication_css' }) }}">
-                <!--[if IE 7]>
-                    <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/font-awesome/css/font-awesome-ie7.min.css' }) }}">
+                <link type="text/css" rel="stylesheet" href="/assets/authentication/css/authentication{% if not app.debug %}.min{% endif %}.css">
+                <!--[if lte IE 8]>
+                <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
                 <![endif]-->
             {% endblock header_stylesheet %}
 
             {% block header_javascript %}
-                 <!--[if lte IE 8]>
-                    <script type="text/javascript" src="{{ path('minifier', {'f' : 'assets/json2/json2.js'}) }}"></script>
+                <!--[if lte IE 8]>
+                <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
+                <script type="text/javascript" src="/assets/vendors/json2/json2{% if not app.debug %}.min{% endif %}.js"></script>
                 <![endif]-->
+                <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
 
                 {# include backbone templates #}
                 {% include "login/common/templates.html.twig" %}
-
-                <script type="text/javascript" src="{{ path('minifier', {'g' : 'authentication'}) }}"></script>
+                <script type="text/javascript" src="/assets/authentication/js/authentication{% if not app.debug %}.min{% endif %}.js"></script>
             {% endblock header_javascript %}
         {% endblock header %}
     </head>
@@ -57,7 +54,7 @@
                     <table>
                         <tr>
                             <td style="width:350px;">
-                                <img src="/skins/login/img/ie6dead.png" />
+                                <img src="/assets/authentication/images/ie6dead.png" />
                             </td>
                             <td>
                                 <h1>

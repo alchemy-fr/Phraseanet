@@ -1,0 +1,19 @@
+// @import '../../../../www/bower_components/normalize-css/normalize'; // not extension for inline import
+@import '../../_shared/styles/variables';
+// @import '../../../../plugins/account.scss';
+@import 'variables';
+@import '../../vendors/bootstrap/bootstrap';
+@import 'skin';
+@import '../../../../www/bower_components/font-awesome/scss/font-awesome.scss';
+@import '../../../../www/bower_components/jquery-ui/themes/base/jquery.ui.autocomplete'; // not extension for inline import
+
+$mainMenuBackgroundColor: #3b3b3b;
+$mainMenuLinkColor: #A6A6A6;
+$mainMenuLinkHoverColor: #FFFFFF;
+$mainMenuLinkActiveColor: #000000;
+$mainMenuMarginBottom: 30px;
+@import '../../_shared/styles/main-menu';
+
+#mainContent {
+  padding-top: $mainMenuHeight;
+}

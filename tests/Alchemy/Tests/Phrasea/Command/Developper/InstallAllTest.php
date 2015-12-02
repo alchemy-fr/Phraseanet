@@ -21,8 +21,7 @@ class InstallAllTest extends \PhraseanetTestCase
 
         $n = 0;
         foreach ([
-            'dependencies:composer',
-            'dependencies:bower'
+            'dependencies:composer'
         ] as $name) {
             $command = $this->getMockBuilder('Symfony\Component\Console\Command\Command')
                 ->setMethods(['execute'])

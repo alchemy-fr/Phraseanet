@@ -1,12 +1,12 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/common/main.css,skins/report/jquery-ui-theme/report-base/jquery-ui-1.10.3.custom.css,skins/report/jquery-ui-theme/report-detailed/jquery-ui-1.10.3.custom.css,skins/report/report-table.css,skins/report/jquery.cluetip.css,include/jslibs/jquery.contextmenu.css' }) }}" media="screen" />
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/report/print.css' }) }}" media="print" />
+    <link type="text/css" rel="stylesheet" href="/assets/report/css/report{% if not app.debug %}.min{% endif %}.css" media="screen">
+    <link type="text/css" rel="stylesheet" href="/assets/report/css/print{% if not app.debug %}.min{% endif %}.css" media="print">
 {% endblock stylesheet %}
 
 {% block icon %}
-    <link rel="shortcut icon" type="image/x-icon" href="/skins/report/img/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/report/images/favicon.ico" />
 {% endblock  icon%}
 
 {% block javascript %}
@@ -33,8 +33,8 @@
 
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'report' }) }}"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery.gvChart-0.1.js' }) }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
         gvChartInit();
     </script>

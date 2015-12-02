@@ -179,13 +179,13 @@
     <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
     {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter" href="#">
-        <img src="/skins/prod/Push/close_badge.png">
+        <img src="/assets/prod/images/Push/close_badge.png">
       </a>
     {% endif %}
     <table>
       <tr>
         <td>
-          <img src="/skins/icons/user.png"/>
+          <img src="/assets/common/images/icons/user.png"/>
         </td>
         <td class="infos" >
           <span class="name">{{ entry.getUser().getDisplayName() }}</span>

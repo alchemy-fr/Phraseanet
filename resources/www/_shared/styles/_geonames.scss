@@ -1,0 +1,22 @@
+@import 'variables';
+.geocompleter-menu {
+    max-height: 180px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    list-style-type: none;
+}
+
+.geocompleter-menu .region {
+    font-size:  11px;
+    font-style: italic;
+    display: block;
+}
+
+.geocompleter-input.input-loading {
+    background: url('#{$iconsPath}loaderFFF.gif') #fff center right no-repeat;
+}
+
+.geocompleter-input.input-error {
+    color: red !important;
+}

@@ -107,7 +107,7 @@
         {% if record.get_type() == 'video' %}
           <div id="thumbExtractor"  class="tabBox">
             <div class="PNB10 main_title">
-              <img src='/skins/prod/ThumbExtractor/camera_title.png'/>
+              <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
               {{ "screenshot video" | trans }}
             </div>
             <hr style='margin-top:25px;'/>
@@ -141,7 +141,7 @@
             </div>
 
             <div id="thumb_camera_button" class="PNB">
-              <img src="/skins/prod/ThumbExtractor/camera_button.png" alt="{{ 'take a screenshot' | trans }}" />
+              <img src="/assets/prod/images/ThumbExtractor/camera_button.png" alt="{{ 'take a screenshot' | trans }}" />
             </div>
 
             <div class="PNB part_title_right">
@@ -149,7 +149,7 @@
 
             <div class="PNB frame_canva">
               <div id="thumb_delete_button">
-                <img src="/skins/prod/ThumbExtractor/delete.png" />
+                <img src="/assets/prod/images/ThumbExtractor/delete.png" />
               </div>
               <p id='thumb_info'>{{ 'To take a screenshot click on camera' | trans }}</p>
                 <canvas id="thumb_canvas"></canvas>
@@ -167,7 +167,7 @@
             <div id="thumb_validate_button" class="PNB">
               <input type="hidden" value='{{record.get_sbas_id()}}' name='sbas_id'>
               <input type="hidden" value='{{record.get_record_id()}}' name='record_id'>
-              <img src="/skins/prod/ThumbExtractor/validate_button.png" alt="{{ 'take a screenshot' | trans }}" />
+              <img src="/assets/prod/images/ThumbExtractor/validate_button.png" alt="{{ 'take a screenshot' | trans }}" />
             </div>
           </div>
         {% endif %}
@@ -341,6 +341,7 @@
     name="uploadHdsub"
     height="0"
     width="0"
+    border="0"
     >
   </iframe>
 </div>
@@ -374,7 +375,7 @@ $(document).ready(function(){
             dataType : 'json',
             data : form.serializeArray(),
             beforeSend: function(){
-                $this.attr('disabled', true);
+                $this.prop('disabled', true);
             },
             success : function(data){
                 if(!data.success){
@@ -385,7 +386,7 @@ $(document).ready(function(){
                 }
             },
             complete: function(){
-                $this.attr('disabled', false);
+                $this.prop('disabled', false);
             }
         });
 
@@ -439,7 +440,7 @@ $(document).ready(function(){
         });
 
 
-        $("img", sliderWrapper).live("click", function(){
+        $("img", sliderWrapper).on("click", function(){
             $('.selected', sliderWrapper).removeClass('selected');
             $(this).addClass('selected');
 
@@ -464,7 +465,7 @@ $(document).ready(function(){
             .appendTo(sliderWrapper);
         });
 
-        $("#thumb_canvas").live('tool_event', function(){
+        $("#thumb_canvas").on('tool_event', function(){
             var thumbnail = $('.selected', sliderWrapper);
 
             if(thumbnail.length === 0)

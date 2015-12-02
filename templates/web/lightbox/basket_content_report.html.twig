@@ -24,13 +24,13 @@
                                 <div class="basket_report_user_wrapper ui-corner-all">
                                     <div class="basket_report_user">
                                         {% if validationDatas.getAgreement() == true %}
-                                            {% set imguser = '<img src="/skins/lightbox/agree.png" />' %}
+                                            {% set imguser = '<img src="/assets/lightbox/images/agree.png" />' %}
                                             {% set styleuser = '' %}
                                         {% elseif validationDatas.getAgreement() is null %}
                                             {% set imguser = '' %}
                                             {% set styleuser = 'margin-left:18px;' %}
                                         {% else %}
-                                            {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
+                                            {% set imguser = '<img src="/assets/lightbox/images/disagree.png" />' %}
                                             {% set styleuser = '' %}
                                         {% endif %}
                                         <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser().getDisplayName()}}</b>

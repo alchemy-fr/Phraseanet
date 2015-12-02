@@ -1,0 +1,104 @@
+@import 'variables';
+
+#notification_trigger{
+  cursor:pointer;
+}
+
+#notification_trigger .counter{
+  border:1px solid white;
+  background:red;
+  -moz-border-radius:8px;
+  -webkit-border-radius:8px;
+  font-size:10px;
+  font-weight:bold;
+  display:inline-block;
+  line-height:12px;
+  margin:0;
+  padding:2px 4px;
+}
+
+#notification_trigger.open a span{
+  color:black;
+}
+
+#notification_trigger.open{
+  background-color:white;
+  border-bottom:1px solid white;
+}
+
+#notification_trigger.unread{
+
+}
+
+
+#notification_box{
+  background-color:white;
+  border:1px solid black;
+  border-top:none;
+  position:absolute;
+  height:150px;
+  top:30px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  z-index:668;
+  right:20px;
+  color:black;
+}
+
+#notification_box div.notification span.time{
+  color:#414141;
+  font-size:11px;
+  white-space:nowrap;
+  margin-left:0;
+}
+
+#notification_box div.notification a{
+  color:#999999;
+  text-decoration:none;
+}
+
+#notification_box div.notification a:hover{
+  text-decoration:underline;
+}
+
+#notification_box div.notification{
+  padding:5px 10px;
+}
+#notification_box div.notification.hover{
+  background-color:#E1E1E1;
+}
+
+#notification_box div.notification.unread{
+  background-color:#E1E1E1;
+}
+
+#notification_box div.notification_title a{
+  font-size:13px;
+  font-weight:bold;
+  color:blue;
+}
+
+#notification_box div.notification_title{
+  text-align:center;
+  padding:10px 0;
+}
+
+#notifications-dialog a{
+  color:#999999;
+}
+#notifications-dialog a:hover{
+  color:#D9D9D9;
+  text-decoration:underline
+}
+
+#notifications-dialog .time{
+  font-size:10px;
+  color:#666666;
+}
+#notifications-dialog .notification_title{
+  padding:10px 0 5px;
+}
+#notifications-dialog .notification_next{
+  text-align:center;
+  padding:15px 0;
+}

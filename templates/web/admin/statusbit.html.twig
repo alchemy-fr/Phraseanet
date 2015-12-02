@@ -22,18 +22,18 @@
                 {% if statusStructure.hasStatus(bit) %}
                     <td>
                         <a target="right" href="{{ path('database_display_statusbit_form', { 'databox_id' : databox_id, 'bit' : bit }) }}" class="ajax">
-                            <img class="editer" src="/skins/icons/edit_0.gif" />
+                            <img class="editer" src="/assets/common/images/icons/edit_0.gif" />
                         </a>
                     </td>
                     <td>
                         <form method="post" action="{{ path('admin_statusbit_delete', { 'databox_id' : databox_id, 'bit' : bit }) }}">
-                            <img class="deleter submiter" src="/skins/icons/delete_0.gif" />
+                            <img class="deleter submiter" src="/assets/common/images/icons/delete_0.gif" />
                         </form>
                     </td>
                 {% else %}
                     <td colspan="2">
                         <a target="right" href="{{ path('database_display_statusbit_form', { 'databox_id' : databox_id, 'bit' : bit }) }}" class="ajax">
-                            <img class="adder" src="/skins/icons/light_new.gif" />
+                            <img class="adder" src="/assets/common/images/icons/light_new.gif" />
                         </a>
                     </td>
                 {% endif %}

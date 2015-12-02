@@ -50,7 +50,7 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block icon %}
-    <link rel="shortcut icon" type="image/x-icon" href="/skins/prod/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/prod/images/favicon.ico">
 {% endblock %}
 
 {% block rss %}
@@ -67,44 +67,8 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <style type="text/css">
-        .noRepresent {
-            background-color: #A2F5F5;
-        }
-
-        .disable {
-            display: none;
-        }
-
-        .deployer_opened::before {
-            content: "\25BC";
-        }
-
-        .deployer_closed::before {
-            content: "\25B6";
-        }
-
-    </style>
-    <style type="text/css">
-        /* Vertical Tabs */
-        .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
-        .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
-        .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
-        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
-        .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right;}
-    </style>
-
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,assets/jquery.treeview/jquery.treeview.css,skins/common/main.css,include/jquery.image_enhancer.css,skins/geonames/geonames.css' }) }}" >
-    <link id="skinCss" type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/' ~ cssfile ~ '/prodcolor.css' }) }}" >
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css' }) }}" >
-
-    <!--[if IE 7]>
-            <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/ie7.css' }) }}" >
-    <![endif]-->
-    <!--[if IE 8]>
-            <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/ie8.css' }) }}" >
-    <![endif]-->
-
+    <link type="text/css" rel="stylesheet" href="/assets/prod/css/prod{% if not app.debug %}.min{% endif %}.css">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/skins/{{ cssfile  }}/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
     <style title="color_selection" type="text/css">
         /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
             color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
@@ -115,47 +79,10 @@
             background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
         }
     </style>
-    <!-- Include Fancytree skin and library -->
-    <link href="{{ path('minifier', { 'f' : 'assets/fancytree/dist/skin-win8/ui.fancytree.min.css'}) }}" rel="stylesheet" type="text/css">
 
-    {% if step %}
-        <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/joyride/joyride-2.1.css' }) }}" >
-            <style>
-                .joyride-tip-guide {
-                    background-color: #eee;
-                    color: #000;
-                }
-
-                .joyride-tip-guide h1 {
-                    font-weight: 100;
-                    font-size: 20px;
-                    color: #0a212b;
-                    line-height: 22px;
-                    margin-bottom: 10px;
-                }
-
-                .joyride-tip-guide span.joyride-nub.top {
-                    border-color: #eee;
-                }
-
-                .joyride-tip-guide span.joyride-nub.right {
-                    border-left-color: #eee !important;
-                }
-
-                .joyride-expose-wrapper {
-                    background-color: transparent;
-                }
-
-                .joyride-tip-guide .joyride-next-tip {
-                    background: #0a212b;
-                    border: none;
-                }
-            </style>
-    {% endif %}
 {% endblock %}
 
 {% block javascript %}
-    <script src="{{ path('minifier', { 'f' : 'assets/fancytree/dist/jquery.fancytree-all.js'}) }}" type="text/javascript"></script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
 
@@ -166,7 +93,7 @@
             <div style="margin:0 10px 10px; font-family:Helvetica,Arial,sans-serif; font-size:18px; color:#1A1A1A; text-align:left;">Phraseanet</div>
             <div style="text-align:center;">{{ 'Chargement' | trans }}</div>
             <div style="width:220px; height:19px; margin:20px auto;">
-                <div id="loader_bar" style="height:19px;width:10%;background-image:url('/skins/icons/main-loader.gif')"></div>
+                <div id="loader_bar" style="height:19px;width:10%;background-image:url('/assets/common/images/icons/main-loader.gif')"></div>
             </div>
         </div>
     </div>
@@ -181,7 +108,7 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     {% block tabs_panel %}
-                        <div id="retractableButton"></div>
+                        <div id="retractableButton"><i class="icon-double-angle-left"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
                         <div id="baskets" class="PNB">
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
@@ -209,7 +136,7 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'action:: nouveau panier' | trans }}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
-                                <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
                                 {{ 'action:: nouveau panier' | trans }}
                             </a>
                         </div>
@@ -221,7 +148,7 @@
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
-                                    <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
+                                    <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
                                     {{ 'action:: nouveau reportage' | trans }}
                                 </a>
                             </div>
@@ -229,13 +156,13 @@
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
-                            <img style="cursor:pointer;" src="/skins/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
+                            <img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
                             {{ 'phraseanet:: tri par date' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
-                            <img style="cursor:pointer;" src="/skins/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
+                            <img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
                             {{ 'phraseanet:: tri par nom' | trans }}
                         </div>
                     </li>
@@ -260,7 +187,7 @@
                             <div class="input-append">
                                 <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query danger_indicator" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                                 <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
-                                    <img src="/skins/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
+                                    <img src="/assets/common/images/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                                 </a>
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
@@ -589,7 +516,7 @@
                     <div class="" style="float:left; width:100%;margin-top:20px;">
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'advanced_search_reload') %}
                         <label class="checkbox inline" for="user_settings_advanced_search_reload">
-                            <input onchange="setPref('advanced_search_reload',$(this).attr('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
+                            <input onchange="setPref('advanced_search_reload',$(this).prop('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
                             {{ 'Use latest search settings on Production loading' | trans }}
                         </label>
                     </div>
@@ -647,7 +574,7 @@
                     {% set doctype_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'doctype_display') %}
                     <h1>{{'Type de documents'  | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
-                        <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
+                        <input onchange="setPref('doctype_display',($(this).prop('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
                         {{ 'Afficher une icone' | trans }}
                     </label>
 
@@ -704,7 +631,7 @@
         </div>
     </div>
 
-    <div id="PREVIEWBOX" class="PNB10" style="overflow:hidden;">
+    <div id="PREVIEWBOX" class="PNB10 ui-dialog " style="overflow:hidden;">
         <div class="PNB" style="right:180px;">
             <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
                 <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
@@ -753,9 +680,10 @@
         </div>
         <div class="PNB" style="width:180px;left:auto;">
             <div class="PNB10 ui-corner-all" style="height:20px;">
-                <div onclick="closePreview();" style="cursor:pointer;color:#CCCCCC;font-size:14px;font-weight:bold;text-align:center;text-decoration:underline;">
-                    {{ 'boutton::fermer' | trans }}
-                </div>
+
+                <button type="button" onclick="closePreview();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" aria-disabled="false" title="close">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
+                </button>
             </div>
             <div id="PREVIEWOTHERS" style="top:40px;" class="PNB10 ui-corner-all">
                 <div id="PREVIEWOTHERSINNER" style=""></div>
@@ -773,7 +701,7 @@
             <div>
                 {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
-                    <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'));"
+                    <input onchange="setPref('basket_status_display',($(this).prop('checked') ? '1' :'0'));"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher les status' | trans }}
@@ -782,7 +710,7 @@
             <div>
                 {% set basket_caption_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
-                    <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'));"
+                    <input onchange="setPref('basket_caption_display',($(this).prop('checked') ? '1' :'0'));"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
                     id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher la fiche descriptive' | trans }}
@@ -791,7 +719,7 @@
             <div>
                 {% set basket_title_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
-                    <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'));"
+                    <input onchange="setPref('basket_title_display',($(this).prop('checked') ? '1' :'0'));"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
                     id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher le titre' | trans }}
@@ -804,174 +732,11 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
-    {% if step %}
-        <ol id="step_by_step" style="visibility: hidden;">
-            /* data-id needs to be the same as the parent it will attach to */
-            <li data-id="EDIT_query">
-                <div>
-                    <h1>
-                        {{ "Rechercher"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Taper ici les termes de recherche afin de retrouver les documents souhaités."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="ADV_query">
-                <div>
-                    <h1>
-                        {{ "Recherche Avancée"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Séléctionner les champs et les collections sur lesquels vous voulez rechercher."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="recordtype_sel">
-                <div>
-                    <h1>
-                        {{ "Types de documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Séléctionner ici le type de document que vous souhaitez rechercher."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="TOOL_disktt">
-                <div>
-                    <h1>
-                        {{ "Barre d'outils"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Sélection et Prévisualisation de documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Sélectionner les documents en cliquant dessus.
-                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
-                        cliquez sur les documents souhaités.
-                        Pour prévisualier un document cliquez dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="basket_menu_trigger">
-                <div>
-                    <h1>
-                        {{ "Paniers"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Consulter et administrer vos paniers dans cet onglet.
-                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
-                        flèche blanche."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Ajouter au panier"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
-                        désiré et en relachant au dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-        </ol>
-    {% endif %}
-
-    {% if step %}
-        <ol id="step_by_step" style="visibility: hidden;">
-            /* data-id needs to be the same as the parent it will attach to */
-            <li data-id="EDIT_query">
-                <div>
-                    <h1>
-                        {{ "Search"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Type words to retrieve documents or stories."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="ADV_query">
-                <div>
-                    <h1>
-                        {{ "Advanced Search"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Select the fields and collections on which to search."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="recordtype_sel">
-                <div>
-                    <h1>
-                        {{ "Types of documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Select the type of documents on which to search."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="TOOL_disktt">
-                <div>
-                    <h1>
-                        {{ "Barre d'outils"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Utilisez la barre d'outils pour télécharger les documents ou pour agir sur ces documents."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Sélection et Prévisualisation de documents"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Sélectionner les documents en cliquant dessus.
-                        Pour sélectionner plusieurs documents, maintenez la touche maj enfoncée et
-                        cliquez sur les documents souhaités.
-                        Pour prévisualier un document cliquez dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="basket_menu_trigger">
-                <div>
-                    <h1>
-                        {{ "Paniers"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Consulter et administrer vos paniers dans cet onglet.
-                        Pour créer un panier et affichez le menu déroulant en cliquant sue la
-                        flèche blanche."|trans }}
-                    </p>
-                </div>
-            </li>
-            <li data-id="answers" data-options="tipLocation:left">
-                <div>
-                    <h1>
-                        {{ "Ajouter au panier"|trans }}
-                    </h1>
-                    <p>
-                        {{ "Ajoutez des médias simplement en les faisant glisser vers le panier
-                        désiré et en relachant au dessus."|trans }}
-                    </p>
-                </div>
-            </li>
-        </ol>
-    {% endif %}
-
     <script type="text/javascript">
         {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
     </script>
-    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
@@ -1006,7 +771,7 @@
         };
 
         function setCss(color) {
-            $("#skinCss").attr("href","/include/minify/?f=skins/prod/"+color+"/prodcolor.css");
+            $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
             $.post("{{ path('save_pref') }}", {
                 prop: "css",
                 value: color,
@@ -1014,25 +779,11 @@
             }, function(data){
                 return;
             });
-            if ($.browser.msie && $.browser.version === "6.0")
+            if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {
                 $("select").hide().show();
+            }
         }
 
     </script>
     <script type="text/javascript" id="bitly_loader"></script>
-    {% if step %}
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.cookie.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/modernizr.mq.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/joyride/jquery.joyride-2.1.js' }) }}"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#step_by_step").joyride({
-                    autoStart : true,
-                    modal:true,
-                    expose: true
-                });
-            });
-        </script>
-    {% endif %}
-
 {% endblock %}

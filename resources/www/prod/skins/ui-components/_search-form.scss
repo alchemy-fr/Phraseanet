@@ -1,0 +1,125 @@
+/******* FORMULAIRE DE RECHERCHE **********************************************/
+form.phrasea_query input.query {
+  padding-left: 30px;
+  font-size: 16px;
+  margin: 0;
+  width: 59%;
+}
+
+.searchFormWrapper {
+  margin: 30px 0 0 5px;
+  line-height: 30px;
+}
+
+#searchForm {
+  width: 100%;
+  float: left;
+  .input-append {
+    float: left;
+    width: 50%;
+    .btn {
+      border:none;
+    }
+    a.btn {
+      height: 22px;
+      width: 20px;
+    }
+    button.btn {
+      height: 30px;
+      width: 110px;
+    }
+  }
+  .control-group {
+    float: right;
+    margin-left: 0;
+  }
+  .danger .danger_indicator,
+  .danger.danger_indicator {
+    border-color: #c9c900;
+    background-color: #FCEC98;
+    color: #000000;
+  }
+
+}
+#adv_search {
+  table {
+    &.colllist {
+      width: 290px;
+    }
+    &.filterlist {
+      width: 600px;
+    }
+  }
+}
+
+/******* SEARCH ***************************************************************/
+
+#adv_search .sbasglob,
+.adv_options .sbasglob,
+#sbasfiltercont {
+  color: $lightTextColor;
+  margin: 0 0 0 10px;
+}
+
+#searchForm input.input-small.datepicker::-webkit-input-placeholder { font-size:12px; }
+#searchForm input.input-small.datepicker::-moz-placeholder { font-size:12px; } /* firefox 19+ */
+#searchForm input.input-small.datepicker:-ms-input-placeholder { font-size:12px; } /* ie */
+#searchForm input.input-small.datepicker:-moz-placeholder { font-size:12px; }
+
+#adv_search .sbasglob hr,
+.adv_options .sbasglob hr,
+.adv_options #sbasfiltercont hr {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid #666666;
+  border-bottom: 1px solid #AAAAAA;
+}
+
+#adv_search .sbasglob .sbas_list,
+.adv_options .sbasglob .sbas_list {
+  padding: 5px 0;
+  border-radius: $defaultBorderRadius;
+}
+
+#adv_search .sbasglob .sbas_list.selected,
+.adv_options .sbasglob .sbas_list.selected {
+  border: 2px solid $lightBorderSelectedColor;
+  background-color: $lightBackgroundSelectedColor;
+}
+
+.sbasglob .btn-toolbar,
+#sbasfiltercont .btn-toolbar {
+  margin: 10px;
+  text-align: center;
+}
+
+.sbas_list label {
+  color: $lightTextColor;
+}
+
+.clkbas {
+  white-space: normal;
+  margin:0 5px;
+  -webkit-column-break-inside:avoid;
+  -moz-column-break-inside:avoid;
+  -o-column-break-inside:avoid;
+  -ms-column-break-inside:avoid;
+  column-break-inside:avoid;
+  span {
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0 5px;
+  }
+}
+
+#searchForm .clkbas label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clkbas img {
+  vertical-align: middle;
+  max-height: 22px;
+}
+
+

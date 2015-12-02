@@ -1,0 +1,104 @@
+$paginationLinkColor: $linkDefaultColor !default;
+
+#tool_navigate input {
+  text-align: center;
+}
+
+#tool_navigate a {
+  padding: 1px 5px;
+  margin: 0 4px;
+  background-color: #0077BC;
+  border-radius: $defaultBorderRadius;
+  font-size: $mediumFontSize;
+  line-height: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  color: $paginationLinkColor
+}
+
+
+#paginate {
+  float: right;
+  margin: 0 65px 15px 0;
+  min-height: 52px;
+}
+
+#idFrameT #answers:hover #paginate {
+  margin-right: 59px;
+}
+
+#paginate #tool_navigate {
+  background-color: $paginateBg1;
+}
+
+#paginate #tool_navigate #NEXT_PAGE:hover,
+#paginate #tool_navigate #PREV_PAGE:hover,
+#paginate #tool_navigate #last:hover,
+#paginate #tool_navigate #first:hover {
+  background-color: $highlightBackgroundColor;
+}
+
+#paginate #tool_navigate #NEXT_PAGE {
+  background: url('#{$iconsPath}sprite_paginate.png') -72px 20px no-repeat;
+  width: 49px;
+  border-left: 1px solid $paginateBorderColor;
+}
+
+#paginate #tool_navigate #PREV_PAGE {
+  background: url('#{$iconsPath}sprite_paginate.png') -29px 20px no-repeat;
+  width: 49px;
+  border-right: 1px solid $paginateBorderColor;
+}
+
+#paginate #tool_navigate #last {
+  background: url('#{$iconsPath}sprite_paginate.png') -121px 20px no-repeat;
+  width: 49px;
+  border-left: 1px solid $paginateBorderColor;
+}
+
+#paginate #tool_navigate #first {
+  background: url('#{$iconsPath}sprite_paginate.png') 21px 20px no-repeat;
+  width: 49px;
+  border-right: 1px solid $paginateBorderColor;
+}
+
+#paginate #tool_navigate #NEXT_PAGE:hover,
+#paginate #tool_navigate #PREV_PAGE:hover,
+#paginate #tool_navigate #last:hover,
+#paginate #tool_navigate #first:hover {
+  background-image: url('#{$iconsPath}sprite_paginate_hover.png');
+}
+
+
+#paginate #tool_navigate input,
+#paginate #tool_navigate a {
+  border: none;
+  border-top: 1px solid $paginateBorderColor;
+  border-bottom: 1px solid $paginateBorderColor;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  height: 50px;
+  line-height: 50px;
+  vertical-align: middle;
+  width: 30px;
+  background: none;
+  font-weight: normal;
+  text-shadow: none;
+  box-shadow: none;
+  color: $paginationLinkColor;
+}
+
+#paginate #tool_navigate:first-child {
+  border-left: 1px solid $paginateBorderColor;
+}
+
+#paginate #tool_navigate:last-child {
+  border-right: 1px solid $paginateBorderColor;
+}
+
+#paginate #tool_navigate input,
+#paginate #tool_navigate a:hover {
+  color: $highlightTextColor;
+  background: $highlightBackgroundColor;
+}

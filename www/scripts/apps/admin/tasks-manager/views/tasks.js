@@ -28,6 +28,7 @@ define([
                 $this._appendDom($this._createView(model));
             });
             $this._rendered = true;
+            $('.dropdown-toggle').dropdown();
             return $this;
         },
         _addOne: function (task) {
@@ -36,6 +37,7 @@ define([
             if (this._rendered) {
                 this._appendDom(view);
             }
+            $('.dropdown-toggle').dropdown();
         },
         _createView: function (task) {
             var view = new TaskView({ model: task });

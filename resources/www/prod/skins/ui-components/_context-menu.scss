@@ -1,0 +1,82 @@
+/*
+Menu contextuel
+    valeurs suggerees dans l'editing : Classic Windows Theme (default) */
+/* =============================== */
+.context-menu-theme-default {
+  border: 2px outset #FFFFFF;
+  background-color: #D4D0C8;
+}
+
+.context-menu-theme-default .context-menu-item {
+  text-align: left;
+  cursor: pointer;
+  padding: 2px 20px 2px 5px;
+  color: black;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.context-menu-theme-default .context-menu-separator {
+  margin: 1px 2px;
+  font-size: 0px;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+.context-menu-theme-default .context-menu-item-disabled {
+  color: #808080;
+}
+
+.context-menu-theme-default .context-menu-item .context-menu-item-inner {
+  background: none no-repeat fixed 999px 999px; /* Make sure icons don't appear */
+}
+
+.context-menu-theme-default .context-menu-item-hover {
+  background-color: #0A246A;
+  color: $textPrimaryHoverColor;
+}
+
+.context-menu-theme-default .context-menu-item-disabled-hover {
+  background-color: #0A246A;
+}
+
+
+/******* DROPDOWN MENU ********************************************************/
+
+.context-menu-theme-vista .context-menu-item .context-menu-item-inner {
+  padding: 4px 20px;
+  margin-left: 0;
+  color: #75ABFF;
+}
+
+.context-menu-theme-vista .context-menu-item-hover {
+  background-image: none;
+  background-color: #75ABFF;
+  border: none;
+}
+
+.context-menu-theme-vista .context-menu-item-hover .context-menu-item-inner {
+  color: #212121;
+}
+
+.context-menu-theme-vista {
+  background-image: none;
+  background-color: #212121;
+  border-bottom-left-radius: $defaultBorderRadius;
+  border-bottom-right-radius: $defaultBorderRadius;
+}
+
+.context-menu-theme-vista .context-menu-item .context-menu-item-inner.published {
+  background-image: url('#{$iconsPath}ticktick.png');
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+
+
+.context-menu-item a {
+  color: #75ABFF;
+}
+
+.context-menu-item-hover a {
+  color: #212121;
+}

@@ -93,7 +93,7 @@ class media_subdefTest extends \PhraseanetTestCase
     {
         $this->assertInstanceOf('Guzzle\Http\Url', self::$objectNotPresent->get_url());
         $this->assertInstanceOf('Guzzle\Http\Url', self::$objectPresent->get_url());
-        $this->assertEquals('/skins/icons/substitution/image_jpeg.png', (string) self::$objectNotPresent->get_url());
+        $this->assertEquals('/assets/common/images/icons/substitution/image_jpeg.png', (string) self::$objectNotPresent->get_url());
         $this->assertRegExp('#\/datafiles\/' . self::$objectPresent->get_sbas_id() . '\/' . self::$objectPresent->get_record_id() . '\/preview\/\?etag=[0-9a-f]{32}#', (string) self::$objectPresent->get_url());
     }
 

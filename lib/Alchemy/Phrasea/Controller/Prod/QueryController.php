@@ -138,7 +138,7 @@ class QueryController extends Controller
 
             $explain = "<div id=\"explainResults\" class=\"myexplain\">";
 
-            $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
+            $explain .= "<img src=\"/assets/common/images/icons/answers.gif\" /><span><b>";
 
             if ($result->getTotal() != $result->getAvailable()) {
                 $explain .= $this->app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);

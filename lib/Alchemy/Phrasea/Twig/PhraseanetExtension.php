@@ -187,7 +187,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         $src = $title = '';
         if ($record->isStory()) {
-            $src = '/skins/icons/icon_story.gif';
+            $src = '/assets/common/images/icons/icon_story.gif';
             $title = $this->app['translator']->trans('reportage');
 
             return sprintf('<img src="%s" title="%s" />', $src, $title);
@@ -195,23 +195,23 @@ class PhraseanetExtension extends \Twig_Extension
 
         switch ($record->getType()) {
             case 'image':
-                $src = '/skins/icons/icon_image.png';
+                $src = '/assets/common/images/icons/icon_image.png';
                 $title = $this->app['translator']->trans('image');
                 break;
             case 'document':
-                $src = '/skins/icons/icon_document.png';
+                $src = '/assets/common/images/icons/icon_document.png';
                 $title = $this->app['translator']->trans('document');
                 break;
             case 'video':
-                $src = '/skins/icons/icon_video.png';
+                $src = '/assets/common/images/icons/icon_video.png';
                 $title = $this->app['translator']->trans('reportage');
                 break;
             case 'audio':
-                $src = '/skins/icons/icon_audio.png';
+                $src = '/assets/common/images/icons/icon_audio.png';
                 $title = $this->app['translator']->trans('audio');
                 break;
             case 'flash':
-                $src = '/skins/icons/icon_flash.png';
+                $src = '/assets/common/images/icons/icon_flash.png';
                 $title = $this->app['translator']->trans('flash');
                 break;
         }
@@ -249,7 +249,7 @@ class PhraseanetExtension extends \Twig_Extension
             }
         }
 
-        $path = sprintf('/skins/icons/substitution/%s.png',
+        $path = sprintf('/assets/common/images/icons/substitution/%s.png',
             str_replace('/', '_', $record->getMimeType())
         );
 

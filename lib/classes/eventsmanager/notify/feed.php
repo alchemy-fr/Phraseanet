@@ -19,7 +19,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function icon_url()
     {
-        return '/skins/icons/rss16.png';
+        return '/assets/common/images/icons/rss16.png';
     }
 
     /**

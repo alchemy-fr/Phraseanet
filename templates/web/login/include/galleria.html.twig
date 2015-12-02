@@ -7,7 +7,7 @@
 <script type="text/javascript">
     requirejs.config({
         paths: {
-            'galleria' : '../assets/jquery-galleria/galleria'
+            'galleria' : '../assets/vendors/jquery-galleria/galleria.min'
         },
         shim: {
             'galleria': {
@@ -18,7 +18,7 @@
     });
 
     require(["jquery", "galleria"], function($, Galleria) {
-        Galleria.loadTheme('/assets/jquery-galleria/galleria.classic.js');
+        Galleria.loadTheme('/assets/vendors/jquery-galleria/galleria.classic.min.js');
         Galleria.run("#galleria");
         $("#galleria").removeClass("hidden");
     });

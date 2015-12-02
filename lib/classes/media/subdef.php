@@ -280,9 +280,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;
-            $this->path = $this->app['root.path'] . '/www/skins/icons/substitution/';
+            $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/substitution/';
             $this->file = 'regroup_thumb.png';
-            $this->url = Url::factory('/skins/icons/substitution/regroup_thumb.png');
+            $this->url = Url::factory('/assets/common/images/icons/substitution/regroup_thumb.png');
         } else {
             $mime = $this->record->get_mime();
             $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
@@ -290,17 +290,17 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;
-            $this->path = $this->app['root.path'] . '/www/skins/icons/substitution/';
+            $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/substitution/';
             $this->file = str_replace('+', '%20', $mime) . '.png';
-            $this->url = Url::factory('/skins/icons/substitution/' . $this->file);
+            $this->url = Url::factory('/assets/common/images/icons/substitution/' . $this->file);
         }
 
         $this->is_physically_present = false;
 
         if ( ! file_exists($this->path . $this->file)) {
-            $this->path = $this->app['root.path'] . '/www/skins/icons/';
+            $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/';
             $this->file = 'substitution.png';
-            $this->url = Url::factory('/skins/icons/' . $this->file);
+            $this->url = Url::factory('/assets/common/images/icons/' . $this->file);
         }
 
         return $this;

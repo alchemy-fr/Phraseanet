@@ -1,0 +1,185 @@
+
+#idFrameC {
+  #baskets {
+    top: $tabHeight !important;
+    border-top: 1px solid $darkBorderColor;
+    > div {
+      // border-top: 1px solid $mediumBorderColor;
+    }
+    .bloc {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 1px;
+      bottom: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      &.groupDrop {
+        border: 3px solid #a00;
+      }
+    }
+    .content {
+      &.grouping .alert_datas_changed,
+      &.basket .alert_datas_changed {
+        position: relative;
+        margin: 10px 0;
+        right: 0;
+        left: 0;
+      }
+    }
+    .alert_datas_changed {
+      position: absolute;
+      top: 5px;
+      height: 20px;
+      right: 26px;
+      left: 10px;
+      background-color: $workzoneBasketAlertDataBg;
+      color: $workzoneBasketAlertDataColor;
+      text-align: center;
+      font-weight: bold;
+      font-size: $mediumFontSize;
+      display: none;
+      z-index: 5000;
+    }
+    .insidebloc {
+      top: 0;
+    }
+    .top-scroller, .bottom-scroller {
+      height: 80px;
+      position: absolute;
+      border: none;
+      top: 0px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .top-scroller {
+      bottom: auto;
+    }
+
+    .bottom-scroller {
+      top: auto;
+    }
+    .SSTT {
+      &.active {
+        &.ui-corner-top {
+          border: none;
+          top: 0;
+          background-color: $mediumBackgroundColor;
+        }
+      }
+      &.grouping {
+        &.active {
+          &.ui-corner-top {
+            border-bottom: none;
+          }
+        }
+      }
+      .title {
+        overflow: hidden;
+        left: 30px;
+        right: 40px;
+        height: 16px;
+        margin: 2px 0;
+        font-size: $mediumFontSize;
+      }
+      .menu {
+        text-align: right;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 3px;
+        margin: 0 5px 0 0;
+        table td {
+          width: 20px;
+        }
+      }
+      .workzone-menu-title {
+        text-overflow: ellipsis;
+        padding-right: 65px;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+      }
+      img {
+        max-height: 18px;
+        vertical-align: middle;
+        cursor: help;
+        margin-right: 9px;
+      }
+    }
+    .menu {
+      .contextMenuTrigger {
+        cursor: pointer;
+        display: block;
+        padding: 0;
+        margin: 0;
+        background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
+        height: 45px;
+        width: 13px;
+      }
+    }
+    .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+      color: $textPrimaryActiveColor;
+      //font-size: 1em;
+    }
+  }
+}
+
+/** hack IE7 only */
+*:first-child + html .workzone-menu-title {
+  margin-right: 65px;
+}
+
+.ui-accordion .ui-accordion-header.baskDrop {
+  color: red;
+}
+
+#basket_menu_trigger {
+  padding: 32px 7px 0 0;
+  float: right;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.CHIM.diapo {
+  width: 100px;
+  overflow: hidden;
+}
+
+.CHIM.diapo .title, .CHIM.diapo .status {
+  position: relative;
+  height: 20px;
+  z-index: 15;
+  font-size: 0.8em
+}
+
+.CHIM.diapo .title {
+  height: 15px;
+  margin: 2px 0;
+  overflow: hidden;
+}
+
+.CHIM.diapo .bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 15;
+  vertical-align: middle;
+  .WorkZoneElementRemover {
+    padding: 3px;
+  }
+}
+
+.CHIM.diapo .bottom span, .CHIM.diapo .bottom img {
+  cursor: pointer;
+  vertical-align: middle;
+  color: $textPrimaryColor;
+  font-size: 10px;
+}
+
+.CHIM.diapo img {
+  margin-top: 9px;
+  z-index: 14;
+  position: relative;
+}

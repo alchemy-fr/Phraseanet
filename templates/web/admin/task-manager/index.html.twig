@@ -30,7 +30,7 @@
         <tbody class="scheduler-view">
             <tr>
                 <td class="menu">
-                    <div class="btn-group">
+                    <div class="btn-group dropdown">
                         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                             <span class="caret"></span>
                         </a>
@@ -67,7 +67,7 @@
             {% for task in tasks %}
                 <tr>
                     <td class="menu">
-                        <div class="btn-group">
+                        <div class="btn-group dropdown">
                             <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                                 <span class="caret"></span>
                             </a>
@@ -126,6 +126,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        $('.dropdown-toggle').dropdown();
         $("form[name='form-create-task'] select").bind("change", function() {
             $(this).closest('form').submit();
         });

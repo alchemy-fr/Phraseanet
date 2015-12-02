@@ -1,0 +1,96 @@
+/********* Default CSS Oauth pages *********/
+
+/****************** Page *******************/
+@import '../_shared/styles/variables';
+html, body {
+  background: #000000;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
+  color: #FFFFFF;
+}
+
+/**************** Title-box ****************/
+
+#title-box {
+  height: 40px;
+  padding: 50px 10px 50px 10px;
+  background: #666666; /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover,  #666666 0%, #595959 0%, #4c4c4c 12%, #474747 20%, #131313 77%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#666666), color-stop(0%,#595959), color-stop(12%,#4c4c4c), color-stop(20%,#474747), color-stop(77%,#131313)); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  #666666 0%,#595959 0%,#4c4c4c 12%,#474747 20%,#131313 77%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  #666666 0%,#595959 0%,#4c4c4c 12%,#474747 20%,#131313 77%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  #666666 0%,#595959 0%,#4c4c4c 12%,#474747 20%,#131313 77%); /* IE10+ */
+  background: radial-gradient(center, ellipse cover,  #666666 0%,#595959 0%,#4c4c4c 12%,#474747 20%,#131313 77%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#131313',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+#namePhr {
+  color: #A9A9A9;
+  text-align: center;
+}
+
+/*************** Content-box ***************/
+
+#content-box {
+  padding: 10px;
+  text-align: center;
+}
+p.login_error {
+  color: #FF0000;
+}
+p.login_hello {
+  color: #FFFFFF;
+}
+#login-form {
+  text-align: center;
+}
+#myLogin {
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px #DCDCDC;
+  border-bottom: 1px solid #DCDCDC;
+  border-radius: 15px 15px 0 0;
+  padding: 10px;
+  margin-bottom: 0;
+}
+#myPass {
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px #DCDCDC;
+  border-top: 1px solid #DCDCDC;
+  border-radius: 0 0 15px 15px;
+  padding: 10px;
+  margin-bottom: 0;
+}
+#button_login {
+  margin-top: 20px;
+}
+#hello-box {
+  padding: 10px;
+  text-align: center;
+}
+#text-box {
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px #DCDCDC;
+  border-radius: 15px;
+  padding: 10px;
+  color: #000000;
+}
+#top-text-box {
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #000000;
+  font-weight: bold;
+}
+#main-text-box {
+  padding-top: 10px;
+  color: #808080;
+}
+#main-text-box span {
+  color: #FFA500;
+}
+#btn-box {
+  padding: 10px;
+  text-align: center;
+}
+form.access-deny {
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

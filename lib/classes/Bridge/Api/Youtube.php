@@ -93,7 +93,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_icon_url()
     {
-        return '/skins/icons/youtube-small.gif';
+        return '/assets/common/images/icons/youtube-small.gif';
     }
 
     /**
@@ -102,7 +102,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_image_url()
     {
-        return '/skins/icons/youtube-white.gif';
+        return '/assets/common/images/icons/youtube-white.gif';
     }
 
     /**

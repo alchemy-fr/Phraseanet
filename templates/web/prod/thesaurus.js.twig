@@ -986,7 +986,7 @@ function ThesauThesaurusSeeker(sbas_id)
     {
       if(!this.tObj["TH_searching"])
         this.tObj["TH_searching"] = document.getElementById("TH_searching");
-      this.tObj["TH_searching"].src = "/skins/icons/ftp-loader-blank.gif";
+      this.tObj["TH_searching"].src = "/assets/common/images/icons/ftp-loader-blank.gif";
 
       if(ret) // && (typeof(ret.parsed)=="undefined" || ret.parsed))
       {
@@ -1099,7 +1099,7 @@ function cbEditing2(textarea, act)
       {
         document.forms["formSearchTH"].formSearchTHfld.value = zText;
 
-        document.getElementById("TH_searching").src = "/skins/icons/ftp-loader.gif";
+        document.getElementById("TH_searching").src = "/assets/common/images/icons/ftp-loader.gif";
         p4.thesau.thlist['s'+sbas_id].search(zText);
       }
     }
@@ -1118,7 +1118,7 @@ function thesauSearchAll()
   else
   {
     var url, i, bid;
-    document.getElementById("TH_searching").src = "/skins/icons/ftp-loader.gif";
+    document.getElementById("TH_searching").src = "/assets/common/images/icons/ftp-loader.gif";
     for(i in p4.thesau.thlist)
     {
       thlist[i].search(value);

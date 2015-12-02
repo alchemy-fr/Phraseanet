@@ -23,7 +23,10 @@
                             <div class="input-append">
                                 <input type="text" name="search_value" class="input-medium"
                                        onkeyup="T_Gfilter_delayed(this.value, 300);"/>
-                                <input type="submit" class="th_ok btn" value=""/>
+                                <button type="submit" class="th_ok btn btn-inverse">
+                                    <i class="icon-search"></i>
+                                </button>
+
                                 <input type="button" class="th_clear"/>
                                 <input type="button" class="th_cancel btn" value="{{ 'boutton::annuler' | trans }}"
                                        onclick="thesauCancelWizard();return(false);"/>

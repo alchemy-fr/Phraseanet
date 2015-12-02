@@ -1,0 +1,332 @@
+/** PUSH BOX */
+.PushBox .content {
+  background-color: $mediumBackgroundColor;
+}
+
+.PushBox .LeftColumn h1 {
+  width: 100%;
+  text-align: center;
+  margin: 5px 0;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.PushBox .LeftColumn ul {
+  margin: 10px 0;
+}
+
+.PushBox .LeftColumn ul li img {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.PushBox table {
+  width: 100%;
+  border: none;
+  overflow: hidden;
+  table-layout: fixed;
+}
+
+.PushBox .user_content .header {
+  height: 35px;
+  right: 20px;
+  bottom: auto;
+}
+
+.PushBox .user_content .footer {
+  height: 35px;
+  top: auto;
+  right: 20px;
+  bottom: 10px;
+  left: 10px;
+  text-align: right;
+}
+
+.PushBox .user_content .badges {
+  top: 50px;
+  overflow: auto;
+  height: auto;
+  bottom: 50px;
+  left: 20px;
+  right: 20px;
+}
+
+.PushBox .user_content .badges .badge .deleter {
+  float: right;
+
+}
+
+.PushBox .user_content .badges .badge {
+  width: 230px;
+  height: 80px;
+  margin: 10px;
+  display: inline-block;
+  background-color: #515150;
+  border: 3px solid #515150;
+  padding: 3px;
+}
+
+.PushBox .user_content .badges .badge.selected {
+  border: 3px solid #EFEFEF;
+}
+
+.PushBox .user_content .badges .badge .toggles .status_on .toggle_off {
+  display: none;
+}
+
+.PushBox .user_content .badges .badge .toggles .status_off .toggle_on {
+  display: none;
+}
+
+.PushBox .user_content .badges .badge td {
+  vertical-align: top;
+}
+
+.PushBox .user_content .badges .badge td.toggle {
+  vertical-align: bottom;
+}
+
+.PushBox .user_content .badges .badge .icon {
+  width: 80px;
+  background-color: #404040;
+}
+
+.PushBox .user_content .badges .badge .infos {
+  padding-top: 3px;
+  padding-left: 5px;
+}
+
+.PushBox .user_content .badges .badge table {
+  width: 95%;
+}
+
+.PushBox .user_content .badges .badge .infos table {
+  height: 75px;
+}
+
+.PushBox .user_content .badges .badge .infos tr {
+  height: 20px;
+}
+
+.PushBox .user_content .badges .badge .infos tr.toggles {
+  height: 25px;
+  text-align: center;
+}
+
+.PushBox .user_content .badges .badge .icon img {
+  margin: 7px;
+}
+
+.PushBox .user_content .badges .badge .name {
+  font-weight: bold;
+  white-space: pre-line;
+  display: block;
+  font-size: $mediumFontSize;
+}
+
+.PushBox .user_content .badges .badge .subtite {
+  display: block;
+  font-size: 10px;
+}
+
+.PushBox .user_content .header .options {
+  text-align: right;
+}
+
+.PushBox .all-lists .lists {
+  overflow: auto;
+}
+
+.PushBox .LeftColumn .content ul.list li:nth-child(odd) {
+  background-color: none;
+}
+
+.PushBox .LeftColumn .content ul.list li:nth-child(even) {
+  background-color: #515150;
+}
+
+.PushBox .lists ul li:nth-child(odd) {
+  background-color: none;
+}
+
+.PushBox .lists ul li:nth-child(even) {
+  background-color: #515150;
+}
+
+.PushBox .LeftColumn .content ul.list li.selected {
+  background-color: #AAA;
+}
+
+.PushBox .lists .list.selected {
+  background-color: #AAA;
+}
+
+.PushBox .lists .list {
+  padding: 3px 0;
+}
+
+.PushBox .welcome {
+  text-align: center;
+  font-size: 16px;
+  line-height: 18px;
+  margin: 20px 0;
+}
+
+.PushBox .welcome h1 {
+  font-weight: bold;
+  margin: 40px 0;
+}
+
+#list-editor-search-results {
+
+}
+
+#list-editor-search-results table td {
+  padding: 1px 0;
+  overflow: hidden;
+}
+
+#list-editor-search-results table tr {
+  line-height: 24px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+#list-editor-search-results table tr.odd {
+  background-color: #515151;
+}
+
+#list-editor-search-results table tr.selected {
+  background-color: #D18827;
+}
+
+#list-editor-search-results table th.sortable span {
+  margin: 0 5px;
+}
+
+#list-editor-search-results table th.sortable {
+  cursor: pointer;
+}
+
+#list-editor-search-results table th.sortable.hover,
+#list-editor-search-results table th.sortable.sorted {
+  background-color: #F0AD30;
+}
+
+#list-editor-search-results table th.sortable span.ord_notifier {
+  display: none;
+}
+
+#list-editor-search-results table th.sortable.sorted span.ord_notifier {
+  display: inline;
+}
+
+#ListShare table {
+  width: 100%;
+  margin: 5px;
+  background-color: #505050;
+}
+
+#ListManager .content.readonly .badge {
+  width: 250px;
+  display: inline-block;
+  margin: 5px;
+  background-color: #515150;
+  padding: 5px;
+}
+
+#ListManager .content.readonly .badge .deleter {
+  float: right;
+}
+
+#ListManager .content.readonly .badge table {
+  width: auto;
+  table-layout: fixed;
+}
+
+#ListManager .content.readonly .badge .infos {
+  padding: 2px;
+}
+
+#ListManager h1 span.title {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+#PushBox .general_togglers li {
+  margin-top: 5px;
+}
+
+#PushBox .general_togglers button {
+  margin: 0;
+  padding: 4px 5px;
+  width: 100%;
+}
+
+#PushBox .general_togglers button .ui-button-text {
+  font-weight: lighter;
+}
+
+#PushBox .content .list_saver {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: block;
+}
+
+#PushBox .content .list_saver input {
+  margin: 0;
+  padding: 4px 2px;
+  width: 115px;
+}
+
+#PushBox .content .list_saver .btn {
+  margin: 0;
+  padding: 0;
+  height: 23px;
+}
+
+#find-user {
+  line-height: 15px;
+}
+
+#ListManager .content .lists span.action {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
+}
+
+#recommanded-users {
+  margin-top: 25px;
+  line-height: 15px;
+}
+
+#recommanded-users a:last-child {
+  color: #0088CC;
+  text-decoration: none;
+}
+
+#QuickAddUser table {
+  width: 100%;
+  table-layout: auto;
+}
+
+#QuickAddUser table tr td {
+  padding: 5px;
+}
+
+#QuickAddUser table td:last-child {
+  text-align: left;
+}
+
+#QuickAddUser input {
+  border: 1px solid #CCCCCC;
+  border-radius: $defaultBorderRadius;
+  box-shadow: 0 1px 1px #EEEEEE;
+  display: inline-block;
+  margin: 0 5px 0 0;
+  padding: 4px;
+  width: 95%;
+}
