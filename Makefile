@@ -1,7 +1,6 @@
 # vim:noexpandtab:ts=4:sts=4:ft=make:
 
 install:
-	php bin/console system:clear-cache
 	npm install
 	composer install -o
 	php bin/console system:clear-cache
