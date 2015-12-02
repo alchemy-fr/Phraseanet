@@ -2,7 +2,7 @@
 - name: Update apt
   sudo: yes
   apt: update_cache=yes
-  when: server.prevent_update is defined
+  when: server.prevent_update is not defined
 
 - name: Install System Packages
   sudo: yes

@@ -1,4 +1,6 @@
 ---
 # application tasks to be customized and to run after the main provision
 - name: Install global npm packages
-  shell: . /usr/local/nvm/nvm.sh && npm install -g bower recess
+  become: yes
+  become_user: vagrant
+  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && npm install -g bower recess
