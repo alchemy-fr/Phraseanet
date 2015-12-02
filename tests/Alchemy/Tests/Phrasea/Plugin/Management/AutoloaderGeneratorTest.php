@@ -25,8 +25,8 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
             $pluginsDir . '/autoload.php',
             $pluginsDir . '/commands.php',
             $pluginsDir . '/twig-paths.php',
-            $pluginsDir . '/login.less',
-            $pluginsDir . '/account.less',
+            $pluginsDir . '/login.scss',
+            $pluginsDir . '/account.scss',
         ];
 
         $this->cleanup($files);
@@ -73,8 +73,8 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
         $mapping = require $pluginsDir . '/twig-paths.php';
         $this->assertSame(['plugin-test-plugin' => realpath($pluginsDir) . '/test-plugin/views', realpath($pluginsDir) . '/test-plugin/views', realpath($pluginsDir) . '/test-plugin/twig-views'], $mapping);
 
-        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/login.less'));
-        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/account.less'));
+        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/login.scss'));
+        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/account.scss'));
 
         $this->cleanup($files);
     }

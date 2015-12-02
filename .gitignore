@@ -13,9 +13,6 @@
 # Exclude node.js dependencies folder
 /node_modules
 
-# Exclude compiled LESS folder
-/www/skins/build
-
 # Exclude compiled javascript test fixture folder
 /www/scripts/tests/fixtures
 

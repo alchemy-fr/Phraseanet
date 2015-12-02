@@ -323,7 +323,6 @@ class V1Controller extends Controller
                     'ffprobe'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
                     'mp4box'      => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null,
                     'pdftotext'   => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
-                    'recess'      => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null,
                     'pdfmaxpages' => $conf->get(['registry', 'executables', 'pdf-max-pages']),
                 ],
                 'mainConfiguration' => [

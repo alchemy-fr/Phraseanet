@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller;
 /**
  * @group functional
  * @group legacy
+ * @group minify
  */
 class MinifierTest extends \PhraseanetTestCase
 {
@@ -26,23 +27,6 @@ class MinifierTest extends \PhraseanetTestCase
     }
 
     /**
-     * @dataProvider provideGroupsToMinify
-     */
-    public function testGenerationOfGroups($name)
-    {
-        $_GET['g'] = $name;
-        self::$DI['client']->request('GET', '/include/minify/?g=' . $name);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "Group $name is ok");
-    }
-
-    public function provideGroupsToMinify()
-    {
-        $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
-
-        return array_map(function ($group) {return [$group];}, array_keys($groups));
-    }
-
-    /**
      * @dataProvider provideFilesToMinify
      */
     public function testFileMinification($file)
@@ -54,17 +38,7 @@ class MinifierTest extends \PhraseanetTestCase
 
     public function provideFilesToMinify()
     {
-        $files = [];
-
-        $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
-
-        foreach ($groups as $name => $data) {
-            foreach ($data as $file) {
-                $files[] = substr($file, 2);
-            }
-        }
-
-        return array_map(function ($file) {return [$file];}, array_unique($files));
+        return [['scripts/apps/admin/require.config.js']];
     }
 
     public function testFileMinificationWithoutParamsShouldReturnA400()

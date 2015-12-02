@@ -11,11 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
-use Alchemy\Phrasea\Command\Developer\Utils\BowerDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver;
-use Alchemy\Phrasea\Command\Developer\Utils\GruntDriver;
-use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
-use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -47,26 +43,6 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
             return $app['executable-finder']->find($name, null, $extraDirs);
         });
 
-        $app['driver.bower'] = $app->share(function (Application $app) {
-            $bowerBinary = $app['driver.binary-finder']('bower', 'bower_binary');
-
-            if (null === $bowerBinary) {
-                throw new RuntimeException('Unable to find bower executable.');
-            }
-
-            return BowerDriver::create(['bower.binaries' => $bowerBinary, 'timeout' => 300], $app['monolog']);
-        });
-
-        $app['driver.recess'] = $app->share(function (Application $app) {
-            $recessBinary = $app['driver.binary-finder']('recess', 'recess_binary');
-
-            if (null === $recessBinary) {
-                throw new RuntimeException('Unable to find recess executable.');
-            }
-
-            return RecessDriver::create(['recess.binaries' => $recessBinary], $app['monolog']);
-        });
-
         $app['driver.composer'] = $app->share(function (Application $app) {
             $composerBinary = $app['driver.binary-finder']('composer', 'composer_binary');
 
@@ -75,26 +51,6 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
             }
 
             return ComposerDriver::create(['composer.binaries' => $composerBinary, 'timeout' => 300], $app['monolog']);
-        });
-
-        $app['driver.uglifyjs'] = $app->share(function (Application $app) {
-            $uglifyJsBinary = $app['driver.binary-finder']('uglifyjs', 'uglifyjs_binary');
-
-            if (null === $uglifyJsBinary) {
-                throw new RuntimeException('Unable to find uglifyJs executable.');
-            }
-
-            return UglifyJsDriver::create(['uglifyjs.binaries' => $uglifyJsBinary], $app['monolog']);
-        });
-
-        $app['driver.grunt'] = $app->share(function (Application $app) {
-            $gruntBinary = $app['driver.binary-finder']('grunt', 'grunt_binary');
-
-            if (null === $gruntBinary) {
-                throw new RuntimeException('Unable to find grunt executable.');
-            }
-
-            return GruntDriver::create(['grunt.binaries' => $gruntBinary], $app['monolog']);
         });
     }
 

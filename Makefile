@@ -4,9 +4,7 @@ install:
 	php bin/console system:clear-cache
 	npm install
 	composer install -o
-	./node_modules/.bin/grunt install-assets
 	php bin/console system:clear-cache
-	php bin/developer assets:compile-less
 
 config:
 	@php bin/console compile:configuration

@@ -70,9 +70,6 @@ find . -maxdepth 1 -type f -exec rm {} \;
 sudo cp -rf * /usr/local/
 
 # npm binaries
-sudo npm install -g recess
-sudo npm install -g bower
-sudo npm install -g uglify-js
 
 #twig
 cd /tmp
