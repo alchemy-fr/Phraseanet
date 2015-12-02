@@ -44,9 +44,6 @@ class MainConfigurationFormType extends AbstractType
         $builder->add('registration', new RegistrationFormType(), [
             'label' => 'Registration',
         ]);
-        $builder->add('classic', new ClassicFormType(), [
-            'label' => 'Client',
-        ]);
         $builder->add('maintenance', new MaintenanceFormType(), [
             'label' => 'Maintenance state',
         ]);
