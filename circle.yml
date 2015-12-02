@@ -43,5 +43,4 @@ database:
 test:
   override:
     - case $CIRCLE_NODE_INDEX in 0) php -d memory_limit=-1 bin/phpunit --exclude-group legacy ;; 1) ./node_modules/.bin/gulp test ;; 2) php -d memory_limit=-1 bin/phpunit --group legacy --exclude-group web ;; 3) php -d memory_limit=-1 bin/phpunit --group web ;; esac:
-    - case $CIRCLE_NODE_INDEX in 0) php -d memory_limit=-1 bin/phpunit --exclude-group legacy ;; 1) php -d memory_limit=-1 bin/phpunit --group legacy --exclude-group web ;; 2) php -d memory_limit=-1 bin/phpunit --group web ;; esac:
         parallel: true
