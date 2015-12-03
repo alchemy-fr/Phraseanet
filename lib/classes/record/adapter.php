@@ -1088,9 +1088,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $databox = $this->app->findDataboxById($this->get_sbas_id());
         $connbas = $databox->get_connection();
-        $sql = 'UPDATE record SET jeton=(jeton | ' . PhraseaTokens::MAKE_SUBDEF . ') WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET jeton=(jeton | :make_subdef_mask) WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->get_record_id()]);
+        $stmt->execute([
+            ':record_id' => $this->getRecordId(),
+            'make_subdef_mask' => PhraseaTokens::MAKE_SUBDEF,
+        ]);
         $stmt->closeCursor();
 
         return $this;
@@ -1098,7 +1101,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function get_missing_subdefs()
     {
-        $databox = $this->get_databox();
+        $databox = $this->getDatabox();
 
         try {
             $this->get_hd_file();
@@ -1106,15 +1109,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return array();
         }
 
-        $subDefDefinitions = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
+        $subDefDefinitions = $databox->get_subdef_structure()->getSubdefGroup($this->getType());
         if (!$subDefDefinitions) {
             return array();
         }
 
         $record = $this;
-        $wanted_subdefs = array_map(function(media_subdef $subDef) {
+        $wanted_subdefs = array_map(function(databox_subdef $subDef) {
            return  $subDef->get_name();
-        }, array_filter($subDefDefinitions, function(media_subdef $subDef) use ($record) {
+        }, array_filter($subDefDefinitions, function(databox_subdef $subDef) use ($record) {
             return !$record->has_subdef($subDef->get_name());
         }));
 
