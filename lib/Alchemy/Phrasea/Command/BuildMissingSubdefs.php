@@ -11,7 +11,8 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Alchemy\Phrasea\Media\SubdefGenerator;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -35,7 +36,11 @@ class BuildMissingSubdefs extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $start = microtime(true);
+        $progressBar = new ProgressBar($output);
         $n = 0;
+
+        /** @var SubdefGenerator $subdefGenerator */
+        $subdefGenerator = $this->container['subdef.generator'];
 
         foreach ($this->container->getDataboxes() as $databox) {
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
@@ -43,6 +48,7 @@ class BuildMissingSubdefs extends Command
             $stmt->execute();
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
+            $progressBar->start(count($rs));
 
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);
@@ -50,7 +56,7 @@ class BuildMissingSubdefs extends Command
                 $wanted_subdefs = $record->get_missing_subdefs();
 
                 if (count($wanted_subdefs) > 0) {
-                    $record->generate_subdefs($databox, $this->container, $wanted_subdefs);
+                    $subdefGenerator->generateSubdefs($record, $wanted_subdefs);
 
                     foreach ($wanted_subdefs as $subdef) {
                         $this->container['monolog']->addInfo("generate " .$subdef . " for record " . $record->get_record_id());
@@ -59,7 +65,10 @@ class BuildMissingSubdefs extends Command
                 }
 
                 unset($record);
+                $progressBar->advance();
             }
+
+            $progressBar->finish();
         }
 
         $this->container['monolog']->addInfo($n . " subdefs done");
@@ -67,6 +76,7 @@ class BuildMissingSubdefs extends Command
         $duration = $stop - $start;
 
         $this->container['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
+        $progressBar->finish();
 
         return;
     }
