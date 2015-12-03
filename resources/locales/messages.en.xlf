@@ -6149,7 +6149,7 @@
       </trans-unit>
       <trans-unit id="194aa1c37cc9c71f78e4ef648743beec42783329" resname="Subdef name" approved="yes">
         <source>Subdef name</source>
-        <target state="translated">Subview mane</target>
+        <target state="translated">Subview name</target>
         <jms:reference-file line="181">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8017bd7de9961cf42f59abc587d0495a9d25c2a9" resname="Substitute" approved="yes">

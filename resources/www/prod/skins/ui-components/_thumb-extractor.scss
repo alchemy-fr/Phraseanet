@@ -109,7 +109,7 @@
     img {
       display: inline-block;
       width: 80px;
-      height: 60px;
+      height: auto;
       margin-left: 5px;
       margin-right: 5px;
       &.selected {
@@ -125,7 +125,7 @@
     left: 10px;
     text-align: center;
   }
-  #thumb_validate_button {
+  .thumb_submit_action {
     cursor: pointer;
     height: 30px;
     width: 80px;
@@ -146,6 +146,10 @@
       padding: 5px;
       text-align: center;
       vertical-align: middle;
+      img.selected {
+        width: 160px;
+        height: auto;
+      }
     }
   }
 }

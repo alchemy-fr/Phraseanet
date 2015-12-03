@@ -685,6 +685,8 @@ function unfix_tooltip() {
 
 
 $(document).bind('keydown', function (event) {
+    if( $.tooltip === undefined ) return;
+
     if (event.keyCode == 27 && $.tooltip.blocked === true) {
         unfix_tooltip();
     }

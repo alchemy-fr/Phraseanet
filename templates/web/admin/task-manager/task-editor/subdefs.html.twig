@@ -102,7 +102,7 @@
             for(i=0; i < $databoxes.length; i++) {
                 var sbid = $($databoxes[i]).attr('value');
 
-                $($databoxes[i]).attr('checked', (xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0));
+                $($databoxes[i]).prop('checked', (xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0));
             }
         }
     }

@@ -643,7 +643,7 @@
                 $('input[name="obj[]"]', $('#download')).each(function(){
                     var total_el = $('#download input[name=download_'+$(this).val()+']');
                     var count_el = $('#download input[name=count_'+$(this).val()+']');
-                    if($(this).attr('checked'))
+                    if($(this).prop('checked'))
                     {
                         total += parseInt($(total_el).val());
                         count += parseInt($(count_el).val());
@@ -664,7 +664,7 @@
                 if(count>1 && total/1024/1024 > {{max_download}}) {
                     if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two|e('js') ~ "\\n" ~ alert_too_big_three|e('js')}}")) {
                         $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
-                        $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
+                        $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).prop('checked', true);
                         });
                         $('input[name="destmail"]', $('#sendmail')).val("{{app.getAuthenticatedUser().getEmail()}}");
 
