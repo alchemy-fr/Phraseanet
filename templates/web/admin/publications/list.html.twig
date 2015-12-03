@@ -111,7 +111,7 @@
       }
     });
     $('#add_pub_public').bind('change', function(){
-      if($(this).attr('checked'))
+      if($(this).prop('checked'))
       {
         $('#add_pub_base_id').val('');
       }
@@ -119,7 +119,7 @@
     $('#add_pub_base_id').bind('change', function(){
       if($(this).val() != '')
       {
-        $('#add_pub_public').attr('checked', false);
+        $('#add_pub_public').prop('checked', false);
       }
     });
   });

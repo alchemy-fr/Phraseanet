@@ -299,9 +299,9 @@
       name = input.attr('name');
 
       var inputs = $('input[name="' + $(this).prev('input').attr('name') + '"]', $container);
-      inputs.removeAttr('checked').next('label').removeClass('selected');
+      inputs.prop('checked', false).next('label').removeClass('selected');
 
-      input.attr('checked', 'checked').next('label').addClass('selected');
+      input.prop('checked', true).next('label').addClass('selected');
       $('form[name="BasketBrowser"]', $container).trigger('submit')
     });
 

@@ -17,7 +17,7 @@
 
                     $this.after('<img class="loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>');
                     $this.after('<img class="reload" src="/assets/common/images/icons/reload.png"/>');
-                    $this.after('<img class="status" src="/assets/common/images/icons/delete.png"/>');
+                    $this.after('<img class="status btn-img" src="/assets/common/images/icons/delete.png" width="16"/>');
 
 
                     $this.bind('keyup blur', function () {

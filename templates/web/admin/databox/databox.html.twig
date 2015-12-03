@@ -251,7 +251,7 @@
                         $("#viewname").html(data.viewname);
                     }
 
-                    $("#is_indexable").attr('checked', data.indexable);
+                    $("#is_indexable").prop('checked', data.indexable);
                     $("#records").text(data.counts.records);
 
                     if (data.counts.records > 0) {

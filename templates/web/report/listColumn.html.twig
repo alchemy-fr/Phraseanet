@@ -34,10 +34,10 @@
   </div>
             <script type="text/javascript">
                 $('a#on').click(function(){
-                    $(this).closest('#dialog').find(':checkbox').attr('checked', true);
+                    $(this).closest('#dialog').find(':checkbox').prop('checked', true);
                 });
                 $('a#off').click(function(){
-                    $(this).closest('#dialog').find(':checkbox').attr('checked', false);
+                    $(this).closest('#dialog').find(':checkbox').prop('checked', false);
                 });
             </script>
 {% endblock %}

@@ -121,7 +121,7 @@
 
               {% set technical_info = record.get_technical_infos %}
               {% set width = technical_info[dataW].value %}
-              {% set height = technical_infos[dataH].value %}
+              {% set height = technical_info[dataH].value %}
 
               {% if width and height %}
                 {% set ratio = (width / height)|number_format(2, '.') %}
@@ -164,10 +164,11 @@
               <div id="thumb_wrapper">
               </div>
             </div>
-            <div id="thumb_validate_button" class="PNB">
+            <div class="thumb_submit_action PNB">
               <input type="hidden" value='{{record.get_sbas_id()}}' name='sbas_id'>
               <input type="hidden" value='{{record.get_record_id()}}' name='record_id'>
-              <img src="/assets/prod/images/ThumbExtractor/validate_button.png" alt="{{ 'take a screenshot' | trans }}" />
+                <button  id="thumb_validate_button" class="btn btn-inverse" type="button">{{ "validate" | trans }}</button>
+
             </div>
           </div>
         {% endif %}
@@ -349,11 +350,11 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
-    var scope = $("#prod-tool-box");
-    var tabs = $("#tool-tabs", scope).tabs();
+    var $scope = $("#prod-tool-box");
+    var tabs = $("#tool-tabs", $scope).tabs();
     var width = 0;
 
-    $(".iframe_submiter", scope).bind("click", function(){
+    $(".iframe_submiter", $scope).bind("click", function(){
         var form = $(this).closest("form");
         form.submit();
         form.find('.load').empty().html(language.loading + ' ...');
@@ -365,7 +366,7 @@ $(document).ready(function(){
         });
     });
 
-    $(".action_submiter", scope).bind("click", function(){
+    $(".action_submiter", $scope).bind("click", function(){
         var $this = $(this);
         var form = $(this).closest("form");
 
@@ -393,7 +394,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $(".action_cancel", scope).bind("click", function(){
+    $(".action_cancel", $scope).bind("click", function(){
         var dialog = p4.Dialog.get(1);
         dialog.Close();
 
@@ -408,10 +409,22 @@ $(document).ready(function(){
 
     if(ThumbEditor.isSupported()) {
 
-        var sliderWrapper = $("#thumb_wrapper", scope);
+        var $sliderWrapper = $("#thumb_wrapper", $scope);
 
-        $("#thumb_delete_button", scope).bind("click", function(){
-            var img = sliderWrapper.find(".selected");
+        $sliderWrapper.on('click', 'img', function(){
+            $('.selected', $sliderWrapper).removeClass('selected');
+            $(this).addClass('selected');
+
+            var $self = this;
+            var selectedScreenId = $self.getAttribute("id").split("_").pop();
+            var screenshots = ThumbEditor.store.get(selectedScreenId);
+
+            ThumbEditor.copy(screenshots.getDataURI(), screenshots.getAltScreenShots());
+        });
+
+
+        $scope.on('click', '#thumb_delete_button', function(){
+            var img = $sliderWrapper.find(".selected");
             var id = img.attr("id").split("_").pop();
             var previous = img.prev();
             var next = img.next();
@@ -427,7 +440,7 @@ $(document).ready(function(){
             else
             {
                 $(this).hide();
-                $("#thumb_info", scope).show();
+                $("#thumb_info", $scope).show();
                 ThumbEditor.resetCanva();
             }
 
@@ -435,38 +448,27 @@ $(document).ready(function(){
             ThumbEditor.store.remove(id);
         });
 
-        $(".close_action_frame", scope).bind("click", function(){
+        $scope.on('click', '.close_action_frame', function(){
             $(this).closest(".action_frame").hide();
         });
 
 
-        $("img", sliderWrapper).on("click", function(){
-            $('.selected', sliderWrapper).removeClass('selected');
-            $(this).addClass('selected');
-
-            var $self = this;
-            var selectedScreenId = $self.getAttribute("id").split("_").pop();
-            var screenshots = ThumbEditor.store.get(selectedScreenId);
-
-            ThumbEditor.copy(screenshots.getDataURI(), screenshots.getAltScreenShots());
-        });
-
-        $("#thumb_camera_button", scope).bind("click", function(){
-            $("#thumb_info", scope).hide();
-            $("#thumb_delete_button", scope).show();
+        $scope.on('click', '#thumb_camera_button', function(){
+            $("#thumb_info", $scope).hide();
+            $("#thumb_delete_button", $scope).show();
 
             var screenshot = ThumbEditor.screenshot();
             var img = $("<img />");
-            $('.selected', sliderWrapper).removeClass('selected');
+            $('.selected', $sliderWrapper).removeClass('selected');
             img.addClass('selected')
             .attr('id', 'working_'+ screenshot.getId())
             .attr('src', screenshot.getDataURI())
             .attr("alt", screenshot.getVideoTime())
-            .appendTo(sliderWrapper);
+            .appendTo($sliderWrapper);
         });
 
         $("#thumb_canvas").on('tool_event', function(){
-            var thumbnail = $('.selected', sliderWrapper);
+            var thumbnail = $('.selected', $sliderWrapper);
 
             if(thumbnail.length === 0)
             {
@@ -478,9 +480,8 @@ $(document).ready(function(){
             thumbnail.attr('src', ThumbEditor.getCanvaImage());
 
         });
-
-        $("#thumb_validate_button", scope).bind("click", function(){
-            var thumbnail = $('.selected', sliderWrapper);
+        $scope.on('click', '#thumb_validate_button', function(){
+            var thumbnail = $('.selected', $sliderWrapper);
 
             if(thumbnail.length === 0)
             {
@@ -591,7 +592,7 @@ $(document).ready(function(){
             }, 2);
 
             var datas = {
-                image: $('.selected', sliderWrapper).attr("src"),
+                image: $('.selected', $sliderWrapper).attr("src"),
                 sbas_id: sbas_id,
                 record_id: record_id
             };

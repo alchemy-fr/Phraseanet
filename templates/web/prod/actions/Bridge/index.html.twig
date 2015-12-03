@@ -234,7 +234,7 @@ $(function() {
 
         if(event.selector_all)
         {
-          $this.attr('checked', $(".bridge_all_selector", $panel).is(':checked'));
+          $this.prop('checked', $(".bridge_all_selector", $panel).is(':checked'));
         }
 
         $('form[name="bridge_selection"] input[name="elements_list"]', $panel).val(
@@ -251,7 +251,7 @@ $(function() {
         if(!event.selector_all)
         {
           var bool = !($(".bridge_element_selector:checked", $panel).length !== $(".bridge_element_selector", $panel).length);
-          $(".bridge_all_selector", $panel).attr('checked', bool);
+          $(".bridge_all_selector", $panel).prop('checked', bool);
         }
         else
         {

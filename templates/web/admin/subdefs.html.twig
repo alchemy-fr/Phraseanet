@@ -292,19 +292,27 @@
                                 {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
                                     <div style="width:250px;" id="slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}"></div>
                                     <script type="text/javascript">
-                                    $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').slider({
-                                        value:{{ option.getValue }},
-                                        min: {{ option.getMinValue() }},
-                                        max: {{ option.getMaxValue() }},
-                                        {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
-                                        slide: function( event, ui ) {
-                                            $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
-                                        },
-                                        create: function (event, ui) {
-                                            {# add no-ajax class to slider link to prevent page load in IE7 #}
-                                            $("a.ui-slider-handle", event.target).addClass("no-ajax");
-                                        }
-                                    });
+
+                                        $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}')
+                                                .slider({
+                                            value:{{ option.getValue }},
+                                            min: {{ option.getMinValue() }},
+                                            max: {{ option.getMaxValue() }},
+                                            {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
+                                            slide: function( event, ui ) {
+                                                $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
+                                            },
+                                            create: function (event, ui) {
+                                                {# add no-ajax class to slider link to prevent page load in IE7 #}
+                                                $("a.ui-slider-handle", event.target).addClass("no-ajax");
+                                            }
+                                        });
+
+                                        $('#slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').on('change', function(){
+                                            var $this = $(this);
+                                            $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').slider( "option", "value", $this.val() );
+                                        })
+
                                     </script>
                                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                     <select name="{{varname}}">
@@ -326,7 +334,7 @@
                             </td>
                             <td>
                                 {% if option.type == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
-                                    <input style="width:35px;" readonly value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}" name="{{varname}}" />
+                                    <input style="width:35px;" value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}" name="{{varname}}" />
                                 {% endif %}
                             </td>
                         </tr>
