@@ -32,19 +32,19 @@ class PermalinkController extends AbstractDelivery
     /** @var Media */
     private $mediaService;
 
-    public function __construct(Application $app, \appbox $appbox, ACLProvider $acl, Authenticator $authenticator)
+    public function __construct(Application $app, \appbox $appbox, ACLProvider $acl, Authenticator $authenticator, Media $mediaService)
     {
         parent::__construct($app);
 
         $this->appbox = $appbox;
         $this->acl = $acl;
         $this->authentication = $authenticator;
-        $this->mediaService = new Media($this->app, $this->app->getApplicationBox(), $this->app['acl'], $this->app->getAuthenticator());
+        $this->mediaService = $mediaService;
     }
 
     public function getOptionsResponse(Request $request, $sbas_id, $record_id)
     {
-        $databox = $this->getDatabox($sbas_id);
+        $databox = $this->mediaService->getDatabox($sbas_id);
         $token = $request->query->get('token');
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $request->get('subdef', 'thumbnail'));
 
@@ -57,7 +57,7 @@ class PermalinkController extends AbstractDelivery
 
     public function deliverCaption(Request $request, $sbas_id, $record_id)
     {
-        $databox = $this->getDatabox($sbas_id);
+        $databox = $this->mediaService->getDatabox($sbas_id);
         $token = $request->query->get('token');
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
 
@@ -91,8 +91,8 @@ class PermalinkController extends AbstractDelivery
 
     private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
     {
-        $databox = $this->getDatabox($sbas_id);
-        // $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
+
+        $databox = $this->mediaService->getDatabox($sbas_id);
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdefName);
         $metaDatas = $this->mediaService->getMetaDatas($record, $subdefName);
         $subdef = $record->get_subdef($subdefName);
@@ -110,7 +110,7 @@ class PermalinkController extends AbstractDelivery
 
     private function doDeliverPermalink(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
-        $databox = $this->getDatabox($sbas_id);
+        $databox = $this->mediaService->getDatabox($sbas_id);
         // $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdef);
         $watermark = $stamp = false;
@@ -147,15 +147,6 @@ class PermalinkController extends AbstractDelivery
         }
 
         return $this->deliverContentWithCaptionLink($request, $record, $subdef, $watermark, $stamp, $token);
-    }
-
-    /**
-     * @param int $databoxId
-     * @return \databox
-     */
-    private function getDatabox($databoxId)
-    {
-        return $this->appbox->get_databox((int)$databoxId);
     }
 
     /**
