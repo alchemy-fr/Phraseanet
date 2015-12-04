@@ -103,6 +103,7 @@ class PermalinkController extends AbstractDelivery
             'module_name' => 'overview',
             'module'      => 'overview',
             'view'        => 'overview',
+            'token'       => $token,
             'record'      => $record,
         ]);
     }

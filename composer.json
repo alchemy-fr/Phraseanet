@@ -25,6 +25,10 @@
         {
             "type": "git",
             "url": "https://github.com/alchemy-fr/symfony-cors"
+        },
+        {
+            "type": "vcs",
+            "url":  "https://github.com/lostdalek/embed-bundle.git"
         }
     ],
     "require":      {

@@ -7,44 +7,10 @@
 {% endblock %}
 
 {% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css">
         <style type="text/css">
-            body {
-                color: #FFFFFF;
-                background-color: #212121;
-                font-family: Helvetica, Arial, sans-serif;
-                font-size: 14px;
-                overflow: auto;
-                min-height: 100%;
-                width: 100%;
-            }
 
-            h1 {
-                font-size: 26px;
-                font-weight: bold;
-                padding: 50px 0 20px;
-            }
-            #page {
-                width: 860px;
-                background-color: #414141;
-                padding: 0 20px;
-                margin: 0 auto;
-                height: 100%;
-                position: relative !important;
-            }
-
-            .preview .thumb_wrapper {
-                overflow: hidden;
-            }
-
-            .caption {
-                padding: 50px 0 20px;
-            }
         </style>
-{% endblock %}
-{% block javascript %}
-    <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/permaview/js/permaview{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block rss %}
@@ -53,140 +19,14 @@
     {% endfor %}
 {% endblock %}
 
-{% block stylesheet %}
-    <style type="text/css">
-        html {
-            color: white;
-            background-color: #212121;
-        }
-
-        body {
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            overflow: auto;
-            min-height: 100%;
-            width: 100%;
-            top: 0;
-            left: 0;
-            position: absolute;
-        }
-        #mainContainer {
-            margin-top: 32px;
-        }
-
-        h1 {
-            font-size: 26px;
-            font-weight: bold;
-            padding: 50px 0 20px;
-        }
-
-        #page {
-            width: 860px;
-            background-color: #414141;
-            padding: 0 20px;
-            margin: 0 auto;
-            height: 100%;
-        }
-        .record {
-            margin: 0 auto;
-        }
-        .preview .thumb_wrapper {
-            overflow: hidden;
-        }
-
-        .caption {
-            padding: 30px 0 20px;
-        }
-        dl {
-            margin-bottom: 20px;
-        }
-
-        dt,
-        dd {
-            line-height: 20px;
-        }
-
-        dt {
-            font-weight: bold;
-        }
-
-        dd {
-            margin-left: 10px;
-        }
-
-        .dl-horizontal {
-            *zoom: 1;
-        }
-
-        .dl-horizontal:before,
-        .dl-horizontal:after {
-            display: table;
-            line-height: 0;
-            content: "";
-        }
-
-        .dl-horizontal:after {
-            clear: both;
-        }
-
-        .dl-horizontal dt {
-            float: left;
-            width: 160px;
-            overflow: hidden;
-            clear: left;
-            text-align: right;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .dl-horizontal dd {
-            margin-left: 180px;
-        }
-        </style>
-{% endblock %}
-{% block javascript %}
-
-    {#{% if subdef.get_type() == 'VIDEO_MP4' or subdef.get_type() == 'VIDEO_FLV' %}
-        <script type="text/javascript"
-                src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/jslibs/jquery.mousewheel.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery.ui/jquery-ui.js' }) }}"></script>
-        <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.13.min.js"></script>
-
-    {% elseif subdef.get_type() == 'FLEXPAPER' or subdef.get_type() == 'AUDIO_MP3' %}
-        <script type="text/javascript"
-                src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/jslibs/jquery.mousewheel.js,assets/swfobject/swfobject.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery.ui/jquery-ui.js' }) }}"></script>
-
-    {% else %}
-
-        <script type="text/javascript"
-                src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/jslibs/jquery.mousewheel.js,include/jquery.image_enhancer.js' }) }}"></script>
-        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery.ui/jquery-ui.js' }) }}"></script>
-
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.preview.enhancable').image_enhance({
-                    zoomable: true
-                });
-            })
-        </script>
-    {% endif %}#}
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.preview .thumb_wrapper').width('100%');
-        });
-    </script>
-
-{% endblock %}
-
 {% block content %}
-    <div id="page" >
+    <div class="content-container" >
         <h1>{{ record.get_title() }}</h1>
 
-        <div class="preview enhancable">
-            {% import 'common/thumbnail.html.twig' as thumbnail %}
-            {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', true, false) }}
+        <div class="preview">
+            <iframe width="{{ subdef.get_width() }}" height="{{ subdef.get_height() }}"
+                    src="{{ app['request'].baseUrl }}/embed/{{ record.getBaseId() }}/{{ record.getRecordId() }}/{{ subdef.get_name() }}/?token={{ token }}"
+                    frameborder="0" allowfullscreen></iframe>
         </div>
 
         <div class="caption">

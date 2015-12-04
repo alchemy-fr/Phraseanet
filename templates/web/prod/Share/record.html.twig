@@ -1,17 +1,16 @@
 {% if not isAvailable %}
-    <p>{{ 'No permalink available.' | trans }}</p>{#
-    <p>{{ 'No preview available.' | trans }}</p>#}
+    <p>{{ 'No permalink available.' | trans }}</p>
 {% else %}
     {%  if preview.permalinkUrl is not empty %}
         <div id="share">
             <div id="tweet" class="well-large">
-                <div>
+                <p>
                     <a href="http://www.twitter.com/home/?status={{ preview.permaviewUrl }}" target="_blank">
                         <img src="/assets/common/images/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/>
                         {% trans %}Send to Twitter{% endtrans %}
                     </a>
-                </div>
-                <div>
+                </p>
+                <p>
                     <a href="http://www.facebook.com/sharer.php?u={{ preview.permaviewUrl }}" target="_blank">
                         <img src="/assets/common/images/icons/facebook.ico" title="share on facebook" style="vertical-align:middle;padding:0 5px;"/>
                         {% trans %}Send to Facebook{% endtrans %}
@@ -25,16 +24,16 @@
                                id="permalinkUrl"/>
 
                         <p class="pull-right">
-                            <a href="{{ preview.permalinkUrl }}" target="_blank">previewLabel</a> &nbsp;&nbsp;
-                            <a href="#" class="" id="permalinkUrlCopy">copyClipboardLabel</a>
+                            <a href="{{ preview.permalinkUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                            <a href="#" class="" id="permalinkUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
                         </p>
                     </div>
                     <div class="form-group clearfix">
                         <label>{% trans %}Detailed view URL{% endtrans %}</label>
                         <input class="input-block-level" readonly="readonly" type="text" value="{{ preview.permaviewUrl }}" id="permaviewUrl"/>
                         <p class="pull-right">
-                            <a href="{{ preview.permaviewUrl }}" target="_blank">previewLabel</a> &nbsp;&nbsp;
-                            <a href="#" class="" id="permaviewUrlCopy">copyClipboardLabel</a>
+                            <a href="{{ preview.permaviewUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                            <a href="#" class="" id="permaviewUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
                         </p>
                     </div>
                     <div class="form-group clearfix">
@@ -46,13 +45,13 @@
                             </textarea>
                         {% endspaceless %}
                         <p class="pull-right">
-                            <a href="{{ preview.embedUrl }}" target="_blank">previewLabel</a> &nbsp;&nbsp;
-                            <a href="#" class="" id="embedCopy">copyClipboardLabel</a>
+                            <a href="{{ preview.embedUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                            <a href="#" class="" id="embedCopy">{{ 'copyClipboardLabel' | trans }}</a>
                         </p>
                     </div>
                     {#{% endif %}#}
                 </form>
-            </div>
+            </p>
         </div>
 
         <script language="javascript">
