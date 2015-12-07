@@ -29,6 +29,7 @@ gulp.task('build-vendors', [
     'build-alchemy-embed',
     'build-bootstrap',
     'build-colorpicker',
+    'build-html5shiv',
     'build-jquery',
     'build-jquery-ui', // will build themes too
     'build-jquery-mobile',
