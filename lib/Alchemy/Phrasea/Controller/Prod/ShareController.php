@@ -64,8 +64,12 @@ class ShareController extends Controller
 
 
             $sbas_id = $record->getDataboxId();
-            $baseUrl = $this->app['request']->getSchemeAndHttpHost().$this->app['request']->getBaseUrl();
-            $embedUrl = $baseUrl.'/embed/'.$sbas_id.'/'.$record_id.'/'.$subdefName.'/?token='.$token;
+            $embedUrl = $this->app->url('alchemy_embed_view', [
+                'sbas_id' => $sbas_id,
+                'record_id' => $record_id,
+                'subdefName' => $subdefName,
+                'token' => $token,
+            ]);
 
             $outputVars = [
                 'isAvailable' => true,
