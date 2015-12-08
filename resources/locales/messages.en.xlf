@@ -9255,9 +9255,9 @@
         <jms:reference-file line="682">Controller/Report/ActivityController.php</jms:reference-file>
         <jms:reference-file line="534">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a70a59b9120185471e5b45630f8ba24d5516f590" resname="copyClipboardLabel">
+      <trans-unit id="a70a59b9120185471e5b45630f8ba24d5516f590" resname="copyClipboardLabel" approved="yes">
         <source>copyClipboardLabel</source>
-        <target state="new">Copy to clipboard</target>
+        <target state="translated">Copy to clipboard</target>
         <jms:reference-file line="28">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="36">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="49">prod/Share/record.html.twig</jms:reference-file>
@@ -10309,9 +10309,9 @@
         <target state="translated">View statistics</target>
         <jms:reference-file line="4">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel">
+      <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel" approved="no">
         <source>previewLinkLabel</source>
-        <target state="new">Preview</target>
+        <target state="needs-translation">Preview</target>
         <jms:reference-file line="27">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
