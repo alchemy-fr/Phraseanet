@@ -362,6 +362,8 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Notifications' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Preferences' => [],
+            'Alchemy\EmbedProvider\EmbedServiceProvider' => [],
+            'Alchemy\EmbedProvider\OembedServiceProvider' => [],
         ];
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
@@ -683,6 +685,8 @@ class Application extends SilexApplication
             '/datafiles'                   => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
             '/developers/'                 => 'Alchemy\Phrasea\ControllerProvider\Root\Developers',
             '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
+            '/embed/'                      => 'Alchemy\EmbedProvider\EmbedServiceProvider',
+            '/oembed/'                     => 'Alchemy\EmbedProvider\OembedServiceProvider',
             '/feeds/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds',
             '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/login/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\Login',

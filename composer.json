@@ -25,12 +25,17 @@
         {
             "type": "git",
             "url": "https://github.com/alchemy-fr/symfony-cors"
+        },
+        {
+            "type": "vcs",
+            "url":  "https://github.com/lostdalek/embed-bundle.git"
         }
     ],
     "require":      {
         "php": ">=5.5",
 
         "alchemy-fr/tcpdf-clone":                "~6.0",
+        "alchemy/embed-bundle":                  "dev-master@dev",
         "alchemy/geonames-api-consumer":         "~0.1.0",
         "alchemy/google-plus-api-client":        "~0.6.2",
         "alchemy/mediavorus":                    "^0.4.4",

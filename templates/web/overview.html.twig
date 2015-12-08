@@ -7,68 +7,30 @@
 {% endblock %}
 
 {% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css">
         <style type="text/css">
-            body {
-                color: #FFFFFF;
-                background-color: #212121;
-                font-family: Helvetica, Arial, sans-serif;
-                font-size: 14px;
-                overflow: auto;
-                min-height: 100%;
-                width: 100%;
-            }
 
-            h1 {
-                font-size: 26px;
-                font-weight: bold;
-                padding: 50px 0 20px;
-            }
-            #page {
-                width: 860px;
-                background-color: #414141;
-                padding: 0 20px;
-                margin: 0 auto;
-                height: 100%;
-                position: relative !important;
-            }
-
-            .preview .thumb_wrapper {
-                overflow: hidden;
-            }
-
-            .caption {
-                padding: 50px 0 20px;
-            }
         </style>
 {% endblock %}
-{% block javascript %}
-    <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/permaview/js/permaview{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function(){
-        $('.preview .thumb_wrapper').width('100%');
-        $('.preview.enhancable').image_enhance({
-          zoomable:true
-        });
-      })
-    </script>
+
+{% block rss %}
+    {% for metaKey, metaValue in ogMetaDatas %}
+        <meta property="{{ metaKey }}" content="{{ metaValue }}" />
+    {% endfor %}
 {% endblock %}
 
-
-
-
 {% block content %}
-        <div id="page">
-      <h1>{{record.get_title()}}</h1>
-      <div class="preview enhancable">
-        {% import 'common/thumbnail.html.twig' as thumbnail %}
-        {% set subdef = record.get_subdef(subdef_name) %}
+    <div class="content-container" >
+        <h1>{{ record.get_title() }}</h1>
 
-        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', true, false) }}
-      </div>
-            <div class="caption">
-        {% include 'common/caption.html.twig' %}
-      </div>
+        <div class="preview">
+            <iframe width="{{ subdef.get_width() }}" height="{{ subdef.get_height() }}"
+                    src="{{ app['request'].baseUrl }}/embed/{{ record.getBaseId() }}/{{ record.getRecordId() }}/{{ subdef.get_name() }}/?token={{ token }}"
+                    frameborder="0" allowfullscreen></iframe>
         </div>
+
+        <div class="caption">
+            {% include 'common/caption.html.twig' %}
+        </div>
+    </div>
 {% endblock %}

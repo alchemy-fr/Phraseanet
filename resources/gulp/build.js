@@ -10,6 +10,7 @@ var utils = require('./utils.js');
 
 gulp.task('build', ['build-vendors'], function(){
     gulp.start('build-common');
+    gulp.start('build-permaview');
     gulp.start('build-oauth');
     gulp.start('build-prod');
     gulp.start('build-thesaurus');
@@ -25,8 +26,10 @@ gulp.task('build', ['build-vendors'], function(){
 
 // standalone vendors used across application
 gulp.task('build-vendors', [
+    'build-alchemy-embed',
     'build-bootstrap',
     'build-colorpicker',
+    'build-html5shiv',
     'build-jquery',
     'build-jquery-ui', // will build themes too
     'build-jquery-mobile',
@@ -46,5 +49,6 @@ gulp.task('build-vendors', [
     'build-requirejs',
     'build-jquery-treeview',
     'build-jquery-lazyload',
-    'build-jquery-test-paths'
+    'build-jquery-test-paths',
+    'build-swfobject'
     ], function() {});

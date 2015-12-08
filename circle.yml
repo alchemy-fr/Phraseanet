@@ -24,7 +24,10 @@ dependencies:
     - pecl install json
     - yes '' | pecl install zmq-beta
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+  override:
+    - composer install --prefer-source --no-interaction
   post:
+    - npm install
     - if [[ ! -e elasticsearch-1.6.0 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.6.0.tar.gz && tar -xvf elasticsearch-1.6.0.tar.gz && elasticsearch-1.6.0/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0; fi
     - elasticsearch-1.6.0/bin/elasticsearch: {background: true}
 

@@ -59,7 +59,10 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $share = new ShareController(self::$DI['app']);
 
-        $response = $share->shareRecord(self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+        /** @var \record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+
+        $response = $share->shareRecord($record_1->getBaseId(), $record_1->getRecordId());
         $this->assertTrue($response->isOk());
     }
 

@@ -33,8 +33,8 @@ before_install:
   - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
   - yes | pecl install imagick
 install:
-  - travis_retry npm install
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
+  - travis_retry npm install
 before_script:
   - mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
   - "./bin/developer system:uninstall"

@@ -219,3 +219,13 @@ crossdomain:
             domain: 'foo.example.com'
             secure: 'false'
             headers: 'Authorization,X-Foo*'
+embed_bundle:
+    video_player: 'videojs'
+    video_autoplay: false
+    video_available_speeds:
+        - 0.5
+        - 1
+        - 1.5
+        - 2
+    audio_player: 'videojs'
+    audio_autoplay: false

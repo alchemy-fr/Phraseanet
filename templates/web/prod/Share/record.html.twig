@@ -1,45 +1,57 @@
-{% set preview = record.get_preview()%}
-
-{% if preview is iterable %}
-    <p>{{ 'No preview available.' | trans }}</p>
-{% elseif preview.get_permalink() is none %}
+{% if not isAvailable %}
     <p>{{ 'No permalink available.' | trans }}</p>
 {% else %}
-    {% set type = record.get_type() %}
-    {% set url = preview.get_permalink().get_url() %}
-    {% set pageurl = preview.get_permalink().get_page() %}
-
-    {% if url is not empty %}
+    {%  if preview.permalinkUrl is not empty %}
         <div id="share">
-            <div class="well-large">
+            <div id="tweet" class="well-large">
                 <p>
-                    <a href="http://www.twitter.com/home/?status={{ pageurl }}" target="_blank">
+                    <a href="http://www.twitter.com/home/?status={{ preview.permaviewUrl }}" target="_blank">
                         <img src="/assets/common/images/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/>
                         {% trans %}Send to Twitter{% endtrans %}
                     </a>
                 </p>
                 <p>
-                    <a href="http://www.facebook.com/sharer.php?u={{ pageurl }}" target="_blank">
+                    <a href="http://www.facebook.com/sharer.php?u={{ preview.permaviewUrl }}" target="_blank">
                         <img src="/assets/common/images/icons/facebook.ico" title="share on facebook" style="vertical-align:middle;padding:0 5px;"/>
                         {% trans %}Send to Facebook{% endtrans %}
                     </a>
                 </p>
 
                 <form action="#">
-                    <label>{% trans %}Resource URL{% endtrans %}</label>
-                    <input class="input-block-level" readonly="readonly" type="text"  value="{{ url }}" />
-                    <label>{% trans %}Detailed view URL{% endtrans %}</label>
-                    <input class="input-block-level" readonly="readonly" type="text"  value="{{ pageurl }}" />
-                    {% if type == 'image' %}
+                    <div class="form-group clearfix">
+                        <label>{% trans %}Resource URL{% endtrans %}</label>
+                        <input class="input-block-level" readonly="readonly" type="text" value="{{ preview.permalinkUrl }}"
+                               id="permalinkUrl"/>
+
+                        <p class="pull-right">
+                            <a href="{{ preview.permalinkUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                            <a href="#" class="" id="permalinkUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
+                        </p>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label>{% trans %}Detailed view URL{% endtrans %}</label>
+                        <input class="input-block-level" readonly="readonly" type="text" value="{{ preview.permaviewUrl }}" id="permaviewUrl"/>
+                        <p class="pull-right">
+                            <a href="{{ preview.permaviewUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                            <a href="#" class="" id="permaviewUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
+                        </p>
+                    </div>
+                    <div class="form-group clearfix">
+                        {#{% if type == 'image' %}#}
                         <label>{% trans %}Embed code{% endtrans %}</label>
                         {% spaceless %}
-                            <textarea class="input-block-level" rows="4" readonly="true">
-                                <a href="{{ pageurl }}"><img src="{{ url|url_encode }}" title="" /></a>
+                            <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
+                                <iframe width="{{ preview.width }}" height="{{ preview.height }}" src="{{ preview.embedUrl }}" frameborder="0" allowfullscreen></iframe>
                             </textarea>
                         {% endspaceless %}
-                    {% endif %}
+                        <p class="pull-right">
+                            <a href="{{ preview.embedUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                            <a href="#" class="" id="embedCopy">{{ 'copyClipboardLabel' | trans }}</a>
+                        </p>
+                    </div>
+                    {#{% endif %}#}
                 </form>
-            </div>
+            </p>
         </div>
 
         <script language="javascript">
@@ -48,10 +60,37 @@
                     function(){$(this).addClass('ui-state-hover');},
                     function(){$(this).removeClass('ui-state-hover');}
                 );
+
+                $('#permalinkUrlCopy').on('click', function(event) {
+                    event.preventDefault();
+                    return copyElContentClipboard('permalinkUrl');
+                });
+
+                $('#permaviewUrlCopy').on('click', function(event) {
+                    event.preventDefault();
+                    return copyElContentClipboard('permaviewUrl');
+                });
+
+                $('#embedCopy').on('click', function(event) {
+                    event.preventDefault();
+                    return copyElContentClipboard('embedRecordUrl');
+                });
+
+                var copyElContentClipboard = function(elId) {
+                    var copyEl = document.getElementById(elId);
+                    copyEl.select();
+                    try {
+                        var successful = document.execCommand('copy');
+                        var msg = successful ? 'successful' : 'unsuccessful';
+                        console.log('Copying text command was ' + msg);
+                    } catch (err) {
+                        console.log('unable to copy');
+                    }
+                }
             });
         </script>
     {% else %}
-        <div><{{ 'No URL available' | trans }}</div>
+        <div>{{ 'No URL available' | trans }}</div>
     {% endif %}
 {% endif %}
 
