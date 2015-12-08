@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea;
 
 use Alchemy\Cors\Options\DefaultProvider;
 use Alchemy\CorsProvider\CorsServiceProvider;
-use Alchemy\EmbedProvider\EmbedServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
