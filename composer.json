@@ -28,7 +28,7 @@
         },
         {
             "type": "vcs",
-            "url":  "https://github.com/lostdalek/embed-bundle.git"
+            "url":  "https://github.com/alchemy-fr/embed-bundle.git"
         }
     ],
     "require":      {

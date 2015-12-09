@@ -28,7 +28,7 @@
     "bootstrap-sass": "v2.3.2.2",
     "jquery.lazyload": "~1.9.7",
     "jquery-treeview": "~1.4.2",
-    "alchemy-embed-medias": "https://github.com/lostdalek/embed-bundle.git"
+    "alchemy-embed-medias": "https://github.com/alchemy-fr/embed-bundle.git"
   },
   "devDependencies": {
     "mocha": "latest",
