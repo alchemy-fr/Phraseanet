@@ -104,6 +104,7 @@ class UserManipulator implements ManipulatorInterface
             $old_login = $user->getLogin();
             $old_email = $user->getEmail();
 
+            $user->setLogin(sprintf('(#deleted_%s_%d)', $old_login, $old_id));
             $user->setDeleted(true);
             $user->setEmail(null);
 

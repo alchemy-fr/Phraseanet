@@ -83,6 +83,9 @@ use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
+use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Event\ConnectionEventArgs;
+use Doctrine\DBAL\Events;
 use Doctrine\ORM\Configuration;
 use FFMpeg\FFMpegServiceProvider;
 use Gedmo\DoctrineExtensions as GedmoExtension;
@@ -1012,11 +1015,26 @@ class Application extends SilexApplication
 
         $this['dbs.event_manager'] = $this->share($this->extend('dbs.event_manager', function ($eventManagers, $app) {
             foreach ($eventManagers->keys() as $name) {
-                $app['dbal.evm.register.listeners']($eventManagers[$name]);
+                /** @var EventManager $eventManager */
+                $eventManager = $eventManagers[$name];
+                $app['dbal.evm.register.listeners']($eventManager);
+
+                $eventManager->addEventListener(Events::postConnect, $this);
             }
 
             return $eventManagers;
         }));
+    }
+
+    /**
+     * @param ConnectionEventArgs $args
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function postConnect(ConnectionEventArgs $args)
+    {
+        if ('sqlite' == $args->getDatabasePlatform()->getName()) {
+            $args->getConnection()->exec('PRAGMA foreign_keys = ON');
+        }
     }
 
     private function setupMediaAlchemyst()
