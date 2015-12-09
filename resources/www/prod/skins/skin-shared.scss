@@ -1,6 +1,7 @@
 $proposalColor: #4c5d84;
 $thesaurusColor: #884c92;
 $basketsColor: #076882;
+$pluginsColor: #FFF;
 
 @import '../../_shared/styles/variables';
 
@@ -530,6 +531,7 @@ h4 {
 @import 'ui-components/workzone-thesaurus';
 @import 'ui-components/workzone-baskets';
 @import 'ui-components/workzone-proposals';
+@import 'ui-components/workzone-plugins';
 @import 'ui-components/actions';
 @import 'ui-components/gui';
 @import 'ui-components/gui-misc';
