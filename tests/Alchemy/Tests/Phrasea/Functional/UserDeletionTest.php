@@ -59,6 +59,9 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->apiApplicationManipulator->update($this->apiApplication);
     }
 
+    /**
+     * @see https://phraseanet.atlassian.net/browse/PHRAS-811
+     */
     public function testRemoveUserWhichLoggedViaOAuthDoesNotThrowException()
     {
         $app = $this->getApplication();
@@ -82,6 +85,16 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNull($apiLogRepository->find($apiLogId), 'Created api log should have been deleted');
         $this->user = null;
         $this->apiApplication = null;
+    }
+
+    /**
+     * @see https://phraseanet.atlassian.net/browse/PHRAS-812
+     */
+    public function testRemoveUserShouldChangeLogin()
+    {
+        $this->userManipulator->delete($this->user);
+
+        $this->assertNotEquals('login', $this->user->getLogin());
     }
 
     public function tearDown()
