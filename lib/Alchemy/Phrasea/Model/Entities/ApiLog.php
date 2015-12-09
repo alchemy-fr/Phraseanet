@@ -28,7 +28,12 @@ class ApiLog
 
     /**
      * @ORM\ManyToOne(targetEntity="ApiAccount")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(
+     *     name="account_id",
+     *     referencedColumnName="id",
+     *     nullable=false,
+     *     onDelete="CASCADE"
+     * )
      *
      * @return ApiAccount
      **/
