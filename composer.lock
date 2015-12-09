@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "88bd77e0808ebda8b6e88227e8769c3f",
-    "content-hash": "a9100adfec1e7b458776e28327caa573",
+    "hash": "abab1b811f46968bbffeeec40d17eac9",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -135,13 +134,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/lostdalek/embed-bundle.git",
-                "reference": "209704c7eab848891fa0fa77390b48c38f0b5fd4"
+                "url": "https://github.com/alchemy-fr/embed-bundle.git",
+                "reference": "a9fc3ac5f5d2b4b8565cf6fbb2889eb9dda9bb07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lostdalek/embed-bundle/zipball/56672f0067acb94c7e7e6a9c2076e760fbd2c405",
-                "reference": "209704c7eab848891fa0fa77390b48c38f0b5fd4",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/a9fc3ac5f5d2b4b8565cf6fbb2889eb9dda9bb07",
+                "reference": "a9fc3ac5f5d2b4b8565cf6fbb2889eb9dda9bb07",
                 "shasum": ""
             },
             "require-dev": {
@@ -179,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/lostdalek/embed-bundle/tree/master",
-                "issues": "https://github.com/lostdalek/embed-bundle/issues"
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/master",
+                "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2015-12-07 15:56:41"
+            "time": "2015-12-09 14:35:43"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -497,7 +496,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/a0e2c2b8a1d2c9c405fc9663b698f56a20831946",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
                 "reference": "7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
                 "shasum": ""
             },
