@@ -100,6 +100,11 @@ $workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
         &.baskets.ui-state-active a {
           border-bottom: 3px solid $basketsColor;
         }
+        &.plugins.ui-state-active a {
+          border-bottom: 3px solid $pluginsColor;
+        }
+
+
         a {
           padding: 0;
           margin: 0;
@@ -136,7 +141,7 @@ $workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
     width: 100%;
   }
   .icon-menu {
-    .WZtabs {
+    .WZtabs, .WZplugins {
       display: block;
       width: 70px;
       height: 82px;
