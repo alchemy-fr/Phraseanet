@@ -270,6 +270,9 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $params = $this->createRecordQueryParams($recordQuery, $options, null);
 
+        // ask ES to return field _version (incremental version number of document)
+        $params['body']['version'] = true;
+
         $params['body']['from'] = $offset;
         $params['body']['size'] = $perPage;
         if($this->options->getHighlight()) {

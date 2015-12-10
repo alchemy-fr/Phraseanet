@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use MediaVorus\Media\MediaInterface;
@@ -184,15 +185,15 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         }
 
-        $connbas = $this->record->get_databox()->get_connection();
+        $connbas = $this->record->getDatabox()->get_connection();
 
-        $sql = 'SELECT subdef_id, name, file, width, height, mime,
-                path, size, substit, created_on, updated_on, etag
-                FROM subdef
-                WHERE name = :name AND record_id = :record_id';
+        $sql = "SELECT subdef_id, name, file, width, height, mime,"
+            . " path, size, substit, created_on, updated_on, etag"
+            . " FROM subdef"
+            . " WHERE name = :name AND record_id = :record_id";
 
         $params = [
-            ':record_id' => $this->record->get_record_id(),
+            ':record_id' => $this->record->getRecordId(),
             ':name'      => $this->name
         ];
 
@@ -284,7 +285,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->file = 'regroup_thumb.png';
             $this->url = Url::factory('/assets/common/images/icons/substitution/regroup_thumb.png');
         } else {
-            $mime = $this->record->get_mime();
+            $mime = $this->record->getMimeType();
             $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
 
             $this->mime = 'image/png';
@@ -331,7 +332,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function get_permalink()
     {
         if ( ! $this->permalink && $this->is_physically_present())
-            $this->permalink = media_Permalink_Adapter::getPermalink($this->app, $this->record->get_databox(), $this);
+            $this->permalink = media_Permalink_Adapter::getPermalink($this->app, $this->record->getDatabox(), $this);
 
         return $this->permalink;
     }
@@ -342,7 +343,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_record_id()
     {
-        return $this->record->get_record_id();
+        return $this->record->getRecordId();
     }
 
     public function getEtag()
@@ -362,7 +363,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->etag = $etag;
 
         $sql = "UPDATE subdef SET etag = :etag WHERE subdef_id = :subdef_id";
-        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt = $this->record->getDatabox()->get_connection()->prepare($sql);
         $stmt->execute([':subdef_id' => $this->subdef_id, ':etag'      => $etag]);
         $stmt->closeCursor();
 
@@ -374,7 +375,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->is_substituted = !!$substit;
 
         $sql = "UPDATE subdef SET substit = :substit, updated_on=NOW() WHERE subdef_id = :subdef_id";
-        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt = $this->record->getDatabox()->get_connection()->prepare($sql);
         $stmt->execute(array(
             ':subdef_id' => $this->subdef_id,
             ':substit'   => $this->is_substituted
@@ -392,7 +393,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_sbas_id()
     {
-        return $this->record->get_sbas_id();
+        return $this->record->getDataboxId();
     }
 
     /**
@@ -537,9 +538,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function getDataboxSubdef()
     {
         return $this->record
-                ->get_databox()
+                ->getDatabox()
                 ->get_subdef_structure()
-                ->get_subdef($this->record->get_type(), $this->get_name());
+                ->get_subdef($this->record->getType(), $this->get_name());
     }
 
     public function getDevices()
@@ -550,9 +551,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         try {
             return $this->record
-                    ->get_databox()
+                    ->getDatabox()
                     ->get_subdef_structure()
-                    ->get_subdef($this->record->get_type(), $this->get_name())
+                    ->get_subdef($this->record->getType(), $this->get_name())
                     ->getDevices();
         } catch (\Exception_Databox_SubdefNotFound $e) {
             return [];
@@ -584,9 +585,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $media = $mediavorus->guess($this->get_pathfile());
 
-        $sql = "UPDATE subdef
-              SET height = :height , width = :width, updated_on = NOW()
-              WHERE record_id = :record_id AND name = :name";
+        $sql = "UPDATE subdef SET height = :height , width = :width, updated_on = NOW()"
+            . " WHERE record_id = :record_id AND name = :name";
 
         $params = [
             ':width'     => $media->getWidth(),
@@ -595,7 +595,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             ':name'      => $this->get_name(),
         ];
 
-        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt = $this->record->getDatabox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -671,7 +671,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public static function create(Application $app, \record_adapter $record, $name, MediaInterface $media)
     {
-        $databox = $record->get_databox();
+        $databox = $record->getDatabox();
         $connbas = $databox->get_connection();
 
         $path = $media->getFile()->getPath();
@@ -696,11 +696,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         try {
 
-            $sql = 'SELECT subdef_id FROM subdef
-                    WHERE record_id = :record_id AND name = :name';
+            $sql = "SELECT subdef_id FROM subdef WHERE record_id = :record_id AND name = :name";
             $stmt = $connbas->prepare($sql);
             $stmt->execute([
-                ':record_id' => $record->get_record_id(),
+                ':record_id' => $record->getRecordId(),
                 ':name'      => $name,
             ]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -710,21 +709,19 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
                 throw new \Exception_Media_SubdefNotFound('Require the real one');
             }
 
-            $sql = "UPDATE subdef
-              SET path = :path, file = :file
-                  , width = :width , height = :height, mime = :mime
-                  , size = :size, dispatched = :dispatched, updated_on = NOW()
-              WHERE subdef_id = :subdef_id";
+            $sql = "UPDATE subdef"
+                . " SET path = :path, file = :file,"
+                . " width = :width , height = :height, mime = :mime,"
+                . " size = :size, dispatched = :dispatched, updated_on = NOW()"
+                . " WHERE subdef_id = :subdef_id";
 
             $params[':subdef_id'] = $row['subdef_id'];
         } catch (\Exception_Media_SubdefNotFound $e) {
-            $sql = "INSERT INTO subdef
-              (record_id, name, path, file, width
-                , height, mime, size, dispatched, created_on, updated_on)
-              VALUES (:record_id, :name, :path, :file, :width, :height
-                , :mime, :size, :dispatched, NOW(), NOW())";
+            $sql = "INSERT INTO subdef"
+                . " (record_id, name, path, file, width, height, mime, size, dispatched, created_on, updated_on)"
+                . " VALUES (:record_id, :name, :path, :file, :width, :height, :mime, :size, :dispatched, NOW(), NOW())";
 
-            $params[':record_id'] = $record->get_record_id();
+            $params[':record_id'] = $record->getRecordId();
             $params[':name'] = $name;
         }
 
@@ -740,7 +737,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         if ($name === 'thumbnail') {
-            $app['phraseanet.thumb-symlinker']->symlink($subdef->get_pathfile());
+            /** @var SymLinker $symlinker */
+            $symlinker = $app['phraseanet.thumb-symlinker'];
+            $symlinker->symlink($subdef->get_pathfile());
         }
 
         unset($media);
@@ -750,8 +749,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @param  boolean $random
-     * @return string
      */
     protected function generate_url()
     {
@@ -776,8 +773,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             }
         }
 
-        $this->url = Url::factory("/datafiles/" . $this->record->get_sbas_id()
-            . "/" . $this->record->get_record_id() . "/"
+        $this->url = Url::factory("/datafiles/" . $this->record->getDataboxId()
+            . "/" . $this->record->getRecordId() . "/"
             . $this->get_name() . "/?etag=".$this->getEtag());
 
         return;
@@ -791,14 +788,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function get_data_from_cache($option = null)
     {
-        $databox = $this->get_record()->get_databox();
+        $databox = $this->get_record()->getDatabox();
 
         return $databox->get_data_from_cache($this->get_cache_key($option));
     }
 
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        $databox = $this->get_record()->get_databox();
+        $databox = $this->get_record()->getDatabox();
 
         return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
@@ -806,8 +803,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function delete_data_from_cache($option = null)
     {
         $this->setEtag(null);
-        $databox = $this->get_record()->get_databox();
+        $databox = $this->get_record()->getDatabox();
 
-        return $databox->delete_data_from_cache($this->get_cache_key($option));
+        $databox->delete_data_from_cache($this->get_cache_key($option));
     }
 }

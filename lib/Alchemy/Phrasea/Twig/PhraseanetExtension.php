@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
+use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 
 class PhraseanetExtension extends \Twig_Extension
 {
@@ -231,20 +232,25 @@ class PhraseanetExtension extends \Twig_Extension
 
     public function getSubdefUrl(RecordInterface $record, $subdefName)
     {
+        /** @var StaticMode $staticMode */
+        $staticMode = $this->app['phraseanet.static-file'];
+
         if ($record instanceof ElasticsearchRecord) {
             $subdefs = $record->getSubdefs();
             if (isset($subdefs[$subdefName])) {
                 $thumbnail = $subdefs[$subdefName];
                 if (null !== $path = $thumbnail['path']) {
                     if (is_string($path) && '' !== $path) {
-                        return $this->app['phraseanet.static-file']->getUrl($path);
+                        $etag = dechex(crc32(dechex($record->getESVersion() ^ 0x5A5A5A5A)));
+                        return $staticMode->getUrl($path, $etag);
                     }
                 }
             }
         } elseif ($record instanceof \record_adapter) {
             if (null !== $thumbnail = $record->get_subdef($subdefName)) {
                 if ('' !== $path = $thumbnail->get_pathfile()) {
-                    return $this->app['phraseanet.static-file']->getUrl($path);
+                    $etag = $thumbnail->getEtag();
+                    return $staticMode->getUrl($path, $etag);
                 }
             }
         }
