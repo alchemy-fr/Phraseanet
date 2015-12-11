@@ -60,6 +60,16 @@ $answersInfoLabelColor: #949494 !default;
     width: 600px;
     overflow: hidden;
     border: 3px solid #404040;
+    .desc {
+      .dl-horizontal {
+        dt {
+          width: 70px; //100
+        }
+        dd {
+          margin-left: 90px; //120
+        }
+      }
+    }
   }
 }
 

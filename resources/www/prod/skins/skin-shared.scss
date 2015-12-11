@@ -511,6 +511,14 @@ h4 {
   color: $textPrimaryInverseColor;
 }
 
+.dl-horizontal {
+  dd {
+    &:before {
+      content: "\200b"; // unicode zero width space character
+    }
+  }
+}
+
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
 @import 'ui-components/forms';

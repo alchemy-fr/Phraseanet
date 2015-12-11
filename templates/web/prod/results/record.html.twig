@@ -66,27 +66,16 @@
                     {% endif %}
 
                     {# drop down options #}
-                    <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
+                    <td style="text-align:right;width:{{l_width}}px;" valign="bottom">
 
-
-
-                        {#<a style="float:right;padding:0;cursor:pointer;" class="contextMenuTrigger" id="contextTrigger_{{record.id}}">
-
-                            <img src="/assets/common/images/icons/contextMenuTrigger.png" height="10" />
-                            <i class="icon-caret-down"></i>
-                        </a>#}
-
-
-                        {% if record.subdefs.preview is defined and has_access_subdef(record, 'preview') %}
-                            <span class="icon-stack previewTips"
-                                 tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" class="previewTips"
-                            >
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-search icon-light"></i>
-                            </span>
-                            {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" class="previewTips"></div>#}
+                        {% if settings.rollover_thumbnail == 'caption' %}
+                            {% if record.subdefs.preview is defined and has_access_subdef(record, 'preview') %}
+                                <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" class="previewTips">
+                                  <i class="icon-circle icon-stack-base"></i>
+                                  <i class="icon-search icon-light"></i>
+                                </span>
+                            {% endif %}
                         {% endif %}
-
                         {% if settings.rollover_thumbnail == 'preview' %}
                             <span class="icon-stack captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
                               <i class="icon-circle icon-stack-base"></i>
@@ -95,10 +84,6 @@
                         {% endif %}
 
                         {% if settings.technical_display == '1' %}
-                            {#<img
-                            class="infoTips"
-                            tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" src="/assets/common/images/icons/info.gif"/>#}
-
                             <span class="icon-stack infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
                               <i class="icon-circle icon-stack-base"></i>
                               <i class="icon-info icon-light"></i>
