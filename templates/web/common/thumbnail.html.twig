@@ -1,43 +1,7 @@
 {% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload) %}
-    {# @todo remove lazyload #}
-
     {% set record_type = thumbnail.get_type() %}
     {% set box_w = box_w|round %}
     {% set box_h = box_h|default(box_w)|round %}
-
-    {% if record_type == 'AUDIO_MP3' %}
-        {% set original_w = 320 %}
-        {% set original_h = 60 %}
-        {% set box_w = 320 %}
-        {% set box_h = 60 %}
-
-
-        {% set fit_size = {
-            "width":original_w,
-            "height":original_h,
-            "top":0,
-            "left": 0
-        } %}
-    {% elseif record_type == 'FLEXPAPER' %}
-        {% set original_w = 800 %}
-        {% set original_h = 600 %}
-
-        {% set fit_size = {
-            "width":800,
-            "height":600,
-            "top":0,
-            "left": 0
-        } %}
-    {% else %}
-        {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
-        {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
-
-        {% set fit_size = fitIn(
-            {"width":original_w, "height":original_h},
-            {"width":box_w, "height":box_h}
-        )%}
-    {% endif %}
-
     {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
 
     {% if wrap %}
@@ -45,20 +9,36 @@
     {% endif %}
 
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-        {% import 'common/players/video.html.twig' as player %}
-        {{ player.video_player(thumbnail, url, original_w, original_h, fit_size) }}
+        <iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}"
+                frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'FLEXPAPER' %}
-        {% import 'common/players/pdf.html.twig' as player %}
-        {{ player.pdf_player(thumbnail, url, original_w, original_h, fit_size) }}
+        <iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}"
+                frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'AUDIO_MP3' %}
-        {% import 'common/players/audio.html.twig' as player %}
-        {{ player.audio_player(thumbnail, url, original_w, original_h, fit_size) }}
+        <iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}"
+                frameborder="0" allowfullscreen></iframe>
     {% else %}
+        {#<iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&options=draggable,zoomable"
+                frameborder="0" allowfullscreen></iframe>#}
+
+        {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+        {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+
+        {% set fit_size = fitIn(
+        {"width":original_w, "height":original_h},
+        {"width":box_w, "height":box_h}
+        )%}
+
         <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
              style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
              src="{% if lazyload %}/assets/common/images/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
         <input type="hidden" name="width" value="{{original_w}}"/>
         <input type="hidden" name="height" value="{{original_h}}"/>
+
     {% endif %}
 
     {% if wrap %}
