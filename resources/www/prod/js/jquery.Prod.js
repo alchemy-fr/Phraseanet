@@ -3,7 +3,7 @@
         humane.info = humane.spawn({addnCls: 'humane-libnotify-info', timeout: 1000});
         humane.error = humane.spawn({addnCls: 'humane-libnotify-error', timeout: 1000});
 
-        $('a.dialog').on('click', function (event) {
+        $('body').on('click', 'a.dialog', function (event) {
             var $this = $(this), size = 'Medium';
 
             if ($this.hasClass('small-dialog')) {

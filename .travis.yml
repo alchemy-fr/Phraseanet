@@ -27,10 +27,10 @@ before_install:
   - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0
   - sudo service elasticsearch start
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - echo 'extension="redis.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/redis.ini
-  - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
-  - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - echo "extension=zmq.so" > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/zmq.ini
+  - echo 'extension="redis.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - yes | pecl install imagick
 install:
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
