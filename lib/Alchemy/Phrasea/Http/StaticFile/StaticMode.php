@@ -25,13 +25,20 @@ class StaticMode
     }
 
     /**
-     * {@inheritdoc}
+     * @param $pathFile
+     * @param null $etag
+     * @return Url
      */
-    public function getUrl($pathFile)
+    public function getUrl($pathFile, $etag=null)
     {
         $this->ensureSymlink($pathFile);
 
-        return Url::factory(sprintf('/thumbnails/%s', $this->symlinker->getSymlinkBasePath($pathFile)));
+        $url = sprintf('/thumbnails/%s', $this->symlinker->getSymlinkBasePath($pathFile));
+        if($etag !== null) {
+            $url .= "?etag=" . urlencode($etag);
+        }
+
+        return Url::factory($url);
     }
 
     /**

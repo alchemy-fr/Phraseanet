@@ -37,6 +37,8 @@ class ElasticsearchRecordHydrator
 
         $record = new ElasticsearchRecord();
 
+        $record->setESData($hit['_index'], $hit['_type'], $hit['_id'], $hit['_version'], $hit['_score']);
+
         $record->setPosition($position);
         $record->setBaseId(igorw\get_in($data, ['base_id'], 0));
         $record->setCollectionName(igorw\get_in($data, ['collection_name'], null));

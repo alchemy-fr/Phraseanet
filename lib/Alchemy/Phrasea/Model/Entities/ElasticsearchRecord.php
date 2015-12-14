@@ -19,6 +19,14 @@ use Alchemy\Phrasea\Model\RecordInterface;
  */
 class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
 {
+    // ES data
+    private $_index;
+    private $_type;
+    private $_id;
+    private $_version;
+    private $_score;
+
+    // Phraseanet Record data
     private $databoxId;
     private $recordId;
     private $collectionId;
@@ -41,6 +49,33 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $subdefs = [];
     private $flags = [];
     private $highlight = [];
+
+    /**
+     * @param string $_index
+     * @param string $_type
+     * @param string $_id
+     * @param int $_version
+     * @param float $_score
+     */
+    public function setESData($_index, $_type, $_id, $_version, $_score)
+    {
+        $this->_index = $_index;
+        $this->_type = $_type;
+        $this->_id = $_id;
+        $this->_version = $_version;
+        $this->_score = $_score;
+    }
+
+    // todo: add getters for other ES data _index, _type, _id, _score
+
+    /**
+     * @return int the _version value from ES for the document
+     */
+    public function getESVersion()
+    {
+        return $this->_version;
+    }
+
 
     /** {@inheritdoc} */
     public function getId()
