@@ -18,9 +18,7 @@ gulp.task('build-permaview-js', function(){
     /*
     var permaviewGroup =  [
         config.paths.src + 'vendors/jquery-mousewheel/js/jquery.mousewheel.js',
-        config.paths.src + 'vendors/jquery-image-enhancer/js/jquery.image_enhancer.js',
-        config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
-        config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
+        config.paths.src + 'vendors/jquery-image-enhancer/js/jquery.image_enhancer.js'
     ];
     return utils.buildJsGroup(permaviewGroup, 'permaview', 'permaview/js', debugMode);
     */

@@ -39,9 +39,7 @@ gulp.task('build-common-js', function(){
         config.paths.src + 'vendors/jquery-contextmenu/js/jquery.contextmenu_custom.js',
         config.paths.src + 'common/js/jquery.common.js',
         config.paths.src + 'common/js/jquery.tooltip.js',
-        config.paths.src + 'common/js/jquery.Dialog.js',
-        config.paths.vendors + 'swfobject/swfobject/swfobject.js', // @TODO: should be moved away (embed-bundle)
-        config.paths.dist + 'include/jslibs/flowplayer/flowplayer-3.2.13.min.js' // @TODO: should be moved away (embed-bundle)
+        config.paths.src + 'common/js/jquery.Dialog.js'
     ];
     return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });

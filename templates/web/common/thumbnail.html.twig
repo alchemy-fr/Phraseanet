@@ -21,10 +21,6 @@
                 src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
                 frameborder="0" allowfullscreen></iframe>
     {% else %}
-        {#<iframe width="100%" height="100%"
-                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&options=draggable,zoomable"
-                frameborder="0" allowfullscreen></iframe>#}
-
         {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
         {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
 

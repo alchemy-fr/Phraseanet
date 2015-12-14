@@ -26,85 +26,49 @@
         {% set d_width = d_height * thumbnail_width / thumbnail_height %}
         {% set top = ((b_height - d_height) / 2) %}
     {% endif %}
+    {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
 
+    {% set record_type = thumbnail.get_type() %}
+    <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
 
-        {% set record_type = thumbnail.get_type() %}
-        <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
-        {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = random(100000) %}
-          <div class="record record_video imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-            <video type="video/mp4" controls="controls" style="width:{{d_width|round}}px;height:{{d_height|round}}px;" autoplay="autoplay">
-              <source src="{{thumbnail.get_url()}}" type="video/mp4" />
-            </video>
-          </div>
-        {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = random(100000) %}
-          <div class="record record_document imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-              <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-            <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
-            "preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "100%", "100%", "9.0.0", false, false,
-            {menu: "false",flashvars: "SwfFile={{thumbnail.get_url()}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{ app['locale'] }}",  movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
-
-        {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = random(100000) %}
-          <div class="record record_audio audioTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
-            <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-            <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-            <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/jslibs/audio-player/player.swf",
-            "preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "{{thumbnail_width}}", "{{thumbnail_height}}", "9.0.0", false, false,
-            {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{thumbnail.get_url()}}", movie: "/include/jslibs/audio-player/player.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
-        {% else %}
-          <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
-               style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
-               src="{{thumbnail.get_url()}}" ondragstart="return false;">
-          <input type="hidden" name="width" value="{{thumbnail_width}}"/>
-          <input type="hidden" name="height" value="{{thumbnail_height}}"/>
-        {% endif %}
-        </div>
-
-
+    {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+    <iframe width="100%" height="100%"
+            src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'FLEXPAPER' %}
+    <iframe width="100%" height="100%"
+            src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'AUDIO_MP3' %}
+    <iframe width="100%" height="100%"
+            src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% else %}
+      <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+           style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
+           src="{{thumbnail.get_url()}}" ondragstart="return false;">
+      <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+      <input type="hidden" name="height" value="{{thumbnail_height}}"/>
+    {% endif %}
+    </div>
 {% endmacro %}
 
 {% macro format100percent(thumbnail, extraclass)%}
+    {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
     {% set record_type = thumbnail.get_type() %}
-        {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-          {% set random = random(100000) %}
-          <div class="record record_video imgTips">
-            <video type="video/mp4" controls="controls" style="height:80%;width:80%;max-height: 80%;max-width:80%; margin: 0 auto" autoplay="autoplay">
-              <source src="{{thumbnail.get_url()}}" type="video/mp4" />
-            </video>
-          </div>
-        {% elseif record_type == 'FLEXPAPER' %}
-          {% set random = random(100000) %}
-          <div class="record record_document imgTips" style="width:100%;">
-              <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
-            "preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "100%", "100%", "9.0.0", false, false,
-            {menu: "false",flashvars: "SwfFile={{thumbnail.get_url()}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",  movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
-
-        {% elseif record_type == 'AUDIO_MP3' %}
-          {% set random = random(100000) %}
-          <div class="record record_audio audioTips" style="width:100%;">
-            <div id="preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}" class="PNB" style=""></div>
-          </div>
-          <script type="text/javascript">
-            swfobject.embedSWF("/include/jslibs/audio-player/player.swf",
-            "preview_{{thumbnail.get_base_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
-            "{{thumbnail.get_width()}}", "{{thumbnail.get_height()}}", "9.0.0", false, false,
-            {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{thumbnail.get_url()}}", movie: "/include/jslibs/audio-player/player.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
-        {% else %}
+    {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+        <iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
+                frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'FLEXPAPER' %}
+        <iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
+                frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'AUDIO_MP3' %}
+        <iframe width="100%" height="100%"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
+                frameborder="0" allowfullscreen></iframe>
+    {% else %}
           <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                src="{{thumbnail.get_url()}}" ondragstart="return false;" />
         {% endif %}

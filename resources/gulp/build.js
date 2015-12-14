@@ -49,6 +49,5 @@ gulp.task('build-vendors', [
     'build-requirejs',
     'build-jquery-treeview',
     'build-jquery-lazyload',
-    'build-jquery-test-paths',
-    'build-swfobject'
+    'build-jquery-test-paths'
     ], function() {});
