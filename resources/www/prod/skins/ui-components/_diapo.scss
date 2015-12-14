@@ -58,6 +58,16 @@ $diapoBorderColor: $darkerBorderColor !default;
         font-size: 12px;
 
       }*/
+      tr {
+        td {
+          &:first-child {
+            font-size: $xmediumFontSize;
+            line-height: $xmediumFontSize;
+            text-shadow: 1px 1px 2px $darkBackgroundColor;
+
+          }
+        }
+      }
       .icon-stack {
         font-size: 11px;
         cursor: pointer;
