@@ -7,6 +7,12 @@
     {% set wrap = true %}
 {% endif %}
 
+{% if autoplay is defined and autoplay %}
+    {% set autoplay = true %}
+{% else %}
+    {% set autoplay = false %}
+{% endif %}
+
 {% set previewHtml5 = null %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_subdef(record, 'preview') %}
@@ -18,4 +24,4 @@
 {% set width = preview_obj.get_width() %}
 {% set height = preview_obj.get_height() %}
 
-{{ thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', wrap, false) }}
+{{ thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', wrap, false, autoplay) }}

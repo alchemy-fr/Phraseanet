@@ -1,4 +1,4 @@
-{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload) %}
+{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload, autoplay) %}
     {% set record_type = thumbnail.get_type() %}
     {% set box_w = box_w|round %}
     {% set box_h = box_h|default(box_w)|round %}
@@ -10,15 +10,15 @@
 
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
         <iframe width="100%" height="100%"
-                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
                 frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'FLEXPAPER' %}
         <iframe width="100%" height="100%"
-                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
                 frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'AUDIO_MP3' %}
         <iframe width="100%" height="100%"
-                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}"
+                src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
                 frameborder="0" allowfullscreen></iframe>
     {% else %}
         {#<iframe width="100%" height="100%"
