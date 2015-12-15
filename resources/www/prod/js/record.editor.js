@@ -1569,50 +1569,6 @@ function previewEdit(r) {
 
     $('#TH_Opreview .PNB10').empty().append(p4.edit.T_records[r].preview);
 
-    //  var data = p4.edit.T_records[r].preview;
-
-    //  if ((data.doctype == 'video' || data.doctype == 'audio' || data.doctype == 'flash')) {
-    //    if(data.doctype != 'video' && data.flashcontent.url)
-    //    {
-    //      var flashvars = false;
-    //      var params = {
-    //        menu: "false",
-    //        flashvars: data.flashcontent.flashVars,
-    //        movie: data.flashcontent.url,
-    //        allowFullScreen :"true",
-    //        wmode: "transparent"
-    //      };
-    //      var attributes = false;
-    //      if (data.doctype != 'audio') {
-    //        attributes = {
-    //          styleclass: "PREVIEW_PIC"
-    //        };
-    //      }
-    //      swfobject.embedSWF(data.flashcontent.url, "FLASHPREVIEW", data.flashcontent.width, data.flashcontent.height, "9.0.0", false, flashvars, params, attributes);
-    //    }
-    //    else
-    //    {
-    //      flowplayer("FLASHPREVIEW", '/include/flowplayer/flowplayer-3.2.2.swf',{
-    //        clip: {
-    //          autoPlay: true,
-    //          autoBuffering:true,
-    //          provider: 'h264streaming',
-    //          metadata: false,
-    //          scaling:'fit',
-    //          url: data.flashcontent.flv
-    //        },
-    //        onError:function(code,message){
-    //          getNewVideoToken(p4.edit.T_records[r].sbas_id, p4.edit.T_records[r].rid, this);
-    //        },
-    //        plugins: {
-    //          h264streaming: {
-    //            url: '/include/flowplayer/flowplayer.pseudostreaming-3.2.2.swf'
-    //          }
-    //        }
-    //      });
-    //    }
-    //  }
-
     if ($('img.PREVIEW_PIC.zoomable').length > 0) {
         $('img.PREVIEW_PIC.zoomable').draggable();
     }

@@ -43,6 +43,7 @@ class TooltipController extends Controller
     {
         return $this->render('prod/Tooltip/Preview.html.twig', [
             'record' => new \record_adapter($this->app, $sbas_id, $record_id),
+            'autoplay' => true,
             'not_wrapped' => true
         ]);
     }

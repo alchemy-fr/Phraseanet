@@ -229,3 +229,5 @@ embed_bundle:
         - 2
     audio_player: 'videojs'
     audio_autoplay: false
+    document:
+        enable_pdfjs: true

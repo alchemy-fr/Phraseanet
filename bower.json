@@ -20,7 +20,6 @@
     "bootstrap-multiselect": "v0.9",
     "zxcvbn": "https://github.com/lowe/zxcvbn.git",
     "geonames-server-jquery-plugin": "~0.2",
-    "swfobject": "latest",
     "tinymce": "~4.0",
     "jquery-galleria": "1.2.9",
     "jquery.cookie": "~1.4",
