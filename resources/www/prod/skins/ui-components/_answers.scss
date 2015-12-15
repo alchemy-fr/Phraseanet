@@ -79,11 +79,11 @@ $answersInfoLabelColor: #949494 !default;
     top: 55px;
     bottom: 0;
     margin-right: 8px;
-    overflow-y: hidden;
+    //overflow-y: hidden;
     padding-left: 10px;
-    &:hover {
-      overflow-y: auto;
-    }
+    overflow-y: auto;
+    /*&:hover {
+    }*/
   }
 }
 

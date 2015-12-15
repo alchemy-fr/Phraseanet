@@ -21,7 +21,7 @@ $(document).ready(function () {
     $.datepicker.setDefaults({showMonthAfterYear: false});
     $.datepicker.setDefaults($.datepicker.regional[jq_date]);
 
-    $('a.infoDialog,div.infoDialog').on('click', function (event) {
+    $('body').on('click', '.infoDialog', function (event) {
         infoDialog($(this));
     });
 
