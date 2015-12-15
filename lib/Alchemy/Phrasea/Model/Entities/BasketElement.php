@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -237,7 +238,7 @@ class BasketElement
     /**
      * Get validation_datas
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection|ValidationData[]
      */
     public function getValidationDatas()
     {
@@ -276,8 +277,9 @@ class BasketElement
     }
 
     /**
-     *
+     * @param User $user
      * @return ValidationData
+     * @throws \Exception
      */
     public function getUserValidationDatas(User $user)
     {
