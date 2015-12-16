@@ -18,7 +18,7 @@
                     This avoids anonymous users to access to the content of the push if they were able to get the display
                     url through a forwarded mail for example.
                 </source>
-        <target state="translated">L'option Forcer l'authentification des utilisateurs contraint les destinataires à s'authentifier pour accéder au contenu diffusé. Cela interdit l'accès aux documents à des personnes auprès desquels l'url aurait été divulguée notamment par un transfert d'e-mail.</target>
+        <target state="translated">L'option Forcer l'authentification des utilisateurs contraint les destinataires à s'authentifier pour accéder au contenu diffusé. Cela interdit l'accès aux documents à des personnes auprès desquels l'URL aurait été divulguée notamment par un transfert d'e-mail.</target>
         <jms:reference-file line="168">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9378053eb7743587671aa830ffd2c9f1b13ad1a" resname="%ElementsCount% records" approved="yes">
@@ -4647,7 +4647,7 @@
       </trans-unit>
       <trans-unit id="78fbf70be163b16d5c72147a659d43a1ddbe4f62" resname="Please consider send this validation to the following users : %recommendation%" approved="yes">
         <source>Please consider send this validation to the following users : %recommendation%</source>
-        <target state="translated">Cette validation peut être adressée aux utilisateurs suivants : %recommendation%</target>
+        <target state="translated">Cette demande de validation peut être adressée aux utilisateurs suivants : %recommendation%</target>
         <jms:reference-file line="129">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2bec3eec3fa44ad54758d6446a424345830aac30" resname="Please fill the captcha" approved="yes">
@@ -4837,7 +4837,7 @@
       </trans-unit>
       <trans-unit id="12ca5649a3fe2b4bb2ad76e9bc73196208553814" resname="Push configuration" approved="yes">
         <source>Push configuration</source>
-        <target state="translated">Configuration de la Validation (Push de validation)</target>
+        <target state="translated">Configuration de la demande de validation</target>
         <jms:reference-file line="39">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5af801b860f0c16ff1fa7c14e4365c4a1372df5e" resname="Push from %user%" approved="yes">
@@ -4887,7 +4887,9 @@
       </trans-unit>
       <trans-unit id="dcf907ccbbcda0c0a828ef73ff1e6320748c1fad" resname="Push::une validation est une demande d'appreciation a d'autres personnes" approved="yes">
         <source>Push::une validation est une demande d'appreciation a d'autres personnes</source>
-        <target state="translated">La validation permet d'adresser des demandes d'appréciation de documents auprès d'utilisateurs. Ils recevront un e-mail contenant un lien lançant Phraseanet Lightbox. Cette interface les autorise à visualiser, télécharger, et à émettre des avis et commentaires sur le contenu diffusé. Pour les utilisateurs authentifiés, la Validation est également disponible sous la forme d'un panier reçu dans la zone de travail.</target>
+        <target state="translated">La validation permet d'adresser des demandes d'appréciation de documents auprès d'utilisateurs. 
+Ils recevront un e-mail contenant un lien lançant Phraseanet Lightbox. Cette interface les autorise à visualiser, télécharger, et à émettre des avis et commentaires sur le contenu diffusé. 
+Pour les utilisateurs authentifiés, la demande de validation est également disponible sous la forme d'un panier reçu dans la zone de travail.</target>
         <jms:reference-file line="159">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3e45857148ed08b19a425b5f4a2775e30dd346a7" resname="Push::unpush permet d'envoyer un lot d'image a des destinataires" approved="yes">
@@ -5001,7 +5003,7 @@
       </trans-unit>
       <trans-unit id="aba19c22de9ce4775ec46aebd783d496329ceee7" resname="Rappel pour une demande de validation" approved="yes">
         <source>Rappel pour une demande de validation</source>
-        <target state="translated">Rappel pour une demande de validation</target>
+        <target state="translated">Rappel pour une demande de validation se terminant bientôt</target>
         <jms:reference-file line="83">eventsmanager/notify/validationreminder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aafcf684757a5a4e1bf1630db0821e75f47a2d08" resname="Rapport de Validation" approved="yes">
@@ -5089,7 +5091,7 @@
       </trans-unit>
       <trans-unit id="f8a7429e2e2311f5a221af1767483f1cc8c5bc5f" resname="Recevoir des notifications lorsqu'on me demande une validation" approved="yes">
         <source>Recevoir des notifications lorsqu'on me demande une validation</source>
-        <target state="translated">Demande une validation d'enregistrements</target>
+        <target state="translated">Réception d'un Push ou d'une demande de validation</target>
         <jms:reference-file line="87">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7858bf48573ba33ca42942bf7c7d8221c6790312" resname="Recevoir des notifications lorsqu'un upload echoue sur un bridge" approved="yes">
@@ -5577,7 +5579,7 @@
       </trans-unit>
       <trans-unit id="7c2ce4a38c55478fb397967408b8c6d7c29fcc3b" resname="See validation results" approved="yes">
         <source>See validation results</source>
-        <target state="translated">Voir les résultats de la validation</target>
+        <target state="translated">Voir les résultats de la demande de validation</target>
         <jms:reference-file line="81">Notification/Mail/MailInfoValidationDone.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="68679be6d90db68ca5ceebaded92d5d83de8761c" resname="Select a list on the left and edit it !" approved="yes">
@@ -6439,7 +6441,7 @@
       </trans-unit>
       <trans-unit id="814c3298cccd06ad65ccac8a35e4f2104a4af17e" resname="This user does not participate to the validation but is only viewer." approved="yes">
         <source>This user does not participate to the validation but is only viewer.</source>
-        <target state="translated">Cet utilisateur ne participe pas à la validation</target>
+        <target state="translated">Cet utilisateur ne participe pas à la demande de validation</target>
         <jms:reference-file line="363">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="edbc2ef60cebe2e6efe5cb9a2662e710a65615d1" resname="This user has no rights" approved="yes">
@@ -6942,7 +6944,7 @@
       </trans-unit>
       <trans-unit id="6b48f9fba4e8006b68c009a21b0e1087b6aafa91" resname="Validation request from %user% for '%title%'" approved="yes">
         <source>Validation request from %user% for '%title%'</source>
-        <target state="translated">Demande de validation de la part de %user% : '%title%'</target>
+        <target state="translated">Demande de validation adressée par %user% : '%title%'</target>
         <jms:reference-file line="63">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c259e54dcc7188e7cfe33403eca78cda53017fc" resname="Validations" approved="yes">
