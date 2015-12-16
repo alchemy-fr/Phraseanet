@@ -4894,7 +4894,9 @@ Feedbacks are also available as a Feedback request basket within Phraseanet Prod
       </trans-unit>
       <trans-unit id="3e45857148ed08b19a425b5f4a2775e30dd346a7" resname="Push::unpush permet d'envoyer un lot d'image a des destinataires" approved="yes">
         <source>Push::unpush permet d'envoyer un lot d'image a des destinataires</source>
-        <target state="translated">Use Push to send a selection of documents to recipients.rnRecipients will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents and possibly download them.rnPushed documents are also available in a received basket within Phraseanet Production for registered users.</target>
+        <target state="translated">Use Push to send a selection of documents to recipients.
+Recipients will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents and possibly download them.
+Pushed documents are also available in a received basket within Phraseanet Production for registered users.</target>
         <jms:reference-file line="157">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a60f2c73604f623449f263e78f5857849ad5e429" resname="Quality" approved="yes">
@@ -12116,7 +12118,7 @@ Feedbacks are also available as a Feedback request basket within Phraseanet Prod
       </trans-unit>
       <trans-unit id="0d0f4c55ea27f5943f5853afacda246f1cdcd805" resname="thesaurus:: attention :" approved="yes">
         <source>thesaurus:: attention :</source>
-        <target state="translated">Warning :</target>
+        <target state="translated">Warning:</target>
         <jms:reference-file line="67">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="39efb34364d199cf2dac5051e15c13e771fda1dc" resname="thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire" approved="yes">
