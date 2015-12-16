@@ -2,7 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
@@ -57,7 +59,8 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 
     public function testDelete()
     {
-        $manipulator = new ApiApplicationManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-applications'], self::$DI['app']['random.medium']);
+        $app = $this->getApplication();
+        $manipulator = new ApiApplicationManipulator($app['orm.em'], $app['repo.api-applications'], $app['random.medium']);
         $application = $manipulator->create(
             'desktop-app2',
             ApiApplication::DESKTOP_TYPE,
@@ -65,15 +68,17 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
             'http://desktop-app2-url.net'
         );
         $applicationSave = clone $application;
-        $countBefore = count(self::$DI['app']['repo.api-applications']->findAll());
-        $account = self::$DI['app']['manipulator.api-account']->create($application, self::$DI['user']);
+        $countBefore = count($app['repo.api-applications']->findAll());
+        /** @var ApiAccountManipulator $apiAccountManipulator */
+        $apiAccountManipulator = $app['manipulator.api-account'];
+        $account = $apiAccountManipulator->create($application, self::$DI['user'], V2::VERSION);
         $accountMem = clone $account;
-        self::$DI['app']['manipulator.api-oauth-token']->create($account);
+        $app['manipulator.api-oauth-token']->create($account);
         $manipulator->delete($application);
-        $this->assertGreaterThan(count(self::$DI['app']['repo.api-applications']->findAll()), $countBefore);
-        $accounts = self::$DI['app']['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], $applicationSave);
+        $this->assertGreaterThan(count($app['repo.api-applications']->findAll()), $countBefore);
+        $accounts = $app['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], $applicationSave);
         $this->assertEquals(0, count($accounts));
-        $tokens = self::$DI['app']['repo.api-oauth-tokens']->findOauthTokens($accountMem);
+        $tokens = $app['repo.api-oauth-tokens']->findOauthTokens($accountMem);
         $this->assertEquals(0, count($tokens));
     }
 

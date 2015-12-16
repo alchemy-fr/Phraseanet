@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 namespace Alchemy\Tests\Phrasea\Functional;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
