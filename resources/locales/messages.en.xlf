@@ -4887,7 +4887,9 @@
       </trans-unit>
       <trans-unit id="dcf907ccbbcda0c0a828ef73ff1e6320748c1fad" resname="Push::une validation est une demande d'appreciation a d'autres personnes" approved="yes">
         <source>Push::une validation est une demande d'appreciation a d'autres personnes</source>
-        <target state="translated">Click on the Send buton to forward a feedback request on a selection of documents to recipients. \r\nThey will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents, leave feedbacks and possibly download them. \r\nFeedbacks are also available as a Feedback request basket within Phraseanet Production for registered users.</target>
+        <target state="translated">Click on the Send buton to forward a feedback request on a selection of documents to recipients.
+They will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents, leave feedbacks and possibly download them.
+Feedbacks are also available as a Feedback request basket within Phraseanet Production for registered users.</target>
         <jms:reference-file line="159">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3e45857148ed08b19a425b5f4a2775e30dd346a7" resname="Push::unpush permet d'envoyer un lot d'image a des destinataires" approved="yes">
