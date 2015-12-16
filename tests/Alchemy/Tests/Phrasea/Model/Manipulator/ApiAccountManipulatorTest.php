@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\ControllerProvider\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 
 /**
@@ -24,16 +24,16 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
     public function testCreate()
     {
         $nbApps = count(self::$DI['app']['repo.api-accounts']->findAll());
-        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $this->assertGreaterThan($nbApps, count(self::$DI['app']['repo.api-accounts']->findAll()));
         $this->assertFalse($account->isRevoked());
-        $this->assertEquals(V1::VERSION, $account->getApiVersion());
+        $this->assertEquals(V2::VERSION, $account->getApiVersion());
         $this->assertGreaterThan($nbApps, count(self::$DI['app']['repo.api-accounts']->findAll()));
     }
 
     public function testDelete()
     {
-        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $accountMem = clone $account;
         $countBefore = count(self::$DI['app']['repo.api-accounts']->findAll());
         self::$DI['app']['manipulator.api-oauth-token']->create($account);
@@ -45,7 +45,7 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 
     public function testUpdate()
     {
-        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $account->setApiVersion(24);
         $this->sut->update($account);
         $account = self::$DI['app']['repo.api-accounts']->find($account->getId());
@@ -54,14 +54,14 @@ class ApiAccountManipulatorTest extends \PhraseanetTestCase
 
     public function testAuthorizeAccess()
     {
-        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $this->sut->authorizeAccess($account);
         $this->assertFalse($account->isRevoked());
     }
 
     public function testRevokeAccess()
     {
-        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $this->sut->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $this->sut->revokeAccess($account);
         $this->assertTrue($account->isRevoked());
     }

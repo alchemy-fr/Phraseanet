@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Controller\Api\Result;
-use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Parser;
 
@@ -22,7 +21,7 @@ class ResultTest extends \PhraseanetTestCase
             'REQUEST_URI'     => 'my/base/path/my/request/uri',
             'PHP_SELF'        => 'my/base/path',
         ];
-        $request = new Request(["callback" => ""], [], [], [], [], $server);
+        $request = new Request(["callback" => ""], [], ['api_version' => '2.0.0'], [], [], $server);
 
         $apiResult = new Result($request);
         $return = $apiResult->createResponse()->getContent();
@@ -35,7 +34,7 @@ class ResultTest extends \PhraseanetTestCase
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $response->response);
         $this->assertEquals(0, sizeof(get_object_vars($response->response)));
         $this->assertEquals(0, sizeof(get_class_methods($response->response)));
-        $this->checkResponseFieldMeta($response, "api_version", V1::VERSION, \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+        $this->checkResponseFieldMeta($response, "api_version", '2.0.0', \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
         $this->checkResponseFieldMeta($response, "request", "GET my/base/path/my/request/uri", \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
 
         $date = new \DateTime();
@@ -72,6 +71,7 @@ class ResultTest extends \PhraseanetTestCase
             'PHP_SELF'        => 'my/base/path',
         ];
         $request = new Request(["callback" => ""], [], [], [], [], $server);
+        Result::setDefaultVersion('1.0.0');
 
         $apiResult = new Result($request);
         $response = (new Parser())->parse($apiResult->createResponse()->getContent());
@@ -84,7 +84,7 @@ class ResultTest extends \PhraseanetTestCase
         $this->assertEquals(0, count($response["response"]));
         $this->assertArrayHasKey("api_version", $response["meta"]);
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["api_version"]);
-        $this->assertEquals(V1::VERSION, $response["meta"]["api_version"]);
+        $this->assertEquals('1.0.0', $response["meta"]["api_version"]);
         $this->assertArrayHasKey("request", $response["meta"]);
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["request"]);
         $this->assertEquals("GET my/base/path/my/request/uri", $response["meta"]["request"]);

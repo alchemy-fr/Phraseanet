@@ -27,14 +27,11 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
 {
-    private $app;
-
     private $logger;
 
-    public function __construct(Application $app)
+    public function __construct(LoggerInterface $logger = null)
     {
-        $this->app = $app;
-        $this->logger = new NullLogger();
+        $this->logger = $logger ?: new NullLogger();
     }
 
     public function setLogger(LoggerInterface $logger)

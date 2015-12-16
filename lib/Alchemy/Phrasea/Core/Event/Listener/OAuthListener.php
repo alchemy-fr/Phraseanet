@@ -19,8 +19,6 @@ use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
-use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
-use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -73,6 +71,8 @@ class OAuthListener
         $this->getSession($app)->set('token', $token);
 
         $oAuth2Account = $token->getAccount();
+        // Sets the Api Version
+        $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
         $oAuth2App = $oAuth2Account->getApplication();
 
         /** @var PropertyAccess $conf */

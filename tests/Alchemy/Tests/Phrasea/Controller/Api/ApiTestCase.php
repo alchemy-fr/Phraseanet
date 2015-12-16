@@ -6,6 +6,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
@@ -243,10 +245,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $route = '/api/v1/nothinghere';
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client = $this->getClient();
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
 
-        $this->evaluateResponseNotFound(self::$DI['client']->getResponse());
+        $this->evaluateResponseNotFound($client->getResponse());
         $this->evaluateMetaNotFound($content);
     }
 
@@ -277,22 +280,27 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     public function testCheckNativeApp()
     {
-        $value = self::$DI['app']['conf']->get(['registry', 'api-clients', 'navigator-enabled']);
-        self::$DI['app']['conf']->set(['registry', 'api-clients', 'navigator-enabled'], false);
+        $app = $this->getApplication();
+        /** @var PropertyAccess $conf */
+        $conf = $app['conf'];
+        $value = $conf->get(['registry', 'api-clients', 'navigator-enabled']);
+        $conf->set(['registry', 'api-clients', 'navigator-enabled'], false);
 
         $fail = null;
 
         try {
-            $nativeApp = self::$DI['app']['repo.api-applications']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
+            $nativeApp = $app['repo.api-applications']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
             if (null === $nativeApp) {
                 throw new  \Exception(sprintf('%s not found', \API_OAuth2_Application_Navigator::CLIENT_ID));
             }
-            $account = self::$DI['app']['manipulator.api-account']->create($nativeApp, self::$DI['user']);
-            $token = self::$DI['app']['manipulator.api-oauth-token']->create($account);
+            $account = $app['manipulator.api-account']->create($nativeApp, self::$DI['user'], V2::VERSION);
+            $token = $app['manipulator.api-oauth-token']->create($account);
 
             $this->setToken($token);
-            self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+            $client = $this->getClient();
+            $client->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $content = $this->unserialize(
+                $client->getResponse()->getContent());
 
             if (403 != $content['meta']['http_code']) {
                 $fail = new \Exception('Result does not match expected 403, returns ' . $content['meta']['http_code']);
@@ -301,7 +309,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $fail = $e;
         }
 
-        self::$DI['app']['conf']->set(['registry', 'api-clients', 'navigator-enabled'], $value);
+        $conf->set(['registry', 'api-clients', 'navigator-enabled'], $value);
 
         if ($fail) {
             throw $fail;
@@ -1381,10 +1389,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client = $this->getClient();
+        $client->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($client->getResponse()->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($client->getResponse());
         $this->evaluateMeta200($content);
 
         $this->assertEquals(1, count($content['response']));
@@ -2270,10 +2279,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function evaluateMethodNotAllowedRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
-            $this->assertTrue(self::$DI['client']->getResponse()->headers->has('Allow'));
-            $this->evaluateResponseMethodNotAllowed(self::$DI['client']->getResponse());
+            $client = $this->getClient();
+            $client->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $content = $this->unserialize($client->getResponse()->getContent());
+            $this->assertTrue($client->getResponse()->headers->has('Allow'));
+            $this->evaluateResponseMethodNotAllowed($client->getResponse());
             $this->evaluateMetaMethodNotAllowed($content);
         }
     }
@@ -2281,21 +2291,22 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function evaluateBadRequestRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
-            $this->evaluateResponseBadRequest(self::$DI['client']->getResponse());
+            $client = $this->getClient();
+            $client->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $content = $this->unserialize($client->getResponse()->getContent());
+            $this->evaluateResponseBadRequest($client->getResponse());
             $this->evaluateMetaBadRequest($content);
         }
     }
 
-    protected function evaluateMeta($content)
+    protected function evaluateMeta($content, $version = null)
     {
         $this->assertTrue(is_array($content), 'La reponse est un objet');
         $this->assertArrayHasKey('meta', $content);
         $this->assertArrayHasKey('response', $content);
         $this->assertTrue(is_array($content['meta']), 'Le bloc meta est un array');
         $this->assertTrue(is_array($content['response']), 'Le bloc reponse est un array');
-        $this->assertEquals('2.0.0', $content['meta']['api_version']);
+        $this->assertEquals($version ?: V2::VERSION, $content['meta']['api_version']);
         $this->assertNotNull($content['meta']['response_time']);
         $this->assertEquals('UTF-8', $content['meta']['charset']);
     }

@@ -29,9 +29,10 @@ class ApiRootTest extends \PhraseanetWebTestCase
 
     public function testRoot()
     {
-        self::$DI['client']->request('GET', '/api/');
+        $client = $this->getClient();
+        $client->request('GET', '/api/');
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->headers->get('content-type'));

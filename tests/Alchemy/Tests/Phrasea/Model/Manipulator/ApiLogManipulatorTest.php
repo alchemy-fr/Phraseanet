@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,7 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
     public function testCreate()
     {
         $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
-        $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $nbLogs = count(self::$DI['app']['repo.api-logs']->findAll());
         $manipulator = new ApiLogManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-logs']);
         $manipulator->create($account, Request::create('/databoxes/list/', 'POST'), new Response());
@@ -41,7 +42,7 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
     public function testDelete()
     {
         $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
-        $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $manipulator = new ApiLogManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-logs']);
         $log = $manipulator->create($account, Request::create('/databoxes/list/', 'POST'), new Response());
         $countBefore = count(self::$DI['app']['repo.api-logs']->findAll());
@@ -52,7 +53,7 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
     public function testUpdate()
     {
         $manipulator = new ApiAccountManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-accounts']);
-        $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $account = $manipulator->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
         $manipulator = new ApiLogManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-logs']);
         $log = $manipulator->create($account, Request::create('/databoxes/list/', 'POST'), new Response());
         $log->setAspect('a-new-aspect');

@@ -72,7 +72,7 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var ApiAccountManipulator $apiAccountManipulator */
         $apiAccountManipulator = $app['manipulator.api-account'];
 
-        $account = $apiAccountManipulator->create($this->apiApplication, $this->user);
+        $account = $apiAccountManipulator->create($this->apiApplication, $this->user, V2::VERSION);
         $this->assertInstanceOf(ApiAccount::class, $account);
 
         $apiLog = $apiLogManipulator->create($account, new Request(), new Response());

@@ -23,7 +23,7 @@ class ApiExceptionHandlerSubscriberTest extends \PhraseanetTestCase
     public function testError($exception, $code)
     {
         $app = new Application(Application::ENV_TEST);
-        $app['dispatcher']->addSubscriber(new ApiExceptionHandlerSubscriber($app));
+        $app['dispatcher']->addSubscriber(new ApiExceptionHandlerSubscriber());
         $app->get('/', function () use ($exception) {
             throw $exception;
         });

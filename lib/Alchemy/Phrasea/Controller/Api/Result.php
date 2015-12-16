@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
-use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +18,8 @@ use Symfony\Component\Yaml\Dumper;
 
 class Result
 {
+    private static $defaultVersion = '1.0.0';
+
     /** @var string */
     private $responseTime;
 
@@ -42,6 +43,9 @@ class Result
 
     /** @var string */
     private $responseType;
+
+    /** @var string */
+    private $version;
 
     const FORMAT_JSON = 'json';
     const FORMAT_YAML = 'yaml';
@@ -75,8 +79,6 @@ class Result
         $this->errorType = $errorType;
         $this->errorMessage = $errorMessage;
         $this->errorDetails = $errorDetails;
-
-        return $this;
     }
 
     /**
@@ -211,7 +213,7 @@ class Result
 
         $ret = [
             'meta' => [
-                'api_version'   => V1::VERSION,
+                'api_version'   => $this->getVersion(),
                 'request'       => $request_uri,
                 'response_time' => $this->responseTime,
                 'http_code'     => $this->code,
@@ -242,6 +244,28 @@ class Result
                 return $response;
                 break;
         }
+    }
+
+    /**
+     * @param string|null $version
+     */
+    public function setVersion($version)
+    {
+        $this->version = (string)$version;
+    }
+
+    public static function setDefaultVersion($version)
+    {
+        self::$defaultVersion = $version;
+    }
+
+    public function getVersion()
+    {
+        if (null === $this->version) {
+            $this->version = $this->request->attributes->get('api_version') ?: self::$defaultVersion;
+        }
+
+        return $this->version;
     }
 
     /**
