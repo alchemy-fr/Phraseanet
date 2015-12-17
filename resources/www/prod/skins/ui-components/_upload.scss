@@ -228,12 +228,7 @@
       img {
         max-height: 480px;
       }
-      button {
-        font-weight: normal;
-        img {
-          margin-right: 5px;
-        }
-      }
+
       .record-thumb {
         height: 180px;
       }
@@ -243,17 +238,11 @@
   .lazaret-proposals .records-subititution {
     margin: 0 10px 10px 0;
   }
+  button, .btn {
+    font-weight: normal;
+    img {
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

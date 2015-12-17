@@ -21,7 +21,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function icon_url()
     {
-        return '';
+        return '/assets/common/images/icons/quarantine.png';
     }
 
     /**
