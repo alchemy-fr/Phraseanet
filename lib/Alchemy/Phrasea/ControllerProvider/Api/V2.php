@@ -48,12 +48,12 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(new OAuthListener());
 
         $controller = $controllers
-            ->post('/baskets/{basket}/records/', 'controller.api.v2.baskets:removeRecordsAction')
+            ->post('/baskets/{basket}/records/', 'controller.api.v2.baskets:addRecordsAction')
             ->bind('api_v2_basket_records_add');
         $this->addBasketMiddleware($app, $controller);
         $controllers->post('/baskets/{wrong_basket}/records/', 'controller.api.v1:getBadRequestAction');
 
-        $controller = $controllers->delete('/baskets/{basket}/records/', 'controller.api.v2.baskets:addRecordsAction')
+        $controller = $controllers->delete('/baskets/{basket}/records/', 'controller.api.v2.baskets:removeRecordsAction')
             ->bind('api_v2_basket_records_remove');
         $this->addBasketMiddleware($app, $controller);
         $controllers->delete('/baskets/{wrong_basket}/records/', 'controller.api.v1:getBadRequestAction');
