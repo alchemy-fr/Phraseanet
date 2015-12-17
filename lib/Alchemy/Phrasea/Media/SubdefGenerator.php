@@ -12,7 +12,12 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\RecordSubDefinitionCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\SpecificationInterface;
@@ -38,14 +43,28 @@ class SubdefGenerator
         $this->mediavorus = $mediavorus;
     }
 
+    private function dispatch($eventName, RecordEvent $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
+
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
-        if (null === $subdefs = $record->get_databox()->get_subdef_structure()->getSubdefGroup($record->get_type())) {
-            $this->logger->info(sprintf('Nothing to do for %s', $record->get_type()));
+        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
+            $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
 
-            return;
+            return $this;
         }
 
+        $this->dispatch(
+            RecordEvents::SUB_DEFINITIONS_CREATION,
+            new SubDefinitionsCreationEvent(
+                $record,
+                $wanted_subdefs
+            )
+        );
+
+        $mediaCreated = [];
         foreach ($subdefs as $subdef) {
             $subdefname = $subdef->get_name();
 
@@ -64,6 +83,14 @@ class SubdefGenerator
 
             $pathdest = $this->generateSubdefPathname($record, $subdef, $pathdest);
 
+            $this->dispatch(
+                RecordEvents::SUB_DEFINITION_CREATION,
+                new SubDefinitionCreationEvent(
+                    $record,
+                    $subdefname
+                )
+            );
+
             $this->logger->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generateSubdef($record, $subdef, $pathdest);
 
@@ -71,12 +98,36 @@ class SubdefGenerator
                 $media = $this->mediavorus->guess($pathdest);
 
                 \media_subdef::create($this->app, $record, $subdef->get_name(), $media);
+
+                $this->dispatch(
+                    RecordEvents::SUB_DEFINITION_CREATED,
+                    new SubDefinitionCreatedEvent(
+                        $record,
+                        $subdefname,
+                        $mediaCreated[$subdefname] = $media
+                    )
+                );
+            }
+            else {
+                $this->dispatch(
+                    RecordEvents::SUB_DEFINITION_CREATION_FAILED,
+                    new SubDefinitionCreationFailedEvent(
+                        $record,
+                        $subdefname
+                    )
+                );
             }
 
             $record->clearSubdefCache($subdefname);
-
-            $this->app['dispatcher']->dispatch(RecordEvents::SUB_DEFINITION_CREATED, new RecordSubDefinitionCreatedEvent($record, $subdefname));
         }
+
+        $this->dispatch(
+            RecordEvents::SUB_DEFINITIONS_CREATED,
+            new SubDefinitionsCreatedEvent(
+                $record,
+                $mediaCreated
+            )
+        );
 
         return $this;
     }
@@ -92,7 +143,7 @@ class SubdefGenerator
 
             $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
         } catch (MediaAlchemystException $e) {
-            $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->get_record_id(), $e->getMessage()));
+            $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
     }
 
@@ -104,7 +155,7 @@ class SubdefGenerator
             $pathdest = \databox::dispatch($this->filesystem, $subdef->get_path());
         }
 
-        return $pathdest . $record->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
+        return $pathdest . $record->getRecordId() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
     }
 
     /**

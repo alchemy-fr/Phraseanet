@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Border\Manager as borderManager;
 use Alchemy\Phrasea\TaskManager\Editor\ArchiveEditor;
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
@@ -1080,7 +1081,9 @@ class ArchiveJob extends AbstractJob
                 $record = $element;
             };
 
-        $app['border-manager']->process($this->getLazaretSession($app), $file, $postProcess, $force);
+        /** @var borderManager $borderManager */
+        $borderManager = $app['border-manager'];
+        $borderManager->process($this->getLazaretSession($app), $file, $postProcess, $force);
 
         return $record;
     }

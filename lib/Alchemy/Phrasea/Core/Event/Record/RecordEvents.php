@@ -21,6 +21,11 @@ final class RecordEvents
     const ORIGINAL_NAME_CHANGED = 'record.original_name_changed';
     const STATUS_CHANGED = 'record.status_changed';
     // Sub-definitions
+    const SUB_DEFINITIONS_CREATION = 'record.sub_definitions_creation';
+    const SUB_DEFINITION_CREATION = 'record.sub_definition_creation';
     const SUB_DEFINITION_CREATED = 'record.sub_definition_created';
+    const SUB_DEFINITIONS_CREATED = 'record.sub_definitions_created';
+    const SUB_DEFINITION_CREATION_FAILED = 'record.sub_definition_creation_failed';
+
     const MEDIA_SUBSTITUTED = 'record.media_substituted';
 }

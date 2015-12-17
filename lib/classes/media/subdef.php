@@ -271,7 +271,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     * Find a substitution file for a sibdef
+     * Find a substitution file for a subdef
      *
      * @return \media_subdef
      */
@@ -476,7 +476,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @return id
+     * @return int
      */
     public function get_subdef_id()
     {
@@ -678,6 +678,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $newname = $media->getFile()->getFilename();
 
         $params = [
+            ':record_id'  => $record->getRecordId(),
+            ':name'       => $name,
             ':path'       => $path,
             ':file'       => $newname,
             ':width'      => 0,
@@ -694,36 +696,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $params[':height'] = $media->getHeight();
         }
 
-        try {
-
-            $sql = "SELECT subdef_id FROM subdef WHERE record_id = :record_id AND name = :name";
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute([
-                ':record_id' => $record->getRecordId(),
-                ':name'      => $name,
-            ]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if (! $row) {
-                throw new \Exception_Media_SubdefNotFound('Require the real one');
-            }
-
-            $sql = "UPDATE subdef"
-                . " SET path = :path, file = :file,"
-                . " width = :width , height = :height, mime = :mime,"
-                . " size = :size, dispatched = :dispatched, updated_on = NOW()"
-                . " WHERE subdef_id = :subdef_id";
-
-            $params[':subdef_id'] = $row['subdef_id'];
-        } catch (\Exception_Media_SubdefNotFound $e) {
-            $sql = "INSERT INTO subdef"
-                . " (record_id, name, path, file, width, height, mime, size, dispatched, created_on, updated_on)"
-                . " VALUES (:record_id, :name, :path, :file, :width, :height, :mime, :size, :dispatched, NOW(), NOW())";
-
-            $params[':record_id'] = $record->getRecordId();
-            $params[':name'] = $name;
-        }
+        $sql = "INSERT INTO subdef"
+            . " (record_id, name, path, file, width, height, mime, size, dispatched, created_on, updated_on)"
+            . " VALUES (:record_id, :name, :path, :file, :width, :height, :mime, :size, :dispatched, NOW(), NOW())"
+            . " ON DUPLICATE KEY UPDATE"
+            . " path = VALUES(path), file = VALUES(file),"
+            . " width = VALUES(width) , height = VALUES(height), mime = VALUES(mime),"
+            . " size = VALUES(size), dispatched = VALUES(dispatched), updated_on = NOW()";
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute($params);

@@ -20,6 +20,9 @@ use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
+use Alchemy\Phrasea\Border\Attribute\MetaField as MetafieldAttr;
+use Alchemy\Phrasea\Border\Attribute\Status as StatusAttr;
+use Alchemy\Phrasea\Border\Attribute\Story as StoryAttr;
 use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
@@ -314,6 +317,7 @@ class Manager
         foreach ($file->getAttributes() as $attribute) {
             switch ($attribute->getName()) {
                 case AttributeInterface::NAME_METAFIELD:
+                    /** @var MetafieldAttr $attribute */
                     $values = $attribute->getValue();
                     $value = $attribute->getField()->is_multi() ? new Multi($values) : new MonoValue(array_pop($values));
 
@@ -329,14 +333,17 @@ class Manager
                     break;
 
                 case AttributeInterface::NAME_METADATA:
+                    /** @var MetadataAttr $attribute */
                     $newMetadata[] = $attribute->getValue();
                     break;
                 case AttributeInterface::NAME_STATUS:
+                    /** @var StatusAttr $attribute */
                     $element->set_binary_status(decbin(bindec($element->get_status()) | bindec($attribute->getValue())));
 
                     break;
                 case AttributeInterface::NAME_STORY:
 
+                    /** @var StoryAttr $attribute */
                     $story = $attribute->getValue();
 
                     if ( ! $story->hasChild($element)) {
@@ -441,6 +448,8 @@ class Manager
      * to Phraseanet
      *
      * @param File $file The file
+     *
+     * @return Manager
      */
     protected function addMediaAttributes(File $file)
     {

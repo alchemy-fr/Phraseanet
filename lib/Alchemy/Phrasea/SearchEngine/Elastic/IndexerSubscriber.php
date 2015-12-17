@@ -13,10 +13,10 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
 use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordSubDefinitionCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvent;
@@ -84,7 +84,7 @@ class IndexerSubscriber implements EventSubscriberInterface
             RecordEvents::METADATA_CHANGED => 'onRecordChange',
             RecordEvents::ORIGINAL_NAME_CHANGED => 'onRecordChange',
             RecordEvents::STATUS_CHANGED => 'onRecordChange',
-            RecordEvents::SUB_DEFINITION_CREATED => 'onRecordChange',
+            RecordEvents::SUB_DEFINITIONS_CREATED => 'onRecordChange',
             RecordEvents::MEDIA_SUBSTITUTED => 'onRecordChange',
             ThesaurusEvents::IMPORTED => 'onThesaurusChange',
             ThesaurusEvents::FIELD_LINKED => 'onThesaurusChange',
@@ -120,14 +120,13 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function onRecordChange(RecordEvent $event)
     {
-        if ($event instanceof RecordSubDefinitionCreatedEvent && $event->getSubDefinitionName() !== 'thumbnail') {
-            return;
+        if ($event instanceof SubDefinitionsCreatedEvent) {
+            $record = $event->getRecord();
+            $this->getIndexer()->indexRecord($record);
         }
-        $record = $event->getRecord();
-        $this->getIndexer()->indexRecord($record);
     }
 
-    public function onRecordDelete(RecordDeletedEvent $event)
+    public function onRecordDelete(DeletedEvent $event)
     {
         $record = $event->getRecord();
         $this->getIndexer()->deleteRecord($record);

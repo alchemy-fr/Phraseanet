@@ -12,14 +12,14 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Cache\Exception;
-use Alchemy\Phrasea\Core\Event\Record\RecordCollectionChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordCreatedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordDeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\RecordMetadataChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordOriginalNameChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordStatusChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
 use Alchemy\Phrasea\Media\FloatTechnicalData;
@@ -38,7 +38,9 @@ use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -453,7 +455,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new RecordCollectionChangedEvent($this));
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this));
 
         return $this;
     }
@@ -463,7 +465,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_rollover_thumbnail()
     {
-        if ($this->get_type() != 'video') {
+        if ($this->getType() != 'video') {
             return null;
         }
 
@@ -793,7 +795,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new RecordOriginalNameChangedEvent($this));
+        $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new OriginalNameChangedEvent($this));
 
         return $this;
     }
@@ -896,15 +898,18 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
 
+        /** @var Filesystem $filesystem */
+        $filesystem = $app['filesystem'];
+
         if ($name == 'document') {
             $baseprefs = $this->getDatabox()->get_sxml_structure();
 
             $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
 
             $filehd = $this->getRecordId() . "_document." . strtolower($media->getFile()->getExtension());
-            $pathhd = databox::dispatch($app['filesystem'], $pathhd);
+            $pathhd = databox::dispatch($filesystem, $pathhd);
 
-            $app['filesystem']->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
+            $filesystem->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
 
             $subdefFile = $pathhd . $filehd;
 
@@ -920,8 +925,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $this->get_subdef($name)->remove_file();
                 $this->clearSubdefCache($name);
             } else {
-                $path = databox::dispatch($app['filesystem'], $subdef_def->get_path());
-                $app['filesystem']->mkdir($path, 0750);
+                $path = databox::dispatch($filesystem, $subdef_def->get_path());
+                $filesystem->mkdir($path, 0750);
                 $path_file_dest = $path . $newfilename;
             }
 
@@ -939,7 +944,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $subdefFile = $path_file_dest;
             }
             else{
-                $app['filesystem']->copy($media->getFile()->getRealPath(), $path_file_dest);
+                $filesystem->copy($media->getFile()->getRealPath(), $path_file_dest);
 
                 $subdefFile = $path_file_dest;
             }
@@ -947,7 +952,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $meta_writable = $subdef_def->meta_writeable();
         }
 
-        $app['filesystem']->chmod($subdefFile, 0760);
+        $filesystem->chmod($subdefFile, 0760);
         $media = $app->getMediaFromUri($subdefFile);
         $subdef = media_subdef::create($app, $this, $name, $media);
         $subdef->set_substituted(true);
@@ -1076,7 +1081,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->set_xml($xml);
         unset($xml);
 
-        $this->dispatch(RecordEvents::METADATA_CHANGED, new RecordMetadataChangedEvent($this));
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
         return $this;
     }
@@ -1158,23 +1163,28 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ['status' => bindec($status), 'record_id' => $this->record_id]
         );
 
-        $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
-        $stmt = $connection->prepare($sql);
-
         $status = strrev($status);
         $length = strlen($status);
+        $sqlValues = [];
         for ($i = 4; $i < $length; $i++) {
-            $stmt->execute([
-                ':record_id' => $this->getRecordId(),
-                ':name'      => $i,
-                ':value'     => $status[$i]
-            ]);
+            $sqlValues[] = join(',', array(
+                'null',
+                $connection->quote($this->getRecordId()),
+                $connection->quote($i),
+                $connection->quote($status[$i])
+            ));
         }
+        $sql = "REPLACE INTO status (id, record_id, name, value)"
+            . " VALUES (" . join('),(', $sqlValues) . ")";
+        $stmt = $connection->prepare($sql);
+
+        $stmt->execute();
+
         $stmt->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new RecordStatusChangedEvent($this));
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
 
         return $this;
     }
@@ -1231,7 +1241,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        $story->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($story));
+        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story));
 
         return $story;
     }
@@ -1285,10 +1295,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        $pathhd = databox::dispatch($app['filesystem'], trim($databox->get_sxml_structure()->path));
+        /** @var Filesystem $filesystem */
+        $filesystem = $app['filesystem'];
+
+        $pathhd = databox::dispatch($filesystem, trim($databox->get_sxml_structure()->path));
         $newname = $record->getRecordId() . "_document." . pathinfo($file->getOriginalName(), PATHINFO_EXTENSION);
 
-        $app['filesystem']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
+        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
         $media = $app->getMediaFromUri($pathhd . $newname);
         media_subdef::create($app, $record, 'document', $media);
@@ -1297,7 +1310,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $record->insertTechnicalDatas($app['mediavorus']);
 
-        $record->dispatch(RecordEvents::CREATED, new RecordCreatedEvent($record));
+        $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
 
         return $record;
     }
@@ -1316,15 +1329,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
+        $connection = $this->getDatabox()->get_connection();
         $sql = 'DELETE FROM technical_datas WHERE record_id = :record_id';
-        $stmt = $this->getDatabox()->get_connection()->prepare($sql);
+        $stmt = $connection->prepare($sql);
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "INSERT INTO technical_datas (id, record_id, name, value)"
-            . " VALUES (null, :record_id, :name, :value)";
-        $stmt = $this->getDatabox()->get_connection()->prepare($sql);
-
+        $sqlValues = [];
         foreach ($document->readTechnicalDatas($mediavorus) as $name => $value) {
             if (is_null($value)) {
                 continue;
@@ -1335,13 +1346,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     $value = 0;
                 }
             }
-
-            $stmt->execute([
-                ':record_id' => $this->getRecordId()
-                , ':name'      => $name
-                , ':value'     => $value
-            ]);
+            $sqlValues[] = join(',', array(
+                'null',
+                $connection->quote($this->getRecordId()),
+                $connection->quote($name),
+                $connection->quote($value)
+            ));
         }
+        $sql = "INSERT INTO technical_datas (id, record_id, name, value)"
+            . " VALUES (" . join('),(', $sqlValues) . ")";
+        ;
+        $stmt = $connection->prepare($sql);
+
+        $stmt->execute();
 
         $stmt->closeCursor();
 
@@ -1510,7 +1527,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 
-        $this->dispatch(RecordEvents::DELETED, new RecordDeletedEvent($this));
+        $this->dispatch(RecordEvents::DELETED, new DeletedEvent($this));
 
         return array_keys($ftodel);
     }

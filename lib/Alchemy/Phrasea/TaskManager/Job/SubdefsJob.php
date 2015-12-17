@@ -114,25 +114,16 @@ class SubdefsJob extends AbstractJob
                     $this->log('warning', sprintf("Generate subdefs failed for : sbasid=%s / databox=%s / recordid=%s : %s", $databox->get_sbas_id(), $databox->get_dbname() , $row['record_id'], $e->getMessage()));
                 }
 
+                // subdef created, ask to rewrite metadata
                 $sql = 'UPDATE record'
-                    . ' SET jeton=(jeton & ~(:flag)), moddate=NOW()'
+                    . ' SET jeton=(jeton & ~(:flag_and)) | :flag_or, moddate=NOW()'
                     . ' WHERE record_id=:record_id';
 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([
                     ':record_id' => $row['record_id'],
-                    ':flag' => PhraseaTokens::MAKE_SUBDEF
-                ]);
-                $stmt->closeCursor();
-
-                // rewrite metadata
-                $sql = 'UPDATE record'
-                    . ' SET jeton=(jeton | :flag)'
-                    . ' WHERE record_id=:record_id';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([
-                    ':record_id' => $row['record_id'],
-                    ':flag' => (PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX)
+                    ':flag_and' => PhraseaTokens::MAKE_SUBDEF,
+                    ':flag_or' => (PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX)
                 ]);
                 $stmt->closeCursor();
 
