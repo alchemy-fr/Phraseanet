@@ -126,12 +126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "a17304296180bafac116cf9d98674e87f5380a52"
+                "reference": "9a8d3f72461896bc3d8141e00ace6d85f21baf74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/a17304296180bafac116cf9d98674e87f5380a52",
-                "reference": "a17304296180bafac116cf9d98674e87f5380a52",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/9a8d3f72461896bc3d8141e00ace6d85f21baf74",
+                "reference": "9a8d3f72461896bc3d8141e00ace6d85f21baf74",
                 "shasum": ""
             },
             "require-dev": {
@@ -172,7 +172,7 @@
                 "source": "https://github.com/alchemy-fr/embed-bundle/tree/master",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2015-12-14 17:16:42"
+            "time": "2015-12-17 09:34:48"
         },
         {
             "name": "alchemy/geonames-api-consumer",
