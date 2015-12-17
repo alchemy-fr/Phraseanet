@@ -15,18 +15,17 @@
 
         var $this = this;
 
-        $('.content .options .select-all', this.container).bind('click', function () {
+        this.container.on('click', '.content .options .select-all', function (event) {
             $this.selection.selectAll();
         });
 
-        $('.content .options .unselect-all', this.container).bind('click', function () {
+        this.container.on('click', '.content .options .unselect-all', function (event) {
             $this.selection.empty();
         });
 
         $('.UserTips', this.container).tooltip();
 
-        $('a.user_adder', this.container).bind('click', function () {
-
+        this.container.on('click', 'a.user_adder', function (event) {
             var $this = $(this);
 
             $.ajax({
@@ -57,8 +56,7 @@
             return false;
         });
 
-        $('.recommended_users', this.container).bind('click', function () {
-
+        this.container.on('click', '.recommended_users', function (event) {
             var usr_id = $('input[name="usr_id"]', $(this)).val();
 
             $this.loadUser(usr_id, $this.selectUser);
@@ -66,7 +64,7 @@
             return false;
         });
 
-        $('.recommended_users_list', this.container).bind('click', function () {
+        this.container.on('click', '.recommended_users_list', function (event) {
 
             var content = $('#push_user_recommendations').html();
 
@@ -103,6 +101,7 @@
             return false;
         });
 
+        //this.container.on('submit', '#PushBox form[name="FeedBackForm"]', function (event) {
         $('#PushBox form[name="FeedBackForm"]').bind('submit', function () {
 
             var $this = $(this);
@@ -199,8 +198,9 @@
 
         $('.user_content .badges', this.container).disableSelection();
 
-        $('.user_content .badges .badge .toggle', this.container).off('click').on('click', function (event) {
 
+        // toggle download feature for users
+        this.container.on('click', '.user_content .badges .badge .toggle', function (event) {
             var $this = $(this);
 
             $this.toggleClass('status_off status_on');
@@ -210,7 +210,8 @@
             return false;
         });
 
-        $('.general_togglers .general_toggler', this.container).bind('click', function () {
+        // toggle feature state of selected users
+        this.container.on('click', '.general_togglers .general_toggler', function (event) {
             var feature = $(this).attr('feature');
 
             var $badges = $('.user_content .badge.selected', this.container);
@@ -228,21 +229,21 @@
             return false;
         });
 
-        $('.user_content .badges .badge .deleter', this.container).on('click', function (event) {
+        this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
             var $elem = $(this).closest('.badge');
             $elem.fadeOut(function () {
                 $elem.remove();
             });
-            return;
+            return false;
         });
 
-        $('.list_manager', this.container).bind('click', function () {
+        this.container.on('click', '.list_manager', function (event) {
             $('#PushBox').hide();
             $('#ListManager').show();
             return false;
         });
 
-        $('a.list_loader', this.container).bind('click', function () {
+        this.container.on('click', 'a.list_loader', function (event) {
             var url = $(this).attr('href');
 
             var callbackList = function (list) {
@@ -255,8 +256,6 @@
 
             return false;
         });
-
-        $('.options button', this.container);
 
         $('form.list_saver', this.container).bind('submit', function () {
             var $form = $(this);
@@ -335,10 +334,6 @@
             if ($('.badge_' + user.usr_id, this.container).length > 0) {
                 humane.info('User already selected');
                 return;
-            }
-
-            if (window.console) {
-                console.log('Selecting', user);
             }
 
             var html = _.template($("#" + this.Context.toLowerCase() + "_badge_tpl").html(), {
@@ -663,7 +658,6 @@
         initLeft();
 
         $('.badges a.deleter', this.container).on('click', function () {
-
             var badge = $(this).closest('.badge');
 
             var usr_id = badge.find('input[name="id"]').val();

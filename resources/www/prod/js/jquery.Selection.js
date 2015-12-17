@@ -37,6 +37,7 @@
         this.$container.addClass('selectionnable');
         this.$container
             .on('click', this.options.selector, function(event) {
+                event.preventDefault();
                 if (typeof $this.options.selectStart === 'function') {
                     $this.options.selectStart(jQuery.extend(jQuery.Event('selectStart'), event), $this);
                 }
@@ -117,8 +118,6 @@
                 if (typeof $this.options.selectStop === 'function') {
                     $this.options.selectStop(jQuery.extend(jQuery.Event('selectStop'), event), $this);
                 }
-
-                return false;
 
             });
 
