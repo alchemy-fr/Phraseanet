@@ -533,12 +533,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             throw new Exception('status not found');
         }
 
-        $status = $row['status'];
-        $n = strlen($status);
-        while ($n < 32) {
-            $status = '0' . $status;
-            $n++;
-        }
+        $status = str_pad($row['status'], 32, '0', STR_PAD_LEFT);
 
         $this->set_data_to_cache($status, self::CACHE_STATUS);
 

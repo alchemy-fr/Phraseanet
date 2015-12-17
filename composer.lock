@@ -347,11 +347,11 @@
         },
         {
             "name": "alchemy/symfony-cors",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/symfony-cors",
-                "reference": "8aafaff26e29fdd57358062d20724109a349def5"
+                "reference": "9e7f249e689e66f05a1e3d4d166224aaa1e9cc63"
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -388,7 +388,7 @@
                 }
             ],
             "description": "A library that adds CORS services to Silex/Symfony Applications",
-            "time": "2015-11-20 17:55:08"
+            "time": "2015-12-17 15:34:43"
         },
         {
             "name": "beberlei/assert",
