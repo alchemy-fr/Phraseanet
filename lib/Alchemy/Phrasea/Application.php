@@ -178,7 +178,9 @@ class Application extends SilexApplication
             ini_set('log_errors', 'on');
             ini_set('error_log', $this['root.path'].'/logs/php_error.log');
         }
-        $this->register(new PimpleDumpProvider());
+        if ('allowed' == getenv('APP_CONTAINER_DUMP')) {
+            $this->register(new PimpleDumpProvider());
+        }
 
         $this->register(new ConfigurationServiceProvider());
         $this->register(new MonologServiceProvider());
