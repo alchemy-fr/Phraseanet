@@ -63,6 +63,7 @@ class Result
     const ERROR_METHODNOTALLOWED = 'Method Not Allowed';
     const ERROR_INTERNALSERVERERROR = 'Internal Server Error';
     const ERROR_UNACCEPTABLE = 'Unacceptable';
+    const ERROR_UNPROCESSABLEENTITY = 'Unprocessable Entity';
 
     public function __construct(Request $request, array $data = null, $code = 200, $errorType = null, $errorMessage = null, $errorDetails = null)
     {
@@ -144,6 +145,10 @@ class Result
             case 406:
                 $errorType = self::ERROR_UNACCEPTABLE;
                 $errorMessage = 'Request content type is not acceptable';
+                break;
+            case 422:
+                $errorType = self::ERROR_UNPROCESSABLEENTITY;
+                $errorMessage = 'Request content is unprocessable';
                 break;
             case 500:
                 $errorType = self::ERROR_INTERNALSERVERERROR;

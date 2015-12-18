@@ -119,6 +119,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Form\Exception\FormException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -399,7 +400,7 @@ class Application extends SilexApplication
      *
      * @return FormInterface The form named after the type
      *
-     * @throws FormException if any given option is not applicable to the given type
+     * @throws ExceptionInterface if any given option is not applicable to the given type
      */
     public function form($type = 'form', $data = null, array $options = [], FormBuilderInterface $parent = null)
     {
