@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -61,26 +62,19 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
 use Firebase\JWT\JWT;
-use JsonSchema\RefResolver;
-use JsonSchema\Uri\UriRetriever;
-use JsonSchema\Validator;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
-use Webmozart\Json\DecodingFailedException;
-use Webmozart\Json\JsonDecoder;
-use Webmozart\Json\ValidationFailedException;
 
 class V1Controller extends Controller
 {
     use DataboxLoggerAware;
     use DispatcherAware;
+    use JsonBodyAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
@@ -1699,26 +1693,6 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return Validator
-     */
-    protected function getJsonSchemaValidator()
-    {
-        $validator = $this->app['json-schema.validator'];
-
-        $validator->reset();
-
-        return $validator;
-    }
-
-    /**
-     * @return JsonDecoder
-     */
-    protected function getJsonDecoder()
-    {
-        return $this->app['json.decoder'];
-    }
-
-    /**
      * Retrieve elements of one basket
      *
      * @param Request $request
@@ -2592,44 +2566,5 @@ class V1Controller extends Controller
     private function getSearchEngineLogger()
     {
         return $this->app['phraseanet.SE.logger'];
-    }
-
-    /**
-     * @param string $schemaUri
-     * @return object
-     */
-    private function retrieveSchema($schemaUri)
-    {
-        /** @var UriRetriever $retriever */
-        $retriever = $this->app['json-schema.retriever'];
-        $schema = $retriever->retrieve($schemaUri, $this->app['json-schema.base_uri']);
-
-        /** @var RefResolver $refResolver */
-        $refResolver = $this->app['json-schema.ref_resolver'];
-        $refResolver->resolve($schema);
-
-        return $schema;
-    }
-
-    /**
-     * @param Request            $request
-     * @param null|string|object $schemaUri
-     * @return mixed
-     */
-    private function decodeJsonBody(Request $request, $schemaUri = null)
-    {
-        $content = $request->getContent();
-
-        $schema = $schemaUri ? $this->retrieveSchema($schemaUri) : null;
-
-        $jsonDecoder = $this->getJsonDecoder();
-
-        try {
-            return $jsonDecoder->decode($content, $schema);
-        } catch (DecodingFailedException $exception) {
-            throw new UnprocessableEntityHttpException('Json request cannot be decoded', $exception);
-        } catch (ValidationFailedException $exception) {
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
-        }
     }
 }
