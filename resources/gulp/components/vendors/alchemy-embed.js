@@ -3,6 +3,12 @@ var config = require('../../config.js');
 var utils = require('../../utils.js');
 var debugMode = false;
 
+// for dev purposes
+gulp.task('copy-alchemy-embed-debug', function(){
+    debugMode = true;
+    gulp.start('copy-alchemy-embed');
+});
+
 gulp.task('copy-alchemy-embed', function(){
     // copy all dist folder:
     if( debugMode === true) {
