@@ -2156,27 +2156,10 @@ class V1Controller extends Controller
 
     private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
     {
-        $content = $request->getContent();
-
-        $data = @json_decode($content);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
-        }
-
-        if (!isset($data->{'story_records'})) {
-            $this->app->abort(400, 'Missing "story_records" property');
-        }
-
-        $recordsData = $data->{'story_records'};
-
-        if (!is_array($recordsData)) {
-            $recordsData = array($recordsData);
-        }
-
+        $data = $this->decodeJsonBody($request, 'story_records.json');
         $story = new \record_adapter($this->app, $databox_id, $story_id);
 
-        $records = $this->addOrDelStoryRecordsFromData($story, $recordsData, $action);
+        $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
         $result = Result::create($request, array('records' => $records));
 
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
@@ -2187,12 +2170,10 @@ class V1Controller extends Controller
     private function addOrDelStoryRecordsFromData(\record_adapter $story, array $recordsData, $action)
     {
         $records = array();
-        $schema = $this->getJsonSchemaRetriever()
-            ->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_record.json');
         $cover_set = false;
 
         foreach ($recordsData as $data) {
-            $records[] = $this->addOrDelStoryRecord($story, $data, $schema, $action);
+            $records[] = $this->addOrDelStoryRecord($story, $data, $action);
             if($action === 'ADD' && !$cover_set && isset($data->{'use_as_cover'}) && $data->{'use_as_cover'} === true) {
                 // because we can try many records as cover source, we let it fail
                 $cover_set = ($this->setStoryCover($story, $data->{'record_id'}, true) !== false);
@@ -2202,24 +2183,18 @@ class V1Controller extends Controller
         return $records;
     }
 
-    private function addOrDelStoryRecord(\record_adapter $story, $data, $jsonSchema, $action)
+    private function addOrDelStoryRecord(\record_adapter $story, $data, $action)
     {
-        $validator = $this->getJsonSchemaValidator();
-        $validator->check($data, $jsonSchema);
-
-        if (false === $validator->isValid()) {
-            $this->app->abort(400, 'Request body contains not a valid "record story" object');
-        }
-
         $databox_id = $data->{'databox_id'};
         $record_id = $data->{'record_id'};
 
         if($story->getDataboxId() !== $databox_id) {
-            $this->app->abort(409, sprintf('The databox_id %s (for record_id %s) must match the databox_id %s of the story'
-                , $databox_id
-                , $record_id
-                , $story->getDataboxId())
-            );
+            $this->app->abort(409, sprintf(
+                'The databox_id %s (for record_id %s) must match the databox_id %s of the story',
+                $databox_id,
+                $record_id,
+                $story->getDataboxId()
+            ));
         }
 
         try {
@@ -2620,14 +2595,6 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return UriRetriever
-     */
-    private function getJsonSchemaRetriever()
-    {
-        return $this->app['json-schema.retriever'];
-    }
-
-    /**
      * @param string $schemaUri
      * @return object
      */
@@ -2647,7 +2614,7 @@ class V1Controller extends Controller
     /**
      * @param Request            $request
      * @param null|string|object $schemaUri
-     * @return object
+     * @return mixed
      */
     private function decodeJsonBody(Request $request, $schemaUri = null)
     {
