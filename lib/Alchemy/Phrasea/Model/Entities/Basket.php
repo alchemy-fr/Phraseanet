@@ -314,26 +314,34 @@ class Basket
     }
 
     /**
-     * Add elements
+     * Add element
      *
-     * @param  BasketElement $elements
+     * @param  BasketElement $element
      * @return Basket
      */
-    public function addElement(BasketElement $elements)
+    public function addElement(BasketElement $element)
     {
-        $this->elements[] = $elements;
+        $this->elements[] = $element;
+        $element->setBasket($this);
 
         return $this;
     }
 
     /**
-     * Remove elements
+     * Remove element
      *
-     * @param BasketElement $elements
+     * @param BasketElement $element
+     * @return bool
      */
-    public function removeElement(BasketElement $elements)
+    public function removeElement(BasketElement $element)
     {
-        $this->elements->removeElement($elements);
+        if ($this->elements->removeElement($element)) {
+            $element->setBasket();
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
