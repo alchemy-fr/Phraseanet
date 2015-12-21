@@ -19,7 +19,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketElementRepository")
- * @ORM\HasLifecycleCallbacks
  */
 class BasketElement
 {
@@ -266,14 +265,6 @@ class BasketElement
     public function getBasket()
     {
         return $this->basket;
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function setLastInBasket()
-    {
-        $this->setOrd($this->getBasket()->getElements()->count() + 1);
     }
 
     /**

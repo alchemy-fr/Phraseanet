@@ -31,7 +31,8 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             function (PhraseaApplication $app) {
                 return (new BasketController($app))
                     ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                    ->setDispatcher($app['dispatcher']);
+                    ->setDispatcher($app['dispatcher'])
+                    ->setJsonBodyHelper($app['json.body_helper']);
             }
         );
     }

@@ -78,4 +78,14 @@ class JsonBodyHelper
             throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
     }
+
+    /**
+     * @param mixed         $data
+     * @param string|object $schema
+     * @return string[]
+     */
+    public function validateJson($data, $schema)
+    {
+        return $this->validator->validate($data, $schema);
+    }
 }

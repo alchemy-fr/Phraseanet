@@ -51,11 +51,10 @@ class BasketManipulator
 
             $basket_element = new BasketElement();
             $basket_element->setRecord($record);
-            $basket_element->setBasket($basket);
+            $basket->addElement($basket_element);
 
             $this->manager->persist($basket_element);
 
-            $basket->addElement($basket_element);
             $elements[] = $basket_element;
 
             if (null !== $validationSession = $basket->getValidation()) {

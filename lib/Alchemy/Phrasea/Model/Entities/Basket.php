@@ -323,6 +323,7 @@ class Basket
     {
         $this->elements[] = $element;
         $element->setBasket($this);
+        $element->setOrd(count($this->elements));
 
         return $this;
     }
