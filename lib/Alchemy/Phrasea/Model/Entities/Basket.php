@@ -53,7 +53,7 @@ class Basket
     private $user;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
+     * @ORM\Column(name="is_read", type="boolean", options={"default" = 0})
      */
     private $isRead = false;
 

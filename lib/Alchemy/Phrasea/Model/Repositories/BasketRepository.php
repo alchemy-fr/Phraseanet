@@ -65,7 +65,7 @@ class BasketRepository extends EntityRepository
             LEFT JOIN s.participants p
             WHERE b.archived = false
             AND (
-              (b.user = :usr_id_owner AND b.is_read = false)
+              (b.user = :usr_id_owner AND b.isRead = false)
               OR (b.user != :usr_id_ownertwo
                   AND p.user = :usr_id_participant
                   AND p.is_aware = false)
