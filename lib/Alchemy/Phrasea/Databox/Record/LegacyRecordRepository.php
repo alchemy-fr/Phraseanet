@@ -11,6 +11,7 @@ namespace Alchemy\Phrasea\Databox\Record;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Cache\Exception;
+use Doctrine\DBAL\Connection;
 
 class LegacyRecordRepository implements RecordRepository
 {
@@ -25,13 +26,9 @@ class LegacyRecordRepository implements RecordRepository
         $this->databox = $databox;
     }
 
-    /**
-     * @param mixed $record_id
-     * @return \record_adapter|null
-     */
-    public function find($record_id)
+    public function find($record_id, $number = null)
     {
-        $record = new \record_adapter($this->app, $this->databox->get_sbas_id(), $record_id, null, false);
+        $record = new \record_adapter($this->app, $this->databox->get_sbas_id(), $record_id, $number, false);
         try {
             $data = $record->get_data_from_cache();
         } catch (Exception $exception) {
@@ -85,6 +82,27 @@ class LegacyRecordRepository implements RecordRepository
         }
 
         $result = $this->databox->get_connection()->fetchAll($sql, ['uuid' => $uuid]);
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
+    public function findByRecordIds(array $recordIds)
+    {
+        static $sql;
+
+        if (empty($recordIds)) {
+            return [];
+        }
+
+        if (!$sql) {
+            $sql = $this->createSelectBuilder()->where('record_id IN (:recordIds)')->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll(
+            $sql,
+            ['recordIds' => $recordIds],
+            ['recordIds' => Connection::PARAM_INT_ARRAY]
+        );
 
         return $this->mapRecordsFromResultSet($result);
     }
