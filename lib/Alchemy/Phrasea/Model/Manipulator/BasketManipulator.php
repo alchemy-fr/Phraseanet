@@ -106,4 +106,16 @@ class BasketManipulator
 
         $this->manager->flush();
     }
+
+    public function saveBasket(Basket $basket)
+    {
+        $this->manager->persist($basket);
+        $this->manager->flush();
+    }
+
+    public function removeBasket(Basket $basket)
+    {
+        $this->manager->remove($basket);
+        $this->manager->flush();
+    }
 }
