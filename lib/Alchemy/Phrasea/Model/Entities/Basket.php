@@ -55,7 +55,7 @@ class Basket
     /**
      * @ORM\Column(type="boolean", options={"default" = 0})
      */
-    private $is_read = false;
+    private $isRead = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -182,27 +182,23 @@ class Basket
         return $this->user;
     }
 
-    /**
-     * Set is_read
-     *
-     * @param  boolean $isRead
-     * @return Basket
-     */
-    public function setIsRead($isRead)
+    public function markRead()
     {
-        $this->is_read = $isRead;
+        $this->isRead = true;
 
         return $this;
     }
 
-    /**
-     * Get is_read
-     *
-     * @return boolean
-     */
-    public function getIsRead()
+    public function markUnread()
     {
-        return $this->is_read;
+        $this->isRead = false;
+
+        return $this;
+    }
+
+    public function isRead()
+    {
+        return $this->isRead;
     }
 
     /**

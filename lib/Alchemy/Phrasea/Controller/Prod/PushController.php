@@ -97,7 +97,7 @@ class PushController extends Controller
                 $Basket->setDescription($push_description);
                 $Basket->setUser($user_receiver);
                 $Basket->setPusher($this->getAuthenticatedUser());
-                $Basket->setIsRead(false);
+                $Basket->markUnread();
                 
                 $manager->persist($Basket);
 
@@ -212,7 +212,7 @@ class PushController extends Controller
                 $basket->setName($validation_name);
                 $basket->setDescription($validation_description);
                 $basket->setUser($this->getAuthenticatedUser());
-                $basket->setIsRead(false);
+                $basket->markUnread();
 
                 $manager->persist($basket);
 

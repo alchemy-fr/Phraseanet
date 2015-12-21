@@ -1444,7 +1444,7 @@ class V1Controller extends Controller
             'pusher_usr_id'     => $basket->getPusher() ? $basket->getPusher()->getId() : null,
             'pusher'            => $basket->getPusher() ? $this->listUser($basket->getPusher()) : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
-            'unread'            => !$basket->getIsRead(),
+            'unread'            => !$basket->isRead(),
             'validation_basket' => !!$basket->getValidation(),
         ];
 

@@ -24,8 +24,8 @@ class BasketController extends Controller
 {
     public function displayBasket(Request $request, Basket $basket)
     {
-        if ($basket->getIsRead() === false) {
-            $basket->setIsRead(true);
+        if ($basket->isRead() === false) {
+            $basket->markRead();
             $this->getEntityManager()->flush();
         }
 

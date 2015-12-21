@@ -1648,8 +1648,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return set_selection
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
+     * @deprecated use {@link self::getChildren} instead.
      */
     public function get_children()
+    {
+        return $this->getChildren();
+    }
+
+    public function getChildren()
     {
         if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');

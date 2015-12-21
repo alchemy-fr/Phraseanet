@@ -232,10 +232,10 @@ class LightboxController extends Controller
      */
     private function markBasketRead(Basket $basket)
     {
-        if ($basket->getIsRead() === false) {
+        if ($basket->isRead() === false) {
             /** @var Basket $basket */
             $basket = $this->app['orm.em']->merge($basket);
-            $basket->setIsRead(true);
+            $basket->markRead();
             $this->app['orm.em']->flush();
         }
         
