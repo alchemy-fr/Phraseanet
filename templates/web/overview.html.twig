@@ -8,9 +8,7 @@
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css">
-        <style type="text/css">
-
-        </style>
+    <style type="text/css"></style>
 {% endblock %}
 
 {% block rss %}
@@ -24,8 +22,8 @@
         <h1>{{ record.get_title() }}</h1>
 
         <div class="preview">
-            <iframe width="{{ subdef.get_width() }}" height="{{ subdef.get_height() }}"
-                    src="{{ app['request'].baseUrl }}/embed/{{ record.getBaseId() }}/{{ record.getRecordId() }}/{{ subdef.get_name() }}/?token={{ token }}"
+            <iframe width="100%" height="{{ subdef.get_height() }}"
+                    src="{{ app['request'].baseUrl }}/embed/{{ subdef.get_sbas_id() }}/{{ record.getRecordId() }}/{{ subdef.get_name() }}/?token={{ token }}"
                     frameborder="0" allowfullscreen></iframe>
         </div>
 

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9cbb232263e66f0b496e4b0bbfe50ba2",
-    "content-hash": "548f5bb46cedc32f324eaa9012d9d14e",
+    "hash": "8a03f54c53aac0be4b6bec5ee24be736",
+    "content-hash": "c03239742e332a5a20589d3f5ec09b9a",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -122,16 +122,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "dev-master",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "639e6a2649df04254ed3dfc1a6d42c1821873673"
+                "reference": "fc5fb948b15b10262a8da52e54e11fe1d2ed2904"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/639e6a2649df04254ed3dfc1a6d42c1821873673",
-                "reference": "639e6a2649df04254ed3dfc1a6d42c1821873673",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/fc5fb948b15b10262a8da52e54e11fe1d2ed2904",
+                "reference": "fc5fb948b15b10262a8da52e54e11fe1d2ed2904",
                 "shasum": ""
             },
             "require-dev": {
@@ -169,10 +169,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/master",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/v0.1.0",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2015-12-18 09:36:03"
+            "time": "2015-12-21 10:19:25"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -6338,7 +6338,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "alchemy/embed-bundle": 20,
         "alchemy/rest-bundle": 20,
         "alchemy/task-manager": 20,
         "goodby/csv": 20,
