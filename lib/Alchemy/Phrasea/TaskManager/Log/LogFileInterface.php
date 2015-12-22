@@ -16,28 +16,32 @@ interface LogFileInterface
     /**
      * Returns the path to the logfile.
      *
-     * @return string
+     * @return string[]
      */
-    public function getPath();
+    public function getLogFiles();
 
     /**
-     * Returns the content of the logfile.
+     * Returns the content of a logfile.
      *
+     * @param string $logfile
      * @return string
      */
-    public function getContent();
+    public function getContent($logfile);
 
     /**
-     * Streams the content of the logfile.
+     * Streams the content of a logfile.
      *
      * This methods returns a closure that echoes the output.
      *
+     * @param string $logfile
      * @return Closure
      */
-    public function getContentStream();
+    public function getContentStream($logfile);
 
     /**
-     * Clears the content of the logfile.
+     * Clears the content of a logfile.
+     *
+     * @param string $logfile
      */
-    public function clear();
+    public function clear($logfile);
 }

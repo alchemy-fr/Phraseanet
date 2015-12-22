@@ -64,7 +64,7 @@ abstract class AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear($logfile)
     {
         file_put_contents($this->getPath(), '');
     }
