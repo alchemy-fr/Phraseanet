@@ -170,9 +170,10 @@ class Application extends SilexApplication
         $this->setupApplicationPaths();
         $this->setupConstants();
 
-        $this['debug'] = $this->share(function (Application $app) {
-            return Application::ENV_PROD !== $app->getEnvironment();
-        });
+        $this['debug'] = !in_array($environment, [
+            Application::ENV_PROD,
+            Application::ENV_TEST,
+        ]);
 
         if ($this['debug']) {
             ini_set('log_errors', 'on');
