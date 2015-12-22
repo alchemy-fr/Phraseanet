@@ -876,10 +876,17 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         self::$DI['record_story_1'];
 
-        self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(['search_type' => SearchEngineOptions::RECORD_GROUPING]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $client = $this->getClient();
+        $client->request(
+            'POST',
+            '/api/v1/search/',
+            $this->getParameters(['search_type' => SearchEngineOptions::RECORD_GROUPING]),
+            [],
+            ['HTTP_Accept' => $this->getAcceptMimeType()]
+        );
+        $content = $this->unserialize($client->getResponse()->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($client->getResponse());
         $this->evaluateMeta200($content);
 
         $response = $content['response'];
