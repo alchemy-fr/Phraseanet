@@ -104,6 +104,7 @@ class RecordIndexer
 
     /**
      * index whole databox(es), don't test actual "jetons"
+     * called by command "populate"
      *
      * @param BulkOperation $bulk
      * @param databox[] $databoxes
@@ -111,38 +112,41 @@ class RecordIndexer
     public function populateIndex(BulkOperation $bulk, array $databoxes)
     {
         foreach ($databoxes as $databox) {
-            $submitted_records = [];
+
+            $submited_records = [];
 
             $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
 
             $fetcher = $this->createFetcherForDatabox($databox);    // no delegate, scan the whole records
 
             // post fetch : flag records as "indexing"
-            $fetcher->setPostFetch(function(array $records) use ($databox) {
+            $fetcher->setPostFetch(function(array $records) use ($databox, $fetcher) {
                 RecordQueuer::didStartIndexingRecords($records, $databox);
                 // do not restart the fetcher since it has no clause on jetons
             });
 
             // bulk flush : flag records as "indexed"
-            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submitted_records) {
-                $this->onBulkFlush($databox, $operation_identifiers, $submitted_records);
+            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
+                $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
             });
 
             // Perform indexing
-            $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
+            $this->indexFromFetcher($bulk, $fetcher, $submited_records);
 
             $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
         }
     }
 
     /**
-     * Index the records flagged as "to_index" on all databoxes
+     * Index the records flagged as "to_index" on databoxes
+     * called by task "indexer"
      *
      * @param BulkOperation $bulk
+     * @param databox[] $databoxes
      */
-    public function indexScheduled(BulkOperation $bulk)
+    public function indexScheduled(BulkOperation $bulk, array $databoxes)
     {
-        foreach ($this->appbox->get_databoxes() as $databox) {
+        foreach ($databoxes as $databox) {
             $this->indexScheduledInDatabox($bulk, $databox);
         }
     }

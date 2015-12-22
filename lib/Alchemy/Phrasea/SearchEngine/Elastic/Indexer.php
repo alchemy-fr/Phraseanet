@@ -175,10 +175,14 @@ class Indexer
         $this->deleteQueue->attach($record);
     }
 
-    public function indexScheduledRecords()
+    /**
+     * @param \databox[] $databoxes    databoxes to index
+     * @throws \Exception
+     */
+    public function indexScheduledRecords(array $databoxes)
     {
-        $this->apply(function(BulkOperation $bulk) {
-            $this->recordIndexer->indexScheduled($bulk);
+        $this->apply(function(BulkOperation $bulk) use($databoxes) {
+            $this->recordIndexer->indexScheduled($bulk, $databoxes);
         });
     }
 
