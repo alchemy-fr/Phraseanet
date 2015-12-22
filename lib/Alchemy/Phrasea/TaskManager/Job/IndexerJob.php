@@ -8,7 +8,10 @@
  * file that was distributed with this source code.
  */
 namespace Alchemy\Phrasea\TaskManager\Job;
+
 use Alchemy\Phrasea\TaskManager\Editor\IndexerEditor;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+
 class IndexerJob extends AbstractJob
 {
     /**
@@ -45,6 +48,17 @@ class IndexerJob extends AbstractJob
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
-        $app['elasticsearch.indexer']->indexScheduledRecords();
+        /** @var Indexer $indexer */
+        $indexer = $app['elasticsearch.indexer'];
+
+        foreach (
+            array_filter(
+                $app->get_databoxes(),
+                function($databox) use($app) {
+                    return $app->is_databox_indexable($databox);
+                }
+            ) as $databox) {
+            $indexer->indexScheduledRecords($databox);
+        }
     }
 }
