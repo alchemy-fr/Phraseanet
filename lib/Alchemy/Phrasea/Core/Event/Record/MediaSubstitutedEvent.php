@@ -11,6 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
-class RecordMetadataChangedEvent extends RecordEvent
+class MediaSubstitutedEvent extends RecordEvent
 {
 }

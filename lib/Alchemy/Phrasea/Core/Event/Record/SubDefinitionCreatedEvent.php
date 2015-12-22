@@ -11,19 +11,34 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
-class RecordSubDefinitionCreatedEvent extends RecordEvent
+use MediaVorus\Media\MediaInterface;
+
+class SubDefinitionCreatedEvent extends RecordEvent
 {
     private $subDefinitionName;
+    private $media;
 
-    public function __construct(\record_adapter $record, $subDefinitionName)
+    public function __construct(\record_adapter $record, $subDefinitionName, MediaInterface $media)
     {
         parent::__construct($record);
 
         $this->subDefinitionName = $subDefinitionName;
+        $this->media = $media;
     }
 
+    /**
+     * @return string
+     */
     public function getSubDefinitionName()
     {
         return $this->subDefinitionName;
+    }
+
+    /**
+     * @return MediaInterface
+     */
+    public function getMedia()
+    {
+        return $this->media;
     }
 }

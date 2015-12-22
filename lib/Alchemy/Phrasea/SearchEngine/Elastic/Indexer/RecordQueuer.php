@@ -44,13 +44,13 @@ class RecordQueuer
     }
 
     /**
-     * @param array $records
-     * @param $databox
+     * @param array   $records
+     * @param databox $databox
      *
      * nb: changing the jeton may affect a fetcher if his "where" clause (delegate) depends on jeton.
      * in this case the client of the fetcher must set a "postFetch" callback and restart the fetcher
      */
-    public static function didStartIndexingRecords(array $records, $databox)
+    public static function didStartIndexingRecords(array $records, databox $databox)
     {
         $connection = $databox->get_connection();
         $sql = "UPDATE record SET jeton = (jeton | :flag) WHERE record_id IN (:record_ids)";
@@ -76,14 +76,14 @@ class RecordQueuer
     {
         return $connection->executeQuery($sql, array(
             ':flag'       => $flag,
-            ':record_ids' => self::array_pluck($records, 'record_id')
+            ':record_ids' => self::arrayPluck($records, 'record_id')
         ), array(
             ':flag'       => PDO::PARAM_INT,
             ':record_ids' => Connection::PARAM_INT_ARRAY
         ));
     }
 
-    private static function array_pluck(array $array, $key)
+    private static function arrayPluck(array $array, $key)
     {
         $values = array();
         foreach ($array as $item) {

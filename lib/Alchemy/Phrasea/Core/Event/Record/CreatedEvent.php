@@ -11,5 +11,5 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
-class RecordCreatedEvent extends RecordEvent
+class CreatedEvent extends RecordEvent
 {}

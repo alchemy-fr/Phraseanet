@@ -246,7 +246,7 @@ class File
     /**
      * Returns an array of AttributeInterface associated to the file
      *
-     * @return array
+     * @return AttributeInterface[]
      */
     public function getAttributes()
     {
