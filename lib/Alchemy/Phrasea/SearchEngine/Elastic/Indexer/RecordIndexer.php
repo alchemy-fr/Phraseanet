@@ -112,7 +112,8 @@ class RecordIndexer
     public function populateIndex(BulkOperation $bulk, array $databoxes)
     {
         foreach ($databoxes as $databox) {
-            $submitted_records = [];
+
+            $submited_records = [];
 
             $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
 
