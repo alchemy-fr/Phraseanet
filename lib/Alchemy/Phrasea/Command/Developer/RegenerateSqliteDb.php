@@ -11,12 +11,14 @@
 
 namespace Alchemy\Phrasea\Command\Developer;
 
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
-use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Feed;
@@ -26,18 +28,20 @@ use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Registration;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Alchemy\Phrasea\Model\Entities\ValidationSession;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
-use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
-use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
+use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -45,7 +49,6 @@ use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Alchemy\Phrasea\Border\File;
 
 class RegenerateSqliteDb extends Command
 {
@@ -207,10 +210,14 @@ class RegenerateSqliteDb extends Command
 
     public function insertOauthAccounts(\Pimple $DI)
     {
-        $DI['api-app-acc-user'] = $this->container['manipulator.api-account']->create($DI['api-app-user'], $DI['user']);
-        $this->container['manipulator.api-oauth-token']->create($DI['api-app-acc-user']);
-        $DI['api-app-acc-user-not-admin'] = $this->container['manipulator.api-account']->create($DI['api-app-user-not-admin'], $DI['user_notAdmin']);
-        $this->container['manipulator.api-oauth-token']->create($DI['api-app-acc-user-not-admin']);
+        /** @var ApiAccountManipulator $apiAccountManipulator */
+        $apiAccountManipulator = $this->container['manipulator.api-account'];
+        /** @var ApiOauthTokenManipulator $apiOAuthTokenManipulator */
+        $apiOAuthTokenManipulator = $this->container['manipulator.api-oauth-token'];
+        $DI['api-app-acc-user'] = $apiAccountManipulator->create($DI['api-app-user'], $DI['user'], V2::VERSION);
+        $apiOAuthTokenManipulator->create($DI['api-app-acc-user']);
+        $DI['api-app-acc-user-not-admin'] = $apiAccountManipulator->create($DI['api-app-user-not-admin'], $DI['user_notAdmin'], V2::VERSION);
+        $apiOAuthTokenManipulator->create($DI['api-app-acc-user-not-admin']);
     }
 
     public function insertNativeApps()

@@ -27,14 +27,11 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
 {
-    private $app;
-
     private $logger;
 
-    public function __construct(Application $app)
+    public function __construct(LoggerInterface $logger = null)
     {
-        $this->app = $app;
-        $this->logger = new NullLogger();
+        $this->logger = $logger ?: new NullLogger();
     }
 
     public function setLogger(LoggerInterface $logger)
@@ -65,7 +62,7 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
         } elseif ($e instanceof NotFoundHttpException) {
             $code = 404;
         } elseif ($e instanceof HttpExceptionInterface) {
-            if (in_array($e->getStatusCode(), [400, 401, 403, 404, 405, 406, 503])) {
+            if (in_array($e->getStatusCode(), [400, 401, 403, 404, 405, 406, 422, 503])) {
                 $code = $e->getStatusCode();
             } else {
                 $code = 500;

@@ -12,13 +12,13 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketElementRepository")
- * @ORM\HasLifecycleCallbacks
  */
 class BasketElement
 {
@@ -237,7 +237,7 @@ class BasketElement
     /**
      * Get validation_datas
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection|ValidationData[]
      */
     public function getValidationDatas()
     {
@@ -268,16 +268,9 @@ class BasketElement
     }
 
     /**
-     * @ORM\PrePersist
-     */
-    public function setLastInBasket()
-    {
-        $this->setOrd($this->getBasket()->getElements()->count() + 1);
-    }
-
-    /**
-     *
+     * @param User $user
      * @return ValidationData
+     * @throws \Exception
      */
     public function getUserValidationDatas(User $user)
     {

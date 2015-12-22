@@ -52,12 +52,14 @@ class SessionManagerSubscriber implements EventSubscriberInterface
                 $request = $event->getRequest();
                 $request->cookies->set($this->app['session']->getName(), $sessionId);
 
-                return $request;
             }
         }
     }
 
-    /**log real human activity on application, to keep session alive*/
+    /**
+     * log real human activity on application, to keep session alive
+     * @param GetResponseEvent $event
+     */
     public function checkSessionActivity(GetResponseEvent $event)
     {
         $modulesIds = [
@@ -69,7 +71,9 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             "lightbox"  => 6,
         ];
 
-        $pathInfo = array_filter(explode('/', $event->getRequest()->getPathInfo()));
+        $request = $event->getRequest();
+
+        $pathInfo = array_filter(explode('/', $request->getPathInfo()));
 
         if (count($pathInfo) < 1) {
             return;
@@ -80,32 +84,25 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
         // this route is polled by js in admin/databox to refresh infos (progress bar...)
-        if (preg_match("#^/admin/databox/[0-9]+/informations/documents/#", $event->getRequest()->getPathInfo()) == 1) {
+        if (preg_match("#^/admin/databox/[0-9]+/informations/documents/#", $request->getPathInfo()) == 1) {
             return;
         }
         // this route is polled by js in admin/tasks to refresh tasks status
-        if ($event->getRequest()->getPathInfo() == "/admin/task-manager/tasks/" && $event->getRequest()->getContentType() == 'json') {
+        if ($request->getPathInfo() == "/admin/task-manager/tasks/" && $request->getContentType() == 'json') {
             return;
         }
 
-        if ($this->isFlashUploadRequest($event->getRequest())) {
+        if ($this->isFlashUploadRequest($request)) {
             return;
         }
 
-        if ($event->getRequest()->query->has('LOG')) {
+        if ($request->query->has('LOG')) {
             return;
         }
 
-        // if we are already disconnected (ex. from another window), quit immediatly
+        // if we are already disconnected (ex. from another window), quit immediately
         if (!($this->app->getAuthenticator()->isAuthenticated())) {
-            if ($event->getRequest()->isXmlHttpRequest()) {
-                $response = new Response("End-Session", 403);
-            } else {
-                $response = new RedirectResponse($this->app["url_generator"]->generate("homepage", ["redirect"=>'..' . $event->getRequest()->getPathInfo()]));
-            }
-            $response->headers->set('X-Phraseanet-End-Session', '1');
-
-            $event->setResponse($response);
+            $this->setDisconnectResponse($event);
 
             return;
         }
@@ -119,16 +116,9 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $now = new \DateTime();
         $dt = $now->getTimestamp() - $session->getUpdated()->getTimestamp();
         if ($idle > 0 && $dt > $idle) {
-            // we must disconnet due to idletime
+            // we must disconnect due to idle time
             $this->app->getAuthenticator()->closeAccount();
-            if ($event->getRequest()->isXmlHttpRequest()) {
-                $response = new Response("End-Session", 403);
-            } else {
-                $response = new RedirectResponse($this->app["url_generator"]->generate("homepage", ["redirect"=>'..' . $event->getRequest()->getPathInfo()]));
-            }
-            $response->headers->set('X-Phraseanet-End-Session', '1');
-
-            $event->setResponse($response);
+            $this->setDisconnectResponse($event);
 
             return;
         }
@@ -136,23 +126,47 @@ class SessionManagerSubscriber implements EventSubscriberInterface
 
         $session->setUpdated(new \DateTime());
 
+        $entityManager = $this->app['orm.em'];
+
         if (!$session->hasModuleId($moduleId)) {
             $module = new SessionModule();
             $module->setModuleId($moduleId);
             $module->setSession($session);
             $session->addModule($module);
 
-            $this->app['orm.em']->persist($module);
+            $entityManager->persist($module);
         } else {
-            $this->app['orm.em']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+            $entityManager->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
-        $this->app['orm.em']->persist($session);
-        $this->app['orm.em']->flush();
+        $entityManager->persist($session);
+        $entityManager->flush();
     }
 
     private function isFlashUploadRequest(Request $request)
     {
         return false !== stripos($request->server->get('HTTP_USER_AGENT'), 'flash')
         && $request->getRequestUri() === '/prod/upload/';
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     */
+    private function setDisconnectResponse(GetResponseEvent $event)
+    {
+        if ($event->getRequest()->isXmlHttpRequest()) {
+            $response = new Response("End-Session", 403, ['X-Phraseanet-End-Session' => '1']);
+
+            $event->setResponse($response);
+
+            return;
+        }
+
+        $redirectUrl = $this->app["url_generator"]->generate("homepage", [
+            "redirect" => '..' . $event->getRequest()->getPathInfo(),
+        ]);
+
+        $response = new RedirectResponse($redirectUrl, 302, ['X-Phraseanet-End-Session' => '1']);
+
+        $event->setResponse($response);
     }
 }

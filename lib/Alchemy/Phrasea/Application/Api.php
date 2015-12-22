@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\ControllerProvider\Api\OAuth2;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
@@ -38,13 +39,11 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
 
     $app->register(new OAuth2());
     $app->register(new V1());
+    $app->register(new V2());
     $app->loadPlugins();
 
     $app['exception_handler'] = $app->share(function ($app) {
-        $handler = new ApiExceptionHandlerSubscriber($app);
-        $handler->setLogger($app['monolog']);
-
-        return $handler;
+        return new ApiExceptionHandlerSubscriber($app['monolog']);
     });
     $app['monolog'] = $app->share($app->extend('monolog', function (Logger $monolog) {
         $monolog->pushProcessor(new WebProcessor());
@@ -113,7 +112,17 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
                         'authorization_token' => '/api/oauthv2/authorize',
                         'access_token'        => '/api/oauthv2/token'
                     ]
-                ]
+                ],
+                '2' => [
+                    'number'                  => V2::VERSION,
+                    'uri'                     => '/api/v2/',
+                    'authenticationProtocol'  => 'OAuth2',
+                    'authenticationVersion'   => 'draft#v9',
+                    'authenticationEndPoints' => [
+                        'authorization_token' => '/api/oauthv2/authorize',
+                        'access_token'        => '/api/oauthv2/token'
+                    ],
+                ],
             ]
         ])->createResponse();
     });
@@ -129,6 +138,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     $app->mount('/api/oauthv2', new OAuth2());
     $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
+    $app->mount('/api/v2', new V2());
     $app->mount('/permalink/', new Permalink());
     $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
     $app->mount('/include/minify/', new Minifier());

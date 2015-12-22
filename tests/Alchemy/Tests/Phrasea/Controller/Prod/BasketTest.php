@@ -3,8 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Doctrine\ORM\EntityManager;
 
 /**
  * @group functional
@@ -56,27 +55,31 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRootPostJSON()
     {
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $app = $this->getApplication();
+        /** @var EntityManager $entityManager */
+        $entityManager = $app['orm.em'];
+        $query = $entityManager->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
 
         $route = '/prod/baskets/';
 
-        self::$DI['client']->request(
-            'POST'
-            , $route
-            , [
-            'name' => 'panier',
-            'desc' => 'mon beau panier',
-            ]
-            , []
-            , [
-            "HTTP_ACCEPT" => "application/json"
+        $client = $this->getClient();
+        $client->request(
+            'POST',
+            $route,
+            [
+                'name' => 'panier',
+                'desc' => 'mon beau panier',
+            ],
+            [],
+            [
+                "HTTP_ACCEPT" => "application/json",
             ]
         );
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
 
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
+        $query = $entityManager->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
 
         $this->assertEquals($count + 1, $query->getSingleScalarResult());
         $this->assertEquals(200, $response->getStatusCode());
@@ -86,9 +89,10 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $route = '/prod/baskets/create/';
 
-        $crawler = self::$DI['client']->request('GET', $route);
+        $client = $this->getClient();
+        $crawler = $client->request('GET', $route);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
 
         $filter = "form[action='/prod/baskets/']";

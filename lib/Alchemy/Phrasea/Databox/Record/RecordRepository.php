@@ -12,10 +12,11 @@ namespace Alchemy\Phrasea\Databox\Record;
 interface RecordRepository
 {
     /**
-     * @param mixed $record_id
-     * @return \record_adapter|null
+     * @param mixed    $record_id
+     * @param null|int $number
+     * @return null|\record_adapter
      */
-    public function find($record_id);
+    public function find($record_id, $number = null);
 
     /**
      * @param string $sha256
@@ -28,4 +29,10 @@ interface RecordRepository
      * @return \record_adapter[]
      */
     public function findByUuid($uuid);
+
+    /**
+     * @param array $recordIds
+     * @return \record_adapter[]
+     */
+    public function findByRecordIds(array $recordIds);
 }

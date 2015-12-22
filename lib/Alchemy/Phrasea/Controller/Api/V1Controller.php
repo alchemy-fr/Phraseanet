@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -53,6 +54,7 @@ use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
@@ -60,9 +62,7 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
 use Firebase\JWT\JWT;
-use JsonSchema\Uri\UriRetriever;
-use JsonSchema\Validator;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,6 +74,7 @@ class V1Controller extends Controller
 {
     use DataboxLoggerAware;
     use DispatcherAware;
+    use JsonBodyAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
@@ -936,7 +937,7 @@ class V1Controller extends Controller
         $base_id = $record->getBaseId();
         $collection = \collection::get_from_base_id($this->app, $base_id);
         if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
-            return Result::create($request, 403, sprintf(
+            return Result::createError($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])
             ));
         }
@@ -1443,7 +1444,7 @@ class V1Controller extends Controller
             'pusher_usr_id'     => $basket->getPusher() ? $basket->getPusher()->getId() : null,
             'pusher'            => $basket->getPusher() ? $this->listUser($basket->getPusher()) : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
-            'unread'            => !$basket->getIsRead(),
+            'unread'            => !$basket->isRead(),
             'validation_basket' => !!$basket->getValidation(),
         ];
 
@@ -1615,7 +1616,7 @@ class V1Controller extends Controller
 
             return Result::create($request, ["record" => $this->listRecord($request, $record)])->createResponse();
         } catch (\Exception $e) {
-            return $this->getBadRequestAction($this->app, $request, $e->getMessage());
+            return $this->getBadRequestAction($request, $e->getMessage());
         }
     }
 
@@ -1689,14 +1690,6 @@ class V1Controller extends Controller
         ];
 
         return Result::create($request, $ret)->createResponse();
-    }
-
-    /**
-     * @return Validator
-     */
-    protected function getJsonSchemaValidator()
-    {
-        return $this->app['json-schema.validator'];
     }
 
     /**
@@ -2051,31 +2044,13 @@ class V1Controller extends Controller
 
     public function createStoriesAction(Request $request)
     {
-        $content = $request->getContent();
-
-        $data = @json_decode($content);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
-        }
-
-        if (!isset($data->{'stories'})) {
-            $this->app->abort(400, 'Missing "stories" property');
-        }
-
-        $jsonSchemaRetriever = $this->getJsonSchemaRetriever();
-        $schemaStory = $jsonSchemaRetriever->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story.json');
-        $schemaRecordStory = $jsonSchemaRetriever->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_record.json');
+        $data = $this->decodeJsonBody($request, 'stories.json');
 
         $storyData = $data->{'stories'};
 
-        if (!is_array($storyData)) {
-            $storyData = array($storyData);
-        }
-
         $stories = array();
         foreach ($storyData as $data) {
-            $stories[] = $this->createStory($data, $schemaStory, $schemaRecordStory);
+            $stories[] = $this->createStory($data);
         }
 
         $result = Result::create($request, array('stories' => array_map(function(\record_adapter $story) {
@@ -2086,22 +2061,12 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param $data
-     * @param $schemaStory
-     * @param $schemaRecordStory
+     * @param object $data
      * @return \record_adapter
      * @throws \Exception
      */
-    protected function createStory($data, $schemaStory, $schemaRecordStory)
+    protected function createStory($data)
     {
-        $validator = $this->getJsonSchemaValidator();
-
-        $validator->check($data, $schemaStory);
-
-        if (false === $validator->isValid()) {
-            $this->app->abort(400, 'Request body does not contains a valid "story" object');
-        }
-
         $collection = \collection::get_from_base_id($this->app, $data->{'base_id'});
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
@@ -2165,27 +2130,10 @@ class V1Controller extends Controller
 
     private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
     {
-        $content = $request->getContent();
-
-        $data = @json_decode($content);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
-        }
-
-        if (!isset($data->{'story_records'})) {
-            $this->app->abort(400, 'Missing "story_records" property');
-        }
-
-        $recordsData = $data->{'story_records'};
-
-        if (!is_array($recordsData)) {
-            $recordsData = array($recordsData);
-        }
-
+        $data = $this->decodeJsonBody($request, 'story_records.json');
         $story = new \record_adapter($this->app, $databox_id, $story_id);
 
-        $records = $this->addOrDelStoryRecordsFromData($story, $recordsData, $action);
+        $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
         $result = Result::create($request, array('records' => $records));
 
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
@@ -2196,12 +2144,10 @@ class V1Controller extends Controller
     private function addOrDelStoryRecordsFromData(\record_adapter $story, array $recordsData, $action)
     {
         $records = array();
-        $schema = $this->getJsonSchemaRetriever()
-            ->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_record.json');
         $cover_set = false;
 
         foreach ($recordsData as $data) {
-            $records[] = $this->addOrDelStoryRecord($story, $data, $schema, $action);
+            $records[] = $this->addOrDelStoryRecord($story, $data, $action);
             if($action === 'ADD' && !$cover_set && isset($data->{'use_as_cover'}) && $data->{'use_as_cover'} === true) {
                 // because we can try many records as cover source, we let it fail
                 $cover_set = ($this->setStoryCover($story, $data->{'record_id'}, true) !== false);
@@ -2211,24 +2157,18 @@ class V1Controller extends Controller
         return $records;
     }
 
-    private function addOrDelStoryRecord(\record_adapter $story, $data, $jsonSchema, $action)
+    private function addOrDelStoryRecord(\record_adapter $story, $data, $action)
     {
-        $validator = $this->getJsonSchemaValidator();
-        $validator->check($data, $jsonSchema);
-
-        if (false === $validator->isValid()) {
-            $this->app->abort(400, 'Request body contains not a valid "record story" object');
-        }
-
         $databox_id = $data->{'databox_id'};
         $record_id = $data->{'record_id'};
 
         if($story->getDataboxId() !== $databox_id) {
-            $this->app->abort(409, sprintf('The databox_id %s (for record_id %s) must match the databox_id %s of the story'
-                , $databox_id
-                , $record_id
-                , $story->getDataboxId())
-            );
+            $this->app->abort(409, sprintf(
+                'The databox_id %s (for record_id %s) must match the databox_id %s of the story',
+                $databox_id,
+                $record_id,
+                $story->getDataboxId()
+            ));
         }
 
         try {
@@ -2260,31 +2200,14 @@ class V1Controller extends Controller
 
     public function setStoryCoverAction(Request $request, $databox_id, $story_id)
     {
-        $content = $request->getContent();
-
-        $data = @json_decode($content);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $this->app->abort(400, 'Json response cannot be decoded or the encoded data is deeper than the recursion limit');
-        }
-
-        $schemaStoryCover = $this->getJsonSchemaRetriever()
-            ->retrieve('file://'.$this->app['root.path'].'/lib/conf.d/json_schema/story_cover.json');
-
-        $validator = $this->getJsonSchemaValidator();
-        $validator->check($data, $schemaStoryCover);
-
-        if (false === $validator->isValid()) {
-            $this->app->abort(400, 'Request body contains not a valid "story cover" object');
-        }
+        $data = $this->decodeJsonBody($request, 'story_cover.json');
 
         $story = new \record_adapter($this->app, $databox_id, $story_id);
 
         // we do NOT let "setStoryCover()" fail : pass false as last arg
         $record_key = $this->setStoryCover($story, $data->{'record_id'}, false);
 
-        $result = Result::create($request, array($record_key));
-        return $result->createResponse();
+        return Result::create($request, array($record_key))->createResponse();
     }
 
     protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false)
@@ -2392,6 +2315,7 @@ class V1Controller extends Controller
         $service = $this->getAccountService();
         $data = json_decode($request->getContent(false), true);
         $command = new UpdatePasswordCommand();
+        /** @var Form $form */
         $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
             'csrf_protection' => false
         ]);
@@ -2637,20 +2561,10 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return LoggerInterface
+     * @return SearchEngineLogger
      */
     private function getSearchEngineLogger()
     {
-        /** @var LoggerInterface $logger */
-        $logger = $this->app['phraseanet.SE.logger'];
-        return $logger;
-    }
-
-    /**
-     * @return UriRetriever
-     */
-    private function getJsonSchemaRetriever()
-    {
-        return $this->app['json-schema.retriever'];
+        return $this->app['phraseanet.SE.logger'];
     }
 }

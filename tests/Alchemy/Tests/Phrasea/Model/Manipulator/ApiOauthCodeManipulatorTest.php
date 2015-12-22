@@ -2,8 +2,13 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\ApiAccount;
+use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
+use Alchemy\Phrasea\Model\Repositories\ApiOauthCodeRepository;
 
 /**
  * @group functional
@@ -13,32 +18,40 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
     {
-        $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
-        $nbCodes = count(self::$DI['app']['repo.api-oauth-codes']->findAll());
-        $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $app = $this->getApplication();
+        $oauthCodesRepository = $this->getOAuthCodesRepository($app);
+
+        $manipulator = new ApiOauthCodeManipulator($app['orm.em'], $oauthCodesRepository, $app['random.medium']);
+        $nbCodes = count($oauthCodesRepository->findAll());
+        $account = $this->getApiAccount($app);
         $manipulator->create($account, 'http://www.redirect.url', time() + 30);
-        $this->assertGreaterThan($nbCodes, count(self::$DI['app']['repo.api-oauth-codes']->findAll()));
+        $this->assertGreaterThan($nbCodes, count($oauthCodesRepository->findAll()));
     }
 
     public function testDelete()
     {
-        $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
-        $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $app = $this->getApplication();
+        $oauthCodesRepository = $this->getOAuthCodesRepository($app);
+
+        $manipulator = new ApiOauthCodeManipulator($app['orm.em'], $oauthCodesRepository, $app['random.medium']);
+        $account = $this->getApiAccount($app);
         $code = $manipulator->create($account, 'http://www.redirect.url', time() + 30);
-        $countBefore = count(self::$DI['app']['repo.api-oauth-codes']->findAll());
+        $countBefore = count($oauthCodesRepository->findAll());
         $manipulator->delete($code);
-        $this->assertGreaterThan(count(self::$DI['app']['repo.api-oauth-codes']->findAll()), $countBefore);
+        $this->assertGreaterThan(count($oauthCodesRepository->findAll()), $countBefore);
     }
 
     public function testUpdate()
     {
+        $app = $this->getApplication();
+        $oauthCodesRepository = $this->getOAuthCodesRepository($app);
 
-        $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
-        $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $manipulator = new ApiOauthCodeManipulator($app['orm.em'], $oauthCodesRepository, $app['random.medium']);
+        $account = $this->getApiAccount($app);
         $code = $manipulator->create($account, 'http://www.redirect.url', $t = time() + 30);
         $code->setExpires(time() + 40);
         $manipulator->update($code);
-        $code = self::$DI['app']['repo.api-oauth-codes']->find($code->getCode());
+        $code = $oauthCodesRepository->find($code->getCode());
         $this->assertGreaterThan($t, $code->getExpires());
     }
 
@@ -47,8 +60,11 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
      */
     public function testSetRedirectUriBadArgumentException()
     {
-        $manipulator = new ApiOauthCodeManipulator(self::$DI['app']['orm.em'], self::$DI['app']['repo.api-oauth-codes'], self::$DI['app']['random.medium']);
-        $account = self::$DI['app']['manipulator.api-account']->create(self::$DI['oauth2-app-user'], self::$DI['user']);
+        $app = $this->getApplication();
+        $oauthCodesRepository = $this->getOAuthCodesRepository($app);
+
+        $manipulator = new ApiOauthCodeManipulator($app['orm.em'], $oauthCodesRepository, $app['random.medium']);
+        $account = $this->getApiAccount($app);
         $code = $manipulator->create($account, 'http://www.redirect.url', time() + 30);
         try {
             $manipulator->setRedirectUri($code, 'bad-url');
@@ -56,5 +72,33 @@ class ApiOauthCodeManipulatorTest extends \PhraseanetTestCase
         } catch (InvalidArgumentException $e) {
 
         }
+    }
+
+    /**
+     * @param Application $app
+     * @return ApiOauthCodeRepository
+     */
+    private function getOAuthCodesRepository(Application $app)
+    {
+        return $app['repo.api-oauth-codes'];
+    }
+
+    /**
+     * @param Application $app
+     * @return ApiAccountManipulator
+     */
+    private function getApiAccountManipulator(Application $app)
+    {
+        return $app['manipulator.api-account'];
+    }
+
+    /**
+     * @param Application $app
+     * @return ApiAccount
+     */
+    private function getApiAccount(Application $app)
+    {
+        return $this->getApiAccountManipulator($app)
+            ->create(self::$DI['oauth2-app-user'], self::$DI['user'], V2::VERSION);
     }
 }

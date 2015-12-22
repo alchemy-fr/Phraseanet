@@ -32,6 +32,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Elasticsearch\Client;
 use Hoa\Compiler;
 use Hoa\File;
+use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Silex\Application;
@@ -98,8 +99,8 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             // TODO Use upcomming monolog factory
-            $logger = new \Monolog\Logger('indexer');
-            $logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
+            $logger = new Logger('indexer');
+            $logger->pushHandler(new ErrorLogHandler());
             return new RecordIndexer(
                 $app['search_engine.structure'],
                 $app['elasticsearch.record_helper'],
@@ -147,7 +148,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             if ($app['debug']) {
                 /** @var Logger $logger */
                 $logger = new $app['monolog.logger.class']('search logger');
-                $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2), Logger::INFO);
+                $logger->pushHandler(new RotatingFileHandler($app['log.path'].DIRECTORY_SEPARATOR.'elasticsearch.log', 2, Logger::INFO));
 
                 $clientParams['logObject'] = $logger;
                 $clientParams['logging'] = true;
@@ -171,11 +172,13 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
 
         /* Querying helper services */
-
         $app['thesaurus'] = $app->share(function ($app) {
-            // TODO Use upcomming monolog factory
-            $logger = new \Monolog\Logger('thesaurus');
-            $logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
+            $logger = new Logger('thesaurus');
+            $logger->pushHandler(new ErrorLogHandler(
+                ErrorLogHandler::OPERATING_SYSTEM,
+                $app['debug'] ? Logger::DEBUG : Logger::ERROR
+            ));
+
             return new Thesaurus(
                 $app['elasticsearch.client'],
                 $app['elasticsearch.options'],

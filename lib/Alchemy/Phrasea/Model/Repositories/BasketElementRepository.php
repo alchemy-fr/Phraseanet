@@ -11,9 +11,13 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Parameter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -24,7 +28,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class BasketElementRepository extends EntityRepository
 {
-
     public function findUserElement($element_id, User $user)
     {
         $dql = 'SELECT e
@@ -150,5 +153,63 @@ class BasketElementRepository extends EntityRepository
         $query->setParameters($params);
 
         return $query->getResult();
+    }
+
+    /**
+     * @param array $records Each record is an array which MUST have a databox_id AND record_id key
+     * @param null|int   $basketId
+     * @return \Alchemy\Phrasea\Model\Entities\BasketElement[]
+     */
+    public function findByRecords(array $records, $basketId = null)
+    {
+        $perDataboxLookup = [];
+        foreach ($records as $record) {
+            if (!isset($record['databox_id']) || !isset($record['record_id'])) {
+                throw new \LogicException('Each record should have a databox_id AND record_id key');
+            }
+
+            $databoxId = $record['databox_id'];
+            $recordId = $record['record_id'];
+
+            if (!isset($perDataboxLookup[$databoxId])) {
+                $perDataboxLookup[$databoxId] = [];
+            }
+            $perDataboxLookup[$databoxId][] = $recordId;
+        }
+
+        if (empty($perDataboxLookup)) {
+            return [];
+        }
+
+        $builder = $this->createQueryBuilder('e');
+
+        $parameters = new ArrayCollection();
+
+        if ($basketId) {
+            $builder->where('e.basket_id = :basket_id');
+            $parameters->add(new Parameter('basket_id', $basketId));
+        }
+
+        $parameterGroup = 1;
+        $expr = $builder->expr()->orX();
+        foreach ($perDataboxLookup as $databoxId => $recordsIds) {
+            $databoxIdParameter = sprintf('databoxId%d', $parameterGroup);
+            $recordIdsParameter = sprintf('recordIds%d', $parameterGroup);
+
+            $expr->add($builder->expr()->andX(
+                sprintf('e.sbas_id = :%s', $databoxIdParameter),
+                sprintf('e.record_id IN (:%s)', $recordIdsParameter)
+            ));
+
+            $parameters->add(new Parameter($databoxIdParameter, $databoxId, \PDO::PARAM_INT));
+            $parameters->add(new Parameter($recordIdsParameter, $recordsIds, Connection::PARAM_INT_ARRAY));
+
+            ++$parameterGroup;
+        }
+
+        $builder->andWhere($expr);
+        $builder->setParameters($parameters);
+
+        return $builder->getQuery()->getResult();
     }
 }

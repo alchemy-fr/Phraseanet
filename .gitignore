@@ -65,3 +65,5 @@ behat.yml
 # Exclude jison files
 grammar/query.js
 grammar/jison-*
+
+pimple.json

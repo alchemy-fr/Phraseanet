@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpKernel\Client;
 
 /**
@@ -44,16 +45,19 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdSession()
     {
-        $this->authenticate(self::$DI['app']);
+        $this->authenticate($this->getApplication());
 
+        /** @var User $user */
+        $user = self::$DI['user'];
         $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user']->getId(),
+            'usr' => $user->getId(),
             'module' => 1
         ]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->checkSessionReturn($datas);
-        $this->assertEquals('ok', $datas->status);
+        $client = $this->getClient();
+        $this->assertTrue($client->getResponse()->isOk());
+        $data = json_decode($client->getResponse()->getContent());
+        $this->checkSessionReturn($data);
+        $this->assertEquals('ok', $data->status);
     }
 
      /**

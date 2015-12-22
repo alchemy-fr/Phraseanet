@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +24,8 @@ class BasketController extends Controller
 {
     public function displayBasket(Request $request, Basket $basket)
     {
-        if ($basket->getIsRead() === false) {
-            $basket->setIsRead(true);
+        if ($basket->isRead() === false) {
+            $basket->markRead();
             $this->getEntityManager()->flush();
         }
 
@@ -50,55 +50,36 @@ class BasketController extends Controller
 
     public function createBasket(Request $request)
     {
-        $Basket = new Basket();
+        $basket = new Basket();
 
-        $Basket->setName($request->request->get('name', ''));
-        $Basket->setUser($this->getAuthenticatedUser());
-        $Basket->setDescription($request->request->get('desc'));
-
-        $this->getEntityManager()->persist($Basket);
-
-        $n = 0;
+        $basket->setName($request->request->get('name', ''));
+        $basket->setUser($this->getAuthenticatedUser());
+        $basket->setDescription($request->request->get('desc'));
 
         $records = RecordsRequest::fromRequest($this->app, $request, true);
 
-        foreach ($records as $record) {
-            if ($Basket->hasRecord($this->app, $record)) {
-                continue;
-            }
-
-            $basket_element = new BasketElement();
-            $basket_element->setRecord($record);
-            $basket_element->setBasket($Basket);
-
-            $this->getEntityManager()->persist($basket_element);
-
-            $Basket->addElement($basket_element);
-
-            $n++;
-        }
-
-        $this->getEntityManager()->flush();
+        $manipulator = $this->getBasketManipulator();
+        $manipulator->addRecords($basket, $records);
+        $manipulator->saveBasket($basket);
 
         if ($request->getRequestFormat() === 'json') {
             $data = [
                 'success' => true,
                 'message' => $this->app->trans('Basket created'),
                 'basket'  => [
-                    'id' => $Basket->getId(),
+                    'id' => $basket->getId(),
                 ]
             ];
 
             return $this->app->json($data);
         }
 
-        return $this->app->redirectPath('prod_baskets_basket', ['basket' => $Basket->getId()]);
+        return $this->app->redirectPath('prod_baskets_basket', ['basket' => $basket->getId()]);
     }
 
     public function deleteBasket(Request $request, Basket $basket)
     {
-        $this->getEntityManager()->remove($basket);
-        $this->getEntityManager()->flush();
+        $this->getBasketManipulator()->removeBasket($basket);
 
         $data = [
             'success' => true
@@ -116,20 +97,7 @@ class BasketController extends Controller
     {
         /** @var BasketElement $basketElement */
         $basketElement = $this->getEntityManager()->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
-        $ord = $basketElement->getOrd();
-
-        foreach ($basket->getElements() as $basket_element) {
-            if ($basket_element->getOrd() > $ord) {
-                $basket_element->setOrd($basket_element->getOrd() - 1);
-            }
-            if ($basket_element->getId() === (int) $basket_element_id) {
-                $basket->removeElement($basket_element);
-                $this->getEntityManager()->remove($basket_element);
-            }
-        }
-
-        $this->getEntityManager()->persist($basket);
-        $this->getEntityManager()->flush();
+        $this->getBasketManipulator()->removeElements($basket, [$basketElement]);
 
         $data = ['success' => true, 'message' => $this->app->trans('Record removed from basket')];
 
@@ -237,44 +205,13 @@ class BasketController extends Controller
 
     public function addElements(Request $request, Basket $basket)
     {
-        $n = 0;
-
         $records = RecordsRequest::fromRequest($this->app, $request, true);
 
-        $em = $this->getEntityManager();
-        foreach ($records as $record) {
-            if ($basket->hasRecord($this->app, $record))
-                continue;
-
-            $basket_element = new BasketElement();
-            $basket_element->setRecord($record);
-            $basket_element->setBasket($basket);
-
-            $em->persist($basket_element);
-
-            $basket->addElement($basket_element);
-
-            if (null !== $validationSession = $basket->getValidation()) {
-
-                $participants = $validationSession->getParticipants();
-
-                foreach ($participants as $participant) {
-                    $validationData = new ValidationData();
-                    $validationData->setParticipant($participant);
-                    $validationData->setBasketElement($basket_element);
-
-                    $em->persist($validationData);
-                }
-            }
-
-            $n++;
-        }
-
-        $em->flush();
+        $elements = $this->getBasketManipulator()->addRecords($basket, $records);
 
         $data = [
             'success' => true,
-            'message' => $this->app->trans('%quantity% records added', ['%quantity%' => $n]),
+            'message' => $this->app->trans('%quantity% records added', ['%quantity%' => count($elements)]),
         ];
 
         if ($request->getRequestFormat() === 'json') {
@@ -299,7 +236,6 @@ class BasketController extends Controller
             }
 
             $basket_element->getBasket()->removeElement($basket_element);
-            $basket_element->setBasket($basket);
             $basket->addElement($basket_element);
             $n++;
         }
@@ -326,5 +262,13 @@ class BasketController extends Controller
     private function getEntityManager()
     {
         return $this->app['orm.em'];
+    }
+
+    /**
+     * @return BasketManipulator
+     */
+    private function getBasketManipulator()
+    {
+        return $this->app['manipulator.basket'];
     }
 }

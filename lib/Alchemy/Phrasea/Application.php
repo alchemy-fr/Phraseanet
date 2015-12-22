@@ -117,7 +117,9 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
+use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Form\Exception\FormException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -168,13 +170,17 @@ class Application extends SilexApplication
         $this->setupApplicationPaths();
         $this->setupConstants();
 
-        $this['debug'] = $this->share(function (Application $app) {
-            return Application::ENV_PROD !== $app->getEnvironment();
-        });
+        $this['debug'] = !in_array($environment, [
+            Application::ENV_PROD,
+            Application::ENV_TEST,
+        ]);
 
         if ($this['debug']) {
             ini_set('log_errors', 'on');
             ini_set('error_log', $this['root.path'].'/logs/php_error.log');
+        }
+        if ('allowed' == getenv('APP_CONTAINER_DUMP')) {
+            $this->register(new PimpleDumpProvider());
         }
 
         $this->register(new ConfigurationServiceProvider());
@@ -397,7 +403,7 @@ class Application extends SilexApplication
      *
      * @return FormInterface The form named after the type
      *
-     * @throws FormException if any given option is not applicable to the given type
+     * @throws ExceptionInterface if any given option is not applicable to the given type
      */
     public function form($type = 'form', $data = null, array $options = [], FormBuilderInterface $parent = null)
     {

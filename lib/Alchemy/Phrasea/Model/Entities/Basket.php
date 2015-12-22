@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -51,9 +53,9 @@ class Basket
     private $user;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
+     * @ORM\Column(name="is_read", type="boolean", options={"default" = 0})
      */
-    private $is_read = false;
+    private $isRead = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -101,7 +103,7 @@ class Basket
      */
     public function __construct()
     {
-        $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elements = new ArrayCollection();
     }
 
     /**
@@ -180,27 +182,23 @@ class Basket
         return $this->user;
     }
 
-    /**
-     * Set is_read
-     *
-     * @param  boolean $isRead
-     * @return Basket
-     */
-    public function setIsRead($isRead)
+    public function markRead()
     {
-        $this->is_read = $isRead;
+        $this->isRead = true;
 
         return $this;
     }
 
-    /**
-     * Get is_read
-     *
-     * @return boolean
-     */
-    public function getIsRead()
+    public function markUnread()
     {
-        return $this->is_read;
+        $this->isRead = false;
+
+        return $this;
+    }
+
+    public function isRead()
+    {
+        return $this->isRead;
     }
 
     /**
@@ -316,26 +314,35 @@ class Basket
     }
 
     /**
-     * Add elements
+     * Add element
      *
-     * @param  BasketElement $elements
+     * @param  BasketElement $element
      * @return Basket
      */
-    public function addElement(BasketElement $elements)
+    public function addElement(BasketElement $element)
     {
-        $this->elements[] = $elements;
+        $this->elements[] = $element;
+        $element->setBasket($this);
+        $element->setOrd(count($this->elements));
 
         return $this;
     }
 
     /**
-     * Remove elements
+     * Remove element
      *
-     * @param BasketElement $elements
+     * @param BasketElement $element
+     * @return bool
      */
-    public function removeElement(BasketElement $elements)
+    public function removeElement(BasketElement $element)
     {
-        $this->elements->removeElement($elements);
+        if ($this->elements->removeElement($element)) {
+            $element->setBasket();
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -364,55 +371,52 @@ class Basket
     /**
      * Get elements
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection|BasketElement[]
      */
     public function getElements()
     {
         return $this->elements;
     }
 
-    public function getElementsByOrder($ordre)
+    /**
+     * @param string $order one of self::ELEMENTSORDER_* const
+     * @return ArrayCollection|BasketElement[]
+     */
+    public function getElementsByOrder($order)
     {
-        if ($ordre === self::ELEMENTSORDER_DESC) {
-            $ret = new \Doctrine\Common\Collections\ArrayCollection();
-            $elements = $this->elements->toArray();
+        $elements = $this->elements->toArray();
 
-            uasort($elements, 'self::setBEOrderDESC');
-
-            foreach ($elements as $elem) {
-                $ret->add($elem);
-            }
-
-            return $ret;
-        } elseif ($ordre === self::ELEMENTSORDER_ASC) {
-            $ret = new \Doctrine\Common\Collections\ArrayCollection();
-            $elements = $this->elements->toArray();
-
-            uasort($elements, 'self::setBEOrderASC');
-
-            foreach ($elements as $elem) {
-                $ret->add($elem);
-            }
-
-            return $ret;
+        switch ($order)
+        {
+            case self::ELEMENTSORDER_DESC:
+                uasort($elements, 'self::setBEOrderDESC');
+                break;
+            case self::ELEMENTSORDER_ASC:
+                uasort($elements, 'self::setBEOrderASC');
+                break;
         }
 
-        return $this->elements;
+        return new ArrayCollection($elements);
     }
 
-    private static function setBEOrderDESC($element1, $element2)
+    /**
+     * @param BasketElement $element1
+     * @param BasketElement $element2
+     * @return int
+     */
+    private static function setBEOrderDESC(BasketElement $element1, BasketElement $element2)
     {
         $total_el1 = 0;
         $total_el2 = 0;
 
-        foreach ($element1->getValidationDatas() as $datas) {
-            if ($datas->getAgreement() !== null) {
-                $total_el1 += $datas->getAgreement() ? 1 : 0;
+        foreach ($element1->getValidationDatas() as $data) {
+            if ($data->getAgreement() !== null) {
+                $total_el1 += $data->getAgreement() ? 1 : 0;
             }
         }
-        foreach ($element2->getValidationDatas() as $datas) {
-            if ($datas->getAgreement() !== null) {
-                $total_el2 += $datas->getAgreement() ? 1 : 0;
+        foreach ($element2->getValidationDatas() as $data) {
+            if ($data->getAgreement() !== null) {
+                $total_el2 += $data->getAgreement() ? 1 : 0;
             }
         }
 
@@ -423,19 +427,24 @@ class Basket
         return $total_el1 < $total_el2 ? 1 : -1;
     }
 
-    private static function setBEOrderASC($element1, $element2)
+    /**
+     * @param BasketElement $element1
+     * @param BasketElement $element2
+     * @return int
+     */
+    private static function setBEOrderASC(BasketElement $element1, BasketElement $element2)
     {
         $total_el1 = 0;
         $total_el2 = 0;
 
-        foreach ($element1->getValidationDatas() as $datas) {
-            if ($datas->getAgreement() !== null) {
-                $total_el1 += $datas->getAgreement() ? 0 : 1;
+        foreach ($element1->getValidationDatas() as $data) {
+            if ($data->getAgreement() !== null) {
+                $total_el1 += $data->getAgreement() ? 0 : 1;
             }
         }
-        foreach ($element2->getValidationDatas() as $datas) {
-            if ($datas->getAgreement() !== null) {
-                $total_el2 += $datas->getAgreement() ? 0 : 1;
+        foreach ($element2->getValidationDatas() as $data) {
+            if ($data->getAgreement() !== null) {
+                $total_el2 += $data->getAgreement() ? 0 : 1;
             }
         }
 

@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Record Collection",
+    "description": "A Record collection",
+    "definitions": {
+        "record": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "The unique identifier for a record",
+                    "type": "string"
+                },
+                "record_id": {
+                    "description": "The databox id of the record",
+                    "type": "integer"
+                },
+                "databox_id": {
+                    "description": "The databox identifier where record is localized",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "databox_id",
+                "record_id"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "data": {
+            "description": "A collection of story_record",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/record"
+            }
+        }
+    },
+    "required": ["data"]
+}

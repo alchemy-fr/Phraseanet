@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 namespace Alchemy\Tests\Phrasea\Functional;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -72,7 +73,7 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var ApiAccountManipulator $apiAccountManipulator */
         $apiAccountManipulator = $app['manipulator.api-account'];
 
-        $account = $apiAccountManipulator->create($this->apiApplication, $this->user);
+        $account = $apiAccountManipulator->create($this->apiApplication, $this->user, V2::VERSION);
         $this->assertInstanceOf(ApiAccount::class, $account);
 
         $apiLog = $apiLogManipulator->create($account, new Request(), new Response());

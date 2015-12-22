@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Controller\Api\Result;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -29,9 +31,12 @@ class APIServiceProvider implements ServiceProviderInterface
 
             return $token ? $app['repo.api-oauth-tokens']->find($token) : null;
         });
+
+        $app['api.default_version'] = V2::VERSION;
     }
 
     public function boot(Application $app)
     {
+        Result::setDefaultVersion($app['api.default_version']);
     }
 }

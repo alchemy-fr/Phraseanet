@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
@@ -185,7 +186,7 @@ class DeveloperController extends Controller
                 );
 
             // create an account as well
-            $this->getApiAccountManipulator()->create($application, $user);
+            $this->getApiAccountManipulator()->create($application, $user, V2::VERSION);
 
             return $this->app->redirectPath('developers_application', ['application' => $application->getId()]);
         }

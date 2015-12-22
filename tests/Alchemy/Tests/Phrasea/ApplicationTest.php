@@ -32,14 +32,14 @@ class ApplicationTest extends \PhraseanetTestCase
         $app = new Application('prod');
         $this->assertFalse($app['debug']);
 
-        $app = new Application(Application::ENV_TEST);
-        $this->assertTrue($app['debug']);
+        $app = new Application('test');
+        $this->assertFalse($app['debug']);
 
         $app = new Application('dev');
         $this->assertTrue($app['debug']);
     }
 
-    public function testExceptionHandlerIsNotYetInstancied()
+    public function testExceptionHandlerIsNotYetInstantiated()
     {
         $app = new Application(Application::ENV_TEST);
         $app['exception_handler'] = new TestExceptionHandlerSubscriber();
