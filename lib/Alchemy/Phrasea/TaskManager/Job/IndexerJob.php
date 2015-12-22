@@ -50,10 +50,9 @@ class IndexerJob extends AbstractJob
         $app = $data->getApplication();
         /** @var Indexer $indexer */
         $indexer = $app['elasticsearch.indexer'];
-        foreach ($app->get_databoxes() as $databox) {
-            if($app->is_databox_indexable($databox)) {
-                $indexer->indexScheduledRecords($databox);
-            }
-        }
+        $databoxes = array_filter($app->get_databoxes(), function (\databox $databox) use ($app) {
+            return $app->is_databox_indexable($databox);
+        });
+        $indexer->indexScheduledRecords($databoxes);
     }
 }
