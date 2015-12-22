@@ -120,10 +120,8 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function onRecordChange(RecordEvent $event)
     {
-        if ($event instanceof SubDefinitionsCreatedEvent) {
-            $record = $event->getRecord();
-            $this->getIndexer()->indexRecord($record);
-        }
+        $record = $event->getRecord();
+        $this->getIndexer()->indexRecord($record);
     }
 
     public function onRecordDelete(DeletedEvent $event)
