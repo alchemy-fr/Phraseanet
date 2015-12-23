@@ -1163,18 +1163,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ['status' => bindec($status), 'record_id' => $this->record_id]
         );
 
-        $status = strrev($status);
-        $length = strlen($status);
+        $status = strrev($status);  // so str = b0+b1+...+bN
+        $status = str_pad($status, 32, '0');  // so str = b0+b1+...+b31, we will write 32(-4) lines in table
         $sqlValues = [];
-        for ($i = 4; $i < $length; $i++) {
+        for ($i = 4; $i < 32; $i++) {
             $sqlValues[] = join(',', array(
-                'null',
                 $connection->quote($this->getRecordId()),
                 $connection->quote($i),
                 $connection->quote($status[$i])
             ));
         }
-        $sql = "REPLACE INTO status (id, record_id, name, value)"
+        $sql = "REPLACE INTO status (record_id, name, value)"
             . " VALUES (" . join('),(', $sqlValues) . ")";
         $stmt = $connection->prepare($sql);
 
