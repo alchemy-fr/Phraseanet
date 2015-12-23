@@ -10,18 +10,17 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use MediaAlchemyst\Exception\ExceptionInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Alchemy\Phrasea\Model\RecordInterface;
 
 class databox_status
 {
     public static function getSearchStatus(Application $app)
     {
-        $structures = $stats = [];
+        $structures = [];
         foreach ($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
             $see_all = false;
             foreach ($databox->get_collections() as $collection) {
@@ -131,7 +130,7 @@ class databox_status
 
         try {
             $app['media-alchemyst']->turninto($filePath, $destPath, $imageSpec);
-        } catch (\MediaAlchemyst\Exception $e) {
+        } catch (ExceptionInterface $e) {
 
         }
 
@@ -149,8 +148,9 @@ class databox_status
         if (substr($stat2, 0, 2) === '0x') {
             $stat2 = self::hex2bin(substr($stat2, 2));
         }
+        $length = max(strlen($stat1), strlen($stat2));
 
-        return dechex(hexdec($stat1) & hexdec($stat2));
+        return str_pad(decbin(bindec($stat1) & bindec($stat2)), $length, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -164,6 +164,8 @@ class databox_status
      */
     public static function operation_mask($stat1, $stat2)
     {
+        $length = max(strlen($stat1), strlen($stat2));
+
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
         $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
         $stat1_or  = bindec(trim(str_replace("x", "0", $stat1)));
@@ -171,7 +173,9 @@ class databox_status
         $stat2_or  = bindec(trim(str_replace("x", "0", $stat2)));
         $stat2_and = bindec(trim(str_replace("x", "1", $stat2)));
 
-        return decbin((((0 | $stat1_or) & $stat1_and) | $stat2_or) & $stat2_and);
+        $decbin = decbin((((0 | $stat1_or) & $stat1_and) | $stat2_or) & $stat2_and);
+
+        return str_pad($decbin, $length, '0', STR_PAD_LEFT);
     }
 
     public static function operation_and_not($stat1, $stat2)
@@ -182,10 +186,12 @@ class databox_status
         if (substr($stat2, 0, 2) === '0x') {
             $stat2 = self::hex2bin(substr($stat2, 2));
         }
+        $length = max(strlen($stat1), strlen($stat2));
+
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
         $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
 
-        return decbin(bindec($stat1) & ~bindec($stat2));
+        return str_pad(decbin(bindec($stat1) & ~bindec($stat2)), $length, '0', STR_PAD_LEFT);
     }
 
     public static function operation_or($stat1, $stat2)
@@ -196,10 +202,11 @@ class databox_status
         if (substr($stat2, 0, 2) === '0x') {
             $stat2 = self::hex2bin(substr($stat2, 2));
         }
+        $length = max(strlen($stat1), strlen($stat2));
         $stat1 = str_pad($stat1, 32, '0', STR_PAD_LEFT);
         $stat2 = str_pad($stat2, 32, '0', STR_PAD_LEFT);
 
-        return decbin(bindec($stat1) | bindec($stat2));
+        return str_pad(decbin(bindec($stat1) | bindec($stat2)), $length, '0', STR_PAD_LEFT);
     }
 
     public static function dec2bin($status)
@@ -224,7 +231,7 @@ class databox_status
             throw new \Exception('Non-hexadecimal value');
         }
 
-        return base_convert($status, 16, 2);
+        return str_pad(base_convert($status, 16, 2), 4*strlen($status), '0', STR_PAD_LEFT);
     }
 
     public static function bitIsSet($bitValue, $nthBit)

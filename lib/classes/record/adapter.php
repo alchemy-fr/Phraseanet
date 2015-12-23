@@ -1163,25 +1163,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ['status' => bindec($status), 'record_id' => $this->record_id]
         );
 
-        $status = strrev($status);
-        $length = strlen($status);
-        $sqlValues = [];
-        for ($i = 4; $i < $length; $i++) {
-            $sqlValues[] = join(',', array(
-                'null',
-                $connection->quote($this->getRecordId()),
-                $connection->quote($i),
-                $connection->quote($status[$i])
-            ));
-        }
-        $sql = "REPLACE INTO status (id, record_id, name, value)"
-            . " VALUES (" . join('),(', $sqlValues) . ")";
-        $stmt = $connection->prepare($sql);
-
-        $stmt->execute();
-
-        $stmt->closeCursor();
-
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
         $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
