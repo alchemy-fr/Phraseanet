@@ -14,34 +14,44 @@ namespace Alchemy\Phrasea\TaskManager\Log;
 interface LogFileInterface
 {
     /**
-     * Returns the path to the logfile.
+     * Returns versions (suffixes due to logrotate) of the logfiles.
+     * ex. foo.log --> ""
+     *     bar-2015-12-25.log --> "2015-12-25"
      *
      * @return string[]
      */
-    public function getLogFiles();
+    public function getVersions();
+
+    /**
+     * Returns the path of a logfile.
+     *
+     * @param string $version
+     * @return string
+     */
+    public function getPath($version);
 
     /**
      * Returns the content of a logfile.
      *
-     * @param string $logfile
+     * @param string $version
      * @return string
      */
-    public function getContent($logfile);
+    public function getContent($version);
 
     /**
      * Streams the content of a logfile.
      *
      * This methods returns a closure that echoes the output.
      *
-     * @param string $logfile
+     * @param string $version
      * @return Closure
      */
-    public function getContentStream($logfile);
+    public function getContentStream($version);
 
     /**
      * Clears the content of a logfile.
      *
-     * @param string $logfile
+     * @param string $version
      */
-    public function clear($logfile);
+    public function clear($version);
 }

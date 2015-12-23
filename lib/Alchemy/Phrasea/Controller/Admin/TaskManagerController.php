@@ -182,26 +182,29 @@ class TaskManagerController extends Controller
         $factory = $this->app['task-manager.log-file.factory'];
         $logFile = $factory->forManager();
         if ($request->query->get('clr')) {
-            $logFile->clear();
+            $logFile->clear($request->query->get('version'));
         }
 
         return $this->render('admin/task-manager/log.html.twig', [
             'logfile' => $logFile,
+            'version' => $request->query->get('version'),
             'logname' => 'Scheduler',
         ]);
     }
 
     public function getTaskLog(Request $request, Task $task)
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export(null, true)), FILE_APPEND);
         /** @var LogFileFactory $factory */
         $factory = $this->app['task-manager.log-file.factory'];
         $logFile = $factory->forTask($task);
         if ($request->query->get('clr')) {
-            $logFile->clear();
+            $logFile->clear($request->query->get('version'));
         }
 
         return $this->render('admin/task-manager/log.html.twig', [
             'logfile' => $logFile,
+            'version' => $request->query->get('version'),
             'logname' => sprintf('%s (task id %d)', $task->getName(), $task->getId()),
         ]);
     }

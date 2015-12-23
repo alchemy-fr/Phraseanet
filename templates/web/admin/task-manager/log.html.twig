@@ -1,12 +1,21 @@
-<h4>
-    <a href="{{ path('admin_tasks_list') }} ">
-        < {{ 'Return' | trans }}
-    </a>
-    {{ logname }}
-    <a href="{{ path('admin_tasks_scheduler_log', { 'clr' : logfile.getPath() }) }} ">
-        {{ 'Clear' | trans }}
-    </a>
-</h4>
+<a href="{{ path('admin_tasks_list') }} ">
+    < {{ 'Return' | trans }}
+</a>
+<h4>{{ logname }}</h4>
+{% for v in logfile.getVersions() %}
+    {% if version != null and v == version %}
+        <b>{{v}}]</b>
+    {% else %}
+        <a href="{{ path('admin_tasks_scheduler_log', { 'version' : v }) }}">[{{v}}]</a>
+    {% endif %}
+    &nbsp;
+{% endfor %}
+{% if version != null %}
+<a href="{{ path('admin_tasks_scheduler_log', { 'clr' : logfile.getPath(version) }) }} ">
+    {{ 'Clear' | trans }}
+</a>
+
 <pre>
-    {{ logfile.getContent() }}
+    {{ logfile.getContent(version) }}
 </pre>
+{% endif %}

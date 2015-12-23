@@ -25,6 +25,14 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getVersions()
+    {
+        return array('', '2015-12-21');
+    }
+
+    /**
      * Returns the related Task entity.
      *
      * @return Task
@@ -37,8 +45,8 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath()
+    public function getPath($version)
     {
-        return sprintf('%s/task_%d.log', $this->root, $this->task->getId());
+        return sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version ? ('-'.$version) : '');
     }
 }

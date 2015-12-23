@@ -16,8 +16,16 @@ class ManagerLogFile extends AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath()
+    public function getVersions()
     {
-        return sprintf('%s/scheduler.log', $this->root);
+        return array('');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath($version)
+    {
+        return sprintf('%s/scheduler%s.log', $this->root, $version ? ('-'.$version) : '' );
     }
 }
