@@ -3,11 +3,7 @@
 </a>
 <h4>{{ logname }}</h4>
 {% for v in logfile.getVersions() %}
-    {% if version != null and v == version %}
-        <b>{{v}}]</b>
-    {% else %}
         <a href="{{ path('admin_tasks_scheduler_log', { 'version' : v }) }}">[{{v}}]</a>
-    {% endif %}
     &nbsp;
 {% endfor %}
 {% if version != null %}

@@ -1,0 +1,24 @@
+
+<a href="{{ path('admin_tasks_list') }} ">
+    < {{ 'Return' | trans }}
+</a>
+<h4>
+    {{ logfile.getTask().getName() }} (task id {{ logfile.getTask.getId() }})
+    {% if version is not null %}
+        version {{ version ? version : "(now)" }}
+    {% endif %}
+</h4>
+
+{% for v in logfile.getVersions() %}
+    <a href="{{ path('admin_tasks_task_log', {'task':logfile.getTask.getId(), 'version' : v }) }}">{{ v ? v : "(now)" }}</a>
+    &nbsp;
+{% endfor %}
+
+{% if version is not null %}
+    <pre>
+        {{ logfile.getContent(version) }}
+    </pre>
+    <a href="{{ path('admin_tasks_task_log', {'task':logfile.getTask.getId(), 'clr' : logfile.getPath(version) }) }} ">
+        {{ 'Clear' | trans }}
+    </a>
+{% endif %}

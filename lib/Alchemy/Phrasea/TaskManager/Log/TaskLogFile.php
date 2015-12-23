@@ -47,6 +47,8 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
      */
     public function getPath($version)
     {
+        $path = sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version ? ('-'.$version) : '');
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($path, true)), FILE_APPEND);
         return sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version ? ('-'.$version) : '');
     }
 }
