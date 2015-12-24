@@ -165,12 +165,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
-        $this->app['dispatcher']->dispatch(
-            CollectionEvents::ENABLED,
-            new EnabledEvent(
-                $this
-            )
-        );
+        $this->dispatch(CollectionEvents::ENABLED, new EnabledEvent($this));
 
         return $this;
     }
@@ -201,12 +196,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
-        $this->app['dispatcher']->dispatch(
-            CollectionEvents::DISABLED,
-            new DisabledEvent(
-                $this
-            )
-        );
+        $this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
 
         return $this;
     }
@@ -230,12 +220,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
             unset($record);
         }
 
-        $this->app['dispatcher']->dispatch(
-            CollectionEvents::EMPTIED,
-            new EmptiedEvent(
-                $this
-            )
-        );
+        $this->dispatch(CollectionEvents::EMPTIED, new EmptiedEvent($this));
 
         return $this;
     }
@@ -352,13 +337,10 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
         phrasea::reset_baseDatas($this->databox->get_appbox());
 
-        $this->app['dispatcher']->dispatch(
-            CollectionEvents::LABEL_CHANGED,
-            new LabelChangedEvent(
-                $this,
-                array("lng"=>$code, "label_before"=>$old_label)
-            )
-        );
+        $this->dispatch(CollectionEvents::LABEL_CHANGED, new LabelChangedEvent($this, array(
+            "lng"=>$code,
+            "label_before"=>$old_label,
+        )));
 
         return $this;
     }
@@ -586,7 +568,7 @@ class collection implements cache_cacheableInterface, ThumbnailedElement
 
         $this->delete_data_from_cache();
 
-        $this->app['dispatcher']->dispatch(
+        $this->dispatch(
             CollectionEvents::SETTINGS_CHANGED,
             new SettingsChangedEvent(
                 $this,
