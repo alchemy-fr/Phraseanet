@@ -1412,7 +1412,7 @@ class ArchiveJob extends AbstractJob
             }
 
             if ($meta->is_multi()) {
-                $fields = caption_field::get_multi_values($field, $meta->get_separator());
+                $fields = \caption_field::get_multi_values($field, $meta->get_separator());
 
                 if (!$metadataBag->containsKey($meta->get_name())) {
                     $values = $fields;
