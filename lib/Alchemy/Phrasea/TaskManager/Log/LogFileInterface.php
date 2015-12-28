@@ -28,7 +28,7 @@ interface LogFileInterface
      * @param string $version
      * @return string
      */
-    public function getPath($version);
+    public function getPath($version = '');
 
     /**
      * Returns the content of a logfile.
@@ -36,7 +36,7 @@ interface LogFileInterface
      * @param string $version
      * @return string
      */
-    public function getContent($version);
+    public function getContent($version = '');
 
     /**
      * Streams the content of a logfile.
@@ -46,14 +46,14 @@ interface LogFileInterface
      * @param string $version
      * @return Closure
      */
-    public function getContentStream($version);
+    public function getContentStream($version = '');
 
     /**
      * Clears the content of a logfile.
      *
      * @param string $version
      */
-    public function clear($version);
+    public function clear($version = '');
 
     /**
      * Returns true if the logfile exists
