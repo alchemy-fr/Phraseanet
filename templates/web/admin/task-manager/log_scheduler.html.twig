@@ -10,13 +10,13 @@
 </h4>
 
 {% for v in logfile.getVersions() %}
-    <a href="{{ path('admin_tasks_scheduler_log', 'version' : v }) }}">{{ v ? v : "(now)" }}</a>
+    <a href="{{ path('admin_tasks_scheduler_log', {'version' : v }) }}">{{ v ? v : "(now)" }}</a>
     &nbsp;
 {% endfor %}
 
 {% if version is not null %}
     <pre>{{ logfile.getContent(version) }}</pre>
-    <a href="{{ path('admin_tasks_scheduler_log', 'version' : version, 'clr':'1' }) }} ">
+    <a href="{{ path('admin_tasks_scheduler_log', {'version' : version, 'clr':'1' }) }} ">
         {{ 'Clear' | trans }}
     </a>
 {% endif %}
