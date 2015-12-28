@@ -66,6 +66,15 @@ abstract class AbstractLogFile implements LogFileInterface
      */
     public function clear($version)
     {
-        file_put_contents($this->getPath($version), '');
+        file_put_contents($this->getPath($version), sprintf("File cleared %s\n", date('r')));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function versionExists($version)
+    {
+        return file_exists($this->getPath($version));
+    }
+
 }

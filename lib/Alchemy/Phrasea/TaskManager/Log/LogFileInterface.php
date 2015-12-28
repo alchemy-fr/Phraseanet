@@ -54,4 +54,13 @@ interface LogFileInterface
      * @param string $version
      */
     public function clear($version);
+
+    /**
+     * Returns true if the logfile exists
+     *
+     * @param $version
+     * @return bool
+     */
+    public function versionExists($version);
+
 }
