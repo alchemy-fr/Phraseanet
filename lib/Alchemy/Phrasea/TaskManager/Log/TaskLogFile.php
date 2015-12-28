@@ -57,7 +57,7 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath($version)
+    public function getPath($version = '')
     {
         return sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version);
     }

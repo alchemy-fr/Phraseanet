@@ -34,7 +34,7 @@ abstract class AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getContent($version)
+    public function getContent($version = '')
     {
         $path = $this->getPath($version);
         if (is_file($path)) {
@@ -47,7 +47,7 @@ abstract class AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getContentStream($version)
+    public function getContentStream($version = '')
     {
         $path = $this->getPath($version);
 
@@ -64,7 +64,7 @@ abstract class AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function clear($version)
+    public function clear($version = '')
     {
         file_put_contents($this->getPath($version), sprintf("File cleared %s\n", date('r')));
     }
