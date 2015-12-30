@@ -14,6 +14,9 @@ use Doctrine\DBAL\Driver\Statement;
 
 class caption_field implements cache_cacheableInterface
 {
+    const RETRIEVE_VALUES = true;
+    const DONT_RETRIEVE_VALUES = false;
+
     /**
      * @var databox_field
      */
@@ -33,31 +36,42 @@ class caption_field implements cache_cacheableInterface
     protected static $localCache = [];
 
     /**
-     * @param Application      $app
-     * @param databox_field    $databox_field
+     * @param Application    $app
+     * @param databox_field  $databox_field
      * @param record_adapter $record
+     * @param bool           $retrieveValues
      *
      * @return caption_field
      */
-    public function __construct(Application $app, databox_field $databox_field, \record_adapter $record)
+    public function __construct(Application $app, databox_field $databox_field, \record_adapter $record, $retrieveValues = self::RETRIEVE_VALUES)
     {
         $this->app = $app;
         $this->record = $record;
         $this->databox_field = $databox_field;
         $this->values = [];
 
-        $rs = $this->get_metadatas_ids();
+        if($retrieveValues == self::RETRIEVE_VALUES) {
+            $rs = $this->get_metadatas_ids();
 
-        foreach ($rs as $row) {
-            $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
+            foreach ($rs as $row) {
+                $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
 
-            // Inconsistent, should not happen
-            if ( ! $databox_field->is_multi()) {
-                break;
+                // Inconsistent, should not happen
+                if (!$databox_field->is_multi()) {
+                    break;
+                }
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @param caption_Field_Value[] $values
+     */
+    public function injectValues($values)
+    {
+        $this->values = $values;
     }
 
     protected function get_metadatas_ids()
@@ -73,7 +87,7 @@ class caption_field implements cache_cacheableInterface
         $sql = 'SELECT id FROM metadatas WHERE record_id = :record_id AND meta_struct_id = :meta_struct_id';
 
         $params = [
-            ':record_id'      => $this->record->get_record_id()
+            ':record_id'      => $this->record->getRecordId()
             , ':meta_struct_id' => $this->databox_field->get_id()
         ];
 
