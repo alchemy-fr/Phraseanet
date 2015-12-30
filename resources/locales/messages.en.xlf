@@ -2534,7 +2534,7 @@
       </trans-unit>
       <trans-unit id="473558393914486d8e60b9968e5443e40be433e0" resname="Emails" approved="yes">
         <source>Emails</source>
-        <target state="translated">E-mails</target>
+        <target state="translated">E-mail configuration</target>
         <jms:reference-file line="63">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7884b9b422d77cabded5da8a9a56524a84481930" resname="Embed code" approved="yes">
