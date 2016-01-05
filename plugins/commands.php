@@ -6,6 +6,7 @@
 use Alchemy\Phrasea\CLI;
 
 return call_user_func(function (CLI $cli) {
+    $cli->command(Alchemy\WebGalleryPlugin\Command\UpdateSchemaCommand::create());
 
     return $cli;
 }, $cli);
