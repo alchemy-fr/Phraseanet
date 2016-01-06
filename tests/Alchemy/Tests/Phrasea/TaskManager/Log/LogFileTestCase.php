@@ -60,7 +60,9 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
         $log = $this->getLogFile($this->root);
         file_put_contents($log->getPath(), 'hello world');
         $log->clear();
-        $this->assertSame('', $log->getContent());
+        $matches = [];
+        $this->assertEquals(1, preg_match('/^\[(.*)\] File cleared/', $log->getContent(), $matches));
+        $this->assertDateAtom($matches[1]);
     }
 
     /**
