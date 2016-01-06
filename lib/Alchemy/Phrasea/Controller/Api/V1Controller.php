@@ -1316,7 +1316,7 @@ class V1Controller extends Controller
      */
     public function getRecordMetadataAction(Request $request, $databox_id, $record_id)
     {
-        $record = \record_adapter::getRecordLoaded($this->app, $databox_id, $record_id);
+        $record = $this->findDataboxById($databox_id)->get_record($record_id);
         $ret = ["record_metadatas" => $this->listRecordCaption($record->get_caption())];
 
         return Result::create($request, $ret)->createResponse();
@@ -2417,7 +2417,8 @@ class V1Controller extends Controller
     public function ensureCanAccessToRecord(Request $request)
     {
         $user = $this->getApiAuthenticatedUser();
-        $record = \record_adapter::getRecordLoaded($this->app, $request->attributes->get('databox_id'), $request->attributes->get('record_id'));
+        $record = $this->findDataboxById($request->attributes->get('databox_id'))
+            ->get_record($request->attributes->get('record_id'));
         if (!$this->getAclForUser($user)->has_access_to_record($record)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }

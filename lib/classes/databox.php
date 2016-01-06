@@ -250,7 +250,7 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_record($record_id, $number = null)
     {
-        return record_adapter::getRecordLoaded($this->app, $this->id, $record_id, $number);
+        return new record_adapter($this->app, $this->id, $record_id, $number);
     }
 
     public function get_label($code, $substitute = true)

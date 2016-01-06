@@ -108,28 +108,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * returns a loaded record, same thing as calling new record_adapter(..., load=true)
-     *  but does instantiate only one record, no need to mirror().
-     *
-     * @param Application $app
-     * @param $sbas_id
-     * @param $record_id
-     * @param null $number
-     *
-     * @return null|record_adapter
-     */
-    public static function getRecordLoaded(Application $app, $sbas_id, $record_id, $number = null)
-    {
-        if (null === ($record = $app->findDataboxById((int) $sbas_id)->getRecordRepository()->find($record_id))) {
-            throw new Exception_Record_AdapterNotFound('Record ' . $record_id . ' on database ' . $sbas_id . ' not found ');
-        }
-        $record->app = $app;
-        $record->number = $number;
-
-        return $record;
-    }
-
-    /**
      * @param record_adapter $record
      */
     private function mirror(record_adapter $record)
