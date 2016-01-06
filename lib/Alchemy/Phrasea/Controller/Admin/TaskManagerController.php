@@ -181,13 +181,13 @@ class TaskManagerController extends Controller
         /** @var LogFileFactory $factory */
         $factory = $this->app['task-manager.log-file.factory'];
         $logFile = $factory->forManager();
-        if ($request->query->get('clr')) {
-            $logFile->clear();
+        if ($request->query->get('clr') && $request->query->get('version') !== null) {
+            $logFile->clear($request->query->get('version'));
         }
 
-        return $this->render('admin/task-manager/log.html.twig', [
+        return $this->render('admin/task-manager/log_scheduler.html.twig', [
             'logfile' => $logFile,
-            'logname' => 'Scheduler',
+            'version' => $request->query->get('version')
         ]);
     }
 
@@ -196,13 +196,13 @@ class TaskManagerController extends Controller
         /** @var LogFileFactory $factory */
         $factory = $this->app['task-manager.log-file.factory'];
         $logFile = $factory->forTask($task);
-        if ($request->query->get('clr')) {
-            $logFile->clear();
+        if ($request->query->get('clr') && $request->query->get('version') !== null) {
+            $logFile->clear($request->query->get('version'));
         }
 
-        return $this->render('admin/task-manager/log.html.twig', [
+        return $this->render('admin/task-manager/log_task.html.twig', [
             'logfile' => $logFile,
-            'logname' => sprintf('%s (task id %d)', $task->getName(), $task->getId()),
+            'version' => $request->query->get('version')
         ]);
     }
 

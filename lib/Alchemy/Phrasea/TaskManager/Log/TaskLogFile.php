@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\TaskManager\Log;
 
 use Alchemy\Phrasea\Model\Entities\Task;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class TaskLogFile extends AbstractLogFile implements LogFileInterface
 {
@@ -22,6 +24,24 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
     {
         parent::__construct($root);
         $this->task = $task;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVersions()
+    {
+        $x = sprintf('/^task_%d(|(-.*))\.log$/', $this->task->getId());
+        $f = new Finder();
+        $versions = [];
+        /** @var \SplFileInfo $file */
+        foreach($f->files()->in($this->root) as $file) {
+            $matches = [];
+            if(preg_match($x, $file->getBasename(), $matches)) {
+                $versions[] = $matches[1];
+            }
+        }
+        return $versions;
     }
 
     /**
@@ -37,8 +57,9 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath()
+    public function getPath($version = '')
     {
-        return sprintf('%s/task_%d.log', $this->root, $this->task->getId());
+        return sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version);
     }
+
 }

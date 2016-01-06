@@ -11,13 +11,34 @@
 
 namespace Alchemy\Phrasea\TaskManager\Log;
 
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+
 class ManagerLogFile extends AbstractLogFile implements LogFileInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function getPath()
+    public function getVersions()
     {
-        return sprintf('%s/scheduler.log', $this->root);
+        $x = '/^scheduler(|(-.*))\.log$/';
+        $f = new Finder();
+        $versions = [];
+        /** @var \SplFileInfo $file */
+        foreach($f->files()->in($this->root) as $file) {
+            $matches = [];
+            if(preg_match($x, $file->getBasename(), $matches)) {
+                $versions[] = $matches[1];
+            }
+        }
+        return $versions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath($version = '')
+    {
+        return sprintf('%s/scheduler%s.log', $this->root, $version);
     }
 }
