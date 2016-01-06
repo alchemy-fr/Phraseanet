@@ -91,7 +91,7 @@ class patch_390alpha13a implements patchInterface
             }
 
             try {
-                $collection = \collection::get_from_base_id($app, $row['base_id']);
+                $collection = \collection::getByBaseId($app, $row['base_id']);
             } catch (\Exception $e) {
                 $app['monolog']->addInfo(sprintf(
                     'Patch %s : Registration for user (%s) could not be turn into doctrine entity as base with id (%s) could not be found.',

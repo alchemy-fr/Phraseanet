@@ -70,7 +70,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
                         $collections = [];
                         foreach ($checker['collections'] as $base_id) {
                             try {
-                                $collections[] = \collection::get_from_base_id($app, $base_id);
+                                $collections[] = \collection::getByBaseId($app, $base_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid collection option');
                             }

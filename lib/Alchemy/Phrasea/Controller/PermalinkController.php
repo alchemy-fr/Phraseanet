@@ -132,7 +132,7 @@ class PermalinkController extends AbstractDelivery
             return $this->deliverContentWithCaptionLink($request, $record, $subdef, $watermark, $stamp, $token);
         }
 
-        $collection = \collection::get_from_base_id($this->app, $record->get_base_id());
+        $collection = \collection::getByBaseId($this->app, $record->get_base_id());
         switch ($collection->get_pub_wm()) {
             default:
             case 'none':

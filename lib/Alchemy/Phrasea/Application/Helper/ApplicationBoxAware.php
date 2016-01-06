@@ -9,6 +9,8 @@
  */
 namespace Alchemy\Phrasea\Application\Helper;
 
+use Alchemy\Phrasea\Collection\CollectionService;
+
 trait ApplicationBoxAware
 {
     /** @var \appbox|callable */
@@ -59,6 +61,14 @@ trait ApplicationBoxAware
         $this->applicationBox = $instance;
 
         return $this->applicationBox;
+    }
+
+    /**
+     * @return CollectionService
+     */
+    public function getCollectionService()
+    {
+        return $this['services.collection'];
     }
 
     /**

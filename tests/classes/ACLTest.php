@@ -494,7 +494,7 @@ class ACLTest extends \PhraseanetTestCase
 
         foreach ($bases as $base_id) {
             try {
-                $collection = collection::get_from_base_id(self::$DI['app'], $base_id);
+                $collection = collection::getByBaseId(self::$DI['app'], $base_id);
                 $this->assertTrue($collection instanceof collection);
                 $this->assertEquals($base_id, $collection->get_base_id());
                 unset($collection);
