@@ -786,7 +786,7 @@ class Application extends SilexApplication
         // app root path
         $this['root.path'] = realpath(__DIR__ . '/../../..');
         // temporary resources default path such as download zip, quarantined documents etc ..
-        $this['tmp.path'] = $this['root.path'].'/tmp';
+        $this['tmp.path'] = getenv('PHRASEANET_TMP') ?: $this['root.path'].'/tmp';
         // plugin path
         $this['plugin.path'] = $dir = $this['root.path'].'/plugins';
         // thumbnails path
