@@ -173,6 +173,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
+
         self::$DI['app']['border-manager']->registerChecker(new Sha256(self::$DI['app']));
         self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
 

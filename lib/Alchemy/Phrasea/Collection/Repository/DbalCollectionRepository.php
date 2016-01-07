@@ -66,14 +66,22 @@ class DbalCollectionRepository implements CollectionRepository
     public function findAll()
     {
         $references = $this->referenceRepository->findAllByDatabox($this->databoxId);
-        $params = [];
 
-        foreach ($references as $reference) {
-            $params[':id_' . $reference->getCollectionId()] = $reference->getCollectionId();
+        if (empty($references)) {
+            return [];
         }
 
-        $query = self::$selectQuery . sprintf(' WHERE coll_id IN (%s)', implode(', ', array_keys($params)));
-        $rows = $this->connection->fetchAll($query, $params);
+        $parameters = [];
+
+        foreach ($references as $reference) {
+            $parameters[] = $reference->getCollectionId();
+        }
+
+        $query = self::$selectQuery . ' WHERE coll_id IN (:collectionIds)';
+        $parameters = [ 'collectionIds' => $parameters ];
+        $parameterTypes = [ 'collectionIds' => Connection::PARAM_INT_ARRAY ];
+
+        $rows = $this->connection->fetchAll($query, $parameters, $parameterTypes);
 
         return $this->collectionFactory->createMany($this->databoxId, $references, $rows);
     }

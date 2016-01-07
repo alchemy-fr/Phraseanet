@@ -439,7 +439,13 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
+
+        // Collection has to be reloaded since it was modified outside of the current process
+        $databox = $this->getApplication()->findDataboxById($collection->get_sbas_id());
+        $collection = \collection::getByCollectionId($this->getApplication(), $databox, $collection->get_coll_id());
+
         $this->assertEquals($collection->get_name(), 'test_rename_coll');
+
         $collection->unmount();
         $collection->delete();
     }
@@ -465,6 +471,10 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
+
+        $databox = $this->getApplication()->findDataboxById($collection->get_sbas_id());
+        $collection = \collection::getByCollectionId($this->getApplication(), $databox, $collection->get_coll_id());
+
         $this->assertEquals($collection->get_label('de'), 'german label');
         $this->assertEquals($collection->get_label('nl'), 'netherlands label');
         $this->assertEquals($collection->get_label('fr'), 'label français');
