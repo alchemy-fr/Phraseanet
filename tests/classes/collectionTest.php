@@ -23,29 +23,29 @@ class collectionTest extends \PhraseanetTestCase
         parent::setup();
 
         if (!self::$object) {
-            if (0 === count($databoxes = self::$DI['app']->getDataboxes())) {
+            if (0 === count($databoxes = $this->getApplication()->getDataboxes())) {
                 $this->fail('No databox found for collection test');
             }
 
             $databox = array_shift($databoxes);
 
             self::$object = collection::create(
-                self::$DI['app'],
+                $this->getApplication(),
                 $databox,
-                self::$DI['app']['phraseanet.appbox'],
+                $this->getApplication()['phraseanet.appbox'],
                 'test_collection',
                 self::$DI['user']
             );
 
             self::$objectDisable = collection::create(
-                self::$DI['app'],
+                $this->getApplication(),
                 $databox,
-                self::$DI['app']['phraseanet.appbox'],
+                $this->getApplication()['phraseanet.appbox'],
                 'test_collection',
                 self::$DI['user']
             );
 
-            self::$objectDisable->disable(self::$DI['app']['phraseanet.appbox']);
+            self::$objectDisable->disable();
         }
     }
 
@@ -62,34 +62,42 @@ class collectionTest extends \PhraseanetTestCase
     {
         $base_id = self::$object->get_base_id();
         $coll_id = self::$object->get_coll_id();
-        self::$object->disable(self::$DI['app']['phraseanet.appbox']);
+
+        self::$object->disable();
+
         $this->assertTrue(is_int(self::$object->get_base_id()));
         $this->assertTrue(is_int(self::$object->get_coll_id()));
         $this->assertFalse(self::$object->is_active());
 
         $sbas_id = self::$object->get_databox()->get_sbas_id();
-        $databox = self::$DI['app']->findDataboxById($sbas_id);
+        $databox = $this->getApplication()->findDataboxById($sbas_id);
 
         foreach ($databox->get_collections() as $collection) {
-            $this->assertTrue($collection->get_base_id() !== $base_id);
-            $this->assertTrue($collection->get_coll_id() !== $coll_id);
+            $this->assertNotEquals($collection->get_base_id(), $base_id);
+            $this->assertNotEquals($collection->get_coll_id(), $coll_id);
         }
     }
 
     public function testEnable()
     {
-        self::$objectDisable->enable(self::$DI['app']['phraseanet.appbox']);
+        self::$objectDisable->enable();
+
         $this->assertTrue(is_int(self::$objectDisable->get_base_id()));
         $this->assertTrue(is_int(self::$objectDisable->get_coll_id()));
         $this->assertTrue(self::$objectDisable->is_active());
 
         $n = $m = 0;
+
         foreach (self::$objectDisable->get_databox()->get_collections() as $collection) {
-            if ($collection->get_base_id() === self::$objectDisable->get_base_id())
-                $n ++;
-            if ($collection->get_coll_id() === self::$objectDisable->get_coll_id())
-                $m ++;
+            if ($collection->get_base_id() === self::$objectDisable->get_base_id()) {
+                $n++;
+            }
+
+            if ($collection->get_coll_id() === self::$objectDisable->get_coll_id()) {
+                $m++;
+            }
         }
+
         $this->assertEquals(1, $n);
         $this->assertEquals(1, $m);
     }
@@ -97,9 +105,16 @@ class collectionTest extends \PhraseanetTestCase
     public function testGet_record_amount()
     {
         self::$object->empty_collection();
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$object);
-        record_adapter::createFromFile($file, self::$DI['app']);
+
+        $file = new File(
+            $this->getApplication(),
+            $this->getApplication()['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'),
+            self::$object
+        );
+
+        record_adapter::createFromFile($file, $this->getApplication());
         $this->assertTrue(self::$object->get_record_amount() === 1);
+
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
     }
@@ -148,8 +163,8 @@ class collectionTest extends \PhraseanetTestCase
 
     public function testGet_record_details()
     {
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$object);
-        $record = record_adapter::createFromFile($file, self::$DI['app']);
+        $file = new File($this->getApplication(), $this->getApplication()['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$object);
+        $record = record_adapter::createFromFile($file, $this->getApplication());
         $details = self::$object->get_record_details();
 
         $this->assertTrue(is_array($details));
@@ -175,7 +190,7 @@ class collectionTest extends \PhraseanetTestCase
 
     public function testGet_from_coll_id()
     {
-        $temp_coll = collection::getByCollectionId(self::$DI['app'], self::$object->get_databox(), self::$object->get_coll_id());
+        $temp_coll = collection::getByCollectionId($this->getApplication(), self::$object->get_databox(), self::$object->get_coll_id());
         $this->assertEquals(self::$object->get_coll_id(), $temp_coll->get_coll_id());
         $this->assertEquals(self::$object->get_base_id(), $temp_coll->get_base_id());
     }

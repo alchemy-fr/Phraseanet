@@ -45,9 +45,6 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     private static $_stamps = [];
     private static $_watermarks = [];
     private static $_presentations = [];
-    private static $_collections = [];
-
-
 
     /**
      * @param Application $app
@@ -110,6 +107,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
                 $collection
             )
         );
+
         return $reference->getBaseId();
     }
 
@@ -169,7 +167,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     public static function purge()
     {
-        self::$_collections = [];
+        // BC only
     }
 
     /**
@@ -261,6 +259,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     protected $collectionVO;
 
     /**
+     * @var CollectionRepositoryRegistry
+     */
+    protected $collectionRepositoryRegistry;
+
+    /**
      * @var CollectionReference
      */
     protected $reference;
@@ -278,6 +281,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->app = $app;
         $this->databox = $app->getApplicationBox()->get_databox($reference->getDataboxId());
         $this->collectionService = $app->getApplicationBox()->getCollectionService();
+        $this->collectionRepositoryRegistry = $app['repo.collections-registry'];
 
         $this->collectionVO = $collection;
         $this->reference = $reference;
@@ -317,10 +321,19 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     public function __sleep()
     {
-        return array(
+        return [
             'collectionVO',
             'reference'
-        );
+        ];
+    }
+
+    public function __debugInfo()
+    {
+        return [
+            'reference' => $this->reference,
+            'databox' => $this->databox,
+            'collectionVO' => $this->collectionVO
+        ];
     }
 
     /**
@@ -472,7 +485,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      */
     public function get_base_id()
     {
-        return $this->reference->getBaseId();
+        return (int) $this->reference->getBaseId();
     }
 
     /**
@@ -480,7 +493,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      */
     public function get_sbas_id()
     {
-        return $this->reference->getDataboxId();
+        return (int) $this->reference->getDataboxId();
     }
 
     /**
@@ -488,7 +501,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      */
     public function get_coll_id()
     {
-        return $this->reference->getCollectionId();
+        return (int) $this->reference->getCollectionId();
     }
 
     /**
@@ -565,11 +578,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->reference->disable();
 
         $this->getReferenceRepository()->save($this->reference);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
-	$this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
+	    $this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
 	
         return $this;
     }
@@ -582,11 +595,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->reference->enable();
 
         $this->getReferenceRepository()->save($this->reference);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
-	$this->dispatch(CollectionEvents::ENABLED, new EnabledEvent($this));
+	    $this->dispatch(CollectionEvents::ENABLED, new EnabledEvent($this));
 	
         return $this;
     }
@@ -659,7 +672,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionVO->setLogo($fileContents);
 
         $this->getCollectionRepository()->save($this->collectionVO);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
 
         return $this;
     }
@@ -673,7 +686,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionService->resetWatermark($this->collectionVO);
 
         $this->getCollectionRepository()->save($this->collectionVO);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
 
         return $this;
     }
@@ -688,7 +701,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionService->resetStamp($this->collectionVO, $record_id);
 
         $this->getCollectionRepository()->save($this->collectionVO);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
 
         return $this;
     }
@@ -703,7 +716,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getCollectionRepository()->delete($this->collectionVO);
 
         $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
     }
 
     /**
@@ -720,7 +733,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getReferenceRepository()->delete($this->reference);
 
         $this->app['manipulator.registration']->deleteRegistrationsOnCollection($this);
-        $this->app['repo.collections-registry']->purgeRegistry();
+        $this->collectionRepositoryRegistry->purgeRegistry();
 
         $this->dispatch(
             CollectionEvents::UNMOUNTED,

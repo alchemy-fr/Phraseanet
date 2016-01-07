@@ -178,17 +178,13 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_collections()
     {
-        static $collections;
+        /** @var CollectionRepositoryRegistry $repositoryRegistry */
+        $repositoryRegistry = $this->app['repo.collections-registry'];
+        $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
 
-        if ($collections === null) {
-            /** @var CollectionRepositoryRegistry $repositoryRegistry */
-            $repositoryRegistry = $this->app['repo.collections-registry'];
-            $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
-
-            $collections = $repository->findAll();
-        }
-
-        return $collections;
+        return array_filter($repository->findAll(), function (collection $collection) {
+            return $collection->is_active();
+        });
     }
 
     /**
