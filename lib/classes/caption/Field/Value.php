@@ -15,6 +15,9 @@ use Alchemy\Phrasea\Vocabulary;
 
 class caption_Field_Value implements cache_cacheableInterface
 {
+    const RETRIEVE_VALUES = true;
+    const DONT_RETRIEVE_VALUES = false;
+
     /** @var int */
     protected $id;
 
@@ -55,21 +58,71 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param  databox_field        $databox_field
      * @param  record_adapter       $record
      * @param  mixed                $id
+     * @param  bool                 $retrieveValues
      * @return \caption_Field_Value
      */
-    public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id)
+    public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id, $retrieveValues = self::RETRIEVE_VALUES)
     {
         $this->id = (int) $id;
         $this->databox_field = $databox_field;
         $this->record = $record;
         $this->app = $app;
 
-        $this->retrieveValues();
+        if($retrieveValues == self::RETRIEVE_VALUES) {
+            $this->retrieveValues();
+        }
     }
 
     public function getQjs()
     {
         return $this->qjs;
+    }
+
+    public function injectValues($value, $VocabularyType, $VocabularyId)
+    {
+        $this->value = StringHelper::crlfNormalize($value);
+
+        try {
+            $this->VocabularyType = $VocabularyType ? Vocabulary\Controller::get($this->app, $VocabularyType) : null;
+            $this->VocabularyId = $VocabularyId;
+        } catch (\InvalidArgumentException $e) {
+
+        }
+
+        if ($this->VocabularyType) {
+            /**
+             * Vocabulary Control has been deactivated
+             */
+            if ( ! $this->databox_field->getVocabularyControl()) {
+                $this->removeVocabulary();
+            }
+            /**
+             * Vocabulary Control has changed
+             */
+            elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->VocabularyType->getType()) {
+                $this->removeVocabulary();
+            }
+            /**
+             * Current Id is not available anymore
+             */
+            elseif ( ! $this->VocabularyType->validate($this->VocabularyId)) {
+                $this->removeVocabulary();
+            }
+            /**
+             * String equivalence has changed
+             */
+            elseif ($this->VocabularyType->getValue($this->VocabularyId) !== $this->value) {
+                $this->set_value($this->VocabularyType->getValue($this->VocabularyId));
+            }
+        }
+
+        $datas = [
+            'value'          => $this->value,
+            'vocabularyId'   => $this->VocabularyId,
+            'vocabularyType' => $this->VocabularyType ? $this->VocabularyType->getType() : null,
+        ];
+
+        $this->set_data_to_cache($datas);
     }
 
     protected function retrieveValues()
@@ -95,46 +148,12 @@ class caption_Field_Value implements cache_cacheableInterface
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $this->value = $row ? StringHelper::crlfNormalize($row['value']) : null;
-
-        try {
-            $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($this->app, $row['VocabularyType']) : null;
-            $this->VocabularyId = $row['VocabularyId'];
-        } catch (\InvalidArgumentException $e) {
-
+        if($row) {
+            $this->injectValues($row['value'], $row['VocabularyType'], $row['VocabularyId']);
         }
-
-        if ($this->VocabularyType) {
-            /**
-             * Vocabulary Control has been deactivated
-             */
-            if ( ! $this->databox_field->getVocabularyControl()) {
-                $this->removeVocabulary();
-            }
-            /**
-             * Vocabulary Control has changed
-             */ elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->VocabularyType->getType()) {
-                $this->removeVocabulary();
-            }
-            /**
-             * Current Id is not available anymore
-             */ elseif ( ! $this->VocabularyType->validate($this->VocabularyId)) {
-                $this->removeVocabulary();
-            }
-            /**
-             * String equivalence has changed
-             */ elseif ($this->VocabularyType->getValue($this->VocabularyId) !== $this->value) {
-                $this->set_value($this->VocabularyType->getValue($this->VocabularyId));
-            }
+        else {
+            $this->injectValues(null, null, null);
         }
-
-        $datas = [
-            'value'          => $this->value,
-            'vocabularyId'   => $this->VocabularyId,
-            'vocabularyType' => $this->VocabularyType ? $this->VocabularyType->getType() : null,
-        ];
-
-        $this->set_data_to_cache($datas);
 
         return $this;
     }
