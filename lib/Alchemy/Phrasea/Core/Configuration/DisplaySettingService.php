@@ -33,7 +33,7 @@ class DisplaySettingService
         'warning_on_delete_story' => 'true',
         'client_basket_status'    => '1',
         'css'                     => '000000',
-        'start_page_query'        => 'last',
+        'start_page_query'        => '',
         'start_page'              => 'QUERY',
         'rollover_thumbnail'      => 'caption',
         'technical_display'       => '1',
