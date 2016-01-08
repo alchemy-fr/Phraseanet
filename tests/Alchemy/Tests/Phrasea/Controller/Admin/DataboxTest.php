@@ -645,6 +645,8 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $data = json_decode(self::$DI['client']->getResponse()->getContent(), true);
         $this->assertTrue($data['success']);
 
+        $base = $this->getApplication()->findDataboxById($base->get_sbas_id());
+
         $this->assertEquals('frenchy label', $base->get_label('fr', false));
         $this->assertEquals('', $base->get_label('en', false));
         $this->assertEquals('Jaja label', $base->get_label('de', false));

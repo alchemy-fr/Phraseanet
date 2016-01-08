@@ -146,9 +146,17 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
             $factory = new DataboxFactory($app);
             $appbox = $app->getApplicationBox();
-            $repository = new DbalDataboxRepository($appbox->get_connection(), $factory);
 
-            return new CachingDataboxRepositoryDecorator($repository, $app['cache'], $appbox->get_cache_key($appbox::CACHE_LIST_BASES), $factory);
+            $repository = new CachingDataboxRepositoryDecorator(
+                new DbalDataboxRepository($appbox->get_connection(), $factory),
+                $app['cache'],
+                $appbox->get_cache_key($appbox::CACHE_LIST_BASES),
+                $factory
+            );
+
+            $factory->setDataboxRepository($repository);
+
+            return $repository;
         });
 
         $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {

@@ -56,6 +56,13 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
         return $databoxes;
     }
 
+    public function save(\databox $databox)
+    {
+        $this->cache->delete($this->cacheKey);
+
+        $this->repository->save($databox);
+    }
+
     /**
      * @param \databox[] $databoxes
      */

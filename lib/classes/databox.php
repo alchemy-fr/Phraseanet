@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\Record\RecordRepository;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -74,23 +75,30 @@ class databox extends base implements ThumbnailedElement
     /** @var databox_subdefsStructure */
     protected $subdef_struct;
 
+    /** @var DataboxRepository */
+    private $databoxRepository;
     /** @var RecordRepository */
     private $recordRepository;
     /** @var string[]  */
     private $labels = [];
+    /** @var int */
     private $ord;
+    /** @var string */
     private $viewname;
+
 
     /**
      * @param Application $app
-     * @param int         $sbas_id
-     * @param array       $row
+     * @param int $sbas_id
+     * @param DataboxRepository $databoxRepository
+     * @param array $row
      */
-    public function __construct(Application $app, $sbas_id, array $row)
+    public function __construct(Application $app, $sbas_id, DataboxRepository $databoxRepository, array $row)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
 
+        $this->databoxRepository = $databoxRepository;
         $this->id = $sbas_id;
 
         $connectionConfigs = phrasea::sbas_params($app);
@@ -146,6 +154,7 @@ class databox extends base implements ThumbnailedElement
         cache_databox::update($this->app, $this->id, 'structure');
 
         $this->viewname = $viewname;
+        $this->databoxRepository->save($this);
 
         return $this;
     }
@@ -192,14 +201,10 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_collection_unique_ids()
     {
-        static $collectionsIds;
+        $collectionsIds = [];
 
-        if ($collectionsIds === null) {
-            $collectionsIds = [];
-
-            foreach ($this->get_collections() as $collection) {
-                $collectionsIds[] = $collection->get_base_id();
-            }
+        foreach ($this->get_collections() as $collection) {
+            $collectionsIds[] = $collection->get_base_id();
         }
 
         return $collectionsIds;
@@ -242,6 +247,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
 
         $this->labels[$code] = $label;
+
+        $this->databoxRepository->save($this);
 
         phrasea::reset_sbasDatas($this->app['phraseanet.appbox']);
 
@@ -841,6 +848,8 @@ class databox extends base implements ThumbnailedElement
 
         cache_databox::update($this->app, $this->id, 'structure');
 
+        $this->databoxRepository->save($this);
+
         $this->app['dispatcher']->dispatch(
             DataboxEvents::STRUCTURE_CHANGED,
             new StructureChangedEvent(
@@ -871,6 +880,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute($params);
         $stmt->closeCursor();
 
+        $this->databoxRepository->save($this);
+
         return $this;
     }
     protected $thesaurus;
@@ -887,6 +898,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute([':xml'  => $this->thesaurus, ':date' => $now]);
         $stmt->closeCursor();
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
+
+        $this->databoxRepository->save($this);
 
         $this->app['dispatcher']->dispatch(
             DataboxEvents::THESAURUS_CHANGED,

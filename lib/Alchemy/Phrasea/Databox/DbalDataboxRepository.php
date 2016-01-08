@@ -47,6 +47,11 @@ final class DbalDataboxRepository implements DataboxRepository
         return $this->factory->createMany($this->fetchRows());
     }
 
+    public function save(\databox $databox)
+    {
+        return true;
+    }
+
     /**
      * @param int $id
      * @return false|array
