@@ -33,31 +33,36 @@
                 sequentialUploads: true,
                 add: function (e, data) {
                     $('#upload-error').empty();
-                    $.each(data.files, function (index, file) {
-                        var fileType = /^image\/(gif|jpeg|png)$/;
-                        if(typeof loadImage == 'function' && fileType.test(file.type)){
-                            if(file.size < 204800){ //200 ko
-                                var options = {
-                                    maxWidth: 32,
-                                    maxHeight: 32,
-                                    minWidth: 32,
-                                    minHeight: 32
-                                };
+                    require([
+                        "blueimp.loadimage"
+                    ], function (loadImage) {
 
-                                data.oldImage = $("#img_before").get(0);
+                        $.each(data.files, function (index, file) {
+                            var fileType = /^image\/(gif|jpeg|png)$/;
+                            if(typeof loadImage == 'function' && fileType.test(file.type)){
+                                if(file.size < 204800){ //200 ko
+                                    var options = {
+                                        maxWidth: 32,
+                                        maxHeight: 32,
+                                        minWidth: 32,
+                                        minHeight: 32
+                                    };
 
-                                loadImage(file, function(img){
-                                    $("#img_before").remove();
-                                    $("#pub_icon .thumb_wrapper").append(img);
-                                    $("#pub_icon .thumb_wrapper img").attr("img_before");
-                                    return false;
-                                }, options);
+                                    data.oldImage = $("#img_before").get(0);
 
-                                data.submit();
-                            } else {
-                                $('#upload-error').empty().append(language.errorFileApiTooBig);
+                                    loadImage(file, function(img){
+                                        $("#img_before").remove();
+                                        $("#pub_icon .thumb_wrapper").append(img);
+                                        $("#pub_icon .thumb_wrapper img").attr("img_before");
+                                        return false;
+                                    }, options);
+
+                                    data.submit();
+                                } else {
+                                    $('#upload-error').empty().append(language.errorFileApiTooBig);
+                                }
                             }
-                        }
+                        });
                     });
                 },
                 done: function (e, data) {
