@@ -10,10 +10,12 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\Record\RecordRepository;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -73,23 +75,30 @@ class databox extends base implements ThumbnailedElement
     /** @var databox_subdefsStructure */
     protected $subdef_struct;
 
+    /** @var DataboxRepository */
+    private $databoxRepository;
     /** @var RecordRepository */
     private $recordRepository;
     /** @var string[]  */
     private $labels = [];
+    /** @var int */
     private $ord;
+    /** @var string */
     private $viewname;
+
 
     /**
      * @param Application $app
-     * @param int         $sbas_id
-     * @param array       $row
+     * @param int $sbas_id
+     * @param DataboxRepository $databoxRepository
+     * @param array $row
      */
-    public function __construct(Application $app, $sbas_id, array $row)
+    public function __construct(Application $app, $sbas_id, DataboxRepository $databoxRepository, array $row)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
 
+        $this->databoxRepository = $databoxRepository;
         $this->id = $sbas_id;
 
         $connectionConfigs = phrasea::sbas_params($app);
@@ -145,6 +154,7 @@ class databox extends base implements ThumbnailedElement
         cache_databox::update($this->app, $this->id, 'structure');
 
         $this->viewname = $viewname;
+        $this->databoxRepository->save($this);
 
         return $this;
     }
@@ -177,69 +187,27 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_collections()
     {
-        $ret = [];
+        /** @var CollectionRepositoryRegistry $repositoryRegistry */
+        $repositoryRegistry = $this->app['repo.collections-registry'];
+        $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
 
-        foreach ($this->get_available_collections() as $coll_id) {
-            $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
-        }
-
-        return $ret;
+        return array_filter($repository->findAll(), function (collection $collection) {
+            return $collection->is_active();
+        });
     }
 
+    /**
+     * @return int[]
+     */
     public function get_collection_unique_ids()
     {
-        static $base_ids_cache = [];
+        $collectionsIds = [];
 
-        if (isset($base_ids_cache[$this->id])) {
-            return $base_ids_cache[$this->id];
+        foreach ($this->get_collections() as $collection) {
+            $collectionsIds[] = $collection->get_base_id();
         }
 
-        $conn = $this->get_appbox()->get_connection();
-        $sql = "SELECT b.base_id FROM bas b WHERE b.sbas_id = :sbas_id AND b.active = '1' ORDER BY b.ord ASC";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $base_ids = [];
-        foreach ($rs as $row) {
-            $base_ids[] = (int) $row['base_id'];
-        }
-
-        return $base_ids_cache[$this->id] = $base_ids;
-    }
-
-    protected function get_available_collections()
-    {
-        try {
-            $data = $this->get_data_from_cache(self::CACHE_COLLECTIONS);
-            if (is_array($data)) {
-                return $data;
-            }
-        } catch (\Exception $e) {
-
-        }
-
-        $conn = $this->get_appbox()->get_connection();
-
-        $sql = "SELECT b.server_coll_id FROM sbas s, bas b
-            WHERE s.sbas_id = b.sbas_id AND b.sbas_id = :sbas_id
-              AND b.active = '1'
-            ORDER BY s.ord ASC, b.ord,b.base_id ASC";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $ret = [];
-
-        foreach ($rs as $row) {
-            $ret[] = (int) $row['server_coll_id'];
-        }
-
-        $this->set_data_to_cache($ret, self::CACHE_COLLECTIONS);
-
-        return $ret;
+        return $collectionsIds;
     }
 
     /**
@@ -279,6 +247,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
 
         $this->labels[$code] = $label;
+
+        $this->databoxRepository->save($this);
 
         phrasea::reset_sbasDatas($this->app['phraseanet.appbox']);
 
@@ -415,7 +385,7 @@ class databox extends base implements ThumbnailedElement
         $old_dbname = $this->get_dbname();
 
         foreach ($this->get_collections() as $collection) {
-            $collection->unmount_collection($this->app);
+            $collection->unmount();
         }
 
         $query = $this->app['phraseanet.user-query'];
@@ -878,6 +848,8 @@ class databox extends base implements ThumbnailedElement
 
         cache_databox::update($this->app, $this->id, 'structure');
 
+        $this->databoxRepository->save($this);
+
         $this->app['dispatcher']->dispatch(
             DataboxEvents::STRUCTURE_CHANGED,
             new StructureChangedEvent(
@@ -908,6 +880,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute($params);
         $stmt->closeCursor();
 
+        $this->databoxRepository->save($this);
+
         return $this;
     }
     protected $thesaurus;
@@ -924,6 +898,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute([':xml'  => $this->thesaurus, ':date' => $now]);
         $stmt->closeCursor();
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
+
+        $this->databoxRepository->save($this);
 
         $this->app['dispatcher']->dispatch(
             DataboxEvents::THESAURUS_CHANGED,

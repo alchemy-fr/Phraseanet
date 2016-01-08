@@ -133,7 +133,7 @@ class UploadController extends Controller
             $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
 
             $media = $this->app->getMediaFromUri($renamedFilename);
-            $collection = \collection::get_from_base_id($this->app, $base_id);
+            $collection = \collection::getByBaseId($this->app, $base_id);
 
             $lazaretSession = new LazaretSession();
             $lazaretSession->setUser($this->getAuthenticatedUser());

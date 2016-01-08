@@ -34,7 +34,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach (self::$createdCollections as $collection) {
             try {
-                $collection->unmount_collection(self::$DI['app']);
+                $collection->unmount();
             } catch (\Exception $e) {
 
             }
@@ -513,7 +513,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->setAdmin(true);
 
         $collection = $this->createOneCollection();
-        $collection->unmount_collection(self::$DI['app']);
+        $collection->unmount();
 
         self::$DI['client']->request('POST', '/admin/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', [
             'othcollsel' => self::$DI['collection']->get_base_id()
@@ -644,6 +644,8 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $data = json_decode(self::$DI['client']->getResponse()->getContent(), true);
         $this->assertTrue($data['success']);
+
+        $base = $this->getApplication()->findDataboxById($base->get_sbas_id());
 
         $this->assertEquals('frenchy label', $base->get_label('fr', false));
         $this->assertEquals('', $base->get_label('en', false));

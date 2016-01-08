@@ -633,7 +633,7 @@ class DataboxController extends Controller
     {
         try {
             foreach ($request->request->get('order', []) as $data) {
-                $collection = \collection::get_from_base_id($this->app, $data['id']);
+                $collection = \collection::getByBaseId($this->app, $data['id']);
                 $collection->set_ord($data['offset']);
             }
             $success = true;
@@ -712,7 +712,7 @@ class DataboxController extends Controller
         } catch (\Exception $e) {
             return $this->app->redirectPath('admin_database_submit_collection', [
                 'databox_id' => $databox_id,
-                'error' => 'error',
+                'error' => $e->getMessage(),
             ]);
         }
     }

@@ -21,4 +21,9 @@ interface DataboxRepository
      * @return \databox[]
      */
     public function findAll();
+
+    /**
+     * @param \databox $databox
+     */
+    public function save(\databox $databox);
 }
