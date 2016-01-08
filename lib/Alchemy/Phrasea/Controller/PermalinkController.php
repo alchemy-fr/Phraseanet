@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
-use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,18 +24,15 @@ class PermalinkController extends AbstractDelivery
 {
     /** @var ACLProvider */
     private $acl;
-    /** @var \appbox */
-    private $appbox;
     /** @var Authenticator */
     private $authentication;
     /** @var Media */
     private $mediaService;
 
-    public function __construct(Application $app, \appbox $appbox, ACLProvider $acl, Authenticator $authenticator, Media $mediaService)
+    public function __construct(Application $app, ACLProvider $acl, Authenticator $authenticator, Media $mediaService)
     {
         parent::__construct($app);
 
-        $this->appbox = $appbox;
         $this->acl = $acl;
         $this->authentication = $authenticator;
         $this->mediaService = $mediaService;
@@ -111,7 +107,6 @@ class PermalinkController extends AbstractDelivery
     private function doDeliverPermalink(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
         $databox = $this->mediaService->getDatabox($sbas_id);
-        // $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdef);
         $watermark = $stamp = false;
 
