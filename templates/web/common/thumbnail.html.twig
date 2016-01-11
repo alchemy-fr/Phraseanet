@@ -3,15 +3,19 @@
     {% set box_w = box_w|round %}
     {% set box_h = box_h|default(box_w)|round %}
     {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
-
+    {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+    {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
     {% if wrap %}
         <div style="width:{{box_w}}px;height:{{box_h}}px;" class="thumb_wrapper {{extra_class|default('')}}" >
     {% endif %}
 
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+        <div style="width:{{original_w}}px;height: {{ original_h }}px" class="videoTips">
+
         <iframe width="100%" height="100%"
                 src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
                 frameborder="0" allowfullscreen></iframe>
+        </div>
     {% elseif record_type == 'FLEXPAPER' %}
         <iframe width="100%" height="100%"
                 src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
@@ -21,9 +25,6 @@
                 src="{{ app['request'].baseUrl }}/embed/datafiles/?url={{ url|url_encode }}&autoplay={{ autoplay|default('false') }}"
                 frameborder="0" allowfullscreen></iframe>
     {% else %}
-        {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
-        {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
-
         {% set fit_size = fitIn(
         {"width":original_w, "height":original_h},
         {"width":box_w, "height":box_h}
