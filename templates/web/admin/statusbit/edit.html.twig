@@ -166,6 +166,7 @@
 
 <script type="text/javascript">
 
+
 $(document).ready(function(){
     var selected_files = [];
 
@@ -182,15 +183,20 @@ $(document).ready(function(){
                     return false;
                 }
 
-                loadImage(file,function(img){
-                   $('input[name='+data.paramName[0]+']').closest('.controls').find('.thumbnail').empty().append(img);
-                }, {
-                    fileType: /^image\/(gif|jpeg|png|jpg)$/,
-                    maxSize : 5242880, // 5MB
-                    maxWidth: 16,
-                    maxHeight: 16,
-                    minWidth: 16,
-                    minHeight: 16
+                require([
+                    "blueimp.loadimage"
+                ], function (loadImage) {
+
+                    loadImage(file,function(img){
+                       $('input[name='+data.paramName[0]+']').closest('.controls').find('.thumbnail').empty().append(img);
+                    }, {
+                        fileType: /^image\/(gif|jpeg|png|jpg)$/,
+                        maxSize : 5242880, // 5MB
+                        maxWidth: 16,
+                        maxHeight: 16,
+                        minWidth: 16,
+                        minHeight: 16
+                    });
                 });
             });
 
