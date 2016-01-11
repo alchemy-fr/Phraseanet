@@ -9,11 +9,8 @@ env:
 php:
   - 5.5
   - 5.6
-  - 7.0
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: 7.0
 services:
   - mysql
   - memcached
@@ -31,8 +28,7 @@ before_install:
   - echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - if [[ $TRAVIS_PHP_VERSION != 7.0 ]]; then yes | pecl install imagick; fi;
-  - if [[ $TRAVIS_PHP_VERSION = 7.0 ]]; then yes | pecl install imagick-beta; yes | pecl install zmq-beta; fi;
+  - yes | pecl install imagick
 install:
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
   - travis_retry npm install
