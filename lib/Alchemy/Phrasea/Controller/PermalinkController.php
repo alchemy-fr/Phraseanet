@@ -70,27 +70,12 @@ class PermalinkController extends AbstractDelivery
         return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
-    public function deliverPermaviewOldWay($sbas_id, $record_id, $token, $subdef)
-    {
-        return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef);
-    }
-
-    public function deliverPermalink(Request $request, $sbas_id, $record_id, $subdef)
-    {
-        return $this->doDeliverPermalink($request, $sbas_id, $record_id, $request->query->get('token'), $subdef);
-    }
-
-    public function deliverPermalinkOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
-    {
-        return $this->doDeliverPermalink($request, $sbas_id, $record_id, $token, $subdef);
-    }
-
     private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
     {
 
         $databox = $this->mediaService->getDatabox($sbas_id);
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdefName);
-        $metaDatas = $this->mediaService->getMetaDatas($record, $subdefName);
+        $metaDatas = $this->mediaService->getMetaData($record, $subdefName);
         $subdef = $record->get_subdef($subdefName);
 
         return $this->app['twig']->render('overview.html.twig', [
@@ -102,6 +87,16 @@ class PermalinkController extends AbstractDelivery
             'token'       => $token,
             'record'      => $record,
         ]);
+    }
+
+    public function deliverPermaviewOldWay($sbas_id, $record_id, $token, $subdef)
+    {
+        return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef);
+    }
+
+    public function deliverPermalink(Request $request, $sbas_id, $record_id, $subdef)
+    {
+        return $this->doDeliverPermalink($request, $sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
     private function doDeliverPermalink(Request $request, $sbas_id, $record_id, $token, $subdef)
@@ -164,5 +159,10 @@ class PermalinkController extends AbstractDelivery
         ]));
 
         return $response;
+    }
+
+    public function deliverPermalinkOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
+    {
+        return $this->doDeliverPermalink($request, $sbas_id, $record_id, $token, $subdef);
     }
 }
