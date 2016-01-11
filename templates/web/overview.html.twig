@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block rss %}
-    {% for metaKey, metaValue in ogMetaDatas %}
+    {% for metaKey, metaValue in ogMetaData %}
         <meta property="{{ metaKey }}" content="{{ metaValue }}" />
     {% endfor %}
 {% endblock %}

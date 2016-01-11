@@ -67,19 +67,19 @@ class PermalinkController extends AbstractDelivery
 
     public function deliverPermaview(Request $request, $sbas_id, $record_id, $subdef)
     {
-        return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef);
+        return $this->doDeliverPermaview($request, $sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
-    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
+    private function doDeliverPermaview(Request $request, $sbas_id, $record_id, $token, $subdefName)
     {
 
         $databox = $this->mediaService->getDatabox($sbas_id);
         $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdefName);
-        $metaDatas = $this->mediaService->getMetaData($record, $subdefName);
+        $metaData = $this->mediaService->getMetaData($request, $record, $subdefName);
         $subdef = $record->get_subdef($subdefName);
 
         return $this->app['twig']->render('overview.html.twig', [
-            'ogMetaDatas'    => $metaDatas['ogMetaDatas'],
+            'ogMetaData'  => $metaData['ogMetaData'],
             'subdef'      => $subdef,
             'module_name' => 'overview',
             'module'      => 'overview',
@@ -89,9 +89,9 @@ class PermalinkController extends AbstractDelivery
         ]);
     }
 
-    public function deliverPermaviewOldWay($sbas_id, $record_id, $token, $subdef)
+    public function deliverPermaviewOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
-        return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef);
+        return $this->doDeliverPermaview($request, $sbas_id, $record_id, $token, $subdef);
     }
 
     public function deliverPermalink(Request $request, $sbas_id, $record_id, $subdef)
