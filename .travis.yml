@@ -31,7 +31,7 @@ before_install:
   - echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - yes | pecl install imagick
+  - yes | pecl install imagick-beta
 install:
   - travis_retry composer install --optimize-autoloader --dev --prefer-source
   - travis_retry npm install
