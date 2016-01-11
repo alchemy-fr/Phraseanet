@@ -52,10 +52,10 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     }));
 
     $app['phraseanet.content-negotiation.priorities'] = array_merge(
+        ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
         V1::$extendedContentTypes['json'],
         V1::$extendedContentTypes['jsonp'],
-        V1::$extendedContentTypes['yaml'],
-        ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript']
+        V1::$extendedContentTypes['yaml']
     );
 
     $app['phraseanet.content-negotiation.custom_formats'] = [
