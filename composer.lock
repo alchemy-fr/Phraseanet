@@ -126,12 +126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bburnichon/embed-bundle.git",
-                "reference": "859f19891a794fee4ed81bc4b55e9fb2d19e6a48"
+                "reference": "c249ab3d99206acdaa32df49162b0be66540a773"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bburnichon/embed-bundle/zipball/859f19891a794fee4ed81bc4b55e9fb2d19e6a48",
-                "reference": "859f19891a794fee4ed81bc4b55e9fb2d19e6a48",
+                "url": "https://api.github.com/repos/bburnichon/embed-bundle/zipball/c249ab3d99206acdaa32df49162b0be66540a773",
+                "reference": "c249ab3d99206acdaa32df49162b0be66540a773",
                 "shasum": ""
             },
             "require-dev": {
@@ -171,7 +171,7 @@
             "support": {
                 "source": "https://github.com/bburnichon/embed-bundle/tree/OpenEmbed"
             },
-            "time": "2016-01-12 16:51:22"
+            "time": "2016-01-12 19:10:31"
         },
         {
             "name": "alchemy/geonames-api-consumer",
