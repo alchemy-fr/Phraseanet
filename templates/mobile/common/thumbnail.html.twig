@@ -33,15 +33,15 @@
 
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
     <iframe width="100%" height="100%"
-            src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+            src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
             frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'FLEXPAPER' %}
     <iframe width="100%" height="100%"
-            src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+            src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
             frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'AUDIO_MP3' %}
     <iframe width="100%" height="100%"
-            src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+            src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
             frameborder="0" allowfullscreen></iframe>
     {% else %}
       <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
@@ -58,15 +58,15 @@
     {% set record_type = thumbnail.get_type() %}
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
         <iframe width="100%" height="100%"
-                src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+                src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'FLEXPAPER' %}
         <iframe width="100%" height="100%"
-                src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+                src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'AUDIO_MP3' %}
         <iframe width="100%" height="100%"
-                src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+                src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
     {% else %}
           <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"

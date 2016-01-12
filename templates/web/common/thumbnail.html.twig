@@ -13,16 +13,16 @@
         <div style="width:{{original_w}}px;height: {{ original_h }}px" class="videoTips">
 
         <iframe width="100%" height="100%"
-                src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+                src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
         </div>
     {% elseif record_type == 'FLEXPAPER' %}
         <iframe width="100%" height="100%"
-                src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+                src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
     {% elseif record_type == 'AUDIO_MP3' %}
         <iframe width="100%" height="100%"
-                src="{{ url('alchemy_embed_view', ['url': url, 'autoplay': autoplay|default('false')]) }}"
+                src="{{ url('alchemy_embed_view', {url: url, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
     {% else %}
         {% set fit_size = fitIn(
