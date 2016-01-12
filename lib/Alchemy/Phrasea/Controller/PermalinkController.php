@@ -86,6 +86,13 @@ class PermalinkController extends AbstractDelivery
             'view'        => 'overview',
             'token'       => $token,
             'record'      => $record,
+            'recordUrl'   => $this->app->url('permalinks_permalink', [
+                'sbas_id' => $sbas_id,
+                'record_id' => $record_id,
+                'subdef' => $subdefName,
+                'label' => $record->get_title(),
+                'token' => $token,
+            ])
         ]);
     }
 

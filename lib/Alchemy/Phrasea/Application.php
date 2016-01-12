@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
-use Alchemy\Phrasea\Cache\Factory;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
@@ -75,6 +74,8 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
+use Alchemy\Phrasea\Media\MediaAccessorResolver;
+use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -93,11 +94,8 @@ use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
-use Monolog\Handler\NullHandler;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
-use Monolog\Processor\IntrospectionProcessor;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
@@ -372,11 +370,25 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\User\Notifications' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Preferences' => [],
             'Alchemy\EmbedProvider\EmbedServiceProvider' => [],
-            'Alchemy\EmbedProvider\OembedServiceProvider' => [],
         ];
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
         }
+
+        $resolvers = $this['alchemy_embed.resource_resolvers'];
+        $resolvers['datafiles'] = $resolvers->share(function () {
+            return new DatafilesResolver($this->getApplicationBox(), $this['url_generator']);
+        });
+        $resolvers['permalinks_permalink'] = $resolvers->share(function () {
+            return new PermalinkMediaResolver($this->getApplicationBox(), $this['url_generator']);
+        });
+        $resolvers['media_accessor'] = $resolvers->share(function () {
+            return new MediaAccessorResolver(
+                $this->getApplicationBox(),
+                $this['url_generator'],
+                $this['controller.media_accessor']
+            );
+        });
     }
 
     /**
@@ -695,7 +707,6 @@ class Application extends SilexApplication
             '/developers/'                 => 'Alchemy\Phrasea\ControllerProvider\Root\Developers',
             '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
             '/embed/'                      => 'Alchemy\EmbedProvider\EmbedServiceProvider',
-            '/oembed/'                     => 'Alchemy\EmbedProvider\OembedServiceProvider',
             '/feeds/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds',
             '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/login/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\Login',
