@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
@@ -106,8 +107,8 @@ class ORMServiceProvider implements ServiceProviderInterface
         $proxiesDirectory = $app['root.path'] . '/resources/proxies';
         $doctrineAnnotationsPath = $app['root.path'] . '/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php';
 
-        $driver = $this->buildMetadataDriver($app, $doctrineAnnotationsPath);
         $cache = $this->buildCache($app, 'EntityManager');
+        $driver = $this->buildMetadataDriver($app, $cache, $doctrineAnnotationsPath);
 
         $configuration = Setup::createConfiguration($devMode, $proxiesDirectory, $cache);
         $configuration->setMetadataDriverImpl($driver);
@@ -141,12 +142,15 @@ class ORMServiceProvider implements ServiceProviderInterface
      * @param $doctrineAnnotationsPath
      * @return AnnotationDriver
      */
-    private function buildMetadataDriver(PhraseaApplication $app, $doctrineAnnotationsPath)
+    private function buildMetadataDriver(PhraseaApplication $app, Cache $cache, $doctrineAnnotationsPath)
     {
         DoctrineExtensions::registerAnnotations();
         AnnotationRegistry::registerFile($doctrineAnnotationsPath);
 
-        $driver = new AnnotationDriver(new AnnotationReader(), [
+        $reader = new AnnotationReader();
+        $reader = new CachedReader($reader, $cache);
+
+        $driver = new AnnotationDriver($reader, [
             $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity/MappedSuperclass',
             $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity/MappedSuperclass',
             $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity/MappedSuperclass',
