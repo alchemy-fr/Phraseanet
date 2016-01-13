@@ -32,6 +32,7 @@ class Permalink implements ControllerProviderInterface, ServiceProviderInterface
             ))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
+                ->setApplicationBox($app['phraseanet.appbox'])
             ;
         });
     }
