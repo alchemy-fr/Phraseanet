@@ -378,16 +378,14 @@ class Application extends SilexApplication
 
         $resolvers = $this['alchemy_embed.resource_resolvers'];
         $resolvers['datafile'] = $resolvers->share(function () {
-            return new DatafilesResolver($this->getApplicationBox(), $this['url_generator']);
+            return new DatafilesResolver($this->getApplicationBox());
         });
         $resolvers['permalinks_permalink'] = $resolvers->share(function () {
-            return new PermalinkMediaResolver($this->getApplicationBox(), $this['url_generator']);
+            return new PermalinkMediaResolver($this->getApplicationBox());
         });
         $resolvers['media_accessor'] = $resolvers->share(function () {
             return new MediaAccessorResolver(
-                $this->getApplicationBox(),
-                $this['url_generator'],
-                $this['controller.media_accessor']
+                $this->getApplicationBox(), $this['controller.media_accessor']
             );
         });
     }

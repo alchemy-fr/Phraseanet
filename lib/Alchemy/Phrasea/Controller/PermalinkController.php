@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Embed\Media\Media;
+use Alchemy\Embed\Media\MediaInformation;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
@@ -70,16 +71,27 @@ class PermalinkController extends AbstractDelivery
 
     public function deliverPermaview(Request $request, $sbas_id, $record_id, $subdef)
     {
-        return $this->doDeliverPermaview($request, $sbas_id, $record_id, $request->query->get('token'), $subdef);
+        return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
-    private function doDeliverPermaview(Request $request, $sbas_id, $record_id, $token, $subdefName)
+    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
     {
-
         $databox = $this->findDataboxById($sbas_id);
         $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
-        $metaData = $this->mediaService->getMetaData($request, $record, $subdefName);
         $subdef = $record->get_subdef($subdefName);
+
+        $information = $this->mediaService->createMediaInformationFromResourceAndRoute(
+            $subdef,
+            'permalinks_permalink',
+            [
+                'sbas_id'   => $sbas_id,
+                'record_id' => $record_id,
+                'subdef'    => $subdefName,
+                'label'     => $record->get_title(),
+                'token'     => $token,
+            ]
+        );
+        $metaData = $this->mediaService->getMetaData($information);
 
         return $this->app['twig']->render('overview.html.twig', [
             'ogMetaData'  => $metaData['ogMetaData'],
@@ -89,19 +101,13 @@ class PermalinkController extends AbstractDelivery
             'view'        => 'overview',
             'token'       => $token,
             'record'      => $record,
-            'recordUrl'   => $this->app->url('permalinks_permalink', [
-                'sbas_id' => $sbas_id,
-                'record_id' => $record_id,
-                'subdef' => $subdefName,
-                'label' => $record->get_title(),
-                'token' => $token,
-            ])
+            'recordUrl'   => $information->getUrl(),
         ]);
     }
 
     public function deliverPermaviewOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
-        return $this->doDeliverPermaview($request, $sbas_id, $record_id, $token, $subdef);
+        return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef);
     }
 
     public function deliverPermalink(Request $request, $sbas_id, $record_id, $subdef)

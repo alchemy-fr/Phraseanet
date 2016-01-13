@@ -12,19 +12,15 @@ namespace Alchemy\Phrasea\Media;
 use Alchemy\Embed\Media\MediaInformation;
 use Alchemy\Embed\Media\ResourceResolver;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PermalinkMediaResolver implements ResourceResolver
 {
     /** @var \appbox */
     private $appbox;
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
 
-    public function __construct(\appbox $appbox, UrlGeneratorInterface $urlGenerator)
+    public function __construct(\appbox $appbox)
     {
         $this->appbox = $appbox;
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function resolve(Request $request, $routeName, array $routeParameters)
@@ -43,10 +39,6 @@ class PermalinkMediaResolver implements ResourceResolver
         $record = $databox->get_record((int)$parameters['record_id']);
         $subdef = $record->get_subdef($parameters['subdef']);
 
-        $urlGenerator = $this->urlGenerator;
-        $url = $urlGenerator->generate($routeName, $parameters, $urlGenerator::ABSOLUTE_URL);
-        $embedUrl = $urlGenerator->generate('alchemy_embed_view', ['url' => $url], $urlGenerator::ABSOLUTE_URL);
-
-        return new MediaInformation($subdef, $url, $embedUrl);
+        return new MediaInformation($subdef, $request, $routeName, $routeParameters);
     }
 }
