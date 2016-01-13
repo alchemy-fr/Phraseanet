@@ -116,6 +116,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->load($substitute);
 
         $this->generate_url();
+
+        parent::__construct($this->url, $this->width, $this->height);
     }
 
     /**
@@ -680,7 +682,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         // serve thumbnails using static file service
         if ($this->get_name() === 'thumbnail') {
             if (null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
-                $this->url = $url. "?etag=".$this->getEtag();
+                $url->getQuery()->offsetSet('etag', $this->getEtag());
+                $this->url = $url;
 
                 return;
             }
@@ -694,9 +697,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             }
         }
 
-        $this->url = Url::factory("/datafiles/" . $this->record->getDataboxId()
-            . "/" . $this->record->getRecordId() . "/"
-            . $this->get_name() . "/?etag=".$this->getEtag());
+        $this->url = Url::factory($this->app->path('datafile', [
+            'sbas_id' => $this->record->getDataboxId(),
+            'record_id' => $this->record->getRecordId(),
+            'subdef' => $this->get_name(),
+            'etag' => $this->getEtag(),
+        ]));
 
         return;
     }
