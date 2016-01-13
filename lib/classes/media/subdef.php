@@ -11,96 +11,59 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
-use MediaAlchemyst\Alchemyst;
-use MediaVorus\MediaVorus;
-use MediaVorus\Media\MediaInterface;
 use Guzzle\Http\Url;
+use MediaAlchemyst\Alchemyst;
+use MediaVorus\Media\MediaInterface;
+use MediaVorus\MediaVorus;
 
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
+    /** @var Application */
     protected $app;
-    /**
-     *
-     * @var string
-     */
+
+    /** @var string */
     protected $mime;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $file;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $path;
 
-    /**
-     *
-     * @var record_adapter
-     */
+    /** @var record_adapter */
     protected $record;
 
-    /**
-     *
-     * @var media_Permalink_Adapter
-     */
+    /** @var media_Permalink_Adapter */
     protected $permalink;
 
-    /**
-     *
-     * @var boolean
-     */
+    /** @var boolean */
     protected $is_substituted = false;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $pathfile;
 
-    /**
-     *
-     * @var int
-     */
+    /** @var int */
     protected $subdef_id;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $etag;
 
-    /**
-     *
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $creation_date;
 
-    /**
-     *
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $modification_date;
 
-    /**
-     *
-     * @var boolean
-     */
+    /** @var bool */
     protected $is_physically_present = false;
 
     /** @var integer */
     private $size = 0;
 
-    /**
+    /*
      * Players types constants
      */
     const TYPE_VIDEO_MP4 = 'VIDEO_MP4';
@@ -109,7 +72,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TYPE_AUDIO_MP3 = 'AUDIO_MP3';
     const TYPE_IMAGE = 'IMAGE';
     const TYPE_NO_PLAYER = 'UNKNOWN';
-    /**
+
+    /*
      * Technical datas types constants
      */
     const TC_DATA_WIDTH = 'Width';
@@ -155,9 +119,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  boolean      $substitute
-     * @return media_subdef
+     * @param  bool $substitute
+     * @return $this
      */
     protected function load($substitute)
     {
@@ -228,19 +191,19 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         $datas = [
-            'mime'               => $this->mime
-            , 'width'              => $this->width
-            , 'size'               => $this->size
-            , 'height'             => $this->height
-            , 'etag'               => $this->etag
-            , 'path'               => $this->path
-            , 'url'                => $this->url
-            , 'file'               => $this->file
-            , 'physically_present' => $this->is_physically_present
-            , 'is_substituted'     => $this->is_substituted
-            , 'subdef_id'          => $this->subdef_id
-            , 'modification_date'  => $this->modification_date
-            , 'creation_date'      => $this->creation_date
+            'mime'               => $this->mime,
+            'width'              => $this->width,
+            'size'               => $this->size,
+            'height'             => $this->height,
+            'etag'               => $this->etag,
+            'path'               => $this->path,
+            'url'                => $this->url,
+            'file'               => $this->file,
+            'physically_present' => $this->is_physically_present,
+            'is_substituted'     => $this->is_substituted,
+            'subdef_id'          => $this->subdef_id,
+            'modification_date'  => $this->modification_date,
+            'creation_date'      => $this->creation_date,
         ];
 
         $this->set_data_to_cache($datas);
@@ -308,8 +271,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_physically_present()
     {
@@ -317,7 +279,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return record_adapter
      */
     public function get_record()
@@ -326,7 +287,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return media_Permalink_Adapter
      */
     public function get_permalink()
@@ -338,7 +298,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_record_id()
@@ -388,7 +347,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_sbas_id()
@@ -397,7 +355,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_type()
@@ -430,7 +387,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_mime()
@@ -439,7 +395,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_path()
@@ -448,7 +403,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_file()
@@ -457,7 +411,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_size()
@@ -466,7 +419,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_name()
@@ -475,7 +427,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return int
      */
     public function get_subdef_id()
@@ -484,8 +435,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_substituted()
     {
@@ -493,7 +443,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_pathfile()
@@ -502,7 +451,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_modification_date()
@@ -511,7 +459,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_creation_date()
@@ -520,7 +467,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function renew_url()
@@ -561,7 +507,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param int        $angle
      * @param Alchemyst  $alchemyst
      * @param MediaVorus $mediavorus
@@ -726,9 +671,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $subdef;
     }
 
-    /**
-     *
-     */
     protected function generate_url()
     {
         if (!$this->is_physically_present()) {
