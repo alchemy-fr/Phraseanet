@@ -113,6 +113,8 @@ class ORMServiceProvider implements ServiceProviderInterface
         $configuration = Setup::createConfiguration($devMode, $proxiesDirectory, $cache);
         $configuration->setMetadataDriverImpl($driver);
         $configuration->addEntityNamespace('Phraseanet', 'Alchemy\Phrasea\Model\Entities');
+        $configuration->setAutoGenerateProxyClasses($devMode);
+        $configuration->setProxyNamespace('Alchemy\Phrasea\Model\Proxies');
 
         return $configuration;
     }
