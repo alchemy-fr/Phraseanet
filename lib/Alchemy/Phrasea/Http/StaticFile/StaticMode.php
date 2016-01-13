@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Http\StaticFile;
 
-use Alchemy\Phrasea\Http\AbstractServerMode;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Guzzle\Http\Url;
 
@@ -26,10 +25,10 @@ class StaticMode
 
     /**
      * @param $pathFile
-     * @param null $etag
+     * @param null|string $etag
      * @return Url
      */
-    public function getUrl($pathFile, $etag=null)
+    public function getUrl($pathFile, $etag = null)
     {
         $this->ensureSymlink($pathFile);
 

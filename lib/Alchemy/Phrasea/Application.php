@@ -74,6 +74,7 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
+use Alchemy\Phrasea\Media\DatafilesResolver;
 use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -376,7 +377,7 @@ class Application extends SilexApplication
         }
 
         $resolvers = $this['alchemy_embed.resource_resolvers'];
-        $resolvers['datafiles'] = $resolvers->share(function () {
+        $resolvers['datafile'] = $resolvers->share(function () {
             return new DatafilesResolver($this->getApplicationBox(), $this['url_generator']);
         });
         $resolvers['permalinks_permalink'] = $resolvers->share(function () {
