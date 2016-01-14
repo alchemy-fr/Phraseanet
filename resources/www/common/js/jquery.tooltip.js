@@ -348,7 +348,7 @@
 
 
                 //correction par ratio
-                if (resizeImgTips && $('#' + settings($.tooltip.current).id + ' .imgTips')[0]) {
+                if (resizeImgTips && $imgTips.get(0)) {
 
                     if (ratioSurfaceH > ratioImage) {
                         horS = v.y * ratioImage * v.y;
@@ -416,13 +416,12 @@
                     top: top
                 });
 
-
                 //si ya une image on re-ajuste au ratio
-                if (resizeImgTips && $('#' + settings($.tooltip.current).id + ' .imgTips')[0]) {
+                if (resizeImgTips && $imgTips.get(0)) {
                     if (width == 'auto')
-                        width = $('#' + settings($.tooltip.current).id).width();
+                        width = $imgTips.get(0).width();
                     if (height == 'auto')
-                        height = $('#' + settings($.tooltip.current).id).height();
+                        height = $imgTips.get(0).height();
                     if (ratio > 1) {
                         var nh = width / ratio;
                         if (nh > height) {
@@ -439,7 +438,19 @@
                         }
                         width = nw;
                     }
-                } else {
+                }
+                else if (resizeVideoTips && $videoTips.get(0)) {
+                    width = $videoTips.data('original-width');
+                    height = $videoTips.data('original-height');
+                    // limit video to maxWidth:
+                    if( width > 720 ) {
+                        var limitRatio = width/height;
+                        width = 720;
+                        height = width / limitRatio;
+                    }
+                    console.log('video first scaled to ', width, height)
+                }
+                else {
                     if (vertS < horS) {
                         height = 'auto';
                     }
@@ -469,7 +480,7 @@
 
                     width = imgWidth + 45;
                     height = imgHeight + 75;
-
+                    console.log('video scaled to ', width, height)
                     $videoTips.css({
                         width: Math.round(imgWidth),
                         height: Math.round(imgHeight)
