@@ -41,7 +41,7 @@ class FileServeServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.static-file'] = $app->share(function (Application $app) {
-            return new StaticMode(SymLinker::create($app));
+            return new StaticMode($app['phraseanet.thumb-symlinker']);
         });
 
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {

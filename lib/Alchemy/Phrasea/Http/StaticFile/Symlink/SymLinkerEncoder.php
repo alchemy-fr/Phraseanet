@@ -11,20 +11,9 @@
 
 namespace Alchemy\Phrasea\Http\StaticFile\Symlink;
 
-use Silex\Application;
-use Symfony\Component\Filesystem\Filesystem;
-use Guzzle\Http\Url;
-
 class SymLinkerEncoder
 {
     protected $key;
-
-    public static function create(Application $app)
-    {
-        return new self(
-            $app['phraseanet.configuration']['main']['key']
-        );
-    }
 
     public function __construct($key)
     {

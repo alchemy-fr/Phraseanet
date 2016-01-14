@@ -11,10 +11,8 @@
 
 namespace Alchemy\Phrasea\Http\StaticFile\Symlink;
 
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Silex\Application;
 use Symfony\Component\Filesystem\Filesystem;
-use Guzzle\Http\Url;
 
 /**
  * Create & retrieve symlinks
@@ -24,15 +22,6 @@ class SymLinker
     protected $encoder;
     protected $fs;
     protected $symlinkDir;
-
-    public static function create(Application $app)
-    {
-        return new SymLinker(
-            $app['phraseanet.thumb-symlinker-encoder'],
-            $app['filesystem'],
-            $app['thumbnail.path']
-        );
-    }
 
     public function __construct(SymLinkerEncoder $encoder, Filesystem $fs, $symlinkDir)
     {
