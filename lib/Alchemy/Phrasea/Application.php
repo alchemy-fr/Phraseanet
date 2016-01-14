@@ -118,6 +118,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Form\Exception\FormException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -1172,8 +1173,7 @@ class Application extends SilexApplication
     private function setupEventDispatcher()
     {
         $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                //$dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
+            $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
