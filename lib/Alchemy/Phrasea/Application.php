@@ -126,6 +126,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Routing\RequestContext;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -267,7 +268,7 @@ class Application extends SilexApplication
         $this->setupForm();
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
-        $this->setupUrlGenerator();
+        $this->setupRequestContext();
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
@@ -1089,21 +1090,21 @@ class Application extends SilexApplication
         });
     }
 
-    private function setupUrlGenerator()
+    private function setupRequestContext()
     {
-        $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, Application $app) {
+        $this['request_context'] = $this->share($this->extend('request_context', function (RequestContext $context, Application $app) {
             if ($app['configuration.store']->isSetup()) {
                 $data = parse_url($app['conf']->get('servername'));
 
                 if (isset($data['scheme'])) {
-                    $urlGenerator->getContext()->setScheme($data['scheme']);
+                    $context->setScheme($data['scheme']);
                 }
                 if (isset($data['host'])) {
-                    $urlGenerator->getContext()->setHost($data['host']);
+                    $context->setHost($data['host']);
                 }
             }
 
-            return $urlGenerator;
+            return $context;
         }));
     }
 
