@@ -14,12 +14,11 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
 use Alchemy\Phrasea\Http\H264PseudoStreaming\H264Factory;
 use Alchemy\Phrasea\Http\ServeFileResponseFactory;
-use Alchemy\Phrasea\Http\StaticFile\StaticFileFactory;
 use Alchemy\Phrasea\Http\StaticFile\StaticMode;
-use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class FileServeServiceProvider implements ServiceProviderInterface
 {
@@ -45,7 +44,7 @@ class FileServeServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {
-            return ServeFileResponseFactory::create($app);
+            return new ServeFileResponseFactory($app['unicode']);
         });
     }
 
@@ -55,7 +54,7 @@ class FileServeServiceProvider implements ServiceProviderInterface
     public function boot(Application $app)
     {
         $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function ($dispatcher, Application $app) {
+            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addSubscriber(new XSendFileSubscriber($app));
 
                 return $dispatcher;

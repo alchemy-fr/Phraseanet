@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Http;
 
-use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -22,17 +21,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
     public function __construct(\unicode $unicode)
     {
         $this->unicode = $unicode;
-    }
-
-    /**
-     * @param  Application $app
-     * @return self
-     */
-    public static function create(Application $app)
-    {
-        return new self(
-            $app['unicode']
-        );
     }
 
     /**
