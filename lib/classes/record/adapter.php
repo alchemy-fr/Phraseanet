@@ -1417,7 +1417,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 continue;
 
             if ($subdef->get_name() === 'thumbnail') {
-                $this->app['filesystem']->remove($this->app['phraseanet.thumb-symlinker']->getSymlinkPath($subdef->get_pathfile()));
+                $this->app['phraseanet.thumb-symlinker']->unlink($subdef->get_pathfile());
             }
 
             $ftodel[] = $subdef->get_pathfile();

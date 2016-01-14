@@ -40,6 +40,11 @@ class SymLinker
         $this->fs->symlink($pathFile, $this->getSymlinkPath($pathFile)) ;
     }
 
+    public function unlink($pathFile)
+    {
+        $this->fs->remove($this->getSymlinkPath($pathFile));
+    }
+
     public function getSymlink($pathFile)
     {
         return $this->encoder->encode($pathFile);
