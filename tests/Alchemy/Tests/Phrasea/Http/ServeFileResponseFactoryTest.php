@@ -16,12 +16,6 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 {
     protected $factory;
 
-    public function testDeliverFileFactoryCreation()
-    {
-        $factory = ServeFileResponseFactory::create(self::$DI['app']);
-        $this->assertInstanceOf('Alchemy\Phrasea\Http\ServeFileResponseFactory', $factory);
-    }
-
     public function testDeliverFile()
     {
         $this->factory = new ServeFileResponseFactory(new \unicode());

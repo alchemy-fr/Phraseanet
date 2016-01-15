@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "32865d9f1fb5a0d8ead56364bc5db5c7",
-    "content-hash": "1212545fbe0ee56e58d31f099da0e819",
+    "hash": "9d34cc6e824ce669456479a581065fb7",
+    "content-hash": "317a4ac8e941d0fb396ac81e4e3bc41f",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -122,16 +122,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "v0.1.1",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "422f4835a812d916e6ae81bfb842dad10a0f3a2a"
+                "reference": "37cc6ab627e4a770a60aad4ae4c60934e5de5cf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/422f4835a812d916e6ae81bfb842dad10a0f3a2a",
-                "reference": "422f4835a812d916e6ae81bfb842dad10a0f3a2a",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/37cc6ab627e4a770a60aad4ae4c60934e5de5cf5",
+                "reference": "37cc6ab627e4a770a60aad4ae4c60934e5de5cf5",
                 "shasum": ""
             },
             "require-dev": {
@@ -169,10 +169,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/v0.1.1",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/v0.2.0",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2016-01-06 17:34:21"
+            "time": "2016-01-15 12:49:06"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -2583,7 +2583,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hoaproject/Stream/zipball/011ab91d942f1d7096deade4c8a10fe57d51c5b3",
+                "url": "https://api.github.com/repos/hoaproject/Stream/zipball/3bc446bc00849bf51166adc415d77aa375d48d8c",
                 "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3",
                 "shasum": ""
             },
@@ -4440,7 +4440,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/8ea5840ad835444627de70a706aabd8c9aa41df8",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/9835fc4f8463c944bdc2617cbbdb6b688ca17944",
                 "reference": "a6a3d39d1f68e3e04555a2d6b43a9df0977d96d9",
                 "shasum": ""
             },

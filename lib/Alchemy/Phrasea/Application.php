@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
-use Alchemy\Phrasea\Cache\Factory;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
@@ -75,6 +74,9 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
+use Alchemy\Phrasea\Media\DatafilesResolver;
+use Alchemy\Phrasea\Media\MediaAccessorResolver;
+use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Twig\BytesConverter;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -93,11 +95,8 @@ use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
-use Monolog\Handler\NullHandler;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
-use Monolog\Processor\IntrospectionProcessor;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
@@ -119,6 +118,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Form\Exception\FormException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -127,6 +127,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Routing\RequestContext;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -268,7 +269,7 @@ class Application extends SilexApplication
         $this->setupForm();
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
-        $this->setupUrlGenerator();
+        $this->setupRequestContext();
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
@@ -372,11 +373,23 @@ class Application extends SilexApplication
             'Alchemy\Phrasea\ControllerProvider\User\Notifications' => [],
             'Alchemy\Phrasea\ControllerProvider\User\Preferences' => [],
             'Alchemy\EmbedProvider\EmbedServiceProvider' => [],
-            'Alchemy\EmbedProvider\OembedServiceProvider' => [],
         ];
         foreach ($providers as $class => $values) {
             $this->register(new $class, $values);
         }
+
+        $resolvers = $this['alchemy_embed.resource_resolvers'];
+        $resolvers['datafile'] = $resolvers->share(function () {
+            return new DatafilesResolver($this->getApplicationBox());
+        });
+        $resolvers['permalinks_permalink'] = $resolvers->share(function () {
+            return new PermalinkMediaResolver($this->getApplicationBox());
+        });
+        $resolvers['media_accessor'] = $resolvers->share(function () {
+            return new MediaAccessorResolver(
+                $this->getApplicationBox(), $this['controller.media_accessor']
+            );
+        });
     }
 
     /**
@@ -695,7 +708,6 @@ class Application extends SilexApplication
             '/developers/'                 => 'Alchemy\Phrasea\ControllerProvider\Root\Developers',
             '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
             '/embed/'                      => 'Alchemy\EmbedProvider\EmbedServiceProvider',
-            '/oembed/'                     => 'Alchemy\EmbedProvider\OembedServiceProvider',
             '/feeds/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds',
             '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
             '/login/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\Login',
@@ -1079,21 +1091,21 @@ class Application extends SilexApplication
         });
     }
 
-    private function setupUrlGenerator()
+    private function setupRequestContext()
     {
-        $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, Application $app) {
+        $this['request_context'] = $this->share($this->extend('request_context', function (RequestContext $context, Application $app) {
             if ($app['configuration.store']->isSetup()) {
                 $data = parse_url($app['conf']->get('servername'));
 
                 if (isset($data['scheme'])) {
-                    $urlGenerator->getContext()->setScheme($data['scheme']);
+                    $context->setScheme($data['scheme']);
                 }
                 if (isset($data['host'])) {
-                    $urlGenerator->getContext()->setHost($data['host']);
+                    $context->setHost($data['host']);
                 }
             }
 
-            return $urlGenerator;
+            return $context;
         }));
     }
 
@@ -1161,8 +1173,7 @@ class Application extends SilexApplication
     private function setupEventDispatcher()
     {
         $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function ($dispatcher, Application $app) {
-                //$dispatcher->addListener(KernelEvents::RESPONSE, [$app, 'addUTF8Charset'], -128);
+            $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);

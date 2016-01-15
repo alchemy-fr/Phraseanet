@@ -11,11 +11,12 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Embed\Media\Media;
+use Alchemy\Embed\Media\MediaInformation;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
-use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,20 +24,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PermalinkController extends AbstractDelivery
 {
+    use ApplicationBoxAware;
+
     /** @var ACLProvider */
     private $acl;
-    /** @var \appbox */
-    private $appbox;
     /** @var Authenticator */
     private $authentication;
     /** @var Media */
     private $mediaService;
 
-    public function __construct(Application $app, \appbox $appbox, ACLProvider $acl, Authenticator $authenticator, Media $mediaService)
+    public function __construct(Application $app, ACLProvider $acl, Authenticator $authenticator, Media $mediaService)
     {
         parent::__construct($app);
 
-        $this->appbox = $appbox;
         $this->acl = $acl;
         $this->authentication = $authenticator;
         $this->mediaService = $mediaService;
@@ -44,9 +44,9 @@ class PermalinkController extends AbstractDelivery
 
     public function getOptionsResponse(Request $request, $sbas_id, $record_id)
     {
-        $databox = $this->mediaService->getDatabox($sbas_id);
+        $databox = $this->findDataboxById($sbas_id);
         $token = $request->query->get('token');
-        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $request->get('subdef', 'thumbnail'));
+        $record = $this->retrieveRecord($databox, $token, $record_id, $request->get('subdef', 'thumbnail'));
 
         if (null === $record) {
             throw new NotFoundHttpException("Record not found");
@@ -57,9 +57,9 @@ class PermalinkController extends AbstractDelivery
 
     public function deliverCaption(Request $request, $sbas_id, $record_id)
     {
-        $databox = $this->mediaService->getDatabox($sbas_id);
+        $databox = $this->findDataboxById($sbas_id);
         $token = $request->query->get('token');
-        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
+        $record = $this->retrieveRecord($databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
 
         if (null === $record) {
             throw new NotFoundHttpException("Caption not found");
@@ -74,7 +74,38 @@ class PermalinkController extends AbstractDelivery
         return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
-    public function deliverPermaviewOldWay($sbas_id, $record_id, $token, $subdef)
+    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
+    {
+        $databox = $this->findDataboxById($sbas_id);
+        $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
+        $subdef = $record->get_subdef($subdefName);
+
+        $information = $this->mediaService->createMediaInformationFromResourceAndRoute(
+            $subdef,
+            'permalinks_permalink',
+            [
+                'sbas_id'   => $sbas_id,
+                'record_id' => $record_id,
+                'subdef'    => $subdefName,
+                'label'     => $record->get_title(),
+                'token'     => $token,
+            ]
+        );
+        $metaData = $this->mediaService->getMetaData($information);
+
+        return $this->app['twig']->render('overview.html.twig', [
+            'ogMetaData'  => $metaData['ogMetaData'],
+            'subdef'      => $subdef,
+            'module_name' => 'overview',
+            'module'      => 'overview',
+            'view'        => 'overview',
+            'token'       => $token,
+            'record'      => $record,
+            'recordUrl'   => $information->getUrl(),
+        ]);
+    }
+
+    public function deliverPermaviewOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
         return $this->doDeliverPermaview($sbas_id, $record_id, $token, $subdef);
     }
@@ -84,35 +115,10 @@ class PermalinkController extends AbstractDelivery
         return $this->doDeliverPermalink($request, $sbas_id, $record_id, $request->query->get('token'), $subdef);
     }
 
-    public function deliverPermalinkOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
-    {
-        return $this->doDeliverPermalink($request, $sbas_id, $record_id, $token, $subdef);
-    }
-
-    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
-    {
-
-        $databox = $this->mediaService->getDatabox($sbas_id);
-        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdefName);
-        $metaDatas = $this->mediaService->getMetaDatas($record, $subdefName);
-        $subdef = $record->get_subdef($subdefName);
-
-        return $this->app['twig']->render('overview.html.twig', [
-            'ogMetaDatas'    => $metaDatas['ogMetaDatas'],
-            'subdef'      => $subdef,
-            'module_name' => 'overview',
-            'module'      => 'overview',
-            'view'        => 'overview',
-            'token'       => $token,
-            'record'      => $record,
-        ]);
-    }
-
     private function doDeliverPermalink(Request $request, $sbas_id, $record_id, $token, $subdef)
     {
-        $databox = $this->mediaService->getDatabox($sbas_id);
-        // $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
-        $record = $this->mediaService->retrieveRecord($databox, $token, $record_id, $subdef);
+        $databox = $this->findDataboxById($sbas_id);
+        $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
         $watermark = $stamp = false;
 
         if ($this->authentication->isAuthenticated()) {
@@ -169,5 +175,43 @@ class PermalinkController extends AbstractDelivery
         ]));
 
         return $response;
+    }
+
+    public function deliverPermalinkOldWay(Request $request, $sbas_id, $record_id, $token, $subdef)
+    {
+        return $this->doDeliverPermalink($request, $sbas_id, $record_id, $token, $subdef);
+    }
+
+    /**
+     * @param \databox $databox
+     * @param string   $token
+     * @param int      $record_id
+     * @param string   $subdef
+     * @return \record_adapter
+     */
+    private function retrieveRecord(\databox $databox, $token, $record_id, $subdef)
+    {
+        try {
+            $record = $databox->get_record($record_id);
+            $subDefinition = $record->get_subdef($subdef);
+            $permalink = $subDefinition->get_permalink();
+        } catch (\Exception $exception) {
+            throw new NotFoundHttpException('Wrong token.', $exception);
+        }
+
+        if (null === $permalink || !$permalink->get_is_activated()) {
+            throw new NotFoundHttpException('This token has been disabled.');
+        }
+
+        $feedItemsRepository = $this->app['repo.feed-items'];
+        if (in_array($subdef, [\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL])
+            && $feedItemsRepository->isRecordInPublicFeed($databox->get_sbas_id(), $record_id)
+        ) {
+            return $record;
+        } elseif ($permalink->get_token() == (string)$token) {
+            return $record;
+        }
+
+        throw new NotFoundHttpException('Wrong token.');
     }
 }
