@@ -23,10 +23,6 @@
             "url":  "https://github.com/alchemy-fr/JMSTranslationBundle"
         },
         {
-            "type": "git",
-            "url": "https://github.com/alchemy-fr/symfony-cors"
-        },
-        {
             "type": "vcs",
             "url":  "https://github.com/alchemy-fr/embed-bundle.git"
         }
