@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\CacheStatisticsSubscriber;
+use Alchemy\Phrasea\Core\Profiler\CacheDataCollector;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\LoggerChain;
@@ -43,7 +45,11 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
                 return $templates;
             }));
 
-            $app['data_collectors'] = $app->share($app->extend('data_collectors', function ($collectors) {
+            $app['data_collector.cache_subscriber'] = $app->share(function ($app) {
+                return new CacheStatisticsSubscriber($app['cache']);
+            });
+
+            $app['data_collectors'] = $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
                 $collectors['ajax'] = function () {
                     return new AjaxDataCollector();
                 };
@@ -63,7 +69,8 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             /** @var Connection $db */
             $db = $app['db'];
             /** @var DoctrineDataCollector $collector */
-            $collector = $app['data_collectors.doctrine'];
+            $collector = $app['
+            '];
 
             $loggerChain = new LoggerChain();
             $logger = new DebugStack();
@@ -78,14 +85,23 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             return $collector;
         });
 
+        $dataCollectors['cache'] = $app->share(function ($app) {
+            return new CacheDataCollector($app['data_collector.cache_subscriber']);
+        });
+
         $app['data_collectors'] = $dataCollectors;
 
         $dataCollectorTemplates = $app['data_collector.templates'];
         $dataCollectorTemplates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
+        $dataCollectorTemplates[] = array('cache', '@PhraseaProfiler/cache.html.twig');
         $app['data_collector.templates'] = $dataCollectorTemplates;
 
         $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader, $app) {
-            $loader->addPath($app['root.path'].'/vendor/sorien/silex-dbal-profiler/src/Sorien/Resources/views', 'DoctrineBundle');
+            $loader->addPath(
+                $app['root.path'] . '/vendor/sorien/silex-dbal-profiler/src/Sorien/Resources/views',
+                'DoctrineBundle'
+            );
+            $loader->addPath($app['root.path'] . '/templates/web/debug', 'PhraseaProfiler');
             return $loader;
         }));
     }
@@ -99,6 +115,6 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // TODO: Implement boot() method.
+        $app['dispatcher']->addSubscriber($app['data_collector.cache_subscriber']);
     }
 }

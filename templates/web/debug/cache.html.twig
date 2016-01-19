@@ -1,0 +1,80 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>Cache hits</b>
+        <span class="sf-toolbar-status sf-toolbar-status-green">{{ collector.hits }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Cache misses</b>
+        <span class="sf-toolbar-status sf-toolbar-status-red">{{ collector.misses }}</span>
+    </div>
+    {% endset %}
+    {% set icon %}
+    <img width="20" height="28" alt="Cache" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQRJREFUeNpi/P//PwM1ARMDlcGogZQDlpMnT7pxc3NbA9nhQKxOpL5rQLwJiPeBsI6Ozl+YBOOOHTv+AOllQNwtLS39F2owKYZ/gRq8G4i3ggxEToggWzvc3d2Pk+1lNL4fFAs6ODi8JzdS7mMRVyDVoAMHDsANdAPiOCC+jCQvQKqBQB/BDbwBxK5AHA3E/kB8nKJkA8TMQBwLxaBIKQbi70AvTADSBiSadwFXpCikpKQU8PDwkGTaly9fHFigkaKIJid4584dkiMFFI6jkTJII0WVmpHCAixZQEXWYhDeuXMnyLsVlEQKI45qFBQZ8eRECi4DBaAlDqle/8A48ip6gAADANdQY88Uc0oGAAAAAElFTkSuQmCC"/>
+    <span class="sf-toolbar-status{% if 75 > collector.hits / collector.totalCalls %} sf-toolbar-status-green{% endif %}">{{ '%0.2f'|format(collector.hits / collector.totalCalls * 100) }} %</span> cache hit ratio
+    {% endset %}
+    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <strong>Cache</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Doctrine Cache</h2>
+
+    {% if collector.data|length == 0 %}
+        <p><em>No calls profiled.</em></p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Initial value</th>
+                    <th>Final value</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tr>
+                <th scope="row">Hits</th>
+                <td>{{ collector.data['early']['hits'] }}</td>
+                <td>{{ collector.data['late']['hits'] }}</td>
+                <td>{{ collector.hits }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Misses</th>
+                <td>{{ collector.data['early']['misses'] }}</td>
+                <td>{{ collector.data['late']['misses'] }}</td>
+                <td>{{ collector.misses }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Calls</th>
+                <td>{{ collector.data['early']['misses'] + collector.data['early']['hits'] }}</td>
+                <td>{{ collector.data['late']['misses'] + collector.data['late']['hits'] }}</td>
+                <td>{{ collector.totalCalls }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Uptime</th>
+                <td>{{ collector.data['early']['uptime'] }}</td>
+                <td>{{ collector.data['late']['uptime'] }}</td>
+                <td>{{ collector.data['late']['uptime'] - collector.data['early']['uptime'] }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Memory usage</th>
+                <td>{{ collector.data['early']['memory_usage'] }}</td>
+                <td>{{ collector.data['late']['memory_usage'] }}</td>
+                <td>{{ collector.data['late']['memory_usage'] - collector.data['early']['memory_usage'] }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Memory available</th>
+                <td>{{ collector.data['early']['memory_available'] }}</td>
+                <td>{{ collector.data['late']['memory_available'] }}</td>
+                <td>{{ collector.data['late']['memory_available'] - collector.data['early']['memory_available'] }}</td>
+            </tr>
+        </table>
+    {% endif %}
+{% endblock %}
