@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Application\Helper;
 
 use Alchemy\Phrasea\Http\DeliverDataInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 trait DelivererAware
 {   
@@ -57,11 +58,12 @@ trait DelivererAware
     /**
      * Returns a HTTP Response ready to deliver a binary file
      *
-     * @param string      $file
-     * @param string      $filename
-     * @param string      $disposition
+     * @param string $file
+     * @param string $filename
+     * @param string $disposition
      * @param string|null $mimeType
-     * @param integer     $cacheDuration
+     * @param integer $cacheDuration
+     * @return Response
      */
     public function deliverFile($file, $filename = null, $disposition = DeliverDataInterface::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = null)
     {
@@ -71,11 +73,12 @@ trait DelivererAware
     /**
      * Return a HTTP Response ready to deliver data
      *
-     * @param string  $data
-     * @param string  $filename
-     * @param string  $mimeType
-     * @param string  $disposition
+     * @param string $data
+     * @param string $filename
+     * @param string $mimeType
+     * @param string $disposition
      * @param integer $cacheDuration
+     * @return Response
      */
     public function deliverData($data, $filename, $mimeType, $disposition = DeliverDataInterface::DISPOSITION_INLINE, $cacheDuration = null)
     {
