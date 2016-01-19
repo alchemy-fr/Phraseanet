@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractDelivery
 {
@@ -34,13 +33,8 @@ abstract class AbstractDelivery
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp)
     {
         $mediaSubdefinition = $record->get_subdef($subdef);
-        $pathOut = $mediaSubdefinition->get_pathfile();
 
-        if ($watermark === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
-            $pathOut = \recordutils_image::watermark($this->app, $mediaSubdefinition);
-        } elseif ($stamp === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
-            $pathOut = \recordutils_image::stamp($this->app, $mediaSubdefinition);
-        }
+        $pathOut = $this->tamperProofSubDefinition($mediaSubdefinition, $watermark, $stamp);
 
         $disposition = $request->query->get('download') ? DeliverDataInterface::DISPOSITION_ATTACHMENT : DeliverDataInterface::DISPOSITION_INLINE;
 
@@ -79,5 +73,24 @@ abstract class AbstractDelivery
         } catch (\Exception $e) {
             // Ignore exception
         }
+    }
+
+    /**
+     * @param \media_subdef $mediaSubdefinition
+     * @param bool $watermark
+     * @param bool $stamp
+     * @return string
+     */
+    private function tamperProofSubDefinition(\media_subdef $mediaSubdefinition, $watermark, $stamp)
+    {
+        $pathOut = $mediaSubdefinition->get_pathfile();
+
+        if ($watermark === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
+            $pathOut = \recordutils_image::watermark($this->app, $mediaSubdefinition);
+        } elseif ($stamp === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
+            $pathOut = \recordutils_image::stamp($this->app, $mediaSubdefinition);
+        }
+
+        return $pathOut;
     }
 }
