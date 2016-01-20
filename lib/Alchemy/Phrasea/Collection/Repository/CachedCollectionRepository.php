@@ -56,7 +56,7 @@ final class CachedCollectionRepository implements CollectionRepository
      */
     public function findAll()
     {
-        $cacheKey = hash('sha256', $this->cacheKey);
+        $cacheKey = $this->getCacheKey();
         /** @var \collection[] $collections */
         $collections = $this->cache->fetch($cacheKey);
 
@@ -91,7 +91,7 @@ final class CachedCollectionRepository implements CollectionRepository
     {
         $this->repository->save($collection);
 
-        $cacheKey = hash('sha256', $this->cacheKey);
+        $cacheKey = $this->getCacheKey();
 
         $this->cache->delete($cacheKey);
     }
@@ -100,7 +100,7 @@ final class CachedCollectionRepository implements CollectionRepository
     {
         $this->repository->delete($collection);
 
-        $cacheKey = hash('sha256', $this->cacheKey);
+        $cacheKey = $this->getCacheKey();
 
         $this->cache->delete($cacheKey);
     }
@@ -108,5 +108,15 @@ final class CachedCollectionRepository implements CollectionRepository
     private function putInCache($key, $value)
     {
         $this->cache->save($key, $value);
+    }
+
+    /**
+     * @return string
+     */
+    private function getCacheKey()
+    {
+        $cacheKey = 'collections:' . hash('sha256', $this->cacheKey);
+
+        return $cacheKey;
     }
 }
