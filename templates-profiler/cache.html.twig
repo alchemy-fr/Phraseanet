@@ -80,7 +80,7 @@
         </tr>
     </table>
 
-    <h3>Hit miss summary</h3>
+    <h3>HIT/MISS summary</h3>
 
     <table>
         <thead>
@@ -129,15 +129,23 @@
     <table>
         <thead>
         <tr>
-            <th>Operation</th>
-            <th>Count</th>
+            <th>Key</th>
+            <th>Hits</th>
+            <th>Misses</th>
+            <th>Reads</th>
+            <th>Writes</th>
+            <th>Total</th>
         </tr>
         </thead>
         <tbody>
-        {% for callKey, count in collector.callSummary['calls_by_key'] %}
+        {% for callKey, stats in collector.callSummary['calls_by_key'] %}
             <tr>
                 <td>{{ callKey }}</td>
-                <td>{{ count }}</td>
+                <td>{{ stats['hits'] }}</td>
+                <td>{{ stats['misses'] }}</td>
+                <td>{{ stats['reads'] }}</td>
+                <td>{{ stats['writes'] }}</td>
+                <td>{{ stats['total'] }}</td>
             </tr>
         {% endfor %}
         </tbody>

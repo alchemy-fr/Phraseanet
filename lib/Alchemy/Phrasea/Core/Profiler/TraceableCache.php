@@ -53,10 +53,25 @@ class TraceableCache implements Cache, PhraseaCache
         $this->summary['calls_by_type'][$type]++;
 
         if (! array_key_exists($id, $this->summary['calls_by_key'])) {
-            $this->summary['calls_by_key'][$id] = 0;
+            $this->summary['calls_by_key'][$id] = [
+                'total' => 0,
+                'reads'=> 0,
+                'writes' => 0,
+                'hits' => 0,
+                'misses' => 0
+            ];
         }
 
-        $this->summary['calls_by_key'][$id]++;
+        if (! array_key_exists($type, $this->summary['calls_by_key'][$id])) {
+            $this->summary['calls_by_key'][$id][$type] = 0;
+        }
+        $this->summary['calls_by_key'][$id]['hits'] += $hit ? 1 : 0;
+        $this->summary['calls_by_key'][$id]['misses'] += $hit ? 0 : 1;
+
+        $this->summary['calls_by_key'][$id]['reads'] += ($type == 'fetch' || $type == 'contains') ? 1 : 0;
+        $this->summary['calls_by_key'][$id]['writes'] += ($type == 'fetch' || $type == 'contains') ? 0 : 1;
+
+        $this->summary['calls_by_key'][$id]['total']++;
 
         $this->calls[] = [
             'type' => $type,
