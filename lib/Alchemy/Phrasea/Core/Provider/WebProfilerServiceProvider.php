@@ -64,13 +64,29 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             return new DoctrineDataCollector($db);
         });
 
+        $app['dbal.provider'] = $app->extend('dbal.provider', function ($provider, $app) {
+            return function (array $parameters) use ($provider, $app) {
+                $connection = $provider($parameters);
+
+                if (! $connection->getConfiguration()->getSQLLogger() && $app->offsetExists('data_collectors.doctrine')) {
+                    /** @var DoctrineDataCollector $collector */
+                    $collector = $app['data_collectors.doctrine'];
+                    $logger = new DebugStack();
+
+                    $connection->getConfiguration()->setSQLLogger($logger);
+                    $collector->addLogger($logger);
+                }
+
+                return $connection;
+            };
+        });
+
         $dataCollectors = $app['data_collectors'];
         $dataCollectors['db'] = $app->share(function ($app) {
             /** @var Connection $db */
             $db = $app['db'];
             /** @var DoctrineDataCollector $collector */
-            $collector = $app['
-            '];
+            $collector = $app['data_collectors.doctrine'];
 
             $loggerChain = new LoggerChain();
             $logger = new DebugStack();
