@@ -24,8 +24,12 @@ use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
+use Symfony\Component\Console\Input\ArgvInput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'prod');
 
 $version = new Version();
 $app = new CLI("
@@ -46,7 +50,7 @@ $app = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' SETUP', $version->getName() . ' ' . $version->getNumber());
+            . ' SETUP', $version->getName() . ' ' . $version->getNumber(), $env);
 
 $app->register(new DoctrineMigrationServiceProvider());
 

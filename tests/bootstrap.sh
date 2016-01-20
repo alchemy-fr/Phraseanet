@@ -32,7 +32,7 @@ if ! ./bin/developer system:uninstall > /dev/null 2>&1
 then
     rm -f config/configuration.yml config/configuration-compiled.php
 fi
-./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=en --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y $VERBOSITY
+./bin/setup system:install --env=test --email=test@phraseanet.com --password=test --db-user=root --db-template=en --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y $VERBOSITY
 case "$INSTALL_MODE" in
     update)
         ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs $VERBOSITY
@@ -41,6 +41,6 @@ case "$INSTALL_MODE" in
     install)
         ;;
 esac
-./bin/developer ini:setup-tests-dbs $VERBOSITY
-./bin/console searchengine:index:create $VERBOSITY
-./bin/developer phraseanet:regenerate-sqlite $VERBOSITY
+./bin/developer ini:setup-tests-dbs --env=test $VERBOSITY
+./bin/console searchengine:index:create --env=test $VERBOSITY
+./bin/developer phraseanet:regenerate-sqlite --env=test $VERBOSITY

@@ -69,10 +69,6 @@ class RegenerateSqliteDb extends Command
             $fs->remove($json);
         }
 
-        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
-            return $app['orm.ems'][$app['db.fixture.hash.key']];
-        });
-
         $em = $this->container['orm.em'];
 
         if ($fs->exists($em->getConnection()->getParams()['path'])) {

@@ -166,7 +166,7 @@ class DataboxesController extends Controller
             try {
                 $data_template = new \SplFileInfo($this->app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 /** @var Connection $connection */
-                $connection = $this->app['db.provider']([
+                $connection = $this->app['dbal.provider']([
                     'host'     => $hostname,
                     'port'     => $port,
                     'user'     => $userDb,

@@ -144,7 +144,7 @@ class Installer
     private function createAB(Connection $abConn)
     {
         // set default orm to the application box
-        $this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
+        //$this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
 
         $metadata = $this->app['orm.em']->getMetadataFactory()->getAllMetadata();
 

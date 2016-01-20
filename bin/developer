@@ -50,8 +50,12 @@ use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Symfony\Component\Console\Input\ArgvInput;
 
 require_once __DIR__ . '/../lib/autoload.php';
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'prod');
 
 $version = new Version();
 $cli = new CLI("
@@ -64,7 +68,7 @@ $cli = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
+            . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber(), $env);
 
 $cli->command(new TranslationDumper());
 

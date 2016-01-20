@@ -39,10 +39,12 @@ class appbox extends base
      * @var int
      */
     protected $id;
+
     /**
      * @var \databox[]
      */
     protected $databoxes;
+
     /**
      * @var CollectionService
      */
@@ -51,7 +53,7 @@ class appbox extends base
     public function __construct(Application $app)
     {
         $connectionConfig = $app['conf']->get(['main', 'database']);
-        $connection = $app['db.provider']($connectionConfig);
+        $connection = $app['dbal.provider']($connectionConfig);
 
         $connectionSettings = new ConnectionSettings(
             $connectionConfig['host'],

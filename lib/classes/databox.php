@@ -392,7 +392,7 @@ class databox extends base implements ThumbnailedElement
         }
 
         $connectionConfig = $connectionConfigs[$sbas_id];
-        $connection = $app['db.provider']($connectionConfig);
+        $connection = $app['dbal.provider']($connectionConfig);
 
         $connectionSettings = new ConnectionSettings(
             $connectionConfig['host'],
