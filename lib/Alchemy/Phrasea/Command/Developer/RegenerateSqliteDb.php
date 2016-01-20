@@ -44,6 +44,7 @@ use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,7 +55,7 @@ class RegenerateSqliteDb extends Command
 {
     public function __construct()
     {
-        parent::__construct('phraseanet:regenerate-sqlite');
+        parent::__construct('phraseanet:regenerate-test-db');
 
         $this->setDescription("Updates the sqlite 'db-ref.sqlite' database with current database definition.");
     }
@@ -69,14 +70,33 @@ class RegenerateSqliteDb extends Command
             $fs->remove($json);
         }
 
+        /** @var EntityManager $em */
         $em = $this->container['orm.em'];
+        $driverName = $em->getConnection()->getDriver()->getName();
 
-        if ($fs->exists($em->getConnection()->getParams()['path'])) {
-            $fs->remove($em->getConnection()->getParams()['path']);
+        if ($driverName == 'pdo_sqlite') {
+            if ($fs->exists($em->getConnection()->getParams()['path'])) {
+                $fs->remove($em->getConnection()->getParams()['path']);
+            }
+        }
+
+        if ($driverName == 'pdo_mysql') {
+            $em->getConnection()->exec('SET FOREIGN_KEY_CHECKS=0;');
         }
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
+        $allMetadata = $em->getMetadataFactory()->getAllMetadata();
+
+        foreach ($allMetadata as $metadata) {
+            /** @var ClassMetadata $metadata */
+            $em->getConnection()->exec("DROP TABLE IF EXISTS `{$metadata->getTableName()}`");
+        }
+
+        if ($driverName == 'pdo_mysql') {
+            $em->getConnection()->exec('SET FOREIGN_KEY_CHECKS=1;');
+        }
+
+        $schemaTool->createSchema($allMetadata);
 
         $fixtures = [];
 
@@ -174,6 +194,13 @@ class RegenerateSqliteDb extends Command
         $fixtures['webhook']['event'] = $DI['event_webhook_1']->getId();
 
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
+
+        $em->getConnection()->exec('DROP DATABASE IF EXISTS ' . $em->getConnection()->getDatabase() . '_orig;');
+        $em->getConnection()->exec('CREATE DATABASE ' . $em->getConnection()->getDatabase() . '_orig;');
+
+        shell_exec(
+            'mysqldump -u root -ptoor ' . $em->getConnection()->getDatabase() .
+            ' > ' . $em->getConnection()->getDatabase() . '_orig;');
 
         return 0;
     }

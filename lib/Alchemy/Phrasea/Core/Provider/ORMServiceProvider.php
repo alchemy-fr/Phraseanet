@@ -22,6 +22,7 @@ use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Logging\EchoSQLLogger;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -74,8 +75,16 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['dbal.provider'] = $app->protect(function (array $parameters) use ($app) {
             /** @var ConnectionPoolManager $connectionPool */
             $connectionPool = $app['dbal.connection_pool'];
+            $connection = $connectionPool->get($parameters);
 
-            return $connectionPool->get($parameters);
+            if ($app->getEnvironment() == PhraseaApplication::ENV_TEST && getenv('VERBOSE_SQL')) {
+                $logger = new EchoSQLLogger();
+                $logger->setDatabaseName($connection->getDatabase());
+
+                $connection->getConfiguration()->setSQLLogger($logger);
+            }
+
+            return $connection;
         });
     }
 
@@ -98,7 +107,7 @@ class ORMServiceProvider implements ServiceProviderInterface
     private function buildConnectionParameters(PhraseaApplication $app)
     {
         if ($app->getEnvironment() == PhraseaApplication::ENV_TEST) {
-            return $app['conf']->get(['main', 'database-test'], array());
+            //return $app['conf']->get(['main', 'database-test'], array());
         }
 
         return $app['conf']->get(['main', 'database'], array());

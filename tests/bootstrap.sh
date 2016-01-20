@@ -43,4 +43,4 @@ case "$INSTALL_MODE" in
 esac
 ./bin/developer ini:setup-tests-dbs --env=test $VERBOSITY
 ./bin/console searchengine:index:create --env=test $VERBOSITY
-./bin/developer phraseanet:regenerate-sqlite --env=test $VERBOSITY
+./bin/developer phraseanet:regenerate-test-db --env=test $VERBOSITY

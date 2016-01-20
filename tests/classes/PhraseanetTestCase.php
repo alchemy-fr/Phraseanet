@@ -35,6 +35,10 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     private static $recordsInitialized = false;
     private static $fixtureIds = [];
+    /**
+     * @var SqlResetLogger
+     */
+    private static $sqlResetUtil;
 
     public function createApplication()
     {
@@ -268,7 +272,24 @@ abstract class PhraseanetTestCase extends WebTestCase
         if (is_null($decodedFixtureIds)) {
             $decodedFixtureIds = json_decode(file_get_contents(sys_get_temp_dir().'/fixtures.json'), true);
         }
+
         self::$fixtureIds = $decodedFixtureIds;
+
+        /** @var \Doctrine\DBAL\Configuration $configuration */
+        $configuration = self::$DI['app']['orm.em']->getConnection()->getConfiguration();
+
+        self::$sqlResetUtil = new SqlResetLogger();
+
+        $logger = self::$sqlResetUtil;
+
+        if ($configuration->getSQLLogger()) {
+            $logger = new \Doctrine\DBAL\Logging\LoggerChain();
+
+            $logger->addLogger($configuration->getSQLLogger());
+            $logger->addLogger(self::$sqlResetUtil);
+        }
+
+        $configuration->setSQLLogger($logger);
     }
 
     /**
@@ -344,8 +365,6 @@ abstract class PhraseanetTestCase extends WebTestCase
             $app = new Application($environment);
         }
         $this->addAppCacheFlush($app);
-
-        $this->loadDb($app);
         $this->addMocks($app);
 
         return $app;
@@ -360,11 +379,34 @@ abstract class PhraseanetTestCase extends WebTestCase
         }));
     }
 
+    protected function requiresFreshDb()
+    {
+        return false;
+    }
+
     protected function loadDb($app)
     {
-        // copy db.ref.sqlite to db.sqlite to re-initialize db with empty values
-        $app['filesystem']->copy($app['db.fixture.info']['path'], $app['db.test.info']['path'], true);
+        if (! self::$sqlResetUtil->shouldReset()) {
+            return;
+        }
 
+        /** @var \Doctrine\ORM\EntityManager $orm */
+        $orm = $app['orm.em'];
+
+        if (! $orm->getConnection()) {
+            return;
+        }
+
+        echo ' ';
+
+        $orm->getConnection()->exec('DROP DATABASE IF EXISTS ' . $orm->getConnection()->getDatabase());
+        $orm->getConnection()->exec('CREATE DATABASE ' . $orm->getConnection()->getDatabase());
+
+        shell_exec(
+            'cat ' . $orm->getConnection()->getDatabase() . '_orig' .
+            ' | mysql -u root -ptoor ' . $orm->getConnection()->getDatabase() . ';');
+
+        $orm->getConnection()->exec('USE ' . $orm->getConnection()->getDatabase());
     }
 
     protected function addMocks(Application $app)
@@ -391,11 +433,6 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         $app['phraseanet.SE.subscriber'] = new PhraseanetSeTestSubscriber();
 
-        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
-
-            return $app['orm.ems'][$app['db.test.hash.key']];
-        });
-
         $app['browser'] = $app->share($app->extend('browser', function ($browser) {
             $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
 
@@ -415,6 +452,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function tearDown()
     {
+        $this->loadDb(self::$DI['app']);
+
         ACLProvider::purge();
         \collection::purge();
         \databox::purge();

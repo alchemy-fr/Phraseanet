@@ -1186,8 +1186,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $connection = $collection->get_databox()->get_connection();
 
-        $sql = 'INSERT INTO record (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)'
-            .' VALUES (:coll_id, NULL, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid , :originalname, :mime)';
+        $sql = 'INSERT INTO record (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime, xml)'
+            .' VALUES (:coll_id, NULL, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid , :originalname, :mime, \'\')';
 
         $stmt = $connection->prepare($sql);
 
@@ -1239,8 +1239,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $databox = $file->getCollection()->get_databox();
 
         $sql = "INSERT INTO record"
-            . " (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)"
-            . " VALUES (:coll_id, null, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid, :originalname, :mime)";
+            . " (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime, xml)"
+            . " VALUES (:coll_id, null, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid, :originalname, :mime, '')";
 
         $stmt = $databox->get_connection()->prepare($sql);
 
