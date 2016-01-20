@@ -37,8 +37,8 @@
         <div class="PNB10">
             <div class="PNB" style="height:25px; bottom:auto;">
                 <p>
-                    {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
-                    {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
+                    {% set length = ist.getEntries().count() %}
+                    <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}</span>
                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                         <button class="EditToggle btn btn-inverse">{{ 'Edit' | trans }}</button>
                     {% endif %}

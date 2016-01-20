@@ -11,7 +11,6 @@
         </span>
         <ul class="lists">
           {% for list in lists %}
-            {% set length = '<span class="counter">' ~ list.getEntries().count() ~ '</span>' %}
             <li class="list" style="padding:2px;">
               <a href="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}" class="list_link">
                 {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
@@ -20,7 +19,7 @@
                   <img src="/assets/common/images/icons/SHARE16.png" />
                 {% endif %}
                 {{ list.getName() }}
-                ({{ length }})
+                <span class="counter">({{ list.getEntries().count() }})</span>
               </a>
             </li>
           {% endfor %}
