@@ -50,19 +50,21 @@
             <th scope="row">Hits</th>
             <td>{{ collector.initialProfile.hits }}</td>
             <td>{{ collector.currentProfile.hits }}</td>
-            <td>{{ collector.summary.hits }}</td>
+            <td>{{ collector.currentProfile.hits - collector.initialProfile.hits }}</td>
         </tr>
         <tr>
             <th scope="row">Misses</th>
             <td>{{ collector.initialProfile.misses }}</td>
             <td>{{ collector.currentProfile.misses }}</td>
-            <td>{{ collector.summary.misses }}</td>
+            <td>{{ collector.currentProfile.misses - collector.initialProfile.misses }}</td>
         </tr>
         <tr>
             <th scope="row">Calls</th>
-            <td>{{ collector.initialProfile.misses + collector.initialProfile.hits }}</td>
-            <td>{{ collector.currentProfile.misses + collector.currentProfile.hits }}</td>
-            <td>{{ collector.summary.calls }}</td>
+            {% set initialCallCount = collector.initialProfile.misses + collector.initialProfile.hits %}
+            {% set finalCallCount = collector.currentProfile.misses + collector.currentProfile.hits %}
+            <td>{{ initialCallCount }}</td>
+            <td>{{ finalCallCount}}</td>
+            <td>{{ finalCallCount - initialCallCount }}</td>
         </tr>
         <tr>
             <th scope="row">Uptime</th>
