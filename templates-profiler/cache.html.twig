@@ -159,9 +159,11 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>
-                    {% if call['type'] != 'fetch' %}<strong>{% endif %}
+                    {% if call['type'] != 'fetch' %}
+                    <strong>{{ call['type'] }}</strong>
+                    {% else %}
                     {{ call['type'] }}
-                    {% if call['type'] != 'fetch' %}</strong>{% endif %}
+                    {% endif %}
                 </td>
                 <td>{{ call['key'] }}</td>
                 <td>{% if call['hit'] %}HIT{% else %}<strong>MISS</strong>{% endif %}</td>
