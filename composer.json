@@ -44,7 +44,6 @@
         "beberlei/assert": "^2.3",
         "dailymotion/sdk": "~1.5",
         "data-uri/data-uri": "~0.1.0",
-        "dflydev/doctrine-orm-service-provider": "~1.0",
         "doctrine/dbal": "^2.4.0",
         "doctrine/migrations": "^1.0.0",
         "doctrine/orm": "^2.4.0",
