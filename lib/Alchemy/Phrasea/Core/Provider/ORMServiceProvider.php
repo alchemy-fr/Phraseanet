@@ -15,13 +15,13 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Connection\ConnectionPoolManager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Types;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -35,12 +35,12 @@ class ORMServiceProvider implements ServiceProviderInterface
 {
 
     private static $customTypes = [
-        'blob' => '\Alchemy\Phrasea\Model\Types\Blob',
-        'enum' => '\Alchemy\Phrasea\Model\Types\Enum',
-        'longblob' => '\Alchemy\Phrasea\Model\Types\LongBlob',
-        'varbinary' => '\Alchemy\Phrasea\Model\Types\VarBinary',
-        'binary' => '\Alchemy\Phrasea\Model\Types\Binary',
-        'binary_string' => '\Alchemy\Phrasea\Model\Types\BinaryString',
+        'blob' => Types\Blob::class,
+        'enum' => Types\Enum::class,
+        'longblob' => Types\LongBlob::class,
+        'varbinary' => Types\VarBinary::class,
+        'binary' => Types\Binary::class,
+        'binary_string' => Types\BinaryString::class
     ];
 
     public function register(Application $app)
@@ -213,6 +213,6 @@ class ORMServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        // @todo Bootstrap all databox entity managers
+        // NO-OP
     }
 }
