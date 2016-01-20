@@ -40,7 +40,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             })
         );
 
-        if (class_exists('Symfony\Bundle\FrameworkBundle\DataCollector\AjaxDataCollector')) {
+        if (class_exists(AjaxDataCollector::class)) {
             $app['data_collector.templates'] = $app->share($app->extend('data_collector.templates', function (array $templates) {
                 $templates[] = array('ajax', '@WebProfiler/Collector/ajax.html.twig');
 
@@ -77,8 +77,6 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
 
         $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
             $collectors['db'] = $app->share(function ($app) {
-                /** @var Connection $db */
-                $db = $app['db'];
                 /** @var DoctrineDataCollector $collector */
                 $collector = $app['data_collectors.doctrine'];
 
@@ -88,6 +86,8 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
                 $loggerChain->addLogger($logger);
                 $loggerChain->addLogger(new DbalLogger($app['logger'], $app['stopwatch']));
 
+                /** @var Connection $db */
+                $db = $app['db'];
                 $db->getConfiguration()->setSQLLogger($loggerChain);
 
                 $collector->addLogger($logger);
@@ -114,7 +114,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
                 $app['root.path'] . '/vendor/sorien/silex-dbal-profiler/src/Sorien/Resources/views',
                 'DoctrineBundle'
             );
-            $loader->addPath($app['root.path'] . '/templates/web/debug', 'PhraseaProfiler');
+            $loader->addPath($app['root.path'] . '/templates-profiler/', 'PhraseaProfiler');
             return $loader;
         }));
     }
