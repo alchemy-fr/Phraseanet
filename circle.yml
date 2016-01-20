@@ -36,12 +36,12 @@ database:
   override:
     - mysql -u ubuntu -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
   post:
-    - "./bin/developer system:uninstall -v"
-    - "./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=ubuntu --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
-    - "./bin/developer ini:setup-tests-dbs -v"
-    - "./bin/console searchengine:index:create -v"
-    - "./bin/developer phraseanet:regenerate-sqlite -v"
-    - "./bin/developer phraseanet:generate-js-fixtures -v"
+    - "./bin/developer --env=test system:uninstall -v"
+    - "./bin/setup system:install --env=test -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=ubuntu --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
+    - "./bin/developer ini:setup-tests-dbs --env=test -v"
+    - "./bin/console searchengine:index:create --env=test -v"
+    - "./bin/developer phraseanet:regenerate-sqlite --env=test -v"
+    - "./bin/developer phraseanet:generate-js-fixtures --env=test -v"
 
 test:
   override:
