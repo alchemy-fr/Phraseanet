@@ -66,6 +66,15 @@ class CacheStatisticsSubscriber implements EventSubscriberInterface
         return [];
     }
 
+    public function getTimeSpent()
+    {
+        if ($this->cache instanceof TraceableCache) {
+            return $this->cache->getTotalTime();
+        }
+
+        return 0;
+    }
+
     public function getCacheType()
     {
         return $this->cacheType;
