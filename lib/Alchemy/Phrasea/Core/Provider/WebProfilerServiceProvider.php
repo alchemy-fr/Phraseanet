@@ -75,7 +75,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             return new CacheStatisticsSubscriber($app['cache']);
         });
 
-        $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
+        $app['data_collectors'] = $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
             $collectors['db'] = $app->share(function ($app) {
                 /** @var DoctrineDataCollector $collector */
                 $collector = $app['data_collectors.doctrine'];

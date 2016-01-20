@@ -80,6 +80,69 @@
         </tr>
     </table>
 
+    <h3>Hit miss summary</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Call stat</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Hits</th>
+                <td>{{ collector.callSummary['hits'] }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Misses</th>
+                <td>{{ collector.callSummary['misses'] }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Total</th>
+                <td>{{ collector.callSummary['calls'] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Calls by type summary</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Operation</th>
+            <th>Count</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for callType, count in collector.callSummary['calls_by_type'] %}
+            <tr>
+                <td>{{ callType }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Calls by key summary</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Operation</th>
+            <th>Count</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for callKey, count in collector.callSummary['calls_by_key'] %}
+            <tr>
+                <td>{{ callKey }}</td>
+                <td>{{ count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
     <h3>Call list</h3>
 
     <table>

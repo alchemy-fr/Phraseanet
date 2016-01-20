@@ -42,6 +42,21 @@ class CacheStatisticsSubscriber implements EventSubscriberInterface
         return '[ root ]';
     }
 
+    public function getCallSummary()
+    {
+        if ($this->cache instanceof TraceableCache) {
+            return $this->cache->getSummary();
+        }
+
+        return [
+            'calls' => 0,
+            'hits' => 0,
+            'misses' => 0,
+            'calls_by_type' => [],
+            'calls_by_key' => []
+        ];
+    }
+
     public function getCalls()
     {
         if ($this->cache instanceof TraceableCache) {

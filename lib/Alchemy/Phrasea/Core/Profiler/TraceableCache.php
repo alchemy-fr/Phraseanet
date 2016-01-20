@@ -24,7 +24,15 @@ class TraceableCache implements Cache, PhraseaCache
      */
     private $calls = [];
 
-    /**
+    private $summary = [
+        'calls' => 0,
+        'hits' => 0,
+        'misses' => 0,
+        'calls_by_type' => [],
+        'calls_by_key' => [],
+    ];
+
+    /*s*
      * @param PhraseaCache $cache
      */
     public function __construct(PhraseaCache $cache)
@@ -34,12 +42,29 @@ class TraceableCache implements Cache, PhraseaCache
 
     private function collect($type, $id, $hit = true, $result = null)
     {
+        $this->summary['calls']++;
+        $this->summary['hits'] += $hit ? 1 : 0;
+        $this->summary['misses'] += $hit ? 0 : 1;
+
+        if (! array_key_exists($type, $this->summary['calls_by_type'])) {
+            $this->summary['calls_by_type'][$type] = 0;
+        }
+
+        $this->summary['calls_by_type'][$type]++;
+
+        if (! array_key_exists($id, $this->summary['calls_by_key'])) {
+            $this->summary['calls_by_key'][$id] = 0;
+        }
+
+        $this->summary['calls_by_key'][$id]++;
+
         $this->calls[] = [
             'type' => $type,
             'key'  => $id,
             'result' => $result,
             'hit'  => (bool) $hit
         ];
+
     }
 
     /**
@@ -56,6 +81,14 @@ class TraceableCache implements Cache, PhraseaCache
     public function getCalls()
     {
         return $this->calls;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSummary()
+    {
+        return $this->summary;
     }
 
     /**

@@ -36,6 +36,11 @@ class CacheDataCollector implements DataCollectorInterface
     private $calls = [];
 
     /**
+     * @var array
+     */
+    private $callSummary;
+
+    /**
      * @param CacheStatisticsSubscriber $cacheStatisticsSubscriber
      */
     public function __construct(CacheStatisticsSubscriber $cacheStatisticsSubscriber)
@@ -73,6 +78,7 @@ class CacheDataCollector implements DataCollectorInterface
         );
 
         $this->calls = $this->statsListener->getCalls();
+        $this->callSummary = $this->statsListener->getCallSummary();
     }
 
     /**
@@ -94,6 +100,11 @@ class CacheDataCollector implements DataCollectorInterface
     public function getCalls()
     {
         return $this->calls;
+    }
+
+    public function getCallSummary()
+    {
+        return $this->callSummary;
     }
 
     /**
