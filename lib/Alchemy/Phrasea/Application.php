@@ -993,27 +993,7 @@ class Application extends SilexApplication
     private function setupDBAL()
     {
         $this['dbs.config'] = $this->share($this->extend('dbs.config', function ($configs, $app) {
-            if ($app->getEnvironment() !== self::ENV_DEV) {
-                return $configs;
-            }
-
-            foreach($configs->keys() as $service) {
-                $app['dbal.config.register.loggers']($configs[$service]);
-            }
-
             return $configs;
-        }));
-
-        $this['dbs.event_manager'] = $this->share($this->extend('dbs.event_manager', function ($eventManagers, $app) {
-            foreach ($eventManagers->keys() as $name) {
-                /** @var EventManager $eventManager */
-                $eventManager = $eventManagers[$name];
-                $app['dbal.evm.register.listeners']($eventManager);
-
-                $eventManager->addEventListener(Events::postConnect, $this);
-            }
-
-            return $eventManagers;
         }));
     }
 

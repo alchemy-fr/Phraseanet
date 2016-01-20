@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Core\Profiler;
+namespace Alchemy\Phrasea\Core\Profiler\Cache;
 
 use Alchemy\Phrasea\Cache\Cache as PhraseaCache;
 use Alchemy\Phrasea\Cache\Exception;

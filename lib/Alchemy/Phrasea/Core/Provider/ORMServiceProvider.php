@@ -83,15 +83,8 @@ class ORMServiceProvider implements ServiceProviderInterface
 
     private function buildConnectionParameters(PhraseaApplication $app)
     {
-        var_dump($app->getEnvironment());
-
         if ($app->getEnvironment() == PhraseaApplication::ENV_TEST) {
-            //return $app['conf']->get(['main', 'database-test'], array());
-            return [
-                'driver'  => 'pdo_sqlite',
-                'path'    => sprintf('%s/%s', $app['tmp.path'], 'db-ref.sqlite'),
-                'charset' => 'UTF8',
-            ];
+            return $app['conf']->get(['main', 'database-test'], array());
         }
 
         return $app['conf']->get(['main', 'database'], array());
