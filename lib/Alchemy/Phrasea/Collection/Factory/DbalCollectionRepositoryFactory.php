@@ -48,11 +48,11 @@ class DbalCollectionRepositoryFactory implements CollectionRepositoryFactory
      */
     public function createRepositoryForDatabox($databoxId)
     {
-        $connection = $this->databoxConnectionProvider->getConnection($databoxId);
+        $databoxConnection = $this->databoxConnectionProvider->getConnection($databoxId);
 
         return new DbalCollectionRepository(
             $databoxId,
-            $connection,
+            $databoxConnection,
             $this->collectionReferenceRepository,
             $this->collectionFactory
         );
