@@ -31,6 +31,11 @@ class CacheDataCollector implements DataCollectorInterface
     private $summary;
 
     /**
+     * @var array
+     */
+    private $calls = [];
+
+    /**
      * @param CacheStatisticsSubscriber $cacheStatisticsSubscriber
      */
     public function __construct(CacheStatisticsSubscriber $cacheStatisticsSubscriber)
@@ -62,9 +67,12 @@ class CacheDataCollector implements DataCollectorInterface
 
         $this->summary = new CacheProfileSummary(
             $this->statsListener->getCacheType(),
+            $this->statsListener->getCacheNamespace(),
             $this->startProfile,
             $this->endProfile
         );
+
+        $this->calls = $this->statsListener->getCalls();
     }
 
     /**
@@ -81,6 +89,11 @@ class CacheDataCollector implements DataCollectorInterface
     public function getCurrentProfile()
     {
         return $this->endProfile;
+    }
+
+    public function getCalls()
+    {
+        return $this->calls;
     }
 
     /**

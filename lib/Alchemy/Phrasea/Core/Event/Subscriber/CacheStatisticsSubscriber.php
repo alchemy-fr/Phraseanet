@@ -2,7 +2,8 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Doctrine\Common\Cache\Cache;
+use Alchemy\Phrasea\Cache\Cache;
+use Alchemy\Phrasea\Core\Profiler\TraceableCache;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -29,7 +30,25 @@ class CacheStatisticsSubscriber implements EventSubscriberInterface
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
-        $this->cacheType = get_class($cache);
+        $this->cacheType = $cache->getName();
+    }
+
+    public function getCacheNamespace()
+    {
+        if ($this->cache instanceof TraceableCache) {
+            return $this->cache->getNamespace();
+        }
+
+        return '[ root ]';
+    }
+
+    public function getCalls()
+    {
+        if ($this->cache instanceof TraceableCache) {
+            return $this->cache->getCalls();
+        }
+
+        return [];
     }
 
     public function getCacheType()

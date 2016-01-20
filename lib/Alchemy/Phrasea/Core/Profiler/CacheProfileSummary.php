@@ -10,6 +10,11 @@ class CacheProfileSummary
     private $cacheType;
 
     /**
+     * @var string
+     */
+    private $cacheNamespace;
+
+    /**
      * @var CacheProfile
      */
     private $initialProfile;
@@ -21,19 +26,32 @@ class CacheProfileSummary
 
     /**
      * @param string $cacheType
+     * @param string $namespace
      * @param CacheProfile $initialProfile
      * @param CacheProfile $finalProfile
      */
-    public function __construct($cacheType, CacheProfile $initialProfile, CacheProfile $finalProfile)
+    public function __construct($cacheType, $namespace, CacheProfile $initialProfile, CacheProfile $finalProfile)
     {
         $this->cacheType = (string) $cacheType;
+        $this->cacheNamespace = (string) $namespace;
         $this->initialProfile = $initialProfile;
         $this->finalProfile = $finalProfile;
     }
 
+    /**
+     * @return string
+     */
     public function getCacheType()
     {
         return $this->cacheType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->cacheNamespace;
     }
 
     /**

@@ -27,10 +27,16 @@
 {% block panel %}
     <h2>Cache: {{ collector.summary.cacheType }}</h2>
 
+{% if collector.summary.namespace %}
+    <p><strong>Namespace</strong>: {{ collector.summary.namespace }}</p>
+{% endif %}
+
+    <h3>Server statistics</h3>
+
     <table>
         <thead>
             <tr>
-                <th></th>
+                <th>Server stat</th>
                 <th>Initial value</th>
                 <th>Final value</th>
                 <th>Delta</th>
@@ -72,5 +78,30 @@
             <td>{{ collector.currentProfile.memAvailable }}</td>
             <td>{{ collector.summary.memAvailableDelta }}</td>
         </tr>
+    </table>
+
+    <h3>Call list</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Call type</th>
+                <th>Key</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for call in collector.calls %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    {% if call['type'] != 'fetch' %}<strong>{% endif %}
+                    {{ call['type'] }}
+                    {% if call['type'] != 'fetch' %}</strong>{% endif %}
+                </td>
+                <td>{{ call['key'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
 {% endblock %}
