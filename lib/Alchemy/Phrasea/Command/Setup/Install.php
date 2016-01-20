@@ -164,12 +164,6 @@ class Install extends Command
             $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
         }
 
-        // add dbs.option & orm.options services to use orm.em later
-        if ($abConn && $info) {
-            //$this->container['dbs.options'] = array_merge($this->container['db.options.from_info']($info), $this->container['dbs.options']);
-            //$this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
-        }
-
         return $abConn;
     }
 
@@ -220,12 +214,6 @@ class Install extends Command
             $dbConn->connect();
             $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
             $template = $input->getOption('db-template') ? : 'en';
-        }
-
-        // add dbs.option & orm.options services to use orm.em later
-        if ($dbConn && $info) {
-            //$this->container['dbs.options'] = array_merge($this->container['db.options.from_info']($info), $this->container['dbs.options']);
-            //$this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
         return [$dbConn, $template];
