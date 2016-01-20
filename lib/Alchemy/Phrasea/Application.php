@@ -403,8 +403,6 @@ class Application extends SilexApplication
             $this->mount('/_profiler', $p);
 
             if ($this['phraseanet.configuration-tester']->isInstalled()) {
-                $this->register(new DoctrineProfilerServiceProvider());
-
                 $this['db'] = $this->share(function (self $app) {
                     return $app['orm.em']->getConnection();
                 });

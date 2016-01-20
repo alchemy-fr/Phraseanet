@@ -2,8 +2,13 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\Logging\LoggerChain;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Sorien\DataCollector\DoctrineDataCollector;
+use Sorien\Logger\DbalLogger;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AjaxDataCollector;
 use Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener;
 
@@ -46,6 +51,43 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
                 return $collectors;
             }));
         }
+
+        $app['data_collectors.doctrine'] = $app->share(function ($app) {
+            /** @var Connection $db */
+            $db = $app['db'];
+            return new DoctrineDataCollector($db);
+        });
+
+        $dataCollectors = $app['data_collectors'];
+        $dataCollectors['db'] = $app->share(function ($app) {
+            /** @var Connection $db */
+            $db = $app['db'];
+            /** @var DoctrineDataCollector $collector */
+            $collector = $app['data_collectors.doctrine'];
+
+            $loggerChain = new LoggerChain();
+            $logger = new DebugStack();
+
+            $loggerChain->addLogger($logger);
+            $loggerChain->addLogger(new DbalLogger($app['logger'], $app['stopwatch']));
+
+            $db->getConfiguration()->setSQLLogger($loggerChain);
+
+            $collector->addLogger($logger);
+
+            return $collector;
+        });
+
+        $app['data_collectors'] = $dataCollectors;
+
+        $dataCollectorTemplates = $app['data_collector.templates'];
+        $dataCollectorTemplates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
+        $app['data_collector.templates'] = $dataCollectorTemplates;
+
+        $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader, $app) {
+            $loader->addPath($app['root.path'].'/vendor/sorien/silex-dbal-profiler/src/Sorien/Resources/views', 'DoctrineBundle');
+            return $loader;
+        }));
     }
 
     /**
