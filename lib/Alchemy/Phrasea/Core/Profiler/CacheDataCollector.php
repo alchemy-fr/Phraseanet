@@ -57,8 +57,8 @@ class CacheDataCollector implements DataCollectorInterface
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $this->startProfile = new CacheProfile($this->statsListener->getInitialStats());
-        $this->endProfile = new CacheProfile($this->statsListener->getCurrentStats());
+        $this->startProfile = new CacheProfile($this->statsListener->getInitialStats() ?: []);
+        $this->endProfile = new CacheProfile($this->statsListener->getCurrentStats() ?: []);
 
         $this->summary = new CacheProfileSummary(
             $this->statsListener->getCacheType(),

@@ -45,10 +45,6 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
                 return $templates;
             }));
 
-            $app['data_collector.cache_subscriber'] = $app->share(function ($app) {
-                return new CacheStatisticsSubscriber($app['cache']);
-            });
-
             $app['data_collectors'] = $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
                 $collectors['ajax'] = function () {
                     return new AjaxDataCollector();
@@ -64,53 +60,44 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             return new DoctrineDataCollector($db);
         });
 
-        $app['dbal.provider'] = $app->extend('dbal.provider', function ($provider, $app) {
-            return function (array $parameters) use ($provider, $app) {
-                $connection = $provider($parameters);
 
-                if (! $connection->getConfiguration()->getSQLLogger() && $app->offsetExists('data_collectors.doctrine')) {
-                    /** @var DoctrineDataCollector $collector */
-                    $collector = $app['data_collectors.doctrine'];
-                    $logger = new DebugStack();
-
-                    $connection->getConfiguration()->setSQLLogger($logger);
-                    $collector->addLogger($logger);
-                }
-
-                return $connection;
-            };
+        $app['data_collector.cache_subscriber'] = $app->share(function ($app) {
+            return new CacheStatisticsSubscriber($app['cache']);
         });
 
-        $dataCollectors = $app['data_collectors'];
-        $dataCollectors['db'] = $app->share(function ($app) {
-            /** @var Connection $db */
-            $db = $app['db'];
-            /** @var DoctrineDataCollector $collector */
-            $collector = $app['data_collectors.doctrine'];
+        $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
+            $collectors['db'] = $app->share(function ($app) {
+                /** @var Connection $db */
+                $db = $app['db'];
+                /** @var DoctrineDataCollector $collector */
+                $collector = $app['data_collectors.doctrine'];
 
-            $loggerChain = new LoggerChain();
-            $logger = new DebugStack();
+                $loggerChain = new LoggerChain();
+                $logger = new DebugStack();
 
-            $loggerChain->addLogger($logger);
-            $loggerChain->addLogger(new DbalLogger($app['logger'], $app['stopwatch']));
+                $loggerChain->addLogger($logger);
+                $loggerChain->addLogger(new DbalLogger($app['logger'], $app['stopwatch']));
 
-            $db->getConfiguration()->setSQLLogger($loggerChain);
+                $db->getConfiguration()->setSQLLogger($loggerChain);
 
-            $collector->addLogger($logger);
+                $collector->addLogger($logger);
 
-            return $collector;
-        });
+                return $collector;
+            });
 
-        $dataCollectors['cache'] = $app->share(function ($app) {
-            return new CacheDataCollector($app['data_collector.cache_subscriber']);
-        });
+            $collectors['cache'] = $app->share(function ($app) {
+                return new CacheDataCollector($app['data_collector.cache_subscriber']);
+            });
 
-        $app['data_collectors'] = $dataCollectors;
+            return $collectors;
+        }));
 
-        $dataCollectorTemplates = $app['data_collector.templates'];
-        $dataCollectorTemplates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
-        $dataCollectorTemplates[] = array('cache', '@PhraseaProfiler/cache.html.twig');
-        $app['data_collector.templates'] = $dataCollectorTemplates;
+        $app['data_collector.templates'] = $app->share($app->extend('data_collector.templates', function (array $templates) {
+            $templates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
+            $templates[] = array('cache', '@PhraseaProfiler/cache.html.twig');
+
+            return $templates;
+        }));
 
         $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader, $app) {
             $loader->addPath(
