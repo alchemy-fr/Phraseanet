@@ -13,7 +13,7 @@
     {% endset %}
     {% set icon %}
     <img width="20" height="28" alt="Cache" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQRJREFUeNpi/P//PwM1ARMDlcGogZQDlpMnT7pxc3NbA9nhQKxOpL5rQLwJiPeBsI6Ozl+YBOOOHTv+AOllQNwtLS39F2owKYZ/gRq8G4i3ggxEToggWzvc3d2Pk+1lNL4fFAs6ODi8JzdS7mMRVyDVoAMHDsANdAPiOCC+jCQvQKqBQB/BDbwBxK5AHA3E/kB8nKJkA8TMQBwLxaBIKQbi70AvTADSBiSadwFXpCikpKQU8PDwkGTaly9fHFigkaKIJid4584dkiMFFI6jkTJII0WVmpHCAixZQEXWYhDeuXMnyLsVlEQKI45qFBQZ8eRECi4DBaAlDqle/8A48ip6gAADANdQY88Uc0oGAAAAAElFTkSuQmCC"/>
-    <span class="sf-toolbar-status{% if 75 > collector.summary.hitRatio %} sf-toolbar-status-green{% endif %}">{{ '%0.2f'|format(collector.summary.hitRatio * 100) }} %</span> cache hit ratio
+    <span class="sf-toolbar-status{% if 75 > collector.summary.hitRatio %} sf-toolbar-status-green{% endif %}">{{ '%0.2f'|format(collector.summary.hitRatio * 100) }} %</span> in {{ collector.totalTime }} ms
     {% endset %}
     {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
 {% endblock %}
@@ -21,6 +21,10 @@
 {% block menu %}
     <span class="label">
         <strong>Cache</strong>
+        <span class="count">
+            <span>{{ collector.summary.hits }} / {{ collector.summary.calls }}</span>
+            <span>{{ '%0.0f'|format(collector.totalTime) }} ms</span>
+        </span>
     </span>
 {% endblock %}
 
@@ -46,19 +50,21 @@
             <th scope="row">Hits</th>
             <td>{{ collector.initialProfile.hits }}</td>
             <td>{{ collector.currentProfile.hits }}</td>
-            <td>{{ collector.summary.hits }}</td>
+            <td>{{ collector.currentProfile.hits - collector.initialProfile.hits }}</td>
         </tr>
         <tr>
             <th scope="row">Misses</th>
             <td>{{ collector.initialProfile.misses }}</td>
             <td>{{ collector.currentProfile.misses }}</td>
-            <td>{{ collector.summary.misses }}</td>
+            <td>{{ collector.currentProfile.misses - collector.initialProfile.misses }}</td>
         </tr>
         <tr>
             <th scope="row">Calls</th>
-            <td>{{ collector.initialProfile.misses + collector.initialProfile.hits }}</td>
-            <td>{{ collector.currentProfile.misses + collector.currentProfile.hits }}</td>
-            <td>{{ collector.summary.calls }}</td>
+            {% set initialCallCount = collector.initialProfile.misses + collector.initialProfile.hits %}
+            {% set finalCallCount = collector.currentProfile.misses + collector.currentProfile.hits %}
+            <td>{{ initialCallCount }}</td>
+            <td>{{ finalCallCount}}</td>
+            <td>{{ finalCallCount - initialCallCount }}</td>
         </tr>
         <tr>
             <th scope="row">Uptime</th>

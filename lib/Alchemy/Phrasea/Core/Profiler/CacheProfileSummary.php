@@ -25,17 +25,29 @@ class CacheProfileSummary
     private $finalProfile;
 
     /**
+     * @var array
+     */
+    private $callSummaryData;
+
+    /**
      * @param string $cacheType
      * @param string $namespace
      * @param CacheProfile $initialProfile
      * @param CacheProfile $finalProfile
+     * @param array $callSummaryData
      */
-    public function __construct($cacheType, $namespace, CacheProfile $initialProfile, CacheProfile $finalProfile)
-    {
-        $this->cacheType = (string) $cacheType;
-        $this->cacheNamespace = (string) $namespace;
+    public function __construct(
+        $cacheType,
+        $namespace,
+        CacheProfile $initialProfile,
+        CacheProfile $finalProfile,
+        array $callSummaryData
+    ) {
+        $this->cacheType = (string)$cacheType;
+        $this->cacheNamespace = (string)$namespace;
         $this->initialProfile = $initialProfile;
         $this->finalProfile = $finalProfile;
+        $this->callSummaryData = $callSummaryData;
     }
 
     /**
@@ -59,7 +71,11 @@ class CacheProfileSummary
      */
     public function getHits()
     {
-        return (int) max(0, $this->finalProfile->getHits() - $this->initialProfile->getHits());
+        if (isset($this->callSummaryData['hits'])) {
+            return (int) $this->callSummaryData['hits'];
+        }
+
+        return (int)max(0, $this->finalProfile->getHits() - $this->initialProfile->getHits());
     }
 
     /**
@@ -67,7 +83,11 @@ class CacheProfileSummary
      */
     public function getMisses()
     {
-        return (int) max(0, $this->finalProfile->getMisses() - $this->initialProfile->getMisses());
+        if (isset($this->callSummaryData['misses'])) {
+            return (int) $this->callSummaryData['misses'];
+        }
+
+        return (int)max(0, $this->finalProfile->getMisses() - $this->initialProfile->getMisses());
     }
 
     /**
@@ -75,6 +95,10 @@ class CacheProfileSummary
      */
     public function getCalls()
     {
+        if (isset($this->callSummaryData['calls'])) {
+            return (int) $this->callSummaryData['calls'];
+        }
+
         return $this->getHits() + $this->getMisses();
     }
 
@@ -86,7 +110,7 @@ class CacheProfileSummary
         $calls = $this->getCalls();
 
         if ($calls == 0) {
-            return (float) 0;
+            return (float)0;
         }
 
         return $this->getHits() / $calls;
@@ -100,7 +124,7 @@ class CacheProfileSummary
         $calls = $this->getCalls();
 
         if ($calls == 0) {
-            return (float) 0;
+            return (float)0;
         }
 
         return $this->getMisses() / $calls;

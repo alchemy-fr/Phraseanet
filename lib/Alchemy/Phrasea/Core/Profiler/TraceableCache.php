@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Core\Profiler;
 use Alchemy\Phrasea\Cache\Cache as PhraseaCache;
 use Alchemy\Phrasea\Cache\Exception;
 use Doctrine\Common\Cache\Cache;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class TraceableCache implements Cache, PhraseaCache
 {
@@ -32,12 +33,15 @@ class TraceableCache implements Cache, PhraseaCache
         'calls_by_key' => [],
     ];
 
+    private $stopWatch;
+
     /*s*
      * @param PhraseaCache $cache
      */
-    public function __construct(PhraseaCache $cache)
+    public function __construct(PhraseaCache $cache, Stopwatch $stopwatch = null)
     {
         $this->cache = $cache;
+        $this->stopWatch = $stopwatch ?: new Stopwatch();
     }
 
     private function collect($type, $id, $hit = true, $result = null)
@@ -91,6 +95,14 @@ class TraceableCache implements Cache, PhraseaCache
     }
 
     /**
+     * @return int
+     */
+    public function getTotalTime()
+    {
+        return $this->stopWatch->getEvent('cache')->getDuration();
+    }
+
+    /**
      * @return array
      */
     public function getCalls()
@@ -116,7 +128,9 @@ class TraceableCache implements Cache, PhraseaCache
     public function fetch($id)
     {
         try {
+            $this->stopWatch->start('cache');
             $value = $this->cache->fetch($id);
+            $this->stopWatch->stop('cache');
         }
         catch (\Exception $ex) {
             $value = false;
@@ -138,7 +152,11 @@ class TraceableCache implements Cache, PhraseaCache
     {
         $this->collect('contains', $id);
 
-        return $this->cache->contains($id);
+        $this->stopWatch->start('cache');
+        $result = $this->cache->contains($id);
+        $this->stopWatch->stop('cache');
+
+        return $result;
     }
 
     /**
@@ -158,7 +176,11 @@ class TraceableCache implements Cache, PhraseaCache
     {
         $this->collect('save', $id);
 
-        return $this->cache->save($id, $data, $lifeTime);
+        $this->stopWatch->start('cache');
+        $result = $this->cache->save($id, $data, $lifeTime);
+        $this->stopWatch->stop('cache');
+
+        return $result;
     }
 
     /**
@@ -173,7 +195,11 @@ class TraceableCache implements Cache, PhraseaCache
     {
         $this->collect('delete', $id);
 
-        return $this->cache->delete($id);
+        $this->stopWatch->start('cache');
+        $result = $this->cache->delete($id);
+        $this->stopWatch->stop('cache');
+
+        return $result;
     }
 
     /**
@@ -202,7 +228,11 @@ class TraceableCache implements Cache, PhraseaCache
      */
     public function getStats()
     {
-        return $this->cache->getStats();
+        $this->stopWatch->start('cache');
+        $result = $this->cache->getStats();
+        $this->stopWatch->stop('cache');
+
+        return $result;
     }
 
     /**
@@ -222,7 +252,9 @@ class TraceableCache implements Cache, PhraseaCache
     public function flushAll()
     {
         $this->collect('flush-all', null);
+        $this->stopWatch->start('cache');
         $this->cache->flushAll();
+        $this->stopWatch->stop('cache');
     }
 
     /**
