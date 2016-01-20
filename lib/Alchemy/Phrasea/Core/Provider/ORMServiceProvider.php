@@ -164,12 +164,16 @@ class ORMServiceProvider implements ServiceProviderInterface
 
     private function getCacheDriver(PhraseaApplication $app)
     {
-        return 'ArrayCache';
+        $conf = $app['conf']->get(['main', 'cache']);
+
+        return isset($conf['type']) ? $conf['type'] : 'ArrayCache';
     }
 
     private function getCacheOptions(PhraseaApplication $app)
     {
-        return [];
+        $conf = $app['conf']->get(['main', 'cache']);
+
+        return isset($conf['options']) ? $conf['options'] : [];
     }
 
     private function validateConnectionSettings(array $parameters)
