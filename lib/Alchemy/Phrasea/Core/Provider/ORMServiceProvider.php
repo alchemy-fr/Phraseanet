@@ -13,12 +13,14 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Cache\Manager;
+use Alchemy\Phrasea\Core\Connection\ConnectionPoolManager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
@@ -50,18 +52,24 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['orm.em'] = $app->share(function (PhraseaApplication $app) {
             $connectionParameters = $this->buildConnectionParameters($app);
             $configuration = $this->buildConfiguration($app);
-            $eventManager = new EventManager();
+            /** @var Connection $connection */
+            $connection = $app['dbal.provider']($connectionParameters);
 
             $this->registerCustomTypes();
-            $this->registerEventListeners($eventManager);
+            $this->registerEventListeners($connection->getEventManager());
 
-            return EntityManager::create($connectionParameters, $configuration, $eventManager);
+            return EntityManager::create($connection, $configuration, $connection->getEventManager());
         });
 
-        $app['dbal.provider'] = $app->protect(function (array $parameters) {
-            $parameters = $this->validateConnectionSettings($parameters);
+        $app['dbal.connection_pool'] = $app->share(function () {
+            return new ConnectionPoolManager();
+        });
 
-            return DriverManager::getConnection($parameters);
+        $app['dbal.provider'] = $app->protect(function (array $parameters) use ($app) {
+            /** @var ConnectionPoolManager $connectionPool */
+            $connectionPool = $app['dbal.connection_pool'];
+
+            return $connectionPool->get($parameters);
         });
     }
 
