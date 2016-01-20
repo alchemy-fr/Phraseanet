@@ -84,6 +84,7 @@ use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
+use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;

@@ -14,6 +14,11 @@ class CacheStatisticsSubscriber implements EventSubscriberInterface
     private $cache;
 
     /**
+     * @var string
+     */
+    private $cacheType = '';
+
+    /**
      * @var array
      */
     private $stats = [];
@@ -24,6 +29,12 @@ class CacheStatisticsSubscriber implements EventSubscriberInterface
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
+        $this->cacheType = get_class($cache);
+    }
+
+    public function getCacheType()
+    {
+        return $this->cacheType;
     }
 
     public function getInitialStats()

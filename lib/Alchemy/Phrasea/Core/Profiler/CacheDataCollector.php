@@ -9,15 +9,26 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 
 class CacheDataCollector implements DataCollectorInterface
 {
-    /**
-     * @var array
-     */
-    private $data = [];
 
     /**
      * @var CacheStatisticsSubscriber
      */
     private $statsListener;
+
+    /**
+     * @var CacheProfile
+     */
+    private $startProfile;
+
+    /**
+     * @var CacheProfile
+     */
+    private $endProfile;
+
+    /**
+     * @var CacheProfileSummary
+     */
+    private $summary;
 
     /**
      * @param CacheStatisticsSubscriber $cacheStatisticsSubscriber
@@ -46,27 +57,37 @@ class CacheDataCollector implements DataCollectorInterface
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $this->data['early'] = $this->statsListener->getInitialStats();
-        $this->data['late'] = $this->statsListener->getCurrentStats();
+        $this->startProfile = new CacheProfile($this->statsListener->getInitialStats());
+        $this->endProfile = new CacheProfile($this->statsListener->getCurrentStats());
+
+        $this->summary = new CacheProfileSummary(
+            $this->statsListener->getCacheType(),
+            $this->startProfile,
+            $this->endProfile
+        );
     }
 
-    public function getData()
+    /**
+     * @return CacheProfile
+     */
+    public function getInitialProfile()
     {
-        return $this->data;
+        return $this->startProfile;
     }
 
-    public function getHits()
+    /**
+     * @return CacheProfile
+     */
+    public function getCurrentProfile()
     {
-        return $this->data['late']['hits'] - $this->data['early']['hits'];
+        return $this->endProfile;
     }
 
-    public function getMisses()
+    /**
+     * @return CacheProfileSummary
+     */
+    public function getSummary()
     {
-        return $this->data['late']['misses'] - $this->data['early']['misses'];
-    }
-
-    public function getTotalCalls()
-    {
-        return $this->getHits() + $this->getMisses();
+        return $this->summary;
     }
 }
