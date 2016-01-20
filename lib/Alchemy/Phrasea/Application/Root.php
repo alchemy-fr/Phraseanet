@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FirewallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
+use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Monolog\Logger;
 use Monolog\Processor\WebProcessor;
 use Silex\Provider\WebProfilerServiceProvider;
@@ -63,6 +64,9 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         $app->register($p = new WebProfilerServiceProvider(), [
             'profiler.cache_dir' => $app['cache.path'].'/profiler',
         ]);
+
+        $app->register(new PhraseaWebProfilerServiceProvider());
+
         $app->mount('/_profiler', $p);
 
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
