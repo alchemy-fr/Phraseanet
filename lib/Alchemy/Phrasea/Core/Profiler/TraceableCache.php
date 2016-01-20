@@ -32,11 +32,13 @@ class TraceableCache implements Cache, PhraseaCache
         $this->cache = $cache;
     }
 
-    private function collect($type, $id)
+    private function collect($type, $id, $hit = true, $result = null)
     {
         $this->calls[] = [
             'type' => $type,
-            'key'  => $id
+            'key'  => $id,
+            'result' => $result,
+            'hit'  => (bool) $hit
         ];
     }
 
@@ -65,9 +67,11 @@ class TraceableCache implements Cache, PhraseaCache
      */
     public function fetch($id)
     {
-        $this->collect('fetch', $id);
+        $value = $this->cache->fetch($id);
 
-        return $this->cache->fetch($id);
+        $this->collect('fetch', $id, $value != false, $value);
+
+        return $value;
     }
 
     /**

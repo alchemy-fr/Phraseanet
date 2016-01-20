@@ -88,6 +88,7 @@
                 <th>#</th>
                 <th>Call type</th>
                 <th>Key</th>
+                <th>Hit / Miss</th>
             </tr>
         </thead>
         <tbody>
@@ -100,6 +101,7 @@
                     {% if call['type'] != 'fetch' %}</strong>{% endif %}
                 </td>
                 <td>{{ call['key'] }}</td>
+                <td>{% if call['hit'] %}HIT{% else %}<strong>MISS</strong>{% endif %}</td>
             </tr>
         {% endfor %}
         </tbody>
