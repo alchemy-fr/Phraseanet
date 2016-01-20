@@ -65,6 +65,12 @@ class ORMServiceProvider implements ServiceProviderInterface
             return new ConnectionPoolManager();
         });
 
+        $app['connection.pool.manager'] = $app->share(function ($app) {
+            return $app['dbal.connection_pool'];
+        });
+
+        $app['orm.add'] = $app->protect(function () { return hash('sha256', serialize(func_get_args())); });
+
         $app['dbal.provider'] = $app->protect(function (array $parameters) use ($app) {
             /** @var ConnectionPoolManager $connectionPool */
             $connectionPool = $app['dbal.connection_pool'];
