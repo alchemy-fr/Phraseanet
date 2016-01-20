@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
-use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
@@ -72,6 +71,7 @@ use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
+use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Media\DatafilesResolver;
@@ -116,6 +116,8 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
+use Silex\Provider\WebProfilerServiceProvider;
+use Sorien\Provider\DoctrineProfilerServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -382,14 +384,31 @@ class Application extends SilexApplication
         $resolvers['datafile'] = $resolvers->share(function () {
             return new DatafilesResolver($this->getApplicationBox());
         });
+
         $resolvers['permalinks_permalink'] = $resolvers->share(function () {
             return new PermalinkMediaResolver($this->getApplicationBox());
         });
+
         $resolvers['media_accessor'] = $resolvers->share(function () {
             return new MediaAccessorResolver(
                 $this->getApplicationBox(), $this['controller.media_accessor']
             );
         });
+
+        if (self::ENV_DEV === $this->getEnvironment()) {
+            $this->register($p = new WebProfilerServiceProvider(), [
+                'profiler.cache_dir' => $this['cache.path'].'/profiler',
+            ]);
+
+            $this->register(new PhraseaWebProfilerServiceProvider());
+            $this->mount('/_profiler', $p);
+
+            if ($this['phraseanet.configuration-tester']->isInstalled()) {
+                $this['db'] = $this->share(function (self $app) {
+                    return $app['orm.em']->getConnection();
+                });
+            }
+        }
     }
 
     /**
