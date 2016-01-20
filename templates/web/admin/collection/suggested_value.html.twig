@@ -582,9 +582,9 @@ function verifAndactiv()
     o = $("#valajout");
     if ( o.length > 0 ) {
         if(o.val().length>0) {
-            activer_bout('bout_add',false);
-        } else {
             activer_bout('bout_add',true);
+        } else {
+            activer_bout('bout_add',false);
         }
     }
 }
