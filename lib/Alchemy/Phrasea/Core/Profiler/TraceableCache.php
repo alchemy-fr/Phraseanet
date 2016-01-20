@@ -67,7 +67,12 @@ class TraceableCache implements Cache, PhraseaCache
      */
     public function fetch($id)
     {
-        $value = $this->cache->fetch($id);
+        try {
+            $value = $this->cache->fetch($id);
+        }
+        catch (\Exception $ex) {
+            $value = false;
+        }
 
         $this->collect('fetch', $id, $value != false, $value);
 
