@@ -264,6 +264,10 @@ class TraceableCache implements Cache, PhraseaCache
      */
     public function get($key)
     {
+        if ( ! $this->contains($key)) {
+            throw new Exception('Unable to retrieve the value');
+        }
+
         return $this->fetch($key);
     }
 
