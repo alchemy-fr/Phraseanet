@@ -37,9 +37,11 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
 
         $app['conf']->set(['debugger', 'allowed-ips'], $authorized);
         $app['dispatcher']->addSubscriber(new DebuggerSubscriber($app));
+
         $app->get('/', function () {
             return 'success';
         });
+
         $app->boot();
 
         if ($exceptionThrown) {
@@ -53,12 +55,12 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
     {
         return [
             [false, Application::ENV_PROD, '127.0.0.1', []],
-            [false, Application::ENV_PROD, '192.168.0.1', []],
+            [true, Application::ENV_PROD, '192.168.0.1', []],
             [false, Application::ENV_DEV, '127.0.0.1', []],
             [true, Application::ENV_DEV, '192.168.0.1', []],
             [false, Application::ENV_DEV, '192.168.0.1', ['192.168.0.1']],
             [false, Application::ENV_TEST, '127.0.0.1', []],
-            [false, Application::ENV_TEST, '192.168.0.1', []],
+            [true, Application::ENV_TEST, '192.168.0.1', []],
         ];
     }
 }

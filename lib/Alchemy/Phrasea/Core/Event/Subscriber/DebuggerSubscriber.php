@@ -37,10 +37,6 @@ class DebuggerSubscriber implements EventSubscriberInterface
 
     public function checkIp(GetResponseEvent $event)
     {
-        if (Application::ENV_DEV !== $this->app->getEnvironment()) {
-            return;
-        }
-
         if ($this->app['configuration.store']->isSetup() && $this->app['conf']->has(['debugger', 'allowed-ips'])) {
             $allowedIps = $this->app['conf']->get(['debugger', 'allowed-ips']);
             $allowedIps = is_array($allowedIps) ? $allowedIps : [$allowedIps];
