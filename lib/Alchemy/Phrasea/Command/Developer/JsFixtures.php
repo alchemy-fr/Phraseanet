@@ -30,15 +30,8 @@ class JsFixtures extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        if (!file_exists($this->container['db.fixture.info']['path'])) {
-            throw new RuntimeException('You must generate sqlite db first, run "bin/console phraseanet:regenerate-sqlite" command.');
-        }
-
-        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
-            return $app['orm.ems'][$app['db.fixture.hash.key']];
-        });
-
         $sbasId = current($this->container->getDataboxes())->get_sbas_id();
+
         $this->writeResponse($output, 'GET', '/login/', '/home/login/index.html');
         $this->writeResponse($output, 'GET', '/admin/fields/'.$sbasId , '/admin/fields/index.html', true);
         $this->writeResponse($output, 'GET', '/admin/task-manager/tasks', '/admin/task-manager/index.html', true);
@@ -105,9 +98,6 @@ class JsFixtures extends Command
     {
         $environment = Application::ENV_TEST;
         $app = require __DIR__ . '/../../Application/Root.php';
-        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
-            return $app['orm.ems'][$app['db.fixture.hash.key']];
-        });
 
         $user = $this->createUser($app);
 
@@ -121,11 +111,14 @@ class JsFixtures extends Command
         if ($authenticateUser) {
             $this->loginUser($app, $user);
         }
+
         $client->request($method, $path);
         $response = $client->getResponse();
+
         if ($authenticateUser) {
             $this->logoutUser($app);
         }
+
         if (false === $response->isOk()) {
             $this->deleteUser($user);
             throw new RuntimeException(sprintf('Request %s %s returns %d code error', $method, $path, $response->getStatusCode()));
