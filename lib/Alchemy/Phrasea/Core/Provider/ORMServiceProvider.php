@@ -107,7 +107,7 @@ class ORMServiceProvider implements ServiceProviderInterface
     private function buildConnectionParameters(PhraseaApplication $app)
     {
         if ($app->getEnvironment() == PhraseaApplication::ENV_TEST) {
-            //return $app['conf']->get(['main', 'database-test'], array());
+            return $app['conf']->get(['main', 'database-test'], array());
         }
 
         return $app['conf']->get(['main', 'database'], array());

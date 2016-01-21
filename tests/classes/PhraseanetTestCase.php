@@ -5,6 +5,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Database\SqlDbResetTool;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -397,16 +398,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             return;
         }
 
-        echo ' ';
-
-        $orm->getConnection()->exec('DROP DATABASE IF EXISTS ' . $orm->getConnection()->getDatabase());
-        $orm->getConnection()->exec('CREATE DATABASE ' . $orm->getConnection()->getDatabase());
-
-        shell_exec(
-            'cat ' . $orm->getConnection()->getDatabase() . '_orig' .
-            ' | mysql -u root -ptoor ' . $orm->getConnection()->getDatabase() . ';');
-
-        $orm->getConnection()->exec('USE ' . $orm->getConnection()->getDatabase());
+        SqlDbResetTool::loadDatabase($orm->getConnection());
     }
 
     protected function addMocks(Application $app)

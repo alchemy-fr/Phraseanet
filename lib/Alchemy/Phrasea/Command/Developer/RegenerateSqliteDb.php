@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\Core\Database\SqlDbResetTool;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -195,14 +196,7 @@ class RegenerateSqliteDb extends Command
 
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
 
-        $em->getConnection()->exec('DROP DATABASE IF EXISTS ' . $em->getConnection()->getDatabase() . '_orig;');
-        $em->getConnection()->exec('CREATE DATABASE ' . $em->getConnection()->getDatabase() . '_orig;');
-
-        shell_exec(
-            'mysqldump -u root -ptoor ' . $em->getConnection()->getDatabase() .
-            ' > ' . $em->getConnection()->getDatabase() . '_orig;');
-
-        return 0;
+        SqlDbResetTool::dumpDatabase($em->getConnection());
     }
 
     private function insertOauthApps(\Pimple $DI)
