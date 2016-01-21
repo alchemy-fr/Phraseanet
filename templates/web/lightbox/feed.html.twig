@@ -81,7 +81,7 @@
                         <div class="lightbox_container PNB">
               {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
-                {{macro.caption(first_item.getRecord(app), business, false)}}
+                {{macro.caption(first_item.getRecord(app), business, false, true)}}
               {% endif %}
             </div>
                     </div>
