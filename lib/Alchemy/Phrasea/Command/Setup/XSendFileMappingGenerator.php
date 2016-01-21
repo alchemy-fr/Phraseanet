@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Databox\DataboxPathExtractor;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,7 +36,8 @@ class XSendFileMappingGenerator extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $paths = $this->extractPath($this->container->getApplicationBox());
+        $extractor = new DataboxPathExtractor($this->container->getApplicationBox());
+        $paths = $extractor->extractPaths();
         foreach ($paths as $path) {
             $this->container['filesystem']->mkdir($path);
         }
@@ -83,21 +85,5 @@ class XSendFileMappingGenerator extends Command
         $n++;
 
         return ['mount-point' => 'protected_dir_'.$n, 'directory' => $path];
-    }
-
-    private function extractPath(\appbox $appbox)
-    {
-        $paths = [];
-
-        foreach ($appbox->get_databoxes() as $databox) {
-            $paths[] = (string) $databox->get_sxml_structure()->path;
-            foreach ($databox->get_subdef_structure() as $group => $subdefs) {
-                foreach ($subdefs as $subdef) {
-                    $paths[] = $subdef->get_path();
-                }
-            }
-        }
-
-        return array_filter(array_unique($paths));
     }
 }

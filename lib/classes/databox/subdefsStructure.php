@@ -44,9 +44,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
      * @param  databox $databox
-     * @return Array
      */
     public function __construct(databox $databox, TranslatorInterface $translator)
     {
@@ -54,8 +52,6 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $this->translator = $translator;
 
         $this->load_subdefs();
-
-        return $this->AvSubdefs;
     }
 
     /**

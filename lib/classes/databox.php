@@ -994,8 +994,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     *
-     * @return databox_subdefsStructure
+     * @return databox_subdefsStructure|databox_subdef[][]
      */
     public function get_subdef_structure()
     {
