@@ -215,7 +215,7 @@ class phrasea
         $reference = $referenceRepository->find($base_id);
 
         if (! $reference) {
-            return 'Unknown collection';
+            return $app->trans('collection.label.unknown');
         }
 
         /** @var CollectionRepositoryRegistry $collectionRepositoryRegistry */
@@ -234,6 +234,6 @@ class phrasea
             return $labels[$app['locale']];
         }
 
-        return 'Unknown collection';
+        return $collection->getCollection()->getName();
     }
 }
