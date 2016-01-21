@@ -33,12 +33,28 @@ class SqlDbResetTool
         }
     }
 
+    public static function recreateDatabase(Connection $connection, $database)
+    {
+        switch ($connection->getDriver()->getName()) {
+            case 'pdo_mysql':
+                self::resetMySql($connection, $database);
+                break;
+            case 'pdo_sqlite':
+                break;
+        }
+    }
+
+    private static function resetMySql(Connection $connection, $dbName)
+    {
+        $connection->exec("DROP DATABASE IF EXISTS `$dbName`;");
+        $connection->exec("CREATE DATABASE `$dbName`;");
+    }
+
     private static function dumpMySql(Connection $connection)
     {
         $targetDbName = $connection->getDatabase() . self::SOURCE_SUFFIX;
 
-        $connection->exec("DROP DATABASE IF EXISTS `$targetDbName`;");
-        $connection->exec("CREATE DATABASE `$targetDbName`;");
+        self::resetMySql($connection, $targetDbName);
 
         $dumpCommand = "mysqldump -u %s -p%s {$connection->getDatabase()} > $targetDbName;";
 
@@ -49,8 +65,7 @@ class SqlDbResetTool
     {
         $sourceDbName = $connection->getDatabase() . self::SOURCE_SUFFIX;
 
-        $connection->exec("DROP DATABASE IF EXISTS `{$connection->getDatabase()}`;");
-        $connection->exec("CREATE DATABASE `{$connection->getDatabase()}`;");
+        self::resetMySql($connection, $connection->getDatabase());
 
         $importCommand = "cat $sourceDbName | mysql -u %s -p%s {$connection->getDatabase()}";
 

@@ -51,7 +51,7 @@ class ORMServiceProvider implements ServiceProviderInterface
         }
 
         $app['orm.em'] = $app->share(function (PhraseaApplication $app) {
-            $connectionParameters = $this->buildConnectionParameters($app);
+            $connectionParameters = $this->buildConnectionParameters($app, true);
             $configuration = $this->buildConfiguration($app);
             /** @var Connection $connection */
             $connection = $app['dbal.provider']($connectionParameters);
@@ -104,9 +104,9 @@ class ORMServiceProvider implements ServiceProviderInterface
         $eventManager->addEventSubscriber(new TimestampableListener());
     }
 
-    private function buildConnectionParameters(PhraseaApplication $app)
+    private function buildConnectionParameters(PhraseaApplication $app, $isOrmConnection = false)
     {
-        if ($app->getEnvironment() == PhraseaApplication::ENV_TEST) {
+        if ($app->getEnvironment() == PhraseaApplication::ENV_TEST && $isOrmConnection) {
             return $app['conf']->get(['main', 'database-test'], array());
         }
 

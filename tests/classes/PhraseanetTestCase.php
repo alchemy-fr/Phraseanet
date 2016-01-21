@@ -41,6 +41,12 @@ abstract class PhraseanetTestCase extends WebTestCase
      */
     private static $sqlResetUtil;
 
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    private static $connection;
+
+
     public function createApplication()
     {
 
@@ -276,6 +282,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         self::$fixtureIds = $decodedFixtureIds;
 
+        self::$connection = self::$DI['app']['orm.em']->getConnection();
         /** @var \Doctrine\DBAL\Configuration $configuration */
         $configuration = self::$DI['app']['orm.em']->getConnection()->getConfiguration();
 
@@ -343,12 +350,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         return self::$DI['collection'];
     }
 
-    public static function tearDownAfterClass()
-    {
-        gc_collect_cycles();
-        parent::tearDownAfterClass();
-    }
-
     protected function loadCLI($environment = Application::ENV_TEST)
     {
         $cli = new CLI('cli test', null, $environment);
@@ -366,6 +367,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             $app = new Application($environment);
         }
         $this->addAppCacheFlush($app);
+        $this->loadDb($app);
         $this->addMocks($app);
 
         return $app;
@@ -387,18 +389,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function loadDb($app)
     {
-        if (! self::$sqlResetUtil->shouldReset()) {
-            return;
-        }
-
-        /** @var \Doctrine\ORM\EntityManager $orm */
-        $orm = $app['orm.em'];
-
-        if (! $orm->getConnection()) {
-            return;
-        }
-
-        SqlDbResetTool::loadDatabase($orm->getConnection());
+        SqlDbResetTool::loadDatabase($app['orm.em']->getConnection());
     }
 
     protected function addMocks(Application $app)
@@ -444,8 +435,6 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function tearDown()
     {
-        $this->loadDb(self::$DI['app']);
-
         ACLProvider::purge();
         \collection::purge();
         \databox::purge();
