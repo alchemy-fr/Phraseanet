@@ -230,24 +230,21 @@ class databox extends base implements ThumbnailedElement
         return $databox;
     }
 
-    public static function dispatch(Filesystem $filesystem, $repository_path, $date = false)
+    public static function dispatch(Filesystem $filesystem, $repository_path)
     {
-        if (! $date) {
-            $date = date('Y-m-d H:i:s');
-        }
-
         $repository_path = p4string::addEndSlash($repository_path);
 
-        $year = date('Y', strtotime($date));
-        $month = date('m', strtotime($date));
-        $day = date('d', strtotime($date));
+        $timestamp = strtotime(date('Y-m-d'));
+        $year = date('Y', $timestamp);
+        $month = date('m', $timestamp);
+        $day = date('d', $timestamp);
 
-        $n = 0;
         $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
 
-        while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100) {
-            $n ++;
-        }
+        $n = 0;
+        do {
+            $pathout = sprintf('%s%s%05d', $repository_path, $comp, $n++);
+        } while (is_dir($pathout) && iterator_count(new DirectoryIterator($pathout)) > 100);
 
         $filesystem->mkdir($pathout, 0750);
 
@@ -337,10 +334,6 @@ class databox extends base implements ThumbnailedElement
         self::$_xpath_thesaurus = self::$_dom_thesaurus = self::$_thesaurus = self::$_sxml_thesaurus = [];
     }
 
-    private static function addZeros($n, $length = 5)
-    {
-        return str_pad($n, $length, '0');
-    }
     /** @var int */
     protected $id;
     /** @var string */
