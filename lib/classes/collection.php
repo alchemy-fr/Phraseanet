@@ -278,13 +278,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      */
     public function __construct(Application $app, CollectionVO $collection, CollectionReference $reference)
     {
-        $this->app = $app;
-        $this->databox = $app->getApplicationBox()->get_databox($reference->getDataboxId());
-        $this->collectionService = $app->getApplicationBox()->getCollectionService();
-        $this->collectionRepositoryRegistry = $app['repo.collections-registry'];
-
         $this->collectionVO = $collection;
         $this->reference = $reference;
+
+        $this->fetchInternalServices($app);
     }
 
     /**
@@ -314,9 +311,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     public function hydrate(Application $app)
     {
-        $this->app = $app;
-        $this->databox = $app->getApplicationBox()->get_databox($this->reference->getDataboxId());
-        $this->collectionService = $app->getApplicationBox()->getCollectionService();
+        $this->fetchInternalServices($app);
     }
 
     public function __sleep()
@@ -809,5 +804,16 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     public function delete_data_from_cache($option = null)
     {
         $this->databox->delete_data_from_cache($this->get_cache_key($option));
+    }
+
+    /**
+     * @param Application $app
+     */
+    private function fetchInternalServices(Application $app)
+    {
+        $this->app = $app;
+        $this->databox = $app->getApplicationBox()->get_databox($this->reference->getDataboxId());
+        $this->collectionService = $app->getApplicationBox()->getCollectionService();
+        $this->collectionRepositoryRegistry = $app['repo.collections-registry'];
     }
 }
