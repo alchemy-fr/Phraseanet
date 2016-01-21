@@ -34,10 +34,12 @@ class Installer
         $this->rollbackInstall($abConn, $dbConn);
 
         $this->createConfigFile($abConn, $serverName, $binaryData, $dataPath);
+
         try {
             $this->createAB($abConn);
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
+
             if (null !== $dbConn) {
                 $this->createDB($dbConn, $template, $user);
             }

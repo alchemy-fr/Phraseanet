@@ -94,6 +94,10 @@ class SqlDbResetTool
             unlink($targetDbName);
         }
 
+        if (! file_exists($sourceDbName)) {
+            throw new \RuntimeException('No source database found');
+        }
+
         copy($sourceDbName, $targetDbName);
     }
 }
