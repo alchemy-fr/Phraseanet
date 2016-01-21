@@ -40,7 +40,7 @@ database:
     - "./bin/setup system:install --env=test -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=ubuntu --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
     - "./bin/developer ini:setup-tests-dbs --env=test -v"
     - "./bin/console searchengine:index:create --env=test -v"
-    - "./bin/developer phraseanet:regenerate-sqlite --env=test -v"
+    - "./bin/developer phraseanet:regenerate-test-db --env=test -v"
     - "./bin/developer phraseanet:generate-js-fixtures --env=test -v"
 
 test:
