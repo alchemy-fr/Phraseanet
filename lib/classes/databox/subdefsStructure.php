@@ -14,8 +14,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class databox_subdefsStructure implements IteratorAggregate, Countable
 {
     /**
-     *
-     * @var Array
+     * @var array|databox_subdef[][]
      */
     protected $AvSubdefs = [];
 
@@ -23,6 +22,11 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @var TranslatorInterface
      */
     private $translator;
+
+    /**
+     * @var databox
+     */
+    private $databox;
 
     /**
      *
@@ -44,9 +48,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
      * @param  databox $databox
-     * @return Array
      */
     public function __construct(databox $databox, TranslatorInterface $translator)
     {
@@ -54,8 +56,6 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $this->translator = $translator;
 
         $this->load_subdefs();
-
-        return $this->AvSubdefs;
     }
 
     /**
@@ -137,10 +137,10 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     }
 
     /**
-     * @param $subdef_type
-     * @param $subdef_name
+     * @param string $subdef_type
+     * @param string $subdef_name
      *
-     * @return mixed
+     * @return databox_subdef
      * @throws Exception_Databox_SubdefNotFound
      */
     public function get_subdef($subdef_type, $subdef_name)
@@ -224,13 +224,14 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
-     * @param  string                   $group
-     * @param  string                   $name
-     * @param  string                   $class
-     * @param  boolean                  $downloadable
-     * @param  Array                    $options
+     * @param string $group
+     * @param string $name
+     * @param string $class
+     * @param boolean $downloadable
+     * @param array $options
+     * @param array $labels
      * @return databox_subdefsStructure
+     * @throws Exception
      */
     public function set_subdef($group, $name, $class, $downloadable, $options, $labels)
     {

@@ -709,9 +709,9 @@ class Application extends SilexApplication
         // temporary resources default path such as download zip, quarantined documents etc ..
         $this['tmp.path'] = getenv('PHRASEANET_TMP') ?: $this['root.path'].'/tmp';
         // plugin path
-        $this['plugin.path'] = $dir = $this['root.path'].'/plugins';
+        $this['plugin.path'] = $this['root.path'].'/plugins';
         // thumbnails path
-        $this['thumbnail.path'] = $dir = $this['root.path'].'/www/thumbnails';
+        $this['thumbnail.path'] = $this['root.path'].'/www/thumbnails';
 
         // cache path (twig, minify, translations, configuration, doctrine metas serializer metas, profiler etc ...)
         $this['cache.path'] = $this->share(function() {

@@ -23,9 +23,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
         $this->unicode = $unicode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deliverFile($file, $filename = '', $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = null)
     {
         $response = new BinaryFileResponse($file);
@@ -41,9 +38,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
         return $response;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = null)
     {
         $response = new Response($data);

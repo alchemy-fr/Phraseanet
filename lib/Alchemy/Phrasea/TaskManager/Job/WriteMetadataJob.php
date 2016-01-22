@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
@@ -20,6 +21,7 @@ use PHPExiftool\Driver\Tag;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Writer as ExifWriter;
 use PHPExiftool\Exception\TagUnknown;
+use PHPExiftool\Writer;
 
 class WriteMetadataJob extends AbstractJob
 {
@@ -60,34 +62,17 @@ class WriteMetadataJob extends AbstractJob
      */
     protected function doJob(JobData $data)
     {
-        $app = $data->getApplication();
         $settings = simplexml_load_string($data->getTask()->getSettings());
         $clearDoc = (Boolean) (string) $settings->cleardoc;
         $MWG = (Boolean) (string) $settings->mwg;
 
-        // move this in service provider configuration
-        // $app['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
+        foreach ($data->getApplication()->getDataboxes() as $databox) {
+            $connection = $databox->get_connection();
 
-        foreach ($app->getDataboxes() as $databox) {
-
-            $conn = $databox->get_connection();
-            $metaSubdefs = [];
-
-            foreach ($databox->get_subdef_structure() as $type => $definitions) {
-                foreach ($definitions as $sub) {
-                    $name = $sub->get_name();
-                    if ($sub->meta_writeable()) {
-                        $metaSubdefs[$name . '_' . $type] = true;
-                    }
-                }
-            }
-
-            $sql = 'SELECT record_id, coll_id, jeton FROM record WHERE (jeton & ' . PhraseaTokens::WRITE_META . ' > 0)';
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $statement = $connection->prepare('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)');
+            $statement->execute(['token' => PhraseaTokens::WRITE_META]);
+            $rs = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $statement->closeCursor();
 
             foreach ($rs as $row) {
                 $record_id = $row['record_id'];
@@ -99,7 +84,7 @@ class WriteMetadataJob extends AbstractJob
                 $subdefs = [];
                 foreach ($record->get_subdefs() as $name => $subdef) {
                     $write_document = (($token & PhraseaTokens::WRITE_META_DOC) && $name == 'document');
-                    $write_subdef = (($token & PhraseaTokens::WRITE_META_SUBDEF) && isset($metaSubdefs[$name . '_' . $type]));
+                    $write_subdef = (($token & PhraseaTokens::WRITE_META_SUBDEF) && $this->isSubdefMetadataUpdateRequired($databox, $type, $name));
 
                     if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
                         $subdefs[$name] = $subdef->get_pathfile();
@@ -179,16 +164,17 @@ class WriteMetadataJob extends AbstractJob
                     );
                 }
 
-                $app['exiftool.writer']->reset();
+                $writer = $this->getMetadataWriter($data->getApplication());
+                $writer->reset();
 
                 if($MWG) {
-                    $app['exiftool.writer']->setModule(ExifWriter::MODULE_MWG, true);
+                    $writer->setModule(ExifWriter::MODULE_MWG, true);
                 }
 
                 foreach ($subdefs as $name => $file) {
-                    $app['exiftool.writer']->erase($name != 'document' || $clearDoc, true);
+                    $writer->erase($name != 'document' || $clearDoc, true);
                     try {
-                        $app['exiftool.writer']->write($file, $metadata);
+                        $writer->write($file, $metadata);
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
@@ -196,11 +182,33 @@ class WriteMetadataJob extends AbstractJob
                     }
                 }
 
-                $sql = 'UPDATE record SET jeton=jeton & ~' . PhraseaTokens::WRITE_META . ' WHERE record_id = :record_id';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([':record_id' => $record_id]);
-                $stmt->closeCursor();
+                $statement = $connection->prepare('UPDATE record SET jeton=jeton & ~:token WHERE record_id = :record_id');
+                $statement->execute([
+                    'record_id' => $record_id,
+                    'token' => PhraseaTokens::WRITE_META,
+                ]);
+                $statement->closeCursor();
             }
         }
+    }
+
+    /**
+     * @param Application $app
+     * @return Writer
+     */
+    private function getMetadataWriter(Application $app)
+    {
+        return $app['exiftool.writer'];
+    }
+
+    /**
+     * @param \databox $databox
+     * @param string $subdefType
+     * @param string $subdefName
+     * @return bool
+     */
+    private function isSubdefMetadataUpdateRequired(\databox $databox, $subdefType, $subdefName)
+    {
+        return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
     }
 }

@@ -14,7 +14,7 @@ use Guzzle\Http\Url;
 abstract class media_abstract
 {
     const PORTRAIT = 'PORTRAIT';
-    const PAYSAGE = 'LANDSCAPE';
+    const LANDSCAPE = 'LANDSCAPE';
 
     /**
      * @var Url
@@ -78,10 +78,10 @@ abstract class media_abstract
     /**
      * @return string
      */
-    public function get_orientation()
+    public function getOrientation()
     {
         if ($this->width > $this->height) {
-            return self::PAYSAGE;
+            return self::LANDSCAPE;
         } else {
             return self::PORTRAIT;
         }
@@ -90,16 +90,16 @@ abstract class media_abstract
     /**
      * @return bool
      */
-    public function is_paysage()
+    public function isLandscape()
     {
-        return $this->get_orientation() == self::PAYSAGE;
+        return $this->getOrientation() == self::LANDSCAPE;
     }
 
     /**
      * @return bool
      */
-    public function is_portrait()
+    public function isPortrait()
     {
-        return $this->get_orientation() == self::PORTRAIT;
+        return $this->getOrientation() == self::PORTRAIT;
     }
 }

@@ -263,10 +263,10 @@ abstract class base implements cache_cacheableInterface
         return $this;
     }
 
-    public function apply_patches($from, $to, $post_process, Application $app)
+    public function apply_patches($from, $to, $post_process)
     {
         $service = new DatabaseMaintenanceService($this->app, $this->connection);
 
-        return $service->applyPatches($this, $from, $to, $post_process, $app);
+        return $service->applyPatches($this, $from, $to, $post_process);
     }
 }

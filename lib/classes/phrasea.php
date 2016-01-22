@@ -16,12 +16,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class phrasea
 {
-    private static $_bas2sbas = false;
     private static $_sbas_names = false;
     private static $_sbas_labels = false;
-    private static $_coll2bas = false;
-    private static $_bas2coll = false;
-    private static $_bas_labels = false;
     private static $_sbas_params = false;
 
     const CACHE_BAS_2_SBAS = 'bas_2_sbas';
@@ -100,9 +96,7 @@ class phrasea
 
     public static function sbasFromBas(Application $app, $base_id)
     {
-        /** @var CollectionReferenceRepository $repository */
-        $repository = $app['repo.collection-references'];
-        $reference = $repository->find($base_id);
+        $reference = self::getCollectionReferenceRepository($app)->find($base_id);
 
         if ($reference) {
             return $reference->getDataboxId();
@@ -113,9 +107,7 @@ class phrasea
 
     public static function baseFromColl($sbas_id, $coll_id, Application $app)
     {
-        /** @var CollectionReferenceRepository $repository */
-        $repository = $app['repo.collection-references'];
-        $reference = $repository->findByCollectionId($sbas_id, $coll_id);
+        $reference = self::getCollectionReferenceRepository($app)->findByCollectionId($sbas_id, $coll_id);
 
         if ($reference) {
             return $reference->getBaseId();
@@ -126,39 +118,32 @@ class phrasea
 
     public static function reset_baseDatas(appbox $appbox)
     {
-        self::$_coll2bas = self::$_bas2coll = self::$_bas_labels = self::$_bas2sbas = null;
-        $appbox->delete_data_from_cache(
-            [
-                self::CACHE_BAS_2_COLL
-                , self::CACHE_BAS_2_COLL
-                , self::CACHE_BAS_LABELS
-                , self::CACHE_SBAS_FROM_BAS
-            ]
-        );
+        $appbox->delete_data_from_cache([
+            self::CACHE_BAS_2_COLL,
+            self::CACHE_BAS_2_COLL,
+            self::CACHE_BAS_LABELS,
+            self::CACHE_SBAS_FROM_BAS,
+        ]);
 
         return;
     }
 
     public static function reset_sbasDatas(appbox $appbox)
     {
-        self::$_sbas_names = self::$_sbas_labels = self::$_sbas_params = self::$_bas2sbas = null;
-        $appbox->delete_data_from_cache(
-            [
-                self::CACHE_SBAS_NAMES,
-                self::CACHE_SBAS_LABELS,
-                self::CACHE_SBAS_FROM_BAS,
-                self::CACHE_SBAS_PARAMS,
-            ]
-        );
+        self::$_sbas_names = self::$_sbas_labels = self::$_sbas_params = null;
+        $appbox->delete_data_from_cache([
+            self::CACHE_SBAS_NAMES,
+            self::CACHE_SBAS_LABELS,
+            self::CACHE_SBAS_FROM_BAS,
+            self::CACHE_SBAS_PARAMS,
+        ]);
 
         return;
     }
 
     public static function collFromBas(Application $app, $base_id)
     {
-        /** @var CollectionReferenceRepository $repository */
-        $repository = $app['repo.collection-references'];
-        $reference = $repository->find($base_id);
+        $reference = self::getCollectionReferenceRepository($app)->find($base_id);
 
         if ($reference) {
             return $reference->getCollectionId();
@@ -188,6 +173,9 @@ class phrasea
         if (!self::$_sbas_labels) {
             try {
                 self::$_sbas_labels = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_LABELS);
+                if (!is_array(self::$_sbas_labels)) {
+                    throw new \Exception('Invalid data retrieved from cache');
+                }
             } catch (\Exception $e) {
                 foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
@@ -210,17 +198,14 @@ class phrasea
 
     public static function bas_labels($base_id, Application $app)
     {
-        /** @var CollectionReferenceRepository $repository */
-        $referenceRepository = $app['repo.collection-references'];
-        $reference = $referenceRepository->find($base_id);
+        $reference = self::getCollectionReferenceRepository($app)->find($base_id);
 
         if (! $reference) {
             return $app->trans('collection.label.unknown');
         }
 
-        /** @var CollectionRepositoryRegistry $collectionRepositoryRegistry */
-        $collectionRepositoryRegistry = $app['repo.collections-registry'];
-        $collectionRepository = $collectionRepositoryRegistry->getRepositoryByDatabox($reference->getDataboxId());
+        $collectionRepository = self::getCollectionRepositoryRegistry($app)
+            ->getRepositoryByDatabox($reference->getDataboxId());
 
         $collection = $collectionRepository->find($reference->getCollectionId());
 
@@ -235,5 +220,23 @@ class phrasea
         }
 
         return $collection->getCollection()->getName();
+    }
+
+    /**
+     * @param Application $app
+     * @return CollectionReferenceRepository
+     */
+    private static function getCollectionReferenceRepository(Application $app)
+    {
+        return $app['repo.collection-references'];
+    }
+
+    /**
+     * @param Application $app
+     * @return CollectionRepositoryRegistry
+     */
+    private static function getCollectionRepositoryRegistry(Application $app)
+    {
+        return $app['repo.collections-registry'];
     }
 }

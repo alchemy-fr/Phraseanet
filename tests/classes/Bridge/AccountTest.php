@@ -104,10 +104,10 @@ class Bridge_AccountTest extends \PhraseanetTestCase
         $this->assertTrue(self::$object->get_updated_on() <= new DateTime());
         $this->assertTrue(self::$object->get_updated_on() >= self::$object->get_created_on());
 
+        $this->backDateObjectUpdatedOnField();
         $update1 = self::$object->get_updated_on();
-        sleep(2);
-        self::$object->set_name('prout');
 
+        self::$object->set_name('prout');
         $update2 = self::$object->get_updated_on();
         $this->assertTrue($update2 > $update1);
     }
@@ -117,9 +117,14 @@ class Bridge_AccountTest extends \PhraseanetTestCase
         $new_name = 'YODELALI &é"\'(-è_çà)';
         self::$object->set_name($new_name);
         $this->assertEquals($new_name, self::$object->get_name());
+        $this->backDateObjectUpdatedOnField();
+        $update1 = self::$object->get_updated_on();
+
         $new_name = 'BACHI BOUZOUKS';
         self::$object->set_name($new_name);
         $this->assertEquals($new_name, self::$object->get_name());
+        $update2 = self::$object->get_updated_on();
+        $this->assertTrue($update2 > $update1);
     }
 
     public function testGet_accounts_by_api()
@@ -155,5 +160,18 @@ class Bridge_AccountTest extends \PhraseanetTestCase
     {
         $account = Bridge_Account::load_account(self::$DI['app'], self::$object->get_id());
         $this->assertEquals(self::$object->get_id(), $account->get_id());
+    }
+
+    private function backDateObjectUpdatedOnField()
+    {
+        static $reflection;
+
+        if (null === $reflection) {
+            $reflection = new ReflectionProperty(Bridge_Account::class, 'updated_on');
+
+            $reflection->setAccessible(true);
+        }
+
+        $reflection->setValue(self::$object, new DateTime('yesterday'));
     }
 }
