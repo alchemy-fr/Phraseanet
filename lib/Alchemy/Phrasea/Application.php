@@ -14,10 +14,13 @@ namespace Alchemy\Phrasea;
 use Alchemy\Cors\Options\DefaultProvider;
 use Alchemy\CorsProvider\CorsServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
+use Alchemy\Phrasea\Application\Environment;
 use Alchemy\Phrasea\Application\Helper\AclAware;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
+use Alchemy\Phrasea\Application\RouteLoader;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
+use Alchemy\Phrasea\ControllerProvider\ControllerProviderServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
@@ -142,6 +145,10 @@ class Application extends SilexApplication
     use UrlGeneratorTrait;
     use TranslationTrait;
 
+    const ENV_DEV = 'dev';
+    const ENV_PROD = 'prod';
+    const ENV_TEST = 'test';
+
     protected static $availableLanguages = [
         'de' => 'Deutsch',
         'en' => 'English',
@@ -150,38 +157,31 @@ class Application extends SilexApplication
     ];
 
     private static $flashTypes = ['warning', 'info', 'success', 'error'];
+
+    /**
+     * @var Environment
+     */
     private $environment;
 
-    const ENV_DEV = 'dev';
-    const ENV_PROD = 'prod';
-    const ENV_TEST = 'test';
-
-    public function getEnvironment()
+    /**
+     * @param Environment|string $environment
+     */
+    public function __construct($environment = null)
     {
-        return $this->environment;
-    }
+        if (is_string($environment)) {
+            $environment = new Environment($environment, false);
+        }
 
-    public function __construct($environment = self::ENV_PROD)
-    {
-        parent::__construct();
+        $this->environment = $environment ?: new Environment(self::ENV_PROD, false);
 
-        error_reporting(-1);
-
-        $this->environment = $environment;
+        parent::__construct([
+            'debug' => $this->environment->isDebug()
+        ]);
 
         $this->setupCharset();
         $this->setupApplicationPaths();
         $this->setupConstants();
 
-        $this['debug'] = !in_array($environment, [
-            Application::ENV_PROD,
-            Application::ENV_TEST,
-        ]);
-
-        if ($this['debug']) {
-            ini_set('log_errors', 'on');
-            ini_set('error_log', $this['root.path'].'/logs/php_error.log');
-        }
         if ('allowed' == getenv('APP_CONTAINER_DUMP')) {
             $this->register(new PimpleDumpProvider());
         }
@@ -287,6 +287,7 @@ class Application extends SilexApplication
                 return rtrim($app['cache.path'], '/\\') . '/alchemy_cors.cache.php';
             },
         ]);
+
         $this['phraseanet.api_cors.options_provider'] = function (Application $app) {
             $paths = [];
 
@@ -307,78 +308,16 @@ class Application extends SilexApplication
         $this->register(new LocaleServiceProvider());
         $this->setupEventDispatcher();
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
+            /** @var PhraseaExceptionHandler $handler */
             $handler =  PhraseaExceptionHandler::register($app['debug']);
+
             $handler->setTranslator($app['translator']);
             $handler->setLogger($app['monolog']);
 
             return $handler;
         });
 
-        $providers = [
-            'Alchemy\Phrasea\ControllerProvider\Admin\Collection' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Databox' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Feeds' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Fields' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Plugins' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Root' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Setup' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager' => [],
-            'Alchemy\Phrasea\ControllerProvider\Admin\Users' => [],
-            'Alchemy\Phrasea\ControllerProvider\Client\Root' => [],
-            'Alchemy\Phrasea\ControllerProvider\Datafiles' => [],
-            'Alchemy\Phrasea\ControllerProvider\Lightbox' => [],
-            'Alchemy\Phrasea\ControllerProvider\MediaAccessor' => [],
-            'Alchemy\Phrasea\ControllerProvider\Minifier' => [],
-            'Alchemy\Phrasea\ControllerProvider\Permalink' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Bridge' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Download' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Edit' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Export' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Feed' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Language' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Order' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Printer' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Property' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Push' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Query' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Record' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Root' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Share' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Story' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Tools' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Tooltip' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\TOU' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\Upload' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists' => [],
-            'Alchemy\Phrasea\ControllerProvider\Prod\WorkZone' => [],
-            'Alchemy\Phrasea\ControllerProvider\Report\Activity' => [],
-            'Alchemy\Phrasea\ControllerProvider\Report\Information' => [],
-            'Alchemy\Phrasea\ControllerProvider\Report\Root' => [],
-            'Alchemy\Phrasea\ControllerProvider\Root\Account' => [],
-            'Alchemy\Phrasea\ControllerProvider\Root\Developers' => [],
-            'Alchemy\Phrasea\ControllerProvider\Root\Login' => [],
-            'Alchemy\Phrasea\ControllerProvider\Root\Root' => [],
-            'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds' => [],
-            'Alchemy\Phrasea\ControllerProvider\Root\Session' => [],
-            'Alchemy\Phrasea\ControllerProvider\Setup' => [],
-            'Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus' => [],
-            'Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp' => [],
-            'Alchemy\Phrasea\ControllerProvider\User\Notifications' => [],
-            'Alchemy\Phrasea\ControllerProvider\User\Preferences' => [],
-            'Alchemy\EmbedProvider\EmbedServiceProvider' => [],
-        ];
-        foreach ($providers as $class => $values) {
-            $this->register(new $class, $values);
-        }
+        $this->register(new ControllerProviderServiceProvider());
 
         $resolvers = $this['alchemy_embed.resource_resolvers'];
         $resolvers['datafile'] = $resolvers->share(function () {
@@ -409,6 +348,11 @@ class Application extends SilexApplication
                 });
             }
         }
+    }
+
+    public function getEnvironment()
+    {
+        return $this->environment->getName();
     }
 
     /**
@@ -475,6 +419,7 @@ class Application extends SilexApplication
                 $twig->setCache($app['cache.path'].'/twig');
 
                 $paths = [];
+
                 if (file_exists($app['plugin.path'] . '/twig-paths.php')) {
                     $paths = require $app['plugin.path'] . '/twig-paths.php';
                 }
@@ -652,6 +597,14 @@ class Application extends SilexApplication
     }
 
     /**
+     * @return bool
+     */
+    public function isDebug()
+    {
+        return $this->environment->isDebug();
+    }
+
+    /**
      * Returns true if a captcha is required for next authentication
      *
      * @return boolean
@@ -706,74 +659,11 @@ class Application extends SilexApplication
      */
     public function bindRoutes()
     {
-        $providers = [
-            '/account/'                    => 'Alchemy\Phrasea\ControllerProvider\Root\Account',
-            '/admin/'                      => 'Alchemy\Phrasea\ControllerProvider\Admin\Root',
-            '/admin/collection'            => 'Alchemy\Phrasea\ControllerProvider\Admin\Collection',
-            '/admin/connected-users'       => 'Alchemy\Phrasea\ControllerProvider\Admin\ConnectedUsers',
-            '/admin/dashboard'             => 'Alchemy\Phrasea\ControllerProvider\Admin\Dashboard',
-            '/admin/databox'               => 'Alchemy\Phrasea\ControllerProvider\Admin\Databox',
-            '/admin/databoxes'             => 'Alchemy\Phrasea\ControllerProvider\Admin\Databoxes',
-            '/admin/fields'                => 'Alchemy\Phrasea\ControllerProvider\Admin\Fields',
-            '/admin/publications'          => 'Alchemy\Phrasea\ControllerProvider\Admin\Feeds',
-            '/admin/plugins'               => 'Alchemy\Phrasea\ControllerProvider\Admin\Plugins',
-            '/admin/search-engine'         => 'Alchemy\Phrasea\ControllerProvider\Admin\SearchEngine',
-            '/admin/setup'                 => 'Alchemy\Phrasea\ControllerProvider\Admin\Setup',
-            '/admin/subdefs'               => 'Alchemy\Phrasea\ControllerProvider\Admin\Subdefs',
-            '/admin/task-manager'          => 'Alchemy\Phrasea\ControllerProvider\Admin\TaskManager',
-            '/admin/users'                 => 'Alchemy\Phrasea\ControllerProvider\Admin\Users',
-            '/client/'                     => 'Alchemy\Phrasea\ControllerProvider\Client\Root',
-            '/datafiles'                   => 'Alchemy\Phrasea\ControllerProvider\Datafiles',
-            '/developers/'                 => 'Alchemy\Phrasea\ControllerProvider\Root\Developers',
-            '/download/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\DoDownload',
-            '/embed/'                      => 'Alchemy\EmbedProvider\EmbedServiceProvider',
-            '/feeds/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\RSSFeeds',
-            '/include/minify'              => 'Alchemy\Phrasea\ControllerProvider\Minifier',
-            '/login/'                      => 'Alchemy\Phrasea\ControllerProvider\Root\Login',
-            '/lightbox'                    => 'Alchemy\Phrasea\ControllerProvider\Lightbox',
-            '/permalink'                   => 'Alchemy\Phrasea\ControllerProvider\Permalink',
-            '/prod/baskets'                => 'Alchemy\Phrasea\ControllerProvider\Prod\BasketProvider',
-            '/prod/bridge/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Bridge',
-            '/prod/download'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Download',
-            '/prod/export/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Export',
-            '/prod/feeds'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Feed',
-            '/prod/language'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Language',
-            '/prod/lazaret/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Lazaret',
-            '/prod/lists'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\UsrLists',
-            '/prod/order/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Order',
-            '/prod/printer/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Printer',
-            '/prod/push/'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Push',
-            '/prod/query/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Query',
-            '/prod/records/'               => 'Alchemy\Phrasea\ControllerProvider\Prod\Record',
-            '/prod/records/edit'           => 'Alchemy\Phrasea\ControllerProvider\Prod\Edit',
-            '/prod/records/movecollection' => 'Alchemy\Phrasea\ControllerProvider\Prod\MoveCollection',
-            '/prod/records/property'       => 'Alchemy\Phrasea\ControllerProvider\Prod\Property',
-            '/prod/share/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Share',
-            '/prod/story'                  => 'Alchemy\Phrasea\ControllerProvider\Prod\Story',
-            '/prod/tools/'                 => 'Alchemy\Phrasea\ControllerProvider\Prod\Tools',
-            '/prod/tooltip'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Tooltip',
-            '/prod/TOU/'                   => 'Alchemy\Phrasea\ControllerProvider\Prod\TOU',
-            '/prod/upload/'                => 'Alchemy\Phrasea\ControllerProvider\Prod\Upload',
-            '/prod/WorkZone'               => 'Alchemy\Phrasea\ControllerProvider\Prod\WorkZone',
-            '/prod/'                       => 'Alchemy\Phrasea\ControllerProvider\Prod\Root',
-            '/report/activity'             => 'Alchemy\Phrasea\ControllerProvider\Report\Activity',
-            '/report/informations'         => 'Alchemy\Phrasea\ControllerProvider\Report\Information',
-            '/report/'                     => 'Alchemy\Phrasea\ControllerProvider\Report\Root',
-            '/session/'                    => 'Alchemy\Phrasea\ControllerProvider\Root\Session',
-            '/setup'                       => 'Alchemy\Phrasea\ControllerProvider\Setup',
-            '/thesaurus'                   => 'Alchemy\Phrasea\ControllerProvider\Thesaurus\Thesaurus',
-            '/user/notifications/'         => 'Alchemy\Phrasea\ControllerProvider\User\Notifications',
-            '/user/preferences/'           => 'Alchemy\Phrasea\ControllerProvider\User\Preferences',
-            '/xmlhttp'                     => 'Alchemy\Phrasea\ControllerProvider\Thesaurus\Xmlhttp',
-            '/'                            => 'Alchemy\Phrasea\ControllerProvider\Root\Root',
-        ];
+        $loader = new RouteLoader();
 
-        // controllers with routes referenced by api
-        $providers[$this['controller.media_accessor.route_prefix']] = 'Alchemy\Phrasea\ControllerProvider\MediaAccessor';
-        foreach ($providers as $prefix => $class) {
-            $this->mount($prefix, new $class);
-        }
+        $loader->registerProviders(RouteLoader::$defaultProviders);
 
+        $loader->bindRoutes($this);
         $this->bindPluginRoutes('plugin.controller_providers.root');
     }
 
@@ -928,12 +818,15 @@ class Application extends SilexApplication
             if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
                 return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
             }
+
             if (class_exists('\Gmagick')) {
                 return 'gmagick';
             }
+
             if (class_exists('\Imagick')) {
                 return 'imagick';
             }
+
             if (extension_loaded('gd')) {
                 return 'gd';
             }
@@ -980,6 +873,7 @@ class Application extends SilexApplication
                 $service->factory('ORM_hydration', $app['orm.cache.driver'], $app['orm.cache.options'])
             );
         });
+
         $app['orm.proxies_dir'] = $app['root.path'].'/resources/proxies';
         $app['orm.auto_generate_proxies'] = $app['debug'];
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
@@ -1014,6 +908,7 @@ class Application extends SilexApplication
             return $this['session.storage.handler.factory']->create($app['conf']);
         });
     }
+
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
@@ -1105,6 +1000,7 @@ class Application extends SilexApplication
 
             return $configuration;
         });
+
         $this['media-alchemyst.logger'] = $this->share(function (Application $app) {
             return $app['monolog'];
         });
@@ -1220,12 +1116,15 @@ class Application extends SilexApplication
         if (!defined('JETON_MAKE_SUBDEF')) {
             define('JETON_MAKE_SUBDEF', 0x01);
         }
+
         if (!defined('JETON_WRITE_META_DOC')) {
             define('JETON_WRITE_META_DOC', 0x02);
         }
+
         if (!defined('JETON_WRITE_META_SUBDEF')) {
             define('JETON_WRITE_META_SUBDEF', 0x04);
         }
+
         if (!defined('JETON_WRITE_META')) {
             define('JETON_WRITE_META', 0x06);
         }
@@ -1242,30 +1141,8 @@ class Application extends SilexApplication
      */
     public function bindPluginRoutes($routeParameter)
     {
-        foreach ($this[$routeParameter] as $provider) {
-            $prefix = '';
+        $loader = new RouteLoader();
 
-            if (is_array($provider)) {
-                $providerDefinition = $provider;
-                list($prefix, $provider) = $providerDefinition;
-            }
-
-            if (!is_string($prefix) || !is_string($provider)) {
-                continue;
-            }
-
-            $prefix = '/' . ltrim($prefix, '/');
-            if (!isset($this[$provider])) {
-                continue;
-            }
-
-            $provider = $this[$provider];
-
-            if (!$provider instanceof ControllerProviderInterface) {
-                continue;
-            }
-
-            $this->mount($prefix, $provider);
-        }
+        $loader->bindPluginRoutes($this, $routeParameter);
     }
 }

@@ -12,9 +12,8 @@
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Debug\ErrorHandler;
 
-require_once __DIR__ . "/../lib/autoload.php";
 
-error_reporting(0);
+require_once __DIR__ . "/../lib/autoload.php";
 
 ErrorHandler::register();
 
