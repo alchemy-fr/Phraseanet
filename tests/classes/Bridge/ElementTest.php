@@ -97,7 +97,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         $this->object->set_status($new_status);
         $this->assertEquals($new_status, $this->object->get_status());
         $update2 = $this->object->get_updated_on();
-        $this->assertTrue($update2 > $update1);
+        $this->assertGreaterThan($update1, $update2);
     }
 
     public function testGet_title()
@@ -154,7 +154,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         static $reflection;
 
         if (null === $reflection) {
-            $reflection = new ReflectionProperty(Bridge_Element::class, 'uploaded_on');
+            $reflection = new ReflectionProperty(Bridge_Element::class, 'updated_on');
 
             $reflection->setAccessible(true);
         }
