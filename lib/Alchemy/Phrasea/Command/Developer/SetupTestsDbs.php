@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,15 +52,20 @@ class SetupTestsDbs extends Command
             $schema->dropAndCreateDatabase($name);
         }
 
-        $this->container['orm.em']->getConnection()->executeUpdate('
-            GRANT ALL PRIVILEGES ON '.$settings['database']['ab_name'].'.* TO \''.$settings['database']['user'].'\'@\''.$settings['database']['host'].'\' IDENTIFIED BY \''.$settings['database']['password'].'\' WITH GRANT OPTION
-        ');
+        /** @var Connection $connection */
+        $connection = $this->container['orm.em']->getConnection();
 
-        $this->container['orm.em']->getConnection()->executeUpdate('
-            GRANT ALL PRIVILEGES ON '.$settings['database']['db_name'].'.* TO \''.$settings['database']['user'].'\'@\''.$settings['database']['host'].'\' IDENTIFIED BY \''.$settings['database']['password'].'\' WITH GRANT OPTION
-        ');
+        if ($connection->getDriver()->getName() == 'pdo_mysql') {
+            $connection->executeUpdate('
+                GRANT ALL PRIVILEGES ON ' . $settings['database']['ab_name'] . '.* TO \'' . $settings['database']['user'] . '\'@\'' . $settings['database']['host'] . '\' IDENTIFIED BY \'' . $settings['database']['password'] . '\' WITH GRANT OPTION
+            ');
 
-        $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
+            $connection->executeUpdate('
+                GRANT ALL PRIVILEGES ON ' . $settings['database']['db_name'] . '.* TO \'' . $settings['database']['user'] . '\'@\'' . $settings['database']['host'] . '\' IDENTIFIED BY \'' . $settings['database']['password'] . '\' WITH GRANT OPTION
+            ');
+
+            $connection->executeUpdate('SET @@global.sql_mode= ""');
+        }
 
         return 0;
     }

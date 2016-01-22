@@ -23,8 +23,8 @@ class Factory
     }
 
     /**
-     * @param type $name
-     * @param type $options
+     * @param string $name
+     * @param array $options
      *
      * @return Cache
      *

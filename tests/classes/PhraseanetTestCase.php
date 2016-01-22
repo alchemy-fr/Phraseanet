@@ -5,6 +5,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Database\SqlDbResetTool;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -35,6 +36,16 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     private static $recordsInitialized = false;
     private static $fixtureIds = [];
+    /**
+     * @var SqlResetLogger
+     */
+    private static $sqlResetUtil;
+
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    private static $connection;
+
 
     public function createApplication()
     {
@@ -59,216 +70,22 @@ abstract class PhraseanetTestCase extends WebTestCase
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
-        self::$DI['app'] = self::$DI->share(function ($DI) {
-            return $this->loadApp($this->getApplicationPath());
+        self::$DI['fixtures'] = self::$DI->share(function () {
+            return self::$fixtureIds;
         });
 
-        self::$DI['cli'] = self::$DI->share(function ($DI) {
-            return $this->loadCLI();
-        });
+        self::$sqlResetUtil = new SqlResetLogger();
 
-        self::$DI['local-guzzle'] = self::$DI->share(function ($DI) {
-            return new Guzzle(self::$DI['app']['conf']->get('servername'));
-        });
+        $logger = self::$sqlResetUtil;
 
-        self::$DI['client'] = self::$DI->share(function ($DI) {
-            return new Client($DI['app'], []);
-        });
+        if ($configuration->getSQLLogger()) {
+            $logger = new \Doctrine\DBAL\Logging\LoggerChain();
 
-        self::$DI['feed_public'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.feeds']->find(self::$fixtureIds['feed']['public']['feed']);
-        });
-        self::$DI['feed_public_entry'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.feed-entries']->find(self::$fixtureIds['feed']['public']['entry']);
-        });
-        self::$DI['feed_public_token'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.feed-tokens']->find(self::$fixtureIds['feed']['public']['token']);
-        });
-
-        self::$DI['feed_private'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.feeds']->find(self::$fixtureIds['feed']['private']['feed']);
-        });
-        self::$DI['feed_private_entry'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.feed-entries']->find(self::$fixtureIds['feed']['private']['entry']);
-        });
-        self::$DI['feed_private_token'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.feed-tokens']->find(self::$fixtureIds['feed']['private']['token']);
-        });
-
-        self::$DI['basket_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_1']);
-        });
-
-        self::$DI['basket_2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_2']);
-        });
-
-        self::$DI['basket_3'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_3']);
-        });
-
-        self::$DI['basket_4'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_4']);
-        });
-
-        self::$DI['token_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_1']);
-        });
-
-        self::$DI['token_2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_2']);
-        });
-
-        self::$DI['token_invalid'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_invalid']);
-        });
-
-        self::$DI['token_validation'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_validation']);
-        });
-
-        $users = [
-            'user' => 'test_phpunit',
-            'user_1' => 'user_1',
-            'user_2' => 'user_2',
-            'user_3' => 'user_3',
-            'user_guest' => 'user_guest',
-            'user_notAdmin' => 'test_phpunit_not_admin',
-            'user_alt1' => 'test_phpunit_alt1',
-            'user_alt2' => 'test_phpunit_alt2',
-            'user_template' => 'user_template',
-        ];
-
-        $userFactory = function ($fixtureName) {
-            if ('user_guest' === $fixtureName) {
-                return function ($DI) use ($fixtureName) {
-                    return $DI['app']['repo.users']->find(self::$fixtureIds['user'][$fixtureName]);
-                };
-            }
-
-            return function ($DI) use ($fixtureName) {
-                $user = $DI['app']['repo.users']->find(self::$fixtureIds['user'][$fixtureName]);
-                self::resetUsersRights($DI['app'], $user);
-
-                return $user;
-            };
-        };
-
-        foreach ($users as $name => $fixtureName) {
-            self::$DI[$name] = self::$DI->share($userFactory($fixtureName));
+            $logger->addLogger($configuration->getSQLLogger());
+            $logger->addLogger(self::$sqlResetUtil);
         }
 
-        self::$DI['registration_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_1']);
-        });
-        self::$DI['registration_2'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_2']);
-        });
-        self::$DI['registration_3'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_3']);
-        });
-
-        self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
-        });
-
-        self::$DI['webhook-event'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.webhook-event']->find(self::$fixtureIds['webhook']['event']);
-        });
-
-        self::$DI['oauth2-app-user-not-admin'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user-not-admin']);
-        });
-
-        self::$DI['oauth2-app-acc-user'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.api-accounts']->find(self::$fixtureIds['oauth']['acc-user']);
-        });
-
-        self::$DI['oauth2-app-acc-user-not-admin'] = self::$DI->share(function ($DI) {
-            return $DI['app']['repo.api-accounts']->find(self::$fixtureIds['oauth']['acc-user-not-admin']);
-        });
-
-        self::$DI['logger'] = self::$DI->share(function () {
-            $logger = new Logger('tests');
-            $logger->pushHandler(new NullHandler());
-
-            return $logger;
-        });
-
-        self::$DI['collection'] = self::$DI->share(function ($DI) {
-            return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll']);
-        });
-
-        self::$DI['collection_no_access'] = self::$DI->share(function ($DI) {
-            return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
-        });
-
-        self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) {
-            return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_status']);
-        });
-
-        self::$DI['lazaret_1'] = self::$DI->share(function ($DI) {
-            return $DI['app']['orm.em']->find('Phraseanet:LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
-        });
-
-        foreach (range(1, 7) as $i) {
-            self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($i) {
-                return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], self::$fixtureIds['record']['record_'.$i]);
-            });
-        }
-
-        foreach (range(1, 3) as $i) {
-            self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
-                return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], self::$fixtureIds['record']['record_story_'.$i]);
-            });
-        }
-
-        self::$DI['record_no_access_resolver'] = self::$DI->protect(function () {
-            $id = 'no_access';
-
-            if (isset(self::$fixtureIds['records'][$id])) {
-                return self::$fixtureIds['records'][$id];
-            }
-
-            self::$recordsInitialized[] = $id;
-            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$DI['collection_no_access']);
-            $record = record_adapter::createFromFile($file, self::$DI['app']);
-            self::$DI['app']['subdef.generator']->generateSubdefs($record);
-            self::$fixtureIds['records'][$id] = $record->get_record_id();
-
-            return self::$fixtureIds['records'][$id];
-        });
-
-        self::$DI['record_no_access_by_status_resolver'] = self::$DI->protect(function () {
-            $id = 'no_access_by_status';
-
-            if (isset(self::$fixtureIds['records'][$id])) {
-                return self::$fixtureIds['records'][$id];
-            }
-
-            self::$recordsInitialized[] = $id;
-            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$DI['collection_no_access_by_status']);
-            $record = record_adapter::createFromFile($file, self::$DI['app']);
-            self::$DI['app']['subdef.generator']->generateSubdefs($record);
-            self::$fixtureIds['records'][$id] = $record->get_record_id();
-
-            return self::$fixtureIds['records'][$id];
-        });
-
-        self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
-            return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_resolver']());
-        });
-
-        self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
-            return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_by_status_resolver']());
-        });
-
-        static $decodedFixtureIds;
-
-        if (is_null($decodedFixtureIds)) {
-            $decodedFixtureIds = json_decode(file_get_contents(sys_get_temp_dir().'/fixtures.json'), true);
-        }
-        self::$fixtureIds = $decodedFixtureIds;
+        $configuration->setSQLLogger($logger);
     }
 
     /**
@@ -321,12 +138,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         return self::$DI['collection'];
     }
 
-    public static function tearDownAfterClass()
-    {
-        gc_collect_cycles();
-        parent::tearDownAfterClass();
-    }
-
     protected function loadCLI($environment = Application::ENV_TEST)
     {
         $cli = new CLI('cli test', null, $environment);
@@ -343,8 +154,8 @@ abstract class PhraseanetTestCase extends WebTestCase
         } else {
             $app = new Application($environment);
         }
-        $this->addAppCacheFlush($app);
 
+        $this->addAppCacheFlush($app);
         $this->loadDb($app);
         $this->addMocks($app);
 
@@ -362,9 +173,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function loadDb($app)
     {
-        // copy db.ref.sqlite to db.sqlite to re-initialize db with empty values
-        $app['filesystem']->copy($app['db.fixture.info']['path'], $app['db.test.info']['path'], true);
-
+        SqlDbResetTool::loadDatabase($app['orm.em']->getConnection());
     }
 
     protected function addMocks(Application $app)
@@ -390,11 +199,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         $app['translator'] = $this->createTranslatorMock();
 
         $app['phraseanet.SE.subscriber'] = new PhraseanetSeTestSubscriber();
-
-        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
-
-            return $app['orm.ems'][$app['db.test.hash.key']];
-        });
 
         $app['browser'] = $app->share($app->extend('browser', function ($browser) {
             $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);

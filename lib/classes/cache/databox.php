@@ -127,7 +127,7 @@ class cache_databox
 
         $sql = 'UPDATE sitepreff SET memcached_update = :date';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([':date' => $now]);
+        $stmt->execute([':date' => $date->format('Y-m-d H:i:s')]);
         $stmt->closeCursor();
 
         self::$refreshing = false;

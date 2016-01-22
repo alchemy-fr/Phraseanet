@@ -15,8 +15,12 @@ main:
         driver: pdo_mysql
         charset: UTF8
     database-test:
-        driver: pdo_sqlite
-        path: '/tmp/db.sqlite'
+        host: 127.0.0.1
+        port: 3306
+        user: root
+        password: ''
+        dbname: ab_test
+        driver: pdo_mysql
         charset: UTF8
     cache:
         type: MemcacheCache

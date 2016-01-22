@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -45,12 +46,16 @@ class CLI extends Application
     {
         parent::__construct($environment);
 
-        $app = $this;
-
         $this['session.test'] = true;
 
-        $this['console'] = $this->share(function () use ($name, $version) {
-            return new Console\Application($name, $version);
+        $this['console'] = $this->share(function () use ($name, $version, $environment) {
+            $console = new Console\Application($name, $version);
+
+            $console->getDefinition()->addOption(new InputOption(
+                '--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', $environment
+            ));
+
+            return $console;
         });
 
         $this['dispatcher'] = $this->share(

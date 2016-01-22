@@ -3,8 +3,9 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Event\Subscriber\CacheStatisticsSubscriber;
-use Alchemy\Phrasea\Core\Profiler\CacheDataCollector;
-use Alchemy\Phrasea\Core\Profiler\TraceableCache;
+use Alchemy\Phrasea\Core\Profiler\Cache\CacheDataCollector;
+use Alchemy\Phrasea\Core\Profiler\Cache\TraceableCache;
+use Alchemy\Phrasea\Core\Profiler\Cache\TraceableCacheFactory;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
@@ -62,14 +63,12 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             return new DoctrineDataCollector($db);
         });
 
-        $app['cache'] = $app->share($app->extend('cache', function (Cache $cache, $app) {
-            $namespace = $app['conf']->get(['main', 'cache', 'options', 'namespace']);
-            $cache = new TraceableCache($cache);
-
-            $cache->setNamespace($namespace);
-
-            return $cache;
-        }));
+        $app['phraseanet.cache-factory'] = $app->share($app->extend(
+            'phraseanet.cache-factory',
+            function ($factory) {
+                return new TraceableCacheFactory($factory);
+            }
+        ));
 
         $app['data_collector.cache_subscriber'] = $app->share(function ($app) {
             return new CacheStatisticsSubscriber($app['cache']);

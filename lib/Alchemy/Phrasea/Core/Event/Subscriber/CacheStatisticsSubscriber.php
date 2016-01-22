@@ -3,7 +3,7 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Cache\Cache;
-use Alchemy\Phrasea\Core\Profiler\TraceableCache;
+use Alchemy\Phrasea\Core\Profiler\Cache\TraceableCache;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 

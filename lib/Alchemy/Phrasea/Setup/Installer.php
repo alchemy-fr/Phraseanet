@@ -34,10 +34,12 @@ class Installer
         $this->rollbackInstall($abConn, $dbConn);
 
         $this->createConfigFile($abConn, $serverName, $binaryData, $dataPath);
+
         try {
             $this->createAB($abConn);
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
+
             if (null !== $dbConn) {
                 $this->createDB($dbConn, $template, $user);
             }
@@ -143,9 +145,7 @@ class Installer
 
     private function createAB(Connection $abConn)
     {
-        // set default orm to the application box
-        $this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
-
+        // Set default orm to the application box
         $metadata = $this->app['orm.em']->getMetadataFactory()->getAllMetadata();
 
         if (!empty($metadata)) {

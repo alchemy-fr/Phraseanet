@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\Core\Database\SqlDbResetTool;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -44,6 +45,7 @@ use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,7 +56,7 @@ class RegenerateSqliteDb extends Command
 {
     public function __construct()
     {
-        parent::__construct('phraseanet:regenerate-sqlite');
+        parent::__construct('phraseanet:regenerate-test-db');
 
         $this->setDescription("Updates the sqlite 'db-ref.sqlite' database with current database definition.");
     }
@@ -69,18 +71,33 @@ class RegenerateSqliteDb extends Command
             $fs->remove($json);
         }
 
-        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
-            return $app['orm.ems'][$app['db.fixture.hash.key']];
-        });
-
+        /** @var EntityManager $em */
         $em = $this->container['orm.em'];
+        $driverName = $em->getConnection()->getDriver()->getName();
 
-        if ($fs->exists($em->getConnection()->getParams()['path'])) {
-            $fs->remove($em->getConnection()->getParams()['path']);
+        if ($driverName == 'pdo_sqlite') {
+            if ($fs->exists($em->getConnection()->getParams()['path'])) {
+                $fs->remove($em->getConnection()->getParams()['path']);
+            }
+        }
+
+        if ($driverName == 'pdo_mysql') {
+            $em->getConnection()->exec('SET FOREIGN_KEY_CHECKS=0;');
         }
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
+        $allMetadata = $em->getMetadataFactory()->getAllMetadata();
+
+        foreach ($allMetadata as $metadata) {
+            /** @var ClassMetadata $metadata */
+            $em->getConnection()->exec("DROP TABLE IF EXISTS `{$metadata->getTableName()}`");
+        }
+
+        if ($driverName == 'pdo_mysql') {
+            $em->getConnection()->exec('SET FOREIGN_KEY_CHECKS=1;');
+        }
+
+        $schemaTool->createSchema($allMetadata);
 
         $fixtures = [];
 
@@ -179,7 +196,7 @@ class RegenerateSqliteDb extends Command
 
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
 
-        return 0;
+        SqlDbResetTool::dumpDatabase($em->getConnection());
     }
 
     private function insertOauthApps(\Pimple $DI)

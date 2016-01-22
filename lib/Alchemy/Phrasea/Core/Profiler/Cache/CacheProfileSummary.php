@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Core\Profiler;
+namespace Alchemy\Phrasea\Core\Profiler\Cache;
 
 class CacheProfileSummary
 {
