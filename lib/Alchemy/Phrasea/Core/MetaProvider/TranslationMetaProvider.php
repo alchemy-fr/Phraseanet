@@ -14,14 +14,14 @@ class TranslationMetaProvider implements ServiceProviderInterface
         $app->register(new TranslationServiceProvider(), [
             'locale_fallbacks' => ['fr'],
             'translator.resources' => [
-                [ 'xlf', __DIR__.'/../../../resources/locales/messages.fr.xlf', 'fr', 'messages' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/validators.fr.xlf', 'fr', 'validators' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/messages.en.xlf', 'en', 'messages' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/validators.en.xlf', 'en', 'validators' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/messages.de.xlf', 'de', 'messages' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/validators.de.xlf', 'de', 'validators' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/messages.nl.xlf', 'nl', 'messages' ],
-                [ 'xlf', __DIR__.'/../../../resources/locales/validators.nl.xlf', 'nl', 'validators' ]
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/messages.fr.xlf', 'fr', 'messages' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/validators.fr.xlf', 'fr', 'validators' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/messages.en.xlf', 'en', 'messages' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/validators.en.xlf', 'en', 'validators' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/messages.de.xlf', 'de', 'messages' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/validators.de.xlf', 'de', 'validators' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/messages.nl.xlf', 'nl', 'messages' ],
+                [ 'xlf', __DIR__.'/../../../../../resources/locales/validators.nl.xlf', 'nl', 'validators' ]
             ],
             'translator.cache-options' => [
                 'debug' => $app['debug'],
