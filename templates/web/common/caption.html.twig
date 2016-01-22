@@ -9,7 +9,7 @@
     {{ macro.caption(record, business, display_exif) }}
 {% elseif view == 'preview' %}
     {% set display_exif = false %}
-    {{ macro.caption(record, business, display_exif) }}
+    {{ macro.caption(record, business, display_exif, true) }}
 {% elseif view == 'basket' %}
     {% set display_exif = false %}
     {{ macro.caption(record, business, display_exif) }}
