@@ -173,6 +173,9 @@ class phrasea
         if (!self::$_sbas_labels) {
             try {
                 self::$_sbas_labels = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_LABELS);
+                if (!is_array(self::$_sbas_labels)) {
+                    throw new \Exception('Invalid data retrieved from cache');
+                }
             } catch (\Exception $e) {
                 foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
