@@ -20,7 +20,7 @@ class SetupMiddlewareProvider implements ServiceProviderInterface
     {
         Assertion::isInstanceOf($app, \Alchemy\Phrasea\Application::class);
 
-        $app['setup.validate-config'] = $app->share($app->protect(function (Request $request) use ($app) {
+        $app['setup.validate-config'] = $app->protect(function (Request $request) use ($app) {
             if (0 === strpos($request->getPathInfo(), '/setup')) {
                 if (!$app['phraseanet.configuration-tester']->isInstalled()) {
                     if (!$app['phraseanet.configuration-tester']->isBlank()) {
@@ -36,7 +36,7 @@ class SetupMiddlewareProvider implements ServiceProviderInterface
                     $app['firewall']->requireSetup();
                 }
             }
-        }));
+        });
     }
 
     /**

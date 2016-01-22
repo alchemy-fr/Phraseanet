@@ -664,7 +664,7 @@ class Application extends SilexApplication
         $loader->registerProviders(RouteLoader::$defaultProviders);
 
         $loader->bindRoutes($this);
-        $loader->bindPluginRoutes($this, 'plugin.controller_providers.root');
+        $this->bindPluginRoutes('plugin.controller_providers.root');
     }
 
     /**
@@ -1141,6 +1141,8 @@ class Application extends SilexApplication
      */
     public function bindPluginRoutes($routeParameter)
     {
+        $loader = new RouteLoader();
 
+        $loader->bindPluginRoutes($this, $routeParameter);
     }
 }
