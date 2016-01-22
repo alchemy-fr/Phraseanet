@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
@@ -20,6 +21,7 @@ use PHPExiftool\Driver\Tag;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Writer as ExifWriter;
 use PHPExiftool\Exception\TagUnknown;
+use PHPExiftool\Writer;
 
 class WriteMetadataJob extends AbstractJob
 {
@@ -64,9 +66,6 @@ class WriteMetadataJob extends AbstractJob
         $settings = simplexml_load_string($data->getTask()->getSettings());
         $clearDoc = (Boolean) (string) $settings->cleardoc;
         $MWG = (Boolean) (string) $settings->mwg;
-
-        // move this in service provider configuration
-        // $app['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
 
         foreach ($app->getDataboxes() as $databox) {
 
@@ -179,16 +178,17 @@ class WriteMetadataJob extends AbstractJob
                     );
                 }
 
-                $app['exiftool.writer']->reset();
+                $writer = $this->getMetadataWriter($app);
+                $writer->reset();
 
                 if($MWG) {
-                    $app['exiftool.writer']->setModule(ExifWriter::MODULE_MWG, true);
+                    $writer->setModule(ExifWriter::MODULE_MWG, true);
                 }
 
                 foreach ($subdefs as $name => $file) {
-                    $app['exiftool.writer']->erase($name != 'document' || $clearDoc, true);
+                    $writer->erase($name != 'document' || $clearDoc, true);
                     try {
-                        $app['exiftool.writer']->write($file, $metadata);
+                        $writer->write($file, $metadata);
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
@@ -202,5 +202,14 @@ class WriteMetadataJob extends AbstractJob
                 $stmt->closeCursor();
             }
         }
+    }
+
+    /**
+     * @param Application $app
+     * @return Writer
+     */
+    private function getMetadataWriter(Application $app)
+    {
+        return $app['exiftool.writer'];
     }
 }
