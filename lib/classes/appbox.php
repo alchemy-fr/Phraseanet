@@ -238,11 +238,11 @@ class appbox extends base
 
     protected function post_upgrade(Application $app)
     {
-        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $app);
+        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true);
         $this->setVersion($app['phraseanet.version']);
 
         foreach ($this->get_databoxes() as $databox) {
-            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $app);
+            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true);
             $databox->setVersion($app['phraseanet.version']);
         }
 
