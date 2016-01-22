@@ -99,16 +99,16 @@ class Bridge_Api
     }
 
     /**
-     *
-     * @return boolean
+     * @param null|DateTime $checkDate
+     * @return bool
      */
-    public function is_disabled()
+    public function is_disabled(DateTime $checkDate = null)
     {
         if ($this->disable_time === null) {
             return false;
         }
 
-        $date_obj = new DateTime();
+        $date_obj = $checkDate ?: new DateTime();
         if ($date_obj > $this->disable_time) {
             $this->enable();
 

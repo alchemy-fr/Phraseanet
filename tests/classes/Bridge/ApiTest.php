@@ -60,24 +60,20 @@ class Bridge_ApiTest extends \PhraseanetTestCase
 
     public function testenable()
     {
-        $this->assertTrue(is_bool($this->object->is_disabled()));
+        $this->assertInternalType('bool', $this->object->is_disabled());
         $this->assertFalse($this->object->is_disabled());
-        sleep(1);
+        $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
 
         $this->object->disable(new DateTime('+2 seconds'));
         $this->assertTrue($this->object->is_disabled());
-        sleep(3);
         $update2 = $this->object->get_updated_on();
+
         $this->assertTrue($update2 > $update1, $update2->format('Y-m-d, H:i:s') ." sould be > to " . $update1->format('Y-m-d, H:i:s'));
-        $this->assertFalse($this->object->is_disabled());
+
+        $this->assertFalse($this->object->is_disabled(new DateTime('+10 seconds')));
         $this->object->enable();
         $this->assertFalse($this->object->is_disabled());
-    }
-
-    public function testdisable()
-    {
-        $this->testenable();
     }
 
     public function testGet_created_on()
@@ -91,5 +87,18 @@ class Bridge_ApiTest extends \PhraseanetTestCase
         $this->assertInstanceOf('DateTime', $this->object->get_updated_on());
         $this->assertTrue($this->object->get_updated_on() <= new DateTime());
         $this->assertTrue($this->object->get_updated_on() >= $this->object->get_created_on());
+    }
+
+    private function backDateObjectUpdatedOnField()
+    {
+        static $reflection;
+
+        if (null === $reflection) {
+            $reflection = new ReflectionProperty(Bridge_Api::class, 'updated_on');
+
+            $reflection->setAccessible(true);
+        }
+
+        $reflection->setValue($this->object, new DateTime('yesterday'));
     }
 }

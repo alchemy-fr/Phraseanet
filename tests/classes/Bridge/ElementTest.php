@@ -90,7 +90,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         $this->object->set_status($new_status);
         $this->assertEquals($new_status, $this->object->get_status());
 
-        $this->BackDateObjectUpdatedOnField();
+        $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
 
         $new_status = '&é"0687345àç_)à)';
@@ -107,7 +107,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
     public function testSet_title()
     {
-        $this->BackDateObjectUpdatedOnField();
+        $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
 
         $new_title = 'Cigares du pharaon';
@@ -119,7 +119,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
     public function testSet_distid()
     {
-        $this->BackDateObjectUpdatedOnField();
+        $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
 
         $this->object->set_dist_id($this->dist_id);
@@ -149,12 +149,12 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         }
     }
 
-    private function BackDateObjectUpdatedOnField()
+    private function backDateObjectUpdatedOnField()
     {
         static $reflection;
 
         if (null === $reflection) {
-            $reflection = new ReflectionProperty(Bridge_Element::class, 'updatedAt');
+            $reflection = new ReflectionProperty(Bridge_Element::class, 'uploaded_on');
 
             $reflection->setAccessible(true);
         }
