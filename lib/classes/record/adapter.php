@@ -949,7 +949,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $subdefFile = $path_file_dest;
             }
 
-            $meta_writable = $subdef_def->meta_writeable();
+            $meta_writable = $subdef_def->isMetadataUpdateRequired();
         }
 
         $filesystem->chmod($subdefFile, 0760);

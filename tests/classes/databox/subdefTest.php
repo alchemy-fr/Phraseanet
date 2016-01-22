@@ -11,7 +11,7 @@ class databox_subdefTest extends \PhraseanetTestCase
      * @covers databox_subdef::__construct
      * @covers databox_subdef::get_class
      * @covers databox_subdef::get_name
-     * @covers databox_subdef::meta_writeable
+     * @covers databox_subdef::isMetadataUpdateRequired
      * @covers databox_subdef::getAvailableSubdefTypes
      * @covers databox_subdef::is_downloadable
      * @covers databox_subdef::get_labels
@@ -60,7 +60,7 @@ class databox_subdefTest extends \PhraseanetTestCase
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Image', $type);
         }
 
-        $this->assertTrue($object->meta_writeable());
+        $this->assertTrue($object->isMetadataUpdateRequired());
 
         $this->assertEquals('preview_api', $object->get_name());
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Image', $object->getSpecs());
@@ -77,7 +77,7 @@ class databox_subdefTest extends \PhraseanetTestCase
      * @covers databox_subdef::__construct
      * @covers databox_subdef::get_class
      * @covers databox_subdef::get_name
-     * @covers databox_subdef::meta_writeable
+     * @covers databox_subdef::isMetadataUpdateRequired
      * @covers databox_subdef::getAvailableSubdefTypes
      * @covers databox_subdef::is_downloadable
      * @covers databox_subdef::get_labels
@@ -126,7 +126,7 @@ class databox_subdefTest extends \PhraseanetTestCase
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Subdef', $type);
         }
 
-        $this->assertFalse($object->meta_writeable());
+        $this->assertFalse($object->isMetadataUpdateRequired());
 
         $this->assertEquals('video_api', $object->get_name());
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Video', $object->getSpecs());

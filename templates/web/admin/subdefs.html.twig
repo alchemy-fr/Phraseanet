@@ -258,7 +258,7 @@
                                 {{ 'Write Metas' | trans }}
                             </td>
                             <td>
-                                <input type="checkbox" value="yes" {% if subdef.meta_writeable() %}checked="checked"{% endif %} name="{{subdefgroup}}_{{subdefname}}_meta"/>
+                                <input type="checkbox" value="yes" {% if subdef.isMetadataUpdateRequired() %}checked="checked"{% endif %} name="{{subdefgroup}}_{{subdefname}}_meta"/>
                             </td>
                             <td></td>
                         </tr>

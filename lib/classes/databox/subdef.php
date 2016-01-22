@@ -32,7 +32,11 @@ class databox_subdef
     protected $path;
     protected $subdef_group;
     protected $labels = [];
-    protected $write_meta;
+
+    /**
+     * @var bool
+     */
+    private $requiresMetadataUpdate;
     protected $downloadable;
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
@@ -74,7 +78,7 @@ class databox_subdef
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
 
-        $this->write_meta = p4field::isyes((string) $sd->meta);
+        $this->requiresMetadataUpdate = p4field::isyes((string) $sd->meta);
 
         foreach ($sd->label as $label) {
             $lang = trim((string) $label->attributes()->lang);
@@ -242,13 +246,13 @@ class databox_subdef
     }
 
     /**
-     * Tells us if we have to write meta datas in the subdef
+     * Tells us if we have to write meta data in the subdef
      *
-     * @return boolean
+     * @return bool
      */
-    public function meta_writeable()
+    public function isMetadataUpdateRequired()
     {
-        return $this->write_meta;
+        return $this->requiresMetadataUpdate;
     }
 
     /**
