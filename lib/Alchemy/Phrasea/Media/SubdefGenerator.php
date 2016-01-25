@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -31,6 +30,9 @@ class SubdefGenerator
     private $app;
     private $alchemyst;
     private $filesystem;
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
     private $mediavorus;
 
@@ -167,27 +169,20 @@ class SubdefGenerator
      */
     private function getExtensionFromSpec(SpecificationInterface $spec)
     {
-        $extension = null;
-
-        switch (true) {
-            case $spec->getType() === SpecificationInterface::TYPE_IMAGE:
-                $extension = 'jpg';
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_ANIMATION:
-                $extension = 'gif';
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_AUDIO:
-                $extension = $this->getExtensionFromAudioCodec($spec->getAudioCodec());
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_VIDEO:
-                $extension = $this->getExtensionFromVideoCodec($spec->getVideoCodec());
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_SWF:
-                $extension = 'swf';
-                break;
+        switch ($spec->getType()) {
+            case SpecificationInterface::TYPE_IMAGE:
+                return 'jpg';
+            case SpecificationInterface::TYPE_ANIMATION:
+                return 'gif';
+            case SpecificationInterface::TYPE_AUDIO:
+                return $this->getExtensionFromAudioCodec($spec->getAudioCodec());
+            case SpecificationInterface::TYPE_VIDEO:
+                return $this->getExtensionFromVideoCodec($spec->getVideoCodec());
+            case SpecificationInterface::TYPE_SWF:
+                return 'swf';
         }
 
-        return $extension;
+        return null;
     }
 
     /**
@@ -199,21 +194,16 @@ class SubdefGenerator
      */
     private function getExtensionFromAudioCodec($audioCodec)
     {
-        $extension = null;
-
         switch ($audioCodec) {
             case 'flac':
-                $extension = 'flac';
-                break;
+                return 'flac';
             case 'libvorbis':
-                $extension = 'ogg';
-                break;
+                return 'ogg';
             case 'libmp3lame':
-                $extension = 'mp3';
-                break;
+                return 'mp3';
         }
 
-        return $extension;
+        return null;
     }
 
     /**
@@ -225,20 +215,15 @@ class SubdefGenerator
      */
     private function getExtensionFromVideoCodec($videoCodec)
     {
-        $extension = null;
-
         switch ($videoCodec) {
             case 'libtheora':
-                $extension = 'ogv';
-                break;
+                return 'ogv';
             case 'libvpx':
-                $extension = 'webm';
-                break;
+                return 'webm';
             case 'libx264':
-                $extension = 'mp4';
-                break;
+                return 'mp4';
         }
 
-        return $extension;
+        return null;
     }
 }
