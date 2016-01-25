@@ -11,15 +11,18 @@ class recordutils_imageTest extends \PhraseanetTestCase
 {
     public function testWatermarkWithoutFile()
     {
-        self::$DI['app']->getApplicationBox()->write_collection_pic(
-            self::$DI['app']['media-alchemyst'],
-            self::$DI['app']['filesystem'],
-            self::$DI['record_1']->get_collection(),
+        $app = $this->getApplication();
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $app->getApplicationBox()->write_collection_pic(
+            $app['media-alchemyst'],
+            $app['filesystem'],
+            $record_1->get_collection(),
             null,
             \collection::PIC_WM
         );
 
-        $path = recordutils_image::watermark(self::$DI['app'], self::$DI['record_1']->get_subdef('preview'));
+        $path = recordutils_image::watermark($app, $record_1->get_subdef('preview'));
 
         $this->assertTrue(0 === strpos(basename($path), 'watermark_'));
         unlink($path);
@@ -27,15 +30,18 @@ class recordutils_imageTest extends \PhraseanetTestCase
 
     public function testWatermarkWithFile()
     {
-        self::$DI['app']->getApplicationBox()->write_collection_pic(
-            self::$DI['app']['media-alchemyst'],
-            self::$DI['app']['filesystem'],
-            self::$DI['record_1']->get_collection(),
+        $app = $this->getApplication();
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $app->getApplicationBox()->write_collection_pic(
+            $app['media-alchemyst'],
+            $app['filesystem'],
+            $record_1->get_collection(),
             new SymfoFile(__DIR__ . '/../../files/logocoll.gif'),
             \collection::PIC_WM
         );
 
-        $path = recordutils_image::watermark(self::$DI['app'], self::$DI['record_1']->get_subdef('preview'));
+        $path = recordutils_image::watermark($app, $record_1->get_subdef('preview'));
 
         $this->assertTrue(0 === strpos(basename($path), 'watermark_'));
         unlink($path);
@@ -74,17 +80,20 @@ class recordutils_imageTest extends \PhraseanetTestCase
 
     public function testStampWithoutFile()
     {
-        $this->addStampConf(self::$DI['record_1']->get_collection());
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $this->addStampConf($record_1->get_collection());
 
-        self::$DI['app']->getApplicationBox()->write_collection_pic(
-            self::$DI['app']['media-alchemyst'],
-            self::$DI['app']['filesystem'],
-            self::$DI['record_1']->get_collection(),
+        $app = $this->getApplication();
+        $app->getApplicationBox()->write_collection_pic(
+            $app['media-alchemyst'],
+            $app['filesystem'],
+            $record_1->get_collection(),
             null,
             \collection::PIC_STAMP
         );
 
-        $path = recordutils_image::stamp(self::$DI['app'], self::$DI['record_1']->get_subdef('preview'));
+        $path = recordutils_image::stamp($app, $record_1->get_subdef('preview'));
 
         $this->assertTrue(0 === strpos(basename($path), 'stamp_'));
         unlink($path);
@@ -92,17 +101,20 @@ class recordutils_imageTest extends \PhraseanetTestCase
 
     public function testStampWithFile()
     {
-        $this->addStampConf(self::$DI['record_1']->get_collection());
+        /** @var record_adapter $record_1 */
+        $record_1 = self::$DI['record_1'];
+        $this->addStampConf($record_1->get_collection());
 
-        self::$DI['app']->getApplicationBox()->write_collection_pic(
-            self::$DI['app']['media-alchemyst'],
-            self::$DI['app']['filesystem'],
-            self::$DI['record_1']->get_collection(),
+        $app = $this->getApplication();
+        $app->getApplicationBox()->write_collection_pic(
+            $app['media-alchemyst'],
+            $app['filesystem'],
+            $record_1->get_collection(),
             new SymfoFile(__DIR__ . '/../../files/logocoll.gif'),
             \collection::PIC_STAMP
         );
 
-        $path = recordutils_image::stamp(self::$DI['app'], self::$DI['record_1']->get_subdef('preview'));
+        $path = recordutils_image::stamp($app, $record_1->get_subdef('preview'));
 
         $this->assertTrue(0 === strpos(basename($path), 'stamp_'));
         unlink($path);
