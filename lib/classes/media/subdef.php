@@ -446,10 +446,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      * @return string
+     * @deprecated use {@link self::getRealPath} instead
      */
     public function get_pathfile()
     {
-        return $this->path . $this->file;
+        return $this->getRealPath();
     }
 
     /**
@@ -733,5 +734,29 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $databox = $this->get_record()->getDatabox();
 
         $databox->delete_data_from_cache($this->get_cache_key($option));
+    }
+
+    /**
+     * @return string
+     */
+    public function getRealPath()
+    {
+        return $this->path . $this->file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWatermarkRealPath()
+    {
+        return $this->path . 'watermark_' . $this->file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStampRealPath()
+    {
+        return $this->path . 'stamp_' . $this->file;
     }
 }
