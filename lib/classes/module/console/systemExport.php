@@ -242,12 +242,12 @@ class module_console_systemExport extends Command
 
     protected function processRecords(\record_adapter $record, $outfile, $caption)
     {
-        if ( ! file_exists($record->get_subdef('document')->get_pathfile())) {
+        if ( ! file_exists($record->get_subdef('document')->getRealPath())) {
             return false;
         }
 
         $this->getService('filesystem')
-            ->copy($record->get_subdef('document')->get_pathfile(), $outfile);
+            ->copy($record->get_subdef('document')->getRealPath(), $outfile);
 
         $dest_file = new \SplFileInfo($outfile);
 

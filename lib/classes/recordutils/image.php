@@ -52,16 +52,16 @@ class recordutils_image
         $base_id = $subdef->get_record()->get_base_id();
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
         if (!$subdef->is_physically_present()) {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
         $rotation = null;
         try {
-            $image = $app->getMediaFromUri($subdef->get_pathfile());
+            $image = $app->getMediaFromUri($subdef->getRealPath());
             if (MediaInterface::TYPE_IMAGE === $image->getType()) {
                 $rotation = $image->getOrientation();
             }
@@ -72,21 +72,21 @@ class recordutils_image
         $domprefs = new DOMDocument();
 
         if (false === $domprefs->loadXML($subdef->get_record()->get_collection()->get_prefs())) {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
         if (false === $sxxml = simplexml_load_string($app['serializer.caption']->serialize($subdef->get_record()->get_caption(), CaptionSerializer::SERIALIZE_XML))) {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
         $xpprefs = new DOMXPath($domprefs);
         $stampNodes = $xpprefs->query('/baseprefs/stamp');
         if ($stampNodes->length == 0) {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
-        $pathIn = $subdef->get_path() . $subdef->get_file();
-        $pathOut = $subdef->get_path() . 'stamp_' . $subdef->get_file();
+        $pathIn = $subdef->getRealPath();
+        $pathOut = $subdef->getStampRealPath();
 
         $vars = $xpprefs->query('/baseprefs/stamp/*/var');
 
@@ -358,12 +358,12 @@ class recordutils_image
             $writer = $app['exiftool.writer'];
             // copy metadata to the stamped file if we can
             if(method_exists($writer, "copy")) {
-                $writer->copy($subdef->get_pathfile(), $pathOut);
+                $writer->copy($subdef->getRealPath(), $pathOut);
             }
             return $pathOut;
         }
 
-        return $subdef->get_pathfile();
+        return $subdef->getRealPath();
     }
 
     /**
@@ -384,11 +384,11 @@ class recordutils_image
         $base_id = $subdef->get_record()->get_base_id();
 
         if ($subdef->get_name() !== 'preview') {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-            return $subdef->get_pathfile();
+            return $subdef->getRealPath();
         }
 
         if (!$subdef->is_physically_present()) {
@@ -401,7 +401,7 @@ class recordutils_image
             return false;
         }
 
-        $pathOut = $subdef->get_path() . 'watermark_' . $subdef->get_file();
+        $pathOut = $subdef->getWatermarkRealPath();
 
         // cache
         if (is_file($pathOut)) {

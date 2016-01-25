@@ -164,7 +164,7 @@ class PDF
                 $subdef = $rec->get_thumbnail();
             }
 
-            $fimg = $subdef->get_pathfile();
+            $fimg = $subdef->getRealPath();
 
             if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
@@ -229,7 +229,7 @@ class PDF
             /* @var $rec record_adapter */
             $subdef = $rec->get_subdef('thumbnail');
 
-            $fimg = $subdef->get_pathfile();
+            $fimg = $subdef->getRealPath();
 
             $wimg = $himg = 50;
             // 1px = 3.77952 mm
@@ -436,7 +436,7 @@ class PDF
                 $subdef = $rec->get_thumbnail();
             }
 
-            $f = $subdef->get_pathfile();
+            $f = $subdef->getRealPath();
 
             if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)

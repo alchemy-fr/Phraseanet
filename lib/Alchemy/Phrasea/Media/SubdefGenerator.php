@@ -75,7 +75,7 @@ class SubdefGenerator
             $pathdest = null;
 
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
-                $pathdest = $record->get_subdef($subdefname)->get_pathfile();
+                $pathdest = $record->get_subdef($subdefname)->getRealPath();
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
                 $record->clearSubdefCache($subdefname);

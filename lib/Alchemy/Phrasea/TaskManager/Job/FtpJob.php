@@ -218,7 +218,7 @@ class FtpJob extends AbstractJob
                             continue;
                         }
 
-                        $localfile = $sd[$subdef]->get_pathfile();
+                        $localfile = $sd->getRealPath();
                         if (!file_exists($localfile)) {
                             throw new \Exception('Le fichier local n\'existe pas');
                         }

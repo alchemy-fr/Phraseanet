@@ -297,7 +297,7 @@ class EditController extends Controller
                         continue;
                     }
 
-                    $media = $this->app->getMediaFromUri($value->get_pathfile());
+                    $media = $this->app->getMediaFromUri($value->getRealPath());
                     $this->getSubDefinitionSubstituer()->substitute($reg_record, $name, $media);
                     $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
                     $this->getDataboxLogger($reg_record->get_databox())->log(

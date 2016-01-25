@@ -87,7 +87,7 @@ class WriteMetadataJob extends AbstractJob
                     $write_subdef = (($token & PhraseaTokens::WRITE_META_SUBDEF) && $this->isSubdefMetadataUpdateRequired($databox, $type, $name));
 
                     if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
-                        $subdefs[$name] = $subdef->get_pathfile();
+                        $subdefs[$name] = $subdef->getRealPath();
                     }
                 }
 

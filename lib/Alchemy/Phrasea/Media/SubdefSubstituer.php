@@ -58,7 +58,7 @@ class SubdefSubstituer
             $subdef_def = $record->get_databox()->get_subdef_structure()->get_subdef($type, $name);
 
             if ($record->has_subdef($name) && $record->get_subdef($name)->is_physically_present()) {
-                $path_file_dest = $record->get_subdef($name)->get_pathfile();
+                $path_file_dest = $record->get_subdef($name)->getRealPath();
                 $record->get_subdef($name)->remove_file();
                 $record->clearSubdefCache($name);
             } else {

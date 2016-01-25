@@ -174,7 +174,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = $row['mime'];
             $this->file = $row['file'];
             $this->path = p4string::addEndSlash($row['path']);
-            $this->is_physically_present = file_exists($this->get_pathfile());
+            $this->is_physically_present = file_exists($this->getRealPath());
             $this->etag = $row['etag'];
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
@@ -220,8 +220,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function remove_file()
     {
-        if ($this->is_physically_present() && is_writable($this->get_pathfile())) {
-            unlink($this->get_pathfile());
+        if ($this->is_physically_present() && is_writable($this->getRealPath())) {
+            unlink($this->getRealPath());
 
             $this->delete_data_from_cache();
 
@@ -310,7 +310,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function getEtag()
     {
         if (!$this->etag && $this->is_physically_present()) {
-            $file = new SplFileInfo($this->get_pathfile());
+            $file = new SplFileInfo($this->getRealPath());
             if ($file->isFile()) {
                 $this->setEtag(md5($file->getMTime()));
             }
@@ -526,12 +526,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $specs->setRotationAngle($angle);
 
         try {
-            $alchemyst->turnInto($this->get_pathfile(), $this->get_pathfile(), $specs);
+            $alchemyst->turnInto($this->getRealPath(), $this->getRealPath(), $specs);
         } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
             return $this;
         }
 
-        $media = $mediavorus->guess($this->get_pathfile());
+        $media = $mediavorus->guess($this->getRealPath());
 
         $sql = "UPDATE subdef SET height = :height , width = :width, updated_on = NOW()"
             . " WHERE record_id = :record_id AND name = :name";
@@ -569,7 +569,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return [];
         }
 
-        $media = $mediavorus->guess($this->get_pathfile());
+        $media = $mediavorus->guess($this->getRealPath());
 
         $datas = [];
 
@@ -666,7 +666,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ($name === 'thumbnail') {
             /** @var SymLinker $symlinker */
             $symlinker = $app['phraseanet.thumb-symlinker'];
-            $symlinker->symlink($subdef->get_pathfile());
+            $symlinker->symlink($subdef->getRealPath());
         }
 
         unset($media);
@@ -682,7 +682,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         // serve thumbnails using static file service
         if ($this->get_name() === 'thumbnail') {
-            if (null !== $url = $this->app['phraseanet.static-file']->getUrl($this->get_pathfile())) {
+            if (null !== $url = $this->app['phraseanet.static-file']->getUrl($this->getRealPath())) {
                 $url->getQuery()->offsetSet('etag', $this->getEtag());
                 $this->url = $url;
 
@@ -691,7 +691,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
         
         if ($this->app['phraseanet.h264-factory']->isH264Enabled() && in_array($this->mime, ['video/mp4'])) {
-            if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->get_pathfile())) {
+            if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->getRealPath())) {
                 $this->url = $url;
 
                 return;
