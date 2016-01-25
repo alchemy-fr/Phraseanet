@@ -54,8 +54,6 @@ class SubdefGenerator
     {
         if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
-
-            return $this;
         }
 
         $this->dispatch(
@@ -93,7 +91,7 @@ class SubdefGenerator
                 )
             );
 
-            $this->logger->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
+            $this->logger->info(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generateSubdef($record, $subdef, $pathdest);
 
             if ($this->filesystem->exists($pathdest)) {
@@ -130,15 +128,13 @@ class SubdefGenerator
                 $mediaCreated
             )
         );
-
-        return $this;
     }
 
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
         try {
             if (null === $record->get_hd_file()) {
-                $this->logger->addInfo('No HD file found, aborting');
+                $this->logger->info('No HD file found, aborting');
 
                 return;
             }
