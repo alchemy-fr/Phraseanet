@@ -11,7 +11,7 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
@@ -27,6 +27,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class SubdefGenerator
 {
+    use DispatcherAware;
+
     private $app;
     private $alchemyst;
     private $filesystem;
@@ -43,11 +45,6 @@ class SubdefGenerator
         $this->filesystem = $filesystem;
         $this->logger = $logger;
         $this->mediavorus = $mediavorus;
-    }
-
-    private function dispatch($eventName, RecordEvent $event)
-    {
-        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
