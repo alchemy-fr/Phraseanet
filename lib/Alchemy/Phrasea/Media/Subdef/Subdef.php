@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+use MediaAlchemyst\Specification\SpecificationInterface;
+
 interface Subdef
 {
     const TYPE_IMAGE = 'image';
@@ -19,9 +21,20 @@ interface Subdef
     const TYPE_AUDIO = 'audio';
     const TYPE_FLEXPAPER = 'flexpaper';
 
+    /**
+     * One of Subdef Type const
+     *
+     * @return string
+     */
     public function getType();
 
+    /**
+     * @return string
+     */
     public function getDescription();
 
+    /**
+     * @return SpecificationInterface
+     */
     public function getMediaAlchemystSpec();
 }

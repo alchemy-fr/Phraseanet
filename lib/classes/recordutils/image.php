@@ -395,7 +395,7 @@ class recordutils_image
             return false;
         }
 
-        $pathIn = $subdef->get_path() . $subdef->get_file();
+        $pathIn = $subdef->getRealPath();
 
         if (!is_file($pathIn)) {
             return false;
