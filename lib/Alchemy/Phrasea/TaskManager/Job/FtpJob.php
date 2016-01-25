@@ -212,9 +212,9 @@ class FtpJob extends AbstractJob
                             throw new \Exception('Impossible de creer un fichier temporaire');
                         }
                     } else {
-                        $sd = $record->get_subdefs();
-
-                        if (!$sd || !isset($sd[$subdef])) {
+                        try {
+                            $sd = $record->get_subdef($subdef);
+                        } catch (\Exception_Media_SubdefNotFound $notFount) {
                             continue;
                         }
 
