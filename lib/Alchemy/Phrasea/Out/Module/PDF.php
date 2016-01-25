@@ -146,7 +146,7 @@ class PDF
         $irow = $ipage = 0;
         $icol = -1;
         foreach ($this->records as $rec) {
-            /* @var $rec record_adapter */
+            /* @var \record_adapter $rec */
             if (++$icol >= $NDiapoW) {
                 $icol = 0;
                 if (++$irow >= $NDiapoH) {
@@ -226,7 +226,7 @@ class PDF
 
         $ndoc = 0;
         foreach ($this->records as $rec) {
-            /* @var $rec record_adapter */
+            /* @var \record_adapter $rec */
             $subdef = $rec->get_subdef('thumbnail');
 
             $fimg = $subdef->getRealPath();
@@ -322,7 +322,7 @@ class PDF
         }
 
         foreach ($this->records as $krec => $rec) {
-            /* @var $rec record_adapter */
+            /* @var \record_adapter $rec */
 
             $this->pdf->AddPage();
 
