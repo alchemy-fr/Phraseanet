@@ -362,6 +362,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function loadDb($app)
     {
+        echo 'R';
         // copy db.ref.sqlite to db.sqlite to re-initialize db with empty values
         $app['filesystem']->copy($app['db.fixture.info']['path'], $app['db.test.info']['path'], true);
 
@@ -475,8 +476,10 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function set_user_agent($user_agent, Application $app)
     {
         $app['browser']->setUserAgent($user_agent);
+
         $app->register(new \Silex\Provider\TwigServiceProvider());
-        $app->setupTwig();
+        $app->register(new \Alchemy\Phrasea\Core\Provider\TwigServiceProvider());
+
         self::$DI['client'] = self::$DI->share(function ($DI) use ($app) {
             return new Client($app, []);
         });

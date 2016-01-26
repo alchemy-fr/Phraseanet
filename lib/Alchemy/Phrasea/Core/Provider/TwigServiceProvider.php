@@ -60,12 +60,7 @@ class TwigServiceProvider implements ServiceProviderInterface
         }));
     }
 
-
-    /**
-     * @param \Twig_Environment $twig
-     * @param $app
-     */
-    private function registerExtensions(\Twig_Environment $twig, $app)
+    private function registerExtensions(\Twig_Environment $twig, Application $app)
     {
         $twig->addExtension(new \Twig_Extension_Core());
         $twig->addExtension(new \Twig_Extension_Optimizer());
@@ -87,9 +82,6 @@ class TwigServiceProvider implements ServiceProviderInterface
         $twig->addExtension(new PhraseanetExtension($app));
     }
 
-    /**
-     * @param \Twig_Environment $twig
-     */
     private function registerFilters(\Twig_Environment $twig)
     {
         $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
@@ -154,6 +146,6 @@ class TwigServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // TODO: Implement boot() method.
+        // no-op
     }
 }
