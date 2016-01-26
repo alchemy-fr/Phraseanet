@@ -37,7 +37,7 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             'session.storage.options' => ['cookie_lifetime' => 0]
         ]);
 
-        $app['session.storage.test'] = $app->share(function (Application $app) {
+        $app['session.storage.test'] = $app->share(function () {
             return new MockArraySessionStorage();
         });
 
