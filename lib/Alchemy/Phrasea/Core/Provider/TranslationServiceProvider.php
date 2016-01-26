@@ -45,6 +45,15 @@ class TranslationServiceProvider implements ServiceProviderInterface
                 }
             }
 
+            foreach ($app['translator.resources'] as $resource) {
+                $translator->addResource(
+                    $resource[0],
+                    $resource[1],
+                    $resource[2],
+                    isset($resource[3]) ? $resource[3] : null
+                );
+            }
+
             return $translator;
         });
 

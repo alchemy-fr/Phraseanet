@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea;
 
-use Alchemy\Cors\Options\DefaultProvider;
-use Alchemy\CorsProvider\CorsServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Environment;
 use Alchemy\Phrasea\Application\Helper\AclAware;
@@ -20,7 +18,6 @@ use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
 use Alchemy\Phrasea\Application\RouteLoader;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\ControllerProviderServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
@@ -30,6 +27,11 @@ use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
+use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
+use Alchemy\Phrasea\Core\MetaProvider\HttpStackMetaProvider;
+use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesMetaServiceProvider;
+use Alchemy\Phrasea\Core\MetaProvider\TemplateEngineMetaProvider;
+use Alchemy\Phrasea\Core\MetaProvider\TranslationMetaProvider;
 use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\BasketMiddlewareProvider;
 use Alchemy\Phrasea\Core\Middleware\TokenMiddlewareProvider;
@@ -44,7 +46,6 @@ use Alchemy\Phrasea\Core\Provider\CacheConnectionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
-use Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
@@ -55,7 +56,6 @@ use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
-use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
@@ -65,13 +65,11 @@ use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
-use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\StatusServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
-use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
@@ -81,48 +79,23 @@ use Alchemy\Phrasea\Media\DatafilesResolver;
 use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Twig\BytesConverter;
-use Alchemy\Phrasea\Twig\Camelize;
-use Alchemy\Phrasea\Twig\Fit;
-use Alchemy\Phrasea\Twig\JSUniqueID;
-use Alchemy\Phrasea\Twig\PhraseanetExtension;
-use Alchemy\Phrasea\Utilities\CachedTranslator;
-use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
-use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
-use Doctrine\DBAL\Events;
-use Doctrine\ORM\Configuration;
-use FFMpeg\FFMpegServiceProvider;
-use Gedmo\DoctrineExtensions as GedmoExtension;
-use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
-use MediaVorus\MediaVorusServiceProvider;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
-use MP4Box\MP4BoxServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
-use Neutron\Silex\Provider\ImagineServiceProvider;
-use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
-use Silex\ControllerProviderInterface;
-use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
-use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
-use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
-use Silex\Provider\TwigServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
-use Sorien\Provider\DoctrineProfilerServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Form\Exception\FormException;
@@ -130,9 +103,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use Symfony\Component\Routing\RequestContext;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -190,15 +160,14 @@ class Application extends SilexApplication
         $this->register(new MonologServiceProvider());
         $this->setupMonolog();
         $this->register(new FilesystemServiceProvider());
+        $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new CacheConnectionServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider());
-        $this->register(new DoctrineServiceProvider());
-        $this->setupDBAL();
-        $this->register(new DoctrineOrmServiceProvider());
-        $this->setupOrms();
-        $this->register(new ORMServiceProvider());
+
+        $this->register(new DatabaseMetaProvider());
+
         $this->register(new BasketMiddlewareProvider());
         $this->register(new TokenMiddlewareProvider());
         $this->register(new AccountServiceProvider());
@@ -211,25 +180,19 @@ class Application extends SilexApplication
         $this->register(new ConvertersServiceProvider());
         $this->register(new CSVServiceProvider());
         $this->register(new RegistrationServiceProvider());
-        $this->register(new ImagineServiceProvider());
-        $this->setUpImagine();
+
         $this->register(new JMSSerializerServiceProvider());
-        $this->register(new FFMpegServiceProvider());
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
         $this->register(new StatusServiceProvider());
         $this->setupGeonames();
-        $this->register(new MediaAlchemystServiceProvider());
-        $this->setupMediaAlchemyst();
-        $this->register(new MediaVorusServiceProvider());
-        $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
-        $this->register(new PHPExiftoolServiceProvider());
+
         $this->register(new RandomGeneratorServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
@@ -241,37 +204,23 @@ class Application extends SilexApplication
             $this->register(new BorderManagerServiceProvider());
         }
 
-        $this->register(new SessionHandlerServiceProvider());
-        $this->register(new SessionServiceProvider(), [
-            'session.test' => $this->getEnvironment() === static::ENV_TEST,
-            'session.storage.options' => ['cookie_lifetime' => 0]
-        ]);
-        $this->setupSession();
+
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->setupSwiftMailer();
         $this->register(new TasksServiceProvider());
-        $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
-        $this->register(new HttpFragmentServiceProvider());
-        $this->register(new TwigServiceProvider());
-        $this->setupTwig();
-        $this->register(new TranslationServiceProvider(), [
-            'locale_fallbacks' => ['fr'],
-            'translator.cache-options' => [
-                'debug' => $this['debug'],
-                'cache_dir' => $this->share(function($app) {
-                    return $app['cache.path'].'/translations';
-                }),
-            ],
-        ]);
-        $this->setupTranslation();
+
+        $this->register(new TemplateEngineMetaProvider());
+        $this->register(new HttpStackMetaProvider());
+        $this->register(new MediaUtilitiesMetaServiceProvider());
+        $this->register(new TranslationMetaProvider());
+
         $this->register(new FormServiceProvider());
         $this->setupForm();
         $this->register(new UnoconvServiceProvider());
-        $this->register(new UrlGeneratorServiceProvider());
-        $this->setupRequestContext();
+
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
@@ -280,31 +229,7 @@ class Application extends SilexApplication
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
-        $this->register(new ContentNegotiationServiceProvider());
-        $this->register(new CorsServiceProvider(), [
-            'alchemy_cors.debug' => $this['debug'],
-            'alchemy_cors.cache_path' => function (Application $app) {
-                return rtrim($app['cache.path'], '/\\') . '/alchemy_cors.cache.php';
-            },
-        ]);
 
-        $this['phraseanet.api_cors.options_provider'] = function (Application $app) {
-            $paths = [];
-
-            if (isset($app['phraseanet.configuration']['api_cors'])) {
-                $config = $app['phraseanet.configuration']['api_cors'];
-
-                if (isset($config['enabled']) && $config['enabled']) {
-                    unset($config['enabled']);
-
-                    $paths['/api/v\d+/'] = $config;
-                }
-            }
-
-            return new DefaultProvider($paths, []);
-        };
-
-        $this['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
         $this->register(new LocaleServiceProvider());
         $this->setupEventDispatcher();
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
@@ -316,8 +241,6 @@ class Application extends SilexApplication
 
             return $handler;
         });
-
-        $this->register(new ControllerProviderServiceProvider());
 
         $resolvers = $this['alchemy_embed.resource_resolvers'];
         $resolvers['datafile'] = $resolvers->share(function () {
@@ -410,114 +333,6 @@ class Application extends SilexApplication
     public function redirectUrl($route, $parameters = [])
     {
         return $this->redirect($this->url($route, $parameters));
-    }
-
-    public function setupTwig()
-    {
-        $this['twig'] = $this->share(
-            $this->extend('twig', function (\Twig_Environment $twig, $app) {
-                $twig->setCache($app['cache.path'].'/twig');
-
-                $paths = [];
-
-                if (file_exists($app['plugin.path'] . '/twig-paths.php')) {
-                    $paths = require $app['plugin.path'] . '/twig-paths.php';
-                }
-
-                if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
-                    $paths[] = $app['root.path'] . '/config/templates/mobile';
-                    $paths[] = $app['root.path'] . '/templates/mobile';
-                    $paths['phraseanet'] = $app['root.path'] . '/config/templates/mobile';
-                    $paths['phraseanet'] = $app['root.path'] . '/templates/mobile';
-                }
-
-                $paths[] = $app['root.path'] . '/config/templates/web';
-                $paths[] = $app['root.path'] . '/templates/web';
-                $paths['phraseanet'] = $app['root.path'] . '/config/templates/web';
-                $paths['phraseanet'] = $app['root.path'] . '/templates/web';
-
-                foreach ($paths as $namespace => $path) {
-                    if (!is_int($namespace)) {
-                        $app['twig.loader.filesystem']->addPath($path, $namespace);
-                    } else {
-                        $app['twig.loader.filesystem']->addPath($path);
-                    }
-                }
-
-                $twig->addGlobal('current_date', new \DateTime());
-
-                $twig->addExtension(new \Twig_Extension_Core());
-                $twig->addExtension(new \Twig_Extension_Optimizer());
-                $twig->addExtension(new \Twig_Extension_Escaper());
-                if ($app['debug']) {
-                    $twig->addExtension(new \Twig_Extension_Debug());
-                }
-
-                // add filter trans
-                $twig->addExtension(new TranslationExtension($app['translator']));
-                // add filter localizeddate
-                $twig->addExtension(new \Twig_Extensions_Extension_Intl());
-                // add filters truncate, wordwrap, nl2br
-                $twig->addExtension(new \Twig_Extensions_Extension_Text());
-                $twig->addExtension(new JSUniqueID());
-                $twig->addExtension(new Fit());
-                $twig->addExtension(new Camelize());
-                $twig->addExtension(new BytesConverter());
-                $twig->addExtension(new PhraseanetExtension($app));
-
-                $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
-                $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
-                $twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
-                $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
-                $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
-                $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
-                $twig->addFilter('ceil', new \Twig_Filter_Function('ceil'));
-                $twig->addFilter('max', new \Twig_Filter_Function('max'));
-                $twig->addFilter('min', new \Twig_Filter_Function('min'));
-                $twig->addFilter('bas_labels', new \Twig_Filter_Function('phrasea::bas_labels'));
-                $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
-                $twig->addFilter('sbas_labels', new \Twig_Filter_Function('phrasea::sbas_labels'));
-                $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
-                $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
-                $twig->addFilter('round', new \Twig_Filter_Function('round'));
-                $twig->addFilter('count', new \Twig_Filter_Function('count'));
-                $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
-                $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-                $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
-                    return str_replace("'", "\\'", $value);
-                }));
-
-                $twig->addFilter(new \Twig_SimpleFilter('highlight', function (\Twig_Environment $twig, $string) {
-                    return str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], $string);
-                }, ['needs_environment' => true,'is_safe' => ['html']]));
-
-                $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) {
-                    return preg_replace(
-                        "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-                        , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
-                        , $string
-                    );
-                }, ['needs_environment' => true, 'is_safe' => ['html']]));
-
-                $twig->addFilter(new \Twig_SimpleFilter('bounce', function (\Twig_Environment $twig, $fieldValue, $fieldName, $searchRequest, $sbasId) {
-                        // bounce value if it is present in thesaurus as well
-                    return "<a class=\"bounce\" onclick=\"bounce('"  .$sbasId . "','"
-                            . str_replace("'", "\\'",$searchRequest)
-                            . "', '"
-                            . str_replace("'", "\\'", $fieldName)
-                            . "');return(false);\">"
-                            . $fieldValue
-                            . "</a>";
-
-                }, ['needs_environment' => true, 'is_safe' => ['html']]));
-
-                $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
-                    return str_replace('"', '\"', $value);
-                }));
-
-                return $twig;
-            })
-        );
     }
 
     /**
@@ -812,103 +627,6 @@ class Application extends SilexApplication
         }));
     }
 
-    private function setUpImagine()
-    {
-        $this['imagine.factory'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
-                return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
-            }
-
-            if (class_exists('\Gmagick')) {
-                return 'gmagick';
-            }
-
-            if (class_exists('\Imagick')) {
-                return 'imagick';
-            }
-
-            if (extension_loaded('gd')) {
-                return 'gd';
-            }
-
-            throw new \RuntimeException('No Imagine driver available');
-        });
-    }
-
-    private function setupTranslation()
-    {
-        $this['translator'] = $this->share($this->extend('translator', function (CachedTranslator $translator, Application $app) {
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.fr.xlf', 'fr', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.fr.xlf', 'fr', 'validators');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.en.xlf', 'en', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.en.xlf', 'en', 'validators');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.de.xlf', 'de', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.de.xlf', 'de', 'validators');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/messages.nl.xlf', 'nl', 'messages');
-            $translator->addResource('xlf', __DIR__.'/../../../resources/locales/validators.nl.xlf', 'nl', 'validators');
-
-            return $translator;
-        }));
-    }
-
-    private function setupOrms()
-    {
-        $app = $this;
-
-        // Override "orm.cache.configurer" service provided for benefiting
-        // of "phraseanet.cache-service"
-        $app['orm.cache.configurer'] = $app->protect(function($name, Configuration $config, $options) use ($app)  {
-            /** @var Manager $service */
-            $service = $app['phraseanet.cache-service'];
-            $config->setMetadataCacheImpl(
-                $service->factory('ORM_metadata', $app['orm.cache.driver'], $app['orm.cache.options'])
-            );
-            $config->setQueryCacheImpl(
-                $service->factory('ORM_query', $app['orm.cache.driver'], $app['orm.cache.options'])
-            );
-            $config->setResultCacheImpl(
-                $service->factory('ORM_result', $app['orm.cache.driver'], $app['orm.cache.options'])
-            );
-            $config->setHydrationCacheImpl(
-                $service->factory('ORM_hydration', $app['orm.cache.driver'], $app['orm.cache.options'])
-            );
-        });
-
-        $app['orm.proxies_dir'] = $app['root.path'].'/resources/proxies';
-        $app['orm.auto_generate_proxies'] = $app['debug'];
-        $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
-
-        $this['orm.ems'] = $this->share($this->extend('orm.ems', function (\Pimple $ems, $app) {
-            GedmoExtension::registerAnnotations();
-
-            foreach ($ems->keys() as $key) {
-                $app['orm.annotation.register']($key);
-                $connection = $ems[$key]->getConnection();
-
-                $app['connection.pool.manager']->add($connection);
-
-                $types = $app['orm.ems.options'][$key]['types'];
-                $app['dbal.type.register']($connection, $types);
-            }
-
-            return $ems;
-        }));
-    }
-
-    private function setupSession()
-    {
-        $this['session.storage.test'] = $this->share(function (Application $app) {
-            return new MockArraySessionStorage();
-        });
-
-        $this['session.storage.handler'] = $this->share(function (Application $app) {
-            if (!$this['phraseanet.configuration-tester']->isInstalled()) {
-                return new NullSessionHandler();
-            }
-            return $this['session.storage.handler.factory']->create($app['conf']);
-        });
-    }
-
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
@@ -926,36 +644,8 @@ class Application extends SilexApplication
     private function setupGeonames()
     {
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
-
             return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
         });
-    }
-
-    private function setupDBAL()
-    {
-        $this['dbs.config'] = $this->share($this->extend('dbs.config', function ($configs, $app) {
-            if ($app->getEnvironment() !== self::ENV_DEV) {
-                return $configs;
-            }
-
-            foreach($configs->keys() as $service) {
-                $app['dbal.config.register.loggers']($configs[$service]);
-            }
-
-            return $configs;
-        }));
-
-        $this['dbs.event_manager'] = $this->share($this->extend('dbs.event_manager', function ($eventManagers, $app) {
-            foreach ($eventManagers->keys() as $name) {
-                /** @var EventManager $eventManager */
-                $eventManager = $eventManagers[$name];
-                $app['dbal.evm.register.listeners']($eventManager);
-
-                $eventManager->addEventListener(Events::postConnect, $this);
-            }
-
-            return $eventManagers;
-        }));
     }
 
     /**
@@ -967,61 +657,6 @@ class Application extends SilexApplication
         if ('sqlite' == $args->getDatabasePlatform()->getName()) {
             $args->getConnection()->exec('PRAGMA foreign_keys = ON');
         }
-    }
-
-    private function setupMediaAlchemyst()
-    {
-        $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
-            $configuration = [];
-
-            foreach ([
-                         'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
-                         'swftools.swfrender.binaries'  => 'swf_render_binary',
-                         'swftools.swfextract.binaries' => 'swf_extract_binary',
-                         'unoconv.binaries'             => 'unoconv_binary',
-                         'mp4box.binaries'              => 'mp4box_binary',
-                         'gs.binaries'                  => 'ghostscript_binary',
-                         'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
-                         'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
-                         'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
-                         'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
-                         'gs.timeout'                   => 'gs_timeout',
-                         'mp4box.timeout'               => 'mp4box_timeout',
-                         'swftools.timeout'             => 'swftools_timeout',
-                         'unoconv.timeout'              => 'unoconv_timeout',
-                     ] as $parameter => $key) {
-                if ($this['conf']->has(['main', 'binaries', $key])) {
-                    $configuration[$parameter] = $this['conf']->get(['main', 'binaries', $key]);
-                }
-            }
-
-            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']) ?: null;
-            $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
-
-            return $configuration;
-        });
-
-        $this['media-alchemyst.logger'] = $this->share(function (Application $app) {
-            return $app['monolog'];
-        });
-    }
-
-    private function setupRequestContext()
-    {
-        $this['request_context'] = $this->share($this->extend('request_context', function (RequestContext $context, Application $app) {
-            if ($app['configuration.store']->isSetup()) {
-                $data = parse_url($app['conf']->get('servername'));
-
-                if (isset($data['scheme'])) {
-                    $context->setScheme($data['scheme']);
-                }
-                if (isset($data['host'])) {
-                    $context->setHost($data['host']);
-                }
-            }
-
-            return $context;
-        }));
     }
 
     private function setupSwiftMailer()
