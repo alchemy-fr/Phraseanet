@@ -34,6 +34,6 @@ class TranslationMetaProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        // TODO: Implement boot() method.
+        // no-op
     }
 }

@@ -31,6 +31,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
+use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesServiceProvider;
 use Alchemy\Phrasea\Core\MetaProvider\TemplateEngineMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\TranslationMetaProvider;
 use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
@@ -83,18 +84,12 @@ use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
-use FFMpeg\FFMpegServiceProvider;
-use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
-use MediaVorus\MediaVorusServiceProvider;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
-use MP4Box\MP4BoxServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
-use Neutron\Silex\Provider\ImagineServiceProvider;
-use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
@@ -175,6 +170,7 @@ class Application extends SilexApplication
         $this->register(new MonologServiceProvider());
         $this->setupMonolog();
         $this->register(new FilesystemServiceProvider());
+        $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new CacheConnectionServiceProvider());
         $this->register(new PhraseanetServiceProvider());
@@ -194,25 +190,20 @@ class Application extends SilexApplication
         $this->register(new ConvertersServiceProvider());
         $this->register(new CSVServiceProvider());
         $this->register(new RegistrationServiceProvider());
-        $this->register(new ImagineServiceProvider());
+
         $this->setUpImagine();
         $this->register(new JMSSerializerServiceProvider());
-        $this->register(new FFMpegServiceProvider());
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
         $this->register(new StatusServiceProvider());
         $this->setupGeonames();
-        $this->register(new MediaAlchemystServiceProvider());
-        $this->setupMediaAlchemyst();
-        $this->register(new MediaVorusServiceProvider());
-        $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
-        $this->register(new PHPExiftoolServiceProvider());
+
         $this->register(new RandomGeneratorServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
@@ -235,18 +226,20 @@ class Application extends SilexApplication
         $this->register(new SwiftmailerServiceProvider());
         $this->setupSwiftMailer();
         $this->register(new TasksServiceProvider());
-        $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
-        $this->register(new HttpFragmentServiceProvider());
 
+        $this->register(new HttpFragmentServiceProvider());
+        $this->register(new UrlGeneratorServiceProvider());
+        $this->setupRequestContext();
+
+        $this->register(new MediaUtilitiesServiceProvider());
         $this->register(new TemplateEngineMetaProvider());
         $this->register(new TranslationMetaProvider());
 
         $this->register(new FormServiceProvider());
         $this->setupForm();
         $this->register(new UnoconvServiceProvider());
-        $this->register(new UrlGeneratorServiceProvider());
-        $this->setupRequestContext();
+
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
@@ -746,43 +739,6 @@ class Application extends SilexApplication
         if ('sqlite' == $args->getDatabasePlatform()->getName()) {
             $args->getConnection()->exec('PRAGMA foreign_keys = ON');
         }
-    }
-
-    private function setupMediaAlchemyst()
-    {
-        $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
-            $configuration = [];
-
-            foreach ([
-                         'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
-                         'swftools.swfrender.binaries'  => 'swf_render_binary',
-                         'swftools.swfextract.binaries' => 'swf_extract_binary',
-                         'unoconv.binaries'             => 'unoconv_binary',
-                         'mp4box.binaries'              => 'mp4box_binary',
-                         'gs.binaries'                  => 'ghostscript_binary',
-                         'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
-                         'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
-                         'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
-                         'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
-                         'gs.timeout'                   => 'gs_timeout',
-                         'mp4box.timeout'               => 'mp4box_timeout',
-                         'swftools.timeout'             => 'swftools_timeout',
-                         'unoconv.timeout'              => 'unoconv_timeout',
-                     ] as $parameter => $key) {
-                if ($this['conf']->has(['main', 'binaries', $key])) {
-                    $configuration[$parameter] = $this['conf']->get(['main', 'binaries', $key]);
-                }
-            }
-
-            $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']) ?: null;
-            $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
-
-            return $configuration;
-        });
-
-        $this['media-alchemyst.logger'] = $this->share(function (Application $app) {
-            return $app['monolog'];
-        });
     }
 
     private function setupRequestContext()
