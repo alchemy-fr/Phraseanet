@@ -212,9 +212,9 @@ class Application extends SilexApplication
         $this->register(new TasksServiceProvider());
         $this->register(new TokensServiceProvider());
 
+        $this->register(new TemplateEngineMetaProvider());
         $this->register(new HttpStackMetaProvider());
         $this->register(new MediaUtilitiesMetaServiceProvider());
-        $this->register(new TemplateEngineMetaProvider());
         $this->register(new TranslationMetaProvider());
 
         $this->register(new FormServiceProvider());
