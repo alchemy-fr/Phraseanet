@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
+use MediaAlchemyst\Specification\SpecificationInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdef
@@ -268,7 +269,7 @@ class databox_subdef
     /**
      * Get the MediaAlchemyst specs for the current subdef
      *
-     * @return type
+     * @return SpecificationInterface
      */
     public function getSpecs()
     {

@@ -248,7 +248,7 @@ class PhraseanetExtension extends \Twig_Extension
             }
         } elseif ($record instanceof \record_adapter) {
             if (null !== $thumbnail = $record->get_subdef($subdefName)) {
-                if ('' !== $path = $thumbnail->get_pathfile()) {
+                if ('' !== $path = $thumbnail->getRealPath()) {
                     $etag = $thumbnail->getEtag();
                     return $staticMode->getUrl($path, $etag);
                 }

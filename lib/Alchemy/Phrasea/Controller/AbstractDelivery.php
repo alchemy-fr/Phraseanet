@@ -83,7 +83,7 @@ abstract class AbstractDelivery
      */
     private function tamperProofSubDefinition(\media_subdef $mediaSubdefinition, $watermark, $stamp)
     {
-        $pathOut = $mediaSubdefinition->get_pathfile();
+        $pathOut = $mediaSubdefinition->getRealPath();
 
         if ($watermark === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
             $pathOut = \recordutils_image::watermark($this->app, $mediaSubdefinition);

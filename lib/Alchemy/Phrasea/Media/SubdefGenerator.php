@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -12,7 +11,7 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
@@ -28,9 +27,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class SubdefGenerator
 {
+    use DispatcherAware;
+
     private $app;
     private $alchemyst;
     private $filesystem;
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
     private $mediavorus;
 
@@ -43,17 +47,10 @@ class SubdefGenerator
         $this->mediavorus = $mediavorus;
     }
 
-    private function dispatch($eventName, RecordEvent $event)
-    {
-        $this->app['dispatcher']->dispatch($eventName, $event);
-    }
-
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
         if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
-
-            return $this;
         }
 
         $this->dispatch(
@@ -75,7 +72,7 @@ class SubdefGenerator
             $pathdest = null;
 
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
-                $pathdest = $record->get_subdef($subdefname)->get_pathfile();
+                $pathdest = $record->get_subdef($subdefname)->getRealPath();
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
                 $record->clearSubdefCache($subdefname);
@@ -91,7 +88,7 @@ class SubdefGenerator
                 )
             );
 
-            $this->logger->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
+            $this->logger->info(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generateSubdef($record, $subdef, $pathdest);
 
             if ($this->filesystem->exists($pathdest)) {
@@ -128,15 +125,13 @@ class SubdefGenerator
                 $mediaCreated
             )
         );
-
-        return $this;
     }
 
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
         try {
             if (null === $record->get_hd_file()) {
-                $this->logger->addInfo('No HD file found, aborting');
+                $this->logger->info('No HD file found, aborting');
 
                 return;
             }
@@ -167,27 +162,20 @@ class SubdefGenerator
      */
     private function getExtensionFromSpec(SpecificationInterface $spec)
     {
-        $extension = null;
-
-        switch (true) {
-            case $spec->getType() === SpecificationInterface::TYPE_IMAGE:
-                $extension = 'jpg';
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_ANIMATION:
-                $extension = 'gif';
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_AUDIO:
-                $extension = $this->getExtensionFromAudioCodec($spec->getAudioCodec());
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_VIDEO:
-                $extension = $this->getExtensionFromVideoCodec($spec->getVideoCodec());
-                break;
-            case $spec->getType() === SpecificationInterface::TYPE_SWF:
-                $extension = 'swf';
-                break;
+        switch ($spec->getType()) {
+            case SpecificationInterface::TYPE_IMAGE:
+                return 'jpg';
+            case SpecificationInterface::TYPE_ANIMATION:
+                return 'gif';
+            case SpecificationInterface::TYPE_AUDIO:
+                return $this->getExtensionFromAudioCodec($spec->getAudioCodec());
+            case SpecificationInterface::TYPE_VIDEO:
+                return $this->getExtensionFromVideoCodec($spec->getVideoCodec());
+            case SpecificationInterface::TYPE_SWF:
+                return 'swf';
         }
 
-        return $extension;
+        return null;
     }
 
     /**
@@ -199,21 +187,16 @@ class SubdefGenerator
      */
     private function getExtensionFromAudioCodec($audioCodec)
     {
-        $extension = null;
-
         switch ($audioCodec) {
             case 'flac':
-                $extension = 'flac';
-                break;
+                return 'flac';
             case 'libvorbis':
-                $extension = 'ogg';
-                break;
+                return 'ogg';
             case 'libmp3lame':
-                $extension = 'mp3';
-                break;
+                return 'mp3';
         }
 
-        return $extension;
+        return null;
     }
 
     /**
@@ -225,20 +208,15 @@ class SubdefGenerator
      */
     private function getExtensionFromVideoCodec($videoCodec)
     {
-        $extension = null;
-
         switch ($videoCodec) {
             case 'libtheora':
-                $extension = 'ogv';
-                break;
+                return 'ogv';
             case 'libvpx':
-                $extension = 'webm';
-                break;
+                return 'webm';
             case 'libx264':
-                $extension = 'mp4';
-                break;
+                return 'mp4';
         }
 
-        return $extension;
+        return null;
     }
 }

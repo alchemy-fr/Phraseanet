@@ -2235,7 +2235,7 @@ class V1Controller extends Controller
             if (!in_array($name, array('thumbnail', 'preview'))) {
                 continue;
             }
-            $media = $this->app->getMediaFromUri($value->get_pathfile());
+            $media = $this->app->getMediaFromUri($value->getRealPath());
             $story->substitute_subdef($name, $media, $this->app);
             $this->getDataboxLogger($story->getDatabox())->log(
                 $story,

@@ -166,8 +166,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_path()
     {
-        $this->assertEquals(dirname(self::$objectPresent->get_pathfile()) . DIRECTORY_SEPARATOR, self::$objectPresent->get_path());
-        $this->assertEquals(dirname(self::$objectNotPresent->get_pathfile()) . DIRECTORY_SEPARATOR, self::$objectNotPresent->get_path());
+        $this->assertEquals(dirname(self::$objectPresent->getRealPath()) . DIRECTORY_SEPARATOR, self::$objectPresent->get_path());
+        $this->assertEquals(dirname(self::$objectNotPresent->getRealPath()) . DIRECTORY_SEPARATOR, self::$objectNotPresent->get_path());
     }
 
     /**
@@ -175,8 +175,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_file()
     {
-        $this->assertEquals(basename(self::$objectPresent->get_pathfile()), self::$objectPresent->get_file());
-        $this->assertEquals(basename(self::$objectNotPresent->get_pathfile()), self::$objectNotPresent->get_file());
+        $this->assertEquals(basename(self::$objectPresent->getRealPath()), self::$objectPresent->get_file());
+        $this->assertEquals(basename(self::$objectNotPresent->getRealPath()), self::$objectNotPresent->get_file());
     }
 
     /**
@@ -218,18 +218,18 @@ class media_subdefTest extends \PhraseanetTestCase
     }
 
     /**
-     * @covers media_subdef::get_pathfile
+     * @covers media_subdef::getRealPath
      */
-    public function testGet_pathfile()
+    public function testGetRealPath()
     {
-        $this->assertEquals(self::$objectPresent->get_path() . self::$objectPresent->get_file(), self::$objectPresent->get_pathfile());
-        $this->assertEquals(self::$objectNotPresent->get_path() . self::$objectNotPresent->get_file(), self::$objectNotPresent->get_pathfile());
-        $this->assertTrue(file_exists(self::$objectPresent->get_pathfile()));
-        $this->assertTrue(file_exists(self::$objectNotPresent->get_pathfile()));
-        $this->assertTrue(is_readable(self::$objectPresent->get_pathfile()));
-        $this->assertTrue(is_readable(self::$objectNotPresent->get_pathfile()));
-        $this->assertTrue(is_writable(self::$objectPresent->get_pathfile()));
-        $this->assertTrue(is_writable(self::$objectNotPresent->get_pathfile()));
+        $this->assertEquals(self::$objectPresent->get_path() . self::$objectPresent->get_file(), self::$objectPresent->getRealPath());
+        $this->assertEquals(self::$objectNotPresent->get_path() . self::$objectNotPresent->get_file(), self::$objectNotPresent->getRealPath());
+        $this->assertTrue(file_exists(self::$objectPresent->getRealPath()));
+        $this->assertTrue(file_exists(self::$objectNotPresent->getRealPath()));
+        $this->assertTrue(is_readable(self::$objectPresent->getRealPath()));
+        $this->assertTrue(is_readable(self::$objectNotPresent->getRealPath()));
+        $this->assertTrue(is_writable(self::$objectPresent->getRealPath()));
+        $this->assertTrue(is_writable(self::$objectNotPresent->getRealPath()));
     }
 
     /**

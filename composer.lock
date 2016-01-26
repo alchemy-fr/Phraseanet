@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "208c3c11dd44d08c565efc4e30a9f151",
-    "content-hash": "936071303af9da18de3b97ba33f1b387",
+    "hash": "26dcf1e33b20a55ecd2555da02ba6161",
+    "content-hash": "6972430014dbde461b9954c32a8cbdbb",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -696,6 +696,69 @@
                 "zip"
             ],
             "time": "2015-12-15 11:29:00"
+        },
+        {
+            "name": "aws/aws-sdk-php",
+            "version": "2.8.24",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aws/aws-sdk-php.git",
+                "reference": "54b67f902bb2c5bbab481bc3c46537752a018830"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/54b67f902bb2c5bbab481bc3c46537752a018830",
+                "reference": "54b67f902bb2c5bbab481bc3c46537752a018830",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": "~3.7",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "doctrine/cache": "~1.0",
+                "ext-openssl": "*",
+                "monolog/monolog": "~1.4",
+                "phpunit/phpunit": "~4.0",
+                "phpunit/phpunit-mock-objects": "2.3.1",
+                "symfony/yaml": "~2.1"
+            },
+            "suggest": {
+                "doctrine/cache": "Adds support for caching of credentials and responses",
+                "ext-apc": "Allows service description opcode caching, request and response caching, and credentials caching",
+                "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
+                "monolog/monolog": "Adds support for logging HTTP requests and responses",
+                "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Aws": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Amazon Web Services",
+                    "homepage": "http://aws.amazon.com"
+                }
+            ],
+            "description": "AWS SDK for PHP - Use Amazon Web Services in your PHP project",
+            "homepage": "http://aws.amazon.com/sdkforphp",
+            "keywords": [
+                "amazon",
+                "aws",
+                "cloud",
+                "dynamodb",
+                "ec2",
+                "glacier",
+                "s3",
+                "sdk"
+            ],
+            "time": "2015-11-16 22:34:08"
         },
         {
             "name": "beberlei/assert",
@@ -2850,6 +2913,48 @@
             "time": "2015-01-13 18:12:26"
         },
         {
+            "name": "ircmaxell/password-compat",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/password_compat.git",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/password.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@php.net",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
+            "homepage": "https://github.com/ircmaxell/password_compat",
+            "keywords": [
+                "hashing",
+                "password"
+            ],
+            "time": "2014-11-20 16:49:30"
+        },
+        {
             "name": "ircmaxell/random-lib",
             "version": "v1.1.0",
             "source": {
@@ -3242,6 +3347,137 @@
                 "schema"
             ],
             "time": "2016-01-06 14:37:04"
+        },
+        {
+            "name": "league/flysystem",
+            "version": "1.0.16",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem.git",
+                "reference": "183e1a610664baf6dcd6fceda415baf43cbdc031"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/183e1a610664baf6dcd6fceda415baf43cbdc031",
+                "reference": "183e1a610664baf6dcd6fceda415baf43cbdc031",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "conflict": {
+                "league/flysystem-sftp": "<1.0.6"
+            },
+            "require-dev": {
+                "ext-fileinfo": "*",
+                "mockery/mockery": "~0.9",
+                "phpspec/phpspec": "^2.2",
+                "phpspec/prophecy-phpunit": "~1.0",
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "ext-fileinfo": "Required for MimeType",
+                "league/flysystem-aws-s3-v2": "Allows you to use S3 storage with AWS SDK v2",
+                "league/flysystem-aws-s3-v3": "Allows you to use S3 storage with AWS SDK v3",
+                "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
+                "league/flysystem-cached-adapter": "Flysystem adapter decorator for metadata caching",
+                "league/flysystem-copy": "Allows you to use Copy.com storage",
+                "league/flysystem-dropbox": "Allows you to use Dropbox storage",
+                "league/flysystem-eventable-filesystem": "Allows you to use EventableFilesystem",
+                "league/flysystem-rackspace": "Allows you to use Rackspace Cloud Files",
+                "league/flysystem-sftp": "Allows you to use SFTP server storage via phpseclib",
+                "league/flysystem-webdav": "Allows you to use WebDAV storage",
+                "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Filesystem abstraction: Many filesystems, one API.",
+            "keywords": [
+                "Cloud Files",
+                "WebDAV",
+                "abstraction",
+                "aws",
+                "cloud",
+                "copy.com",
+                "dropbox",
+                "file systems",
+                "files",
+                "filesystem",
+                "filesystems",
+                "ftp",
+                "rackspace",
+                "remote",
+                "s3",
+                "sftp",
+                "storage"
+            ],
+            "time": "2015-12-19 20:16:43"
+        },
+        {
+            "name": "league/flysystem-aws-s3-v2",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-aws-s3-v2.git",
+                "reference": "e464a35e34abed572c76b76aa2f278d178e141c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-aws-s3-v2/zipball/e464a35e34abed572c76b76aa2f278d178e141c6",
+                "reference": "e464a35e34abed572c76b76aa2f278d178e141c6",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "~2.7",
+                "league/flysystem": "~1.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\AwsS3v2\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Flysystem adapter for AWS S3 SDK v2",
+            "time": "2015-10-15 15:55:48"
         },
         {
             "name": "league/fractal",
@@ -3922,6 +4158,54 @@
             "time": "2014-10-06 10:57:25"
         },
         {
+            "name": "paragonie/random_compat",
+            "version": "1.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "dd8998b7c846f6909f4e7a5f67fabebfc412a4f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/dd8998b7c846f6909f4e7a5f67fabebfc412a4f7",
+                "reference": "dd8998b7c846f6909f4e7a5f67fabebfc412a4f7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2016-01-06 13:31:20"
+        },
+        {
             "name": "php-ffmpeg/php-ffmpeg",
             "version": "0.5.1",
             "source": {
@@ -4436,12 +4720,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "9835fc4f8463c944bdc2617cbbdb6b688ca17944"
+                "reference": "7de84a436dfddf7d407b9cc6f08afa6fa56ff774"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/9835fc4f8463c944bdc2617cbbdb6b688ca17944",
-                "reference": "9835fc4f8463c944bdc2617cbbdb6b688ca17944",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7de84a436dfddf7d407b9cc6f08afa6fa56ff774",
+                "reference": "7de84a436dfddf7d407b9cc6f08afa6fa56ff774",
                 "shasum": ""
             },
             "conflict": {
@@ -4485,10 +4769,11 @@
                 "symfony/http-foundation": ">=2,<2.1|>=2.1,<2.2|>=2.2,<2.3|>=2.3,<2.3.27|>=2.4,<2.5|>=2.5,<2.5.11|>=2.6,<2.6.6",
                 "symfony/http-kernel": ">=2,<2.1|>=2.1,<2.2|>=2.2,<2.3|>=2.3,<2.3.29|>=2.4,<2.5|>=2.5,<2.5.12|>=2.6,<2.6.8",
                 "symfony/routing": ">=2,<2.0.19",
-                "symfony/security": ">=2.3,<2.3.35|>=2.4,<2.5|>=2.5,<2.6|>=2.6,<2.6.12|>=2.7,<2.7.7|>=2,<2.0.25|>=2.1,<2.1.13|>=2.2,<2.2.9",
+                "symfony/security": ">=2.3,<2.3.37|>=2.4,<2.5|>=2.5,<2.6|>=2.6,<2.6.13|>=2.7,<2.7.9|>=2,<2.0.25|>=2.1,<2.1.13|>=2.2,<2.2.9",
+                "symfony/security-core": ">=2.4,<2.5|>=2.5,<2.6|>=2.6,<2.6.13|>=2.7,<2.7.9",
                 "symfony/security-http": ">=2.4,<2.5|>=2.5,<2.6|>=2.6,<2.6.12|>=2.7,<2.7.7",
                 "symfony/serializer": ">=2,<2.0.11",
-                "symfony/symfony": ">=2,<2.1|>=2.1,<2.2|>=2.2,<2.3|>=2.3,<2.3.35|>=2.4,<2.5|>=2.5,<2.6|>=2.6,<2.6.12|>=2.7,<2.7.7",
+                "symfony/symfony": ">=2,<2.1|>=2.1,<2.2|>=2.2,<2.3|>=2.3,<2.3.37|>=2.4,<2.5|>=2.5,<2.6|>=2.6,<2.6.13|>=2.7,<2.7.9",
                 "symfony/translation": ">=2,<2.0.17",
                 "symfony/validator": ">=2,<2.0.24|>=2.1,<2.1.12|>=2.2,<2.2.5|>=2.3,<2.3.3",
                 "symfony/web-profiler-bundle": ">=2,<2.1|>=2.1,<2.2|>=2.2,<2.3|>=2.3,<2.3.19|>=2.4,<2.4.9|>=2.5,<2.5.4",
@@ -4542,7 +4827,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2016-01-12 07:21:05"
+            "time": "2016-01-25 21:27:29"
         },
         {
             "name": "seld/jsonlint",
@@ -5104,24 +5389,491 @@
             "time": "2014-12-05 14:17:14"
         },
         {
-            "name": "symfony/symfony",
-            "version": "v2.7.7",
+            "name": "symfony/polyfill-intl-icu",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/symfony.git",
-                "reference": "cc69dbd24b4b2e6de60b2414ef95da2794f459a2"
+                "url": "https://github.com/symfony/polyfill-intl-icu.git",
+                "reference": "66b0bb4abda229bc073eff6bbc8f2685bdaac165"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/cc69dbd24b4b2e6de60b2414ef95da2794f459a2",
-                "reference": "cc69dbd24b4b2e6de60b2414ef95da2794f459a2",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-icu/zipball/66b0bb4abda229bc073eff6bbc8f2685bdaac165",
+                "reference": "66b0bb4abda229bc073eff6bbc8f2685bdaac165",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/intl": "~2.3|~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's ICU-related data and classes",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "icu",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-01-20 09:13:37"
+        },
+        {
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "1289d16209491b584839022f29257ad859b8532d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/1289d16209491b584839022f29257ad859b8532d",
+                "reference": "1289d16209491b584839022f29257ad859b8532d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-01-20 09:13:37"
+        },
+        {
+            "name": "symfony/polyfill-php54",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php54.git",
+                "reference": "74663d5a2ff3c530c1bc0571500e0feec9094054"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/74663d5a2ff3c530c1bc0571500e0feec9094054",
+                "reference": "74663d5a2ff3c530c1bc0571500e0feec9094054",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php54\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 5.4+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-01-20 09:13:37"
+        },
+        {
+            "name": "symfony/polyfill-php55",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php55.git",
+                "reference": "b4f3f07d91702f8f926339fc4fcf81671d8c27e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php55/zipball/b4f3f07d91702f8f926339fc4fcf81671d8c27e6",
+                "reference": "b4f3f07d91702f8f926339fc4fcf81671d8c27e6",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/password-compat": "~1.0",
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php55\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 5.5+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-01-20 09:13:37"
+        },
+        {
+            "name": "symfony/polyfill-php56",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php56.git",
+                "reference": "4d891fff050101a53a4caabb03277284942d1ad9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php56/zipball/4d891fff050101a53a4caabb03277284942d1ad9",
+                "reference": "4d891fff050101a53a4caabb03277284942d1ad9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/polyfill-util": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php56\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 5.6+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-01-20 09:13:37"
+        },
+        {
+            "name": "symfony/polyfill-php70",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php70.git",
+                "reference": "8428ceddbbaf102f2906769a8ef2438220c5cb95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php70/zipball/8428ceddbbaf102f2906769a8ef2438220c5cb95",
+                "reference": "8428ceddbbaf102f2906769a8ef2438220c5cb95",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": "~1.0",
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php70\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 7.0+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-01-25 08:44:42"
+        },
+        {
+            "name": "symfony/polyfill-util",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-util.git",
+                "reference": "8de62801aa12bc4dfcf85eef5d21981ae7bb3cc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-util/zipball/8de62801aa12bc4dfcf85eef5d21981ae7bb3cc4",
+                "reference": "8de62801aa12bc4dfcf85eef5d21981ae7bb3cc4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Util\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony utilities for portability of PHP codes",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compat",
+                "compatibility",
+                "polyfill",
+                "shim"
+            ],
+            "time": "2016-01-20 09:13:37"
+        },
+        {
+            "name": "symfony/security-acl",
+            "version": "v2.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/security-acl.git",
+                "reference": "4a3f7327ad215242c78f6564ad4ea6d2db1b8347"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/security-acl/zipball/4a3f7327ad215242c78f6564ad4ea6d2db1b8347",
+                "reference": "4a3f7327ad215242c78f6564ad4ea6d2db1b8347",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9",
+                "symfony/security-core": "~2.4|~3.0.0"
+            },
+            "require-dev": {
+                "doctrine/common": "~2.2",
+                "doctrine/dbal": "~2.2",
+                "psr/log": "~1.0",
+                "symfony/phpunit-bridge": "~2.7|~3.0.0"
+            },
+            "suggest": {
+                "doctrine/dbal": "For using the built-in ACL implementation",
+                "symfony/class-loader": "For using the ACL generateSql script",
+                "symfony/finder": "For using the ACL generateSql script"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Security\\Acl\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Security Component - ACL (Access Control List)",
+            "homepage": "https://symfony.com",
+            "time": "2015-12-28 09:39:09"
+        },
+        {
+            "name": "symfony/symfony",
+            "version": "v2.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/symfony.git",
+                "reference": "f3e6a82bcbea4db3b56df08e491e20a1faae82b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/f3e6a82bcbea4db3b56df08e491e20a1faae82b5",
+                "reference": "f3e6a82bcbea4db3b56df08e491e20a1faae82b5",
                 "shasum": ""
             },
             "require": {
                 "doctrine/common": "~2.4",
                 "php": ">=5.3.9",
                 "psr/log": "~1.0",
+                "symfony/polyfill-intl-icu": "~1.0",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/polyfill-php54": "~1.0",
+                "symfony/polyfill-php55": "~1.0",
+                "symfony/polyfill-php56": "~1.0",
+                "symfony/polyfill-php70": "~1.0",
+                "symfony/polyfill-util": "~1.0",
+                "symfony/security-acl": "~2.7",
                 "twig/twig": "~1.23|~2.0"
+            },
+            "conflict": {
+                "phpdocumentor/reflection": "<1.0.7"
             },
             "replace": {
                 "symfony/asset": "self.version",
@@ -5144,18 +5896,20 @@
                 "symfony/http-foundation": "self.version",
                 "symfony/http-kernel": "self.version",
                 "symfony/intl": "self.version",
+                "symfony/ldap": "self.version",
                 "symfony/locale": "self.version",
                 "symfony/monolog-bridge": "self.version",
                 "symfony/options-resolver": "self.version",
                 "symfony/process": "self.version",
                 "symfony/property-access": "self.version",
+                "symfony/property-info": "self.version",
                 "symfony/proxy-manager-bridge": "self.version",
                 "symfony/routing": "self.version",
                 "symfony/security": "self.version",
-                "symfony/security-acl": "self.version",
                 "symfony/security-bundle": "self.version",
                 "symfony/security-core": "self.version",
                 "symfony/security-csrf": "self.version",
+                "symfony/security-guard": "self.version",
                 "symfony/security-http": "self.version",
                 "symfony/serializer": "self.version",
                 "symfony/stopwatch": "self.version",
@@ -5175,14 +5929,14 @@
                 "doctrine/doctrine-bundle": "~1.2",
                 "doctrine/orm": "~2.4,>=2.4.5",
                 "egulias/email-validator": "~1.2",
-                "ircmaxell/password-compat": "~1.0",
                 "monolog/monolog": "~1.11",
-                "ocramius/proxy-manager": "~0.4|~1.0"
+                "ocramius/proxy-manager": "~0.4|~1.0",
+                "phpdocumentor/reflection": "^1.0.7"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
@@ -5196,11 +5950,7 @@
                     "Symfony\\Component\\": "src/Symfony/Component/"
                 },
                 "classmap": [
-                    "src/Symfony/Component/HttpFoundation/Resources/stubs",
                     "src/Symfony/Component/Intl/Resources/stubs"
-                ],
-                "files": [
-                    "src/Symfony/Component/Intl/Resources/stubs/functions.php"
                 ],
                 "exclude-from-classmap": [
                     "**/Tests/"
@@ -5225,7 +5975,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-11-23 11:58:08"
+            "time": "2016-01-14 12:01:11"
         },
         {
             "name": "themattharris/tmhoauth",

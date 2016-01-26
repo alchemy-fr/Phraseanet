@@ -921,7 +921,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             if ($this->has_subdef($name) && $this->get_subdef($name)->is_physically_present()) {
 
-                $path_file_dest = $this->get_subdef($name)->get_pathfile();
+                $path_file_dest = $this->get_subdef($name)->getRealPath();
                 $this->get_subdef($name)->remove_file();
                 $this->clearSubdefCache($name);
             } else {
@@ -1398,7 +1398,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $hd = $this->get_subdef('document');
 
         if ($hd->is_physically_present()) {
-            return new SymfoFile($hd->get_pathfile());
+            return new SymfoFile($hd->getRealPath());
         }
 
         return null;
@@ -1417,14 +1417,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 continue;
 
             if ($subdef->get_name() === 'thumbnail') {
-                $this->app['phraseanet.thumb-symlinker']->unlink($subdef->get_pathfile());
+                $this->app['phraseanet.thumb-symlinker']->unlink($subdef->getRealPath());
             }
 
-            $ftodel[] = $subdef->get_pathfile();
-            $watermark = $subdef->get_path() . 'watermark_' . $subdef->get_file();
+            $ftodel[] = $subdef->getRealPath();
+            $watermark = $subdef->getWatermarkRealPath();
             if (file_exists($watermark))
                 $ftodel[] = $watermark;
-            $stamp = $subdef->get_path() . 'stamp_' . $subdef->get_file();
+            $stamp = $subdef->getStampRealPath();
             if (file_exists($stamp))
                 $ftodel[] = $stamp;
         }
