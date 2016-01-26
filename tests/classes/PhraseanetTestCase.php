@@ -362,7 +362,6 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function loadDb($app)
     {
-        echo 'R';
         // copy db.ref.sqlite to db.sqlite to re-initialize db with empty values
         $app['filesystem']->copy($app['db.fixture.info']['path'], $app['db.test.info']['path'], true);
 
