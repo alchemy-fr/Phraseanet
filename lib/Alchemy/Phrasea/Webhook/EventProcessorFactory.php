@@ -2,33 +2,68 @@
 
 namespace Alchemy\Phrasea\Webhook;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor;
-use Alchemy\Phrasea\Webhook\Processor\UserRegistrationProcessor;
+use Alchemy\Phrasea\Webhook\Processor\CallableProcessorFactory;
+use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessorFactory;
+use Alchemy\Phrasea\Webhook\Processor\ProcessorFactory;
+use Alchemy\Phrasea\Webhook\Processor\UserRegistrationProcessorFactory;
 
 class EventProcessorFactory
 {
-    private $app;
 
+    /**
+     * @var ProcessorFactory
+     */
+    private $processorFactories = [];
+
+    /**
+     * @param Application $app
+     */
     public function __construct(Application $app)
     {
-        $this->app = $app;
+        $this->registerFactory(WebhookEvent::FEED_ENTRY_TYPE, new FeedEntryProcessorFactory($app));
+        $this->registerFactory(WebhookEvent::USER_REGISTRATION_TYPE, new UserRegistrationProcessorFactory($app));
     }
 
+    /**
+     * @param string $eventType
+     * @param ProcessorFactory $processorFactory
+     */
+    public function registerFactory($eventType, ProcessorFactory $processorFactory)
+    {
+        $this->processorFactories[$eventType] = $processorFactory;
+    }
+
+    /**
+     * @param string $eventType
+     * @param callback|callable $callable
+     */
+    public function registerCallableFactory($eventType, $callable)
+    {
+        if (! is_callable($callable)) {
+            throw new InvalidArgumentException(sprintf(
+                'Expected a callable, got "%s" instead',
+                is_object($callable) ? get_class($callable) : gettype($callable)
+            ));
+        }
+
+        $this->processorFactories[$eventType] = new CallableProcessorFactory($callable);
+    }
+
+    /**
+     * @param WebhookEvent $event
+     * @return Processor\ProcessorInterface
+     */
     public function get(WebhookEvent $event)
     {
-        switch ($event->getType()) {
-            case WebhookEvent::FEED_ENTRY_TYPE:
-                return new FeedEntryProcessor(
-                    $this->app,
-                    $this->app['repo.feed-entries'],
-                    $this->app['phraseanet.user-query']
-                );
-            case WebhookEvent::USER_REGISTRATION_TYPE:
-                return new UserRegistrationProcessor($this->app['repo.users']);
-            default:
-                throw new \RuntimeException(sprintf('No processor found for %s', $event->getType()));
+        if (! isset($this->processorFactories[$event->getType()])) {
+            throw new \RuntimeException(sprintf('No processor found for %s', $event->getType()));
         }
+
+        $factory = $this->processorFactories[$event->getType()];
+
+        return $factory->createProcessor();
     }
 }
