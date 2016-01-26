@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,70 +10,61 @@
 
 namespace Alchemy\Phrasea\TaskManager\Job;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
-use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
-use MediaAlchemyst\Transmuter\Image2Image;
 use Alchemy\Phrasea\Media\SubdefGenerator;
+use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
+use Doctrine\DBAL\Connection;
+use MediaAlchemyst\Transmuter\Image2Image;
 
 class SubdefsJob extends AbstractJob
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return $this->translator->trans('task::subdef:creation des sous definitions');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getJobId()
     {
         return 'Subdefs';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDescription()
     {
         return $this->translator->trans("task::subdef:creation des sous definitions des documents d'origine");
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEditor()
     {
         return new SubdefsEditor($this->translator);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
         $settings = simplexml_load_string($data->getTask()->getSettings());
-        $thumbnailExtraction = (Boolean) (string) $settings->embedded;
+        $thumbnailExtraction = (bool) (string) $settings->embedded;
 
         Image2Image::$lookForEmbeddedPreview = $thumbnailExtraction;
 
-        $sqlqmark = array();
-        $sqlparms = array();
-        foreach(array('image',
-                    'video',
-                    'audio',
-                    'document',
-                    'flash',
-                    'unknown') as $type) {
+        $documentTypes = [
+            'image',
+            'video',
+            'audio',
+            'document',
+            'flash',
+            'unknown'
+        ];
+
+        $sqlParameters = [];
+
+        foreach($documentTypes as $type) {
             if (!isset($settings->{"type_" . $type}) || !\p4field::isno($settings->{"type_" . $type})) {
-                $sqlqmark[] = '?';
-                $sqlparms[] = $type;
+                $sqlParameters[] = $type;
             }
         }
-        if(count($sqlqmark) == 0) {
+
+        if(empty($sqlParameters)) {
             return;
         }
 
@@ -90,16 +80,22 @@ class SubdefsJob extends AbstractJob
             $conn = $databox->get_connection();
 
             $sql = 'SELECT coll_id, record_id FROM record'
-                . ' WHERE jeton & ' . PhraseaTokens::MAKE_SUBDEF . ' > 0'
-                . ' AND type IN(' . implode(',', $sqlqmark) . ')'
+                . ' WHERE jeton & :token > 0 AND type IN(:types)'
                 . ' ORDER BY record_id DESC LIMIT 0, 30';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute($sqlparms);
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $resultSet = $conn->fetchAll(
+                $sql,
+                [
+                    'token' => PhraseaTokens::MAKE_SUBDEF,
+                    'types' => $sqlParameters,
+                ],
+                [
+                    'token' => \PDO::PARAM_INT,
+                    'types' => Connection::PARAM_STR_ARRAY,
+                ]
+            );
 
             $i = 0;
-            foreach ($rs as $row) {
+            foreach ($resultSet as $row) {
                 if (!$this->isStarted()) {
                     break;
                 }
@@ -107,9 +103,7 @@ class SubdefsJob extends AbstractJob
 
                 try {
                     $record = $databox->get_record($row['record_id']);
-                    /** @var SubdefGenerator $sg */
-                    $sg = $app['subdef.generator'];
-                    $sg->generateSubdefs($record);
+                    $this->getSubdefGenerator($app)->generateSubdefs($record);
                 } catch (\Exception $e) {
                     $this->log('warning', sprintf("Generate subdefs failed for : sbasid=%s / databox=%s / recordid=%s : %s", $databox->get_sbas_id(), $databox->get_dbname() , $row['record_id'], $e->getMessage()));
                 }
@@ -119,24 +113,35 @@ class SubdefsJob extends AbstractJob
                     . ' SET jeton=(jeton & ~(:flag_and)) | :flag_or, moddate=NOW()'
                     . ' WHERE record_id=:record_id';
 
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([
+                $conn->executeUpdate($sql, [
                     ':record_id' => $row['record_id'],
                     ':flag_and' => PhraseaTokens::MAKE_SUBDEF,
                     ':flag_or' => (PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX)
                 ]);
-                $stmt->closeCursor();
 
                 unset($record);
                 $i++;
 
                 if ($i % 5 === 0) {
-                    $app['elasticsearch.indexer']->flushQueue();
+                    $this->flushIndexerQueue($app);
                 }
             }
         }
 
-        $app['elasticsearch.indexer']->flushQueue();
+        $this->flushIndexerQueue($app);
     }
 
+    /**
+     * @param Application $app
+     * @return SubdefGenerator
+     */
+    private function getSubdefGenerator(Application $app)
+    {
+        return $app['subdef.generator'];
+    }
+
+    private function flushIndexerQueue(Application $app)
+    {
+        $app['elasticsearch.indexer']->flushQueue();
+    }
 }
