@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea;
 
-use Alchemy\Cors\Options\DefaultProvider;
-use Alchemy\CorsProvider\CorsServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Application\Environment;
 use Alchemy\Phrasea\Application\Helper\AclAware;
@@ -20,7 +18,6 @@ use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\AuthenticatorAware;
 use Alchemy\Phrasea\Application\RouteLoader;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
-use Alchemy\Phrasea\ControllerProvider\ControllerProviderServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
@@ -31,7 +28,8 @@ use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
-use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesServiceProvider;
+use Alchemy\Phrasea\Core\MetaProvider\HttpStackMetaProvider;
+use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesMetaServiceProvider;
 use Alchemy\Phrasea\Core\MetaProvider\TemplateEngineMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\TranslationMetaProvider;
 use Alchemy\Phrasea\Core\Middleware\ApiApplicationMiddlewareProvider;
@@ -48,7 +46,6 @@ use Alchemy\Phrasea\Core\Provider\CacheConnectionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
-use Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
@@ -68,7 +65,6 @@ use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
-use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\StatusServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
@@ -94,12 +90,9 @@ use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider\FormServiceProvider;
-use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
-use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
@@ -110,9 +103,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use Symfony\Component\Routing\RequestContext;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -191,7 +181,6 @@ class Application extends SilexApplication
         $this->register(new CSVServiceProvider());
         $this->register(new RegistrationServiceProvider());
 
-        $this->setUpImagine();
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FeedServiceProvider());
         $this->register(new FtpServiceProvider());
@@ -215,12 +204,7 @@ class Application extends SilexApplication
             $this->register(new BorderManagerServiceProvider());
         }
 
-        $this->register(new SessionHandlerServiceProvider());
-        $this->register(new SessionServiceProvider(), [
-            'session.test' => $this->getEnvironment() === static::ENV_TEST,
-            'session.storage.options' => ['cookie_lifetime' => 0]
-        ]);
-        $this->setupSession();
+
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
@@ -228,11 +212,8 @@ class Application extends SilexApplication
         $this->register(new TasksServiceProvider());
         $this->register(new TokensServiceProvider());
 
-        $this->register(new HttpFragmentServiceProvider());
-        $this->register(new UrlGeneratorServiceProvider());
-        $this->setupRequestContext();
-
-        $this->register(new MediaUtilitiesServiceProvider());
+        $this->register(new HttpStackMetaProvider());
+        $this->register(new MediaUtilitiesMetaServiceProvider());
         $this->register(new TemplateEngineMetaProvider());
         $this->register(new TranslationMetaProvider());
 
@@ -248,31 +229,7 @@ class Application extends SilexApplication
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
         $this->register(new PhraseaEventServiceProvider());
-        $this->register(new ContentNegotiationServiceProvider());
-        $this->register(new CorsServiceProvider(), [
-            'alchemy_cors.debug' => $this['debug'],
-            'alchemy_cors.cache_path' => function (Application $app) {
-                return rtrim($app['cache.path'], '/\\') . '/alchemy_cors.cache.php';
-            },
-        ]);
 
-        $this['phraseanet.api_cors.options_provider'] = function (Application $app) {
-            $paths = [];
-
-            if (isset($app['phraseanet.configuration']['api_cors'])) {
-                $config = $app['phraseanet.configuration']['api_cors'];
-
-                if (isset($config['enabled']) && $config['enabled']) {
-                    unset($config['enabled']);
-
-                    $paths['/api/v\d+/'] = $config;
-                }
-            }
-
-            return new DefaultProvider($paths, []);
-        };
-
-        $this['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
         $this->register(new LocaleServiceProvider());
         $this->setupEventDispatcher();
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
@@ -284,8 +241,6 @@ class Application extends SilexApplication
 
             return $handler;
         });
-
-        $this->register(new ControllerProviderServiceProvider());
 
         $resolvers = $this['alchemy_embed.resource_resolvers'];
         $resolvers['datafile'] = $resolvers->share(function () {
@@ -672,43 +627,6 @@ class Application extends SilexApplication
         }));
     }
 
-    private function setUpImagine()
-    {
-        $this['imagine.factory'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
-                return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
-            }
-
-            if (class_exists('\Gmagick')) {
-                return 'gmagick';
-            }
-
-            if (class_exists('\Imagick')) {
-                return 'imagick';
-            }
-
-            if (extension_loaded('gd')) {
-                return 'gd';
-            }
-
-            throw new \RuntimeException('No Imagine driver available');
-        });
-    }
-
-    private function setupSession()
-    {
-        $this['session.storage.test'] = $this->share(function (Application $app) {
-            return new MockArraySessionStorage();
-        });
-
-        $this['session.storage.handler'] = $this->share(function (Application $app) {
-            if (!$this['phraseanet.configuration-tester']->isInstalled()) {
-                return new NullSessionHandler();
-            }
-            return $this['session.storage.handler.factory']->create($app['conf']);
-        });
-    }
-
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
@@ -739,24 +657,6 @@ class Application extends SilexApplication
         if ('sqlite' == $args->getDatabasePlatform()->getName()) {
             $args->getConnection()->exec('PRAGMA foreign_keys = ON');
         }
-    }
-
-    private function setupRequestContext()
-    {
-        $this['request_context'] = $this->share($this->extend('request_context', function (RequestContext $context, Application $app) {
-            if ($app['configuration.store']->isSetup()) {
-                $data = parse_url($app['conf']->get('servername'));
-
-                if (isset($data['scheme'])) {
-                    $context->setScheme($data['scheme']);
-                }
-                if (isset($data['host'])) {
-                    $context->setHost($data['host']);
-                }
-            }
-
-            return $context;
-        }));
     }
 
     private function setupSwiftMailer()

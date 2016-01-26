@@ -41,7 +41,7 @@ class MediaAlchemystServiceProvider implements ServiceProviderInterface
             return $configuration;
         });
 
-        $this['media-alchemyst.logger'] = $app->share(function (Application $app) {
+        $app['media-alchemyst.logger'] = $app->share(function (Application $app) {
             return $app['monolog'];
         });
     }
