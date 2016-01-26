@@ -43,7 +43,10 @@ class EventProcessorFactory
     public function registerCallableFactory($eventType, $callable)
     {
         if (! is_callable($callable)) {
-            throw new InvalidArgumentException('Expected a callable, got instead: ' . gettype($callable));
+            throw new InvalidArgumentException(sprintf(
+                'Expected a callable, got "%s" instead',
+                is_object($callable) ? get_class($callable) : gettype($callable)
+            ));
         }
 
         $this->processorFactories[$eventType] = new CallableProcessorFactory($callable);
