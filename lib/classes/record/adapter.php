@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -15,10 +14,10 @@ use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
@@ -35,7 +34,6 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -1339,7 +1337,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @return Array : list of deleted files;
+     * @return array[] list of deleted files real paths
      */
     public function delete()
     {
@@ -1557,7 +1555,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
         $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
 
-        $sql = sprintf('SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',
+        $sql = sprintf(
+            'SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',
             $caseSensitive ? 'utf8_bin' : 'utf8_unicode_ci',
             $offset_start,
             $how_many
