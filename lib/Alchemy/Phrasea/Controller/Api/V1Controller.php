@@ -943,7 +943,7 @@ class V1Controller extends Controller
         }
         $adapt = ($request->get('adapt')===null || !(\p4field::isno($request->get('adapt'))));
         $ret['adapt'] = $adapt;
-        $record->substitute_subdef($request->get('name'), $media, $this->app, $adapt);
+        $this->getSubdefSubstituer()->substitute($record, $request->get('name'), $media, $adapt);
         foreach ($record->get_embedable_medias() as $name => $media) {
             if ($name == $request->get('name') &&
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
@@ -2236,7 +2236,7 @@ class V1Controller extends Controller
                 continue;
             }
             $media = $this->app->getMediaFromUri($value->getRealPath());
-            $story->substitute_subdef($name, $media, $this->app);
+            $this->getSubdefSubstituer()->substitute($story, $name, $media);
             $this->getDataboxLogger($story->getDatabox())->log(
                 $story,
                 \Session_Logger::EVENT_SUBSTITUTE,
@@ -2566,5 +2566,13 @@ class V1Controller extends Controller
     private function getSearchEngineLogger()
     {
         return $this->app['phraseanet.SE.logger'];
+    }
+
+    /**
+     * @return \Alchemy\Phrasea\Media\SubdefSubstituer
+     */
+    private function getSubdefSubstituer()
+    {
+        return $this->app['subdef.substituer'];
     }
 }
