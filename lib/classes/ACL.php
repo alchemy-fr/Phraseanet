@@ -730,11 +730,7 @@ class ACL implements cache_cacheableInterface
                     continue;
                 }
 
-                try {
-                    $ret[$base_id] = collection::getByBaseId($this->app, $base_id);
-                } catch (\Exception $e) {
-
-                }
+                $ret[$base_id] = $collection;
             }
         }
 

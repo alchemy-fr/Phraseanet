@@ -188,20 +188,57 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
             ));
         }
 
-        $repository = self::getRepository($app, $reference->getDataboxId());
-        $collection = $repository->find($reference->getCollectionId());
+        return self::getAvailableCollection($app, $reference->getDataboxId(), $reference->getCollectionId());
+    }
 
-        if (!$collection) {
-            throw new Exception_Databox_CollectionNotFound(sprintf(
-                "Collection with base_id %s could not be found",
-                $base_id
-            ));
-        }
+    /**
+     * @param  Application $app
+     * @param  databox $databox
+     * @param  int $collectionId
+     * @return collection
+     */
+    public static function getByCollectionId(Application $app, databox $databox, $collectionId)
+    {
+        assert(is_int($collectionId));
 
-        if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
+        return self::getAvailableCollection($app, $databox->get_sbas_id(), $collectionId);
+    }
+
+    /**
+     * @param Application $app
+     * @return \Alchemy\Phrasea\Core\Configuration\AccessRestriction
+     */
+    private static function getAccessRestriction(Application $app)
+    {
+        return $app['conf.restrictions'];
+    }
+
+    private static function assertCollectionIsAvailable(Application $app, collection $collection)
+    {
+        if (!self::getAccessRestriction($app)->isCollectionAvailable($collection)) {
             throw new Exception_Databox_CollectionNotFound(sprintf(
                 'Collection `%d` is not available here.',
                 $collection->get_base_id()
+            ));
+        }
+    }
+
+    /**
+     * @param Application $app
+     * @param int $databoxId
+     * @param int $collectionId
+     * @return collection
+     */
+    private static function getByDataboxIdAndCollectionId(Application $app, $databoxId, $collectionId)
+    {
+        $repository = self::getRepository($app, $databoxId);
+        $collection = $repository->find($collectionId);
+
+        if (!$collection) {
+            throw new Exception_Databox_CollectionNotFound(sprintf(
+                "Collection '%d' on databox '%d' could not be found",
+                $collectionId,
+                $databoxId
             ));
         }
 
@@ -209,31 +246,15 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     }
 
     /**
-     * @param  Application $app
-     * @param  databox $databox
-     * @param  int $coll_id
+     * @param Application $app
+     * @param int $databoxId
+     * @param int $collectionId
      * @return collection
      */
-    public static function getByCollectionId(Application $app, databox $databox, $coll_id)
+    private static function getAvailableCollection(Application $app, $databoxId, $collectionId)
     {
-        assert(is_int($coll_id));
-
-        $repository = self::getRepository($app, $databox->get_sbas_id());
-        $collection = $repository->find($coll_id);
-
-        if (!$collection) {
-            throw new Exception_Databox_CollectionNotFound(sprintf(
-                "Collection with collection ID %d could not be found",
-                $coll_id
-            ));
-        }
-
-        if (!$app['conf.restrictions']->isCollectionAvailable($collection)) {
-            throw new Exception_Databox_CollectionNotFound(sprintf(
-                'Collection `%d` is not available here.',
-                $collection->get_base_id()
-            ));
-        }
+        $collection = self::getByDataboxIdAndCollectionId($app, $databoxId, $collectionId);
+        self::assertCollectionIsAvailable($app, $collection);
 
         return $collection;
     }

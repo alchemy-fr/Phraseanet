@@ -21,7 +21,7 @@ class AccessRestrictionTest extends \PhraseanetTestCase
         $conf = new MockArrayConf($conf);
         $logger = $this->createLoggerMock();
 
-        $restriction = new AccessRestriction(new ArrayCache(), new PropertyAccess($conf), self::$DI['app']['phraseanet.appbox'], $logger);
+        $restriction = new AccessRestriction(new PropertyAccess($conf), self::$DI['app']['phraseanet.appbox'], $logger);
         $this->assertEquals($restricted, $restriction->isRestricted());
 
         foreach ($collAccess as $coll) {

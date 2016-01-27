@@ -335,7 +335,7 @@ class appbox extends base
     /**
      * @return AccessRestriction
      */
-    private function getAccessRestriction()
+    public function getAccessRestriction()
     {
         return $this->app['conf.restrictions'];
     }

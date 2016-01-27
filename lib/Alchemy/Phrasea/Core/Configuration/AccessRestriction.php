@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,37 +10,63 @@
 
 namespace Alchemy\Phrasea\Core\Configuration;
 
-use Alchemy\Phrasea\Cache\Cache;
-use Alchemy\Phrasea\Model\Entities\Collection;
-use Alchemy\Phrasea\Model\Entities\Databox;
 use Assert\Assertion;
 use Psr\Log\LoggerInterface;
 
 class AccessRestriction
 {
-    private $conf;
-    private $appbox;
-    private $logger;
-    private $cache;
+    /**
+     * @var PropertyAccess
+     */
+    private $propertyAccess;
 
-    public function __construct(Cache $cache, PropertyAccess $conf, \appbox $appbox, LoggerInterface $logger)
+    /**
+     * @var \appbox
+     */
+    private $appbox;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var bool
+     */
+    private $loaded = false;
+
+    /**
+     * @var bool
+     */
+    private $restricted = false;
+
+    /**
+     * @var array
+     */
+    private $availableDataboxes = [];
+
+    /**
+     * @var array
+     */
+    private $availableCollections = [];
+
+    public function __construct(PropertyAccess $propertyAccess, \appbox $appbox, LoggerInterface $logger)
     {
-        $this->conf = $conf;
+        $this->propertyAccess = $propertyAccess;
         $this->appbox = $appbox;
         $this->logger = $logger;
-        $this->cache = $cache;
     }
 
     /**
      * Returns true if a configuration is set.
      *
-     * @return Boolean
+     * @return bool
      */
     public function isRestricted()
     {
         $this->load();
 
-        return $this->cache->fetch('restricted');
+        return $this->restricted;
     }
 
     /**
@@ -49,7 +74,7 @@ class AccessRestriction
      *
      * @param \databox $databox
      *
-     * @return Boolean
+     * @return bool
      */
     public function isDataboxAvailable(\databox $databox)
     {
@@ -57,7 +82,7 @@ class AccessRestriction
             return true;
         }
 
-        return in_array($databox->get_sbas_id(), $this->cache->fetch('available_databoxes'), true);
+        return in_array($databox->get_sbas_id(), $this->availableDataboxes, true);
     }
 
     /**
@@ -72,7 +97,7 @@ class AccessRestriction
             return $databoxes;
         }
 
-        $available = array_flip($this->cache->fetch('available_databoxes'));
+        $available = array_flip($this->availableDataboxes);
 
         return array_filter($databoxes, function (\databox $databox) use ($available) {
             return isset($available[$databox->get_sbas_id()]);
@@ -84,7 +109,7 @@ class AccessRestriction
      *
      * @param \collection $collection
      *
-     * @return Boolean
+     * @return bool
      */
     public function isCollectionAvailable(\collection $collection)
     {
@@ -92,30 +117,31 @@ class AccessRestriction
             return true;
         }
 
-        $availableCollections = $this->cache->fetch('available_collections_'.$collection->get_databox()->get_sbas_id()) ?: [];
+        $availableCollections = isset($this->availableCollections[$collection->get_sbas_id()])
+            ? $this->availableCollections[$collection->get_sbas_id()] : [];
 
         return in_array($collection->get_base_id(), $availableCollections, true);
     }
 
     private function load()
     {
-        if ($this->cache->fetch('loaded')) {
+        if ($this->loaded) {
             return;
         }
 
-        $this->cache->save('loaded', true);
+        $this->loaded = true;
 
         $allowedDataboxIds = array_map(function ($dbConf) {
             return $dbConf['id'];
-        }, $this->conf->get('databoxes', []));
+        }, $this->propertyAccess->get('databoxes', []));
 
         if (count($allowedDataboxIds) === 0) {
-            $this->cache->save('restricted', false);
+            $this->restricted = false;
 
             return;
         }
 
-        $this->cache->save('restricted', true);
+        $this->restricted = true;
 
         $databoxIds = array_map(function (\databox $databox) { return $databox->get_sbas_id(); }, $this->appbox->get_databoxes());
         $errors = array_diff($allowedDataboxIds, $databoxIds);
@@ -124,18 +150,15 @@ class AccessRestriction
             $this->logger->error(sprintf('Misconfiguration for allowed databoxes : ids %s do not exist', implode(', ', $errors)));
         }
 
-        $allowedDataboxIds = array_intersect($allowedDataboxIds, $databoxIds);
-        $this->cache->save('available_databoxes', $allowedDataboxIds);
+        $this->availableDataboxes = array_intersect($allowedDataboxIds, $databoxIds);
 
         $this->loadCollections();
     }
 
     private function loadCollections()
     {
-        $allowedDataboxIds = $this->cache->fetch('available_databoxes');
-
-        foreach ($this->conf->get('databoxes') as $databox) {
-            if (!in_array($databox['id'], $allowedDataboxIds, true)) {
+        foreach ($this->propertyAccess->get('databoxes') as $databox) {
+            if (!in_array($databox['id'], $this->availableDataboxes, true)) {
                 continue;
             }
 
@@ -148,9 +171,7 @@ class AccessRestriction
                 $this->logger->error(sprintf('Misconfiguration for allowed collections : ids %s do not exist', implode(', ', $errors)));
             }
 
-            $collections = array_intersect($collections, $availableBaseIds);
-
-            $this->cache->save('available_collections_'.$databox['id'], $collections);
+            $this->availableCollections[$databox['id']] = array_intersect($collections, $availableBaseIds);
         }
     }
 }
