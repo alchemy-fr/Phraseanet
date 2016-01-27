@@ -69,7 +69,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         });
 
         $app['conf.restrictions'] = $app->share(function (SilexApplication $app) {
-            return new AccessRestriction($app['cache'], $app['conf'], $app->getApplicationBox(), $app['monolog']);
+            return new AccessRestriction($app['conf'], $app->getApplicationBox(), $app['monolog']);
         });
     }
 
