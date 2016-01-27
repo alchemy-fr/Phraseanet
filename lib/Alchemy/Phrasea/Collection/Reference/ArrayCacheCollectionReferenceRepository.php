@@ -74,7 +74,7 @@ class ArrayCacheCollectionReferenceRepository implements CollectionReferenceRepo
         $references = $this->findAll();
 
         foreach ($references as $reference) {
-            if ($reference->getCollectionId() == $collectionId) {
+            if ($reference->getDataboxId() == $databoxId && $reference->getCollectionId() == $collectionId) {
                 return $reference;
             }
         }
