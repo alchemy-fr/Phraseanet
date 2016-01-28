@@ -33,6 +33,11 @@ interface DataboxRepository
     public function delete(\databox $databox);
 
     /**
+     * @param \databox $databox
+     */
+    public function unmount(\databox $databox);
+
+    /**
      * @param $host
      * @param $port
      * @param $user

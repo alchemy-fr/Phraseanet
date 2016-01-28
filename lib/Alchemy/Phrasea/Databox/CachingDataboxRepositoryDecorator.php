@@ -76,6 +76,13 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
         return $this->repository->delete($databox);
     }
 
+    public function unmount(\databox $databox)
+    {
+        $this->clearCache();
+
+        return $this->repository->unmount($databox);
+    }
+
     /**
      * @param $host
      * @param $port

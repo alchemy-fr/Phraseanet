@@ -61,6 +61,11 @@ final class DbalDataboxRepository implements DataboxRepository
         return true;
     }
 
+    public function unmount(\databox $databox)
+    {
+        return true;
+    }
+
     /**
      * @param int $id
      * @return false|array

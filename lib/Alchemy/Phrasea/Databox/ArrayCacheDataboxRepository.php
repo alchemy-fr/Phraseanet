@@ -73,6 +73,16 @@ class ArrayCacheDataboxRepository implements DataboxRepository
     }
 
     /**
+     * @param \databox $databox
+     */
+    public function unmount(\databox $databox)
+    {
+        $this->clear();
+
+        return $this->repository->unmount($databox);
+    }
+
+    /**
      * @param $host
      * @param $port
      * @param $user

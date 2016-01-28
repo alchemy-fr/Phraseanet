@@ -870,6 +870,7 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute([':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
+        $this->databoxRepository->unmount($this);
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $this->app['dispatcher']->dispatch(
