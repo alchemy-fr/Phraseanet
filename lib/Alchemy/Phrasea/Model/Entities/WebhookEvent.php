@@ -21,6 +21,9 @@ class WebhookEvent
     const USER_DELETED = 'user.deleted';
     const USER_DELETED_TYPE = 'user.deleted';
 
+    const RECORD_SUBDEF_CREATED = 'record.subdef.created';
+    const RECORD_SUBDEF_TYPE = 'record.subdef';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
