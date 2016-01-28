@@ -57,17 +57,60 @@ class ArrayCacheDataboxRepository implements DataboxRepository
      */
     public function save(\databox $databox)
     {
-        $this->loaded = false;
-        $this->databoxes = [];
+        $this->clear();
 
         return $this->repository->save($databox);
     }
 
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function mount($host, $port, $user, $password, $dbname)
+    {
+        $this->clear();
+
+        return $this->repository->mount($host, $port, $user, $password, $dbname);
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function create($host, $port, $user, $password, $dbname)
+    {
+        $this->clear();
+
+        return $this->repository->create($host, $port, $user, $password, $dbname);
+    }
+
+    /**
+     * Initializes the memory cache if needed.
+     */
     private function load()
     {
         if (! $this->loaded) {
             $this->databoxes = $this->repository->findAll();
             $this->loaded = true;
         }
+    }
+
+    /**
+     * Clears the memory cache.
+     */
+    private function clear()
+    {
+        $this->loaded = false;
+        $this->databoxes = [];
     }
 }

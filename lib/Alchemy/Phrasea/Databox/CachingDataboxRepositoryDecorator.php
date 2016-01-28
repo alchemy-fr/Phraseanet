@@ -32,7 +32,7 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
     {
         $this->repository = $repository;
         $this->cache = $cache;
-        $this->cacheKey = 'databoxes:' . hash('sha256', $cacheKey);
+        $this->cacheKey = $cacheKey;
         $this->factory = $factory;
     }
 
@@ -64,9 +64,45 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
 
     public function save(\databox $databox)
     {
-        $this->cache->delete($this->cacheKey);
+        $this->clearCache();
 
         return $this->repository->save($databox);
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function mount($host, $port, $user, $password, $dbname)
+    {
+        $databox = $this->repository->mount($host, $port, $user, $password, $dbname);
+
+        $this->clearCache();
+
+        return $databox;
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function create($host, $port, $user, $password, $dbname)
+    {
+        $databox = $this->repository->create($host, $port, $user, $password, $dbname);
+
+        $this->clearCache();
+
+        return $databox;
     }
 
     /**
@@ -81,5 +117,10 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
         }
 
         $this->cache->save($this->cacheKey, $rows);
+    }
+
+    private function clearCache()
+    {
+        $this->cache->delete($this->cacheKey);
     }
 }

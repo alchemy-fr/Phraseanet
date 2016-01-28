@@ -145,9 +145,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
 
         $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
-            $factory = new DataboxFactory($app);
             $appbox = $app->getApplicationBox();
 
+            $factory = new DataboxFactory($app);
             $repository = new CachingDataboxRepositoryDecorator(
                 new DbalDataboxRepository($appbox->get_connection(), $factory),
                 $app['cache'],
@@ -155,9 +155,11 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
                 $factory
             );
 
+            $repository = new ArrayCacheDataboxRepository($repository);
+
             $factory->setDataboxRepository($repository);
 
-            return new ArrayCacheDataboxRepository($repository);
+            return $repository;
         });
 
         $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {
