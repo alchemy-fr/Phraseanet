@@ -77,13 +77,36 @@ class TraceableCache implements Cache, PhraseaCache
 
         $this->summary['calls_by_key'][$id]['total']++;
 
-        $this->calls[] = [
+        $lastCall = end($this->calls);
+        $callData = [
             'type' => $type,
-            'key'  => $id,
+            'key' => $id,
             'result' => $result,
-            'hit'  => (bool) $hit
+            'hit' => (bool) $hit,
+            'count' => 1
         ];
 
+        if ($this->compareCalls($lastCall, $callData)) {
+            $lastCall['count']++;
+            $callData = $lastCall;
+
+            array_pop($this->calls);
+        }
+
+        $this->calls[] = $callData;
+    }
+
+    private function compareCalls(array $previousCall, array $currentCall)
+    {
+        $keys = [ 'type', 'key', 'result', 'hit'];
+
+        foreach ($keys as $key) {
+            if ($previousCall[$key] != $currentCall[$key]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
