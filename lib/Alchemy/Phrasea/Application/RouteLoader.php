@@ -117,15 +117,15 @@ class RouteLoader
      */
     public function bindPluginRoutes(Application $app, $routeParameter)
     {
-        foreach ($app[$routeParameter] as $provider) {
+        foreach ($app[$routeParameter] as $providerDefinition) {
             $prefix = '';
-            $providerKey = $provider;
+            $providerKey = $providerDefinition;
 
-            if (is_array($provider)) {
-                list($prefix, $providerKey) = $provider;
+            if (is_array($providerDefinition)) {
+                list($prefix, $providerKey) = $providerDefinition;
             }
 
-            if (! $this->isValidProviderDefinition($app, $prefix, $provider)) {
+            if (! $this->isValidProviderDefinition($app, $prefix, $providerKey)) {
                 continue;
             }
 
