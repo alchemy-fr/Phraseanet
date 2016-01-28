@@ -47,7 +47,21 @@ final class DbalDataboxRepository implements DataboxRepository
         return $this->factory->createMany($this->fetchRows());
     }
 
+    /**
+     * @param \databox $databox
+     * @return bool
+     */
     public function save(\databox $databox)
+    {
+        return true;
+    }
+
+    public function delete(\databox $databox)
+    {
+        return true;
+    }
+
+    public function unmount(\databox $databox)
     {
         return true;
     }
@@ -86,5 +100,74 @@ final class DbalDataboxRepository implements DataboxRepository
         $statement->closeCursor();
 
         return $rows;
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function mount($host, $port, $user, $password, $dbname)
+    {
+        $query = 'INSERT INTO sbas (ord, host, port, dbname, sqlengine, user, pwd)
+              SELECT COALESCE(MAX(ord), 0) + 1 AS ord, :host AS host, :port AS port, :dbname AS dbname,
+                     "MYSQL" AS sqlengine, :user AS user, :password AS pwd FROM sbas';
+
+        $statement = $this->connection->prepare($query);
+        $statement->execute([
+            ':host'     => $host,
+            ':port'     => $port,
+            ':dbname'   => $dbname,
+            ':user'     => $user,
+            ':password' => $password
+        ]);
+
+        $statement->closeCursor();
+
+        return $this->find((int) $this->connection->lastInsertId());
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function create($host, $port, $user, $password, $dbname)
+    {
+        $params = [
+            ':host' => $host,
+            ':port' => $port,
+            ':user' => $user,
+            ':password' => $password,
+            ':dbname' => $dbname
+        ];
+
+        $query = 'SELECT sbas_id FROM sbas
+                  WHERE host = :host AND port = :port AND `user` = :user AND pwd = :password AND dbname = :dbname';
+        $statement = $this->connection->executeQuery($query, $params);
+
+        if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return $this->find((int) $row['sbas_id']);
+        }
+
+        $query = 'INSERT INTO sbas (ord, host, port, dbname, sqlengine, user, pwd)
+              SELECT COALESCE(MAX(ord), 0) + 1 AS ord, :host AS host, :port AS port, :dbname AS dbname,
+                     "MYSQL" AS sqlengine, :user AS user, :password AS pwd FROM sbas';
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($params);
+
+        $stmt->closeCursor();
+
+        return $this->find((int) $this->connection->lastInsertId());
+
     }
 }

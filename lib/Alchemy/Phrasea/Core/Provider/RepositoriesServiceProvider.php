@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
 use Alchemy\Phrasea\Collection\Repository\ArrayCacheCollectionRepository;
 use Alchemy\Phrasea\Collection\Repository\CachedCollectionRepository;
 use Alchemy\Phrasea\Collection\Repository\DbalCollectionRepository;
+use Alchemy\Phrasea\Databox\ArrayCacheDataboxRepository;
 use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxFactory;
@@ -144,15 +145,17 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
 
         $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
-            $factory = new DataboxFactory($app);
             $appbox = $app->getApplicationBox();
 
+            $factory = new DataboxFactory($app);
             $repository = new CachingDataboxRepositoryDecorator(
                 new DbalDataboxRepository($appbox->get_connection(), $factory),
                 $app['cache'],
                 $appbox->get_cache_key($appbox::CACHE_LIST_BASES),
                 $factory
             );
+
+            $repository = new ArrayCacheDataboxRepository($repository);
 
             $factory->setDataboxRepository($repository);
 

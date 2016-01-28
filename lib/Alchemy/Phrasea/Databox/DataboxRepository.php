@@ -26,4 +26,36 @@ interface DataboxRepository
      * @param \databox $databox
      */
     public function save(\databox $databox);
+
+    /**
+     * @param \databox $databox
+     */
+    public function delete(\databox $databox);
+
+    /**
+     * @param \databox $databox
+     */
+    public function unmount(\databox $databox);
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function mount($host, $port, $user, $password, $dbname);
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function create($host, $port, $user, $password, $dbname);
 }

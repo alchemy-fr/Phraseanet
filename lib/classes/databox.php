@@ -62,51 +62,28 @@ class databox extends base implements ThumbnailedElement
 
     /**
      * @param Application $app
-     * @param Connection  $connection
+     * @param Connection  $databoxConnection
      * @param SplFileInfo $data_template
      * @return databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    public static function create(Application $app, Connection $connection, \SplFileInfo $data_template)
+    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
     {
         if ( ! file_exists($data_template->getRealPath())) {
             throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
         }
 
-        $sql = 'SELECT sbas_id
-            FROM sbas
-            WHERE host = :host AND port = :port AND dbname = :dbname
-              AND user = :user AND pwd = :password';
+        $host = $databoxConnection->getHost();
+        $port = $databoxConnection->getPort();
+        $dbname = $databoxConnection->getDatabase();
+        $user = $databoxConnection->getUsername();
+        $password = $databoxConnection->getPassword();
 
-        $host = $connection->getHost();
-        $port = $connection->getPort();
-        $dbname = $connection->getDatabase();
-        $user = $connection->getUsername();
-        $password = $connection->getPassword();
-
-        $params = [
-            ':host'     => $host,
-            ':port'     => $port,
-            ':dbname'   => $dbname,
-            ':user'     => $user,
-            ':password' => $password
-        ];
-
-        /** @var appbox $appbox */
-        $appbox = $app['phraseanet.appbox'];
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            return $appbox->get_databox((int) $row['sbas_id']);
-        }
+        $appbox = $app->getApplicationBox();
 
         try {
-            $sql = 'CREATE DATABASE `' . $dbname . '`
-              CHARACTER SET utf8 COLLATE utf8_unicode_ci';
-            $stmt = $connection->prepare($sql);
+            $sql = 'CREATE DATABASE `' . $dbname . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
+            $stmt = $databoxConnection->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
         } catch (\Exception $e) {
@@ -114,28 +91,9 @@ class databox extends base implements ThumbnailedElement
         }
 
         $sql = 'USE `' . $dbname . '`';
-        $stmt = $connection->prepare($sql);
+        $stmt = $databoxConnection->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
-
-        $sql = 'SELECT MAX(ord) as ord FROM sbas';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $ord = $row['ord'] + 1;
-        }
-
-        $params[':ord'] = $ord;
-
-        $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
-              VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-        $sbas_id = (int) $appbox->get_connection()->lastInsertId();
 
         $app['orm.add']([
             'host'     => $host,
@@ -145,21 +103,20 @@ class databox extends base implements ThumbnailedElement
             'password' => $password
         ]);
 
+        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
+
+        /** @var DataboxRepository $databoxRepository */
+        $databoxRepository = $app['repo.databoxes'];
+        $databox = $databoxRepository->create($host, $port, $user, $password, $dbname);
+
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $appbox->get_databox($sbas_id);
         $databox->insert_datas();
-
         $databox->setNewStructure(
             $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
-        $app['dispatcher']->dispatch(
-            DataboxEvents::CREATED,
-            new CreatedEvent(
-                $databox
-            )
-        );
+        $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
 
         return $databox;
     }
@@ -176,56 +133,25 @@ class databox extends base implements ThumbnailedElement
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname)
     {
-        $conn = $app['db.provider']([
+        $app['db.provider']([
             'host'     => $host,
             'port'     => $port,
             'user'     => $user,
             'password' => $password,
             'dbname'   => $dbname,
-        ]);
+        ])->connect();
 
-        $conn->connect();
-
-        $conn = $app->getApplicationBox()->get_connection();
-        $sql = 'SELECT MAX(ord) as ord FROM sbas';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        if ($row)
-            $ord = $row['ord'] + 1;
-
-        $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
-              VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':ord'      => $ord,
-            ':host'     => $host,
-            ':port'     => $port,
-            ':dbname'   => $dbname,
-            ':user'     => $user,
-            ':password' => $password
-        ]);
-
-        $stmt->closeCursor();
-        $sbas_id = (int) $conn->lastInsertId();
-
-        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-
-        $databox = $app->findDataboxById($sbas_id);
+        /** @var DataboxRepository $databoxRepository */
+        $databoxRepository = $app['repo.databoxes'];
+        $databox = $databoxRepository->mount($host, $port, $user, $password, $dbname);
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
+        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         phrasea::reset_sbasDatas($app['phraseanet.appbox']);
-
         cache_databox::update($app, $databox->get_sbas_id(), 'structure');
 
-        $app['dispatcher']->dispatch(
-            DataboxEvents::MOUNTED,
-            new MountedEvent(
-                $databox
-            )
-        );
+        $app['dispatcher']->dispatch(DataboxEvents::MOUNTED, new MountedEvent($databox));
 
         return $databox;
     }
@@ -944,6 +870,7 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute([':sbas_id' => $this->id]);
         $stmt->closeCursor();
 
+        $this->databoxRepository->unmount($this);
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $this->app['dispatcher']->dispatch(
@@ -1008,6 +935,8 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $this->databoxRepository->delete($this);
 
         $this->app['dispatcher']->dispatch(
             DataboxEvents::DELETED,
