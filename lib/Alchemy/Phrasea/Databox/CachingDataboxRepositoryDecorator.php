@@ -22,11 +22,17 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
     /** @var DataboxFactory */
     private $factory;
 
+    /**
+     * @param DataboxRepository $repository
+     * @param Cache $cache
+     * @param string $cacheKey
+     * @param DataboxFactory $factory
+     */
     public function __construct(DataboxRepository $repository, Cache $cache, $cacheKey, DataboxFactory $factory)
     {
         $this->repository = $repository;
         $this->cache = $cache;
-        $this->cacheKey = $cacheKey;
+        $this->cacheKey = 'databoxes:' . hash('sha256', $cacheKey);
         $this->factory = $factory;
     }
 
@@ -60,7 +66,7 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
     {
         $this->cache->delete($this->cacheKey);
 
-        $this->repository->save($databox);
+        return $this->repository->save($databox);
     }
 
     /**
