@@ -63,6 +63,16 @@ class ArrayCacheDataboxRepository implements DataboxRepository
     }
 
     /**
+     * @param \databox $databox
+     */
+    public function delete(\databox $databox)
+    {
+        $this->clear();
+
+        return $this->repository->delete($databox);
+    }
+
+    /**
      * @param $host
      * @param $port
      * @param $user

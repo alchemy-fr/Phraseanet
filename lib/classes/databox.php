@@ -935,6 +935,8 @@ class databox extends base implements ThumbnailedElement
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
+        $this->databoxRepository->delete($this);
+
         $this->app['dispatcher']->dispatch(
             DataboxEvents::DELETED,
             new DeletedEvent(

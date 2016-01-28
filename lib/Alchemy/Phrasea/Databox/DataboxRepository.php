@@ -28,6 +28,11 @@ interface DataboxRepository
     public function save(\databox $databox);
 
     /**
+     * @param \databox $databox
+     */
+    public function delete(\databox $databox);
+
+    /**
      * @param $host
      * @param $port
      * @param $user
