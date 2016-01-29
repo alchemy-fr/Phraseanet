@@ -121,7 +121,8 @@ class WebhookJob extends AbstractJob
             )
         ));
 
-        $eventFactory = new EventProcessorFactory($app);
+        /** @var EventProcessorFactory $eventFactory */
+        $eventFactory = $app['webhook.processor_factory'];
 
         foreach ($app['repo.webhook-event']->findUnprocessedEvents() as $event) {
             // set event as processed
