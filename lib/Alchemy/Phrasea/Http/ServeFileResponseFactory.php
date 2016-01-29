@@ -38,22 +38,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
         return $response;
     }
 
-    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = null)
-    {
-        $response = new Response($data);
-        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
-            $disposition,
-            $this->sanitizeFilename($filename),
-            $this->sanitizeFilenameFallback($filename
-        )));
-        $response->headers->set('Content-Type', $mimeType);
-        if (null !== $cacheDuration) {
-            $response->setMaxAge($cacheDuration);
-        }
-
-        return $response;
-    }
-
     private function sanitizeFilename($filename)
     {
         return str_replace(['/', '\\'], '', $filename);

@@ -30,16 +30,4 @@ interface DeliverDataInterface
      * @return Response
      */
     public function deliverFile($file, $filename = null, $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = null);
-
-    /**
-     * Return a HTTP Response ready to deliver data
-     *
-     * @param string  $data
-     * @param string  $filename
-     * @param string  $mimeType
-     * @param string  $disposition
-     * @param integer $cacheDuration
-     * @return Response
-     */
-    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = null);
 }

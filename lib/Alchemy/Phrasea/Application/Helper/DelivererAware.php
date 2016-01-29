@@ -69,19 +69,4 @@ trait DelivererAware
     {
         return $this->getDeliverer()->deliverFile($file, $filename, $disposition, $mimeType, $cacheDuration);
     }
-
-    /**
-     * Return a HTTP Response ready to deliver data
-     *
-     * @param string $data
-     * @param string $filename
-     * @param string $mimeType
-     * @param string $disposition
-     * @param integer $cacheDuration
-     * @return Response
-     */
-    public function deliverData($data, $filename, $mimeType, $disposition = DeliverDataInterface::DISPOSITION_INLINE, $cacheDuration = null)
-    {
-        return $this->getDeliverer()->deliverData($data, $filename, $disposition, $mimeType, $cacheDuration);
-    }
 }
