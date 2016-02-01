@@ -1,9 +1,8 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -107,9 +106,9 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
     {
         $body = '';
         $body .= sprintf("Login : %s\n", $registeredUser->getLogin());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur nom'), $registeredUser->getFirstName());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur prenom'), $registeredUser->getLastName());
-        $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur email'), $registeredUser->getEmail());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur nom'), $registeredUser->getFirstName());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur prenom'), $registeredUser->getLastName());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur email'), $registeredUser->getEmail());
         $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->getCompany());
 
         $readyToSend = false;

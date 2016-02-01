@@ -2304,7 +2304,7 @@ class V1Controller extends Controller
             $ret = [ 'success' => true ];
         }
         catch (AccountException $exception) {
-            $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+            $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -2327,7 +2327,7 @@ class V1Controller extends Controller
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
             } catch (AccountException $exception) {
-                $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+                $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
             }
         } else {
             $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];

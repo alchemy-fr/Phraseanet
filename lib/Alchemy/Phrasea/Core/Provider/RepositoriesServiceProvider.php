@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,9 +18,6 @@ use Alchemy\Phrasea\Collection\Factory\CachedCollectionRepositoryFactory;
 use Alchemy\Phrasea\Collection\Factory\DbalCollectionRepositoryFactory;
 use Alchemy\Phrasea\Collection\Reference\ArrayCacheCollectionReferenceRepository;
 use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
-use Alchemy\Phrasea\Collection\Repository\ArrayCacheCollectionRepository;
-use Alchemy\Phrasea\Collection\Repository\CachedCollectionRepository;
-use Alchemy\Phrasea\Collection\Repository\DbalCollectionRepository;
 use Alchemy\Phrasea\Databox\ArrayCacheDataboxRepository;
 use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
@@ -30,6 +26,7 @@ use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Alchemy\Phrasea\Databox\Field\DataboxFieldFactory;
 use Alchemy\Phrasea\Databox\Field\DbalDataboxFieldRepository;
 use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -57,7 +54,11 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             return $app['orm.em']->getRepository('Phraseanet:Registration');
         });
         $app['repo.baskets'] = $app->share(function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Basket');
+            /** @var BasketRepository $repository */
+            $repository = $app['orm.em']->getRepository('Phraseanet:Basket');
+            $repository->setTranslator($app['translator']);
+
+            return $repository;
         });
         $app['repo.basket-elements'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:BasketElement');
@@ -200,5 +201,6 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        // no-op
     }
 }
