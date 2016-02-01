@@ -166,22 +166,26 @@
                 <th>Call type</th>
                 <th>Key</th>
                 <th>Hit / Miss</th>
+                <th>Count</th>
             </tr>
         </thead>
         <tbody>
+        {% set callCount = 1 %}
         {% for call in collector.calls %}
             <tr>
-                <td>{{ loop.index }}</td>
+                <td>{{ callCount }}</td>
                 <td>
                     {% if call['type'] != 'fetch' %}
-                    <strong>{{ call['type'] }}</strong>
+                        <strong>{{ call['type'] }}</strong>
                     {% else %}
-                    {{ call['type'] }}
+                        {{ call['type'] }}
                     {% endif %}
                 </td>
                 <td>{{ call['key'] }}</td>
                 <td>{% if call['hit'] %}HIT{% else %}<strong>MISS</strong>{% endif %}</td>
+                <td>{{ call['count'] }}</td>
             </tr>
+            {% set callCount = callCount + call['count'] %}
         {% endfor %}
         </tbody>
     </table>
