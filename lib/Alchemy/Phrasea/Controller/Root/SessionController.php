@@ -82,7 +82,7 @@ class SessionController extends Controller
 
         if (in_array($this->getSession()->get('phraseanet.message'), ['1', null])) {
             if ($this->app['phraseanet.configuration']['main']['maintenance']) {
-                $ret['message'] .= _('The application is going down for maintenance, please logout.');
+                $ret['message'] .= $this->app->trans('The application is going down for maintenance, please logout.');
             }
 
             if ($this->getConf()->get(['registry', 'maintenance', 'enabled'], false)) {

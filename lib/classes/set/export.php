@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -57,7 +56,6 @@ class set_export extends set_abstract
         if ($sstid != "") {
             $repository = $app['repo.baskets'];
 
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $Basket = $repository->findUserBasket($sstid, $app->getAuthenticatedUser(), false);
             $this->exportName = str_replace([' ', '\\', '/'], '_', $Basket->getName()) . "_" . date("Y-n-d");
 

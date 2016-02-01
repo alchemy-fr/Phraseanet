@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Alchemy\Phrasea\Core\Provider;
 
@@ -54,7 +62,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             $twig->addGlobal('current_date', new \DateTime());
 
             $this->registerExtensions($twig, $app);
-            $this->registerFilters($twig);
+            $this->registerFilters($twig, $app);
 
             return $twig;
         }));
@@ -82,7 +90,7 @@ class TwigServiceProvider implements ServiceProviderInterface
         $twig->addExtension(new PhraseanetExtension($app));
     }
 
-    private function registerFilters(\Twig_Environment $twig)
+    private function registerFilters(\Twig_Environment $twig, Application $app)
     {
         $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
         $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
@@ -110,11 +118,11 @@ class TwigServiceProvider implements ServiceProviderInterface
             return str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], $string);
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
-        $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) {
+        $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) use ($app) {
             return preg_replace(
                 "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
                 ,
-                '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+                '$1 $2 <a title="' . $app['translator']->trans('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
                 , $string
             );
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
