@@ -29,7 +29,7 @@ class TrustedProxySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => ['setProxyConf', 0],
+            KernelEvents::REQUEST => ['setProxyConf', 1024],
         ];
     }
 
