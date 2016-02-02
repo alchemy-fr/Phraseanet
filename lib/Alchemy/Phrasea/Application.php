@@ -71,6 +71,7 @@ use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
+use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -232,6 +233,9 @@ class Application extends SilexApplication
 
         $this->register(new LocaleServiceProvider());
         $this->setupEventDispatcher();
+
+        $this->register(new WebhookServiceProvider());
+        
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */
             $handler =  PhraseaExceptionHandler::register($app['debug']);
