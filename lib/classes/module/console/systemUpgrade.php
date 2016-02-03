@@ -35,11 +35,13 @@ class module_console_systemUpgrade extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        require_once rtrim($this->container['root.path'], '\\/') . '/plugins/autoload.php';
+        $pluginAutoloader = rtrim($this->container['root.path'], '\\/') . '/plugins/autoload.php';
 
-        $serviceProvider = new \Alchemy\Phrasea\Core\Provider\PluginServiceProvider();
-        $serviceProvider->register($this->getContainer());
-        $serviceProvider->boot($this->getContainer());
+        if (file_exists($pluginAutoloader)) {
+            $serviceProvider = new \Alchemy\Phrasea\Core\Provider\PluginServiceProvider();
+            $serviceProvider->register($this->getContainer());
+            $serviceProvider->boot($this->getContainer());
+        }
 
         $this->getContainer()->loadPlugins();
 
