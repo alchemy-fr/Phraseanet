@@ -766,34 +766,6 @@
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 
-        /*function pollNotifications(){
-            $.ajax({
-                type: "POST",
-                url: "{{ path('list_notifications') }}",
-                dataType: "json",
-                data: {
-                    module : 1,
-                    usr : {{app.getAuthenticatedUser().getId()}}
-                },
-                error: function(){
-                    window.setTimeout("pollNotifications();", 10000);
-                },
-                timeout: function(){
-                    window.setTimeout("pollNotifications();", 10000);
-                },
-                success: function(data){
-                    if(data)
-                        manageSession(data, true);
-                    var t = 120000;
-                    if(data.apps && parseInt(data.apps)>1)
-                        t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 60000));
-                    window.setTimeout("pollNotifications();", t);
-
-                    return;
-                }
-            });
-        };*/
-
         function setCss(color) {
             $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
             $.post("{{ path('save_pref') }}", {
