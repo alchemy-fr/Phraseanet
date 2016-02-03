@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
 use Alchemy\Phrasea\Media\FloatTechnicalData;
 use Alchemy\Phrasea\Media\IntegerTechnicalData;
@@ -36,7 +37,6 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 
@@ -53,13 +53,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param Application $app
-     * @return Filesystem
+     * @return FilesystemService
      */
     private static function getFilesystem(Application $app)
     {
-        $filesystem = $app['filesystem'];
-
-        return $filesystem;
+        return $app['phraseanet.filesystem'];
     }
 
     private $base_id;
@@ -1161,7 +1159,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param File        $file
      * @param Application $app
      *
@@ -1211,10 +1208,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $filesystem = self::getFilesystem($app);
 
-        $pathhd = databox::dispatch($filesystem, trim($databox->get_sxml_structure()->path));
-        $newname = $record->getRecordId() . "_document." . pathinfo($file->getOriginalName(), PATHINFO_EXTENSION);
+        $pathhd = $filesystem->generateDataboxDocumentBasePath($databox);
+        $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
 
-        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
+        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
 
         $media = $app->getMediaFromUri($pathhd . $newname);
         media_subdef::create($app, $record, 'document', $media);

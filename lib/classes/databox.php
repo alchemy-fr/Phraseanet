@@ -158,23 +158,9 @@ class databox extends base implements ThumbnailedElement
 
     public static function dispatch(Filesystem $filesystem, $repository_path)
     {
-        $repository_path = p4string::addEndSlash($repository_path);
+        $filesystem = new \Alchemy\Phrasea\Filesystem\FilesystemService($filesystem);
 
-        $timestamp = strtotime(date('Y-m-d'));
-        $year = date('Y', $timestamp);
-        $month = date('m', $timestamp);
-        $day = date('d', $timestamp);
-
-        $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
-
-        $n = 0;
-        do {
-            $pathout = sprintf('%s%s%05d', $repository_path, $comp, $n++);
-        } while (is_dir($pathout) && iterator_count(new DirectoryIterator($pathout)) > 100);
-
-        $filesystem->mkdir($pathout, 0750);
-
-        return $pathout . DIRECTORY_SEPARATOR;
+        return $filesystem->directorySpread($repository_path);
     }
 
     public static function get_available_dcfields()

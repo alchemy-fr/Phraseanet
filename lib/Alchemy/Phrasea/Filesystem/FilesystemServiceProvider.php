@@ -21,7 +21,7 @@ class FilesystemServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['filesystem'] = $app->share(function () {
-            new Filesystem();
+            return new Filesystem();
         });
 
         $app['temporary-filesystem.temporary-fs'] = $app->share(function (Application $app) {
@@ -29,6 +29,10 @@ class FilesystemServiceProvider implements ServiceProviderInterface
         });
         $app['temporary-filesystem'] = $app->share(function (Application $app) {
             return new Manager($app['temporary-filesystem.temporary-fs'], $app['filesystem']);
+        });
+
+        $app['phraseanet.filesystem'] = $app->share(function (Application $app) {
+            return new FilesystemService($app['filesystem']);
         });
     }
 
