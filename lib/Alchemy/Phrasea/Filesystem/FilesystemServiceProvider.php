@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -9,17 +8,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Provider;
+namespace Alchemy\Phrasea\Filesystem;
 
-use Neutron\TemporaryFilesystem\TemporaryFilesystem;
 use Neutron\TemporaryFilesystem\Manager;
+use Neutron\TemporaryFilesystem\TemporaryFilesystem;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
-class TemporaryFilesystemServiceProvider implements ServiceProviderInterface
+class FilesystemServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['filesystem'] = $app->share(function () {
+            new Filesystem();
+        });
+
         $app['temporary-filesystem.temporary-fs'] = $app->share(function (Application $app) {
             return new TemporaryFilesystem($app['filesystem']);
         });
@@ -30,5 +34,6 @@ class TemporaryFilesystemServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        // no-op
     }
 }
