@@ -43,19 +43,17 @@ class Upgrade39Sessions implements PreSchemaUpgradeInterface
      */
     public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
     {
-        if ($this->tableExists($em, 'Sessions')) {
 
-        }
     }
 
     /**
      * Checks whether the table exists or not.
      *
-     * @param $tableName
+     * @param EntityManager $em
+     * @param string $table
      *
      * @return boolean
      */
-
     private function tableExists(EntityManager $em, $table)
     {
         return (Boolean) $em->createNativeQuery(
@@ -70,20 +68,5 @@ class Upgrade39Sessions implements PreSchemaUpgradeInterface
     private function dropTable(EntityManager $em, $tableName)
     {
         $em->getConnection()->getSchemaManager()->dropTable($tableName);
-    }
-
-    /**
-     *
-     * @param EntityManager $em
-     * @param $tableName
-     */
-    private function doTableBackup(EntityManager $em, $tableName)
-    {
-        $em->getConnection()->getSchemaManager()->renameTable($tableName, $tableName . '_backup');
-    }
-
-    private function doTableRestore(EntityManager $em, $tableName)
-    {
-        $em->getConnection()->getSchemaManager()->renameTable($tableName . '_backup', $tableName);
     }
 }
