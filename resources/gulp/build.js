@@ -27,6 +27,7 @@ gulp.task('build', ['build-vendors'], function(){
 // standalone vendors used across application
 gulp.task('build-vendors', [
     'build-alchemy-embed',
+    'build-phraseanet-production-client',
     'build-bootstrap',
     'build-colorpicker',
     'build-html5shiv',

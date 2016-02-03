@@ -34,6 +34,7 @@ gulp.task('watch-js', function(){
     gulp.start('watch-setup-js');
     gulp.start('watch-authentication-js');
     gulp.start('watch-alchemy-embed-js');
+    gulp.start('watch-phraseanet-production-client-js');
 });
 
 gulp.task('watch', function(){
@@ -46,7 +47,8 @@ var browserSync = require('browser-sync').create();
 gulp.task('sync', ['watch'], function(){
     // will open browser in http://localhost:3000/
     browserSync.init({
-        proxy: "phraseanet-php55-nginx"
+        //proxy: "phraseanet-php55-nginx"
+        proxy: "www.phraseanet.vb"
     });
     gulp.watch(config.paths.build + '**/*.css').on('change', browserSync.reload);
     gulp.watch(config.paths.build + '**/*.js').on('change', browserSync.reload);

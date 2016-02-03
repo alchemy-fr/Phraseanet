@@ -1246,7 +1246,7 @@ $(document).ready(function () {
         dateFormat: 'yy/mm/dd'
     });
 
-    $.ajaxSetup({
+    /*$.ajaxSetup({
 
         error: function (jqXHR, textStatus, errorThrown) {
             //Request is aborted
@@ -1263,7 +1263,7 @@ $(document).ready(function () {
                 title: 'Server not responding'
             });
         }
-    });
+    });*/
 
     $('.tools .answer_selector').bind('click',function () {
         selector($(this));
@@ -1278,7 +1278,7 @@ $(document).ready(function () {
             $(this).removeClass('add_selector');
         });
 
-    getLanguage();
+    // getLanguage();
 
     activeIcons();
 
@@ -1286,7 +1286,7 @@ $(document).ready(function () {
 
     initLook();
 
-    setTimeout("pollNotifications();", 10000);
+    // setTimeout("pollNotifications();", 10000);
 
     $(this).bind('keydown', function (event) {
         var cancelKey = false;

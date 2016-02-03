@@ -750,14 +750,23 @@
     <script type="text/javascript">
         {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
     </script>
+    <script type="text/javascript" src="/assets/production/app{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
+        ProductionApplication.bootstrap({
+            notify: {
+                url: "{{ path('list_notifications') }}",
+                moduleId: 1,
+                userId: {{app.getAuthenticatedUser().getId()}}
+            }
+        })
+
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 
-        function pollNotifications(){
+        /*function pollNotifications(){
             $.ajax({
                 type: "POST",
                 url: "{{ path('list_notifications') }}",
@@ -783,7 +792,7 @@
                     return;
                 }
             });
-        };
+        };*/
 
         function setCss(color) {
             $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
@@ -794,9 +803,6 @@
             }, function(data){
                 return;
             });
-            if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {
-                $("select").hide().show();
-            }
         }
 
     </script>
