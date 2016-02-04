@@ -86,7 +86,7 @@ class TraceableCache implements Cache, PhraseaCache
             'count' => 1
         ];
 
-        if ($this->compareCalls($lastCall, $callData)) {
+        if (is_array($lastCall) && $this->compareCalls($lastCall, $callData)) {
             $lastCall['count']++;
             $callData = $lastCall;
 
