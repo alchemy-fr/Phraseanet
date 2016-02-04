@@ -474,7 +474,7 @@ class record_preview extends record_adapter
             . '|2:|min|average|max' .
             '&chxp=2,' . $min . ',' . $average . ',' . $max);
 
-        $this->view_popularity = new media_adapter($url, $width, $height);
+        $this->view_popularity = new media_adapter($width, $height, $url);
 
         return $this->view_popularity;
     }
@@ -547,7 +547,7 @@ class record_preview extends record_adapter
             . '&chl='
             . urlencode(implode('|', array_keys($referrers))));
 
-        $this->refferer_popularity = new media_adapter($url, $width, $height);
+        $this->refferer_popularity = new media_adapter($width, $height, $url);
 
         return $this->refferer_popularity;
     }
@@ -627,7 +627,7 @@ class record_preview extends record_adapter
             . date_format(new DateTime(), 'd M') . '|1:|0|'
             . round($top / 2) . '|' . $top);
 
-        $ret = new media_adapter($url, $width, $height);
+        $ret = new media_adapter($width, $height, $url);
         $this->download_popularity = $ret;
 
         return $this->download_popularity;
