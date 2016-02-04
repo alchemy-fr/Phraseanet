@@ -30,13 +30,14 @@ class PropertyController extends Controller
 
         $records = RecordsRequest::fromRequest($this->app, $request, false, ['chgstatus']);
 
-        if (count($records->databoxes()) > 1) {
+        $databoxes = $records->databoxes();
+        if (count($databoxes) > 1) {
             return new Response($this->render('prod/actions/Property/index.html.twig', [
                 'records'   => $records,
             ]));
         }
 
-        $databox = reset($records->databoxes());
+        $databox = reset($databoxes);
         $statusStructure = $databox->getStatusStructure();
         $recordsStatuses = [];
 
