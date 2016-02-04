@@ -156,13 +156,6 @@ class databox extends base implements ThumbnailedElement
         return $databox;
     }
 
-    public static function dispatch(Filesystem $filesystem, $repository_path)
-    {
-        $filesystem = new \Alchemy\Phrasea\Filesystem\FilesystemService($filesystem);
-
-        return $filesystem->directorySpread($repository_path);
-    }
-
     public static function get_available_dcfields()
     {
         return [
