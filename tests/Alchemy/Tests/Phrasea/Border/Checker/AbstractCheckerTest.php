@@ -2,141 +2,99 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker\AbstractChecker;
 use Alchemy\Phrasea\Border\File;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * @group functional
- * @group legacy
- */
-class AbstractCheckerTest extends \PhraseanetTestCase
+class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Application
+     */
+    private $app;
+
     /**
      * @var AbstractChecker
      */
-    protected $object;
+    private $sut;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->object = $this->getMockBuilder(AbstractChecker::class)
-            ->setConstructorArgs([self::$DI['app']])
-            ->getMockForAbstractClass();
-        $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getCollection'], [], 'CheckerTesterMock' . mt_rand(), false);
-    }
+        $this->app = $this->prophesize(Application::class);
 
-    public function tearDown()
-    {
-        $this->file = null;
-        parent::tearDown();
+        $this->sut = $this->getMockBuilder(AbstractChecker::class)
+            ->setConstructorArgs([$this->app->reveal()])
+            ->getMockForAbstractClass();
+
+
     }
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\AbstractChecker::restrictToDataboxes
-     * @covers Alchemy\Phrasea\Border\Checker\AbstractChecker::isApplicable
-     * @dataProvider getDataboxesCombinaison
+     * @dataProvider getDataboxesCombination
      */
     public function testRestrictToDataboxes($databoxes, $collection, $assertion)
     {
-        $this->file->expects($this->any())
-            ->method('getCollection')
-            ->will($this->returnValue($collection));
+        $file = $this->prophesize(File::class);
+        $file->getCollection()->willReturn($collection);
 
-        $this->object->restrictToDataboxes($databoxes);
+        $this->sut->restrictToDataboxes($databoxes);
 
-        $this->assertEquals($assertion, $this->object->isApplicable($this->file));
+        $this->assertEquals($assertion, $this->sut->isApplicable($file->reveal()));
     }
 
-    public function getDataboxesCombinaison()
+    public function getDataboxesCombination()
     {
-        $databox = $collection = null;
-        $app = $this->loadApp();
+        $databox = $this->prophesize(\databox::class);
+        $databox->get_sbas_id()->willReturn(1);
 
-        foreach ($app->getDataboxes() as $db) {
-            if (! $collection) {
-                foreach ($db->get_collections() as $coll) {
-                    $collection = $coll;
-                    break;
-                }
-            }
-            if (! $collection) {
-                $this->fail('Unable to get a collection');
-            }
+        $collection = $this->prophesize(\collection::class);
+        $collection->get_databox()->willReturn($databox->reveal());
+        $collection->get_base_id()->willReturn(2);
 
-            if ($db->get_sbas_id() != $collection->get_databox()->get_sbas_id()) {
-                $databox = $db;
-                break;
-            }
-        }
+        $anotherDatabox = $this->prophesize(\databox::class);
+        $anotherDatabox->get_sbas_id()->willReturn(3);
 
-        $ret = [
-            [[$collection->get_databox()], $collection, true],
-            [$collection->get_databox(), $collection, true],
-            [$collection->get_databox(), null, true],
+        return [
+            [[], $collection, true],
+            [[$databox->reveal()], $collection, true],
+            [$databox->reveal(), $collection, true],
+            [$databox->reveal(), null, true],
+            [$anotherDatabox->reveal(), $collection, false],
         ];
-
-        if ($databox) {
-            $ret[] = [$databox, $collection, false];
-        }
-
-        return $ret;
     }
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\AbstractChecker::restrictToCollections
-     * @covers Alchemy\Phrasea\Border\Checker\AbstractChecker::isApplicable
-     * @dataProvider getCollectionsCombinaison
+     * @dataProvider getCollectionsCombination
      */
     public function testRestrictToCollections($collection, $othercollection, $assertion)
     {
-        $this->file->expects($this->any())
-            ->method('getCollection')
-            ->will($this->returnValue($othercollection));
+        $file = $this->prophesize(File::class);
+        $file->getCollection()->willReturn($othercollection);
 
-        $this->object->restrictToCollections($collection);
+        $this->sut->restrictToCollections($collection);
 
-        $this->assertEquals($assertion, $this->object->isApplicable($this->file));
+        $this->assertEquals($assertion, $this->sut->isApplicable($file->reveal()));
     }
 
-    public function getCollectionsCombinaison()
+    public function getCollectionsCombination()
     {
-        $othercollection = $collection = null;
-        $app = $this->loadApp();
-        $databoxes = $app->getDataboxes();
-        if (count($databoxes) === 0) {
-            $this->fail('Unable to find collections');
-        }
-        $databox = array_pop($databoxes);
+        $databox = $this->prophesize(\databox::class);
+        $databox->get_sbas_id()->willReturn(1);
 
-        foreach ($databoxes as $db) {
-            if (! $collection) {
-                foreach ($db->get_collections() as $coll) {
-                    $collection = $coll;
-                    break;
-                }
-            }
+        $collectionProphecy = $this->prophesize(\collection::class);
+        $collectionProphecy->get_databox()->willReturn($databox->reveal());
+        $collectionProphecy->get_base_id()->willReturn(2);
+        $collection = $collectionProphecy->reveal();
 
-            if (! $othercollection && $collection) {
-                foreach ($db->get_collections() as $coll) {
-                    if ($coll->get_base_id() != $collection->get_base_id()) {
-                        $othercollection = $coll;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (null === $othercollection) {
-            $othercollection = \collection::create($app, $databox, $app['phraseanet.appbox'], 'other coll');
-        }
-        if (null === $collection) {
-            $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], 'other coll');
-        }
+        $otherCollectionProphecy = $this->prophesize(\collection::class);
+        $otherCollectionProphecy->get_databox()->willReturn($databox->reveal());
+        $otherCollectionProphecy->get_base_id()->willReturn(3);
+        $othercollection = $otherCollectionProphecy->reveal();
 
         return [
+            [[], $collection, true],
             [[$collection], $collection, true],
             [$collection, $collection, true],
             [$collection, null, true],
@@ -151,8 +109,8 @@ class AbstractCheckerTest extends \PhraseanetTestCase
      */
     public function testMixCollectionFirst($databox, $collection)
     {
-        $this->object->restrictToCollections($collection);
-        $this->object->restrictToDataboxes($databox);
+        $this->sut->restrictToCollections($collection);
+        $this->sut->restrictToDataboxes($databox);
     }
 
     /**
@@ -161,8 +119,8 @@ class AbstractCheckerTest extends \PhraseanetTestCase
      */
     public function testMixDataboxFirst($databox, $collection)
     {
-        $this->object->restrictToDataboxes($databox);
-        $this->object->restrictToCollections($collection);
+        $this->sut->restrictToDataboxes($databox);
+        $this->sut->restrictToCollections($collection);
     }
 
     /**
@@ -171,7 +129,7 @@ class AbstractCheckerTest extends \PhraseanetTestCase
      */
     public function testInvalidDatabox($databox, $collection)
     {
-        $this->object->restrictToDataboxes($collection);
+        $this->sut->restrictToDataboxes($collection);
     }
 
     /**
@@ -180,25 +138,17 @@ class AbstractCheckerTest extends \PhraseanetTestCase
      */
     public function testInvalidCollection($databox, $collection)
     {
-        $this->object->restrictToCollections($databox);
+        $this->sut->restrictToCollections($databox);
     }
 
     public function getDataboxAndCollection()
     {
-        $databox = $collection = null;
-        $app = $this->loadApp();
+        $databox = $this->prophesize(\databox::class);
+        $databox->get_sbas_id()->willReturn(1);
 
-        foreach ($app->getDataboxes() as $db) {
-            if (! $databox) {
-                $databox = $db;
-            }
-            if (! $collection) {
-                foreach ($db->get_collections() as $coll) {
-                    $collection = $coll;
-                    break;
-                }
-            }
-        }
+        $collection = $this->prophesize(\collection::class);
+        $collection->get_databox()->willReturn($databox->reveal());
+        $collection->get_base_id()->willReturn(2);
 
         return [
             [$databox, $collection],
