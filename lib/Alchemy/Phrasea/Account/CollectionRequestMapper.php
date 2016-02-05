@@ -25,17 +25,24 @@ class CollectionRequestMapper
         $demands = array();
 
         foreach ($databoxStatuses as $databoxId => $data) {
-            foreach ($data['CollsWait'] as $collectionId => $waiting) {
-                $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, "pending");
-            }
+            $demands = array_merge($demands, $this->mapCollectionsByStatus($databoxId, $data, "CollsWait", "pending"));
+            $demands = array_merge($demands, $this->mapCollectionsByStatus($databoxId, $data, "CollsRefuse", "rejected"));
+            $demands = array_merge($demands, $this->mapCollectionsByStatus($databoxId, $data, "CollsRegistered", "accepted"));
+        }
 
-            foreach ($data['CollsRefuse'] as $collectionId => $waiting) {
-                $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, "rejected");
-            }
+        return $demands;
+    }
 
-            foreach ($data['CollsRegistered'] as $collectionId => $waiting) {
-                $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, "accepted");
-            }
+    private function mapCollectionsByStatus($databoxId, $data, $dataKey, $statusName)
+    {
+        if (! is_array($data[$dataKey])) {
+            return array();
+        }
+
+        $demands = array();
+
+        foreach ($data[$dataKey] as $collectionId => $collectionData) {
+            $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, $statusName);
         }
 
         return $demands;
