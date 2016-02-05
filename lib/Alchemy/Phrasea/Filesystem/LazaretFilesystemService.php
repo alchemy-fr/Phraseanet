@@ -25,20 +25,21 @@ class LazaretFilesystemService
     private $filesystem;
 
     /**
-     * @var string
-     */
-    private $tmpPath;
-
-    /**
      * @var Alchemyst
      */
     private $alchemyst;
 
+    /**
+     * @var LazaretPathBooker
+     */
+    private $booker;
+
     public function __construct(Filesystem $filesystem, $tmpPath, Alchemyst $alchemyst)
     {
         $this->filesystem = $filesystem;
-        $this->tmpPath = $tmpPath;
         $this->alchemyst = $alchemyst;
+
+        $this->booker = new LazaretPathBooker($filesystem, $tmpPath);
     }
 
     /**
@@ -48,10 +49,10 @@ class LazaretFilesystemService
      */
     public function writeLazaret(File $file)
     {
-        $lazaretPathname = $this->bookLazaretPathfile($file->getOriginalName());
+        $lazaretPathname = $this->booker->bookFile($file->getOriginalName());
         $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
 
-        $lazaretPathnameThumb = $this->bookLazaretPathfile($file->getOriginalName(), 'thumb');
+        $lazaretPathnameThumb = $this->booker->bookFile($file->getOriginalName(), 'thumb');
         try {
             $this->alchemyst->turnInto($file->getFile()->getPathname(), $lazaretPathnameThumb, $this->createThumbnailSpecification());
         } catch (ExceptionInterface $e) {
@@ -59,28 +60,6 @@ class LazaretFilesystemService
         }
 
         return new PersistedLazaretInformation($lazaretPathname, $lazaretPathnameThumb);
-    }
-
-    private function bookLazaretPathfile($filename, $suffix = '')
-    {
-        $output = $this->tmpPath .'/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' . pathinfo($filename, PATHINFO_EXTENSION);
-        $infos = pathinfo($output);
-        $n = 0;
-
-        while (true) {
-            $output = sprintf('%s/%s-%d%s', $infos['dirname'], $infos['filename'],  ++ $n, (isset($infos['extension']) ? '.' . $infos['extension'] : ''));
-
-            try {
-                if (! $this->filesystem->exists($output)) {
-                    $this->filesystem->touch($output);
-                    break;
-                }
-            } catch (IOException $e) {
-
-            }
-        }
-
-        return realpath($output);
     }
 
     /**
