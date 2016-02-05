@@ -104,6 +104,10 @@ abstract class AbstractChecker implements CheckerInterface
      */
     public function isApplicable(File $file)
     {
+        if (empty($this->databoxes) && empty($this->collections)) {
+            return true;
+        }
+
         if (null === $file->getCollection()) {
             return true;
         }
