@@ -19,8 +19,19 @@ use Alchemy\Phrasea\Border\File;
  */
 abstract class AbstractChecker implements CheckerInterface
 {
+    /**
+     * @var Application
+     */
     protected $app;
+
+    /**
+     * @var \databox[]
+     */
     protected $databoxes = [];
+
+    /**
+     * @var \collection[]
+     */
     protected $collections = [];
 
     public function __construct(Application $app)
@@ -32,8 +43,8 @@ abstract class AbstractChecker implements CheckerInterface
      * Restrict the checker to a set of databoxes.
      * Warning, you can not restrict on both databoxes and collections
      *
-     * @param  databox|array $databoxes A databox or an array of databoxes
-     * @return Boolean
+     * @param  \databox[] $databoxes A databox or an array of databoxes
+     * @return bool
      *
      * @throws \LogicException           If already restricted to collections
      * @throws \InvalidArgumentException In case invalid databoxes are provided
@@ -60,8 +71,8 @@ abstract class AbstractChecker implements CheckerInterface
      * Restrict the checker to a set of collections.
      * Warning, you can not restrict on both databoxes and collections
      *
-     * @param  collection|array $collections
-     * @return Boolean
+     * @param  \collection[] $collections
+     * @return bool
      *
      * @throws \LogicException           If already restricted to databoxes
      * @throws \InvalidArgumentException In case invalid collections are provided
