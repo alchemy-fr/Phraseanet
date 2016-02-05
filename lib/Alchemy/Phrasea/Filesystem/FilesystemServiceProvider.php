@@ -34,6 +34,10 @@ class FilesystemServiceProvider implements ServiceProviderInterface
         $app['phraseanet.filesystem'] = $app->share(function (Application $app) {
             return new FilesystemService($app['filesystem']);
         });
+
+        $app['phraseanet.lazaret_filesystem'] = $app->share(function (Application $app) {
+            return new LazaretFilesystemService($app['filesystem'], $app['tmp.lazaret.path'], $app['media-alchemyst']);
+        });
     }
 
     public function boot(Application $app)
