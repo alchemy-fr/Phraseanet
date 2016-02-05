@@ -3,13 +3,3 @@ function publicator_reload_publicator(url) {
     var dialog = p4.Dialog.get(1);
     dialog.load(url, 'POST', options);
 }
-
-function init_publicator(url, datas) {
-    var dialog = p4.Dialog.Create({
-        size: 'Full',
-        title: 'Bridge',
-        loading: false
-    });
-
-    dialog.load(url, 'POST', datas);
-}

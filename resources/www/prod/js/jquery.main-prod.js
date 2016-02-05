@@ -1538,7 +1538,7 @@ $(document).ready(function () {
 
 });
 
-
+// edit modal - multiusage @todo refactor
 function editThis(type, value) {
 
     $('#idFrameE').empty().addClass('loading');
@@ -1677,55 +1677,7 @@ function deleteThis(lst) {
     return false;
 }
 
-function chgCollThis(datas) {
-    $dialog = p4.Dialog.Create({
-        size: 'Small',
-        title: language.move,
-        closeButton: true
-    });
-    $.ajax({
-        type: "POST",
-        url: "../prod/records/movecollection/",
-        data: datas,
-        success: function (data) {
-            $dialog.setContent(data);
-        }
-    });
-}
-
-function pushThis(sstt_id, lst, story) {
-    $dialog = p4.Dialog.Create({
-        size: 'Full',
-        title: language.push
-    });
-
-    $.post("../prod/push/sendform/", {
-        lst: lst,
-        ssel: sstt_id,
-        story: story
-    }, function (data) {
-        $dialog.setContent(data);
-        return;
-    });
-}
-
-function feedbackThis(sstt_id, lst, story) {
-    /* disable push closeonescape as an over dialog may exist (add user) */
-    $dialog = p4.Dialog.Create({
-        size: 'Full',
-        title: language.feedback
-    });
-
-    $.post("../prod/push/validateform/", {
-        lst: lst,
-        ssel: sstt_id,
-        story: story
-    }, function (data) {
-        $dialog.setContent(data);
-        return;
-    });
-}
-
+// trigger tools modal - multiusage @todo refactor
 function toolREFACTOR(datas, activeTab) {
 
     var dialog = p4.Dialog.Create({
@@ -1840,22 +1792,6 @@ function printThis(value) {
 }
 
 
-function downloadThis(datas) {
-    var dialog = p4.Dialog.Create({title: language['export']});
-
-    $.post("../prod/export/multi-export/", datas, function (data) {
-
-        dialog.setContent(data);
-
-        $('.tabs', dialog.getDomElement()).tabs();
-
-        $('.close_button', dialog.getDomElement()).bind('click', function () {
-            dialog.Close();
-        });
-
-        return false;
-    });
-}
 
 
 function viewNbSelect() {

@@ -47,8 +47,8 @@ var browserSync = require('browser-sync').create();
 gulp.task('sync', ['watch'], function(){
     // will open browser in http://localhost:3000/
     browserSync.init({
-        //proxy: "phraseanet-php55-nginx"
-        proxy: "www.phraseanet.vb"
+        proxy: "phraseanet-php55-nginx"
+        //proxy: "www.phraseanet.vb"
     });
     gulp.watch(config.paths.build + '**/*.css').on('change', browserSync.reload);
     gulp.watch(config.paths.build + '**/*.js').on('change', browserSync.reload);

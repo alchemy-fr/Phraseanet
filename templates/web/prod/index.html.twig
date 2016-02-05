@@ -755,6 +755,9 @@
     <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
         ProductionApplication.bootstrap({
+            lang: "{{ app.locale }}",
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}',
             notify: {
                 url: "{{ path('list_notifications') }}",
                 moduleId: 1,
