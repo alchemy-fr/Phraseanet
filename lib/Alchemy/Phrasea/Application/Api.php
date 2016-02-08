@@ -50,9 +50,11 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
 
         // handle content negociation
         $priorities = array('application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript');
-        foreach (\API_V1_adapter::$extendedContentTypes['json'] as $priorities[]);
-        foreach (\API_V1_adapter::$extendedContentTypes['yaml'] as $priorities[]);
-        $format = $app['negotiator']->getBest($request->headers->get('accept', 'application/json') ,$priorities);
+        foreach (\API_V1_adapter::$extendedContentTypes['json'] as $p)
+            $priorities[] = $p;
+        foreach (\API_V1_adapter::$extendedContentTypes['yaml'] as $p)
+            $priorities[] = $p;
+        $format = $app['negotiator']->getBest($request->headers->get('accept', 'application/json'), $priorities);
 
         // throw unacceptable http error if API can not handle asked format
         if (null === $format) {
@@ -125,7 +127,11 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
         })->bind($name);
     }
 
-    $app->mount('/api/oauthv2', new Oauth2());
+    $app->post('/api/oauthv2/token', array('Alchemy\Phrasea\Controller\Api\Oauth2', 'tokenAction'));
+    $app->match('/oauthv2/authorize', function () {return '';})
+        ->method('GET|POST')
+        ->bind('oauth2_authenticate');
+
     $app->mount('/datafiles/', new Datafiles());
     $app->mount('/api/v1', new V1());
     $app->bindPluginRoutes('plugin.controller_providers.api');
