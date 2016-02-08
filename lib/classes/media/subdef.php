@@ -117,7 +117,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $this->generate_url();
 
-        parent::__construct($this->url, $this->width, $this->height);
+        parent::__construct($this->width, $this->height, $this->url);
     }
 
     /**

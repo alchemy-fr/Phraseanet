@@ -13,12 +13,12 @@ namespace Alchemy\Phrasea\Media;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Record\MediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Filesystem\FilesystemService;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 class SubdefSubstituer
 {
@@ -26,7 +26,7 @@ class SubdefSubstituer
     private $fs;
     private $mediavorus;
 
-    public function __construct(Application $app, Filesystem $fs, Alchemyst $alchemyst, MediaVorus $mediavorus, EventDispatcherInterface $dispatcher)
+    public function __construct(Application $app, FilesystemService $fs, Alchemyst $alchemyst, MediaVorus $mediavorus, EventDispatcherInterface $dispatcher)
     {
         $this->alchemyst = $alchemyst;
         $this->app = $app;
@@ -56,18 +56,15 @@ class SubdefSubstituer
 
     public function substituteDocument(\record_adapter $record, MediaInterface $media)
     {
-        $baseprefs = $record->getDatabox()->get_sxml_structure();
-        $pathhd = \databox::dispatch($this->fs, \p4string::addEndSlash((string) ($baseprefs->path)));
+        /** @var \SplFileInfo $file */
+        $file = $media->getFile();
 
-        $extension = strtolower($media->getFile()->getExtension());
-        $filehd = $record->getRecordId() . "_document." . $extension;
+        $source = $file->getRealPath();
+        $target = $this->fs->generateDocumentFilename($record, $file);
 
-        $subdefFile = $pathhd . $filehd;
+        $this->fs->writeMediaSourceFile($record->getDatabox(), $source, $target);
 
-        $this->fs->copy($media->getFile()->getRealPath(), $subdefFile, true);
-        $this->fs->chmod($subdefFile, 0760);
-
-        $media = $this->mediavorus->guess($subdefFile);
+        $media = $this->mediavorus->guess($source);
 
         $this->createMediaSubdef($record, 'document', $media);
 
@@ -98,9 +95,7 @@ class SubdefSubstituer
             $record->get_subdef($name)->remove_file();
             $record->clearSubdefCache($name);
         } else {
-            $path = \databox::dispatch($this->fs, $databox_subdef->get_path());
-            $this->fs->mkdir($path, 0750);
-            $path_file_dest = $path . $record->getRecordId() . '_0_' . $name . '.' . $media->getFile()->getExtension();
+            $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef);
         }
 
         if($adapt) {

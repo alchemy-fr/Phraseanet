@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -27,12 +28,9 @@ use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
-use MediaAlchemyst\Specification\Image as ImageSpec;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
-use Silex\Application;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
@@ -248,41 +246,10 @@ class Manager
     }
 
     /**
-     * Find an available Lazaret filename and creates the empty file.
-     *
-     * @param  string $filename The desired filename
-     * @param  string $suffix   A suffix to the filename
-     * @return string The available filename to use
-     */
-    protected function bookLazaretPathfile($filename, $suffix = '')
-    {
-        $output = $this->app['tmp.path'].'/lazaret/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' . pathinfo($filename, PATHINFO_EXTENSION);
-        $infos = pathinfo($output);
-        $n = 0;
-
-        $this->app['filesystem']->mkdir($this->app['tmp.lazaret.path']);
-
-        while (true) {
-            $output = sprintf('%s/%s-%d%s', $infos['dirname'], $infos['filename'],  ++ $n, (isset($infos['extension']) ? '.' . $infos['extension'] : ''));
-
-            try {
-                if ( ! $this->app['filesystem']->exists($output)) {
-                    $this->app['filesystem']->touch($output);
-                    break;
-                }
-            } catch (IOException $e) {
-
-            }
-        }
-
-        return realpath($output);
-    }
-
-    /**
      * Adds a record to Phraseanet
      *
      * @param  File           $file The package file
-     * @return \record_adater
+     * @return \record_adapter
      */
     protected function createRecord(File $file, $nosubdef=false)
     {
@@ -389,21 +356,8 @@ class Manager
             )
         );
 
-        $lazaretPathname = $this->bookLazaretPathfile($file->getOriginalName());
-        $lazaretPathnameThumb = $this->bookLazaretPathfile($file->getOriginalName(), 'thumb');
-
-        $this->app['filesystem']->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
-
-        $spec = new ImageSpec();
-
-        $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
-        $spec->setDimensions(375, 275);
-
-        try {
-            $this->app['media-alchemyst']->turnInto($file->getFile()->getPathname(), $lazaretPathnameThumb, $spec);
-        } catch (MediaAlchemystException $e) {
-
-        }
+        $lazaretFilesystemService = $this->app['phraseanet.lazaret_filesystem'];
+        $persistedLazaret = $lazaretFilesystemService->writeLazaret($file);
 
         $lazaretFile = new LazaretFile();
         $lazaretFile->setBaseId($file->getCollection()->get_base_id());
@@ -413,8 +367,8 @@ class Manager
 
         $lazaretFile->setForced($forced);
 
-        $lazaretFile->setFilename(pathinfo($lazaretPathname, PATHINFO_BASENAME));
-        $lazaretFile->setThumbFileName(pathinfo($lazaretPathnameThumb, PATHINFO_BASENAME));
+        $lazaretFile->setFilename($persistedLazaret->getFilename());
+        $lazaretFile->setThumbFileName($persistedLazaret->getThumbnailFilename());
 
         $lazaretFile->setSession($session);
 

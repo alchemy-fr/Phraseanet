@@ -32,11 +32,11 @@ abstract class media_abstract
     protected $width;
 
     /**
-     * @param Url $url
      * @param int $width
      * @param int $height
+     * @param Url|null $url
      */
-    public function __construct(Url $url, $width, $height)
+    public function __construct($width, $height, Url $url = null)
     {
         $this->url = $url;
         $this->height = (int) $height;

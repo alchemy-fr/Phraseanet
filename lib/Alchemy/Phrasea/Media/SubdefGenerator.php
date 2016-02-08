@@ -18,12 +18,11 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Filesystem\FilesystemService;
 use MediaAlchemyst\Alchemyst;
-use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\MediaVorus;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 class SubdefGenerator
 {
@@ -38,7 +37,7 @@ class SubdefGenerator
     private $logger;
     private $mediavorus;
 
-    public function __construct(Application $app, Alchemyst $alchemyst, Filesystem $filesystem, MediaVorus $mediavorus, LoggerInterface $logger)
+    public function __construct(Application $app, Alchemyst $alchemyst, FilesystemService $filesystem, MediaVorus $mediavorus, LoggerInterface $logger)
     {
         $this->app = $app;
         $this->alchemyst = $alchemyst;
@@ -78,7 +77,7 @@ class SubdefGenerator
                 $record->clearSubdefCache($subdefname);
             }
 
-            $pathdest = $this->generateSubdefPathname($record, $subdef, $pathdest);
+            $pathdest = $this->filesystem->generateSubdefPathname($record, $subdef, $pathdest);
 
             $this->dispatch(
                 RecordEvents::SUB_DEFINITION_CREATION,
@@ -140,83 +139,5 @@ class SubdefGenerator
         } catch (MediaAlchemystException $e) {
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
-    }
-
-    private function generateSubdefPathname(\record_adapter $record, \databox_subdef $subdef, $oldVersion = null)
-    {
-        if ($oldVersion) {
-            $pathdest = \p4string::addEndSlash(pathinfo($oldVersion, PATHINFO_DIRNAME));
-        } else {
-            $pathdest = \databox::dispatch($this->filesystem, $subdef->get_path());
-        }
-
-        return $pathdest . $record->getRecordId() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
-    }
-
-    /**
-     * Get the extension from MediaAlchemyst specs
-     *
-     * @param SpecificationInterface $spec
-     *
-     * @return string
-     */
-    private function getExtensionFromSpec(SpecificationInterface $spec)
-    {
-        switch ($spec->getType()) {
-            case SpecificationInterface::TYPE_IMAGE:
-                return 'jpg';
-            case SpecificationInterface::TYPE_ANIMATION:
-                return 'gif';
-            case SpecificationInterface::TYPE_AUDIO:
-                return $this->getExtensionFromAudioCodec($spec->getAudioCodec());
-            case SpecificationInterface::TYPE_VIDEO:
-                return $this->getExtensionFromVideoCodec($spec->getVideoCodec());
-            case SpecificationInterface::TYPE_SWF:
-                return 'swf';
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the extension from audiocodec
-     *
-     * @param string $audioCodec
-     *
-     * @return string
-     */
-    private function getExtensionFromAudioCodec($audioCodec)
-    {
-        switch ($audioCodec) {
-            case 'flac':
-                return 'flac';
-            case 'libvorbis':
-                return 'ogg';
-            case 'libmp3lame':
-                return 'mp3';
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the extension from videocodec
-     *
-     * @param string $videoCodec
-     *
-     * @return string
-     */
-    private function getExtensionFromVideoCodec($videoCodec)
-    {
-        switch ($videoCodec) {
-            case 'libtheora':
-                return 'ogv';
-            case 'libvpx':
-                return 'webm';
-            case 'libx264':
-                return 'mp4';
-        }
-
-        return null;
     }
 }
