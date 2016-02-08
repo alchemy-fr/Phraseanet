@@ -128,7 +128,7 @@
             <fieldset>
                 <legend>{{ 'setup::Tests d\'envois d\'emails' | trans }}</legend>
                 <div class="input-append">
-                    <input class="span3" id="appendedInputButton" type="text" placeholder="{% trans %}Email{% endtrans %}">
+                    <input class="span3" id="appendedInputButton" name="email" value="" type="text" placeholder="{% trans %}Email{% endtrans %}" required>
                     <input type="submit" class="btn btn-warning" value="{{ 'Send' | trans }}"/>
                 </div>
             </fieldset>
