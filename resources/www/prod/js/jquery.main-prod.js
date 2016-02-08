@@ -566,7 +566,7 @@ function initAnswerForm() {
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
                 $('#tool_results').empty().append(datas.infos);
-                $('#tool_navigate').empty().append(datas.navigation);
+                $('#tool_navigate').empty().append(datas.navigationTpl);
 
                 $.each(p4.Results.Selection.get(), function (i, el) {
                     $('#IMGT_' + el).addClass('selected');
@@ -575,6 +575,7 @@ function initAnswerForm() {
                 p4.tot = datas.total_answers;
                 p4.tot_options = datas.form;
                 p4.tot_query = datas.query;
+                p4.navigation = datas.navigation;
 
                 if (datas.next_page) {
                     $("#NEXT_PAGE, #answersNext").bind('click', function () {

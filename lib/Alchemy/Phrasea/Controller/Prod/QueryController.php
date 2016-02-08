@@ -156,7 +156,11 @@ class QueryController extends Controller
                 . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
-            $json['navigation'] = $string;
+            $json['navigationTpl'] = $string;
+            $json['navigation'] = [
+                'page' => $page,
+                'perPage' => $perPage
+            ];
 
             $prop = null;
 
