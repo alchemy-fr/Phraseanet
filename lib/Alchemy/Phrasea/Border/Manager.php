@@ -42,6 +42,9 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 class Manager
 {
+    /**
+     * @var CheckerInterface[]
+     */
     protected $checkers = [];
     protected $app;
     protected $filesystem;
@@ -157,7 +160,9 @@ class Manager
         }
 
         foreach ($this->checkers as $checker) {
-            $visa->addResponse($checker->check($this->app['orm.em'], $file));
+            if ($checker->isApplicable($file)) {
+                $visa->addResponse($checker->check($this->app['orm.em'], $file));
+            }
         }
 
         return $visa;
