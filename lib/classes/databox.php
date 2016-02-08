@@ -156,27 +156,6 @@ class databox extends base implements ThumbnailedElement
         return $databox;
     }
 
-    public static function dispatch(Filesystem $filesystem, $repository_path)
-    {
-        $repository_path = p4string::addEndSlash($repository_path);
-
-        $timestamp = strtotime(date('Y-m-d'));
-        $year = date('Y', $timestamp);
-        $month = date('m', $timestamp);
-        $day = date('d', $timestamp);
-
-        $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
-
-        $n = 0;
-        do {
-            $pathout = sprintf('%s%s%05d', $repository_path, $comp, $n++);
-        } while (is_dir($pathout) && iterator_count(new DirectoryIterator($pathout)) > 100);
-
-        $filesystem->mkdir($pathout, 0750);
-
-        return $pathout . DIRECTORY_SEPARATOR;
-    }
-
     public static function get_available_dcfields()
     {
         return [

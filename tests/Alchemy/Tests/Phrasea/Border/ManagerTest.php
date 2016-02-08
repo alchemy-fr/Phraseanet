@@ -639,35 +639,10 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->object->unregisterChecker($uuidChecker);
         $this->assertEquals([$shaChecker, $filenameChecker], $this->object->getCheckers());
     }
-
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::bookLazaretPathfile
-     */
-    public function testBookLazaretPathfile()
-    {
-        $manager = new ManagerTester(self::$DI['app']);
-
-        $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
-        $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');
-
-        $this->assertNotEquals($file2, $file1);
-
-        $this->assertTrue(file_exists($file1));
-        $this->assertTrue(file_exists($file2));
-
-        unlink($file1);
-        unlink($file2);
-    }
 }
 
 class ManagerTester extends Manager
 {
-
-    public function bookLazaretPathfileTester($filename)
-    {
-        return parent::bookLazaretPathfile($filename);
-    }
-
     public function addMediaAttributesTester($file)
     {
         return parent::addMediaAttributes($file);

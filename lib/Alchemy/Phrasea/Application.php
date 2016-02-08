@@ -68,13 +68,14 @@ use Alchemy\Phrasea\Core\Provider\SerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\StatusServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SubdefServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
-use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Filesystem\FilesystemServiceProvider;
+use Alchemy\Phrasea\Filesystem\ApplicationPathServiceGenerator;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Media\DatafilesResolver;
 use Alchemy\Phrasea\Media\MediaAccessorResolver;
@@ -86,7 +87,6 @@ use MediaVorus\MediaVorus;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
-use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
@@ -161,7 +161,6 @@ class Application extends SilexApplication
         $this->register(new MonologServiceProvider());
         $this->setupMonolog();
         $this->register(new FilesystemServiceProvider());
-        $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new CacheConnectionServiceProvider());
         $this->register(new PhraseanetServiceProvider());
@@ -532,80 +531,47 @@ class Application extends SilexApplication
         // thumbnails path
         $this['thumbnail.path'] = $this['root.path'].'/www/thumbnails';
 
-        // cache path (twig, minify, translations, configuration, doctrine metas serializer metas, profiler etc ...)
-        $this['cache.path'] = $this->share(function() {
-            $defaultPath = $path = $this['root.path'].'/cache';
-            if ($this['phraseanet.configuration']->isSetup()) {
-                $path = $this['conf']->get(['main', 'storage', 'cache'], $path);
+        $factory = new ApplicationPathServiceGenerator();
+
+        $this['cache.path'] = $factory->createDefinition(
+            ['main', 'storage', 'cache'],
+            function (Application $app) {
+                return $app['root.path'].'/cache';
             }
-            $path = $path ?: $defaultPath;
-
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
+        );
         $this['cache.paths'] = function (Application $app) {
             return new \ArrayObject([
                 $app['cache.path'],
             ]);
         };
 
-        // log path
-        $this['log.path'] = $this->share(function() {
-            $defaultPath = $path = $this['root.path'].'/logs';
-            if ($this['phraseanet.configuration']->isSetup()) {
-                return $this['conf']->get(['main', 'storage', 'log'], $path);
+        $this['log.path'] = $factory->createDefinition(
+            ['main', 'storage', 'log'],
+            function (Application $app) {
+                return $app['root.path'].'/logs';
             }
-            $path = $path ?: $defaultPath;
+        );
 
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
-
-        // temporary download file path (zip file)
-        $this['tmp.download.path'] = $this->share(function() {
-            $defaultPath = $path = $this['tmp.path'].'/download';
-            if ($this['phraseanet.configuration']->isSetup()) {
-                return $this['conf']->get(['main', 'storage', 'download'], $path);
+        $this['tmp.download.path'] = $factory->createDefinition(
+            ['main', 'storage', 'download'],
+            function (Application $app) {
+                return $app['tmp.path'].'/download';
             }
-            $path = $path ?: $defaultPath;
+        );
 
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
-
-        // quarantined file path
-        $this['tmp.lazaret.path'] = $this->share(function() {
-            $defaultPath = $path = $this['tmp.path'].'/lazaret';
-            if ($this['phraseanet.configuration']->isSetup()) {
-                return $this['conf']->get(['main', 'storage', 'quarantine'], $path);
+        $this['tmp.lazaret.path'] = $factory->createDefinition(
+            ['main', 'storage', 'quarantine'],
+            function (Application $app) {
+                return $app['tmp.path'].'/lazaret';
             }
-            $path = $path ?: $defaultPath;
+        );
 
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
-
-        // document caption file path
-        $this['tmp.caption.path'] = $this->share(function() {
-            $defaultPath = $path = $this['tmp.path'].'/caption';
-            if ($this['phraseanet.configuration']->isSetup()) {
-                return $this['conf']->get(['main', 'storage', 'caption'], $path);
+        $this['tmp.caption.path'] = $factory->createDefinition(
+            ['main', 'storage', 'caption'],
+            function (Application $app) {
+                return $app['tmp.path'].'/caption';
             }
-            $path = $path ?: $defaultPath;
-
-            // ensure path is created
-            $this['filesystem']->mkdir($path);
-
-            return $path;
-        });
+        );
     }
 
 

@@ -10,7 +10,6 @@
 namespace Alchemy\Phrasea\Application\Helper;
 
 use Neutron\TemporaryFilesystem\Manager;
-use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 trait FilesystemAware

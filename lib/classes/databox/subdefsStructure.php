@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -75,10 +74,6 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         return null;
     }
 
-    /**
-     *
-     * @return databox_subdefsStructure
-     */
     protected function load_subdefs()
     {
         $sx_struct = $this->databox->get_sxml_structure();
@@ -92,7 +87,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         ];
 
         if (! $sx_struct) {
-            return $this;
+            return;
         }
 
         $subdefgroup = $sx_struct->subdefs[0];
@@ -132,8 +127,6 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             }
         }
         $this->AvSubdefs = $avSubdefs;
-
-        return $this;
     }
 
     /**
