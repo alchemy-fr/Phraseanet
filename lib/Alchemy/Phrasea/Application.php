@@ -824,7 +824,7 @@ class Application extends SilexApplication
     /**
      * Returns true if application has terms of use
      *
-     * @return noolean
+     * @return boolean
      */
     public function hasTermsOfUse()
     {
@@ -893,6 +893,10 @@ class Application extends SilexApplication
         $this->mount('/prod/lazaret/', new Lazaret());
         $this->mount('/prod/upload/', new Upload());
         $this->mount('/prod/', new Prod());
+
+        $this->match('/oauthv2/authorize', array('Alchemy\Phrasea\Controller\Api\Oauth2', 'authorizeAction'))
+            ->method('GET|POST')
+            ->bind('oauth2_authorize');
 
         $this->mount('/user/preferences/', new Preferences());
         $this->mount('/user/notifications/', new Notifications());
