@@ -73,6 +73,12 @@ function openPreview(env, pos, contId, reload) {
 
     var options_serial = p4.tot_options;
     var query = p4.tot_query;
+    var navigation = p4.navigation;
+
+    // keep relative position for answer train:
+    var relativePos = pos;
+    // update real absolute position with pagination:
+    var absolutePos = parseInt(navigation.perPage,10) * (parseInt(navigation.page, 10) - 1) + parseInt(pos,10);
 
     prevAjax = $.ajax({
         type: "POST",
@@ -80,7 +86,7 @@ function openPreview(env, pos, contId, reload) {
         dataType: 'json',
         data: {
             env: env,
-            pos: pos,
+            pos: absolutePos,
             cont: contId,
             roll: roll,
             options_serial: options_serial,
@@ -141,7 +147,7 @@ function openPreview(env, pos, contId, reload) {
             p4.preview.current.width = parseInt($('#PREVIEWIMGCONT input[name=width]').val());
             p4.preview.current.height = parseInt($('#PREVIEWIMGCONT input[name=height]').val());
             p4.preview.current.tot = data.tot;
-            p4.preview.current.pos = data.pos;
+            p4.preview.current.pos = relativePos;
 
             if ($('#PREVIEWBOX img.record.zoomable').length > 0) {
                 $('#PREVIEWBOX img.record.zoomable').draggable();
@@ -334,7 +340,7 @@ function getNext() {
     else {
         if (p4.preview.mode == 'RESULT') {
             posAsk = parseInt(p4.preview.current.pos) + 1;
-            posAsk = (posAsk > parseInt(p4.tot) || isNaN(posAsk)) ? 0 : posAsk;
+            posAsk = (posAsk >= parseInt(p4.tot) || isNaN(posAsk)) ? 0 : posAsk;
             openPreview('RESULT', posAsk, '', false);
         }
         else {
