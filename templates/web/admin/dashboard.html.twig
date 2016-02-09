@@ -106,11 +106,9 @@
                         </label>
                     </li>
                 {% endfor %}
-            </ul>
-            <div class="input-append" style="margin-left:20px">
                 <input class="admin_adder input-large" placeholder="{{ 'Add an admin' | trans }}"/>
-                <input type="submit" class="btn btn-warning" value="{{ 'boutton::valider' | trans }}" />
-            </div>
+            </ul>
+            <input type="submit" class="btn btn-warning" value="{{ 'boutton::valider' | trans }}" />
             <input type="hidden" class="new" name="admins[]" />
         </fieldset>
     </form>

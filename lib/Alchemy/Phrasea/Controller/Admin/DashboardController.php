@@ -124,6 +124,10 @@ class DashboardController extends Controller
     public function addAdmins(Request $request)
     {
         $admins = $request->request->get('admins', []);
+
+        // Remove empty values
+        $admins = array_filter($admins);
+
         if (!is_array($admins) || count($admins) === 0) {
             $this->app->abort(400, '"admins" parameter must contains at least one value.');
         }
@@ -134,6 +138,15 @@ class DashboardController extends Controller
         }
 
         $userRepository = $this->getUserRepository();
+
+        $demotedAdmins = [];
+
+        foreach ($userRepository->findAdmins() as $admin) {
+            if (!in_array($admin->getId(), $admins)) {
+                $demotedAdmins[$admin->getId()] = $admin;
+            }
+        }
+
         $userRepository->findBy(['id' => $admins]);
         $admins = array_map(function ($usrId) use ($userRepository) {
             if (null === $user = $userRepository->find($usrId)) {
@@ -145,7 +158,10 @@ class DashboardController extends Controller
 
         /** @var UserManipulator $userManipulator */
         $userManipulator = $this->app['manipulator.user'];
+
+        $userManipulator->demote($demotedAdmins);
         $userManipulator->promote($admins);
+
         /** @var ACLManipulator $aclManipulator */
         $aclManipulator = $this->app['manipulator.acl'];
         $aclManipulator->resetAdminRights($admins);
