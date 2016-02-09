@@ -111,7 +111,7 @@
     "include-path": ["vendor/zend/gdata/library"],
     "extra":        {
         "branch-alias": {
-            "dev-master": "4.0.x-dev"
+            "dev-master": "4.1.x-dev"
         }
     }
 }

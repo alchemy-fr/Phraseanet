@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "26dcf1e33b20a55ecd2555da02ba6161",
-    "content-hash": "6972430014dbde461b9954c32a8cbdbb",
+    "hash": "8a411f7150eeb12552a747c083ff0e6a",
+    "content-hash": "898d26642c158c5efb98e8abaccc2655",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -487,7 +487,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/a0e2c2b8a1d2c9c405fc9663b698f56a20831946",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/68d2333231867c4157db27f6f4972328b1433eb1",
                 "reference": "7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
                 "shasum": ""
             },
