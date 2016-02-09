@@ -347,9 +347,9 @@ class UserManipulator implements ManipulatorInterface
     /**
      * Makes given variable traversable.
      *
-     * @param mixed $var
+     * @param User|User[] $var
      *
-     * @return array
+     * @return array|\Traversable|User[]
      */
     private function makeTraversable($var)
     {
