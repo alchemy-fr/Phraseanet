@@ -119,7 +119,7 @@
 {% macro caption(record, can_see_business, display_exif, limitedWidth = false) %}
     <dl class="{% if limitedWidth %}{% else %}dl-horizontal{% endif %}">
     {% for name, value in record.getCaption(caption_field_order(record, can_see_business)) %}
-        <dt>{{ name }}</dt>
+        <dt>{{ caption_field_label(record, name) }}</dt>
         <dd>{{ caption_field(record, name, value)|e|highlight }}</dd>
     {% endfor %}
     </dl>
