@@ -27,6 +27,13 @@ function getNewVideoToken(lst, obj) {
     });
 }
 
+/**
+ *
+ * @param env
+ * @param pos - relative position in current page
+ * @param contId
+ * @param reload
+ */
 function openPreview(env, pos, contId, reload) {
 
     if (contId == undefined)
@@ -168,9 +175,9 @@ function openPreview(env, pos, contId, reload) {
             else {
                 if (!justOpen) {
                     $('#PREVIEWCURRENT li.selected').removeClass('selected');
-                    $('#PREVIEWCURRENTCONT li.current' + pos).addClass('selected');
+                    $('#PREVIEWCURRENTCONT li.current' + absolutePos).addClass('selected');
                 }
-                if (justOpen || ($('#PREVIEWCURRENTCONT li.current' + pos).length === 0) || ($('#PREVIEWCURRENTCONT li:last')[0] == $('#PREVIEWCURRENTCONT li.selected')[0]) || ($('#PREVIEWCURRENTCONT li:first')[0] == $('#PREVIEWCURRENTCONT li.selected')[0])) {
+                if (justOpen || ($('#PREVIEWCURRENTCONT li.current' + absolutePos).length === 0) || ($('#PREVIEWCURRENTCONT li:last')[0] == $('#PREVIEWCURRENTCONT li.selected')[0]) || ($('#PREVIEWCURRENTCONT li:first')[0] == $('#PREVIEWCURRENTCONT li.selected')[0])) {
                     getAnswerTrain(pos, data.tools, query, options_serial);
                 }
 
@@ -247,13 +254,18 @@ function zoomPreview(bool) {
 }
 
 function getAnswerTrain(pos, tools, query, options_serial) {
+    // keep relative position for answer train:
+    var relativePos = pos;
+    // update real absolute position with pagination:
+    var absolutePos = parseInt(p4.navigation.perPage,10) * (parseInt(p4.navigation.page, 10) - 1) + parseInt(pos,10);
+
     $('#PREVIEWCURRENTCONT').fadeOut('fast');
     $.ajax({
         type: "POST",
         url: "/prod/query/answer-train/",
         dataType: 'json',
         data: {
-            pos: pos,
+            pos: absolutePos,
             options_serial: options_serial,
             query: query
         },
@@ -404,7 +416,11 @@ function setCurrent(current) {
             $(el).removeClass('openPreview');
             $(el).bind('click', function () {
                 viewCurrent($(this).parent());
-                openPreview(jsopt[0], jsopt[1], jsopt[2],false);
+                // convert abssolute to relative position
+                var absolutePos = jsopt[1];
+                var relativePos = parseInt(absolutePos, 10) - parseInt(p4.navigation.perPage, 10) * (parseInt(p4.navigation.page, 10) - 1);
+                // keep relative position for answer train:
+                openPreview(jsopt[0], relativePos, jsopt[2],false);
             });
         });
     }
