@@ -52,18 +52,7 @@ class MediaAccessorController extends Controller
 
     public function showAction(Request $request, $token)
     {
-        try {
-            $token = JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
-        } catch (\UnexpectedValueException $exception) {
-            throw new NotFoundHttpException('Resource not found', $exception);
-        } catch (\Exception $exception) {
-            throw new BadRequestHttpException('Invalid token', $exception);
-        }
-
-        if (! isset($token->sdef) || !is_array($token->sdef) || count($token->sdef) !== 3) {
-            throw new BadRequestHttpException('sdef should be a sub-definition identifier.');
-        }
-        list ($sbas_id, $record_id, $subdef) = $token->sdef;
+        list($sbas_id, $record_id, $subdef) = $this->validateToken($token);
 
         try {
             $databox = $this->findDataboxById($sbas_id);
@@ -92,5 +81,40 @@ class MediaAccessorController extends Controller
         $response->headers->remove('link');
 
         return $response;
+    }
+
+    /**
+     * @param string $token
+     * @return object
+     */
+    public function decodeToken($token)
+    {
+        try {
+            return JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
+        } catch (\UnexpectedValueException $exception) {
+            throw new NotFoundHttpException('Resource not found', $exception);
+        } catch (\Exception $exception) {
+            throw new BadRequestHttpException('Invalid token', $exception);
+        }
+    }
+
+    /**
+     * Validate token and returns triplet containing sbas_id, record_id and subdef.
+     *
+     * @param string|object $token
+     * @return array
+     */
+    public function validateToken($token)
+    {
+        if (is_string($token)) {
+            $token = $this->decodeToken($token);
+        }
+
+        if (!isset($token->sdef) || !is_array($token->sdef) || count($token->sdef) !== 3) {
+            throw new BadRequestHttpException('sdef should be a sub-definition identifier.');
+        }
+        list ($sbas_id, $record_id, $subdef) = $token->sdef;
+
+        return array($sbas_id, $record_id, $subdef);
     }
 }

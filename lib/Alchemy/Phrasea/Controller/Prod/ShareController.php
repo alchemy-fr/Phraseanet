@@ -41,35 +41,13 @@ class ShareController extends Controller
 
         $preview = $record->get_preview();
 
-        if ($preview->get_permalink() !== null) {
+        if (null !== $previewLink = $preview->get_permalink()) {
+            $permalinkUrl = $previewLink->get_url();
+            $permaviewUrl = $previewLink->get_page();
+            $previewWidth = $preview->get_width();
+            $previewHeight = $preview->get_height();
 
-
-            $subdefName = $preview->get_name();
-            $subdef = $record->get_subdef($subdefName);
-
-            switch ($record->getType()) {
-
-                case 'flexpaper':
-                case 'document':
-                case 'audio':
-                case 'video':
-                default:
-                    $token = $preview->get_permalink()->get_token();
-                    $permalinkUrl = $preview->get_permalink()->get_url();
-                    $permaviewUrl = $preview->get_permalink()->get_page();
-                    $previewWidth = $preview->get_width();
-                    $previewHeight = $preview->get_height();
-                    break;
-            }
-
-
-            $sbas_id = $record->getDataboxId();
-            $embedUrl = $this->app->url('alchemy_embed_view', [
-                'sbas_id' => $sbas_id,
-                'record_id' => $record_id,
-                'subdefName' => $subdefName,
-                'token' => $token,
-            ]);
+            $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
 
             $outputVars = [
                 'isAvailable' => true,

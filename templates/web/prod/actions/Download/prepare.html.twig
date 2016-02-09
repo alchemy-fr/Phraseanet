@@ -65,7 +65,7 @@
                         {% if record_key in records|keys %}
                             {% set record  = attribute(records, record_key) %}
                             {% set thumbnail = record.get_thumbnail() %}
-                            {% if thumbnail.is_paysage() %}
+                            {% if thumbnail.isLandscape() %}
                                 {% set w = 140 %}
                                 {% if thumbnail.get_height() > 0 and thumbnail.get_width() > 0 %}
                                     {% set h = (w / (thumbnail.get_width() / thumbnail.get_height()))|round %}

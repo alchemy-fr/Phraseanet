@@ -42,8 +42,33 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
             new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
             new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
+            new \Twig_SimpleFunction('caption_field_label', array($this, 'getCaptionFieldLabel')),
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
         );
+    }
+
+    /**
+     * get localized field's label
+     * @param RecordInterface $record
+     * @param $fieldName
+     * @return string - the name label
+     */
+    public function getCaptionFieldLabel(RecordInterface $record, $fieldName)
+    {
+        if ($record) {
+            /** @var \appbox $appbox */
+            $appbox = $this->app['phraseanet.appbox'];
+            $databox = $appbox->get_databox($record->getDataboxId());
+
+            foreach ($databox->get_meta_structure() as $meta) {
+                /** @var \databox_field $meta */
+                if ($meta->get_name() === $fieldName) {
+                    return $meta->get_label($this->app['locale']);
+                }
+            }
+        }
+
+        return '';
     }
 
     public function getCaptionField(RecordInterface $record, $field, $value)
@@ -248,7 +273,7 @@ class PhraseanetExtension extends \Twig_Extension
             }
         } elseif ($record instanceof \record_adapter) {
             if (null !== $thumbnail = $record->get_subdef($subdefName)) {
-                if ('' !== $path = $thumbnail->get_pathfile()) {
+                if ('' !== $path = $thumbnail->getRealPath()) {
                     $etag = $thumbnail->getEtag();
                     return $staticMode->getUrl($path, $etag);
                 }

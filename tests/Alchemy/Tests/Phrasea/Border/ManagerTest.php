@@ -551,47 +551,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Border\Manager::getVisa
-     */
-    public function testGetVisa()
-    {
-        $records = [];
-
-        $postProcessRecord = function ($record) use (&$records) {
-                $records[] = $record;
-            };
-
-        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']));
-
-        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
-
-        $this->assertTrue($visa->isValid());
-
-        $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), $postProcessRecord);
-
-        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']));
-
-        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
-
-        $this->assertTrue($visa->isValid());
-
-        $this->object->registerChecker(new Sha256(self::$DI['app']));
-
-        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']));
-
-        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
-
-        $this->assertFalse($visa->isValid());
-
-        foreach ($records as $record) {
-            if ($record instanceof \record_adapter) {
-                $record->delete();
-            }
-        }
-    }
-
-    /**
      * @covers Alchemy\Phrasea\Border\Manager::registerChecker
      * @covers Alchemy\Phrasea\Border\Manager::getCheckers
      */
@@ -639,35 +598,10 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->object->unregisterChecker($uuidChecker);
         $this->assertEquals([$shaChecker, $filenameChecker], $this->object->getCheckers());
     }
-
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::bookLazaretPathfile
-     */
-    public function testBookLazaretPathfile()
-    {
-        $manager = new ManagerTester(self::$DI['app']);
-
-        $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
-        $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');
-
-        $this->assertNotEquals($file2, $file1);
-
-        $this->assertTrue(file_exists($file1));
-        $this->assertTrue(file_exists($file2));
-
-        unlink($file1);
-        unlink($file2);
-    }
 }
 
 class ManagerTester extends Manager
 {
-
-    public function bookLazaretPathfileTester($filename)
-    {
-        return parent::bookLazaretPathfile($filename);
-    }
-
     public function addMediaAttributesTester($file)
     {
         return parent::addMediaAttributes($file);

@@ -2,13 +2,13 @@
 
 namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\DBAL\Migrations\AbstractMigration as BaseMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20151209101524 extends AbstractMigration
+class Version20151209101524 extends BaseMigration
 {
     /**
      * @param Schema $schema

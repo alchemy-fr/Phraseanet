@@ -86,16 +86,18 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
     public function testSet_status()
     {
-        $update1 = $this->object->get_updated_on();
         $new_status = '&é"\'(-è_çà)';
         $this->object->set_status($new_status);
         $this->assertEquals($new_status, $this->object->get_status());
-        sleep(1);
+
+        $this->backDateObjectUpdatedOnField();
+        $update1 = $this->object->get_updated_on();
+
         $new_status = '&é"0687345àç_)à)';
         $this->object->set_status($new_status);
         $this->assertEquals($new_status, $this->object->get_status());
         $update2 = $this->object->get_updated_on();
-        $this->assertTrue($update2 > $update1);
+        $this->assertGreaterThan($update1, $update2);
     }
 
     public function testGet_title()
@@ -105,8 +107,9 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
     public function testSet_title()
     {
+        $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
-        sleep(1);
+
         $new_title = 'Cigares du pharaon';
         $this->object->set_title($new_title);
         $this->assertEquals($new_title, $this->object->get_title());
@@ -116,8 +119,9 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
     public function testSet_distid()
     {
+        $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
-        sleep(1);
+
         $this->object->set_dist_id($this->dist_id);
         $this->assertEquals($this->dist_id, $this->object->get_dist_id());
         $update2 = $this->object->get_updated_on();
@@ -143,5 +147,18 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         foreach ($elements as $element) {
             $this->assertInstanceOf('Bridge_Element', $element);
         }
+    }
+
+    private function backDateObjectUpdatedOnField()
+    {
+        static $reflection;
+
+        if (null === $reflection) {
+            $reflection = new ReflectionProperty(Bridge_Element::class, 'updated_on');
+
+            $reflection->setAccessible(true);
+        }
+
+        $reflection->setValue($this->object, new DateTime('yesterday'));
     }
 }

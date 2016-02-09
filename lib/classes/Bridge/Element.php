@@ -14,85 +14,71 @@ use Alchemy\Phrasea\Application;
 class Bridge_Element
 {
     /**
-     *
      * @var appbox
      */
     protected $app;
 
     /**
-     *
      * @var account
      */
     protected $account;
 
     /**
-     *
      * @var int
      */
     protected $id;
 
     /**
-     *
      * @var record_adapter
      */
     protected $record;
 
     /**
-     *
      * @var string
      */
     protected $dist_id;
 
     /**
-     *
      * @var string
      */
     protected $status;
 
     /**
-     *
      * @var string
      */
     protected $connector_status;
 
     /**
-     *
      * @var string
      */
     protected $title;
 
     /**
-     *
      * @var string
      */
     protected $type;
 
     /**
-     *
      * @var array
      */
     protected $datas;
 
     /**
-     *
      * @var DateTime
      */
     protected $created_on;
 
     /**
-     *
      * @var DateTime
      */
     protected $uploaded_on;
 
     /**
-     *
      * @var DateTime
      */
     protected $updated_on;
 
     /**
-     *
      * @var Bridge_Api_ElementInterface
      */
     protected $connector_element;
@@ -410,7 +396,6 @@ class Bridge_Element
     }
 
     /**
-     *
      * @return DateTime
      */
     public function get_updated_on()

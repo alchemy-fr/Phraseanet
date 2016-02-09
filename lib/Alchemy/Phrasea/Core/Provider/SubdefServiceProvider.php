@@ -21,11 +21,14 @@ class SubdefServiceProvider implements ServiceProviderInterface
 {
     public function register(SilexApplication $app)
     {
-        $app['subdef.generator'] = $app->share(function (SilexApplication $app) {
-            return new SubdefGenerator($app, $app['media-alchemyst'], $app['filesystem'], $app['mediavorus'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog']);
+        $app['subdef.generator'] = $app->share(function (Application $app) {
+            $generator = new SubdefGenerator($app, $app['media-alchemyst'], $app['phraseanet.filesystem'], $app['mediavorus'], isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog']);
+            $generator->setDispatcher($app['dispatcher']);
+
+            return $generator;
         });
-        $app['subdef.substituer'] = $app->share(function (SilexApplication $app) {
-            return new SubdefSubstituer($app, $app['filesystem'], $app['media-alchemyst'], $app['mediavorus'], $app['dispatcher']);
+        $app['subdef.substituer'] = $app->share(function (Application $app) {
+            return new SubdefSubstituer($app, $app['phraseanet.filesystem'], $app['media-alchemyst'], $app['mediavorus'], $app['dispatcher']);
         });
     }
 

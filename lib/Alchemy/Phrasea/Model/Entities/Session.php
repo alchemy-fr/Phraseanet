@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Sessions", indexes={@ORM\index(name="session_user_id", columns={"user_id"})})
+ * @ORM\Table(name="Sessions")
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SessionRepository")
  */
 class Session

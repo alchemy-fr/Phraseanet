@@ -47,7 +47,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     public function __construct(Application $app, \record_adapter $record, databox $databox)
     {
         $this->app = $app;
-        $this->sbas_id = $record->get_sbas_id();
+        $this->sbas_id = $record->getDataboxId();
         $this->record = $record;
         $this->databox = $databox;
     }
@@ -78,12 +78,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
         try {
             $fields = $this->get_data_from_cache();
         } catch (\Exception $e) {
-            $sql = "SELECT m.id as meta_id, s.id as structure_id
-          FROM metadatas m, metadatas_structure s
-          WHERE m.record_id = :record_id AND s.id = m.meta_struct_id
-            ORDER BY s.sorter ASC";
+            $sql = "SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId"
+                . " FROM metadatas m, metadatas_structure s"
+                . " WHERE m.record_id = :record_id AND s.id = m.meta_struct_id"
+                . " ORDER BY s.sorter ASC";
             $stmt = $this->databox->get_connection()->prepare($sql);
-            $stmt->execute([':record_id' => $this->record->get_record_id()]);
+            $stmt->execute([':record_id' => $this->record->getRecordId()]);
             $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             if ($fields) {
@@ -95,11 +95,55 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
         if ($fields) {
             $databox_descriptionStructure = $this->databox->get_meta_structure();
-            foreach ($fields as $row) {
-                $databox_field = $databox_descriptionStructure->get_element($row['structure_id']);
-                $metadata = new caption_field($this->app, $databox_field, $this->record);
 
-                $rec_fields[$databox_field->get_id()] = $metadata;
+            // first group values by field
+            $caption_fields = [];
+            foreach ($fields as $row) {
+                $structure_id = $row['structure_id'];
+                if(!array_key_exists($structure_id, $caption_fields)) {
+                    $caption_fields[$structure_id] = [
+                        'db_field' => $databox_descriptionStructure->get_element($structure_id),
+                        'values' => []
+                    ];
+                }
+
+                if (count($caption_fields[$structure_id]['values']) > 0  && !$caption_fields[$structure_id]['db_field']->is_multi()) {
+                    // Inconsistent, should not happen
+                    continue;
+                }
+
+                // build an EMPTY caption_Field_Value
+                $cfv = new caption_Field_Value(
+                    $this->app,
+                    $caption_fields[$structure_id]['db_field'],
+                    $this->record,
+                    $row['meta_id'],
+                    caption_Field_Value::DONT_RETRIEVE_VALUES   // ask caption_Field_Value "no n+1 sql"
+                );
+
+                // inject the value we already know
+                $cfv->injectValues($row['value'], $row['VocabularyType'], $row['VocabularyId']);
+
+                // add the value to the field
+                $caption_fields[$structure_id]['values'][] = $cfv;
+            }
+
+            // now build a "caption_field" with already known "caption_Field_Value"s
+            foreach($caption_fields as $structure_id => $caption_field) {
+
+                // build an EMPTY caption_field
+                $cf = new caption_field(
+                    $this->app,
+                    $caption_field['db_field'],
+                    $this->record,
+                    caption_field::DONT_RETRIEVE_VALUES     // ask caption_field "no n+1 sql"
+                );
+
+                // inject the value we already know
+                $cf->injectValues($caption_field['values']);
+
+                // add the field to the fields
+                $rec_fields[$structure_id] = $cf;
             }
         }
         $this->fields = $rec_fields;
@@ -248,7 +292,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-        return $this->record->get_databox()->get_data_from_cache($this->get_cache_key($option));
+        return $this->record->getDatabox()->get_data_from_cache($this->get_cache_key($option));
     }
 
     /**
@@ -261,7 +305,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->record->get_databox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->record->getDatabox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     /**
@@ -274,6 +318,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
     {
         $this->fields = null;
 
-        return $this->record->get_databox()->delete_data_from_cache($this->get_cache_key($option));
+        return $this->record->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
     }
 }

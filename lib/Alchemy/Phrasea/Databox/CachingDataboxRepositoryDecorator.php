@@ -22,6 +22,12 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
     /** @var DataboxFactory */
     private $factory;
 
+    /**
+     * @param DataboxRepository $repository
+     * @param Cache $cache
+     * @param string $cacheKey
+     * @param DataboxFactory $factory
+     */
     public function __construct(DataboxRepository $repository, Cache $cache, $cacheKey, DataboxFactory $factory)
     {
         $this->repository = $repository;
@@ -56,6 +62,63 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
         return $databoxes;
     }
 
+    public function save(\databox $databox)
+    {
+        $this->clearCache();
+
+        return $this->repository->save($databox);
+    }
+
+    public function delete(\databox $databox)
+    {
+        $this->clearCache();
+
+        return $this->repository->delete($databox);
+    }
+
+    public function unmount(\databox $databox)
+    {
+        $this->clearCache();
+
+        return $this->repository->unmount($databox);
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function mount($host, $port, $user, $password, $dbname)
+    {
+        $databox = $this->repository->mount($host, $port, $user, $password, $dbname);
+
+        $this->clearCache();
+
+        return $databox;
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $user
+     * @param $password
+     * @param $dbname
+     *
+     * @return \databox
+     */
+    public function create($host, $port, $user, $password, $dbname)
+    {
+        $databox = $this->repository->create($host, $port, $user, $password, $dbname);
+
+        $this->clearCache();
+
+        return $databox;
+    }
+
     /**
      * @param \databox[] $databoxes
      */
@@ -68,5 +131,10 @@ final class CachingDataboxRepositoryDecorator implements DataboxRepository
         }
 
         $this->cache->save($this->cacheKey, $rows);
+    }
+
+    private function clearCache()
+    {
+        $this->cache->delete($this->cacheKey);
     }
 }

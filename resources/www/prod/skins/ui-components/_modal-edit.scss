@@ -260,9 +260,12 @@
   width: 100%;
   display: none;
 }
-
+.edit-zone-title {
+  height: 45px;
+  bottom: auto;
+}
 #EDIT_EDIT {
-  top: 35px;
+  top: 45px;
   bottom: 60px;
   overflow-x: hidden;
   overflow-y: auto;

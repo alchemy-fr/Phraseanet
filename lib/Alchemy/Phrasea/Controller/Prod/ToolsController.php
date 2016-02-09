@@ -83,7 +83,7 @@ class ToolsController extends Controller
             if (!$record->isStory()) {
                 try {
                     $metadata = $this->getExifToolReader()
-                        ->files($record->get_subdef('document')->get_pathfile())
+                        ->files($record->get_subdef('document')->getRealPath())
                         ->first()->getMetadatas();
                 } catch (PHPExiftoolException $e) {
                     // ignore

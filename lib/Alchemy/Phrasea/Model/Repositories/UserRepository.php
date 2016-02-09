@@ -25,7 +25,7 @@ class UserRepository extends EntityRepository
     /**
      * Finds admins.
      *
-     * @return array
+     * @return User[]
      */
     public function findAdmins()
     {

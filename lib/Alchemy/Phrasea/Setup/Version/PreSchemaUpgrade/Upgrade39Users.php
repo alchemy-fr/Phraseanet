@@ -297,15 +297,19 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         $meta = $em->getClassMetadata('Alchemy\Phrasea\Model\Entities\User');
         $connection = $em->getConnection();
         $dbPlatform = $connection->getDatabasePlatform();
-        $connection->beginTransaction();
-        try {
-            $connection->query('SET FOREIGN_KEY_CHECKS=0');
-            $connection->executeUpdate($dbPlatform->getTruncateTableSql($meta->getTableName()));
-            $connection->query('SET FOREIGN_KEY_CHECKS=1');
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollback();
-            throw $e;
+
+        if ($connection->getSchemaManager()->tablesExist([ $meta->getTableName() ])) {
+            $connection->beginTransaction();
+
+            try {
+                $connection->query('SET FOREIGN_KEY_CHECKS=0');
+                $connection->executeUpdate($dbPlatform->getTruncateTableSql($meta->getTableName()));
+                $connection->query('SET FOREIGN_KEY_CHECKS=1');
+                $connection->commit();
+            } catch (\Exception $e) {
+                $connection->rollback();
+                throw $e;
+            }
         }
     }
 

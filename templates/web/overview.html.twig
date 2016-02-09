@@ -12,18 +12,18 @@
 {% endblock %}
 
 {% block rss %}
-    {% for metaKey, metaValue in ogMetaDatas %}
+    {% for metaKey, metaValue in ogMetaData %}
         <meta property="{{ metaKey }}" content="{{ metaValue }}" />
     {% endfor %}
 {% endblock %}
 
 {% block content %}
     <div class="content-container" >
-        <h1>{{ record.get_title() }}</h1>
+        <h1>{{ local_title }}</h1>
 
         <div class="preview">
             <iframe width="100%" height="{{ subdef.get_height() }}"
-                    src="{{ app['request'].baseUrl }}/embed/{{ subdef.get_sbas_id() }}/{{ record.getRecordId() }}/{{ subdef.get_name() }}/?token={{ token }}"
+                    src="{{ recordUrl }}"
                     frameborder="0" allowfullscreen></iframe>
         </div>
 

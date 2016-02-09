@@ -35,6 +35,16 @@ class module_console_systemUpgrade extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        $pluginAutoloader = rtrim($this->container['root.path'], '\\/') . '/plugins/autoload.php';
+
+        if (file_exists($pluginAutoloader)) {
+            $serviceProvider = new \Alchemy\Phrasea\Core\Provider\PluginServiceProvider();
+            $serviceProvider->register($this->getContainer());
+            $serviceProvider->boot($this->getContainer());
+        }
+
+        $this->getContainer()->loadPlugins();
+
         $interactive = !$input->getOption('yes');
 
         while ($migrations = $this->container['phraseanet.configuration-tester']->getMigrations()) {

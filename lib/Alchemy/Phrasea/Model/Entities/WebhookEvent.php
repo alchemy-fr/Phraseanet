@@ -21,6 +21,9 @@ class WebhookEvent
     const USER_DELETED = 'user.deleted';
     const USER_DELETED_TYPE = 'user.deleted';
 
+    const RECORD_SUBDEF_CREATED = 'record.subdef.created';
+    const RECORD_SUBDEF_TYPE = 'record.subdef';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -57,25 +60,6 @@ class WebhookEvent
      * @ORM\Column(type="datetime")
      */
     private $created;
-
-    public static function types()
-    {
-        return [
-            self::FEED_ENTRY_TYPE,
-            self::USER_REGISTRATION_TYPE,
-            self::USER_DELETED_TYPE
-        ];
-    }
-
-    public static function events()
-    {
-        return [
-            self::NEW_FEED_ENTRY,
-            self::USER_REGISTRATION_REJECTED,
-            self::USER_REGISTRATION_GRANTED,
-            self::USER_DELETED
-        ];
-    }
 
     /**
      * @param \DateTime $created
@@ -126,17 +110,12 @@ class WebhookEvent
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
-     * @return WebhookEvent
-     * @throws \InvalidArgumentException
+     * @return $this
      */
     public function setName($name)
     {
-        if (!in_array($name, self::events())) {
-            throw new \InvalidArgumentException("Invalid event name");
-        }
-
         $this->name = $name;
 
         return $this;
@@ -179,16 +158,12 @@ class WebhookEvent
     }
 
     /**
-     * @param $type
+     * @param string $type
      *
      * @return $this
-     * @throws \InvalidArgumentException
      */
     public function setType($type)
     {
-        if (!in_array($type, self::types())) {
-            throw new \InvalidArgumentException("Invalid event name");
-        }
         $this->type = $type;
 
         return $this;

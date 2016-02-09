@@ -127,7 +127,7 @@ class record_exportElement extends record_adapter
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
-        if (isset($sd['document']) && is_file($sd['document']->get_pathfile())) {
+        if (isset($sd['document']) && is_file($sd['document']->getRealPath())) {
             if ($go_dl['document'] === true) {
                 if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->get_base_id())) {
                     $this->remain_hd --;

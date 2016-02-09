@@ -48,6 +48,9 @@ class patch_370alpha6a extends patchAbstract
      */
     public function apply(base $databox, Application $app)
     {
+        /**
+         * @var databox $databox
+         */
         $structure = $databox->get_structure();
 
         $DOM = new DOMDocument();
@@ -90,7 +93,7 @@ class patch_370alpha6a extends patchAbstract
         return true;
     }
 
-    protected function addScreenDeviceOption($root, $subdef, $groupname)
+    protected function addScreenDeviceOption($root, databox_subdef $subdef, $groupname)
     {
         $optionsSubdef = $subdef->getOptions();
 
@@ -102,7 +105,7 @@ class patch_370alpha6a extends patchAbstract
 
         $options['path'] = $subdef->get_path();
         $options['mediatype'] = $subdef->getSubdefType()->getType();
-        $options['meta'] = $subdef->meta_writeable() ? 'yes' : 'no';
+        $options['meta'] = $subdef->isMetadataUpdateRequired() ? 'yes' : 'no';
         $options['devices'] = [databox_subdef::DEVICE_SCREEN];
 
         $root->set_subdef($groupname, $subdef->get_name(), $subdef->get_class(), $subdef->is_downloadable(), $options, []);

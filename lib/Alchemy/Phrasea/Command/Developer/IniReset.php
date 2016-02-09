@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -18,8 +17,6 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Process\Process;
 use vierbergenlars\SemVer\version as SemVer;
 
@@ -65,7 +62,7 @@ class IniReset extends Command
                 $dialog = $this->getHelperSet()->get('dialog');
                 $dbName = $dialog->ask(
                     $output,
-                    _('Please enter the databox name to reset or create')
+                    $this->container['translator']->trans('Please enter the databox name to reset or create')
                 );
             }
         } else if ($input->getOption('db-name')) {
@@ -75,7 +72,7 @@ class IniReset extends Command
         }
 
         $continue = 'y';
-        if (count($dbs['dbs']) > 1 && in_array($dbName, array_map(function($db) { return $db->get_dbname();}, $dbs['dbs']))) {
+        if (count($dbs['dbs']) > 1 && in_array($dbName, array_map(function(\base $db) { return $db->get_dbname();}, $dbs['dbs']))) {
             if ($interactive) {
                 do {
                     $continue = mb_strtolower($dialog->ask($output, '<question>' .$dbName.' database is going to be truncated, do you want to continue ? (Y/n)</question>', 'Y'));
@@ -87,7 +84,7 @@ class IniReset extends Command
             return;
         }
 
-        $unmountedDbs = $dbToMount = array_diff(array_map(function($db) { return $db->get_dbname();}, $dbs['dbs']), array($dbName));
+        $unmountedDbs = $dbToMount = array_diff(array_map(function(\base $db) { return $db->get_dbname();}, $dbs['dbs']), array($dbName));
 
         if (count($unmountedDbs) > 1 && $interactive) {
             array_unshift($unmountedDbs, 'all');

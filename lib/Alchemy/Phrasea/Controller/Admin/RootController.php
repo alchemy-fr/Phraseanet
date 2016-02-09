@@ -32,8 +32,7 @@ class RootController extends Controller
             'module'        => 'admin',
             'events'        => $this->app['events-manager'],
             'module_name'   => 'Admin',
-            'notice'        => $request->query->get("notice"),
-            'tree'          => $this->render('admin/tree.html.twig', $params),
+            'notice'        => $request->query->get("notice")
         ], $params));
     }
 

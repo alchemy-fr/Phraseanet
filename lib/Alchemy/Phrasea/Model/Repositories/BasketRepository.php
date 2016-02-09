@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,6 +15,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class BasketRepository extends EntityRepository
 {
@@ -23,6 +23,32 @@ class BasketRepository extends EntityRepository
     const RECEIVED = 'received';
     const VALIDATION_SENT = 'validation_sent';
     const VALIDATION_DONE = 'validation_done';
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function setTranslator(TranslatorInterface $translator = null)
+    {
+        $this->translator = $translator;
+    }
+
+    /**
+     * @param string $id
+     * @param array $parameters
+     * @param string $domain
+     * @param string $locale
+     * @return string
+     */
+    private function trans($id, $parameters = [], $domain = null, $locale = null)
+    {
+        if ($this->translator) {
+            return $this->translator->trans($id, $parameters, $domain, $locale);
+        }
+
+        return $id;
+    }
 
     /**
      * Returns all basket for a given user that are not marked as archived
@@ -135,11 +161,11 @@ class BasketRepository extends EntityRepository
 
         $basket = $query->getOneOrNullResult();
 
-        /* @var $basket Basket */
         if (null === $basket) {
-            throw new NotFoundHttpException(_('Basket is not found'));
+            throw new NotFoundHttpException($this->trans('Basket is not found'));
         }
 
+        /* @var Basket $basket */
         if ($basket->getUser()->getId() != $user->getId()) {
             $participant = false;
 
@@ -152,7 +178,7 @@ class BasketRepository extends EntityRepository
                 }
             }
             if (!$participant) {
-                throw new AccessDeniedHttpException(_('You have not access to this basket'));
+                throw new AccessDeniedHttpException($this->trans('You have not access to this basket'));
             }
         }
 

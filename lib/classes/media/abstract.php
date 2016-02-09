@@ -13,45 +13,37 @@ use Guzzle\Http\Url;
 
 abstract class media_abstract
 {
+    const PORTRAIT = 'PORTRAIT';
+    const LANDSCAPE = 'LANDSCAPE';
+
     /**
-     *
      * @var Url
      */
     protected $url;
 
     /**
-     *
      * @var int
      */
     protected $height;
 
     /**
-     *
      * @var int
      */
     protected $width;
 
-    const PORTRAIT = 'PORTRAIT';
-    const PAYSAGE = 'LANDSCAPE';
-
     /**
-     *
-     * @param  string $url
-     * @param  int    $width
-     * @param  int    $height
-     * @return media
+     * @param int $width
+     * @param int $height
+     * @param Url|null $url
      */
-    public function __construct(Url $url, $width, $height)
+    public function __construct($width, $height, Url $url = null)
     {
         $this->url = $url;
         $this->height = (int) $height;
         $this->width = (int) $width;
-
-        return $this;
     }
 
     /**
-     *
      * @return Url
      */
     public function get_url()
@@ -60,7 +52,6 @@ abstract class media_abstract
     }
 
     /**
-     *
      * @return int
      */
     public function get_width()
@@ -69,7 +60,6 @@ abstract class media_abstract
     }
 
     /**
-     *
      * @return int
      */
     public function get_height()
@@ -78,7 +68,6 @@ abstract class media_abstract
     }
 
     /**
-     *
      * @return string
      */
     public function get_type()
@@ -87,33 +76,30 @@ abstract class media_abstract
     }
 
     /**
-     *
      * @return string
      */
-    public function get_orientation()
+    public function getOrientation()
     {
         if ($this->width > $this->height) {
-            return self::PAYSAGE;
+            return self::LANDSCAPE;
         } else {
             return self::PORTRAIT;
         }
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
-    public function is_paysage()
+    public function isLandscape()
     {
-        return $this->get_orientation() == self::PAYSAGE;
+        return $this->getOrientation() == self::LANDSCAPE;
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
-    public function is_portrait()
+    public function isPortrait()
     {
-        return $this->get_orientation() == self::PORTRAIT;
+        return $this->getOrientation() == self::PORTRAIT;
     }
 }

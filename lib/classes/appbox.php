@@ -10,13 +10,14 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionService;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
+use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
-use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Finder\Finder;
@@ -42,6 +43,10 @@ class appbox extends base
      * @var \databox[]
      */
     protected $databoxes;
+    /**
+     * @var CollectionService
+     */
+    protected $collectionService;
 
     public function __construct(Application $app)
     {
@@ -233,11 +238,11 @@ class appbox extends base
 
     protected function post_upgrade(Application $app)
     {
-        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $app);
+        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true);
         $this->setVersion($app['phraseanet.version']);
 
         foreach ($this->get_databoxes() as $databox) {
-            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $app);
+            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true);
             $databox->setVersion($app['phraseanet.version']);
         }
 
@@ -258,12 +263,12 @@ class appbox extends base
     }
 
     /**
-     * @param $sbas_id
+     * @param int $sbas_id
      * @return databox
      */
     public function get_databox($sbas_id)
     {
-        $databoxes = $this->get_databoxes();
+        $databoxes = $this->getDataboxRepository()->findAll();
 
         if (!isset($databoxes[$sbas_id]) && !array_key_exists($sbas_id, $databoxes)) {
             throw new NotFoundHttpException('Databox `' . $sbas_id . '` not found');
@@ -314,10 +319,23 @@ class appbox extends base
         parent::delete_data_from_cache($option);
     }
 
+    public function getCollectionService()
+    {
+        if ($this->collectionService === null) {
+            $this->collectionService = new CollectionService(
+                $this->app,
+                $this->connection,
+                new DataboxConnectionProvider($this)
+            );
+        }
+
+        return $this->collectionService;
+    }
+
     /**
      * @return AccessRestriction
      */
-    private function getAccessRestriction()
+    public function getAccessRestriction()
     {
         return $this->app['conf.restrictions'];
     }

@@ -146,7 +146,7 @@ class PDF
         $irow = $ipage = 0;
         $icol = -1;
         foreach ($this->records as $rec) {
-            /* @var $rec record_adapter */
+            /* @var \record_adapter $rec */
             if (++$icol >= $NDiapoW) {
                 $icol = 0;
                 if (++$irow >= $NDiapoH) {
@@ -164,7 +164,7 @@ class PDF
                 $subdef = $rec->get_thumbnail();
             }
 
-            $fimg = $subdef->get_pathfile();
+            $fimg = $subdef->getRealPath();
 
             if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
@@ -226,10 +226,10 @@ class PDF
 
         $ndoc = 0;
         foreach ($this->records as $rec) {
-            /* @var $rec record_adapter */
+            /* @var \record_adapter $rec */
             $subdef = $rec->get_subdef('thumbnail');
 
-            $fimg = $subdef->get_pathfile();
+            $fimg = $subdef->getRealPath();
 
             $wimg = $himg = 50;
             // 1px = 3.77952 mm
@@ -322,7 +322,7 @@ class PDF
         }
 
         foreach ($this->records as $krec => $rec) {
-            /* @var $rec record_adapter */
+            /* @var \record_adapter $rec */
 
             $this->pdf->AddPage();
 
@@ -350,7 +350,7 @@ class PDF
                 }
             }
 
-            $collection = \collection::get_from_base_id($this->app, $rec->get_base_id());
+            $collection = \collection::getByBaseId($this->app, $rec->get_base_id());
 
             $vn = "";
             if (false !== $str = simplexml_load_string($collection->get_prefs())) {
@@ -436,7 +436,7 @@ class PDF
                 $subdef = $rec->get_thumbnail();
             }
 
-            $f = $subdef->get_pathfile();
+            $f = $subdef->getRealPath();
 
             if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)

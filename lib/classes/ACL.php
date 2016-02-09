@@ -730,11 +730,7 @@ class ACL implements cache_cacheableInterface
                     continue;
                 }
 
-                try {
-                    $ret[$base_id] = collection::get_from_base_id($this->app, $base_id);
-                } catch (\Exception $e) {
-
-                }
+                $ret[$base_id] = $collection;
             }
         }
 
@@ -1780,7 +1776,7 @@ class ACL implements cache_cacheableInterface
         $collections = [];
 
         foreach ($rs as $row) {
-            $collections[] = \collection::get_from_base_id($this->app, $row['base_id']);
+            $collections[] = \collection::getByBaseId($this->app, $row['base_id']);
         }
 
         return $collections;

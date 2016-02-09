@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
@@ -36,11 +37,21 @@ class TranslationServiceProvider implements ServiceProviderInterface
             $translator->addLoader('xliff', new XliffLoader());
             // to load Phraseanet resources
             $translator->addLoader('xlf', new XliffLoader());
+            $translator->addLoader('po', new PoFileLoader());
 
             foreach ($app['translator.domains'] as $domain => $data) {
                 foreach ($data as $locale => $messages) {
                     $translator->addResource('array', $messages, $locale, $domain);
                 }
+            }
+
+            foreach ($app['translator.resources'] as $resource) {
+                $translator->addResource(
+                    $resource[0],
+                    $resource[1],
+                    $resource[2],
+                    isset($resource[3]) ? $resource[3] : null
+                );
             }
 
             return $translator;

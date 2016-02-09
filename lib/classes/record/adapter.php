@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -15,12 +14,13 @@ use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
 use Alchemy\Phrasea\Media\FloatTechnicalData;
 use Alchemy\Phrasea\Media\IntegerTechnicalData;
@@ -35,10 +35,8 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 
@@ -52,6 +50,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     const CACHE_SUBDEFS = 'subdefs';
     const CACHE_GROUPING = 'grouping';
     const CACHE_STATUS = 'status';
+
+    /**
+     * @param Application $app
+     * @return FilesystemService
+     */
+    private static function getFilesystem(Application $app)
+    {
+        return $app['phraseanet.filesystem'];
+    }
 
     private $base_id;
     private $collection_id;
@@ -346,7 +353,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_collection()
     {
-        return \collection::get_from_coll_id($this->app, $this->databox, $this->collection_id);
+        return \collection::getByCollectionId($this->app, $this->databox, $this->collection_id);
     }
 
     /**
@@ -894,82 +901,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->getDatabox()->get_sbas_id();
     }
 
-    public function substitute_subdef($name, MediaInterface $media, Application $app, $adapt=true)
-    {
-        $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
-
-        /** @var Filesystem $filesystem */
-        $filesystem = $app['filesystem'];
-
-        if ($name == 'document') {
-            $baseprefs = $this->getDatabox()->get_sxml_structure();
-
-            $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
-
-            $filehd = $this->getRecordId() . "_document." . strtolower($media->getFile()->getExtension());
-            $pathhd = databox::dispatch($filesystem, $pathhd);
-
-            $filesystem->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
-
-            $subdefFile = $pathhd . $filehd;
-
-            $meta_writable = true;
-        } else {
-            $type = $this->isStory() ? 'image' : $this->getType();
-
-            $subdef_def = $this->getDatabox()->get_subdef_structure()->get_subdef($type, $name);
-
-            if ($this->has_subdef($name) && $this->get_subdef($name)->is_physically_present()) {
-
-                $path_file_dest = $this->get_subdef($name)->get_pathfile();
-                $this->get_subdef($name)->remove_file();
-                $this->clearSubdefCache($name);
-            } else {
-                $path = databox::dispatch($filesystem, $subdef_def->get_path());
-                $filesystem->mkdir($path, 0750);
-                $path_file_dest = $path . $newfilename;
-            }
-
-            if($adapt) {
-                try {
-                    $app['media-alchemyst']->turnInto(
-                        $media->getFile()->getRealPath(),
-                        $path_file_dest,
-                        $subdef_def->getSpecs()
-                    );
-                } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
-                    return $this;
-                }
-
-                $subdefFile = $path_file_dest;
-            }
-            else{
-                $filesystem->copy($media->getFile()->getRealPath(), $path_file_dest);
-
-                $subdefFile = $path_file_dest;
-            }
-
-            $meta_writable = $subdef_def->meta_writeable();
-        }
-
-        $filesystem->chmod($subdefFile, 0760);
-        $media = $app->getMediaFromUri($subdefFile);
-        $subdef = media_subdef::create($app, $this, $name, $media);
-        $subdef->set_substituted(true);
-
-        $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
-        if ($meta_writable) {
-            $this->write_metas();
-        }
-
-        if ($name == 'document' && $adapt) {
-            $this->rebuild_subdefs();
-        }
-
-        return $this;
-    }
-
     /**
      * @param  DOMDocument    $dom_doc
      * @return record_adapter
@@ -1228,7 +1159,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     *
      * @param File        $file
      * @param Application $app
      *
@@ -1276,13 +1206,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        /** @var Filesystem $filesystem */
-        $filesystem = $app['filesystem'];
+        $filesystem = self::getFilesystem($app);
 
-        $pathhd = databox::dispatch($filesystem, trim($databox->get_sxml_structure()->path));
-        $newname = $record->getRecordId() . "_document." . pathinfo($file->getOriginalName(), PATHINFO_EXTENSION);
+        $pathhd = $filesystem->generateDataboxDocumentBasePath($databox);
+        $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
 
-        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
+        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
 
         $media = $app->getMediaFromUri($pathhd . $newname);
         media_subdef::create($app, $record, 'document', $media);
@@ -1398,14 +1327,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $hd = $this->get_subdef('document');
 
         if ($hd->is_physically_present()) {
-            return new SymfoFile($hd->get_pathfile());
+            return new SymfoFile($hd->getRealPath());
         }
 
         return null;
     }
 
     /**
-     * @return Array : list of deleted files;
+     * @return array[] list of deleted files real paths
      */
     public function delete()
     {
@@ -1417,14 +1346,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 continue;
 
             if ($subdef->get_name() === 'thumbnail') {
-                $this->app['filesystem']->remove($this->app['phraseanet.thumb-symlinker']->getSymlinkPath($subdef->get_pathfile()));
+                $this->app['phraseanet.thumb-symlinker']->unlink($subdef->getRealPath());
             }
 
-            $ftodel[] = $subdef->get_pathfile();
-            $watermark = $subdef->get_path() . 'watermark_' . $subdef->get_file();
+            $ftodel[] = $subdef->getRealPath();
+            $watermark = $subdef->getWatermarkRealPath();
             if (file_exists($watermark))
                 $ftodel[] = $watermark;
-            $stamp = $subdef->get_path() . 'stamp_' . $subdef->get_file();
+            $stamp = $subdef->getStampRealPath();
             if (file_exists($stamp))
                 $ftodel[] = $stamp;
         }
@@ -1623,7 +1552,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
         $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
 
-        $sql = sprintf('SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',
+        $sql = sprintf(
+            'SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',
             $caseSensitive ? 'utf8_bin' : 'utf8_unicode_ci',
             $offset_start,
             $how_many

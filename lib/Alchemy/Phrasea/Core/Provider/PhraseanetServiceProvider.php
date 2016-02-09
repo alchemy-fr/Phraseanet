@@ -41,11 +41,15 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.thumb-symlinker'] = $app->share(function (SilexApplication $app) {
-            return SymLinker::create($app);
+            return new SymLinker(
+                $app['phraseanet.thumb-symlinker-encoder'],
+                $app['filesystem'],
+                $app['thumbnail.path']
+            );
         });
 
         $app['phraseanet.thumb-symlinker-encoder'] = $app->share(function (SilexApplication $app) {
-            return SymLinkerEncoder::create($app);
+            return new SymLinkerEncoder($app['phraseanet.configuration']['main']['key']);
         });
 
         $app['acl'] = $app->share(function (SilexApplication $app) {

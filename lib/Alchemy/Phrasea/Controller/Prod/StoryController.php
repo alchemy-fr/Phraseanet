@@ -33,7 +33,7 @@ class StoryController extends Controller
 
     public function postCreateFormAction(Request $request)
     {
-        $collection = \collection::get_from_base_id($this->app, $request->request->get('base_id'));
+        $collection = \collection::getByBaseId($this->app, $request->request->get('base_id'));
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
             throw new AccessDeniedHttpException('You can not create a story on this collection');

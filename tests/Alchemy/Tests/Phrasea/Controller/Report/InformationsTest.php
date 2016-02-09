@@ -1,6 +1,8 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
+use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -10,25 +12,40 @@ namespace Alchemy\Tests\Phrasea\Controller\Report;
  */
 class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 {
+    /**
+     * @var \DateTime
+     */
     private $dmin;
+    /**
+     * @var \DateTime
+     */
     private $dmax;
 
-    public function __construct()
+    /**
+     * @var Client
+     */
+    private $client;
+
+    public function setUp()
     {
+        parent::setUp();
+
         $this->dmax = new \DateTime('now');
         $this->dmin = new \DateTime('-1 month');
+
+        $this->client = $this->getClient();
     }
 
     public function testDoReportUserBadRequest()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertFalse($response->isOk());
         $this->assertEquals(400, $response->getStatusCode());
@@ -36,178 +53,178 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUser()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
-            'user'          => self::$DI['user']->getId(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
+            'user'          => $this->getUser()->getId(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromConnexion()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
-            'user'          => self::$DI['user']->getId(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
+            'user'          => $this->getUser()->getId(),
             'from'          => 'CNX',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromQuestion()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'ASK',
-            'user'          => self::$DI['user']->getId(),
+            'user'          => $this->getUser()->getId(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromDownload()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'GEN',
-            'user'          => self::$DI['user']->getId(),
+            'user'          => $this->getUser()->getId(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromConnexionCSV()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'CNX',
             'printcsv'      => 'on',
-            'user'          => self::$DI['user']->getId(),
+            'user'          => $this->getUser()->getId(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromQuestionCSV()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'ASK',
             'printcsv'      => 'on',
-            'user'          => self::$DI['user']->getId(),
+            'user'          => $this->getUser()->getId(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromDownloadCSV()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'GEN',
             'printcsv'      => 'on',
-            'user'          => self::$DI['user']->getId(),
+            'user'          => $this->getUser()->getId(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromDownloadOnCustomField()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'GEN',
             'on'            => 'email',
-            'user'          => self::$DI['user']->getEmail()
+            'user'          => $this->getUser()->getEmail()
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromConnexionOnCustomField()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'CNX',
             'on'            => 'email',
-            'user'          => self::$DI['user']->getEmail()
+            'user'          => $this->getUser()->getEmail()
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportUserFromQuestionOnCustomField()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        $this->client->request('POST', '/report/informations/user', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'from'          => 'ASK',
             'on'            => 'email',
-            'user'          => self::$DI['user']->getEmail()
+            'user'          => $this->getUser()->getEmail()
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportInformationBrowserBadRequest()
     {
-        self::$DI['client']->request('POST', '/report/informations/browser', [
+        $this->client->request('POST', '/report/informations/browser', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertFalse($response->isOk());
         $this->assertEquals(400, $response->getStatusCode());
@@ -215,31 +232,31 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsBrowser()
     {
-        self::$DI['client']->request('POST', '/report/informations/browser', [
+        $this->client->request('POST', '/report/informations/browser', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'user'          => 'chrome',
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportInfomationsDocumentsNotFound()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        $this->client->request('POST', '/report/informations/document', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
             'sbasid'        => 0,
             'rid'           => 0,
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertFalse($response->isOk());
         $this->assertEquals(404, $response->getStatusCode());
@@ -247,68 +264,76 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsDocuments()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        $this->client->request('POST', '/report/informations/document', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
-            'sbasid'        => self::$DI['record_1']->get_sbas_id(),
-            'rid'           => self::$DI['record_1']->get_record_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
+            'sbasid'        => $this->getRecord1()->get_sbas_id(),
+            'rid'           => $this->getRecord1()->get_record_id(),
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportInfomationsDocumentsFromTool()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        $this->client->request('POST', '/report/informations/document', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
-            'sbasid'        => self::$DI['record_1']->get_sbas_id(),
-            'rid'           => self::$DI['record_1']->get_record_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
+            'sbasid'        => $this->getRecord1()->get_sbas_id(),
+            'rid'           => $this->getRecord1()->get_record_id(),
             'from'          => 'TOOL'
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportInfomationsDocumentsFromDashboard()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        $this->client->request('POST', '/report/informations/document', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
-            'sbasid'        => self::$DI['record_1']->get_sbas_id(),
-            'rid'           => self::$DI['record_1']->get_record_id(),
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
+            'sbasid'        => $this->getRecord1()->get_sbas_id(),
+            'rid'           => $this->getRecord1()->get_record_id(),
             'from'          => 'DASH'
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
     }
 
     public function testDoReportInfomationsDocumentsFromOther()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        $this->client->request('POST', '/report/informations/document', [
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
-            'sbasid'        => self::$DI['collection']->get_sbas_id(),
-            'collection'    => self::$DI['collection']->get_coll_id(),
-            'sbasid'        => self::$DI['record_1']->get_sbas_id(),
-            'rid'           => self::$DI['record_1']->get_record_id(),
-            'user'          => self::$DI['user']->getId()
+            'sbasid'        => $this->getCollection()->get_sbas_id(),
+            'collection'    => $this->getCollection()->get_coll_id(),
+            'sbasid'        => $this->getRecord1()->get_sbas_id(),
+            'rid'           => $this->getRecord1()->get_record_id(),
+            'user'          => $this->getUser()->getId()
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->client->getResponse();
 
         $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @return User
+     */
+    private function getUser()
+    {
+        return self::$DI['user'];
     }
 }

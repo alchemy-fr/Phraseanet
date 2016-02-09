@@ -11,10 +11,6 @@
 
 namespace Alchemy\Phrasea\Http;
 
-use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
 class ServeFileResponseFactory implements DeliverDataInterface
 {
     private $unicode;
@@ -24,20 +20,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
         $this->unicode = $unicode;
     }
 
-    /**
-     * @param  Application $app
-     * @return self
-     */
-    public static function create(Application $app)
-    {
-        return new self(
-            $app['unicode']
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function deliverFile($file, $filename = '', $disposition = self::DISPOSITION_INLINE, $mimeType = null, $cacheDuration = null)
     {
         $response = new BinaryFileResponse($file);
@@ -48,25 +30,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
 
         if (null !== $mimeType) {
              $response->headers->set('Content-Type', $mimeType);
-        }
-
-        return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = null)
-    {
-        $response = new Response($data);
-        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
-            $disposition,
-            $this->sanitizeFilename($filename),
-            $this->sanitizeFilenameFallback($filename
-        )));
-        $response->headers->set('Content-Type', $mimeType);
-        if (null !== $cacheDuration) {
-            $response->setMaxAge($cacheDuration);
         }
 
         return $response;

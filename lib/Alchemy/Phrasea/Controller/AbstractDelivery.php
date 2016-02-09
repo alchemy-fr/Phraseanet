@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractDelivery
 {
@@ -33,26 +32,20 @@ abstract class AbstractDelivery
 
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp)
     {
-        $file = $record->get_subdef($subdef);
-        $pathOut = $file->get_pathfile();
+        $mediaSubdefinition = $record->get_subdef($subdef);
 
-        if ($watermark === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
-            $pathOut = \recordutils_image::watermark($this->app, $file);
-        } elseif ($stamp === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
-            $pathOut = \recordutils_image::stamp($this->app, $file);
-        }
+        $pathOut = $this->tamperProofSubDefinition($mediaSubdefinition, $watermark, $stamp);
 
         $disposition = $request->query->get('download') ? DeliverDataInterface::DISPOSITION_ATTACHMENT : DeliverDataInterface::DISPOSITION_INLINE;
 
-        /** @var Response $response */
-        $response = $this->deliverFile($pathOut, $file->get_file(), $disposition, $file->get_mime());
+        $response = $this->deliverFile($pathOut, $mediaSubdefinition->get_file(), $disposition, $mediaSubdefinition->get_mime());
 
         if (in_array($subdef, array('document', 'preview'))) {
             $response->setPrivate();
             $this->logView($record, $request);
         } elseif ($subdef !== 'thumbnail') {
             try {
-                if ($file->getDataboxSubdef()->get_class() != \databox_subdef::CLASS_THUMBNAIL) {
+                if ($mediaSubdefinition->getDataboxSubdef()->get_class() != \databox_subdef::CLASS_THUMBNAIL) {
                     $response->setPrivate();
                     $this->logView($record, $request);
                 }
@@ -80,5 +73,24 @@ abstract class AbstractDelivery
         } catch (\Exception $e) {
             // Ignore exception
         }
+    }
+
+    /**
+     * @param \media_subdef $mediaSubdefinition
+     * @param bool $watermark
+     * @param bool $stamp
+     * @return string
+     */
+    private function tamperProofSubDefinition(\media_subdef $mediaSubdefinition, $watermark, $stamp)
+    {
+        $pathOut = $mediaSubdefinition->getRealPath();
+
+        if ($watermark === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
+            $pathOut = \recordutils_image::watermark($this->app, $mediaSubdefinition);
+        } elseif ($stamp === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
+            $pathOut = \recordutils_image::stamp($this->app, $mediaSubdefinition);
+        }
+
+        return $pathOut;
     }
 }

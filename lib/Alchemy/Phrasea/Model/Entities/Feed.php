@@ -302,7 +302,7 @@ class Feed implements FeedInterface
     public function getCollection(Application $app)
     {
         if ($this->getBaseId() !== null) {
-          return \collection::get_from_base_id($app, $this->getBaseId());
+          return \collection::getByBaseId($app, $this->getBaseId());
         }
     }
 

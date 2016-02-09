@@ -837,7 +837,7 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing base_id parameter');
         }
 
-        $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
+        $collection = \collection::getByBaseId($this->app, $request->get('base_id'));
 
         if (!$this->getAclForUser()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
             return Result::createError($request, 403, sprintf(
@@ -935,7 +935,7 @@ class V1Controller extends Controller
         $media = $this->app->getMediaFromUri($file->getPathname());
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
         $base_id = $record->getBaseId();
-        $collection = \collection::get_from_base_id($this->app, $base_id);
+        $collection = \collection::getByBaseId($this->app, $base_id);
         if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
             return Result::createError($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])
@@ -943,7 +943,7 @@ class V1Controller extends Controller
         }
         $adapt = ($request->get('adapt')===null || !(\p4field::isno($request->get('adapt'))));
         $ret['adapt'] = $adapt;
-        $record->substitute_subdef($request->get('name'), $media, $this->app, $adapt);
+        $this->getSubdefSubstituer()->substitute($record, $request->get('name'), $media, $adapt);
         foreach ($record->get_embedable_medias() as $name => $media) {
             if ($name == $request->get('name') &&
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
@@ -1611,7 +1611,7 @@ class V1Controller extends Controller
         $record = $databox->get_record($record_id);
 
         try {
-            $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
+            $collection = \collection::getByBaseId($this->app, $request->get('base_id'));
             $record->move_to_collection($collection, $this->getApplicationBox());
 
             return Result::create($request, ["record" => $this->listRecord($request, $record)])->createResponse();
@@ -2067,7 +2067,7 @@ class V1Controller extends Controller
      */
     protected function createStory($data)
     {
-        $collection = \collection::get_from_base_id($this->app, $data->{'base_id'});
+        $collection = \collection::getByBaseId($this->app, $data->{'base_id'});
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
             $this->app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
@@ -2235,8 +2235,8 @@ class V1Controller extends Controller
             if (!in_array($name, array('thumbnail', 'preview'))) {
                 continue;
             }
-            $media = $this->app->getMediaFromUri($value->get_pathfile());
-            $story->substitute_subdef($name, $media, $this->app);
+            $media = $this->app->getMediaFromUri($value->getRealPath());
+            $this->getSubdefSubstituer()->substitute($story, $name, $media);
             $this->getDataboxLogger($story->getDatabox())->log(
                 $story,
                 \Session_Logger::EVENT_SUBSTITUTE,
@@ -2304,7 +2304,7 @@ class V1Controller extends Controller
             $ret = [ 'success' => true ];
         }
         catch (AccountException $exception) {
-            $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+            $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -2327,7 +2327,7 @@ class V1Controller extends Controller
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
             } catch (AccountException $exception) {
-                $ret = [ 'success' => false, 'message' => _($exception->getMessage()) ];
+                $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
             }
         } else {
             $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];
@@ -2566,5 +2566,13 @@ class V1Controller extends Controller
     private function getSearchEngineLogger()
     {
         return $this->app['phraseanet.SE.logger'];
+    }
+
+    /**
+     * @return \Alchemy\Phrasea\Media\SubdefSubstituer
+     */
+    private function getSubdefSubstituer()
+    {
+        return $this->app['subdef.substituer'];
     }
 }

@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +11,22 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Collection\CollectionFactory;
+use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
+use Alchemy\Phrasea\Collection\Factory\ArrayCachedCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Factory\CachedCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Factory\DbalCollectionRepositoryFactory;
+use Alchemy\Phrasea\Collection\Reference\ArrayCacheCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Databox\ArrayCacheDataboxRepository;
 use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
+use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Alchemy\Phrasea\Databox\Field\DataboxFieldFactory;
 use Alchemy\Phrasea\Databox\Field\DbalDataboxFieldRepository;
 use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -45,7 +54,11 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             return $app['orm.em']->getRepository('Phraseanet:Registration');
         });
         $app['repo.baskets'] = $app->share(function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Basket');
+            /** @var BasketRepository $repository */
+            $repository = $app['orm.em']->getRepository('Phraseanet:Basket');
+            $repository->setTranslator($app['translator']);
+
+            return $repository;
         });
         $app['repo.basket-elements'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:BasketElement');
@@ -133,11 +146,21 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
 
         $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
-            $factory = new DataboxFactory($app);
             $appbox = $app->getApplicationBox();
-            $repository = new DbalDataboxRepository($appbox->get_connection(), $factory);
 
-            return new CachingDataboxRepositoryDecorator($repository, $app['cache'], $appbox->get_cache_key($appbox::CACHE_LIST_BASES), $factory);
+            $factory = new DataboxFactory($app);
+            $repository = new CachingDataboxRepositoryDecorator(
+                new DbalDataboxRepository($appbox->get_connection(), $factory),
+                $app['cache'],
+                $appbox->get_cache_key($appbox::CACHE_LIST_BASES),
+                $factory
+            );
+
+            $repository = new ArrayCacheDataboxRepository($repository);
+
+            $factory->setDataboxRepository($repository);
+
+            return $repository;
         });
 
         $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {
@@ -147,9 +170,37 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.records.factory'] = $app->protect(function (\databox $databox) use ($app) {
             return new LegacyRecordRepository($app, $databox);
         });
+	
+        $app['repo.collection-references'] = $app->share(function (PhraseaApplication $app) {
+            $repository = new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
+
+            return new ArrayCacheCollectionReferenceRepository($repository);
+        });	
+        $app['repo.collections-registry'] = $app->share(function (PhraseaApplication $app) {
+            $factory = new CollectionFactory($app);
+            $connectionProvider = new DataboxConnectionProvider($app->getApplicationBox());
+
+            $repositoryFactory = new DbalCollectionRepositoryFactory(
+                $connectionProvider,
+                $factory,
+                $app['repo.collection-references']
+            );
+
+            $repositoryFactory = new CachedCollectionRepositoryFactory(
+                $app,
+                $repositoryFactory,
+                $app['cache'],
+                'phrasea.collections'
+            );
+
+            $repositoryFactory = new ArrayCachedCollectionRepositoryFactory($repositoryFactory);
+
+            return new CollectionRepositoryRegistry($app, $repositoryFactory, $app['repo.collection-references']);
+        });
     }
 
     public function boot(Application $app)
     {
+        // no-op
     }
 }

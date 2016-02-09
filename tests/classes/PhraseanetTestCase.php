@@ -196,15 +196,15 @@ abstract class PhraseanetTestCase extends WebTestCase
         });
 
         self::$DI['collection'] = self::$DI->share(function ($DI) {
-            return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll']);
+            return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll']);
         });
 
         self::$DI['collection_no_access'] = self::$DI->share(function ($DI) {
-            return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
+            return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
         });
 
         self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) {
-            return collection::get_from_base_id($DI['app'], self::$fixtureIds['collection']['coll_no_status']);
+            return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_status']);
         });
 
         self::$DI['lazaret_1'] = self::$DI->share(function ($DI) {
@@ -475,8 +475,10 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function set_user_agent($user_agent, Application $app)
     {
         $app['browser']->setUserAgent($user_agent);
+
         $app->register(new \Silex\Provider\TwigServiceProvider());
-        $app->setupTwig();
+        $app->register(new \Alchemy\Phrasea\Core\Provider\TwigServiceProvider());
+
         self::$DI['client'] = self::$DI->share(function ($DI) use ($app) {
             return new Client($app, []);
         });

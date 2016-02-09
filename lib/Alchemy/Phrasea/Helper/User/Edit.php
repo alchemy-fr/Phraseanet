@@ -227,7 +227,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
-            'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
+            'collection'   => \collection::getByBaseId($this->app, $this->base_id),
         ];
     }
 
@@ -331,7 +331,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
-            'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
+            'collection'   => \collection::getByBaseId($this->app, $this->base_id),
         ];
     }
 
@@ -391,7 +391,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             'users'        => $this->users,
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
-            'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
+            'collection'   => \collection::getByBaseId($this->app, $this->base_id),
         ];
     }
 

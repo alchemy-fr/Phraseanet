@@ -1,0 +1,192 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>Cache hits</b>
+        <span class="sf-toolbar-status sf-toolbar-status-green">{{ collector.summary.hits }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Cache misses</b>
+        <span class="sf-toolbar-status sf-toolbar-status-red">{{ collector.summary.misses }}</span>
+    </div>
+    {% endset %}
+    {% set icon %}
+    <img width="20" height="28" alt="Cache" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQRJREFUeNpi/P//PwM1ARMDlcGogZQDlpMnT7pxc3NbA9nhQKxOpL5rQLwJiPeBsI6Ozl+YBOOOHTv+AOllQNwtLS39F2owKYZ/gRq8G4i3ggxEToggWzvc3d2Pk+1lNL4fFAs6ODi8JzdS7mMRVyDVoAMHDsANdAPiOCC+jCQvQKqBQB/BDbwBxK5AHA3E/kB8nKJkA8TMQBwLxaBIKQbi70AvTADSBiSadwFXpCikpKQU8PDwkGTaly9fHFigkaKIJid4584dkiMFFI6jkTJII0WVmpHCAixZQEXWYhDeuXMnyLsVlEQKI45qFBQZ8eRECi4DBaAlDqle/8A48ip6gAADANdQY88Uc0oGAAAAAElFTkSuQmCC"/>
+    <span class="sf-toolbar-status{% if 75 > collector.summary.hitRatio %} sf-toolbar-status-green{% endif %}">{{ '%0.2f'|format(collector.summary.hitRatio * 100) }} %</span> in {{ collector.totalTime }} ms
+    {% endset %}
+    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <strong>Cache</strong>
+        <span class="count">
+            <span>{{ collector.summary.hits }} / {{ collector.summary.calls }}</span>
+            <span>{{ '%0.0f'|format(collector.totalTime) }} ms</span>
+        </span>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Cache: {{ collector.summary.cacheType }}</h2>
+
+{% if collector.summary.namespace %}
+    <p><strong>Namespace</strong>: {{ collector.summary.namespace }}</p>
+{% endif %}
+
+    <h3>Server statistics</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Server stat</th>
+                <th>Initial value</th>
+                <th>Final value</th>
+                <th>Delta</th>
+            </tr>
+        </thead>
+        <tr>
+            <th scope="row">Hits</th>
+            <td>{{ collector.initialProfile.hits }}</td>
+            <td>{{ collector.currentProfile.hits }}</td>
+            <td>{{ collector.currentProfile.hits - collector.initialProfile.hits }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Misses</th>
+            <td>{{ collector.initialProfile.misses }}</td>
+            <td>{{ collector.currentProfile.misses }}</td>
+            <td>{{ collector.currentProfile.misses - collector.initialProfile.misses }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Calls</th>
+            {% set initialCallCount = collector.initialProfile.misses + collector.initialProfile.hits %}
+            {% set finalCallCount = collector.currentProfile.misses + collector.currentProfile.hits %}
+            <td>{{ initialCallCount }}</td>
+            <td>{{ finalCallCount}}</td>
+            <td>{{ finalCallCount - initialCallCount }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Uptime</th>
+            <td>{{ collector.initialProfile.uptime }}</td>
+            <td>{{ collector.currentProfile.uptime }}</td>
+            <td>{{ collector.summary.uptimeDelta }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Memory usage</th>
+            <td>{{ collector.initialProfile.memUsage }}</td>
+            <td>{{ collector.currentProfile.memUsage }}</td>
+            <td>{{ collector.summary.memUsageDelta }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Memory available</th>
+            <td>{{ collector.initialProfile.memAvailable }}</td>
+            <td>{{ collector.currentProfile.memAvailable }}</td>
+            <td>{{ collector.summary.memAvailableDelta }}</td>
+        </tr>
+    </table>
+
+    <h3>HIT/MISS summary</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Call stat</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Hits</th>
+                <td>{{ collector.callSummary['hits'] }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Misses</th>
+                <td>{{ collector.callSummary['misses'] }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Total</th>
+                <td>{{ collector.callSummary['calls'] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Calls by type summary</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Operation</th>
+            <th>Count</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for callType, count in collector.callSummary['calls_by_type'] %}
+            <tr>
+                <td>{{ callType }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Calls by key summary</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Hits</th>
+            <th>Misses</th>
+            <th>Reads</th>
+            <th>Writes</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for callKey, stats in collector.callSummary['calls_by_key'] %}
+            <tr>
+                <td>{{ callKey }}</td>
+                <td>{{ stats['hits'] }}</td>
+                <td>{{ stats['misses'] }}</td>
+                <td>{{ stats['reads'] }}</td>
+                <td>{{ stats['writes'] }}</td>
+                <td>{{ stats['total'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Call list</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Call type</th>
+                <th>Key</th>
+                <th>Hit / Miss</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set callCount = 1 %}
+        {% for call in collector.calls %}
+            <tr>
+                <td>{{ callCount }}</td>
+                <td>
+                    {% if call['type'] != 'fetch' %}
+                        <strong>{{ call['type'] }}</strong>
+                    {% else %}
+                        {{ call['type'] }}
+                    {% endif %}
+                </td>
+                <td>{{ call['key'] }}</td>
+                <td>{% if call['hit'] %}HIT{% else %}<strong>MISS</strong>{% endif %}</td>
+                <td>{{ call['count'] }}</td>
+            </tr>
+            {% set callCount = callCount + call['count'] %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

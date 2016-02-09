@@ -868,7 +868,7 @@ class ArchiveJob extends AbstractJob
             }
 
             try {
-                $collection = \collection::get_from_coll_id($app, $databox, (int) $cid);
+                $collection = \collection::getByCollectionId($app, $databox, (int) $cid);
                 if ($captionFileName === null) {
                     $story = $this->createStory($app, $collection, $path . '/' . $representationFileName, null, $stat0, $stat1);
                 } else {
@@ -1203,7 +1203,7 @@ class ArchiveJob extends AbstractJob
         }
 
         try {
-            $collection = \collection::get_from_coll_id($app, $databox, (int) $cid);
+            $collection = \collection::getByCollectionId($app, $databox, (int) $cid);
 
             if ($captionFileName === null) {
                 $this->createRecord($app, $collection, $path . '/' . $file, null, $grp_rid, null, $stat0, $stat1);

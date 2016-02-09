@@ -16,12 +16,6 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 {
     protected $factory;
 
-    public function testDeliverFileFactoryCreation()
-    {
-        $factory = ServeFileResponseFactory::create(self::$DI['app']);
-        $this->assertInstanceOf('Alchemy\Phrasea\Http\ServeFileResponseFactory', $factory);
-    }
-
     public function testDeliverFile()
     {
         $this->factory = new ServeFileResponseFactory(new \unicode());
@@ -144,22 +138,5 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename="PhraseanetTestCase.php"', $response->headers->get('content-disposition'));
         $this->assertEquals(realpath($file), $response->headers->get('x-accel-redirect'));
-    }
-
-    public function testDeliverDatas()
-    {
-        $this->factory = new ServeFileResponseFactory(new \unicode());
-
-        $data = 'Sex,Name,Birthday
-                M,Alphonse,1932
-                F,Béatrice,1964
-                F,Charlotte,1988';
-
-        $response = $this->factory->deliverData($data, 'data.csv', 'text/csv', 'attachment');
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('attachment; filename="data.csv"', $response->headers->get('content-disposition'));
-        $this->assertEquals('text/csv', $response->headers->get('content-type'));
-        $this->assertEquals($data, $response->getContent());
     }
 }
