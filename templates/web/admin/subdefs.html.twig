@@ -231,6 +231,11 @@
                             <td></td>
                         </tr>
                         <tr>
+                            <td>{{ 'subdef.orderable' | trans }}</td>
+                            <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_orderable" {% if subdef.isOrderable() %}checked="checked"{% endif %} value="1" /></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td>
                                 {{ 'classe' | trans }}
                             </td>
