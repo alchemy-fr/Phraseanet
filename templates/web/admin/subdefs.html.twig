@@ -227,7 +227,7 @@
                         {% endfor %}
                         <tr>
                             <td>{{ 'Telechargeable' | trans }}</td>
-                            <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
+                            <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.isDownloadable() %}checked="checked"{% endif %} value="1" /></td>
                             <td></td>
                         </tr>
                         <tr>

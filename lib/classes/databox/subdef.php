@@ -309,7 +309,7 @@ class databox_subdef
     /**
      * @return bool
      */
-    public function is_downloadable()
+    public function isDownloadable()
     {
         return $this->downloadable;
     }

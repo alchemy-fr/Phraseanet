@@ -1,27 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
-class databox_subdefTest extends \PhraseanetTestCase
+class databox_subdefTest extends \PHPUnit_Framework_TestCase
 {
-
-    /**
-     * @covers databox_subdef::__construct
-     * @covers databox_subdef::get_class
-     * @covers databox_subdef::get_name
-     * @covers databox_subdef::isMetadataUpdateRequired
-     * @covers databox_subdef::getAvailableSubdefTypes
-     * @covers databox_subdef::is_downloadable
-     * @covers databox_subdef::get_labels
-     * @covers databox_subdef::getSubdefGroup
-     * @covers databox_subdef::getSubdefType
-     * @covers databox_subdef::get_path
-     * @covers databox_subdef::getSpecs
-     * @covers databox_subdef::getOptions
-     * @covers databox_subdef::buildImageSubdef
-     */
     public function testImage()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -52,7 +32,7 @@ class databox_subdefTest extends \PhraseanetTestCase
         $this->assertArrayHasKey('en', $labels);
         $this->assertEquals('Preview', $labels['en']);
 
-        $this->assertTrue($object->is_downloadable());
+        $this->assertTrue($object->isDownloadable());
         $this->assertTrue(is_array($object->getAvailableSubdefTypes()));
         $this->assertTrue(count($object->getAvailableSubdefTypes()) > 0);
 
@@ -73,21 +53,6 @@ class databox_subdefTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers databox_subdef::__construct
-     * @covers databox_subdef::get_class
-     * @covers databox_subdef::get_name
-     * @covers databox_subdef::isMetadataUpdateRequired
-     * @covers databox_subdef::getAvailableSubdefTypes
-     * @covers databox_subdef::is_downloadable
-     * @covers databox_subdef::get_labels
-     * @covers databox_subdef::getSubdefGroup
-     * @covers databox_subdef::getSubdefType
-     * @covers databox_subdef::get_path
-     * @covers databox_subdef::getSpecs
-     * @covers databox_subdef::getOptions
-     * @covers databox_subdef::buildVideoSubdef
-     */
     public function testVideo()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -118,7 +83,7 @@ class databox_subdefTest extends \PhraseanetTestCase
         $this->assertTrue(is_array($labels));
         $this->assertEquals(0, count($labels));
 
-        $this->assertFalse($object->is_downloadable());
+        $this->assertFalse($object->isDownloadable());
         $this->assertTrue(is_array($object->getAvailableSubdefTypes()));
         $this->assertTrue(count($object->getAvailableSubdefTypes()) > 0);
 
@@ -139,12 +104,6 @@ class databox_subdefTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers databox_subdef::__construct
-     * @covers databox_subdef::getSpecs
-     * @covers databox_subdef::getOptions
-     * @covers databox_subdef::buildGifSubdef
-     */
     public function testGif()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -170,12 +129,6 @@ class databox_subdefTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers databox_subdef::__construct
-     * @covers databox_subdef::getSpecs
-     * @covers databox_subdef::getOptions
-     * @covers databox_subdef::buildAudioSubdef
-     */
     public function testAudio()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -197,12 +150,6 @@ class databox_subdefTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers databox_subdef::__construct
-     * @covers databox_subdef::getSpecs
-     * @covers databox_subdef::getOptions
-     * @covers databox_subdef::buildFlexPaperSubdef
-     */
     public function testFlexPaper()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -226,11 +173,9 @@ class databox_subdefTest extends \PhraseanetTestCase
 
     /**
      * @dataProvider getVariouasTypeAndSubdefs
-     * @covers databox_subdef::getAvailableSubdefTypes
      */
     public function testGetAvailableSubdefTypes($object)
     {
-
         foreach ($object->getAvailableSubdefTypes() as $type) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Subdef', $type);
         }
