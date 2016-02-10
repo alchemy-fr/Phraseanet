@@ -315,7 +315,7 @@ function showOption(domInput) {
 }
 
 function removeChecked(domInput) {
-    domInput.closest("form").find('input:radio:visible:checked').removeAttr("checked");
+    domInput.closest("form").find('input:radio:visible:checked').prop("checked", false);
 }
 function tableLinkAction(domLink) {
     var cl = domLink.attr("id");
