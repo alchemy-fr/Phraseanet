@@ -60,6 +60,11 @@ class databox_subdef
     private $requiresMetadataUpdate;
 
     /**
+     * @var bool
+     */
+    private $orderable;
+
+    /**
      * @param SubdefType $type
      * @param SimpleXMLElement $sd
      * @param TranslatorInterface $translator
@@ -76,6 +81,7 @@ class databox_subdef
 
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
+        $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
 
         $this->requiresMetadataUpdate = p4field::isyes((string) $sd->meta);
@@ -312,6 +318,14 @@ class databox_subdef
     public function isDownloadable()
     {
         return $this->downloadable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderable()
+    {
+        return $this->orderable;
     }
 
     /**

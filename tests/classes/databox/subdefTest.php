@@ -15,7 +15,7 @@ class databox_subdefTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->translator = $this->getMock(TranslatorInterface::class);
+        $this->translator = $this->getTranslatorMock();
     }
 
     public function testImage()
@@ -205,12 +205,55 @@ class databox_subdefTest extends \PHPUnit_Framework_TestCase
                     <mediatype>image</mediatype>
                 </subdef>';
 
-        $translator = $this->getMock(TranslatorInterface::class);
+        $translator = $this->getTranslatorMock();
 
         return [
             [new databox_subdef(new Type\Audio(), simplexml_load_string($xmlImage), $translator)],
             [new databox_subdef(new Type\Document(), simplexml_load_string($xmlImage), $translator)],
             [new databox_subdef(new Type\Video(), simplexml_load_string($xmlImage), $translator)],
         ];
+    }
+
+    /**
+     * @param bool $expected
+     * @param null|string $configValue
+     * @dataProvider providesOrderableStatuses
+     */
+    public function testOrderableStatus($expected, $configValue, $message)
+    {
+        $xmlTemplate = <<<'EOF'
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<subdef class="thumbnail" name="gifou" downloadable="false"%s>
+    <path>/home/datas/noweb/db_alch_phrasea/video/</path>
+    <mediatype>image</mediatype>
+</subdef>
+EOF;
+
+        if (null !== $configValue) {
+            $configValue = ' orderable="' . $configValue . '"';
+        }
+
+        $xml = sprintf($xmlTemplate, $configValue ?: '');
+
+        $sut = new databox_subdef(new Type\Image(), simplexml_load_string($xml), $this->translator);
+
+        $this->assertSame($expected, $sut->isOrderable(), $message);
+    }
+
+    public function providesOrderableStatuses()
+    {
+        return [
+            [true, null, 'No Orderable Status set should defaults to true'],
+            [false, 'false', 'Orderable should be false'],
+            [true, 'true', 'Orderable should be true'],
+        ];
+    }
+
+    /**
+     * @return PHPUnit_Framework_MockObject_MockObject|TranslatorInterface
+     */
+    private function getTranslatorMock()
+    {
+        return $this->getMock(TranslatorInterface::class);
     }
 }
