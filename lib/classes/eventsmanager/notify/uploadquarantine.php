@@ -16,7 +16,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 {
     /**
-     *
      * @return string
      */
     public function icon_url()
@@ -25,10 +24,9 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     }
 
     /**
-     *
-     * @param  Array   $datas
-     * @param  boolean $unread
-     * @return Array
+     * @param array $data
+     * @param bool $unread
+     * @return array
      */
     public function datas(array $data, $unread)
     {
@@ -55,7 +53,6 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     }
 
     /**
-     *
      * @return string
      */
     public function get_name()
@@ -64,7 +61,6 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     }
 
     /**
-     *
      * @return string
      */
     public function get_description()
