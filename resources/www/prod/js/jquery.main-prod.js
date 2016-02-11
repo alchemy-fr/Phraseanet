@@ -162,9 +162,9 @@ function checkBases(bool) {
 
         var sbas_id = $(this).find('input[name=reference]:first').val();
         if (bool)
-            $(this).find(':checkbox').attr('checked', 'checked');
+            $(this).find(':checkbox').prop('checked', true);
         else
-            $(this).find(':checkbox').removeAttr('checked');
+            $(this).find(':checkbox').prop('checked', false);
     });
 
     checkFilters(true);
@@ -402,8 +402,8 @@ function reset_adv_search() {
     $("option.default-selection", fieldsSort).prop("selected", true);
     $("option.default-selection", fieldsSortOrd).prop("selected", true);
 
-    $('#ADVSRCH_FIELDS_ZONE option').removeAttr("selected");
-    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').removeAttr('checked');
+    $('#ADVSRCH_FIELDS_ZONE option').prop("selected", false);
+    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').prop("checked", false);
 
     $("option:eq(0)", dateFilterSelect).prop("selected", true);
     $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
@@ -637,12 +637,12 @@ function loadFacets(facets) {
 }
 
 function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
-    var filteredSource = _.extend([], source),
+    var filteredSource = source,
         ordered = [];
 
-    _.forEach(predefinedFieldOrder, function(fieldValue, index){
-        _.forEach(source, function(facet, facetIndex) {
-            if( facet[field] !== undefined) {
+    _.forEach(predefinedFieldOrder, function (fieldValue, index) {
+        _.forEach(source, function (facet, facetIndex) {
+            if (facet[field] !== undefined) {
                 if (facet[field] === fieldValue) {
                     ordered.push(facet);
                     // remove from filtered
@@ -651,16 +651,15 @@ function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
             }
         });
     });
-    // push reordoned objects on top of array:
-    // walk backward
-    var olen = ordered.length;
-    for(var i = olen-1; i>=0; i--) {
-        filteredSource.unshift(ordered[i]);
+
+    var olen = filteredSource.length;
+    // fill predefined facets with non predefined facets
+    for (var i = 0; i < olen; i++) {
+        ordered.push(filteredSource[i]);
     }
-
-    return filteredSource;
-
+    return ordered;
 }
+
 // from stackoverflow
 // http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects/979325#979325
 function sortFacets(field, reverse, primer) {
