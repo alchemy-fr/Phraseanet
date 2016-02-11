@@ -85,11 +85,10 @@ class record_exportElement extends record_adapter
 
         $sbas_id = phrasea::sbasFromBas($this->app, $this->get_base_id());
 
-        $subdefgroups = $this->app->findDataboxById($sbas_id)->get_subdef_structure();
-
+        /** @var databox_subdef[] $subdefs */
         $subdefs = [];
 
-        foreach ($subdefgroups as $subdef_type => $subdefs_obj) {
+        foreach ($this->app->findDataboxById($sbas_id)->get_subdef_structure() as $subdef_type => $subdefs_obj) {
             if ($subdef_type == $this->get_type()) {
                 $subdefs = $subdefs_obj;
                 break;
@@ -173,7 +172,7 @@ class record_exportElement extends record_adapter
 
             $downloadable[$name] = false;
 
-            $downloadable_settings = $subdef->is_downloadable();
+            $downloadable_settings = $subdef->isDownloadable();
 
             if (! $downloadable_settings || $go_dl[$class] === false) {
                 continue;

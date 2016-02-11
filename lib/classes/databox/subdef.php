@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -9,18 +8,37 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Audio;
-use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
+use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
+use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdef
 {
+    const CLASS_THUMBNAIL = 'thumbnail';
+    const CLASS_PREVIEW = 'preview';
+    const CLASS_DOCUMENT = 'document';
+
+    const DEVICE_ALL = 'all';
+    const DEVICE_HANDHELD = 'handheld';
+    const DEVICE_PRINT = 'print';
+    const DEVICE_PROJECTION = 'projection';
+    const DEVICE_SCREEN = 'screen';
+    const DEVICE_TV = 'tv';
+
+    protected static $mediaTypeToSubdefTypes = [
+        SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
+        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
+        SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+    ];
+
     /**
      * The class type of the subdef
      * Is null or one of the CLASS_* constants
@@ -33,37 +51,23 @@ class databox_subdef
     protected $path;
     protected $subdef_group;
     protected $labels = [];
+    protected $downloadable;
+    protected $translator;
 
     /**
      * @var bool
      */
     private $requiresMetadataUpdate;
-    protected $downloadable;
-    protected $translator;
-    protected static $mediaTypeToSubdefTypes = [
-        SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
-        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
-        SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
-    ];
-
-    const CLASS_THUMBNAIL = 'thumbnail';
-    const CLASS_PREVIEW = 'preview';
-    const CLASS_DOCUMENT = 'document';
-    const DEVICE_ALL = 'all';
-    const DEVICE_HANDHELD = 'handheld';
-    const DEVICE_PRINT = 'print';
-    const DEVICE_PROJECTION = 'projection';
-    const DEVICE_SCREEN = 'screen';
-    const DEVICE_TV = 'tv';
 
     /**
-     *
-     * @param SubdefType       $type
+     * @var bool
+     */
+    private $orderable;
+
+    /**
+     * @param SubdefType $type
      * @param SimpleXMLElement $sd
-     *
-     * @return databox_subdef
+     * @param TranslatorInterface $translator
      */
     public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator)
     {
@@ -77,6 +81,7 @@ class databox_subdef
 
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
+        $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
 
         $this->requiresMetadataUpdate = p4field::isyes((string) $sd->meta);
@@ -107,12 +112,130 @@ class databox_subdef
                 $this->subdef_type = $this->buildFlexPaperSubdef($sd);
                 break;
         }
-
-        return $this;
     }
 
     /**
+     * Build Image Subdef object depending the SimpleXMLElement
      *
+     * @param  SimpleXMLElement $sd
+     * @return Image
+     */
+    protected function buildImageSubdef(SimpleXMLElement $sd)
+    {
+        $image = new Image($this->translator);
+
+        if ($sd->size) {
+            $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->quality) {
+            $image->setOptionValue(Image::OPTION_QUALITY, (int) $sd->quality);
+        }
+        if ($sd->strip) {
+            $image->setOptionValue(Image::OPTION_STRIP, p4field::isyes($sd->strip));
+        }
+        if ($sd->dpi) {
+            $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
+        }
+        if ($sd->flatten) {
+            $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
+        }
+
+        return $image;
+    }
+
+    /**
+     * Build Audio Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Audio
+     */
+    protected function buildAudioSubdef(SimpleXMLElement $sd)
+    {
+        $audio = new Audio($this->translator);
+
+        if ($sd->acodec) {
+            $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
+        }
+        if ($sd->audiobitrate) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
+        }
+        if ($sd->audiosamplerate) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+
+        return $audio;
+    }
+
+    /**
+     * Build Video Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Video
+     */
+    protected function buildVideoSubdef(SimpleXMLElement $sd)
+    {
+        $video = new Video($this->translator);
+
+        if ($sd->size) {
+            $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->acodec) {
+            $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
+        }
+        if ($sd->vcodec) {
+            $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
+        }
+        if ($sd->fps) {
+            $video->setOptionValue(Video::OPTION_FRAMERATE, (int) $sd->fps);
+        }
+        if ($sd->bitrate) {
+            $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
+        }
+        if ($sd->audiobitrate) {
+            $video->setOptionValue(Video::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
+        }
+        if ($sd->audiosamplerate) {
+            $video->setOptionValue(Video::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+        if ($sd->GOPsize) {
+            $video->setOptionValue(Video::OPTION_GOPSIZE, (int) $sd->GOPsize);
+        }
+
+        return $video;
+    }
+
+    /**
+     * Build GIF Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Gif
+     */
+    protected function buildGifSubdef(SimpleXMLElement $sd)
+    {
+        $gif = new Gif($this->translator);
+
+        if ($sd->size) {
+            $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->delay) {
+            $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
+        }
+
+        return $gif;
+    }
+
+    /**
+     * Build Flexpaper Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return FlexPaper
+     */
+    protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
+    {
+        return new FlexPaper($this->translator);
+    }
+
+    /**
      * @return string
      */
     public function get_class()
@@ -121,7 +244,6 @@ class databox_subdef
     }
 
     /**
-     *
      * @return string
      */
     public function get_path()
@@ -132,7 +254,7 @@ class databox_subdef
     /**
      * The devices matching this subdefinition
      *
-     * @return Array
+     * @return array
      */
     public function getDevices()
     {
@@ -142,7 +264,7 @@ class databox_subdef
     /**
      * The current SubdefType the subdef converts documents
      *
-     * @return Alchemy\Phrasea\Media\Subdef\Subdef
+     * @return \Alchemy\Phrasea\Media\Subdef\Subdef
      */
     public function getSubdefType()
     {
@@ -162,7 +284,7 @@ class databox_subdef
     /**
      * An associative label ; keys are i18n languages
      *
-     * @return Array
+     * @return array
      */
     public function get_labels()
     {
@@ -181,13 +303,29 @@ class databox_subdef
     }
 
     /**
-     * boolean
+     * The name of the subdef
      *
-     * @return type
+     * @return string
      */
-    public function is_downloadable()
+    public function get_name()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDownloadable()
     {
         return $this->downloadable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderable()
+    {
+        return $this->orderable;
     }
 
     /**
@@ -257,16 +395,6 @@ class databox_subdef
     }
 
     /**
-     * The name of the subdef
-     *
-     * @return string
-     */
-    public function get_name()
-    {
-        return $this->name;
-    }
-
-    /**
      * Get the MediaAlchemyst specs for the current subdef
      *
      * @return SpecificationInterface
@@ -284,126 +412,5 @@ class databox_subdef
     public function getOptions()
     {
         return $this->subdef_type->getOptions();
-    }
-
-    /**
-     * Build Image Subdef object depending the SimpleXMLElement
-     *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
-     */
-    protected function buildImageSubdef(SimpleXMLElement $sd)
-    {
-        $image = new Image($this->translator);
-
-        if ($sd->size) {
-            $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
-        }
-        if ($sd->quality) {
-            $image->setOptionValue(Image::OPTION_QUALITY, (int) $sd->quality);
-        }
-        if ($sd->strip) {
-            $image->setOptionValue(Image::OPTION_STRIP, p4field::isyes($sd->strip));
-        }
-        if ($sd->dpi) {
-            $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
-        }
-        if ($sd->flatten) {
-            $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
-        }
-
-        return $image;
-    }
-
-    /**
-     * Build Audio Subdef object depending the SimpleXMLElement
-     *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
-     */
-    protected function buildAudioSubdef(SimpleXMLElement $sd)
-    {
-        $audio = new Audio($this->translator);
-
-        if ($sd->acodec) {
-            $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
-        }
-        if ($sd->audiobitrate) {
-            $audio->setOptionValue(Audio::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
-        }
-        if ($sd->audiosamplerate) {
-            $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
-        }
-
-        return $audio;
-    }
-
-    /**
-     * Build Flexpaper Subdef object depending the SimpleXMLElement
-     *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
-     */
-    protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
-    {
-        return new FlexPaper($this->translator);
-    }
-
-    /**
-     * Build GIF Subdef object depending the SimpleXMLElement
-     *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
-     */
-    protected function buildGifSubdef(SimpleXMLElement $sd)
-    {
-        $gif = new Gif($this->translator);
-
-        if ($sd->size) {
-            $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
-        }
-        if ($sd->delay) {
-            $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
-        }
-
-        return $gif;
-    }
-
-    /**
-     * Build Video Subdef object depending the SimpleXMLElement
-     *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
-     */
-    protected function buildVideoSubdef(SimpleXMLElement $sd)
-    {
-        $video = new Video($this->translator);
-
-        if ($sd->size) {
-            $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
-        }
-        if ($sd->acodec) {
-            $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
-        }
-        if ($sd->vcodec) {
-            $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
-        }
-        if ($sd->fps) {
-            $video->setOptionValue(Video::OPTION_FRAMERATE, (int) $sd->fps);
-        }
-        if ($sd->bitrate) {
-            $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
-        }
-        if ($sd->audiobitrate) {
-            $video->setOptionValue(Video::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
-        }
-        if ($sd->audiosamplerate) {
-            $video->setOptionValue(Video::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
-        }
-        if ($sd->GOPsize) {
-            $video->setOptionValue(Video::OPTION_GOPSIZE, (int) $sd->GOPsize);
-        }
-
-        return $video;
     }
 }
