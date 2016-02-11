@@ -211,13 +211,6 @@
   }
   .lazaret-file,
   .lazaret-proposals {
-    a {
-      font-weight: normal;
-      color: $textPrimaryColor;
-      &:hover {
-        color: $textSecondaryColor;
-      }
-    }
     .thumbnails {
       margin-left: 0;
       background-color: #FFFFFF;
@@ -231,6 +224,18 @@
 
       .record-thumb {
         height: 180px;
+      }
+    }
+  }
+  .well {
+    .lazaret-file,
+    .lazaret-proposals {
+      a {
+        font-weight: normal;
+        color: $textPrimaryInverseColor;
+        &:hover {
+          color: $textInverseHoverColor;
+        }
       }
     }
   }
