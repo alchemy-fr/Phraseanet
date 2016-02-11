@@ -3,6 +3,7 @@ $proposalsTitleHoverColor: $darkerTextHoverColor !default;
 $proposalsContentTextColor: $darkerTextColor !default;
 $proposalsContentTextColor: $darkerTextColor !default;
 $proposalFacetColor: #FFF !default;
+$proposalsFacetHoverColor: #FFF !default;
 /******* PROPOSALS ************************************************************/
 
 
@@ -41,7 +42,7 @@ $proposalFacetColor: #FFF !default;
           &:hover {
             background-color: $proposalColor;
             .fancytree-title {
-              color: $facetHover;
+              color: $proposalsFacetHoverColor;
               // color: $textPrimaryHoverColor;
             }
           }
