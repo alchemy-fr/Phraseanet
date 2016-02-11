@@ -172,7 +172,8 @@ $workzoneToolsLabelColor: #FFFFFF;
 /******** PROPOSALS CONFIG ********/
 $proposalsTitleColor: #FFFFFF;
 $proposalsTitleBorder: #666666;
-
+$proposalsTitleHoverColor: lighten($proposalsTitleColor, 10);
+$facetHover: #FFF;
 
 @import '../../../_shared/styles/jquery-ui/ui-lightness';
 @import '../skin-shared';

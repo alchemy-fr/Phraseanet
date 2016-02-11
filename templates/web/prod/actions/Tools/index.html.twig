@@ -74,7 +74,7 @@
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
-                    <legend style='color:#EEE'>&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
+                    <legend>&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
                     {% if nbSubdefSubstitute > 0 %}
                         <div style="color:#A00;">
                             {{ "Attention, certain documents ont des sous-definitions substituees" | trans }}
@@ -181,7 +181,7 @@
       </div>
       <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
         <fieldset style='border:1px solid #999;padding:20px;'>
-          <legend style='color:#EEE'>&nbsp;<b>{{ "image rotation" | trans  }}</b>&nbsp;</legend>
+          <legend>&nbsp;<b>{{ "image rotation" | trans  }}</b>&nbsp;</legend>
             <label for="ROTA_90" class="radio">
                 <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
                 {{ "rotation 90 degres horaire" | trans }}
@@ -220,7 +220,7 @@
                     target="uploadHdsub">
 
                     <fieldset style='border:1px solid #999;padding:20px;'>
-                      <legend style='color:#EEE'>&nbsp;<b>{{ "substitution HD" | trans }}</b>&nbsp;</legend>
+                      <legend>&nbsp;<b>{{ "substitution HD" | trans }}</b>&nbsp;</legend>
                       <div>
                         <input id='new-hd-file' name="newHD" type="file"/>
                         <br />
@@ -252,7 +252,7 @@
                     method="post"
                     target="uploadHdsub">
                     <fieldset style='border:1px solid #999;padding:20px;'>
-                      <legend style='color:#EEE'>&nbsp;<b>{{ "substitution SD" | trans }}</b>&nbsp;</legend>
+                      <legend>&nbsp;<b>{{ "substitution SD" | trans }}</b>&nbsp;</legend>
                       <div>
                         <input id='new-sd-file' name="newThumb" type="file" />
                         <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
