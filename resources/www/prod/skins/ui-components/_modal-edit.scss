@@ -310,9 +310,7 @@
 }
 #idFrameE {
   .ui-datepicker-inline {
-    background-color: #111111;
-    // /assets/prod/skins/{{cssfile}}/images/
-    background-image: url('#{$iconsPath}ui-bg_gloss-wave_20_111111_500x100.png');
+    background-color: $darkerBackgroundColor;
     background-repeat: repeat-x;
     background-position: 50% top;
   }

@@ -155,7 +155,7 @@ $workzoneToolsLabelColor: #7f7f7f;
 
 /******** PROPOSALS CONFIG ********/
 $proposalsTitleColor: #A6A6A6;
-$proposalsTitleHoverColor: lighten($proposalsTitleColor, 5);
+$proposalsTitleHoverColor: lighten($proposalsTitleColor, 10); // $mediumTextHoverColor
 $proposalsTitleBorder: #303030;
 
 
