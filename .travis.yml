@@ -3,8 +3,6 @@ sudo: require
 env:
   - SETUP_MODE=update TEST_SUITE=1
   - SETUP_MODE=update TEST_SUITE=2
-  - SETUP_MODE=install TEST_SUITE=1
-  - SETUP_MODE=install TEST_SUITE=2
 
 php:
   - 5.5
