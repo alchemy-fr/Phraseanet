@@ -1,20 +1,22 @@
 language: php
 sudo: require
 env:
-  - SETUP_MODE=update TEST_SUITE=1
-  - SETUP_MODE=update TEST_SUITE=2
-  - SETUP_MODE=install TEST_SUITE=1
-  - SETUP_MODE=install TEST_SUITE=2
+  - TEST_SUITE=1
+  - TEST_SUITE=2
+  - TEST_SUITE=3
 
 php:
   - 5.5
   - 5.6
+
 matrix:
   fast_finish: true
+
 services:
   - mysql
   - memcached
   - redis
+
 before_install:
   - nvm install 0.12.0
   - phpenv config-rm xdebug.ini
@@ -37,23 +39,26 @@ before_script:
   - "./bin/developer system:uninstall"
   - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
   - |
-    if [ "$SETUP_MODE" = "update" ]; then
-      ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
+     ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
       php resources/hudson/cleanupSubdefs.php;
-    fi
   - mysql -e 'SELECT ab.version AS applibox_version, db.value AS databox_version FROM ab_test.sitepreff ab, db_test.pref db WHERE db.prop = "version"'
   - "./bin/developer ini:setup-tests-dbs"
   - "./bin/console searchengine:index:create"
   - "./bin/developer phraseanet:regenerate-sqlite"
   - "./bin/developer phraseanet:generate-js-fixtures"
+
 script:
   - "./node_modules/.bin/gulp test"
   - |
-    if [ "$TEST_SUITE" = "1" ]; then
-      "./bin/phpunit" "tests/classes/";
-    else
-      "./bin/phpunit" "tests/Alchemy/";
-    fi
+    case "$TEST_SUITE" in
+      1 )
+        "./bin/phpunit" --exclude-group legacy ;;
+      2 )
+        "./bin/phpunit" --group legacy --exclude-group web;;
+      3 )
+        "./bin/phpunit" --group web;;
+    esac
+
 notifications:
   hipchat:
     rooms:
