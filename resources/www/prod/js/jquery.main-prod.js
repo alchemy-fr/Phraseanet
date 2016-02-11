@@ -637,12 +637,12 @@ function loadFacets(facets) {
 }
 
 function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
-    var filteredSource = _.extend([], source),
+    var filteredSource = source,
         ordered = [];
 
-    _.forEach(predefinedFieldOrder, function(fieldValue, index){
-        _.forEach(source, function(facet, facetIndex) {
-            if( facet[field] !== undefined) {
+    _.forEach(predefinedFieldOrder, function (fieldValue, index) {
+        _.forEach(source, function (facet, facetIndex) {
+            if (facet[field] !== undefined) {
                 if (facet[field] === fieldValue) {
                     ordered.push(facet);
                     // remove from filtered
@@ -651,16 +651,15 @@ function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
             }
         });
     });
-    // push reordoned objects on top of array:
-    // walk backward
-    var olen = ordered.length;
-    for(var i = olen-1; i>=0; i--) {
-        filteredSource.unshift(ordered[i]);
+
+    var olen = filteredSource.length;
+    // fill predefined facets with non predefined facets
+    for (var i = 0; i < olen; i++) {
+        ordered.push(filteredSource[i]);
     }
-
-    return filteredSource;
-
+    return ordered;
 }
+
 // from stackoverflow
 // http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects/979325#979325
 function sortFacets(field, reverse, primer) {
