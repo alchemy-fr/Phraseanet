@@ -31,8 +31,10 @@
     <script type="text/javascript">
         var $dialog = p4.Dialog.get(1);
         var $dialogBox = $dialog.getDomElement();
+        var $closeButton = $("button.ui-dialog-titlebar-close", $dialogBox.parent());
+        var $cancelButton = $("button.cancel", $dialogBox);
 
-        $("button.cancel", $dialogBox).bind("click", function(){
+        $cancelButton.bind("click", function(){
             $dialog.Close();
         });
 
@@ -47,7 +49,10 @@
                 data: form.serializeArray(),
                 dataType: "json",
                 beforeSend:function(){
-                    $this.attr("disabled", true);
+                    $this.prop('disabled', true);
+                    $closeButton.prop('disabled', true);
+                    $cancelButton.prop('disabled', true);
+                    $dialog.setOption('closeOnEscape', false);
                     loader.show();
                 },
                 success: function(data){
@@ -80,7 +85,10 @@
                     viewNbSelect();
                 },
                 complete: function(){
-                    $this.attr("disabled", false);
+                    $this.prop('disabled', false);
+                    $closeButton.prop('disabled', false);
+                    $cancelButton.prop('disabled', false);
+                    $dialog.setOption('closeOnEscape', true);
                     loader.hide();
                 }
             });
