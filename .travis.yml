@@ -3,8 +3,6 @@ sudo: require
 env:
   - TEST_SUITE=1
   - TEST_SUITE=2
-  - TEST_SUITE=3
-
 php:
   - 5.5
   - 5.6
@@ -50,13 +48,13 @@ before_script:
 script:
   - "./node_modules/.bin/gulp test"
   - |
+    echo "$TEST_SUITE";
     case "$TEST_SUITE" in
       1 )
-        "./bin/phpunit" --exclude-group legacy ;;
+        "./bin/phpunit" --exclude-group legacy ;
+        "./bin/phpunit" --group legacy --exclude-group web ;;
       2 )
-        "./bin/phpunit" --group legacy --exclude-group web;;
-      3 )
-        "./bin/phpunit" --group web;;
+        "./bin/phpunit" --group web ;;
     esac
 
 notifications:
