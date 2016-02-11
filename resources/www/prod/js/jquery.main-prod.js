@@ -162,9 +162,9 @@ function checkBases(bool) {
 
         var sbas_id = $(this).find('input[name=reference]:first').val();
         if (bool)
-            $(this).find(':checkbox').attr('checked', 'checked');
+            $(this).find(':checkbox').prop('checked', true);
         else
-            $(this).find(':checkbox').removeAttr('checked');
+            $(this).find(':checkbox').prop('checked', false);
     });
 
     checkFilters(true);
@@ -402,8 +402,8 @@ function reset_adv_search() {
     $("option.default-selection", fieldsSort).prop("selected", true);
     $("option.default-selection", fieldsSortOrd).prop("selected", true);
 
-    $('#ADVSRCH_FIELDS_ZONE option').removeAttr("selected");
-    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').removeAttr('checked');
+    $('#ADVSRCH_FIELDS_ZONE option').prop("selected", false);
+    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').prop("checked", false);
 
     $("option:eq(0)", dateFilterSelect).prop("selected", true);
     $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
