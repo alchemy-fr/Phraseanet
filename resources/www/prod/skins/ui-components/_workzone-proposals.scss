@@ -2,6 +2,7 @@ $proposalsTitleColor: $darkerTextColor !default;
 $proposalsTitleHoverColor: $darkerTextHoverColor !default;
 $proposalsContentTextColor: $darkerTextColor !default;
 $proposalsContentTextColor: $darkerTextColor !default;
+$proposalFacetColor: #FFF !default;
 /******* PROPOSALS ************************************************************/
 
 
@@ -40,7 +41,8 @@ $proposalsContentTextColor: $darkerTextColor !default;
           &:hover {
             background-color: $proposalColor;
             .fancytree-title {
-              color: $textPrimaryHoverColor;
+              color: $facetHover;
+              // color: $textPrimaryHoverColor;
             }
           }
         }
@@ -62,9 +64,9 @@ $proposalsContentTextColor: $darkerTextColor !default;
     }
     &:hover {
       border-left: 4px solid $proposalColor;
-      color: $mediumTextHoverColor;
+      color: $proposalsTitleHoverColor;
       .fancytree-title {
-        color: $mediumTextHoverColor;
+        color: $proposalsTitleHoverColor;
       }
     }
     .fancytree-expander {
@@ -125,6 +127,7 @@ $proposalsContentTextColor: $darkerTextColor !default;
     border-radius: 4px;
     right: 28px;
     background-color: $proposalColor;
+    color: $proposalFacetColor;
     padding-left: 13px;
     padding-right: 13px;
     margin-top: 11px;

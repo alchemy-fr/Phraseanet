@@ -59,7 +59,7 @@ $answersInfoLabelColor: #949494 !default;
     margin: 10px;
     width: 600px;
     overflow: hidden;
-    border: 3px solid #404040;
+    border: 3px solid $darkerBorderColor;
     .desc {
       .dl-horizontal {
         dt {
