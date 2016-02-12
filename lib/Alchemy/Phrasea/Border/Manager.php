@@ -31,7 +31,6 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
-use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Phraseanet Border Manager
@@ -64,15 +63,6 @@ class Manager
     public function __construct(Application $app)
     {
         $this->app = $app;
-    }
-
-    /**
-     * Destructor
-     *
-     */
-    public function __destruct()
-    {
-        $this->app = null;
     }
 
     /**
@@ -112,9 +102,7 @@ class Manager
     {
         $visa = $this->getVisa($file);
 
-        /**
-         * Generate UUID
-         */
+        // Generate UUID
         $file->getUUID(true, false);
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
@@ -131,9 +119,7 @@ class Manager
             $code = self::LAZARET_CREATED;
         }
 
-        /**
-         * Write UUID
-         */
+        // Write UUID
         $file->getUUID(false, true);
 
         if (is_callable($callable)) {
@@ -176,9 +162,26 @@ class Manager
      */
     public function registerChecker(CheckerInterface $checker)
     {
-        $this->checkers[get_class($checker)] = $checker;
+        if (!$this->hasChecker($checker)) {
+            $this->checkers[] = $checker;
+        }
 
         return $this;
+    }
+
+    /**
+     * @param CheckerInterface $checker
+     * @return bool
+     */
+    public function hasChecker(CheckerInterface $checker)
+    {
+        foreach ($this->checkers as $registered) {
+            if ($checker === $registered) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -204,12 +207,14 @@ class Manager
      */
     public function unregisterChecker(CheckerInterface $checker)
     {
-        $class = get_class($checker);
-        if (isset($this->checkers[$class])) {
-            if ($checker !== $this->checkers[$class]) {
-                throw new \LogicException('Trying to unregister wrong checker');
+        if (false === $this->hasChecker($checker)) {
+            throw new \LogicException('Trying to unregister unregistered checker');
+        }
+
+        foreach ($this->checkers as $key => $registeredChecker) {
+            if ($checker === $registeredChecker) {
+                unset($this->checkers[$key]);
             }
-            unset($this->checkers[$class]);
         }
 
         return $this;
@@ -224,11 +229,17 @@ class Manager
     public function getCheckerFromFQCN($checkerName)
     {
         $checkerName = trim($checkerName, '\\');
-        if (!isset($this->checkers[$checkerName])) {
-            throw new RuntimeException('Checker could not be found');
+        if (!class_exists($checkerName)) {
+            throw new \RuntimeException('Checker FQCN does not exists');
         }
 
-        return $this->checkers[$checkerName];
+        foreach ($this->checkers as $checker) {
+            if ($checker instanceof $checkerName) {
+                return $checker;
+            }
+        }
+
+        throw new RuntimeException('Checker could not be found');
     }
 
     /**

@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Filesystem;
 
+use Alchemy\Phrasea\Model\RecordInterface;
 use MediaAlchemyst\Specification\SpecificationInterface;
 
 class FilesystemService
@@ -66,17 +67,17 @@ class FilesystemService
     }
 
     /**
-     * @param \record_adapter $record
+     * @param RecordInterface $record
      * @param string|\SplFileInfo $source
      * @return string
      */
-    public function generateDocumentFilename(\record_adapter $record, $source)
+    public function generateDocumentFilename(RecordInterface $record, $source)
     {
         if (!$source instanceof \SplFileInfo) {
             $source = new \SplFileInfo($source);
         }
 
-        return $record->getRecordId() . '_document' . strtolower($source->getExtension());
+        return $record->getRecordId() . '_document.' . strtolower($source->getExtension());
     }
 
     /**
