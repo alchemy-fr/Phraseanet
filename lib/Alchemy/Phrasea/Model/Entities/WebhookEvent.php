@@ -22,6 +22,8 @@ class WebhookEvent
     const USER_DELETED_TYPE = 'user.deleted';
 
     const RECORD_SUBDEF_CREATED = 'record.subdef.created';
+    const RECORD_SUBDEF_FAILED = 'record.subdef.creation_failed';
+    const RECORD_SUBDEFS_CREATED = 'record.subdefs.created';
     const RECORD_SUBDEF_TYPE = 'record.subdef';
 
     /**
