@@ -154,34 +154,16 @@ class Manage extends Helper
         }
 
         if (null === $createdUser = $this->app['repo.users']->findByEmail($email)) {
-            $sendCredentials = !!$this->request->get('send_credentials', false);
-            $validateMail = !!$this->request->get('validate_mail', false);
-
             $createdUser = $this->app['manipulator.user']->createUser($email, $this->app['random.medium']->generateString(128), $email);
 
-            $receiver = null;
-            try {
-                $receiver = Receiver::fromUser($createdUser);
-            } catch (InvalidArgumentException $e) {
-
+            if ((bool) $this->request->get('send_credentials', false)) {
+                $this->sendPasswordSetupMail($createdUser);
             }
 
-            if ($sendCredentials && $receiver) {
-                $urlToken = $this->app['manipulator.token']->createResetPasswordToken($createdUser);
-                $url = $this->app->url('login_renew_password', ['token' => $urlToken->getValue()]);
-                $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
-                $mail->setLogin($createdUser->getLogin());
-                $this->deliver($mail);
-            }
-
-            if ($validateMail && $receiver) {
+            if ((bool) $this->request->get('validate_mail', false)) {
                 $createdUser->setMailLocked(true);
 
-                $token = $this->app['manipulator.token']->createAccountUnlockToken($createdUser);
-                $url = $this->app->url('login_register_confirm', ['code' => $token]);
-
-                $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $token->getExpiration());
-                $this->deliver($mail);
+                $this->sendAccountUnlockEmail($createdUser);
             }
         }
 
@@ -202,5 +184,31 @@ class Manage extends Helper
         $this->usr_id = $this->app->getAuthenticatedUser()->getId();
 
         return $created_user;
+    }
+
+    public function sendAccountUnlockEmail(User $user)
+    {
+        $receiver = Receiver::fromUser($user);
+
+        $token = $this->app['manipulator.token']->createAccountUnlockToken($user);
+
+        $mail = MailRequestEmailConfirmation::create($this->app, $receiver);
+        $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue()]));
+        $mail->setExpiration($token->getExpiration());
+
+        $this->deliver($mail);
+    }
+
+    public function sendPasswordSetupMail(User $user)
+    {
+        $receiver = Receiver::fromUser($user);
+
+        $token = $this->app['manipulator.token']->createResetPasswordToken($user);
+
+        $mail = MailRequestPasswordSetup::create($this->app, $receiver);
+        $mail->setButtonUrl($this->app->url('login_renew_password', ['token' => $token->getValue()]));
+        $mail->setLogin($user->getLogin());
+
+        $this->deliver($mail);
     }
 }

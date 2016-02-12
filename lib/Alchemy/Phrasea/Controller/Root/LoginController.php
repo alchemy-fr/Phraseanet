@@ -35,6 +35,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Helper\User\Manage;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
@@ -239,7 +240,7 @@ class LoginController extends Controller
                     $user = $registrationService->registerUser($data, $selectedCollections, $providerId);
 
                     try {
-                        $this->sendAccountUnlockEmail($user);
+                        $this->sendAccountUnlockEmail($user, $request);
                         $this->app->addFlash('info', $this->app->trans('login::notification: demande de confirmation par mail envoyee'));
                     } catch (InvalidArgumentException $e) {
                         // todo, log this failure
@@ -309,7 +310,7 @@ class LoginController extends Controller
         }
 
         try {
-            $this->sendAccountUnlockEmail($user);
+            $this->sendAccountUnlockEmail($user, $request);
             $this->app->addFlash('success', $this->app->trans('login::notification: demande de confirmation par mail envoyee'));
         } catch (InvalidArgumentException $e) {
             // todo, log this failure
@@ -319,22 +320,11 @@ class LoginController extends Controller
         return $this->app->redirectPath('homepage');
     }
 
-    /**
-     * Sends an account unlock email.
-     *
-     * @param User $user
-     */
-    private function sendAccountUnlockEmail(User $user)
+    private function sendAccountUnlockEmail(User $user, Request $request)
     {
-        $receiver = Receiver::fromUser($user);
+        $helper = new Manage($this->app, $request);
 
-        $token = $this->getTokenManipulator()->createAccountUnlockToken($user);
-
-        $mail = MailRequestEmailConfirmation::create($this->app, $receiver);
-        $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue()]));
-        $mail->setExpiration($token->getExpiration());
-
-        $this->deliver($mail);
+        $helper->sendAccountUnlockEmail($user);
     }
 
     /**
