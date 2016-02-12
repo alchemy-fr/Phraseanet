@@ -776,7 +776,7 @@ class UserController extends Controller
                 && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== ''
                 && isset($curUser['usr_mail']) && trim($curUser['usr_mail']) !== '') {
                 if (null === $userRepository->findByLogin($curUser['usr_login'])
-                    && false === $userRepository->findByEmail($curUser['usr_mail'])) {
+                    && null === $userRepository->findByEmail($curUser['usr_mail'])) {
 
                     $newUser = $userManipulator
                         ->createUser($curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail']);
@@ -821,10 +821,10 @@ class UserController extends Controller
                         $newUser->setFax($curUser['fax']);
                     }
                     if (isset($curUser['activite'])) {
-                        $newUser->setJob($curUser['activite']);
+                        $newUser->setActivity($curUser['activite']);
                     }
                     if (isset($curUser['fonction'])) {
-                        $newUser->setPosition($curUser['fonction']);
+                        $newUser->setJob($curUser['fonction']);
                     }
                     if (isset($curUser['societe'])) {
                         $newUser->setCompany($curUser['societe']);
