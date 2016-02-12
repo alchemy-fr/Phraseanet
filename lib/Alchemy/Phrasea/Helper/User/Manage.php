@@ -25,9 +25,6 @@ class Manage extends Helper
     use NotifierAware;
 
     /** @var array */
-    protected $results;
-
-    /** @var array */
     protected $query_parms;
 
     /** @var int */
@@ -69,7 +66,7 @@ class Manage extends Helper
         elseif (is_array($this->query_parms['sbas_id']))
             $query->on_sbas_ids($this->query_parms['sbas_id']);
 
-        $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+        $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
@@ -77,7 +74,7 @@ class Manage extends Helper
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), ['canadmin'])
             ->execute();
 
-        return $this->results->get_results();
+        return $results->get_results();
     }
 
     public function search()
@@ -107,7 +104,7 @@ class Manage extends Helper
         elseif (is_array($this->query_parms['sbas_id']))
             $query->on_sbas_ids($this->query_parms['sbas_id']);
 
-        $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+        $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
@@ -135,7 +132,7 @@ class Manage extends Helper
                 ->execute()->get_results();
 
         return [
-            'users'             => $this->results->get_results(),
+            'users'             => $results->get_results(),
             'parm'              => $this->query_parms,
             'invite_user'       => $invite,
             'autoregister_user' => $autoregister,
