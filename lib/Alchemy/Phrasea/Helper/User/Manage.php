@@ -145,7 +145,7 @@ class Manage extends Helper
         ];
     }
 
-    public function create_newuser()
+    public function createNewUser()
     {
         $email = $this->request->get('value');
 
@@ -172,7 +172,7 @@ class Manage extends Helper
         return $createdUser;
     }
 
-    public function create_template()
+    public function createTemplate()
     {
         $name = $this->request->get('value');
 
