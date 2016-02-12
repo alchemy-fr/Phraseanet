@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -14,7 +13,6 @@ namespace Alchemy\Phrasea\Helper\User;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\LazyLocator;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
@@ -25,9 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
 class Manage extends Helper
 {
     use NotifierAware;
-
-    /** @var array */
-    protected $results;
 
     /** @var array */
     protected $query_parms;
@@ -53,15 +48,15 @@ class Manage extends Helper
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
 
         $this->query_parms = [
-            'inactives'    => $request->get('inactives')
-            , 'like_field'   => $request->get('like_field')
-            , 'like_value'   => $request->get('like_value')
-            , 'sbas_id'      => $request->get('sbas_id')
-            , 'base_id'      => $request->get('base_id')
-            , 'last_model'   => $this->request->get('last_model')
-            , 'srt'          => $request->get("srt", \User_Query::SORT_CREATIONDATE)
-            , 'ord'          => $request->get("ord", \User_Query::ORD_DESC)
-            , 'offset_start' => 0
+            'inactives' => $request->get('inactives'),
+            'like_field' => $request->get('like_field'),
+            'like_value' => $request->get('like_value'),
+            'sbas_id' => $request->get('sbas_id'),
+            'base_id' => $request->get('base_id'),
+            'last_model' => $this->request->get('last_model'),
+            'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
+            'ord' => $request->get("ord", \User_Query::ORD_DESC),
+            'offset_start' => $offset_start,
         ];
 
         $query = $this->app['phraseanet.user-query'];
@@ -71,7 +66,7 @@ class Manage extends Helper
         elseif (is_array($this->query_parms['sbas_id']))
             $query->on_sbas_ids($this->query_parms['sbas_id']);
 
-        $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+        $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
@@ -79,7 +74,7 @@ class Manage extends Helper
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), ['canadmin'])
             ->execute();
 
-        return $this->results->get_results();
+        return $results->get_results();
     }
 
     public function search()
@@ -90,16 +85,16 @@ class Manage extends Helper
         $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
 
         $this->query_parms = [
-            'inactives'    => $this->request->get('inactives')
-            , 'like_field'   => $this->request->get('like_field')
-            , 'like_value'   => $this->request->get('like_value')
-            , 'sbas_id'      => $this->request->get('sbas_id')
-            , 'base_id'      => $this->request->get('base_id')
-            , 'last_model'   => $this->request->get('last_model')
-            , 'srt'          => $this->request->get("srt", \User_Query::SORT_CREATIONDATE)
-            , 'ord'          => $this->request->get("ord", \User_Query::ORD_DESC)
-            , 'per_page'     => $results_quantity
-            , 'offset_start' => $offset_start
+            'inactives' => $this->request->get('inactives'),
+            'like_field' => $this->request->get('like_field'),
+            'like_value' => $this->request->get('like_value'),
+            'sbas_id' => $this->request->get('sbas_id'),
+            'base_id' => $this->request->get('base_id'),
+            'last_model' => $this->request->get('last_model'),
+            'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
+            'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
+            'per_page' => $results_quantity,
+            'offset_start' => $offset_start,
         ];
 
         $query = $this->app['phraseanet.user-query'];
@@ -109,7 +104,7 @@ class Manage extends Helper
         elseif (is_array($this->query_parms['sbas_id']))
             $query->on_sbas_ids($this->query_parms['sbas_id']);
 
-        $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+        $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
@@ -122,7 +117,7 @@ class Manage extends Helper
             $invite = $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 
-        if (null == $autoregister = $this->app['repo.users']->findByLogin(User::USER_AUTOREGISTER)) {
+        if (null === $autoregister = $this->app['repo.users']->findByLogin(User::USER_AUTOREGISTER)) {
             $autoregister = $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
         }
 
@@ -137,7 +132,7 @@ class Manage extends Helper
                 ->execute()->get_results();
 
         return [
-            'users'             => $this->results,
+            'users'             => $results->get_results(),
             'parm'              => $this->query_parms,
             'invite_user'       => $invite,
             'autoregister_user' => $autoregister,
@@ -145,7 +140,7 @@ class Manage extends Helper
         ];
     }
 
-    public function create_newuser()
+    public function createNewUser()
     {
         $email = $this->request->get('value');
 
@@ -154,34 +149,16 @@ class Manage extends Helper
         }
 
         if (null === $createdUser = $this->app['repo.users']->findByEmail($email)) {
-            $sendCredentials = !!$this->request->get('send_credentials', false);
-            $validateMail = !!$this->request->get('validate_mail', false);
-
             $createdUser = $this->app['manipulator.user']->createUser($email, $this->app['random.medium']->generateString(128), $email);
 
-            $receiver = null;
-            try {
-                $receiver = Receiver::fromUser($createdUser);
-            } catch (InvalidArgumentException $e) {
-
+            if ((bool) $this->request->get('send_credentials', false)) {
+                $this->sendPasswordSetupMail($createdUser);
             }
 
-            if ($sendCredentials && $receiver) {
-                $urlToken = $this->app['manipulator.token']->createResetPasswordToken($createdUser);
-                $url = $this->app->url('login_renew_password', ['token' => $urlToken->getValue()]);
-                $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
-                $mail->setLogin($createdUser->getLogin());
-                $this->deliver($mail);
-            }
-
-            if ($validateMail && $receiver) {
+            if ((bool) $this->request->get('validate_mail', false)) {
                 $createdUser->setMailLocked(true);
 
-                $token = $this->app['manipulator.token']->createAccountUnlockToken($createdUser);
-                $url = $this->app->url('login_register_confirm', ['code' => $token]);
-
-                $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $token->getExpiration());
-                $this->deliver($mail);
+                $this->sendAccountUnlockEmail($createdUser);
             }
         }
 
@@ -190,7 +167,7 @@ class Manage extends Helper
         return $createdUser;
     }
 
-    public function create_template()
+    public function createTemplate()
     {
         $name = $this->request->get('value');
 
@@ -202,5 +179,31 @@ class Manage extends Helper
         $this->usr_id = $this->app->getAuthenticatedUser()->getId();
 
         return $created_user;
+    }
+
+    public function sendAccountUnlockEmail(User $user)
+    {
+        $receiver = Receiver::fromUser($user);
+
+        $token = $this->app['manipulator.token']->createAccountUnlockToken($user);
+
+        $mail = MailRequestEmailConfirmation::create($this->app, $receiver);
+        $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue()]));
+        $mail->setExpiration($token->getExpiration());
+
+        $this->deliver($mail);
+    }
+
+    public function sendPasswordSetupMail(User $user)
+    {
+        $receiver = Receiver::fromUser($user);
+
+        $token = $this->app['manipulator.token']->createResetPasswordToken($user);
+
+        $mail = MailRequestPasswordSetup::create($this->app, $receiver);
+        $mail->setButtonUrl($this->app->url('login_renew_password', ['token' => $token->getValue()]));
+        $mail->setLogin($user->getLogin());
+
+        $this->deliver($mail);
     }
 }

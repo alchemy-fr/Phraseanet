@@ -255,9 +255,9 @@ class UserController extends Controller
         try {
             $module = $this->getUserManageHelper($request);
             if ($request->request->get('template') == '1') {
-                $user = $module->create_template();
+                $user = $module->createTemplate();
             } else {
-                $user = $module->create_newuser();
+                $user = $module->createNewUser();
             }
             if (!$user instanceof User) {
                 throw new \Exception('Unknown error');
