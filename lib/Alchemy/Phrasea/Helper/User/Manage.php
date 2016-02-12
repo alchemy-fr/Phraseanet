@@ -48,15 +48,15 @@ class Manage extends Helper
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
 
         $this->query_parms = [
-            'inactives'    => $request->get('inactives')
-            , 'like_field'   => $request->get('like_field')
-            , 'like_value'   => $request->get('like_value')
-            , 'sbas_id'      => $request->get('sbas_id')
-            , 'base_id'      => $request->get('base_id')
-            , 'last_model'   => $this->request->get('last_model')
-            , 'srt'          => $request->get("srt", \User_Query::SORT_CREATIONDATE)
-            , 'ord'          => $request->get("ord", \User_Query::ORD_DESC)
-            , 'offset_start' => 0
+            'inactives' => $request->get('inactives'),
+            'like_field' => $request->get('like_field'),
+            'like_value' => $request->get('like_value'),
+            'sbas_id' => $request->get('sbas_id'),
+            'base_id' => $request->get('base_id'),
+            'last_model' => $this->request->get('last_model'),
+            'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
+            'ord' => $request->get("ord", \User_Query::ORD_DESC),
+            'offset_start' => $offset_start,
         ];
 
         $query = $this->app['phraseanet.user-query'];
@@ -85,16 +85,16 @@ class Manage extends Helper
         $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
 
         $this->query_parms = [
-            'inactives'    => $this->request->get('inactives')
-            , 'like_field'   => $this->request->get('like_field')
-            , 'like_value'   => $this->request->get('like_value')
-            , 'sbas_id'      => $this->request->get('sbas_id')
-            , 'base_id'      => $this->request->get('base_id')
-            , 'last_model'   => $this->request->get('last_model')
-            , 'srt'          => $this->request->get("srt", \User_Query::SORT_CREATIONDATE)
-            , 'ord'          => $this->request->get("ord", \User_Query::ORD_DESC)
-            , 'per_page'     => $results_quantity
-            , 'offset_start' => $offset_start
+            'inactives' => $this->request->get('inactives'),
+            'like_field' => $this->request->get('like_field'),
+            'like_value' => $this->request->get('like_value'),
+            'sbas_id' => $this->request->get('sbas_id'),
+            'base_id' => $this->request->get('base_id'),
+            'last_model' => $this->request->get('last_model'),
+            'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
+            'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
+            'per_page' => $results_quantity,
+            'offset_start' => $offset_start,
         ];
 
         $query = $this->app['phraseanet.user-query'];
