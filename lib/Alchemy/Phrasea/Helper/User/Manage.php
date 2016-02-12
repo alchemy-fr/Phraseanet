@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -14,7 +13,6 @@ namespace Alchemy\Phrasea\Helper\User;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\LazyLocator;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
@@ -122,7 +120,7 @@ class Manage extends Helper
             $invite = $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 
-        if (null == $autoregister = $this->app['repo.users']->findByLogin(User::USER_AUTOREGISTER)) {
+        if (null === $autoregister = $this->app['repo.users']->findByLogin(User::USER_AUTOREGISTER)) {
             $autoregister = $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
         }
 
@@ -137,7 +135,7 @@ class Manage extends Helper
                 ->execute()->get_results();
 
         return [
-            'users'             => $this->results,
+            'users'             => $this->results->get_results(),
             'parm'              => $this->query_parms,
             'invite_user'       => $invite,
             'autoregister_user' => $autoregister,
