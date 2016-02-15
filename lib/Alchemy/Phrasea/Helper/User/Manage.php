@@ -132,7 +132,7 @@ class Manage extends Helper
                 ->execute()->get_results();
 
         return [
-            'users'             => $results->get_results(),
+            'users'             => $results,
             'parm'              => $this->query_parms,
             'invite_user'       => $invite,
             'autoregister_user' => $autoregister,
