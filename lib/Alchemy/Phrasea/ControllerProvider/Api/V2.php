@@ -11,13 +11,13 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
+use Alchemy\Phrasea\Controller\Api\LazaretController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class V2 implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -33,6 +33,11 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
                     ->setDataboxLoggerLocator($app['phraseanet.logger'])
                     ->setDispatcher($app['dispatcher'])
                     ->setJsonBodyHelper($app['json.body_helper']);
+            }
+        );
+        $app['controller.api.v2.lazaret'] = $app->share(
+            function (PhraseaApplication $app) {
+                return (new LazaretController($app));
             }
         );
     }
@@ -63,6 +68,14 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('api_v2_basket_records_reorder');
         $this->addBasketMiddleware($app, $controller);
 
+        $controller = $controllers->delete('/quarantine/item/{lazaret_id}/', 'controller.api.v2.lazaret:quarantineItemDeleteAction')
+            ->bind('api_v2_quarantine_item_delete');
+        $this->addQuarantineMiddleware($app, $controller);
+
+        $controller = $controllers->post('/quarantine/item/{lazaret_id}/add/', 'controller.api.v2.lazaret:quarantineItemAddAction')
+            ->bind('api_v2_quarantine_item_add');
+        $this->addQuarantineMiddleware($app, $controller);
+
         return $controllers;
     }
 
@@ -72,6 +85,14 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access'])
             ->assert('basket', '\d+');
+
+        return $controller;
+    }
+
+    private function addQuarantineMiddleware(Application $app, Controller $controller)
+    {
+        $controller
+            ->assert('lazaret_id', '\d+');
 
         return $controller;
     }
