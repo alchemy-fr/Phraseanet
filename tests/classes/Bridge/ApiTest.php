@@ -19,16 +19,18 @@ class Bridge_ApiTest extends \PhraseanetTestCase
     {
         parent::setUp();
 
-        $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-        $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
+        $app = $this->getApplication();
+
+        $stmt = $app->getApplicationBox()->get_connection()->prepare('DELETE FROM bridge_apis WHERE name = "Apitest"');
         $stmt->execute();
         $stmt->closeCursor();
 
         $this->type = 'Apitest';
-        $api = Bridge_Api::create(self::$DI['app'], $this->type);
+
+        $api = Bridge_Api::create($app, $this->type);
 
         $this->id = $api->get_id();
-        $this->object = new Bridge_Api(self::$DI['app'], $api->get_id());
+        $this->object = new Bridge_Api($app, $api->get_id());
     }
 
     public function tearDown()
