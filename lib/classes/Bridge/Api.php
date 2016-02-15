@@ -534,15 +534,15 @@ class Bridge_Api
 
     public static function create(Application $app, $name)
     {
-        $sql = 'INSERT INTO bridge_apis
-            (id, name, disable, disable_time, created_on, updated_on)
-            VALUES (null, :name, 0, null, NOW(), NOW())';
+        $connection = $app->getApplicationBox()->get_connection();
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':name' => strtolower($name)]);
-        $stmt->closeCursor();
+        $statement = $connection->prepare('INSERT INTO bridge_apis (name, disable, disable_time, created_on, updated_on) VALUES (:name, 0, null, :now, :now)');
+        $statement->bindValue('name', strtolower($name));
+        $statement->bindValue('now', new DateTime('now', new DateTimeZone('UTC')), 'datetime');
+        $statement->execute();
+        $statement->closeCursor();
 
-        $api_id = $app->getApplicationBox()->get_connection()->lastInsertId();
+        $api_id = $connection->lastInsertId();
 
         return new self($app, $api_id);
     }
