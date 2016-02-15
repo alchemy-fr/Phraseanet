@@ -10,27 +10,31 @@
     {% endif %}
 
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
-        <div  class="videoTips" data-original-width="{{original_w}}" data-original-height="{{original_h}}">
+        <div  class="videoTips" data-original-width="{{original_w}}" data-original-height="{{original_h}}" data-kind="video">
 
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
         </div>
     {% elseif record_type == 'FLEXPAPER' %}
+        <div class="documentTips" data-original-width="{{original_w}}" data-original-height="{{original_h}}" data-kind="document">
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
+        </div>
     {% elseif record_type == 'AUDIO_MP3' %}
+        <div class="audioTips" data-original-width="{{original_w}}" data-original-height="{{original_h}}" data-kind="audio">
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
+        </div>
     {% else %}
         {% set fit_size = fitIn(
         {"width":original_w, "height":original_h},
         {"width":box_w, "height":box_h}
         )%}
 
-        <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+        <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" data-kind="image" oncontextMenu="return(false);"
              style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
              src="{% if lazyload %}/assets/common/images/grey.gif{% else %}{{ url|trim }}{% endif %}" data-original="{{ url|trim }}" ondragstart="return false;">
         <input type="hidden" name="width" value="{{original_w}}"/>
