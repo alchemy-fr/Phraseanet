@@ -246,7 +246,7 @@
             var height = 'auto';
             var tooltipId = settings($.tooltip.current).id;
 
-
+            var $defaultTips = $('#' + tooltipId);
             var $audioTips = $('#' + tooltipId + ' .audioTips');
             var $imgTips = $('#' + tooltipId + ' .imgTips');
             var $videoTips = $('#' + tooltipId + ' .videoTips');
@@ -255,15 +255,22 @@
 
             // get image or video original dimensions
             var recordWidth = 240;
-            var recordHeight = 240;
+            var recordHeight = 0;
             var tooltipVerticalOffset = 75;
             var tooltipHorizontalOffset = 35;
             var maxWidthAllowed = 1024;
             var maxHeightAllowed = 768;
             var tooltipWidth = 0;
             var tooltipHeight = 0;
+            var viewportDimensions = viewport();
+            var left = 0;
+            var top = 0;
+            var topOffset = 14;
+            var leftOffset = 1;
+            var rightOffset = 2;
+            var bottomOffset = -15;
 
-            var $selector = $imgTips;
+            var $selector = $defaultTips;
 
             if ($imgTips[0] && shouldResize) {
                 recordWidth = parseInt($imgTips[0].style.width);
@@ -271,19 +278,21 @@
                 $imgTips.css({display: 'block', margin: '0 auto'});
             }
 
-            if ($documentTips[0] && shouldResize) {
+            else if ($documentTips[0] && shouldResize) {
                 recordWidth = $documentTips.data('original-width');
                 recordHeight = $documentTips.data('original-height');
                 $documentTips.css({display: 'block', margin: '0 auto'});
                 $selector = $documentTips;
             }
 
-            if ($audioTips[0] && shouldResize) {
+            else if ($audioTips[0] && shouldResize) {
+                recordWidth = 240;
+                recordHeight = 240;
                 $audioTips.css({display: 'block', margin: '0 auto'});
                 $selector = $audioTips;
             }
 
-            if ($videoTips[0] && shouldResize) {
+            else if ($videoTips[0] && shouldResize) {
                 recordWidth = $videoTips.data('original-width');
                 recordHeight = $videoTips.data('original-height');
                 // limit video to maxWidth:
@@ -294,6 +303,14 @@
                  }*/
                 $videoTips.css({display: 'block', margin: '0 auto'});
                 $selector = $videoTips;
+            }
+            else {
+                // handle captions
+                var contentHeight = $selector.get(0).offsetHeight;
+                shouldResize = false;
+                tooltipVerticalOffset = 13;
+                recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
+                $selector.css({height: 'auto'});
             }
 
             tooltipWidth = recordWidth + tooltipHorizontalOffset;
@@ -338,13 +355,6 @@
 
             if (event) {
 
-                var viewportDimensions = viewport();
-                var left = 0;
-                var top = 0;
-                var topOffset = 0;
-                var leftOffset = 0;
-                var rightOffset = 0;
-                var bottomOffset = -15;
                 var $origEventTarget = $(event.target);
 
                 // since event target can have different positionning, try to get common closest parent:
@@ -387,12 +397,14 @@
                     position = 'right';
                 }
 
-                if (shouldBeOnTop && availableHeight > leftAvailableSpace && availableHeight > rightAvailableSpace) {
+
+                // prefer bottom position if tooltip is a small caption:
+                if (bottomAvailableSpace > leftAvailableSpace && bottomAvailableSpace > rightAvailableSpace) {
+                    position = 'bottom';
+                } else if (shouldBeOnTop && availableHeight > leftAvailableSpace && availableHeight > rightAvailableSpace) {
                     position = 'top';
                 }
-                else if (bottomAvailableSpace > leftAvailableSpace && bottomAvailableSpace > rightAvailableSpace) {
-                    position = 'bottom';
-                }
+
                 switch (position) {
                     case 'top':
                         tooltipSize = rescale(totalViewportWidth, topAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
@@ -449,7 +461,6 @@
                             // push at left
                             left = 0;
                         } else {
-
                             // push at right
                             left = totalViewportWidth - tooltipSize.width;
                         }
@@ -459,11 +470,13 @@
                     }
                 }
 
-                rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
+                if (shouldResize) {
+                    rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
+                }
 
                 helper.parent.css({
                     width: Math.round(tooltipWidth),
-                    height: Math.round(tooltipHeight),
+                    height: shouldResize ? Math.round(tooltipHeight) : 'auto',
                     left: left,
                     top: top
                 });
