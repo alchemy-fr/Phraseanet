@@ -244,258 +244,243 @@
         if (settings($this).outside) {
             var width = 'auto';
             var height = 'auto';
-            var ratio = 1;
-            var resizeImgTips = resizeVideoTips = false;
-            var $imgTips = $('#' + settings($.tooltip.current).id + ' .imgTips');
-            var $videoTips = $('#' + settings($.tooltip.current).id + ' .videoTips');
+            var tooltipId = settings($.tooltip.current).id;
 
-            if ($imgTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
-                resizeImgTips = true;
-                width = parseInt($imgTips[0].style.width);
-                height = parseInt($imgTips[0].style.height);
-                ratio = width / height;
-                $imgTips.css({top: '0px', left: '0px'});
+            var $defaultTips = $('#' + tooltipId);
+            var $audioTips = $('#' + tooltipId + ' .audioTips');
+            var $imgTips = $('#' + tooltipId + ' .imgTips');
+            var $videoTips = $('#' + tooltipId + ' .videoTips');
+            var $documentTips = $('#' + tooltipId + ' .documentTips');
+            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
+
+            // get image or video original dimensions
+            var recordWidth = 240;
+            var recordHeight = 0;
+            var tooltipVerticalOffset = 75;
+            var tooltipHorizontalOffset = 35;
+            var maxWidthAllowed = 1024;
+            var maxHeightAllowed = 768;
+            var tooltipWidth = 0;
+            var tooltipHeight = 0;
+            var viewportDimensions = viewport();
+            var left = 0;
+            var top = 0;
+            var topOffset = 14;
+            var leftOffset = 1;
+            var rightOffset = 2;
+            var bottomOffset = -15;
+
+            var $selector = $defaultTips;
+
+            if ($imgTips[0] && shouldResize) {
+                recordWidth = parseInt($imgTips[0].style.width);
+                recordHeight = parseInt($imgTips[0].style.height);
+                $imgTips.css({display: 'block', margin: '0 auto'});
             }
 
-            if ($videoTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
-                resizeVideoTips = true;
-                width = parseInt($videoTips.attr('width'));
-                height = parseInt($videoTips.attr('height'));
-                ratio = width / height;
-                $videoTips.css({top: '0px', left: '0px'});
+            else if ($documentTips[0] && shouldResize) {
+                recordWidth = $documentTips.data('original-width');
+                recordHeight = $documentTips.data('original-height');
+                $documentTips.css({display: 'block', margin: '0 auto'});
+                $selector = $documentTips;
             }
 
-            var v = viewport(),
-                h = helper.parent;
-            helper.parent.css({
-                width: width,
-                top: 0,
-                left: 0,
-                visibility: 'hidden',
-                //			visibility:'visible',
-                display: 'block',
-                height: height
-            });
-
-            $(h).width($(h).width());
-            width = ($(h).width() > (v.x - 40)) ? (v.x - 40) : $(h).width();
-            height = ($(h).height() > (v.y - 40)) ? (v.y - 40) : $(h).height();
-
-//      $('#' + settings($.tooltip.current).id + ' .thumb_wrapper').width('auto').height('auto');
-
-            if ($('#' + settings($.tooltip.current).id + ' .audioTips').length > 0) {
-                height = height < 26 ? 26 : height;
+            else if ($audioTips[0] && shouldResize) {
+                recordWidth = 240;
+                recordHeight = 240;
+                $audioTips.css({display: 'block', margin: '0 auto'});
+                $selector = $audioTips;
             }
 
-            $(h).css({
-                width: width,
-                height: height
-            });
+            else if ($videoTips[0] && shouldResize) {
+                recordWidth = $videoTips.data('original-width');
+                recordHeight = $videoTips.data('original-height');
+                // limit video to maxWidth:
+                /*if( recordWidth > 720 ) {
+                 var limitRatio = recordWidth/recordHeight;
+                 recordWidth = 720;
+                 recordHeight = recordWidth / limitRatio;
+                 }*/
+                $videoTips.css({display: 'block', margin: '0 auto'});
+                $selector = $videoTips;
+            }
+            else {
+                // handle captions
+                var contentHeight = $selector.get(0).offsetHeight;
+                shouldResize = false;
+                tooltipVerticalOffset = 13;
+                recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
+                $selector.css({height: 'auto'});
+            }
+
+            tooltipWidth = recordWidth + tooltipHorizontalOffset;
+            tooltipHeight = recordHeight + tooltipVerticalOffset;
+
+            var rescale = function (containerWidth, containerHeight, resourceWidth, resourceHeight, maxWidthAllowed, maxHeightAllowed, $selector) {
+                var resourceRatio = resourceHeight / resourceWidth;
+                var resizeW = resourceWidth;
+                var resizeH = resourceHeight;
+
+                if (resourceWidth > resourceHeight) {
+                    // if width still too large:
+                    if (resizeW > containerWidth) {
+                        resizeW = containerWidth;
+                        resizeH = containerWidth * resourceRatio;
+                    }
+
+                    if (resizeH > containerHeight) {
+                        resizeW = containerHeight / resourceRatio;
+                        resizeH = containerHeight;
+                    }
+                } else {
+                    if (resizeH > containerHeight) {
+                        resizeW = containerHeight / resourceRatio;
+                        resizeH = containerHeight;
+                    }
+                }
+
+                if (maxWidthAllowed !== undefined && maxHeightAllowed !== undefined) {
+                    if (resizeW > maxWidthAllowed || resizeH > maxHeightAllowed) {
+                        return rescale(maxWidthAllowed, maxHeightAllowed, resourceWidth, resourceHeight)
+                    }
+                }
+
+                if( $selector !== undefined) {
+                    $selector.css({width: Math.floor(resizeW), height: Math.floor(resizeH)});
+                }
+
+                return {width: Math.floor(resizeW), height: Math.floor(resizeH)};
+            };
+
 
             if (event) {
+
                 var $origEventTarget = $(event.target);
 
                 // since event target can have different positionning, try to get common closest parent:
-                var $eventTarget = $origEventTarget.closest('.diapo'),
-                    topOffset = 20,
-                    leftOffset = 20;
+                var $eventTarget = $origEventTarget.closest('.diapo');
 
-                if( $eventTarget.length > 0 ) {
+                if ($eventTarget.length > 0) {
                     // change offsets:
-                    topOffset = -8;
-                    leftOffset = -8;
+                    topOffset = 14;
+                    leftOffset = 1;
+                    rightOffset = 2;
                 } else {
                     // fallback on original target if nothing found:
                     $eventTarget = $origEventTarget;
                 }
 
+                var recordPosition = $eventTarget.offset();
+                var recordWidthOffset = 148; // remove size
+                var recordHeightOffset = 195;
+                var totalViewportWidth = viewportDimensions.x;
+                var totalViewportHeight = viewportDimensions.y;
 
+                var leftAvailableSpace = recordPosition.left + leftOffset;
+                var topAvailableSpace = recordPosition.top + topOffset;
+                var rightAvailableSpace = (totalViewportWidth - leftAvailableSpace - recordWidthOffset) - rightOffset;
+                var bottomAvailableSpace = (totalViewportHeight - topAvailableSpace - recordHeightOffset);
 
-                var vert, vertS, hor, horS, top, left, ratioH, ratioV;
-                //			ratio = $(h).width()/$(h).height();
-                var ratioSurfaceH;
-                var ratioSurfaceV, wiH, wiV, heH, heV;
-                var ratioImage = $(h).width() / $(h).height();
+                var shouldBeOnTop = false;
+                var availableHeight = bottomAvailableSpace;
+                var tooltipSize = {width: tooltipWidth, height: tooltipHeight};
+                var position = 'top';
 
-                //position de l'image
-
-                if ($eventTarget.offset().left > (v.x - $eventTarget.offset().left - $eventTarget.width())) {
-                    hor = 'gauche';
-                    wiH = $eventTarget.offset().left;
-
-                    horS = wiH * v.y;
-                    ratioSurfaceH = wiH / v.y;
+                if (topAvailableSpace > bottomAvailableSpace) {
+                    shouldBeOnTop = true;
+                    availableHeight = topAvailableSpace;
                 }
-                else {
-                    hor = 'droite';
-                    wiH = (v.x - $eventTarget.offset().left - $eventTarget.width());
-                    horS = wiH * v.y;
-                    ratioSurfaceH = wiH / v.y;
 
-                }
-                if ($eventTarget.offset().top > (v.y - $eventTarget.offset().top - $eventTarget.height())) {
-                    vert = 'haut';
-                    heV = $eventTarget.offset().top;
-                    vertS = heV * v.x;
-                    ratioSurfaceV = v.x / heV;
-                }
-                else {
-                    vert = 'bas';
-                    heV = (v.y - $eventTarget.offset().top - $eventTarget.height());
-                    vertS = heV * v.x;
-                    ratioSurfaceV = v.x / heV;
+                if (leftAvailableSpace > rightAvailableSpace) {
+                    position = 'left';
+                } else {
+                    position = 'right';
                 }
 
 
-                //correction par ratio
-                if (resizeImgTips && $imgTips.get(0)) {
+                // prefer bottom position if tooltip is a small caption:
+                if (bottomAvailableSpace > leftAvailableSpace && bottomAvailableSpace > rightAvailableSpace) {
+                    position = 'bottom';
+                } else if (shouldBeOnTop && availableHeight > leftAvailableSpace && availableHeight > rightAvailableSpace) {
+                    position = 'top';
+                }
 
-                    if (ratioSurfaceH > ratioImage) {
-                        horS = v.y * ratioImage * v.y;
+                switch (position) {
+                    case 'top':
+                        tooltipSize = rescale(totalViewportWidth, topAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace - (tooltipSize.width / 2) + (recordWidthOffset / 2);
+                        top = topAvailableSpace - tooltipSize.height;
+                        break;
+                    case 'bottom':
+                        tooltipSize = rescale(totalViewportWidth, bottomAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace - (tooltipSize.width / 2) + (recordWidthOffset / 2);
+                        top = totalViewportHeight - bottomAvailableSpace + bottomOffset;
+                        break;
+                    case 'left':
+                        tooltipSize = rescale(leftAvailableSpace, totalViewportHeight, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace - tooltipSize.width;
+                        break;
+                    case 'right':
+                        tooltipSize = rescale(rightAvailableSpace, totalViewportHeight, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace + recordWidthOffset + rightOffset;
+                        break;
+
+                }
+
+                // try to vertical center, relative to source:
+                if (position === 'left' || position === 'right') {
+                    var verticalSpace = topAvailableSpace + (recordHeightOffset / 2) + (tooltipHeight / 2)
+                    if (verticalSpace < totalViewportHeight) {
+                        // tooltip can be aligned vertically
+                        top = topAvailableSpace + (recordHeightOffset / 2) - (tooltipHeight / 2);
+                    } else {
+                        top = totalViewportHeight - tooltipHeight;
                     }
-                    else {
-                        horS = wiH * wiH / ratioImage;
-                    }
-                    if (ratioSurfaceV > ratioImage) {
-                        vertS = heV * ratioImage * heV;
-                    }
-                    else {
-                        vertS = v.x * v.x / ratioImage;
+                    top = top < 0 ? 0 : top;
+                }
+
+                // try to horizontal center, relative to source:
+                if (position === 'top' || position === 'bottom') {
+                    // push to left
+                    // push to right
+                    var takeLeftSpace = (tooltipSize.width / 2) + leftAvailableSpace;
+                    var takeRightSpace = (tooltipSize.width / 2) + rightAvailableSpace;
+                    // if centering on top or bottom and tooltip is offcanvas
+                    if (takeLeftSpace > totalViewportWidth || takeRightSpace > totalViewportWidth) {
+
+                        if (leftAvailableSpace > (totalViewportWidth / 2)) {
+                            // push at left
+                            left = 0;
+                        } else {
+                            // push at right
+                            left = totalViewportWidth - tooltipSize.width;
+                        }
+                    } else {
+                        // center
+                        left = leftAvailableSpace - (tooltipSize.width / 2) + (recordWidthOffset / 2);
                     }
                 }
 
-                var zH;
-
-                if ((Math.abs(ratioSurfaceV - ratioImage) < Math.abs(ratioSurfaceH - ratioImage))) {
-                    var zL = event.pageX;
-                    var zW = $(h).width();
-                    zH = $(h).height();
-                    var ETOT = $eventTarget.offset().top;
-                    var ETH = $eventTarget.height();
-                    left = (zL - zW / 2) < 20 ? 20 : (((zL + zW / 2 + 20) > v.x) ? (v.x - zW - 20) : (zL - zW / 2));
-
-                    switch (vert) {
-                        case 'haut':
-                            height = (zH > (ETOT - 40)) ? (ETOT - 40) : zH;
-                            top = ETOT - height - topOffset;
-                            break;
-                        case 'bas':
-                            height = ((v.y - ETH - ETOT - 40) > zH) ? zH : (v.y - ETH - ETOT - 40);
-                            top = ETOT + ETH + topOffset;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else {
-                    //				height = ($(h).height()>(v.y-40))?(v.y-40):$(h).height();
-                    zH = $(h).height();
-                    var zT = event.pageY;
-                    var EOTL = $eventTarget.offset().left;
-                    var ETW = $eventTarget.width();
-                    var zw = $(h).width();
-                    top = (zT - zH / 2) < 20 ? 20 : (((zT + zH / 2 + 20) > v.y) ? (v.y - zH - 20) : (zT - zH / 2));
-                    switch (hor) {
-                        case 'gauche':
-                            width = (zw > (EOTL - 40)) ? (EOTL - 40) : zw;
-                            left = EOTL - width - leftOffset;
-                            break;
-                        case 'droite':
-                            width = ((v.x - ETW - EOTL - 40) > zw) ? zw : (v.x - ETW - EOTL - 40);
-                            left = EOTL + ETW + leftOffset;
-                            break;
-                        default:
-                            break;
-                    }
+                if (shouldResize) {
+                    rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
                 }
 
                 helper.parent.css({
-                    width: width,
-                    height: height,
+                    width: Math.round(tooltipWidth),
+                    height: shouldResize ? Math.round(tooltipHeight) : 'auto',
                     left: left,
                     top: top
                 });
-
-                //si ya une image on re-ajuste au ratio
-                if (resizeImgTips && $imgTips.get(0)) {
-                    if (width == 'auto')
-                        width = $imgTips.get(0).width();
-                    if (height == 'auto')
-                        height = $imgTips.get(0).height();
-                    if (ratio > 1) {
-                        var nh = width / ratio;
-                        if (nh > height) {
-                            width = ratio * height;
-                            nh = width / ratio;
-                        }
-                        height = nh;
-                    }
-                    else {
-                        var nw = ratio * height;
-                        if (nw > width) {
-                            height = width / ratio;
-                            nw = height * ratio;
-                        }
-                        width = nw;
-                    }
-                }
-                else if (resizeVideoTips && $videoTips.get(0)) {
-                    width = $videoTips.data('original-width');
-                    height = $videoTips.data('original-height');
-                    // limit video to maxWidth:
-                    if( width > 720 ) {
-                        var limitRatio = width/height;
-                        width = 720;
-                        height = width / limitRatio;
-                    }
-                    console.log('video first scaled to ', width, height)
-                }
-                else {
-                    if (vertS < horS) {
-                        height = 'auto';
-                    }
-                }
-
-                if (resizeImgTips) {
-                    var factor = Math.min((width - 45) / width, (height - 75) / height);
-                    if (factor > 1) {
-                        factor = 1;
-                    }
-                    var imgWidth = Math.round(width * factor);
-                    var imgHeight = Math.round(height * factor);
-
-                    width = imgWidth + 45;
-                    height = imgHeight + 85;
-
-                    $imgTips.css({
-                        maxWidth: imgWidth,
-                        maxHeight: imgHeight
-                    });
-                }
-
-                if (resizeVideoTips) {
-                    var factor = Math.min((width - 45) / width, (height - 75) / height);
-                    var imgWidth = Math.round(width * factor);
-                    var imgHeight = Math.round(height * factor);
-
-                    width = imgWidth + 45;
-                    height = imgHeight + 75;
-                    console.log('video scaled to ', width, height)
-                    $videoTips.css({
-                        width: Math.round(imgWidth),
-                        height: Math.round(imgHeight)
-                    });
-                }
-
-                helper.parent.css({
-                    width: Math.round(width),
-                    height: Math.round(height),
-                    left: left,
-                    top: top
-                });
-
             }
-
         }
         handle.apply($this, arguments);
         return;
