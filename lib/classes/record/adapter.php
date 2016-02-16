@@ -1717,7 +1717,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         switch (true) {
             case $spec->getType() === SpecificationInterface::TYPE_IMAGE:
-                $extension = 'jpg';
+                $extension = $this->getExtensionFromImageCodec($spec->getImageCodec());
                 break;
             case $spec->getType() === SpecificationInterface::TYPE_ANIMATION:
                 $extension = 'gif';
@@ -1755,6 +1755,31 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 break;
             case 'libmp3lame':
                 $extension = 'mp3';
+                break;
+        }
+
+        return $extension;
+    }
+
+    /**
+     * Get the extension from imageCodec
+     *
+     * @param  string $imageCodec
+     * @return string
+     */
+    protected function getExtensionFromImageCodec($imageCodec)
+    {
+        $extension = null;
+
+        switch ($imageCodec) {
+            case 'tiff':
+                $extension = 'tif';
+                break;
+            case 'jpeg':
+                $extension = 'jpg';
+                break;
+            case 'png':
+                $extension = 'png';
                 break;
         }
 
