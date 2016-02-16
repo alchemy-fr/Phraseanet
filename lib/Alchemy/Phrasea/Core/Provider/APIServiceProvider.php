@@ -21,7 +21,7 @@ class APIServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['oauth2-server'] = $app->share(function ($app) {
-            return new \API_OAuth2_Adapter($app);
+            return new \API_OAuth2_Adapter($app, ['api_version' => $app['api.default_version']]);
         });
         $app['token'] = $app->share(function (Application $app) {
             /** @var \API_OAuth2_Adapter $oauth2 */
