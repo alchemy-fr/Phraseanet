@@ -473,16 +473,16 @@ class API_OAuth2_Adapter extends OAuth2
      * @param User $user
      *
      * @return mixed
-     * @throws logicalException
+     * @throws LogicException
      */
     public function updateAccount(User $user)
     {
         if ($this->client === null) {
-            throw new logicalException("Client property must be set before update an account");
+            throw new LogicException("Client property must be set before update an account");
         }
 
         if (null === $account = $this->app['repo.api-accounts']->findByUserAndApplication($user, $this->client)) {
-            $account = $this->app['manipulator.api-account']->create($this->client, $user);
+            $account = $this->app['manipulator.api-account']->create($this->client, $user, $this->getVariable('api_version', V2::VERSION));
         }
 
         return $account;
