@@ -132,7 +132,8 @@ function checkFilters(save) {
         bases: {},
         fields: [],
         dates: {},
-        status: []
+        status: [],
+        sort: {}
     };
 
     var adv_box = $('form.phrasea_query .adv_options');
@@ -220,6 +221,8 @@ function checkFilters(save) {
         $("option.default-selection", fieldsSort).prop("selected", true);
         $("option.default-selection", fieldsSortOrd).prop("selected", true);
     }
+    search.sort.by = $("option:selected:enabled", fieldsSort).val();
+    search.sort.order = $("option:selected:enabled", fieldsSortOrd).val();
 
     //--------- from fields filter ---------
 
