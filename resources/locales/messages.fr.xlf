@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2016-02-16T13:23:18Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -1319,9 +1319,9 @@
         <target state="translated">Le panier a été mis à jour</target>
         <jms:reference-file line="123">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="83602366c2bc77de4a17181cf566da428eaee78e" resname="Basket is not found">
+      <trans-unit id="83602366c2bc77de4a17181cf566da428eaee78e" resname="Basket is not found" approved="yes">
         <source>Basket is not found</source>
-        <target state="new">Basket is not found</target>
+        <target state="translated">Panier non trouvé</target>
         <jms:reference-file line="165">Model/Repositories/BasketRepository.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
@@ -4435,9 +4435,9 @@
         <target state="translated">Seul un enregistrement peut être modifié.</target>
         <jms:reference-file line="38">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="67dae87be6805795c1648fc4ceb2a11ca939d196" resname="Open the URL in a new window">
+      <trans-unit id="67dae87be6805795c1648fc4ceb2a11ca939d196" resname="Open the URL in a new window" approved="yes">
         <source>Open the URL in a new window</source>
-        <target state="new">Open the URL in a new window</target>
+        <target state="translated">Ouvrir l'URL dans une nouvelle fenêtre</target>
         <jms:reference-file line="125">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94946e4d2391ccf8ff24f984869ae8fcf9ede7c4" resname="Or login with" approved="yes">
@@ -7480,9 +7480,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Vous ne disposez pas des autorisations requises pour déplacer les enregistrements vers la collection %collection%</target>
         <jms:reference-file line="55">Controller/Prod/MoveCollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="145b07756b4a54d14812c57aefd27cc9377e1909" resname="You have %quantity% days to validate the selection.">
+      <trans-unit id="145b07756b4a54d14812c57aefd27cc9377e1909" resname="You have %quantity% days to validate the selection." approved="yes">
         <source>You have %quantity% days to validate the selection.</source>
-        <target state="new">You have %quantity% days to validate the selection.</target>
+        <target state="translated">Vous disposez de %quantity% jour pour répondre à la demande de validation.</target>
         <jms:reference-file line="73">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3473405c62969b04d3b4c412a389a1a4ad669863" resname="You have 1 day to validate the selection." approved="yes">
@@ -7495,9 +7495,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Trop de fichiers dans la file d'attente</target>
         <jms:reference-file line="233">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="aecece60b34fa1f68f4671b168031bfb1b287d56" resname="You have not access to this basket">
+      <trans-unit id="aecece60b34fa1f68f4671b168031bfb1b287d56" resname="You have not access to this basket" approved="yes">
         <source>You have not access to this basket</source>
-        <target state="new">You have not access to this basket</target>
+        <target state="translated">Vous n'avez pas accès à ce panier</target>
         <jms:reference-file line="181">Model/Repositories/BasketRepository.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d7596cb5bf503833487b48c95cf263b44f3e05d" resname="You have selected %nbReceivedDocuments% records." approved="yes">
@@ -9263,9 +9263,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Tout cocher</target>
         <jms:reference-file line="7">web/report/listColumn.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bca60e4b2d44b5623e626f9ff951ba6605e975f" resname="collection.label.unknown">
+      <trans-unit id="6bca60e4b2d44b5623e626f9ff951ba6605e975f" resname="collection.label.unknown" approved="yes">
         <source>collection.label.unknown</source>
-        <target state="new">Collection inconnue</target>
+        <target state="translated">Collection inconnue</target>
         <jms:reference-file line="204">lib/classes/phrasea.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2fddc09141619140a386d62d12fc79a784dee067" resname="commande::deadline" approved="yes">
