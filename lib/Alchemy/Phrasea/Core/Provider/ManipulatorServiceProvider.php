@@ -120,14 +120,13 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.lazaret'] = $app->share(function (Application $app) {
-            return (new LazaretManipulator($app, $app['repo.lazaret-files']))
-                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
-                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'));
+            return new LazaretManipulator($app, $app['repo.lazaret-files'], $app['filesystem'], $app['orm.em']);
         });
 
     }
 
     public function boot(SilexApplication $app)
     {
+        // no-op
     }
 }

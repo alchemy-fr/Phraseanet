@@ -73,11 +73,11 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
 
         $controller = $controllers->delete('/quarantine/item/{lazaret_id}/', 'controller.api.v2.lazaret:quarantineItemDeleteAction')
             ->bind('api_v2_quarantine_item_delete');
-        $this->addQuarantineMiddleware($app, $controller);
+        $this->addQuarantineMiddleware($controller);
 
         $controller = $controllers->post('/quarantine/item/{lazaret_id}/add/', 'controller.api.v2.lazaret:quarantineItemAddAction')
             ->bind('api_v2_quarantine_item_add');
-        $this->addQuarantineMiddleware($app, $controller);
+        $this->addQuarantineMiddleware($controller);
 
         return $controllers;
     }
@@ -92,7 +92,7 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         return $controller;
     }
 
-    private function addQuarantineMiddleware(Application $app, Controller $controller)
+    private function addQuarantineMiddleware(Controller $controller)
     {
         $controller
             ->assert('lazaret_id', '\d+');

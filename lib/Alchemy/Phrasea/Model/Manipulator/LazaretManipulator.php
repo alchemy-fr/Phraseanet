@@ -10,30 +10,37 @@
 namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
-use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
+use Doctrine\ORM\EntityManager;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 
 class LazaretManipulator
 {
-    use FilesystemAware;
-    use EntityManagerAware;
-
     /** @var Application */
     private $app;
     /** @var LazaretFileRepository */
     private $repository;
+    /**
+     * @var Filesystem
+     */
+    private $fileSystem;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
-    public function __construct(Application $app, LazaretFileRepository $repository)
+    public function __construct(Application $app, LazaretFileRepository $repository, Filesystem $fileSystem, EntityManager $entityManager)
     {
         $this->app = $app;
         $this->repository = $repository;
+        $this->fileSystem = $fileSystem;
+        $this->entityManager = $entityManager;
     }
 
     public function deny($lazaret_id)
@@ -98,18 +105,17 @@ class LazaretManipulator
             $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
         }
 
-        $manager = $this->getEntityManager();
-        $manager->beginTransaction();
+        $this->entityManager->beginTransaction();
 
         try {
             foreach ($lazaretFiles as $lazaretFile) {
                 $this->denyLazaretFile($lazaretFile);
                 $ret['result']['done']++;
             }
-            $manager->commit();
+            $this->entityManager->commit();
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $manager->rollback();
+            $this->entityManager->rollback();
             $ret['message'] = $this->app->trans('An error occured');
         }
         $ret['result']['todo'] = $ret['result']['tobedone'] - $ret['result']['done'];
@@ -207,9 +213,8 @@ class LazaretManipulator
             }
 
             //Delete lazaret file
-            $manager = $this->getEntityManager();
-            $manager->remove($lazaretFile);
-            $manager->flush();
+            $this->entityManager->remove($lazaretFile);
+            $this->entityManager->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -217,9 +222,9 @@ class LazaretManipulator
         }
 
         try {
-            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
+            $this->fileSystem->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
-
+            // no-op
         }
 
         return $ret;
@@ -247,14 +252,13 @@ class LazaretManipulator
         $lazaretFileName = $path .'/'.$lazaretFile->getFilename();
         $lazaretThumbFileName = $path .'/'.$lazaretFile->getThumbFilename();
 
-        $manager = $this->getEntityManager();
-        $manager->remove($lazaretFile);
-        $manager->flush();
+        $this->entityManager->remove($lazaretFile);
+        $this->entityManager->flush();
 
         try {
-            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
+            $this->fileSystem->remove([$lazaretFileName, $lazaretThumbFileName]);
         } catch (IOException $e) {
-
+            // no-op
         }
 
         return $this;
