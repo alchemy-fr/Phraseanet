@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -13,6 +12,7 @@ use Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -25,30 +25,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class API_OAuth2_Adapter extends OAuth2
 {
     /**
-     * Version
-     */
-    const API_VERSION = "1.0";
-
-    /**
-     *
      * @var ApiApplication
      */
     protected $client;
 
     /**
-     *
      * @var Application
      */
     protected $app;
 
     /**
-     * request parameter
      * @var array
      */
     protected $params;
 
     /**
-     *
      * @var array
      */
     protected $token_type = ["bearer" => "Bearer"];
@@ -59,14 +50,12 @@ class API_OAuth2_Adapter extends OAuth2
     protected $authentication_scheme = ["authorization", "uri", "body"];
 
     /**
-     *
      * do we enable expiration on  access_token
-     * @param boolean
+     * @param bool
      */
     protected $enable_expire = false;
 
     /**
-     *
      * @var string
      */
     protected $session_id;
@@ -78,9 +67,8 @@ class API_OAuth2_Adapter extends OAuth2
     protected $token;
 
     /**
-     *
-     * @param  Application        $app
-     * @return API_OAuth2_Adapter
+     * @param  Application $app
+     * @param array $conf
      */
     public function __construct(Application $app, array $conf = [])
     {
@@ -90,7 +78,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * @return array
      */
     public function getParams()
@@ -99,7 +86,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * @return ApiApplication
      */
     public function getClient()
@@ -108,9 +94,8 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
-     * @param  array              $params
-     * @return API_OAuth2_Adapter
+     * @param array $params
+     * @return $this
      */
     public function setParams(array $params)
     {
@@ -132,8 +117,7 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function has_ses_id()
     {
@@ -141,7 +125,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * @return int
      */
     public function get_ses_id()
@@ -154,7 +137,7 @@ class API_OAuth2_Adapter extends OAuth2
      *
      * @param  string  $clientId
      * @param  string  $clientSecret
-     * @return boolean
+     * @return bool
      */
     protected function checkClientCredentials($clientId, $clientSecret = null)
     {
@@ -170,12 +153,11 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * Implements OAuth2::getRedirectUri().
      *
-     * @param $clientId
+     * @param string $clientId
      *
-     * @return mixed
+     * @return string
      * @throws RuntimeException
      */
     protected function getRedirectUri($clientId)
@@ -188,7 +170,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * Implements OAuth2::getAccessToken().
      *
      * @param  string $oauthToken
@@ -233,7 +214,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * Overrides OAuth2::getSupportedGrantTypes().
      *
      * @return array
@@ -247,7 +227,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * Overrides OAuth2::getSupportedScopes().
      *
      * @return array
@@ -279,7 +258,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * Overrides OAuth2::setAuthCode().
      *
      * @param      $oauthCode
@@ -361,7 +339,6 @@ class API_OAuth2_Adapter extends OAuth2
     }
 
     /**
-     *
      * @param  Request $request
      * @return array
      */
@@ -624,9 +601,6 @@ class API_OAuth2_Adapter extends OAuth2
         $this->doRedirectUriCallback($params['redirect_uri'], $result);
     }
 
-    /**
-     *
-     */
     public function grantAccessToken()
     {
         $filters = [
@@ -775,7 +749,6 @@ class API_OAuth2_Adapter extends OAuth2
             "scope"        => $scope
         ];
 
-        $expires = null;
         if ($this->enable_expire) {
             $token['expires_in'] = $this->getVariable('access_token_lifetime', OAUTH2_DEFAULT_ACCESS_TOKEN_LIFETIME);
         }
