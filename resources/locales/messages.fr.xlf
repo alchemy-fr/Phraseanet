@@ -8565,9 +8565,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Inscription automatique sur %application%</target>
         <jms:reference-file line="21">Notification/Mail/MailInfoSomebodyAutoregistered.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a61aea70e9f5d9de95e8fd259c5a3e2b9b9b3d0c" resname="admin::register: Nouvelle commande sur %application%">
+      <trans-unit id="a61aea70e9f5d9de95e8fd259c5a3e2b9b9b3d0c" resname="admin::register: Nouvelle commande sur %application%" approved="yes">
         <source>admin::register: Nouvelle commande sur %application%</source>
-        <target state="new">admin::register: Nouvelle commande sur %application%</target>
+        <target state="translated">Nouvelle commande sur %application%</target>
         <jms:reference-file line="37">Notification/Mail/MailInfoNewOrder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cc3d489b1e5ed14fa01e9d01eb6f9019b60d24" resname="admin::register: demande d'inscription sur %application%" approved="yes">
