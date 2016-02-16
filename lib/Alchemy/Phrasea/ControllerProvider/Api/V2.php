@@ -68,6 +68,9 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('api_v2_basket_records_reorder');
         $this->addBasketMiddleware($app, $controller);
 
+        $controllers->delete('/quarantine/', 'controller.api.v2.lazaret:quarantineItemEmptyAction')
+            ->bind('api_v2_quarantine_empty');
+
         $controller = $controllers->delete('/quarantine/item/{lazaret_id}/', 'controller.api.v2.lazaret:quarantineItemDeleteAction')
             ->bind('api_v2_quarantine_item_delete');
         $this->addQuarantineMiddleware($app, $controller);

@@ -41,4 +41,22 @@ class LazaretController extends Controller
 
         return Result::create($request, $ret)->createResponse();
     }
+
+    public function quarantineItemEmptyAction(Request $request)
+    {
+        $maxTodo = -1;  // all
+        if($request->get('max') !== null) {
+            $maxTodo = (int)($request->get('max'));
+        }
+        if( $maxTodo <= 0) {
+            $maxTodo = -1;      // all
+        }
+
+        /** @var LazaretManipulator $lazaretManipulator */
+        $lazaretManipulator = $this->app['manipulator.lazaret'];
+
+        $ret = $lazaretManipulator->clear($maxTodo);
+
+        return Result::create($request, $ret)->createResponse();
+    }
 }
