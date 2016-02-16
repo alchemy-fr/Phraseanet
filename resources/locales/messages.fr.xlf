@@ -7482,7 +7482,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="145b07756b4a54d14812c57aefd27cc9377e1909" resname="You have %quantity% days to validate the selection." approved="yes">
         <source>You have %quantity% days to validate the selection.</source>
-        <target state="translated">Vous disposez de %quantity% jour pour répondre à la demande de validation.</target>
+        <target state="translated">Vous disposez de %quantity% jours pour répondre à la demande de validation.</target>
         <jms:reference-file line="73">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3473405c62969b04d3b4c412a389a1a4ad669863" resname="You have 1 day to validate the selection." approved="yes">
