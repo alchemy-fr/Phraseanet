@@ -4663,7 +4663,7 @@
       </trans-unit>
       <trans-unit id="cb75472a748e630791f52a7e31b275376a65b600" resname="Please enter the databox name to reset or create" approved="yes">
         <source>Please enter the databox name to reset or create</source>
-        <target state="translated">Please enter the databox name to reset or create</target>
+        <target state="translated">Please enter the name of the databox to reset or create</target>
         <jms:reference-file line="65">Command/Developer/IniReset.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2bec3eec3fa44ad54758d6446a424345830aac30" resname="Please fill the captcha" approved="yes">
@@ -7499,7 +7499,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       </trans-unit>
       <trans-unit id="aecece60b34fa1f68f4671b168031bfb1b287d56" resname="You have not access to this basket" approved="yes">
         <source>You have not access to this basket</source>
-        <target state="translated">You have no access to this basket</target>
+        <target state="translated">You cannot access to this basket</target>
         <jms:reference-file line="181">Model/Repositories/BasketRepository.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d7596cb5bf503833487b48c95cf263b44f3e05d" resname="You have selected %nbReceivedDocuments% records." approved="yes">
@@ -8568,7 +8568,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       </trans-unit>
       <trans-unit id="a61aea70e9f5d9de95e8fd259c5a3e2b9b9b3d0c" resname="admin::register: Nouvelle commande sur %application%" approved="yes">
         <source>admin::register: Nouvelle commande sur %application%</source>
-        <target state="translated">Incoming order on %application%</target>
+        <target state="translated">New order on %application%</target>
         <jms:reference-file line="37">Notification/Mail/MailInfoNewOrder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cc3d489b1e5ed14fa01e9d01eb6f9019b60d24" resname="admin::register: demande d'inscription sur %application%" approved="yes">
