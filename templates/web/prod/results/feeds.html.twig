@@ -7,7 +7,7 @@
                     <tr>
                         <td style="width:600px;">
                             <h1>
-                                <img src="{% if feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}{% endif %}" style="height:32px;"/>
+                                <img src="{% if feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ feed.iconUrl }}.jpg{% endif %}" style="height:32px;"/>
                                 {% if feed.isAggregated %}
                                     {{ 'Toutes les publications' | trans }}
                                     <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_aggregated') }}">

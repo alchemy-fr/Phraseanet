@@ -48,6 +48,7 @@ use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Provider\SecretProvider;
+use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
@@ -60,6 +61,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
+use Assert\Assertion;
 use Doctrine\ORM\EntityManager;
 use Firebase\JWT\JWT;
 use Symfony\Component\Form\Form;
@@ -1065,13 +1067,7 @@ class V1Controller extends Controller
         $ret['results'] = ['records' => [], 'stories' => []];
 
         /** @var SearchEngineResult $search_result */
-        foreach ($search_result->getResults() as $es_record) {
-            try {
-                $record = new \record_adapter($this->app, $es_record->getDataboxId(), $es_record->getRecordId());
-            } catch (\Exception $e) {
-                continue;
-            }
-
+        foreach ($this->convertSearchResultToRecords($search_result->getResults()) as $record) {
             if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {
@@ -2574,5 +2570,52 @@ class V1Controller extends Controller
     private function getSubdefSubstituer()
     {
         return $this->app['subdef.substituer'];
+    }
+
+    /**
+     * @param RecordInterface[] $records
+     * @return array[]
+     */
+    private function groupRecordIdsPerDataboxId($records)
+    {
+        $number = 0;
+        $perDataboxRecordIds = [];
+
+        foreach ($records as $record) {
+            $databoxId = $record->getDataboxId();
+
+            if (!isset($perDataboxRecordIds[$databoxId])) {
+                $perDataboxRecordIds[$databoxId] = [];
+            }
+
+            $perDataboxRecordIds[$databoxId][$record->getRecordId()] = $number++;
+        }
+
+        return $perDataboxRecordIds;
+    }
+
+    /**
+     * @param RecordInterface[] $records
+     * @return \record_adapter[]
+     */
+    private function convertSearchResultToRecords($records)
+    {
+        Assertion::allIsInstanceOf($records, RecordInterface::class);
+
+        $perDataboxRecordIds = $this->groupRecordIdsPerDataboxId($records);
+
+        $records = [];
+
+        foreach ($perDataboxRecordIds as $databoxId => $recordIds) {
+            $databox = $this->findDataboxById($databoxId);
+
+            foreach ($databox->getRecordRepository()->findByRecordIds(array_keys($recordIds)) as $record) {
+                $records[$recordIds[$record->getRecordId()]] = $record;
+            }
+        }
+
+        ksort($records);
+
+        return $records;
     }
 }
