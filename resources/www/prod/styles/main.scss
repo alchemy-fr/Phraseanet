@@ -98,5 +98,53 @@
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
 .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right;}
 
+.history-collection {
+  background-image: url('#{$iconsPath}chgcoll_history.png');
+}
+
+.history-status {
+  background-image: url('#{$iconsPath}chgstatus_history.png');
+}
+
+.history-print {
+  background-image: url('#{$iconsPath}print_history.png');
+}
+
+.history-substit, .history-publish {
+  background-image: url('#{$iconsPath}imgtools_history.png');
+}
+
+.history-download, .history-mail, .history-ftp {
+  background-image: url('#{$iconsPath}disktt_history.png');
+}
+.history-edit {
+  background-image: url('#{$iconsPath}ppen_history.png');
+}
+
+.history-validate, .history-push {
+  background-image: url('#{$iconsPath}push16.png');
+}
+
+.history-add {
+  background-image: url('#{$iconsPath}add.png');
+}
+
+.history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push, .history-add {
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-size: 16px 16px;
+  padding-left: 24px;
+  min-height: 16px;
+}
+
+@media	only screen and (-webkit-min-device-pixel-ratio: 1.3),
+only screen and (-o-min-device-pixel-ratio: 13/10),
+only screen and (min-resolution: 120dpi)
+{
+  .history-collection, .history-status, .history-print, .history-substit, .history-publish, .history-download, .history-mail, .history-ftp, .history-edit, .history-validate, .history-push {
+    background-size: 16px 16px;
+  }
+}
+
 @import 'ie7';
 @import 'ie8';
