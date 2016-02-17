@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "02cbfee2e7384dfed43ce4c8e8a64c5d",
-    "content-hash": "db0a3515fad6442e50e3a64478365383",
+    "hash": "455f2f5469072352ed9a240d8c170956",
+    "content-hash": "bb783826a1ca0339baf5bff696d69a73",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -14,6 +14,12 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/tcpdf-clone/zipball/2ba0248a7187f1626df6c128750650416267f0e7",
+                "reference": "2ba0248a7187f1626df6c128750650416267f0e7",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -61,6 +67,10 @@
                 "qrcode",
                 "tcpdf"
             ],
+            "support": {
+                "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
+                "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
+            },
             "time": "2013-10-13 16:11:17"
         },
         {
@@ -104,13 +114,13 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "Nicolas Le Goff",
-                    "email": "legoff.n@gmail.com"
-                },
-                {
                     "name": "Phraseanet Team",
                     "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
+                },
+                {
+                    "name": "Nicolas Le Goff",
+                    "email": "legoff.n@gmail.com"
                 }
             ],
             "description": "A set of tools to build binary drivers",
@@ -483,12 +493,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216"
+                "reference": "9048a99dd328cd2d01efaad16e6af648d11ad2b4"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/9048a99dd328cd2d01efaad16e6af648d11ad2b4",
-                "reference": "7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
+                "reference": "9048a99dd328cd2d01efaad16e6af648d11ad2b4",
                 "shasum": ""
             },
             "require": {
@@ -526,7 +536,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2015-09-22 06:58:52"
+            "time": "2016-02-20 22:35:16"
         },
         {
             "name": "alchemy/symfony-cors",
@@ -535,6 +545,12 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/symfony-cors.git",
                 "reference": "dbf7fcff1ce9fc1265db12955476ff169eab7375"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/symfony-cors/zipball/dbf7fcff1ce9fc1265db12955476ff169eab7375",
+                "reference": "dbf7fcff1ce9fc1265db12955476ff169eab7375",
+                "shasum": ""
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -556,11 +572,7 @@
                     "Alchemy\\CorsBundle\\": "src/Bundle/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Alchemy\\Cors\\Tests\\": "tests/unit/Component/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1723,12 +1735,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/igorw/evenement.git",
-                "reference": "v1.0.0"
+                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/igorw/evenement/zipball/fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
-                "reference": "v1.0.0",
+                "reference": "fa966683e7df3e5dd5929d984a44abfbd6bafe8d",
                 "shasum": ""
             },
             "require": {
@@ -1755,7 +1767,7 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 08:01:08"
+            "time": "2012-05-30 15:01:08"
         },
         {
             "name": "facebook/php-sdk",
@@ -1801,6 +1813,7 @@
                 "facebook",
                 "sdk"
             ],
+            "abandoned": "facebook/php-sdk-v4",
             "time": "2013-11-19 23:11:14"
         },
         {
@@ -2642,12 +2655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hoaproject/Stream.git",
-                "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3"
+                "reference": "3bc446bc00849bf51166adc415d77aa375d48d8c"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/hoaproject/Stream/zipball/3bc446bc00849bf51166adc415d77aa375d48d8c",
-                "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3",
+                "reference": "3bc446bc00849bf51166adc415d77aa375d48d8c",
                 "shasum": ""
             },
             "require": {
@@ -2692,7 +2705,7 @@
                 "stream",
                 "wrapper"
             ],
-            "time": "2015-10-22 06:30:43"
+            "time": "2015-10-26 12:21:43"
         },
         {
             "name": "hoa/ustring",
@@ -3544,37 +3557,38 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.8",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "cf1fdacbaf0d54440fa7b61c750234d0befde0c8"
+                "reference": "cc279e0dcf22e47322028084dd1145a44a219c1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/cf1fdacbaf0d54440fa7b61c750234d0befde0c8",
-                "reference": "cf1fdacbaf0d54440fa7b61c750234d0befde0c8",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/cc279e0dcf22e47322028084dd1145a44a219c1a",
+                "reference": "cc279e0dcf22e47322028084dd1145a44a219c1a",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
+                "alchemy/mediavorus": "^0.4.4",
                 "imagine/imagine": "0.6.x@dev",
-                "mediavorus/mediavorus": ">=0.4.2,<0.5",
                 "monolog/monolog": "~1.0",
-                "neutron/temporary-filesystem": "~2.1",
+                "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
                 "php-ffmpeg/php-ffmpeg": ">=0.4.2,<0.6",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
                 "swftools/swftools": "~0.3.0",
-                "symfony/console": "~2.0",
-                "symfony/filesystem": "~2.0"
+                "symfony/console": "^2.1|^3.0",
+                "symfony/filesystem": "^2.1|^3.0",
+                "symfony/process": "^2.1.1|^3.0"
             },
             "require-dev": {
+                "alchemy/phpexiftool": "^0.4.0|^0.5.0",
                 "neutron/silex-imagine-provider": "~0.1",
-                "phpexiftool/phpexiftool": "~0.1",
-                "phpunit/phpunit": "~3.7",
+                "phpunit/phpunit": "^4.1|^5.0",
                 "silex/silex": "~1.0"
             },
             "type": "library",
@@ -3613,63 +3627,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2015-02-03 16:25:38"
-        },
-        {
-            "name": "mediavorus/mediavorus",
-            "version": "0.4.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "2df98b5b180c50b1bc7be838e36bc6ecc573e646"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/2df98b5b180c50b1bc7be838e36bc6ecc573e646",
-                "reference": "2df98b5b180c50b1bc7be838e36bc6ecc573e646",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/collections": "~1.0",
-                "monolog/monolog": "~1.0",
-                "php": ">=5.3.0",
-                "php-ffmpeg/php-ffmpeg": "~0.3",
-                "phpexiftool/phpexiftool": "~0.1",
-                "symfony/console": "~2.0",
-                "symfony/http-foundation": "~2.0"
-            },
-            "require-dev": {
-                "jms/serializer": "~0.12.0",
-                "phpunit/phpunit": "~3.7",
-                "silex/silex": "~1.0",
-                "symfony/yaml": "~2.0"
-            },
-            "suggest": {
-                "jms/serializer": "To serialize Medias",
-                "symfony/yaml": "To serialize Medias in Yaml format"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "MediaVorus": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Romain Neutron",
-                    "email": "imprec@gmail.com",
-                    "homepage": "http://www.lickmychip.com/"
-                }
-            ],
-            "description": "MediaVorus",
-            "keywords": [
-                "metadata"
-            ],
-            "time": "2014-08-26 12:32:10"
+            "time": "2016-02-17 14:25:54"
         },
         {
             "name": "monolog/monolog",
@@ -3778,7 +3736,7 @@
             ],
             "authors": [
                 {
-                    "name": "Stephen Clay",
+                    "name": "Steve Clay",
                     "email": "steve@mrclay.org",
                     "homepage": "http://www.mrclay.org/",
                     "role": "Developer"
@@ -3964,21 +3922,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "0.1.2"
+                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/a8a7862ae90419f2b23746cd8436c2310e4eb084",
-                "reference": "0.1.2",
+                "reference": "a8a7862ae90419f2b23746cd8436c2310e4eb084",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": ">=1.0,<2.0"
+                "silex/silex": "~1.0"
             },
             "require-dev": {
-                "symfony/browser-kit": ">=2.0,<3.0"
+                "symfony/browser-kit": "~2.0"
             },
             "type": "library",
             "autoload": {
@@ -5325,7 +5283,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "support@alchemy.fr",
+                    "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
