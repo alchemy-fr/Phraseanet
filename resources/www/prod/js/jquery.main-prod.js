@@ -32,51 +32,7 @@ function getHome(cas, page) {
             newSearch($("#EDIT_query").val());
             break;
         case 'PUBLI':
-            answAjax = $.ajax({
-                type: "GET",
-                url: "../prod/feeds/",
-                dataType: 'html',
-                data: {
-                    page: page
-                },
-                beforeSend: function () {
-                    if (answAjaxrunning && answAjax.abort)
-                        answAjax.abort();
-                    if (page === 0)
-                        clearAnswers();
-                    answAjaxrunning = true;
-                    $('#answers').addClass('loading');
-                },
-                error: function () {
-                    answAjaxrunning = false;
-                    $('#answers').removeClass('loading');
-                },
-                timeout: function () {
-                    answAjaxrunning = false;
-                    $('#answers').removeClass('loading');
-                },
-                success: function (data) {
-                    answAjaxrunning = false;
-                    var answers = $('#answers');
-
-                    $('.next_publi_link', answers).remove();
-
-                    answers.append(data);
-
-                    answers.find("img.lazyload").lazyload({
-                        container: answers
-                    });
-
-                    afterSearch();
-                    if (page > 0) {
-                        answers.stop().animate({
-                            scrollTop: answers.scrollTop() + answers.height()
-                        }, 700);
-                    }
-                    return;
-                }
-
-            });
+            publicationModule.fetchPublications(page, answAjax, answAjaxrunning);
             break;
         case 'HELP':
             $.ajax({
@@ -1146,122 +1102,6 @@ $(document).ready(function () {
         $(this).highlight('#CCCCCC');
     });
 
-    $('#answers .see_more a').on('click', function (event) {
-        $see_more = $(this).closest('.see_more');
-        $see_more.addClass('loading');
-    });
-
-    $('#answers .feed .entry').on('mouseover', function () {
-        $(this).addClass('hover');
-    });
-    $('#answers .feed .entry').on('mouseout', function () {
-        $(this).removeClass('hover');
-    });
-
-    $('a.ajax_answers').on('click', function (event) {
-        event.stopPropagation();
-        var $this = $(this);
-
-        var append = $this.hasClass('append');
-        var no_scroll = $this.hasClass('no_scroll');
-
-        $.ajax({
-            type: "GET",
-            url: $this.attr('href'),
-            dataType: 'html',
-            success: function (data) {
-                var $answers = $('#answers');
-
-                if (!append) {
-                    $answers.empty();
-                    if (!no_scroll) {
-                        $answers.scrollTop(0);
-                    }
-                    $answers.append(data);
-
-                    $answers.find("img.lazyload").lazyload({
-                        container: $answers
-                    });
-                }
-                else {
-                    $('.see_more.loading', $answers).remove();
-                    $answers.append(data);
-
-                    $answers.find("img.lazyload").lazyload({
-                        container: $answers
-                    });
-
-                    if (!no_scroll) {
-                        $answers.animate({
-                            'scrollTop': ($answers.scrollTop() + $answers.innerHeight() - 80)
-                        });
-                    }
-                }
-                afterSearch();
-            }
-        });
-
-        return false;
-    });
-
-
-    $('a.subscribe_rss').on('click', function (event) {
-
-        var $this = $(this);
-
-        if (typeof(renew) === 'undefined')
-            renew = 'false';
-        else
-            renew = renew ? 'true' : 'false';
-
-        var buttons = {};
-        buttons[language.renewRss] = function () {
-            $this.trigger({
-                type: 'click',
-                renew: true
-            });
-        };
-        buttons[language.fermer] = function () {
-            $('#DIALOG').empty().dialog('destroy');
-        };
-
-        event.stopPropagation();
-        var $this = $(this);
-
-        $.ajax({
-            type: "GET",
-            url: $this.attr('href') + (event.renew === true ? '?renew=true' : ''),
-            dataType: 'json',
-            success: function (data) {
-                if (data.texte !== false && data.titre !== false) {
-                    if ($("#DIALOG").data("ui-dialog")) {
-                        $("#DIALOG").dialog('destroy');
-                    }
-                    $("#DIALOG").attr('title', data.titre)
-                        .empty()
-                        .append(data.texte)
-                        .dialog({
-                            autoOpen: false,
-                            closeOnEscape: true,
-                            resizable: false,
-                            draggable: false,
-                            modal: true,
-                            buttons: buttons,
-                            width: 650,
-                            height: 250,
-                            overlay: {
-                                backgroundColor: '#000',
-                                opacity: 0.7
-                            }
-                        }).dialog('open');
-
-                }
-            }
-        });
-
-        return false;
-    });
-
     $('#search_submit').on('mousedown', function (event) {
         return false;
     });
@@ -1684,44 +1524,6 @@ $(document).ready(function () {
         $(this).select();
     });
 
-    $('#answers .feed .entry a.options').on('click', function () {
-        var $this = $(this);
-        $.ajax({
-            type: "GET",
-            url: $this.attr('href'),
-            dataType: 'html',
-            success: function (data) {
-                return set_up_feed_box(data);
-            }
-        });
-        return false;
-    });
-    $('#answers .feed .entry a.feed_delete').on('click', function () {
-        if (!confirm('etes vous sur de vouloir supprimer cette entree ?'))
-            return false;
-        var $this = $(this);
-        $.ajax({
-            type: "POST",
-            url: $this.attr('href'),
-            dataType: 'json',
-            success: function (data) {
-                if (data.error === false) {
-                    var $entry = $this.closest('.entry');
-                    $entry.animate({
-                        height: 0,
-                        opacity: 0
-                    }, function () {
-                        $entry.remove();
-                    });
-                }
-                else
-                    alert(data.message);
-            }
-        });
-        return false;
-    });
-
-
     $('#loader_bar').stop().animate({
         width: '100%'
     }, 450, function () {
@@ -1729,7 +1531,6 @@ $(document).ready(function () {
             $(this).remove();
         });
     });
-
 
 });
 
@@ -2158,43 +1959,12 @@ function activeIcons() {
         }
 
         if (value !== '') {
-            feedThis(type, value);
+            publicationModule.publishRecords(type, value);
         }
         else {
             alert(language.nodocselected);
         }
     });
-
-    function feedThis(type, value) {
-        var options = {
-            lst: '',
-            ssel: '',
-            act: ''
-        };
-
-        switch (type) {
-            case "IMGT":
-            case "CHIM":
-                options.lst = value;
-                break;
-
-            case "STORY":
-                options.story = value;
-                break;
-            case "SSTT":
-                options.ssel = value;
-                break;
-        }
-
-        $.post("../prod/feeds/requestavailable/"
-            , options
-            , function (data) {
-
-                return set_up_feed_box(data);
-            });
-
-        return;
-    }
 
 
     $container.on('click', '.TOOL_chgcoll_btn', function () {
@@ -3027,104 +2797,7 @@ function autoorder() {
 
 }
 
-function set_up_feed_box(data) {
 
-    var buttons = {};
-    buttons[language.valider] = function () {
-        var dialog = p4.Dialog.get(1);
-        var error = false;
-        var $form = $('form.main_form', dialog.getDomElement());
-
-        $('.required_text', $form).each(function (i, el) {
-            if ($.trim($(el).val()) === '') {
-                $(el).addClass('error');
-                error = true;
-            }
-        });
-
-        if (error) {
-            alert(language.feed_require_fields);
-        }
-
-        if ($('input[name="feed_id"]', $form).val() === '') {
-            alert(language.feed_require_feed);
-            error = true;
-        }
-
-        if (error) {
-            return false;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: $form.attr('action'),
-            data: $form.serializeArray(),
-            dataType: 'json',
-            beforeSend: function () {
-                $('button', dialog.getDomElement()).prop('disabled', true);
-            },
-            error: function () {
-                $('button', dialog.getDomElement()).prop('disabled', false);
-            },
-            timeout: function () {
-                $('button', dialog.getDomElement()).prop('disabled', false);
-            },
-            success: function (data) {
-                $('button', dialog.getDomElement()).prop('disabled', false);
-                if (data.error === true) {
-                    alert(data.message);
-                    return;
-                }
-
-                if ($('form.main_form', dialog.getDomElement()).hasClass('entry_update')) {
-                    var id = $('form input[name="entry_id"]', dialog.getDomElement()).val();
-                    var container = $('#entry_' + id);
-
-                    container.replaceWith(data.datas);
-
-                    container.hide().fadeIn();
-
-                    var answers = $('#answers');
-
-                    answers.find("img.lazyload").lazyload({
-                        container: answers
-                    });
-                }
-
-                p4.Dialog.Close(1);
-            }
-        });
-        p4.Dialog.Close(1);
-    };
-
-    var dialog = p4.Dialog.Create({
-        size: 'Full',
-        closeOnEscape: true,
-        closeButton: true,
-        buttons: buttons
-    });
-
-    dialog.setContent(data);
-
-    var $feeds_item = $('.feeds .feed', dialog.getDomElement());
-    var $form = $('form.main_form', dialog.getDomElement());
-
-    $feeds_item.bind('click',function () {
-        $feeds_item.removeClass('selected');
-        $(this).addClass('selected');
-        $('input[name="feed_id"]', $form).val($('input', this).val());
-    }).hover(function () {
-        $(this).addClass('hover');
-    }, function () {
-        $(this).removeClass('hover');
-    });
-
-    $form.bind('submit', function () {
-        return false;
-    });
-
-    return;
-}
 
 
 //clear search
