@@ -18,10 +18,10 @@
             <td style="width:60px;text-align:right;">
                 {% if entry.feed.isOwner(app.getAuthenticator().user) or entry.isPublisher(app.getAuthenticator().user) %}
                     <a class="tools options feed_edit" href="{{ path('prod_feeds_entry_edit', { 'id' : entry.id }) }}">
-                        <img src="/assets/common/images/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}"/>
+                        <img src="/assets/common/images/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}" width="16" height="16"/>
                     </a>
                     <a class="tools feed_delete"href="{{ path('prod_feeds_entry_delete', { 'id' : entry.id }) }}">
-                        <img src="/assets/common/images/icons/delete.png" title="{{ 'boutton::supprimer' | trans }}"/>
+                        <img src="/assets/common/images/icons/delete.png" title="{{ 'boutton::supprimer' | trans }}" width="16" height="16"/>
                     </a>
                 {% endif %}
             </td>
