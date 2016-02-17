@@ -34,7 +34,7 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('admin::register: Nouvelle commande sur %s', ['%application%' => $this->getPhraseanetTitle()]);
+        return $this->app->trans('admin::register: Nouvelle commande sur %application%', ['%application%' => $this->getPhraseanetTitle()]);
     }
 
     /**
