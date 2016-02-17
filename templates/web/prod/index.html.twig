@@ -240,21 +240,23 @@
                                                     {% set sortByDefault =  app['phraseanet.SE'].getDefaultSort()%}
                                                     {% set sortOrderDefault =  app['phraseanet.SE'].getDefaultSortDirection()%}
 
-                                                    {#{% set sortByPreference = constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') %}#}
-                                                    {% if sortByPreference is not defined %}
-                                                        {% set sortByPreference = sortByDefault %}
+                                                    {% set sortByPreference = sortByDefault %}
+                                                    {% if search_datas.elasticSort.by is defined %}
+                                                        {% set sortByPreference = search_datas.elasticSort.by %}
                                                     {% endif %}
 
-                                                    {% if sortOrderPreference is not defined %}
-                                                        {% set sortOrderPreference = sortOrderDefault %}
+                                                    {% set sortOrderPreference = sortOrderDefault %}
+                                                    {% if search_datas.elasticSort.order is defined %}
+                                                        {% set sortOrderPreference = search_datas.elasticSort.order %}
                                                     {% endif %}
-
                                                     <span>{{ 'Trier par' | trans }}</span>
                                                     <select name="sort" class="input-medium" onchange="checkFilters(true);">
-                                                        {% set b = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
-                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
-                                                        {% set b = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
-                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
+                                                        {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
+                                                        {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                        {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
+                                                        {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
                                                         <optgroup label="{{ 'By field'|trans }}">
                                                         {% for fieldname, sort in search_datas['sort'] %}
                                                             {% set b = (sortOrderPreference == fieldname) %}
@@ -267,8 +269,9 @@
                                                     </select>
                                                     <select name="ord" class="input-medium" onchange="checkFilters(true);">
                                                         {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
-                                                            {% set b = (app['phraseanet.SE'].getDefaultSortDirection() == ord) %}
-                                                            <option value="{{ ord }}" {% if b %}selected="selected" class="default-selection"{% endif %}>{{ ord_name }}</option>
+                                                            {% set isSelected = (sortOrderPreference == ord) %}
+                                                            {% set isDefault = (sortOrderDefault == ord) %}
+                                                            <option value="{{ ord }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ ord_name }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
