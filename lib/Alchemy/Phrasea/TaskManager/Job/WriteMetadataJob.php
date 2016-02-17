@@ -1,9 +1,9 @@
 <?php
 
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -60,13 +60,13 @@ class WriteMetadataJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
-    protected function doJob(JobData $data)
+    protected function doJob(JobData $jobData)
     {
-        $settings = simplexml_load_string($data->getTask()->getSettings());
-        $clearDoc = (Boolean) (string) $settings->cleardoc;
-        $MWG = (Boolean) (string) $settings->mwg;
+        $settings = simplexml_load_string($jobData->getTask()->getSettings());
+        $clearDoc = (bool) (string) $settings->cleardoc;
+        $MWG = (bool) (string) $settings->mwg;
 
-        foreach ($data->getApplication()->getDataboxes() as $databox) {
+        foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
 
             $statement = $connection->prepare('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)');
@@ -79,7 +79,7 @@ class WriteMetadataJob extends AbstractJob
                 $token = $row['jeton'];
 
                 $record = $databox->get_record($record_id);
-                $type = $record->get_type();
+                $type = $record->getType();
 
                 $subdefs = [];
                 foreach ($record->get_subdefs() as $name => $subdef) {
@@ -134,25 +134,25 @@ class WriteMetadataJob extends AbstractJob
 
                     try {
                         $field = $caption->get_field($fieldName);
-                        $data = $field->get_values();
+                        $fieldValues = $field->get_values();
 
                         if ($fieldStructure->is_multi()) {
                             $values = array();
-                            foreach ($data as $value) {
+                            foreach ($fieldValues as $value) {
                                 $values[] = $value->getValue();
                             }
 
                             $value = new Value\Multi($values);
                         } else {
-                            $data = array_pop($data);
-                            $value = $data->getValue();
+                            $fieldValue = array_pop($fieldValues);
+                            $value = $fieldValue->getValue();
 
                             $value = new Value\Mono($value);
                         }
                     } catch(\Exception $e) {
                         // the field is not set in the record, erase it
                         if ($fieldStructure->is_multi()) {
-                            $value = new Value\Multi(Array(''));
+                            $value = new Value\Multi(array(''));
                         }
                         else {
                             $value = new Value\Mono('');
@@ -164,7 +164,7 @@ class WriteMetadataJob extends AbstractJob
                     );
                 }
 
-                $writer = $this->getMetadataWriter($data->getApplication());
+                $writer = $this->getMetadataWriter($jobData->getApplication());
                 $writer->reset();
 
                 if($MWG) {
@@ -209,6 +209,10 @@ class WriteMetadataJob extends AbstractJob
      */
     private function isSubdefMetadataUpdateRequired(\databox $databox, $subdefType, $subdefName)
     {
-        return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
+        if ($databox->get_subdef_structure()->hasSubdef($subdefType, $subdefName)) {
+            return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
+        }
+
+        return false;
     }
 }
