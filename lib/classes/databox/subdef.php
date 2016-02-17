@@ -293,6 +293,9 @@ class databox_subdef
     {
         $image = new Image();
 
+        if ($sd->icodec) {
+            $image->setOptionValue(Image::OPTION_ICODEC, (string) $sd->icodec);
+        }
         if ($sd->size) {
             $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
         }
