@@ -21,15 +21,15 @@ class Prod extends Helper
 
     public function get_search_datas()
     {
-        $searchData = array('bases' => array(), 'dates' => array(), 'fields' => array(), 'sort' => array(),);
+        $searchData = array('bases' => array(), 'dates' => array(), 'fields' => array(), 'sort' => array(), 'elasticSort' => array());
 
-        $bases = $fields = $dates = $sort = array();
+        $bases = $fields = $dates = $sort = $elasticSort = array();
 
         if (!$this->app->getAuthenticatedUser()) {
             return $searchData;
         }
 
-        $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search'), true);
+        $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search', '{}'), true);
         $saveSettings = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'advanced_search_reload');
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($acl->get_granted_sbas() as $databox) {
@@ -102,10 +102,15 @@ class Prod extends Helper
             }
         }
 
+        if (isset($searchSet['elasticSort'])) {
+            $elasticSort = $searchSet['elasticSort'];
+        }
+
         $searchData['fields'] = $fields;
         $searchData['dates'] = $dates;
         $searchData['bases'] = $bases;
         $searchData['sort'] = $sort;
+        $searchData['elasticSort'] = $elasticSort;
 
         return $searchData;
     }
