@@ -23,7 +23,7 @@ class Prod extends Helper
     {
         $searchData = array('bases' => array(), 'dates' => array(), 'fields' => array(), 'sort' => array(), 'elasticSort' => array());
 
-        $bases = $fields = $dates = $sort = array();
+        $bases = $fields = $dates = $sort = $elasticSort = array();
 
         if (!$this->app->getAuthenticatedUser()) {
             return $searchData;
