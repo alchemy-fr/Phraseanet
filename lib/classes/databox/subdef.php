@@ -107,8 +107,6 @@ class databox_subdef
                 $this->subdef_type = $this->buildFlexPaperSubdef($sd);
                 break;
         }
-
-        return $this;
     }
 
     /**
@@ -289,13 +287,16 @@ class databox_subdef
     /**
      * Build Image Subdef object depending the SimpleXMLElement
      *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     * @param  SimpleXMLElement $sd
+     * @return Image
      */
     protected function buildImageSubdef(SimpleXMLElement $sd)
     {
         $image = new Image($this->translator);
 
+        if ($sd->icodec) {
+            $image->setOptionValue(Image::OPTION_ICODEC, (string) $sd->icodec);
+        }
         if ($sd->size) {
             $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
         }
@@ -318,8 +319,8 @@ class databox_subdef
     /**
      * Build Audio Subdef object depending the SimpleXMLElement
      *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     * @param  SimpleXMLElement $sd
+     * @return Audio
      */
     protected function buildAudioSubdef(SimpleXMLElement $sd)
     {
@@ -352,8 +353,8 @@ class databox_subdef
     /**
      * Build GIF Subdef object depending the SimpleXMLElement
      *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     * @param  SimpleXMLElement $sd
+     * @return Gif
      */
     protected function buildGifSubdef(SimpleXMLElement $sd)
     {
@@ -372,8 +373,8 @@ class databox_subdef
     /**
      * Build Video Subdef object depending the SimpleXMLElement
      *
-     * @param  SimpleXMLElement                    $sd
-     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     * @param  SimpleXMLElement $sd
+     * @return Video
      */
     protected function buildVideoSubdef(SimpleXMLElement $sd)
     {
