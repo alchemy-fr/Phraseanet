@@ -4661,9 +4661,9 @@
         <target state="translated">Cette demande de validation peut être adressée aux utilisateurs suivants : %recommendation%</target>
         <jms:reference-file line="129">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cb75472a748e630791f52a7e31b275376a65b600" resname="Please enter the databox name to reset or create">
+      <trans-unit id="cb75472a748e630791f52a7e31b275376a65b600" resname="Please enter the databox name to reset or create" approved="yes">
         <source>Please enter the databox name to reset or create</source>
-        <target state="new">Please enter the databox name to reset or create</target>
+        <target state="translated">Entrer le nom de la databox pour la créer ou la réinitialiser</target>
         <jms:reference-file line="65">Command/Developer/IniReset.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2bec3eec3fa44ad54758d6446a424345830aac30" resname="Please fill the captcha" approved="yes">
