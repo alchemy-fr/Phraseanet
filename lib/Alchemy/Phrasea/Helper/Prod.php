@@ -29,7 +29,7 @@ class Prod extends Helper
             return $searchData;
         }
 
-        $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search'), true);
+        $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search', '{}'), true);
         $saveSettings = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'advanced_search_reload');
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($acl->get_granted_sbas() as $databox) {
@@ -102,7 +102,7 @@ class Prod extends Helper
             }
         }
 
-        if (array_key_exists('elasticSort', $searchSet)){
+        if (isset($searchSet['elasticSort'])) {
             $elasticSort = $searchSet['elasticSort'];
         }
 
