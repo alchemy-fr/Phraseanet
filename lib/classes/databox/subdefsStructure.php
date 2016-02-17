@@ -133,6 +133,24 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param string $subdef_type
      * @param string $subdef_name
      *
+     * @return bool
+     */
+    public function hasSubdef($subdef_type, $subdef_name)
+    {
+        $type = strtolower($subdef_type);
+        $name = strtolower($subdef_name);
+
+        if (isset($this->AvSubdefs[$type][$name])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $subdef_type
+     * @param string $subdef_name
+     *
      * @return databox_subdef
      * @throws Exception_Databox_SubdefNotFound
      */

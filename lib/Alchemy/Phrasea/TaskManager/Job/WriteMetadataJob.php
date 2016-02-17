@@ -60,13 +60,13 @@ class WriteMetadataJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
-    protected function doJob(JobData $data)
+    protected function doJob(JobData $jobData)
     {
-        $settings = simplexml_load_string($data->getTask()->getSettings());
+        $settings = simplexml_load_string($jobData->getTask()->getSettings());
         $clearDoc = (Boolean) (string) $settings->cleardoc;
         $MWG = (Boolean) (string) $settings->mwg;
 
-        foreach ($data->getApplication()->getDataboxes() as $databox) {
+        foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
 
             $statement = $connection->prepare('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)');
@@ -134,18 +134,18 @@ class WriteMetadataJob extends AbstractJob
 
                     try {
                         $field = $caption->get_field($fieldName);
-                        $data = $field->get_values();
+                        $fieldValues = $field->get_values();
 
                         if ($fieldStructure->is_multi()) {
                             $values = array();
-                            foreach ($data as $value) {
+                            foreach ($fieldValues as $value) {
                                 $values[] = $value->getValue();
                             }
 
                             $value = new Value\Multi($values);
                         } else {
-                            $data = array_pop($data);
-                            $value = $data->getValue();
+                            $fieldValue = array_pop($fieldValues);
+                            $value = $fieldValue->getValue();
 
                             $value = new Value\Mono($value);
                         }
@@ -164,7 +164,7 @@ class WriteMetadataJob extends AbstractJob
                     );
                 }
 
-                $writer = $this->getMetadataWriter($data->getApplication());
+                $writer = $this->getMetadataWriter($jobData->getApplication());
                 $writer->reset();
 
                 if($MWG) {
@@ -209,6 +209,10 @@ class WriteMetadataJob extends AbstractJob
      */
     private function isSubdefMetadataUpdateRequired(\databox $databox, $subdefType, $subdefName)
     {
-        return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
+        if ($databox->get_subdef_structure()->hasSubdef($subdefType, $subdefName)) {
+            return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
+        }
+
+        return false;
     }
 }
