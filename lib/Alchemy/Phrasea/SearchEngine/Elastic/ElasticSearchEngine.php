@@ -133,7 +133,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getDefaultSort()
     {
-        return SearchEngineOptions::SORT_RELEVANCE;
+        return SearchEngineOptions::SORT_CREATED_ON;
     }
 
     /**

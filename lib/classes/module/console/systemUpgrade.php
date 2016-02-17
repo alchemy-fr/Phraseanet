@@ -38,6 +38,8 @@ class module_console_systemUpgrade extends Command
         $pluginAutoloader = rtrim($this->container['root.path'], '\\/') . '/plugins/autoload.php';
 
         if (file_exists($pluginAutoloader)) {
+            require_once $pluginAutoloader;
+
             $serviceProvider = new \Alchemy\Phrasea\Core\Provider\PluginServiceProvider();
             $serviceProvider->register($this->getContainer());
             $serviceProvider->boot($this->getContainer());

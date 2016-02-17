@@ -214,3 +214,9 @@
   background-color: darken($darkerBackgroundColor, 10);
   color: $darkerTextColor;
 }
+#PREVIEWIMGCONT {
+  .documentTips {
+    width: 100%;
+    height: 100%;
+  }
+}
