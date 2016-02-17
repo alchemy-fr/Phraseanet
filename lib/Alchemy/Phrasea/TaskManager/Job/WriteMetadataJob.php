@@ -1,9 +1,9 @@
 <?php
 
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -63,8 +63,8 @@ class WriteMetadataJob extends AbstractJob
     protected function doJob(JobData $jobData)
     {
         $settings = simplexml_load_string($jobData->getTask()->getSettings());
-        $clearDoc = (Boolean) (string) $settings->cleardoc;
-        $MWG = (Boolean) (string) $settings->mwg;
+        $clearDoc = (bool) (string) $settings->cleardoc;
+        $MWG = (bool) (string) $settings->mwg;
 
         foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
@@ -79,7 +79,7 @@ class WriteMetadataJob extends AbstractJob
                 $token = $row['jeton'];
 
                 $record = $databox->get_record($record_id);
-                $type = $record->get_type();
+                $type = $record->getType();
 
                 $subdefs = [];
                 foreach ($record->get_subdefs() as $name => $subdef) {
@@ -152,7 +152,7 @@ class WriteMetadataJob extends AbstractJob
                     } catch(\Exception $e) {
                         // the field is not set in the record, erase it
                         if ($fieldStructure->is_multi()) {
-                            $value = new Value\Multi(Array(''));
+                            $value = new Value\Multi(array(''));
                         }
                         else {
                             $value = new Value\Mono('');
