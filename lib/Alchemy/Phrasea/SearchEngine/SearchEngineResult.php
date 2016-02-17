@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -52,7 +53,7 @@ class SearchEngineResult
     /**
      * An collection of results
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|RecordInterface[]
      */
     public function getResults()
     {
