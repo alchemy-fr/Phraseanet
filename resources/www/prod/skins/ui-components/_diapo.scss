@@ -51,7 +51,7 @@ $diapoBorderColor: $darkerBorderColor !default;
   .bottom {
     position: absolute;
     bottom: 0;
-    z-index: 100;
+    z-index: 99;
     &.actions {
       /*.action-icon {
         cursor: pointer;
