@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +15,6 @@ use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvent;
@@ -48,7 +46,9 @@ class IndexerSubscriber implements EventSubscriberInterface
         $this->indexer = $indexer;
     }
 
-    /** @return Indexer */
+    /**
+     * @return Indexer
+     */
     public function getIndexer()
     {
         if ($this->indexer instanceof Indexer) {
@@ -86,6 +86,7 @@ class IndexerSubscriber implements EventSubscriberInterface
             RecordEvents::STATUS_CHANGED => 'onRecordChange',
             RecordEvents::SUB_DEFINITIONS_CREATED => 'onRecordChange',
             RecordEvents::MEDIA_SUBSTITUTED => 'onRecordChange',
+            RecordEvents::ROTATE => 'onRecordChange',
             ThesaurusEvents::IMPORTED => 'onThesaurusChange',
             ThesaurusEvents::FIELD_LINKED => 'onThesaurusChange',
             ThesaurusEvents::CANDIDATE_ACCEPTED_AS_CONCEPT => 'onThesaurusChange',
