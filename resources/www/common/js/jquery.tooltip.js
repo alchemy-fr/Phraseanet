@@ -265,10 +265,12 @@
             var viewportDimensions = viewport();
             var left = 0;
             var top = 0;
-            var topOffset = 14;
-            var leftOffset = 1;
-            var rightOffset = 2;
-            var bottomOffset = -15;
+            var recordWidthOffset = 0;
+            var recordHeightOffset = 0;
+            var topOffset = 0;
+            var leftOffset = 0;
+            var rightOffset = 0;
+            var bottomOffset = 0;
 
             var $selector = $defaultTips;
 
@@ -361,18 +363,24 @@
                 var $eventTarget = $origEventTarget.closest('.diapo');
 
                 if ($eventTarget.length > 0) {
+                    // tooltip from records answer
+                    recordWidthOffset = 148; // remove size
+                    recordHeightOffset = 195;
                     // change offsets:
                     topOffset = 14;
                     leftOffset = 1;
                     rightOffset = 2;
+                    bottomOffset = -15;
                 } else {
+                    // tooltip from workzone (basket)
+                    tooltipVerticalOffset = 0;
+                    tooltipHorizontalOffset = 0;
+                    topOffset = 50;
                     // fallback on original target if nothing found:
                     $eventTarget = $origEventTarget;
                 }
-
                 var recordPosition = $eventTarget.offset();
-                var recordWidthOffset = 148; // remove size
-                var recordHeightOffset = 195;
+
                 var totalViewportWidth = viewportDimensions.x;
                 var totalViewportHeight = viewportDimensions.y;
 
@@ -475,7 +483,7 @@
                 }
 
                 helper.parent.css({
-                    width: Math.round(tooltipWidth),
+                    width: shouldResize ? Math.round(tooltipWidth) : 'auto',
                     height: shouldResize ? Math.round(tooltipHeight) : 'auto',
                     left: left,
                     top: top
