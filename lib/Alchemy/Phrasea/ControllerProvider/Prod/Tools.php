@@ -28,6 +28,7 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.prod.tools'] = $app->share(function (PhraseaApplication $app) {
             return (new ToolsController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setDispatcher($app['dispatcher'])
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setSubDefinitionSubstituerLocator(new LazyLocator($app, 'subdef.substituer'))
             ;

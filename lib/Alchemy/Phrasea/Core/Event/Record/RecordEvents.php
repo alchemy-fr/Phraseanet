@@ -20,6 +20,8 @@ final class RecordEvents
     const METADATA_CHANGED = 'record.metadata_changed';
     const ORIGINAL_NAME_CHANGED = 'record.original_name_changed';
     const STATUS_CHANGED = 'record.status_changed';
+    const ROTATE = 'record.rotate';
+
     // Sub-definitions
     const SUB_DEFINITIONS_CREATION = 'record.sub_definitions_creation';
     const SUB_DEFINITION_CREATION = 'record.sub_definition_creation';
