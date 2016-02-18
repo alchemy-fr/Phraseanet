@@ -10,14 +10,16 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
+use Alchemy\Phrasea\Record\RecordWasRotated;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
@@ -28,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ToolsController extends Controller
 {
     use DataboxLoggerAware;
+    use DispatcherAware;
     use FilesystemAware;
     use SubDefinitionSubstituerAware;
 
@@ -105,6 +108,16 @@ class ToolsController extends Controller
     {
         $records = RecordsRequest::fromRequest($this->app, $request, false);
         $rotation = (int)$request->request->get('rotation', 90);
+        $rotation %= 360;
+
+        if ($rotation > 180) {
+            $rotation -= 360;
+        }
+
+        if ($rotation <= -180) {
+            $rotation += 360;
+        }
+
         if (!in_array($rotation, [-90, 90, 180], true)) {
             $rotation = 90;
         }
@@ -118,8 +131,11 @@ class ToolsController extends Controller
                 try {
                     $subdef->rotate($rotation, $this->getMediaAlchemyst(), $this->getMediaVorus());
                 } catch (\Exception $e) {
+                    // ignore exception
                 }
             }
+
+            $this->dispatch(RecordEvents::ROTATE, new RecordWasRotated($record, $rotation));
         }
 
         return $this->app->json(['success' => true, 'errorMessage' => '']);
