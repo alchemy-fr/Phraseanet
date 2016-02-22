@@ -58,6 +58,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResultToRecordsConverter;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
@@ -1066,8 +1067,10 @@ class V1Controller extends Controller
 
         $ret['results'] = ['records' => [], 'stories' => []];
 
+        $converter = new SearchEngineResultToRecordsConverter($this->getApplicationBox());
+
         /** @var SearchEngineResult $search_result */
-        foreach ($this->convertSearchResultToRecords($search_result->getResults()) as $record) {
+        foreach ($converter->convert($search_result->getResults()) as $record) {
             if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {
@@ -2570,52 +2573,5 @@ class V1Controller extends Controller
     private function getSubdefSubstituer()
     {
         return $this->app['subdef.substituer'];
-    }
-
-    /**
-     * @param RecordInterface[] $records
-     * @return array[]
-     */
-    private function groupRecordIdsPerDataboxId($records)
-    {
-        $number = 0;
-        $perDataboxRecordIds = [];
-
-        foreach ($records as $record) {
-            $databoxId = $record->getDataboxId();
-
-            if (!isset($perDataboxRecordIds[$databoxId])) {
-                $perDataboxRecordIds[$databoxId] = [];
-            }
-
-            $perDataboxRecordIds[$databoxId][$record->getRecordId()] = $number++;
-        }
-
-        return $perDataboxRecordIds;
-    }
-
-    /**
-     * @param RecordInterface[] $records
-     * @return \record_adapter[]
-     */
-    private function convertSearchResultToRecords($records)
-    {
-        Assertion::allIsInstanceOf($records, RecordInterface::class);
-
-        $perDataboxRecordIds = $this->groupRecordIdsPerDataboxId($records);
-
-        $records = [];
-
-        foreach ($perDataboxRecordIds as $databoxId => $recordIds) {
-            $databox = $this->findDataboxById($databoxId);
-
-            foreach ($databox->getRecordRepository()->findByRecordIds(array_keys($recordIds)) as $record) {
-                $records[$recordIds[$record->getRecordId()]] = $record;
-            }
-        }
-
-        ksort($records);
-
-        return $records;
     }
 }

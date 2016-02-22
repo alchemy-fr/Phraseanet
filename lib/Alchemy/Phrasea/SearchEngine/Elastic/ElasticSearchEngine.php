@@ -310,6 +310,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query_string'] = json_encode($params['body']);
 
         return new SearchEngineResult(
+            $options,
             $results,   // ArrayCollection of results
             json_encode($query),
             $res['took'],   // duration

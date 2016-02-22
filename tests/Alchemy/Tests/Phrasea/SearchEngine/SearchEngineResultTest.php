@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
@@ -17,6 +18,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
      */
     public function testBasic()
     {
+        $options = new SearchEngineOptions();
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);
@@ -34,9 +36,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 
-        $result = new SearchEngineResult($results, $query, $duration,
-                        $offsetStart, $available, $total, $error, $warning,
-                        $suggestions, $propositions, $indexes);
+        $result = new SearchEngineResult($options, $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
 
         $this->assertEquals($warning, $result->getWarning());
         $this->assertEquals(2, $result->getTotalPages(23));
@@ -55,6 +55,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
 
     public function testWithOffsetStartAtZero()
     {
+        $options = new SearchEngineOptions();
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);
@@ -72,9 +73,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 
-        $result = new SearchEngineResult($results, $query, $duration,
-                        $offsetStart, $available, $total, $error, $warning,
-                        $suggestions, $propositions, $indexes);
+        $result = new SearchEngineResult($options, $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
 
         $this->assertEquals(1, $result->getCurrentPage(10));
         $this->assertEquals(1, $result->getCurrentPage(25));
