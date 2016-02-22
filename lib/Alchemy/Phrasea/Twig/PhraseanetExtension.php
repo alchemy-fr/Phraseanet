@@ -266,7 +266,7 @@ class PhraseanetExtension extends \Twig_Extension
                 $thumbnail = $subdefs[$subdefName];
                 if (null !== $path = $thumbnail['path']) {
                     if (is_string($path) && '' !== $path) {
-                        $etag = dechex(crc32(dechex($record->getESVersion() ^ 0x5A5A5A5A)));
+                        $etag = dechex(crc32(dechex($record->getVersion() ^ 0x5A5A5A5A)));
                         return $staticMode->getUrl($path, $etag);
                     }
                 }
