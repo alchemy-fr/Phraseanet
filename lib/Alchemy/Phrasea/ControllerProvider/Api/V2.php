@@ -11,6 +11,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
+use Alchemy\Phrasea\Controller\Api\SearchController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
@@ -33,6 +34,12 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
                     ->setDataboxLoggerLocator($app['phraseanet.logger'])
                     ->setDispatcher($app['dispatcher'])
                     ->setJsonBodyHelper($app['json.body_helper']);
+            }
+        );
+
+        $app['controller.api.v2.search'] = $app->share(
+            function (PhraseaApplication $app) {
+                return new SearchController($app);
             }
         );
     }
@@ -62,6 +69,8 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controller = $controllers->put('/baskets/{basket}/records/reorder', 'controller.api.v2.baskets:reorderRecordsAction')
             ->bind('api_v2_basket_records_reorder');
         $this->addBasketMiddleware($app, $controller);
+
+        $controllers->match('/search/', 'controller.api.v2.search:searchAction');
 
         return $controllers;
     }

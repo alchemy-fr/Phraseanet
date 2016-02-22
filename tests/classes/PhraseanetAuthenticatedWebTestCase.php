@@ -3,6 +3,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\DBALException;
@@ -205,6 +206,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $elasticsearchRecord->setRecordId($record->get_record_id());
 
         $result = new SearchEngineResult(
+            new SearchEngineOptions(),
             new ArrayCollection([$elasticsearchRecord]), // Records
             '', // Query
             0, // Duration
