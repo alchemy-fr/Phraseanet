@@ -13,8 +13,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
-use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -24,7 +24,7 @@ class LazaretManipulator
 {
     /** @var Application */
     private $app;
-    /** @var LazaretFileRepository */
+    /** @var EntityRepository */
     private $repository;
     /**
      * @var Filesystem
@@ -35,7 +35,7 @@ class LazaretManipulator
      */
     private $entityManager;
 
-    public function __construct(Application $app, LazaretFileRepository $repository, Filesystem $fileSystem, EntityManager $entityManager)
+    public function __construct(Application $app, EntityRepository $repository, Filesystem $fileSystem, EntityManager $entityManager)
     {
         $this->app = $app;
         $this->repository = $repository;
@@ -48,7 +48,7 @@ class LazaretManipulator
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         /** @var LazaretFile $lazaretFile */
-        $lazaretFile = $this->getLazaretFileRepository()->find($lazaret_id);
+        $lazaretFile = $this->repository->find($lazaret_id);
         if (null === $lazaretFile) {
             $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
 
@@ -90,19 +90,17 @@ class LazaretManipulator
         }
         $ret['result']['max'] = $maxTodo;
 
-        $repo = $this->getLazaretFileRepository();
-
-        $ret['result']['tobedone'] = (int) $repo->createQueryBuilder('id')
+        $ret['result']['tobedone'] = (int) $this->repository->createQueryBuilder('id')
             ->select('COUNT(id)')
             ->getQuery()
             ->getSingleScalarResult();
 
         if($maxTodo == -1) {
             // all
-            $lazaretFiles = $repo->findAll();
+            $lazaretFiles = $this->repository->findAll();
         } else {
             // limit maxTodo
-            $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
+            $lazaretFiles = $this->repository->findBy(array(), null, $maxTodo);
         }
 
         $this->entityManager->beginTransaction();
@@ -129,7 +127,7 @@ class LazaretManipulator
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
         /* @var LazaretFile $lazaretFile */
-        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
+        $lazaretFile = $this->repository->find($file_id);
 
         if (null === $lazaretFile) {
             $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
@@ -228,14 +226,6 @@ class LazaretManipulator
         }
 
         return $ret;
-    }
-
-    /**
-     * @return LazaretFileRepository
-     */
-    private function getLazaretFileRepository()
-    {
-        return $this->app['repo.lazaret-files'];
     }
 
     /**
