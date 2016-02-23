@@ -28,8 +28,8 @@ function getHome(cas, page) {
 
     switch (cas) {
         case 'QUERY':
-            selectedFacetValues = [];
-            newSearch($("#EDIT_query").val());
+            workzoneFacetsModule.resetSelectedFacets();
+            searchModule.newSearch($("#EDIT_query").val());
             break;
         case 'PUBLI':
             publicationModule.fetchPublications(page, answAjax, answAjaxrunning);
@@ -45,7 +45,7 @@ function getHome(cas, page) {
                 beforeSend: function () {
                     if (answAjaxrunning && answAjax.abort)
                         answAjax.abort();
-                    clearAnswers();
+                    searchModule.clearAnswers();
                     answAjaxrunning = true;
                     $('#answers').addClass('loading');
                 },
@@ -60,7 +60,7 @@ function getHome(cas, page) {
                 success: function (data) {
                     answAjaxrunning = false;
                     $('#answers').append(data);
-                    afterSearch();
+                    searchModule.afterSearch();
                     return;
                 }
 
@@ -123,203 +123,24 @@ function checkBases(bool) {
             $(this).find(':checkbox').prop('checked', false);
     });
 
-    checkFilters(true);
+    searchModule.checkFilters(true);
 }
 
-function checkFilters(save) {
-    var danger = false;
-    var search = {
-        bases: {},
-        fields: [],
-        dates: {},
-        status: [],
-        elasticSort: {}
 
-    };
 
-    var adv_box = $('form.phrasea_query .adv_options');
-    var container = $("#ADVSRCH_OPTIONS_ZONE");
-    var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
-    var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
-    var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
-    var scroll = fieldsSelect.scrollTop();
-
-    // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
-    $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
-
-    // hide all the fields in the "fields" select, so only the relevant ones will be shown again
-    $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
-
-    // hide all the fields in the "date field" select, so only the relevant ones will be shown again
-    $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
-
-    var nbTotalSelectedColls = 0;
-    $.each($('.sbascont', adv_box), function () {
-        var $this = $(this);
-
-        var sbas_id = $this.parent().find('input[name="reference"]').val();
-        search.bases[sbas_id] = [];
-
-        var nbCols = 0;
-        var nbSelectedColls = 0;
-        $this.find('.checkbas').each(function (idx, el) {
-            nbCols++;
-            if($(this).prop('checked')) {
-                nbSelectedColls++;
-                nbTotalSelectedColls++;
-                search.bases[sbas_id].push($(this).val());
-            }
-        });
-
-        // display the number of selected colls for the databox
-        $('.infos_sbas_' + sbas_id).empty().append(nbSelectedColls + '/' + nbCols);
-
-        // if one coll is not checked, show danger
-        if(nbSelectedColls != nbCols) {
-            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).addClass("danger");
-            danger = true;
-        }
-        else {
-            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).removeClass("danger");
-        }
-
-        if(nbSelectedColls == 0) {
-            // no collections checked for this databox
-            // hide the status bits
-            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).hide();
-            // uncheck
-            $("#ADVSRCH_SB_ZONE_"+sbas_id+" input:checkbox", container).prop("checked", false);
-        }
-        else {
-            // at least one coll checked for this databox
-            // show again the relevant fields in "sort by" select
-            $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
-            // show again the relevant fields in "from fields" select
-            $(".db_"+sbas_id, fieldsSelect).show().prop("disabled", false);
-            // show the sb
-            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
-            // show again the relevant fields in "date field" select
-            $(".db_"+sbas_id, dateFilterSelect).show().prop("disabled", false);
-        }
-    });
-
-    if (nbTotalSelectedColls == 0) {
-        // no collections checked at all
-        // hide irrelevant filters
-        $("#ADVSRCH_OPTIONS_ZONE").hide();
-    }
-    else {
-        // at least one collection checked
-        // show relevant filters
-        $("#ADVSRCH_OPTIONS_ZONE").show();
-    }
-
-    // --------- sort  --------
-
-    // if no field is selected for sort, select the default option
-    if($("option:selected:enabled", fieldsSort).length == 0) {
-        $("option.default-selection", fieldsSort).prop("selected", true);
-        $("option.default-selection", fieldsSortOrd).prop("selected", true);
-    }
-
-    search.elasticSort.by = $("option:selected:enabled", fieldsSort).val();
-    search.elasticSort.order = $("option:selected:enabled", fieldsSortOrd).val();
-
-    //--------- from fields filter ---------
-
-    // unselect the unavailable fields (or all fields if "all" is selected)
-    var optAllSelected = false;
-    $("option", fieldsSelect).each(
-        function(idx, opt) {
-            if(idx == 0) {
-                // nb: unselect the "all" field, so it acts as a button
-                optAllSelected = $(opt).is(":selected");
-            }
-            if(idx == 0 || optAllSelected || $(opt).is(":disabled") || !$(opt).is(":visible") ) {
-                $(opt).prop("selected", false);
-            }
-        }
-    );
-
-    // here only the relevant fields are selected
-    search.fields = fieldsSelect.val();
-    if(search.fields == null || search.fields.length == 0) {
-        $('#ADVSRCH_FIELDS_ZONE', container).removeClass('danger');
-        search.fields = [];
-    }
-    else {
-        $('#ADVSRCH_FIELDS_ZONE', container).addClass('danger');
-        danger = true;
-    }
-
-    //--------- status bits filter ---------
-
-    // here only the relevant sb are checked
-    for(sbas_id in search.bases) {
-        var nchecked = 0;
-        $("#ADVSRCH_SB_ZONE_"+sbas_id+" :checkbox[checked]", container).each(function () {
-            var n = $(this).attr('n');
-            search.status[n] = $(this).val().split('_');
-            nchecked++;
-        });
-        if(nchecked == 0) {
-            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
-        }
-        else {
-            $("#ADVSRCH_SB_ZONE_"+sbas_id, container).addClass('danger');
-            danger = true;
-        }
-    }
-
-    //--------- dates filter ---------
-
-    // if no date field is selected for filter, select the first option
-    $('#ADVSRCH_DATE_ZONE', adv_box).removeClass('danger');
-    if($("option.dbx:selected:enabled", dateFilterSelect).length == 0) {
-        $("option:eq(0)", dateFilterSelect).prop("selected", true);
-        $("#ADVSRCH_DATE_SELECTORS", container).hide();
-    }
-    else {
-        $("#ADVSRCH_DATE_SELECTORS", container).show();
-        search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
-        search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
-        search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
-        console.log(search.dates.minbound, search.dates.maxbound, search.dates.field)
-        if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
-            danger = true;
-            $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
-        }
-    }
-
-    fieldsSelect.scrollTop(scroll);
-
-    // if one filter shows danger, show it on the query
-    if (danger) {
-        $('#EDIT_query').addClass('danger');
-    }
-    else {
-        $('#EDIT_query').removeClass('danger');
-    }
-
-    if (save === true) {
-        setPref('search', JSON.stringify(search));
-    }
-}
-
-function toggleFilter(filter, ele) {
+/* NOT USED function toggleFilter(filter, ele) {
     var el = $('#' + filter);
     if (el.is(':hidden'))
         $(ele).parent().addClass('open');
     else
         $(ele).parent().removeClass('open');
     el.slideToggle('fast');
-}
+}*/
 
 
-function setVisible(el) {
+/* NOT USED function setVisible(el) {
     el.style.visibility = 'visible';
-}
+}*/
 
 function resize() {
     var body = $('#mainContainer');
@@ -348,11 +169,7 @@ function resize() {
 }
 
 
-function clearAnswers() {
-    $('#formAnswerPage').val('');
-    $('#searchForm input[name="nba"]').val('');
-    $('#answers, #dyn_tool').empty();
-}
+
 
 function reset_adv_search() {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
@@ -373,113 +190,23 @@ function reset_adv_search() {
 }
 
 function search_doubles() {
-    selectedFacetValues = [];
+    workzoneFacetsModule.resetSelectedFacets();
     $('#EDIT_query').val('sha256=sha256');
-    newSearch('sha256=sha256');
+    searchModule.newSearch('sha256=sha256');
 }
 
-function newSearch(query) {
-    p4.Results.Selection.empty();
 
-    clearAnswers();
-    $('#SENT_query').val(query);
-    var histo = $('#history-queries ul');
 
-    histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
 
-    var lis = $('li', histo);
-    if (lis.length > 25) {
-        $('li:last', histo).remove();
-    }
 
-    $('#idFrameC li.proposals_WZ').removeClass('active');
 
-    $('#searchForm').submit();
-    return false;
-}
-
-function beforeSearch() {
-    if (answAjaxrunning)
-        return;
-    answAjaxrunning = true;
-
-    clearAnswers();
-    $('#tooltip').css({
-        'display': 'none'
-    });
-    $('#answers').addClass('loading').empty();
-    $('#answercontextwrap').remove();
-}
-
-function afterSearch() {
-    if ($('#answercontextwrap').length === 0)
-        $('body').append('<div id="answercontextwrap"></div>');
-
-    $.each($('#answers .contextMenuTrigger'), function () {
-
-        var id = $(this).closest('.IMGT').attr('id').split('_').slice(1, 3).join('_');
-
-        $(this).contextMenu('#IMGT_' + id + ' .answercontextmenu', {
-            appendTo: '#answercontextwrap',
-            openEvt: 'click',
-            dropDown: true,
-            theme: 'vista',
-            showTransition: 'slideDown',
-            hideTransition: 'hide',
-            shadow: false
-        });
-    });
-
-    answAjaxrunning = false;
-    $('#answers').removeClass('loading');
-    $('.captionTips, .captionRolloverTips').tooltip({
-        delay: 0,
-        isBrowsable: false,
-        extraClass: 'caption-tooltip-container'
-    });
-    $('.infoTips').tooltip({
-        delay: 0
-    });
-    $('.previewTips').tooltip({
-        fixable: true
-    });
-    $('.thumb .rollovable').hover(
-        function () {
-            $('.rollover-gif-hover', this).show();
-            $('.rollover-gif-out', this).hide();
-        },
-        function () {
-            $('.rollover-gif-hover', this).hide();
-            $('.rollover-gif-out', this).show();
-        }
-    );
-    viewNbSelect();
-    $('#answers div.IMGT').draggable({
-        helper: function () {
-            $('body').append('<div id="dragDropCursor" style="position:absolute;z-index:9999;background:red;-moz-border-radius:8px;-webkit-border-radius:8px;"><div style="padding:2px 5px;font-weight:bold;">' + p4.Results.Selection.length() + '</div></div>');
-            return $('#dragDropCursor');
-        },
-        scope: "objects",
-        distance: 20,
-        scroll: false,
-        cursorAt: {
-            top: -10,
-            left: -20
-        },
-        start: function (event, ui) {
-            if (!$(this).hasClass('selected'))
-                return false;
-        }
-    });
-    linearize();
-}
 
 function initAnswerForm() {
 
     var searchForm = $('#searchForm');
     $('button[type="submit"]', searchForm).bind('click', function () {
-        selectedFacetValues = [];
-        newSearch($("#EDIT_query").val());
+        workzoneFacetsModule.resetSelectedFacets();
+        searchModule.newSearch($("#EDIT_query").val());
         return false;
     });
 
@@ -498,7 +225,7 @@ function initAnswerForm() {
             beforeSend: function (formData) {
                 if (answAjaxrunning && answAjax.abort)
                     answAjax.abort();
-                beforeSearch();
+                searchModule.beforeSearch();
             },
             error: function () {
                 answAjaxrunning = false;
@@ -522,7 +249,7 @@ function initAnswerForm() {
                     container: $('#answers')
                 });
 
-                loadFacets(datas.facets);
+                workzoneFacetsModule.loadFacets(datas.facets);
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -556,7 +283,7 @@ function initAnswerForm() {
                     $("#PREV_PAGE").unbind('click');
                 }
 
-                afterSearch();
+                searchModule.afterSearch();
             }
         });
         return false;
@@ -566,155 +293,16 @@ function initAnswerForm() {
     }
 }
 
-var selectedFacetValues = [];
 
-function loadFacets(facets) {
-    // Convert facets data to fancytree source format
-    var treeSource = _.map(facets, function(facet) {
-        // Values
-        var values = _.map(facet.values, function(value) {
-            return {
-                title: value.value + ' (' + value.count + ')',
-                query: value.query,
-                label: value.value,
-                tooltip: value.value + ' (' + value.count + ')'
-            }
-        });
-        // Facet
-        return {
-            name: facet.name,
-            title: facet.label,
-            folder: true,
-            children: values,
-            expanded: _.isUndefined(selectedFacetValues[facet.name])
-        };
-    });
 
-    treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
 
-    return getFacetsTree().reload(treeSource);
-}
 
-function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
-    var filteredSource = source,
-        ordered = [];
 
-    _.forEach(predefinedFieldOrder, function (fieldValue, index) {
-        _.forEach(source, function (facet, facetIndex) {
-            if (facet[field] !== undefined) {
-                if (facet[field] === fieldValue) {
-                    ordered.push(facet);
-                    // remove from filtered
-                    filteredSource.splice(facetIndex, 1);
-                }
-            }
-        });
-    });
 
-    var olen = filteredSource.length;
-    // fill predefined facets with non predefined facets
-    for (var i = 0; i < olen; i++) {
-        ordered.push(filteredSource[i]);
-    }
-    return ordered;
-}
 
-// from stackoverflow
-// http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects/979325#979325
-function sortFacets(field, reverse, primer) {
-    var key = function (x) {return primer ? primer(x[field]) : x[field]};
 
-    return function (a,b) {
-        var A = key(a), B = key(b);
-        return ( (A < B) ? -1 : ((A > B) ? 1 : 0) ) * [-1,1][+!!reverse];
-    }
-}
 
-function getFacetsTree() {
-    var $facetsTree = $('#proposals');
-    if (!$facetsTree.data('ui-fancytree')) {
-        $facetsTree.fancytree({
-            clickFolderMode: 3, // activate and expand
-            icons:false,
-            source: [],
-            activate: function(event, data){
-                var query = data.node.data.query;
-                if (query) {
-                    var facet = data.node.parent;
-                    selectedFacetValues[facet.title] = data.node.data;
-                    facetCombinedSearch();
-                }
-            },
-            renderNode: function(event, data){
-                var facetFilter = "";
-                if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    facetFilter = selectedFacetValues[data.node.title].label;
-
-                    var s_label = document.createElement("SPAN");
-                    s_label.setAttribute("class", "facetFilter-label");
-                    s_label.setAttribute("title", facetFilter);
-
-                    var length = 15;
-                    var facetFilterString = facetFilter;
-                    if( facetFilterString.length > length) {
-                        facetFilterString = facetFilterString.substring(0,length) + '…';
-                    }
-                    s_label.appendChild(document.createTextNode(facetFilterString));
-
-                    var s_closer = document.createElement("A");
-                    s_closer.setAttribute("class", "facetFilter-closer");
-
-                    var s_gradient = document.createElement("SPAN");
-                    s_gradient.setAttribute("class", "facetFilter-gradient");
-                    s_gradient.appendChild(document.createTextNode("\u00A0"));
-
-                    s_label.appendChild(s_gradient);
-
-                    var s_facet = document.createElement("SPAN");
-                    s_facet.setAttribute("class", "facetFilter");
-                    s_facet.appendChild(s_label);
-                    s_closer = $(s_facet.appendChild(s_closer));
-                    s_closer.data("facetTitle", data.node.title);
-
-                    s_closer.click(
-                        function(event) {
-                            event.stopPropagation();
-                            var facetTitle = $(this).data("facetTitle");
-                            delete selectedFacetValues[facetTitle];
-                            facetCombinedSearch();
-                            return false;
-                        }
-                    );
-
-                    $(".fancytree-folder", data.node.li).append(
-                        $(s_facet)
-                    );
-                }
-            }
-        });
-
-    }
-    return $facetsTree.fancytree('getTree');
-}
-
-function facetCombinedSearch() {
-    var q = $("#EDIT_query").val();
-    var q_facet = "";
-    _.each(_.values(selectedFacetValues), function(facetValue) {
-        q_facet += (q_facet ? " AND " : "") + '(' + facetValue.query + ')';
-    });
-    if(q_facet) {
-        if(q) {
-            q = '(' + q + ') AND '
-        }
-        q += q_facet;
-    }
-
-    checkFilters();
-    newSearch(q);
-}
 
 
 
@@ -779,7 +367,7 @@ function initLook() {
             $('#nperpage_value').val(ui.value);
         },
         stop: function (event, ui) {
-            setPref('images_per_page', $('#nperpage_value').val());
+            userModule.setPref('images_per_page', $('#nperpage_value').val());
         }
     });
     $('#sizeAns_slider').slider({
@@ -791,13 +379,13 @@ function initLook() {
             $('#sizeAns_value').val(ui.value);
         },
         stop: function (event, ui) {
-            setPref('images_size', $('#sizeAns_value').val());
+            userModule.setPref('images_size', $('#sizeAns_value').val());
         }
     });
 }
 
 function acceptCgus(name, value) {
-    setPref(name, value);
+    userModule.setPref(name, value);
 }
 
 function cancelCgus(id) {
@@ -856,7 +444,7 @@ function triggerShortcuts() {
     $('#keyboard-stop').bind('click', function () {
         var display = $(this).get(0).checked ? '0' : '1';
 
-        setPref('keyboard_infos', display);
+        userModule.setPref('keyboard_infos', display);
 
     });
 
@@ -910,62 +498,8 @@ function activeZoning() {
     $('#rightFrame').trigger('mousedown');
 }
 
-function RGBtoHex(R, G, B) {
-    return toHex(R) + toHex(G) + toHex(B);
-}
-function toHex(N) {
-    if (N === null) return "00";
-    N = parseInt(N);
-    if (N === 0 || isNaN(N)) return "00";
-    N = Math.max(0, N);
-    N = Math.min(N, 255);
-    N = Math.round(N);
-    return "0123456789ABCDEF".charAt((N - N % 16) / 16)
-        + "0123456789ABCDEF".charAt(N % 16);
-}
-function hsl2rgb(h, s, l) {
-    var m1, m2, hue;
-    var r, g, b;
-    s /= 100;
-    l /= 100;
-    if (s === 0)
-        r = g = b = (l * 255);
-    else {
-        if (l <= 0.5)
-            m2 = l * (s + 1);
-        else
-            m2 = l + s - l * s;
-        m1 = l * 2 - m2;
-        hue = h / 360;
-        r = HueToRgb(m1, m2, hue + 1 / 3);
-        g = HueToRgb(m1, m2, hue);
-        b = HueToRgb(m1, m2, hue - 1 / 3);
-    }
-    return {
-        r: r,
-        g: g,
-        b: b
-    };
-}
 
-function HueToRgb(m1, m2, hue) {
-    var v;
-    if (hue < 0)
-        hue += 1;
-    else if (hue > 1)
-        hue -= 1;
 
-    if (6 * hue < 1)
-        v = m1 + (m2 - m1) * hue * 6;
-    else if (2 * hue < 1)
-        v = m2;
-    else if (3 * hue < 2)
-        v = m1 + (m2 - m1) * (2 / 3 - hue) * 6;
-    else
-        v = m1;
-
-    return 255 * v;
-}
 
 $(document).ready(function () {
 
@@ -1087,12 +621,12 @@ $(document).ready(function () {
 
             var sim_b = 0.1 * hsb.b;
 
-            var sim_rgb = hsl2rgb(hsb.h, hsb.s, sim_b);
-            var sim_hex = RGBtoHex(sim_rgb.r, sim_rgb.g, sim_rgb.b);
+            var sim_rgb = utilsModule.hsl2rgb(hsb.h, hsb.s, sim_b);
+            var sim_hex = utilsModule.RGBtoHex(sim_rgb.r, sim_rgb.g, sim_rgb.b);
 
-            setPref('background-selection', hex);
-            setPref('background-selection-disabled', sim_hex);
-            setPref('fontcolor-selection', back_hex);
+            userModule.setPref('background-selection', hex);
+            userModule.setPref('background-selection-disabled', sim_hex);
+            userModule.setPref('fontcolor-selection', back_hex);
 
             $('style[title=color_selection]').empty();
 
@@ -1119,7 +653,7 @@ $(document).ready(function () {
         });
 
     startThesaurus();
-    checkFilters();
+    searchModule.checkFilters();
 
     activeZoning();
 
@@ -1648,7 +1182,7 @@ function editThis(type, value) {
 
 function toggleRemoveReg(el) {
     var state = !el.checked;
-    setPref('reg_delete', (state ? '1' : '0'));
+    userModule.setPref('reg_delete', (state ? '1' : '0'));
     p4.reg_delete = state;
 }
 
@@ -1727,7 +1261,7 @@ function checkDeleteThis(type, el) {
 
             var buttons = {};
             buttons[language.valider] = function (e) {
-                deleteBasket(el);
+                workzoneBasketModule.deleteBasket(el);
             };
 
             $('#DIALOG').empty().append(language.confirmDel).attr('title', language.attention).dialog({
@@ -1861,9 +1395,9 @@ function doSpecialSearch(qry, allbase) {
     if (allbase) {
         checkBases(true);
     }
-    selectedFacetValues = [];
+    workzoneFacetsModule.resetSelectedFacets();
     $('#EDIT_query').val(decodeURIComponent(qry).replace(/\+/g, " "));
-    newSearch(qry);
+    searchModule.newSearch(qry);
 }
 
 function clktri(id) {
@@ -1876,7 +1410,7 @@ function clktri(id) {
 
 
 // ---------------------- fcts du thesaurus
-function chgProp(path, v, k) {
+/* NOT USED function chgProp(path, v, k) {
     var q2;
     if (!k)
         k = "*";
@@ -1893,14 +1427,14 @@ function chgProp(path, v, k) {
     for (i = 0; i < q.length; i++)
         q2 += q.charCodeAt(i) == 160 ? " " : q.charAt(i);
 
-    selectedFacetValues = [];
+    workzoneFacetsModule.resetSelectedFacets();
     $('#EDIT_query').val(q);
     newSearch(q);
 
     return(false);
-}
+}*/
 
-function doDelete(lst) {
+/* NOT USED function doDelete(lst) {
     var children = '0';
     if (document.getElementById('del_children') && document.getElementById('del_children').checked)
         children = '1';
@@ -1945,116 +1479,22 @@ function doDelete(lst) {
             viewNbSelect();
         }
     });
-}
-
-function archiveBasket(basket_id) {
-    $.ajax({
-        type: "POST",
-        url: "../prod/baskets/" + basket_id + "/archive/?archive=1",
-        dataType: 'json',
-        beforeSend: function () {
-
-        },
-        success: function (data) {
-            if (data.success) {
-                var basket = $('#SSTT_' + basket_id);
-                var next = basket.next();
-
-                if (next.data("ui-droppable")) {
-                    next.droppable('destroy');
-                }
-
-                next.slideUp().remove();
-
-                if (basket.data("ui-droppable")) {
-                    basket.droppable('destroy');
-                }
-
-                basket.slideUp().remove();
-
-                if ($('#baskets .SSTT').length === 0) {
-                    return p4.WorkZone.refresh(false);
-                }
-            }
-            else {
-                alert(data.message);
-            }
-            return;
-        }
-    });
-}
+}*/
 
 
-function deleteBasket(item) {
-    if ($("#DIALOG").data("ui-dialog")) {
-        $("#DIALOG").dialog('destroy');
-    }
-
-    var k = $(item).attr('id').split('_').slice(1, 2).pop();	// id de chutier
-    $.ajax({
-        type: "POST",
-        url: "../prod/baskets/" + k + '/delete/',
-        dataType: 'json',
-        beforeSend: function () {
-
-        },
-        success: function (data) {
-            if (data.success) {
-                var basket = $('#SSTT_' + k);
-                var next = basket.next();
-
-                if (next.data("ui-droppable")) {
-                    next.droppable('destroy');
-                }
-
-                next.slideUp().remove();
-
-                if (basket.data("ui-droppable")) {
-                    basket.droppable('destroy');
-                }
-
-                basket.slideUp().remove();
-
-                if ($('#baskets .SSTT').length === 0) {
-                    return p4.WorkZone.refresh(false);
-                }
-            }
-            else {
-                alert(data.message);
-            }
-            return;
-        }
-    });
-}
-
-function deploy(deployer, todeploy_selector)
-{
-    if($(deployer).hasClass("deployer_opened")) {
-        $(deployer).removeClass("deployer_opened").addClass("deployer_closed");
-        $(todeploy_selector).hide();
-    }
-    else {
-        $(deployer).removeClass("deployer_closed").addClass("deployer_opened");
-        $(todeploy_selector).show();
-    }
-}
-
-function clksbas(el, sbas_id) {
-    var bool = $(el).prop('checked');
-    $.each($('.sbascont_' + sbas_id + ' :checkbox'), function () {
-        this.checked = bool;
-    });
-
-    checkFilters(true);
-}
 
 
-function advSearch(event) {
+
+
+
+
+/* NOT USED function advSearch(event) {
     event.cancelBubble = true;
     //  alternateSearch(false);
     $('#idFrameC .tabs a.adv_search').trigger('click');
-}
+}*/
 
+// look_box
 function start_page_selector() {
     var el = $('#look_box_settings select[name=start_page]');
 
@@ -2069,7 +1509,7 @@ function start_page_selector() {
             break;
     }
 }
-
+// look_box
 function set_start_page() {
     var el = $('#look_box_settings select[name=start_page]');
     var val = el.val();
@@ -2078,28 +1518,15 @@ function set_start_page() {
     var start_page_query = $('#look_box_settings input[name=start_page_value]').val();
 
     if (val === 'QUERY') {
-        setPref('start_page_query', start_page_query);
+        userModule.setPref('start_page_query', start_page_query);
     }
 
-    setPref('start_page', val);
+    userModule.setPref('start_page', val);
 
 }
 
-function basketPrefs() {
-    $('#basket_preferences').dialog({
-        closeOnEscape: true,
-        resizable: false,
-        width: 450,
-        height: 500,
-        modal: true,
-        draggable: false,
-        overlay: {
-            backgroundColor: '#000',
-            opacity: 0.7
-        }
-    }).dialog('open');
-}
 
+// preferences modal
 function lookBox(el, event) {
     $("#look_box").dialog({
         closeOnEscape: true,
@@ -2162,7 +1589,7 @@ function saveeditPbar(idesc, ndesc) {
     document.getElementById("saveeditPbarN").innerHTML = ndesc;
 }
 
-function getSelText() {
+/* NOT USED function getSelText() {
     var txt = '';
     if (window.getSelection) {
         txt = window.getSelection();
@@ -2176,9 +1603,9 @@ function getSelText() {
     else
         return;
     return txt;
-}
+}*/
 
-function getWinPosAsXML() {
+/* NOT USED function getWinPosAsXML() {
     var ret = '<win id="search" ratio="' + ($('#idFrameC').outerWidth() / bodySize.x) + '"/>';
 
     if ($('#idFrameE').is(':visible') && $('#EDITWINDOW').is(':visible'))
@@ -2186,7 +1613,7 @@ function getWinPosAsXML() {
 
 
     return ret;
-}
+}*/
 
 function saveWindows() {
     var key = '';
@@ -2201,7 +1628,7 @@ function saveWindows() {
         key = 'search_window';
         value = $('#idFrameC').outerWidth() / bodySize.x;
     }
-    setPref(key, value);
+    userModule.setPref(key, value);
 }
 
 function gotopage(pag) {
@@ -2210,7 +1637,7 @@ function gotopage(pag) {
     $('#searchForm').submit();
 }
 
-function addFilterMulti(filter, link, sbasid) {
+/* NOT USED function addFilterMulti(filter, link, sbasid) {
     var clone = $('#filter_multi_' + sbasid + '_' + filter);
     var orig = clone;
     if (!$('#filter_multi_' + sbasid + '_' + filter).is(':visible')) {
@@ -2228,9 +1655,9 @@ function addFilterMulti(filter, link, sbasid) {
         $(link).removeClass('filterActive');
     }
     return false;
-}
+}*/
 
-function autoorder() {
+/* NOT USED function autoorder() {
     var val = $.trim($('#auto_order').val());
 
     if (val === '')
@@ -2278,7 +1705,7 @@ function autoorder() {
         last_moved = elem;
     }
 
-}
+}*/
 
 
 

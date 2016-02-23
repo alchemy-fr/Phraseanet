@@ -1701,7 +1701,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
         },
         stop: function () {
             hsplit1();
-            setPref('editing_top_box', Math.floor($('#EDIT_TOP').height() * 100 / $('#EDIT_ALL').height()));
+            userModule.setPref('editing_top_box', Math.floor($('#EDIT_TOP').height() * 100 / $('#EDIT_ALL').height()));
             setSizeLimits();
         }
     });
@@ -1714,7 +1714,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
             setPreviewEdit();
         },
         stop: function () {
-            setPref('editing_right_box', Math.floor($('#divS').width() * 100 / $('#EDIT_MID_L').width()));
+            userModule.setPref('editing_right_box', Math.floor($('#divS').width() * 100 / $('#EDIT_MID_L').width()));
             vsplit1();
             setSizeLimits();
         }
@@ -1730,7 +1730,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
                 setPreviewEdit();
             },
             stop: function () {
-                setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()));
+                userModule.setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()));
                 vsplit2();
                 setSizeLimits();
             }
@@ -1746,7 +1746,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
         },
         change: function (event, ui) {
             p4.edit.diapoSize = $(ui.value)[0];
-            setPref("editing_images_size", p4.edit.diapoSize);
+            userModule.setPref("editing_images_size", p4.edit.diapoSize);
         }
     });
 

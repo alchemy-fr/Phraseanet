@@ -776,10 +776,10 @@ function doThesSearch(type, sbid, term, field)
     v = '[' + term + ']';
   else
     v = field + '="' + term + '"';
-  selectedFacetValues = [];
+  workzoneFacetsModule.resetSelectedFacets();
   $('#EDIT_query').val(v);
-  checkFilters();
-  newSearch(v);
+  searchModule.checkFilters();
+  searchModule.newSearch(v);
 }
 
 

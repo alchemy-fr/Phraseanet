@@ -48,7 +48,7 @@ var publicationModule = (function () {
                         });
                     }
                 }
-                afterSearch();
+                searchModule.afterSearch();
             });
 
     });
@@ -178,7 +178,7 @@ var publicationModule = (function () {
                 if (ajaxState.isRunning && ajaxState.query.abort)
                     answAjax.abort();
                 if (page === 0)
-                    clearAnswers();
+                    searchModule.clearAnswers();
                 ajaxState.isRunning = true;
                 $answers.addClass('loading');
             },
@@ -307,7 +307,7 @@ var publicationModule = (function () {
                     container: $answers
                 });
 
-                afterSearch();
+                searchModule.afterSearch();
                 if (page > 0) {
                     $answers.stop().animate({
                         scrollTop: $answers.scrollTop() + $answers.height()

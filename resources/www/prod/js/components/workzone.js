@@ -1,6 +1,6 @@
 var p4 = p4 || {};
 
-(function (p4) {
+var workzoneModule = (function (p4) {
     function refreshBaskets(baskId, sort, scrolltobottom, type) {
         type = typeof type === 'undefined' ? 'basket' : type;
 
