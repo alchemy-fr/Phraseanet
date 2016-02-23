@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2016-02-24T17:16:43Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -3157,9 +3157,9 @@
         <target state="translated">Générer un fichier audio</target>
         <jms:reference-file line="44">Media/Subdef/Audio.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image">
+      <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image" approved="yes">
         <source>Generates an image</source>
-        <target state="new">Generates an image</target>
+        <target state="translated">Generates an image</target>
         <jms:reference-file line="47">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efd1f5fd46c31701d2e70555e9ab45efe27b4048" resname="Geonames server address" approved="yes">
@@ -6164,9 +6164,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Dispositif ciblé</target>
         <jms:reference-file line="381">classes/databox/subdef.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5fb2e4a63ebe9160da52c28fba2f61029c85c8d6" resname="Task Edition">
+      <trans-unit id="5fb2e4a63ebe9160da52c28fba2f61029c85c8d6" resname="Task Edition" approved="yes">
         <source>Task Edition</source>
-        <target state="new">Task Edition</target>
+        <target state="translated">Task edition</target>
         <jms:reference-file line="12">task-manager/task-editor/task.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44b242091b360ff04d1cba06fbccad177e657d51" resname="Task Scheduler" approved="yes">
@@ -10343,9 +10343,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Statistiques de visualisation</target>
         <jms:reference-file line="4">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel">
+      <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel" approved="yes">
         <source>previewLinkLabel</source>
-        <target state="needs-translation">Prévisualiser</target>
+        <target state="translated">Prévisualiser</target>
         <jms:reference-file line="27">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/Share/record.html.twig</jms:reference-file>
@@ -11820,9 +11820,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">subdef.document</target>
         <jms:reference-file line="212">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable">
+      <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable" approved="yes">
         <source>subdef.orderable</source>
-        <target state="new">subdef.orderable</target>
+        <target state="translated">Orderable</target>
         <jms:reference-file line="218">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="252">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
