@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RecordEditSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
+use Alchemy\Phrasea\Record\RecordUpdateSubscriber;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -53,8 +54,8 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
                 $app['phraseanet.content-negotiation.custom_formats']
             );
         });
-        $app['phraseanet.record-edit-subscriber'] = $app->share(function () {
-            return new RecordEditSubscriber();
+        $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
+            return new RecordEditSubscriber($app['phraseanet.appbox']);
         });
 
         $app['dispatcher'] = $app->share(
@@ -66,6 +67,7 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+                $dispatcher->addSubscriber(new RecordUpdateSubscriber($app['phraseanet.appbox']));
 
                 return $dispatcher;
             })
