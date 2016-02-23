@@ -219,10 +219,8 @@ class Indexer
             $work($bulk);
             // Flush just in case, it's a noop when already done
             $bulk->flush();
+        } finally {
             $this->restoreShardRefreshing();
-        } catch (\Exception $e) {
-            $this->restoreShardRefreshing();
-            throw $e;
         }
     }
 

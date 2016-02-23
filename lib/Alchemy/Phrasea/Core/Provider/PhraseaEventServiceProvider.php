@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
@@ -18,14 +19,16 @@ use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RecordEditSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
+use Alchemy\Phrasea\Record\RecordUpdateSubscriber;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseaEventServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['phraseanet.logout-subscriber'] = $app->share(function (Application $app) {
+        $app['phraseanet.logout-subscriber'] = $app->share(function () {
             return new LogoutSubscriber();
         });
         $app['phraseanet.locale-subscriber'] = $app->share(function (Application $app) {
@@ -53,11 +56,26 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
             );
         });
         $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
-            return new RecordEditSubscriber();
+            return new RecordEditSubscriber(new LazyLocator($app, 'phraseanet.appbox'));
         });
+
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
+                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+
+                return $dispatcher;
+            })
+        );
     }
 
     public function boot(Application $app)
     {
+        // Nothing to do
     }
 }

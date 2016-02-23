@@ -11,15 +11,11 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
-use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
-use Assert\Assertion;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,12 +35,11 @@ class SearchController extends Controller
         $ret['results'] = [];
 
         foreach ($search_result->getResults() as $record) {
-            /** @var ElasticsearchRecord $record */
             $ret['results'][] = [
                 'databox_id' => $record->getDataboxId(),
                 'record_id' => $record->getRecordId(),
                 'collection_id' => $record->getCollectionId(),
-                'version' => $record->getESVersion(),
+                'version' => $record->getUpdated()->getTimestamp(),
             ];
         }
 

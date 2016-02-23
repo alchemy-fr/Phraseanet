@@ -224,7 +224,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $connbas = $this->databox->get_connection();
 
-        $sql = 'UPDATE record SET type = :type WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET moddate = NOW(), type = :type WHERE record_id = :record_id';
         $connbas->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if ($old_type !== $type) {
@@ -235,6 +235,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    public function touch()
+    {
+        $this->databox->get_connection()->executeUpdate(
+            'UPDATE record SET moddate = NOW() WHERE record_id = :record_id',
+            ['record_id' => $this->getRecordId()]
+        );
+
+        $this->delete_data_from_cache();
     }
 
     /**
@@ -271,7 +281,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         if ($this->databox->get_connection()->executeUpdate(
-            'UPDATE record SET mime = :mime WHERE record_id = :record_id',
+            'UPDATE record SET moddate = NOW(), mime = :mime WHERE record_id = :record_id',
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
@@ -444,7 +454,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
-        $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
+        $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
 
         $params = [
             ':coll_id'   => $collection->get_coll_id(),
@@ -796,7 +806,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $this->getDatabox()->get_connection()->executeUpdate(
-            'UPDATE record SET originalname = :originalname WHERE record_id = :record_id',
+            'UPDATE record SET moddate = NOW(), originalname = :originalname WHERE record_id = :record_id',
             ['originalname' => $original_name, 'record_id' => $this->getRecordId()]
         );
 
@@ -908,7 +918,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     protected function set_xml(DOMDocument $dom_doc)
     {
         $connbas = $this->getDatabox()->get_connection();
-        $sql = 'UPDATE record SET xml = :xml WHERE record_id= :record_id';
+        $sql = 'UPDATE record SET moddate = NOW(), xml = :xml WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(
             [
@@ -1090,7 +1100,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $connection = $this->databox->get_connection();
 
         $connection->executeUpdate(
-            'UPDATE record SET status = :status WHERE record_id= :record_id',
+            'UPDATE record SET moddate = NOW(), status = :status WHERE record_id= :record_id',
             ['status' => bindec($status), 'record_id' => $this->record_id]
         );
 
@@ -1719,12 +1729,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $stmt->closeCursor();
 
-        $sql = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $this->delete_data_from_cache();
+        $this->touch();
 
         return $this;
     }
@@ -1748,12 +1753,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $sql = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $this->delete_data_from_cache();
+        $this->touch();
 
         return $this;
     }
