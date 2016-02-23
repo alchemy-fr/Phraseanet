@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -37,12 +38,13 @@ class SearchController extends Controller
         $ret['search_type'] = $search_result->getOptions()->getSearchType();
         $ret['results'] = [];
 
-        foreach ($this->convertSearchResultToRecords($search_result->getResults()) as $record) {
+        foreach ($search_result->getResults() as $record) {
+            /** @var ElasticsearchRecord $record */
             $ret['results'][] = [
                 'databox_id' => $record->getDataboxId(),
                 'record_id' => $record->getRecordId(),
                 'collection_id' => $record->getCollectionId(),
-                'updated_at' => $record->getUpdated(),
+                'version' => $record->getESVersion(),
             ];
         }
 
@@ -85,12 +87,6 @@ class SearchController extends Controller
             'warning' => (string)$search_result->getWarning(),
             'query_time' => $search_result->getDuration(),
             'search_indexes' => $search_result->getIndexes(),
-            'suggestions' => array_map(
-                function (SearchEngineSuggestion $suggestion) {
-                    return $suggestion->toArray();
-                },
-                $search_result->getSuggestions()->toArray()
-            ),
             'facets' => $search_result->getFacets(),
             'results' => [],
         ];
@@ -120,52 +116,5 @@ class SearchController extends Controller
     private function getSearchEngineLogger()
     {
         return $this->app['phraseanet.SE.logger'];
-    }
-
-    /**
-     * @param RecordInterface[] $records
-     * @return array[]
-     */
-    private function groupRecordIdsPerDataboxId($records)
-    {
-        $number = 0;
-        $perDataboxRecordIds = [];
-
-        foreach ($records as $record) {
-            $databoxId = $record->getDataboxId();
-
-            if (!isset($perDataboxRecordIds[$databoxId])) {
-                $perDataboxRecordIds[$databoxId] = [];
-            }
-
-            $perDataboxRecordIds[$databoxId][$record->getRecordId()] = $number++;
-        }
-
-        return $perDataboxRecordIds;
-    }
-
-    /**
-     * @param RecordInterface[] $records
-     * @return \record_adapter[]
-     */
-    private function convertSearchResultToRecords($records)
-    {
-        Assertion::allIsInstanceOf($records, RecordInterface::class);
-
-        $perDataboxRecordIds = $this->groupRecordIdsPerDataboxId($records);
-
-        $records = [];
-
-        foreach ($perDataboxRecordIds as $databoxId => $recordIds) {
-            $databox = $this->findDataboxById($databoxId);
-
-            foreach ($databox->getRecordRepository()->findByRecordIds(array_keys($recordIds)) as $record) {
-                $records[$recordIds[$record->getRecordId()]] = $record;
-            }
-        }
-
-        ksort($records);
-
-        return $records;
     }
 }
