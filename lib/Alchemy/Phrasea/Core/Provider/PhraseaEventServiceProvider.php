@@ -20,12 +20,13 @@ use Alchemy\Phrasea\Core\Event\Subscriber\RecordEditSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseaEventServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['phraseanet.logout-subscriber'] = $app->share(function (Application $app) {
+        $app['phraseanet.logout-subscriber'] = $app->share(function () {
             return new LogoutSubscriber();
         });
         $app['phraseanet.locale-subscriber'] = $app->share(function (Application $app) {
@@ -52,12 +53,27 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
                 $app['phraseanet.content-negotiation.custom_formats']
             );
         });
-        $app['phraseanet.record-edit-subscriber'] = $app->share(function (Application $app) {
+        $app['phraseanet.record-edit-subscriber'] = $app->share(function () {
             return new RecordEditSubscriber();
         });
+
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
+                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+
+                return $dispatcher;
+            })
+        );
     }
 
     public function boot(Application $app)
     {
+        // Nothing to do
     }
 }
