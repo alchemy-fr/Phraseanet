@@ -10,6 +10,8 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
+use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
@@ -19,21 +21,30 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordEditSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var \appbox
-     */
-    private $appbox;
-
-    public function __construct(\appbox $appbox)
+    public static function getSubscribedEvents()
     {
-        $this->appbox = $appbox;
+        return array(
+            PhraseaEvents::RECORD_EDIT => 'onEdit',
+            PhraseaEvents::RECORD_UPLOAD => 'onEdit',
+            RecordEvents::ROTATE => 'onRotate',
+        );
+    }
+
+    /**
+     * @var callable
+     */
+    private $appboxLocator;
+
+    public function __construct(callable $appboxLocator)
+    {
+        $this->appboxLocator = $appboxLocator;
     }
 
     public function onEdit(RecordEdit $event)
     {
         $record = $event->getRecord();
 
-        $databox = $this->appbox->get_databox($record->getDataboxId());
+        $databox = $this->getRecordDatabox($record);
 
         $metaStructure = $databox->get_meta_structure();
         $editDateField = false;
@@ -44,26 +55,27 @@ class RecordEditSubscriber implements EventSubscriberInterface
         }
 
         if ($editDateField instanceof \databox_field) {
-            $this->updateRecord($this->convertToRecordAdapter($databox, $record), $editDateField);
+            $this->updateRecord($this->convertToRecordAdapter($record), $editDateField);
         }
     }
 
     /**
-     * @param \databox $databox
      * @param RecordInterface $record
-     * @return \record_adapter
+     * @return \databox
      */
-    private function convertToRecordAdapter(\databox $databox, RecordInterface $record)
+    private function getRecordDatabox(RecordInterface $record)
     {
-        if ($record instanceof \record_adapter) {
-            return $record;
-        }
+        return $this->getApplicationBox()->get_databox($record->getDataboxId());
+    }
 
-        $recordAdapter = $databox->getRecordRepository()->find($record->getRecordId());
+    /**
+     * @return \appbox
+     */
+    private function getApplicationBox()
+    {
+        $callable = $this->appboxLocator;
 
-        Assertion::isInstanceOf($recordAdapter, \record_adapter::class);
-
-        return $recordAdapter;
+        return $callable();
     }
 
     private function updateRecord(\record_adapter $record, $field)
@@ -75,7 +87,6 @@ class RecordEditSubscriber implements EventSubscriberInterface
         }
         $this->updateEditField($record, $field);
     }
-
 
     private function updateEditField(\record_adapter $record, \databox_field $editField)
     {
@@ -99,11 +110,29 @@ class RecordEditSubscriber implements EventSubscriberInterface
         ), true);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @param RecordInterface $record
+     * @return \record_adapter
+     */
+    private function convertToRecordAdapter(RecordInterface $record)
     {
-        return array(
-            PhraseaEvents::RECORD_EDIT => 'onEdit',
-            PhraseaEvents::RECORD_UPLOAD => 'onEdit',
-        );
+        if ($record instanceof \record_adapter) {
+            return $record;
+        }
+
+        $databox = $this->getRecordDatabox($record);
+
+        $recordAdapter = $databox->getRecordRepository()->find($record->getRecordId());
+
+        Assertion::isInstanceOf($recordAdapter, \record_adapter::class);
+
+        return $recordAdapter;
+    }
+
+    public function onRecordChange(RecordEvent $recordEvent)
+    {
+        $record = $this->convertToRecordAdapter($recordEvent->getRecord());
+
+        $record->touch();
     }
 }
