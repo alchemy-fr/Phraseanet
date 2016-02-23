@@ -354,7 +354,10 @@ var publicationModule = (function () {
             return fetchPublications(page);
         },
         publishRecords: function (type, value) {
-            return publishRecords(type, value)
+            return publishRecords(type, value);
+        },
+        openModal: function(data) {
+            return _createPublicationModal(data);
         }
     };
 })();
