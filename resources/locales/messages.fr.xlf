@@ -10338,9 +10338,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Statistiques de visualisation</target>
         <jms:reference-file line="4">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel">
+      <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel" approved="yes">
         <source>previewLinkLabel</source>
-        <target state="new">Prévisualiser</target>
+        <target state="translated">Prévisualiser</target>
         <jms:reference-file line="27">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/Share/record.html.twig</jms:reference-file>
