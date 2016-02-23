@@ -487,7 +487,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/a0e2c2b8a1d2c9c405fc9663b698f56a20831946",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/9048a99dd328cd2d01efaad16e6af648d11ad2b4",
                 "reference": "7b1c88c02ab8c0d4e997fd61c13c8fd4c3ce5216",
                 "shasum": ""
             },
@@ -4724,7 +4724,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7de84a436dfddf7d407b9cc6f08afa6fa56ff774",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c18abc6df90257ddbbe2654a98cc5cc7be804411",
                 "reference": "7de84a436dfddf7d407b9cc6f08afa6fa56ff774",
                 "shasum": ""
             },
