@@ -237,15 +237,16 @@
     function positioning(event) {
         helper.body.html(title);
         helper.body.show();
-        $this = $.tooltip.current;
+        var $this = $.tooltip.current;
+        var tooltipSettings = settings($this) ? settings($this) : {};
+        var fixedPosition = tooltipSettings.fixable ? tooltipSettings.fixable : false;
         // fix PNG background for IE
-        if (settings($this).fixPNG)
+        if (tooltipSettings.fixPNG)
             helper.parent.fixPNG();
-        if (settings($this).outside) {
+        if (tooltipSettings.outside) {
             var width = 'auto';
             var height = 'auto';
-            var tooltipId = settings($.tooltip.current).id;
-
+            var tooltipId = tooltipSettings.id;
             var $defaultTips = $('#' + tooltipId);
             var $audioTips = $('#' + tooltipId + ' .audioTips');
             var $imgTips = $('#' + tooltipId + ' .imgTips');
@@ -254,7 +255,7 @@
             var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
 
             // get image or video original dimensions
-            var recordWidth = 240;
+            var recordWidth = 260;
             var recordHeight = 0;
             var tooltipVerticalOffset = 75;
             var tooltipHorizontalOffset = 35;
@@ -278,6 +279,7 @@
                 recordWidth = parseInt($imgTips[0].style.width);
                 recordHeight = parseInt($imgTips[0].style.height);
                 $imgTips.css({display: 'block', margin: '0 auto'});
+                $selector = $imgTips;
             }
 
             else if ($documentTips[0] && shouldResize) {
@@ -359,6 +361,8 @@
 
                 var $origEventTarget = $(event.target);
 
+                // previewTips
+
                 // since event target can have different positionning, try to get common closest parent:
                 var $eventTarget = $origEventTarget.closest('.diapo');
 
@@ -379,6 +383,7 @@
                     // fallback on original target if nothing found:
                     $eventTarget = $origEventTarget;
                 }
+
                 var recordPosition = $eventTarget.offset();
 
                 var totalViewportWidth = viewportDimensions.x;
@@ -393,6 +398,7 @@
                 var availableHeight = bottomAvailableSpace;
                 var tooltipSize = {width: tooltipWidth, height: tooltipHeight};
                 var position = 'top';
+
 
                 if (topAvailableSpace > bottomAvailableSpace) {
                     shouldBeOnTop = true;
@@ -410,6 +416,12 @@
                 if (bottomAvailableSpace > leftAvailableSpace && bottomAvailableSpace > rightAvailableSpace) {
                     position = 'bottom';
                 } else if (shouldBeOnTop && availableHeight > leftAvailableSpace && availableHeight > rightAvailableSpace) {
+                    position = 'top';
+                }
+
+                if (fixedPosition === true) {
+                    leftAvailableSpace = totalViewportWidth;
+                    topAvailableSpace = totalViewportHeight;
                     position = 'top';
                 }
 
@@ -444,50 +456,72 @@
 
                 }
 
-                // try to vertical center, relative to source:
-                if (position === 'left' || position === 'right') {
-                    var verticalSpace = topAvailableSpace + (recordHeightOffset / 2) + (tooltipHeight / 2)
-                    if (verticalSpace < totalViewportHeight) {
-                        // tooltip can be aligned vertically
-                        top = topAvailableSpace + (recordHeightOffset / 2) - (tooltipHeight / 2);
-                    } else {
-                        top = totalViewportHeight - tooltipHeight;
-                    }
-                    top = top < 0 ? 0 : top;
-                }
+                // tooltipHeight = tooltipHeight + 18;
+                // tooltipWidth = tooltipWidth + 28;
+                if (fixedPosition === true) {
+                    left = totalViewportWidth / 2 - (tooltipWidth / 2);
+                    top = totalViewportHeight / 2 - (tooltipHeight / 2);
+                } else {
 
-                // try to horizontal center, relative to source:
-                if (position === 'top' || position === 'bottom') {
-                    // push to left
-                    // push to right
-                    var takeLeftSpace = (tooltipSize.width / 2) + leftAvailableSpace;
-                    var takeRightSpace = (tooltipSize.width / 2) + rightAvailableSpace;
-                    // if centering on top or bottom and tooltip is offcanvas
-                    if (takeLeftSpace > totalViewportWidth || takeRightSpace > totalViewportWidth) {
 
-                        if (leftAvailableSpace > (totalViewportWidth / 2)) {
-                            // push at left
-                            left = 0;
+                    // try to vertical center, relative to source:
+                    if (position === 'left' || position === 'right') {
+                        var verticalSpace = topAvailableSpace + (recordHeightOffset / 2) + (tooltipHeight / 2)
+                        if (verticalSpace < totalViewportHeight) {
+                            // tooltip can be aligned vertically
+                            top = topAvailableSpace + (recordHeightOffset / 2) - (tooltipHeight / 2);
                         } else {
-                            // push at right
-                            left = totalViewportWidth - tooltipSize.width;
+                            top = totalViewportHeight - tooltipHeight;
                         }
-                    } else {
-                        // center
-                        left = leftAvailableSpace - (tooltipSize.width / 2) + (recordWidthOffset / 2);
+                        top = top < 0 ? 0 : top;
+                    }
+
+                    // try to horizontal center, relative to source:
+                    if (position === 'top' || position === 'bottom') {
+                        // push to left
+                        // push to right
+                        var takeLeftSpace = (tooltipWidth / 2) + leftAvailableSpace;
+                        var takeRightSpace = (tooltipWidth / 2) + rightAvailableSpace;
+                        // if centering on top or bottom and tooltip is offcanvas
+                        if (takeLeftSpace > totalViewportWidth || takeRightSpace > totalViewportWidth) {
+
+                            if (leftAvailableSpace > (totalViewportWidth / 2)) {
+                                // push at left
+                                left = 0;
+                            } else {
+                                // push at right
+                                left = totalViewportWidth - tooltipWidth;
+                            }
+                        } else {
+                            // center
+                            left = leftAvailableSpace - (tooltipWidth / 2) + (recordWidthOffset / 2);
+                        }
                     }
                 }
 
-                if (shouldResize) {
-                    rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
-                }
 
-                helper.parent.css({
-                    width: shouldResize ? Math.round(tooltipWidth) : 'auto',
-                    height: shouldResize ? Math.round(tooltipHeight) : 'auto',
+                var resizeProperties = {
                     left: left,
                     top: top
-                });
+                };
+
+                if (shouldResize) {
+                    // rescale $selector css:
+                    rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
+                    // reset non used css properties:
+                    resizeProperties['max-width'] = '';
+                    resizeProperties['min-width'] = '';
+                } else {
+                    // ensure tooltip width match with left position
+                    resizeProperties['max-width'] = Math.round(tooltipWidth);
+                    resizeProperties['min-width'] = Math.round(tooltipWidth);
+                }
+
+                resizeProperties['width'] = shouldResize ? Math.round(tooltipWidth) : 'auto';
+                resizeProperties['height'] = shouldResize ? Math.round(tooltipHeight) : 'auto';
+
+
+                helper.parent.css(resizeProperties);
             }
         }
         handle.apply($this, arguments);
