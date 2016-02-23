@@ -4,6 +4,4 @@
 // To update configuration, use bin/console plugins:* commands.
 
 return array(
-    'plugin-web-gallery' => __DIR__ . '/web-gallery/views',
-    __DIR__ . '/web-gallery/views',
 );

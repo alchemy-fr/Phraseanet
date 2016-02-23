@@ -4,8 +4,6 @@
 // To update configuration, use bin/console plugins:* commands.
 
 return call_user_func(function () {
-    require __DIR__ . '/web-gallery/vendor/autoload.php';
-    require __DIR__ . '/unibail-authentication/vendor/autoload.php';
     $loader = require __DIR__ . '/../vendor/autoload.php';
 
     return $loader;
