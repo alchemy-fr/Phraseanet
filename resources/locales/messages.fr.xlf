@@ -3159,7 +3159,7 @@
       </trans-unit>
       <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image" approved="yes">
         <source>Generates an image</source>
-        <target state="translated">Generates an image</target>
+        <target state="translated">Générer une image</target>
         <jms:reference-file line="47">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efd1f5fd46c31701d2e70555e9ab45efe27b4048" resname="Geonames server address" approved="yes">
@@ -6166,7 +6166,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="5fb2e4a63ebe9160da52c28fba2f61029c85c8d6" resname="Task Edition" approved="yes">
         <source>Task Edition</source>
-        <target state="translated">Task edition</target>
+        <target state="translated">Edition de la tâche</target>
         <jms:reference-file line="12">task-manager/task-editor/task.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44b242091b360ff04d1cba06fbccad177e657d51" resname="Task Scheduler" approved="yes">
@@ -11822,7 +11822,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable" approved="yes">
         <source>subdef.orderable</source>
-        <target state="translated">Orderable</target>
+        <target state="translated">Peut être commandé</target>
         <jms:reference-file line="218">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="252">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
