@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -57,18 +56,18 @@ class ESRecordSerializer extends AbstractSerializer
         }
 
         return [
-            'databox_id'             => $record->get_sbas_id(),
-            'record_id'              => $record->get_record_id(),
-            'collection_id'          => $record->get_collection()->get_coll_id(),
-            'base_id'                => $record->get_base_id(),
-            'mime_type'              => $record->get_mime(),
+            'databox_id'             => $record->getDataboxId(),
+            'record_id'              => $record->getRecordId(),
+            'collection_id'          => $record->getCollectionId(),
+            'base_id'                => $record->getBaseId(),
+            'mime_type'              => $record->getMimeType(),
             'title'                  => $record->get_title(),
             'original_name'          => $record->get_original_name(),
-            'updated_on'             => $record->get_modification_date()->format(DATE_ATOM),
-            'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
-            'sha256'                 => $record->get_sha256(),
+            'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
+            'created_on'             => $record->getCreated()->format(DATE_ATOM),
+            'sha256'                 => $record->getSha256(),
             'technical_informations' => $technicalInformation,
-            'phrasea_type'           => $record->get_type(),
+            'phrasea_type'           => $record->getType(),
             'type'                   => $record->isStory() ? 'story' : 'record',
             'uuid'                   => $record->getUuid(),
             'caption'                => $caption,
