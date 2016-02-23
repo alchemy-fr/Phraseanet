@@ -694,13 +694,6 @@ class Application extends SilexApplication
     {
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
-                $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.locale-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.content-negotiation-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.maintenance-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
-                $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
                 $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
                 $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
                 $dispatcher->addSubscriber(new RegistrationSubscriber($app));

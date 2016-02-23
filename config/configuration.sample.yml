@@ -220,14 +220,17 @@ crossdomain:
             secure: 'false'
             headers: 'Authorization,X-Foo*'
 embed_bundle:
-    video_player: 'videojs'
-    video_autoplay: false
-    video_available_speeds:
-        - 0.5
-        - 1
-        - 1.5
-        - 2
-    audio_player: 'videojs'
-    audio_autoplay: false
+    video:
+        player: videojs
+        autoplay: false
+        coverSubdef: previewx4
+        available-speeds:
+            - 1
+            - 1.5
+            - 3
+    audio:
+        player: videojs
+        autoplay: false
     document:
-        enable_pdfjs: true
+        player: flexpaper
+        enable-pdfjs: true

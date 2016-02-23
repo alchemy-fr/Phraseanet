@@ -4,7 +4,9 @@ namespace Alchemy\Phrasea\Model;
 
 interface RecordInterface
 {
-    /** @return string */
+    /**
+     * @return string
+     */
     public function getId();
 
     /**

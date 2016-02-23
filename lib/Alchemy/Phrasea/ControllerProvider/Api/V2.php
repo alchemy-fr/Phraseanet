@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
 use Alchemy\Phrasea\Controller\Api\LazaretController;
+use Alchemy\Phrasea\Controller\Api\SearchController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
@@ -38,6 +39,12 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.api.v2.lazaret'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new LazaretController($app));
+            }
+        );
+
+        $app['controller.api.v2.search'] = $app->share(
+            function (PhraseaApplication $app) {
+                return new SearchController($app);
             }
         );
     }
@@ -78,6 +85,8 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controller = $controllers->post('/quarantine/item/{lazaret_id}/add/', 'controller.api.v2.lazaret:quarantineItemAddAction')
             ->bind('api_v2_quarantine_item_add');
         $this->addQuarantineMiddleware($controller);
+
+        $controllers->match('/search/', 'controller.api.v2.search:searchAction');
 
         return $controllers;
     }

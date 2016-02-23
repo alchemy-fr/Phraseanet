@@ -51,27 +51,49 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $highlight = [];
 
     /**
-     * @param string $_index
-     * @param string $_type
-     * @param string $_id
-     * @param int $_version
-     * @param float $_score
+     * @param string $index
+     * @param string $type
+     * @param string $id
+     * @param int $version
+     * @param float $score
      */
-    public function setESData($_index, $_type, $_id, $_version, $_score)
+    public function setESData($index, $type, $id, $version, $score)
     {
-        $this->_index = $_index;
-        $this->_type = $_type;
-        $this->_id = $_id;
-        $this->_version = $_version;
-        $this->_score = $_score;
+        $this->_index = $index;
+        $this->_type = $type;
+        $this->_id = $id;
+        $this->_version = $version;
+        $this->_score = $score;
     }
 
-    // todo: add getters for other ES data _index, _type, _id, _score
+    /**
+     * @return string
+     */
+    public function getIndex()
+    {
+        return $this->_index;
+    }
 
     /**
-     * @return int the _version value from ES for the document
+     * @return string
      */
-    public function getESVersion()
+    public function getScore()
+    {
+        return $this->_score;
+    }
+
+    /**
+     * @return string
+     */
+    public function getElasticsearchType()
+    {
+        return $this->_type;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVersion()
     {
         return $this->_version;
     }

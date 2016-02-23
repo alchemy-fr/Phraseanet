@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -31,9 +30,44 @@ class SearchEngineResult
     /** @var FacetsResponse */
     protected $facets;
 
-    public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error,
-        $warning, ArrayCollection $suggestions, $propositions, $indexes, FacetsResponse $facets = null)
-    {
+    /**
+     * @var SearchEngineOptions
+     */
+    private $options;
+
+    /**
+     * SearchEngineResult constructor.
+     * @param SearchEngineOptions $options
+     * @param ArrayCollection $results
+     * @param string $query
+     * @param float $duration
+     * @param int $offsetStart
+     * @param int $available
+     * @param int $total
+     * @param mixed $error
+     * @param mixed $warning
+     * @param ArrayCollection $suggestions
+     * @param array $propositions
+     * @param array $indexes
+     * @param FacetsResponse|null $facets
+     */
+    public function __construct(
+        SearchEngineOptions $options,
+        ArrayCollection $results,
+        $query,
+        $duration,
+        $offsetStart,
+        $available,
+        $total,
+        $error,
+        $warning,
+        ArrayCollection $suggestions,
+        $propositions,
+        $indexes,
+        FacetsResponse $facets = null
+    ) {
+        $this->options = $options;
+
         $this->results = $results;
         $this->query = $query;
         $this->duration = (float) $duration;
@@ -46,8 +80,14 @@ class SearchEngineResult
         $this->propositions = $propositions;
         $this->indexes = $indexes;
         $this->facets = $facets;
+    }
 
-        return $this;
+    /**
+     * @return SearchEngineOptions
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**
