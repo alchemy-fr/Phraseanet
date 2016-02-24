@@ -10,6 +10,7 @@
 
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Media\MediaTypeFactory;
+use Assert\Assertion;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdefsStructure implements IteratorAggregate, Countable
@@ -213,6 +214,25 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $this->load_subdefs();
 
         return $this;
+    }
+
+    /**
+     * @param SubdefGroup[] $groups
+     */
+    public function updateSubdefGroups($groups)
+    {
+        Assertion::allIsInstanceOf($groups, SubdefGroup::class);
+
+        $dom_xp = $this->databox->get_xpath_structure();
+
+        foreach ($groups as $group) {
+            $nodes = $dom_xp->query('//record/subdefs/subdefgroup[@name="' . $group->getName() . '"]');
+
+            /** @var DOMElement $node */
+            foreach ($nodes as $node) {
+                $node->setAttribute('document_orderable', ($group->isDocumentOrderable() ? 'true' : 'false'));
+            }
+        }
     }
 
     /**
