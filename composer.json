@@ -99,7 +99,6 @@
         "zend/gdata": "~1.12.1"
     },
     "require-dev":  {
-        "phpunit/phpunit": "~4.5",
         "mikey179/vfsStream": "~1.5"
     },
     "autoload":     {
