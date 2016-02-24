@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2016-02-23T18:21:21Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2016-02-24T17:18:45Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1592,8 +1592,8 @@
       <trans-unit id="b030d590c21c95efe2ba71da1d0f1198a7e655b4" resname="Choisir" approved="yes">
         <source>Choisir</source>
         <target state="translated">Kiezen</target>
-        <jms:reference-file line="276">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="324">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="294">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="342">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="7">prod/Baskets/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="6">prod/Story/Reorder.html.twig</jms:reference-file>
       </trans-unit>
@@ -2419,17 +2419,17 @@
       <trans-unit id="a908567d2c0292366061394efd6d40b139e033c5" resname="ERREUR : La classe de subdef est necessaire et egal a &quot;thumbnail&quot;,&quot;preview&quot; ou &quot;document&quot;">
         <source>ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"</source>
         <target state="new">ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"</target>
-        <jms:reference-file line="226">lib/classes/databox.php</jms:reference-file>
+        <jms:reference-file line="227">lib/classes/databox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0fbdefee02956c126a413bd8785d536c267f34d9" resname="ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire" approved="yes">
         <source>ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire</source>
         <target state="translated">FOUT : De namen van de thumbnail moeten uniek zijn per group van thumbnails</target>
-        <jms:reference-file line="222">lib/classes/databox.php</jms:reference-file>
+        <jms:reference-file line="223">lib/classes/databox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d9fa5b7c5ab681f407e91fba8cedb0f50e0db30" resname="ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name" approved="yes">
         <source>ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name</source>
         <target state="translated">FOUT : ALLE TAGS subdefgroup vereisen een atribuut naam</target>
-        <jms:reference-file line="211">lib/classes/databox.php</jms:reference-file>
+        <jms:reference-file line="212">lib/classes/databox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5301648dcf6b53cefc9ed52999aaa92d4603cae0" resname="Edit" approved="yes">
         <source>Edit</source>
@@ -6196,7 +6196,7 @@
       <trans-unit id="ec4e670686b423ccb3b0976660cc70f9c5a22782" resname="Telechargeable" approved="yes">
         <source>Telechargeable</source>
         <target state="translated">Downloadable</target>
-        <jms:reference-file line="229">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="247">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ec1ae061c27325c7ecb543adf91235e22cbc9ed" resname="Template" approved="yes">
         <source>Template</source>
@@ -7323,7 +7323,7 @@
       <trans-unit id="e96594f04471c4da6c0cdc8ca87f85e6dcb3f2be" resname="Write Metas" approved="yes">
         <source>Write Metas</source>
         <target state="translated">Schrijf Metas</target>
-        <jms:reference-file line="263">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="281">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9ebeadaf2d2237a35176827d093952ad6cc88f5e" resname="YYYY/MM/DD">
         <source>YYYY/MM/DD</source>
@@ -9051,7 +9051,7 @@
         <jms:reference-file line="93">admin/collection/suggested_value.html.twig</jms:reference-file>
         <jms:reference-file line="162">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="95">admin/publications/list.html.twig</jms:reference-file>
-        <jms:reference-file line="214">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="232">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="21">Bridge/Dailymotion/actioncontainers.html.twig</jms:reference-file>
         <jms:reference-file line="35">Bridge/Dailymotion/actionelements.html.twig</jms:reference-file>
         <jms:reference-file line="26">actions/Bridge/disconnected.html.twig</jms:reference-file>
@@ -9107,7 +9107,7 @@
         <jms:reference-file line="56">web/admin/setup.html.twig</jms:reference-file>
         <jms:reference-file line="157">admin/statusbit/edit.html.twig</jms:reference-file>
         <jms:reference-file line="34">web/admin/structure.html.twig</jms:reference-file>
-        <jms:reference-file line="360">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="378">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="41">user/import/view.html.twig</jms:reference-file>
         <jms:reference-file line="274">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="115">web/developers/application_form.html.twig</jms:reference-file>
@@ -9251,8 +9251,8 @@
       <trans-unit id="7e7b33d679caaf09ae03ab03c7144e908cbbcc27" resname="classe" approved="yes">
         <source>classe</source>
         <target state="translated">klasse</target>
-        <jms:reference-file line="240">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="244">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="258">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="262">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1c16a91b08b05b18794eba5c5b6587f265a47180" resname="classe d'acces" approved="yes">
         <source>classe d'acces</source>
@@ -9338,7 +9338,7 @@
         <target>document</target>
         <jms:reference-file line="229">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="189">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="245">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="263">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="28">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="956c99f946a95f60d02e45468e0ed1f6fdf7fc08" resname="document original" approved="yes">
@@ -9777,7 +9777,7 @@
       <trans-unit id="024b6bde2b38cc102db445880d243021b5ed8509" resname="mediatype">
         <source>mediatype</source>
         <target>mediatype</target>
-        <jms:reference-file line="272">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="290">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7816eedb154cda7ceb6771153f7bda9806aba410" resname="meta-datas">
         <source>meta-datas</source>
@@ -9803,7 +9803,7 @@
         <source>no</source>
         <target state="translated">Nee</target>
         <jms:reference-file line="75">web/account/sessions.html.twig</jms:reference-file>
-        <jms:reference-file line="331">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="349">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="14">user/import/view.html.twig</jms:reference-file>
         <jms:reference-file line="69">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
@@ -10299,7 +10299,7 @@
         <source>preview</source>
         <target state="translated">voorvertoning</target>
         <jms:reference-file line="190">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="246">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="264">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdb5ea435d0e0d2d8e9dc7e2dc925c031406385c" resname="preview:: Description" approved="yes">
         <source>preview:: Description</source>
@@ -11816,10 +11816,16 @@
         <target state="translated">vindt als filter terug in de zoek</target>
         <jms:reference-file line="149">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="6292a8663176cc229b6c77e5a170fc8fcd72b36a" resname="subdef.document">
+        <source>subdef.document</source>
+        <target state="new">subdef.document</target>
+        <jms:reference-file line="212">web/admin/subdefs.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable">
         <source>subdef.orderable</source>
         <target state="new">subdef.orderable</target>
-        <jms:reference-file line="234">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="218">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="252">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6288710b74b759d2d67d9e644b586815610f65b" resname="substitution" approved="yes">
         <source>substitution</source>
@@ -12575,7 +12581,7 @@
         <source>tout le monde</source>
         <target state="translated">iedereen</target>
         <jms:reference-file line="191">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="247">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="265">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44534e351243f0a11c8156dc68ed446ff4069153" resname="tout le sport" approved="yes">
         <source>tout le sport</source>
@@ -12696,7 +12702,7 @@
         <source>yes</source>
         <target state="translated">Ja</target>
         <jms:reference-file line="76">web/account/sessions.html.twig</jms:reference-file>
-        <jms:reference-file line="330">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="348">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="67">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="646b0ebbe9829e44e9e99e9ab991a526f758001d" resname="you are about to change the  representation thumbnail of your video" approved="yes">
