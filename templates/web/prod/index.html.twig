@@ -223,9 +223,9 @@
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
                                             <div class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button"
-                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="checkBases(true);" />
+                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="searchModule.toggleDatabase(true);" />
                                                 <input class="btn btn-inverse" type="button"
-                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" onclick="checkBases(false);" />
+                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" onclick="searchModule.toggleDatabase(false);" />
                                             </div>
                                             {{_self.bas_list(module_prod, search_datas)}}
                                         </div>
@@ -233,7 +233,7 @@
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="sbasfiltercont">
                                             <div  class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="reset_adv_search();" />
+                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="searchModule.resetSearch();" />
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">
@@ -393,21 +393,9 @@
             <div id="idFrameT" class="PNB ui-corner-top">
                 <div class="tools PNB10 btn-toolbar">
                     {% include "prod/toolbar.html.twig" with {acl: app.getAclForUser(app.getAuthenticatedUser())} %}
-                    <a href="#" id="settings" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
+                    <a href="#" id="settings" onclick="preferencesModule.lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
                 </div>
-                <div id="answers" class=" PNB10">
-                    <script>
-                        $(document).ready(function(){
-                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
-                                getHome('PUBLI');
-                            {% endif %}
-                        });
-                    </script>
-                </div>
+                <div id="answers" class=" PNB10"></div>
                 <div id="answers_status">
                     <div class="infos">
                         <span id="tool_results">
@@ -623,7 +611,7 @@
                         <h1>{{ 'Affichage au demarrage' | trans }}</h1>
                         <form class="form-inline">
                             {% set start_page_pref = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') %}
-                            <select class="span4" name="start_page" onchange="start_page_selector();">
+                            <select class="span4" name="start_page" onchange="preferencesModule.setInitialStateOptions();">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
                                     {{ 'Ma derniere question' | trans }}
                                 </option>
@@ -638,7 +626,7 @@
                                 </option>
                             </select>
                             <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
-                            <input type="button" class="btn btn-inverse" value="{{'boutton::valider'  | trans }}" onclick="set_start_page();" />
+                            <input type="button" class="btn btn-inverse" value="{{'boutton::valider'  | trans }}" onclick="preferencesModule.setInitialState();" />
                         </form>
                     </div>
                 </div>
@@ -754,6 +742,16 @@
     <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
+
+
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
+        {% set initialAppState = 'default' %}
+        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
+        {% set initialAppState = 'default' %}
+        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
+        {% set initialAppState = 'publication' %}
+        {% endif %}
+
         ProductionApplication.bootstrap({
             lang: "{{ app.locale }}",
             baseUrl: '{{ app['request'].getUriForPath('/') }}',
@@ -762,7 +760,8 @@
                 url: "{{ path('list_notifications') }}",
                 moduleId: 1,
                 userId: {{app.getAuthenticatedUser().getId()}}
-            }
+            },
+            initialState: "{{ initialAppState }}"
         })
 
         $(document).ready(function(){

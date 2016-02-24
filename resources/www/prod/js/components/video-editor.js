@@ -1,5 +1,4 @@
-;
-(function (document) {
+var videoEditorModule = (function (document) {
 
     /*****************
      * Canva Object
@@ -218,7 +217,7 @@
     /**
      * THUMB EDITOR
      */
-    var ThumbEditor = function (videoId, canvaId, outputOptions) {
+    var ThumbnailEditor = function (videoId, canvaId, outputOptions) {
 
         var domElement = document.getElementById(videoId);
 
@@ -313,7 +312,11 @@
         };
     };
 
-    document.THUMB_EDITOR = ThumbEditor;
+    // document.THUMB_EDITOR = ThumbEditor;
+
+    return {
+        ThumbnailEditor: ThumbnailEditor
+    }
 
 })(document);
 

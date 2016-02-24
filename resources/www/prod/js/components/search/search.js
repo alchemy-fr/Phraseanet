@@ -12,6 +12,41 @@ var searchModule = (function (p4) {
             $(todeploy_selector).show();
         }
     }
+    /**
+     * adv search : check/uncheck all the collections (called by the buttons "all"/"none")
+     *
+     * @param bool
+     */
+    function toggleDatabase(bool) {
+        $('form.phrasea_query .sbas_list').each(function () {
+
+            var sbas_id = $(this).find('input[name=reference]:first').val();
+            if (bool)
+                $(this).find(':checkbox').prop('checked', true);
+            else
+                $(this).find(':checkbox').prop('checked', false);
+        });
+
+        checkFilters(true);
+    }
+
+    function resetSearch() {
+        var container = $("#ADVSRCH_OPTIONS_ZONE");
+        var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
+        var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
+        var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
+
+        $("option.default-selection", fieldsSort).prop("selected", true);
+        $("option.default-selection", fieldsSortOrd).prop("selected", true);
+
+        $('#ADVSRCH_FIELDS_ZONE option').prop("selected", false);
+        $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').prop("checked", false);
+
+        $("option:eq(0)", dateFilterSelect).prop("selected", true);
+        $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
+        $('form.adv_search_bind input:text').val('');
+        toggleDatabase(true);
+    }
 
     function selectDatabase(el, sbas_id) {
         console.log('ok select')
@@ -309,11 +344,13 @@ var searchModule = (function (p4) {
 
     return {
         checkFilters: checkFilters,
+        toggleDatabase: toggleDatabase,
         toggleCollection: toggleCollection,
         selectDatabase: selectDatabase,
         beforeSearch: beforeSearch,
         afterSearch: afterSearch,
         clearAnswers: clearAnswers,
-        newSearch: newSearch
+        newSearch: newSearch,
+        resetSearch: resetSearch
     };
 }(p4));
