@@ -1063,7 +1063,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $record = $this;
         $wanted_subdefs = array_map(function(databox_subdef $subDef) {
            return  $subDef->get_name();
-        }, array_filter($subDefDefinitions, function(databox_subdef $subDef) use ($record) {
+        }, array_filter(iterator_to_array($subDefDefinitions), function(databox_subdef $subDef) use ($record) {
             return !$record->has_subdef($subDef->get_name());
         }));
 

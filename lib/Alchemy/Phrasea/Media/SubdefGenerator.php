@@ -50,6 +50,7 @@ class SubdefGenerator
     {
         if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
+            $subdefs = [];
         }
 
         $this->dispatch(
