@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\Record\RecordRepository;
+use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Status\StatusStructure;
@@ -892,7 +893,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @return databox_subdefsStructure|databox_subdef[][]
+     * @return databox_subdefsStructure|SubdefGroup[]
      */
     public function get_subdef_structure()
     {

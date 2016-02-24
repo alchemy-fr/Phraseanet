@@ -204,6 +204,24 @@
 
         {% for subdefgroup, subdeflist in subdefs %}
         <div id="{{subdefgroup}}">
+            <div>
+                <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
+                    <tbody>
+                    <tr>
+                        <td style="width:120px;">
+                            <h2>{{ 'subdef.document' | trans }}</h2>
+                        </td>
+                        <td style="width:250px;"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'subdef.orderable' | trans }}</td>
+                        <td><input type="checkbox" name="subdefsgroups[{{ subdefgroup }}][document_orderable]" {% if subdeflist.isDocumentOrderable() %}checked="checked" {% endif %}value="1"/></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             {% for subdefname , subdef in subdeflist %}
             <div>
                 <input type="hidden" name="subdefs[]" value="{{subdefgroup}}_{{subdefname}}"/>

@@ -73,7 +73,7 @@ class ToolsController extends Controller
                             continue;
                         }
 
-                        $label = $databoxSubdefs[$subdefName]->get_label($this->app['locale']);
+                        $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
                     }
                     $recordAccessibleSubdefs[] = array(
                         'name' => $subdef->get_name(),

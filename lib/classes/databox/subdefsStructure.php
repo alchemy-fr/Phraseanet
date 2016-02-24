@@ -8,14 +8,17 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Databox\SubdefGroup;
+use Alchemy\Phrasea\Media\MediaTypeFactory;
+use Assert\Assertion;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdefsStructure implements IteratorAggregate, Countable
 {
     /**
-     * @var array|databox_subdef[][]
+     * @var SubdefGroup[]
      */
-    protected $AvSubdefs = [];
+    protected $subdefGroups = [];
 
     /**
      * @var TranslatorInterface
@@ -33,22 +36,20 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->AvSubdefs);
+        return new ArrayIterator($this->subdefGroups);
     }
 
     public function count()
     {
         $n = 0;
-        foreach ($this->AvSubdefs as $subdefs) {
+
+        foreach ($this->subdefGroups as $subdefs) {
             $n += count($subdefs);
         }
 
         return $n;
     }
 
-    /**
-     * @param  databox $databox
-     */
     public function __construct(databox $databox, TranslatorInterface $translator)
     {
         $this->databox = $databox;
@@ -59,16 +60,14 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
 
     /**
      * @param string $searchGroup
-     * @return databox_subdef[]
+     * @return SubdefGroup|databox_subdef[]
      */
     public function getSubdefGroup($searchGroup)
     {
         $searchGroup = strtolower($searchGroup);
 
-        foreach ($this->AvSubdefs as $groupname => $subdefgroup) {
-            if ($searchGroup == $groupname) {
-                return $subdefgroup;
-            }
+        if (isset($this->subdefGroups[$searchGroup])) {
+            return $this->subdefGroups[$searchGroup];
         }
 
         return null;
@@ -78,55 +77,36 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     {
         $sx_struct = $this->databox->get_sxml_structure();
 
-        $avSubdefs = [
-            'image' => [],
-            'video' => [],
-            'audio' => [],
-            'document' => [],
-            'flash' => []
-        ];
-
         if (! $sx_struct) {
             return;
         }
 
         $subdefgroup = $sx_struct->subdefs[0];
 
+        $mediaTypeFactory = new MediaTypeFactory();
+
         foreach ($subdefgroup as $k => $subdefs) {
             $subdefgroup_name = strtolower($subdefs->attributes()->name);
+            $isDocumentOrderable = isset($subdefs->attributes()->document_orderable)
+                ? p4field::isyes($subdefs->attributes()->document_orderable) : true;
 
-            if ( ! isset($avSubdefs[$subdefgroup_name])) {
-                $avSubdefs[$subdefgroup_name] = [];
-            }
-
-            foreach ($subdefs as $sd) {
-                $subdef_name = strtolower($sd->attributes()->name);
-
-                $type = null;
-                switch ($subdefgroup_name) {
-                    case 'audio':
-                        $type = new \Alchemy\Phrasea\Media\Type\Audio();
-                        break;
-                    case 'image':
-                        $type = new \Alchemy\Phrasea\Media\Type\Image();
-                        break;
-                    case 'video':
-                        $type = new \Alchemy\Phrasea\Media\Type\Video();
-                        break;
-                    case 'document':
-                        $type = new \Alchemy\Phrasea\Media\Type\Document();
-                        break;
-                    case 'flash':
-                        $type = new \Alchemy\Phrasea\Media\Type\Flash();
-                        break;
-                    default:
-                        continue;
+            if (! isset($this->subdefGroups[$subdefgroup_name])) {
+                try {
+                    $type = $mediaTypeFactory->createMediaType($subdefgroup_name);
+                } catch (RuntimeException $exception) {
+                    // Skip undefined media type group
+                    continue;
                 }
 
-                $avSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd, $this->translator);
+                $this->subdefGroups[$subdefgroup_name] = new SubdefGroup($subdefgroup_name, $type, $isDocumentOrderable);
+            }
+
+            $group = $this->getSubdefGroup($subdefgroup_name);
+
+            foreach ($subdefs as $sd) {
+                $group->addSubdef(new databox_subdef($group->getType(), $sd, $this->translator));
             }
         }
-        $this->AvSubdefs = $avSubdefs;
     }
 
     /**
@@ -137,11 +117,10 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      */
     public function hasSubdef($subdef_type, $subdef_name)
     {
-        $type = strtolower($subdef_type);
-        $name = strtolower($subdef_name);
+        $group = $this->getSubdefGroup(strtolower($subdef_type));
 
-        if (isset($this->AvSubdefs[$type][$name])) {
-            return true;
+        if ($group) {
+            return $group->hasSubdef(strtolower($subdef_name));
         }
 
         return false;
@@ -159,22 +138,26 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $type = strtolower($subdef_type);
         $name = strtolower($subdef_name);
 
-        if (isset($this->AvSubdefs[$type]) && isset($this->AvSubdefs[$type][$name])) {
-            return $this->AvSubdefs[$type][$name];
+        $group = $this->getSubdefGroup(strtolower($subdef_type));
+
+        if (!$group) {
+            throw new Exception_Databox_SubdefNotFound(sprintf('Databox subdef name `%s` of type `%s` not found', $name, $type));
         }
 
-        throw new Exception_Databox_SubdefNotFound(sprintf('Databox subdef name `%s` of type `%s` not found', $name, $type));
+        try {
+            return $group->getSubdef($name);
+        } catch (RuntimeException $exception) {
+            throw new Exception_Databox_SubdefNotFound(sprintf('Databox subdef name `%s` of type `%s` not found', $name, $type), $exception);
+        }
     }
 
     /**
-     *
-     * @param  string                   $group
-     * @param  string                   $name
-     * @return databox_subdefsStructure
+     * @param string $group
+     * @param string $name
+     * @return self
      */
     public function delete_subdef($group, $name)
     {
-
         $dom_struct = $this->databox->get_dom_structure();
         $dom_xp = $this->databox->get_xpath_structure();
         $nodes = $dom_xp->query(
@@ -189,8 +172,8 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             $parent->removeChild($node);
         }
 
-        if (isset($AvSubdefs[$group]) && isset($AvSubdefs[$group][$name])) {
-            unset($AvSubdefs[$group][$name]);
+        if ($this->hasSubdef($group, $name)) {
+            $this->getSubdefGroup($group)->removeSubdef($name);
         }
 
         $this->databox->saveStructure($dom_struct);
@@ -199,10 +182,9 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
-     * @param  string                   $groupname
-     * @param  string                   $name
-     * @param  string                   $class
+     * @param  string $groupname
+     * @param  string $name
+     * @param  string $class
      * @return databox_subdefsStructure
      */
     public function add_subdef($groupname, $name, $class)
@@ -232,6 +214,25 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $this->load_subdefs();
 
         return $this;
+    }
+
+    /**
+     * @param SubdefGroup[] $groups
+     */
+    public function updateSubdefGroups($groups)
+    {
+        Assertion::allIsInstanceOf($groups, SubdefGroup::class);
+
+        $dom_xp = $this->databox->get_xpath_structure();
+
+        foreach ($groups as $group) {
+            $nodes = $dom_xp->query('//record/subdefs/subdefgroup[@name="' . $group->getName() . '"]');
+
+            /** @var DOMElement $node */
+            foreach ($nodes as $node) {
+                $node->setAttribute('document_orderable', ($group->isDocumentOrderable() ? 'true' : 'false'));
+            }
+        }
     }
 
     /**
