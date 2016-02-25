@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Event\StatusChanged;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -1095,8 +1097,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $xml = new DOMDocument();
         $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML, true));
 
-        $this->set_xml($xml);
-        $this->reindex();
+        $this->set_xml($xml);   // will do this->reindex()
 
         unset($xml);
 
@@ -1182,10 +1183,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  string         $status
+     * @param  string $status
+     * @param  bool   $doSendEvent    // set to false when only private sb(3..0) are changed
+     *
      * @return record_adapter
      */
-    public function set_binary_status($status)
+    public function set_binary_status($status, $doSendEvent=true)
     {
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
@@ -1209,6 +1212,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
+
+        if($doSendEvent) {
+            $this->app['dispatcher']->dispatch(PhraseaEvents::STATUS_CHANGED, new StatusChanged($this));
+        }
 
         return $this;
     }
