@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
+use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -65,12 +66,16 @@ class OrderController extends Controller
             $order->setOrderUsage($orderUsage);
 
             $this->fillOrderFromRequest($records, $order);
+            $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
 
             $success = true;
             $msg = $this->app->trans('The records have been properly ordered');
         } catch (OrderControllerException $exception) {
             $success = false;
             $msg = $exception->getMessage();
+        } catch (\Exception $exception) {
+            $success = false;
+            $msg = $this->app->trans('An error occurred');
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -281,32 +286,23 @@ class OrderController extends Controller
         return $this->app['repo.orders'];
     }
 
-    private function fillOrderFromRequest(RecordsRequest $records, Order $order)
+    /**
+     * @param \record_adapter[] $records
+     * @param Order $order
+     */
+    private function fillOrderFromRequest($records, Order $order)
     {
-        $collectionIds = [];
-
-        foreach ($records->collections() as $collection) {
-            $collectionIds[] = $collection->get_base_id();
-        }
-
-        $hasOneAdmin = [];
-
-        foreach ($this->app['repo.collection-references']->findHavingOrderMaster($collectionIds) as $reference) {
-            $hasOneAdmin[$reference->getBaseId()] = $reference;
-        }
-
-        if (!empty(array_diff($collectionIds, array_keys($hasOneAdmin)))) {
-            throw new OrderControllerException($this->app->trans('There is no one to validate orders, please contact an administrator'));
-        }
+        $this->assertAllRecordsHaveOrderMaster($records);
 
         $entityManager = $this->getEntityManager();
 
         foreach ($records as $key => $record) {
             $orderElement = new OrderElement();
+            $orderElement->setBaseId($record->getBaseId());
+            $orderElement->setRecordId($record->getRecordId());
+
             $order->addElement($orderElement);
-            $orderElement->setOrder($order);
-            $orderElement->setBaseId($record->get_base_id());
-            $orderElement->setRecordId($record->get_record_id());
+
             $entityManager->persist($orderElement);
         }
 
@@ -314,12 +310,32 @@ class OrderController extends Controller
 
         $entityManager->persist($order);
 
-        try {
-            $entityManager->flush();
+        $entityManager->flush();
+    }
 
-            $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
-        } catch (\Exception $e) {
-            throw new OrderControllerException($this->app->trans('An error occurred'), 0, $e);
+    /**
+     * @param \record_adapter[] $records
+     */
+    private function assertAllRecordsHaveOrderMaster($records)
+    {
+        Assertion::allIsInstanceOf($records, \record_adapter::class);
+
+        $collectionIds = [];
+
+        foreach ($records as $record) {
+            $collectionIds[] = $record->getBaseId();
+        }
+
+        $collectionIds = array_unique($collectionIds);
+
+        $hasOneAdmin = [];
+
+        foreach ($this->app['repo.collection-references']->findHavingOrderMaster($collectionIds) as $reference) {
+            $hasOneAdmin[] = $reference->getBaseId();
+        }
+
+        if (!empty(array_diff($collectionIds, $hasOneAdmin))) {
+            throw new OrderControllerException($this->app->trans('There is no one to validate orders, please contact an administrator'));
         }
     }
 }
