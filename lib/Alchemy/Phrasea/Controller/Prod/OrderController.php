@@ -21,9 +21,8 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
 use Alchemy\Phrasea\Model\Entities\Order;
-use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
-use Assert\Assertion;
+use Alchemy\Phrasea\Order\OrderFiller;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -65,7 +64,16 @@ class OrderController extends Controller
             $order->setDeadline($deadLine);
             $order->setOrderUsage($orderUsage);
 
-            $this->fillOrderFromRequest($records, $order);
+            $filler = new OrderFiller($this->app['repo.collection-references'], $this->getEntityManager());
+
+            try {
+                $filler->assertAllRecordsHaveOrderMaster($records);
+            } catch (\RuntimeException $exception) {
+                throw new OrderControllerException($this->app->trans('There is no one to validate orders, please contact an administrator'));
+            }
+
+            $filler->fillOrder($order, $records);
+
             $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
 
             $success = true;
@@ -284,58 +292,5 @@ class OrderController extends Controller
     private function getOrderRepository()
     {
         return $this->app['repo.orders'];
-    }
-
-    /**
-     * @param \record_adapter[] $records
-     * @param Order $order
-     */
-    private function fillOrderFromRequest($records, Order $order)
-    {
-        $this->assertAllRecordsHaveOrderMaster($records);
-
-        $entityManager = $this->getEntityManager();
-
-        foreach ($records as $key => $record) {
-            $orderElement = new OrderElement();
-            $orderElement->setBaseId($record->getBaseId());
-            $orderElement->setRecordId($record->getRecordId());
-
-            $order->addElement($orderElement);
-
-            $entityManager->persist($orderElement);
-        }
-
-        $order->setTodo($order->getElements()->count());
-
-        $entityManager->persist($order);
-
-        $entityManager->flush();
-    }
-
-    /**
-     * @param \record_adapter[] $records
-     */
-    private function assertAllRecordsHaveOrderMaster($records)
-    {
-        Assertion::allIsInstanceOf($records, \record_adapter::class);
-
-        $collectionIds = [];
-
-        foreach ($records as $record) {
-            $collectionIds[] = $record->getBaseId();
-        }
-
-        $collectionIds = array_unique($collectionIds);
-
-        $hasOneAdmin = [];
-
-        foreach ($this->app['repo.collection-references']->findHavingOrderMaster($collectionIds) as $reference) {
-            $hasOneAdmin[] = $reference->getBaseId();
-        }
-
-        if (!empty(array_diff($collectionIds, $hasOneAdmin))) {
-            throw new OrderControllerException($this->app->trans('There is no one to validate orders, please contact an administrator'));
-        }
     }
 }
