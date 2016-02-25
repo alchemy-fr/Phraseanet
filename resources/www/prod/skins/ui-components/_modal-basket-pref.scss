@@ -1,0 +1,146 @@
+#BasketBrowser {
+  h1 {
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .Browser {
+    background-color: $mediumBackgroundColor;
+  }
+
+  .Basket {
+    background-color: $mediumBackgroundColor;
+    display: none;
+
+    .thumb_wrapper {
+      margin: 5px;
+    }
+  }
+
+  .result {
+    position: relative;
+    height: 100px;
+
+    .PNB10 {
+      overflow: hidden;
+    }
+
+    table {
+      height: 80px;
+    }
+
+    &.odd {
+      background-color: $darkBackgroundColor;
+    }
+
+    td.thumbnail {
+      display: table-cell;
+      width: 105px;
+      height: 80px;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      line-height: 18px;
+      text-align: center;
+      vertical-align: top;
+
+      &.content {
+        width: 390px;
+        vertical-align: top;
+      }
+
+      .counter {
+        bottom: 18px;
+        font-size: 14px;
+        position: relative;
+        right: 5px;
+        text-align: right;
+      }
+    }
+  }
+
+  .results {
+    .datas {
+      top: 50px;
+      bottom: 50px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .header, .footer {
+      height: 50px;
+    }
+
+    .header {
+      bottom: auto;
+    }
+
+    .footer {
+      top: auto;
+    }
+
+    .result h1.title {
+      font-size: 14px;
+    }
+  }
+
+  form {
+    h1 {
+      margin: 10px 0;
+    }
+
+    ul li {
+      padding: 0;
+      border-top: 1px solid #9A9A9A;
+      &.first {
+        border-top: none;
+      }
+      label {
+        padding: 3px 0 2px 20px;
+      }
+    }
+  }
+
+  h1.title .loader {
+    display: none;
+    margin: 4px;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  table {
+    width: 100%;
+    border: none;
+    vertical-align: top;
+    td.paginator {
+      text-align: right;
+    }
+  }
+
+  input {
+    display: none;
+    &.Query {
+      padding: 3px;
+      display: block;
+      border-radius: 4px;
+      width: 155px;
+      padding-left: 25px;
+    }
+  }
+
+  label {
+    cursor: pointer;
+    color: #9a9a9a;
+  }
+
+  input:checked + label,
+  label.selected {
+    background-color: $highlightDarkerColor;
+    color: $highlightTextColor;
+  }
+}
