@@ -158,7 +158,7 @@ $(function() {
                     success: function(datas){
                         if(datas.success) {
                             confirmBox.Close();
-                            publicator_reload_publicator(managerUrl);
+                            pushModule.reloadBridge(managerUrl);
                         } else {
                             confirmBox.Close();
                             var alertBox = p4.Dialog.Create({

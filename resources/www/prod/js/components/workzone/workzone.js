@@ -1,6 +1,77 @@
 var p4 = p4 || {};
 
 var workzoneModule = (function (p4) {
+    var warnOnRemove = true;
+    $(document).ready(function () {
+        activeBaskets();
+
+        $('a.story_unfix').on('click', function () {
+            unfix($(this).attr('href'));
+
+            return false;
+        });
+
+        p4.WorkZone = {
+            'Selection': new Selectable($('#baskets'), {selector: '.CHIM'}),
+            'refresh': refreshBaskets,
+            'addElementToBasket': function (sbas_id, record_id, event, singleSelection) {
+                singleSelection = !!singleSelection || false;
+
+                if ($('#baskets .SSTT.active').length === 1) {
+                    return dropOnBask(event, $('#IMGT_' + sbas_id + '_' + record_id), $('#baskets .SSTT.active'), singleSelection);
+                } else {
+                    humane.info(language.noActiveBasket);
+                }
+            },
+            "removeElementFromBasket": WorkZoneElementRemover,
+            'reloadCurrent': function () {
+                var sstt = $('#baskets .content:visible');
+                if (sstt.length === 0)
+                    return;
+                getContent(sstt.prev());
+            },
+            'close': function () {
+                var frame = $('#idFrameC'), that = this;
+
+                if (!frame.hasClass('closed')) {
+                    // hide tabs content
+                    $('#idFrameC .tabs > .ui-tabs-panel').hide();
+
+                    frame.data('openwidth', frame.width());
+                    frame.animate({width: 100},
+                        300,
+                        'linear',
+                        function () {
+                            prodModule.answerSizer();
+                            prodModule.linearizeUi();
+                            $('#answers').trigger('resize');
+                        });
+                    frame.addClass('closed');
+                    $('.escamote', frame).hide();
+                    frame.unbind('click.escamote').bind('click.escamote', function () {
+                        that.open();
+                    });
+                }
+            },
+            'open': function () {
+                var frame = $('#idFrameC');
+
+                if (frame.hasClass('closed')) {
+                    var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
+                    frame.css({width: width});
+                    prodModule.answerSizer();
+                    prodModule.linearizeUi();
+                    frame.removeClass('closed');
+                    $('.escamote', frame).show();
+                    frame.unbind('click.escamote');
+                    // show tabs content
+                    var activeTabIdx = $('#idFrameC .tabs').tabs("option", "active");
+                    $('#idFrameC .tabs > div:eq(' + activeTabIdx + ')').show();
+                }
+            }
+        };
+    });
+
     function refreshBaskets(baskId, sort, scrolltobottom, type) {
         type = typeof type === 'undefined' ? 'basket' : type;
 
@@ -80,7 +151,7 @@ var workzoneModule = (function (p4) {
     function WorkZoneElementRemover(el, confirm) {
         var context = el.data('context');
 
-        if (confirm !== true && $(el).hasClass('groupings') && p4.reg_delete) {
+        if (confirm !== true && $(el).hasClass('groupings') && warnOnRemove) {
             var buttons = {};
 
             buttons[language.valider] = function () {
@@ -92,7 +163,7 @@ var workzoneModule = (function (p4) {
                 $("#DIALOG-baskets").dialog('close').remove();
             };
 
-            var texte = '<p>' + language.confirmRemoveReg + '</p><div><input type="checkbox" onchange="toggleRemoveReg(this);"/>' + language.hideMessage + '</div>';
+            var texte = '<p>' + language.confirmRemoveReg + '</p><div><input type="checkbox" onchange="workzoneModule.toggleRemoveWarning(this);"/>' + language.hideMessage + '</div>';
             $('body').append('<div id="DIALOG-baskets"></div>');
             $("#DIALOG-baskets").attr('title', language.removeTitle)
                 .empty()
@@ -151,7 +222,7 @@ var workzoneModule = (function (p4) {
                             // click next item
                             selectedItem.next().find("img").trigger("click");
                         } else {
-                            closePreview();
+                            recordPreviewModule.closePreview();
                         }
 
                         selectedItem.remove();
@@ -368,14 +439,14 @@ var workzoneModule = (function (p4) {
                             .remove();
                     },
                     drag: function (event, ui) {
-                        if (is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping'))
+                        if (utilsModule.is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping'))
                             $('#dragDropCursor div').empty().append('+ ' + p4.WorkZone.Selection.length());
                         else
                             $('#dragDropCursor div').empty().append(p4.WorkZone.Selection.length());
 
                     }
                 });
-                answerSizer();
+                prodModule.answerSizer();
                 return;
             }
         });
@@ -427,7 +498,7 @@ var workzoneModule = (function (p4) {
 
         switch (action) {
             case "CHU2CHU" :
-                if (!is_ctrl_key(event)) act = "MOV";
+                if (!utilsModule.is_ctrl_key(event)) act = "MOV";
                 break;
             case "IMGT2REG":
             case "CHU2REG" :
@@ -528,75 +599,18 @@ var workzoneModule = (function (p4) {
         });
     }
 
-    $(document).ready(function () {
-        activeBaskets();
+    function setRemoveWarning(state) {
+        warnOnRemove = state;
+    }
+    // remove record from basket/story preferences
+    function toggleRemoveWarning(el) {
+        var state = !el.checked;
+        userModule.setPref('reg_delete', (state ? '1' : '0'));
+        warnOnRemove = state;
+    }
 
-        $('a.story_unfix').on('click', function () {
-            unfix($(this).attr('href'));
-
-            return false;
-        });
-
-        p4.WorkZone = {
-            'Selection': new Selectable($('#baskets'), {selector: '.CHIM'}),
-            'refresh': refreshBaskets,
-            'addElementToBasket': function (sbas_id, record_id, event, singleSelection) {
-                singleSelection = !!singleSelection || false;
-
-                if ($('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, $('#IMGT_' + sbas_id + '_' + record_id), $('#baskets .SSTT.active'), singleSelection);
-                } else {
-                    humane.info(language.noActiveBasket);
-                }
-            },
-            "removeElementFromBasket": WorkZoneElementRemover,
-            'reloadCurrent': function () {
-                var sstt = $('#baskets .content:visible');
-                if (sstt.length === 0)
-                    return;
-                getContent(sstt.prev());
-            },
-            'close': function () {
-                var frame = $('#idFrameC'), that = this;
-
-                if (!frame.hasClass('closed')) {
-                    // hide tabs content
-                    $('#idFrameC .tabs > .ui-tabs-panel').hide();
-
-                    frame.data('openwidth', frame.width());
-                    frame.animate({width: 100},
-                        300,
-                        'linear',
-                        function () {
-                            answerSizer();
-                            linearize();
-                            $('#answers').trigger('resize');
-                        });
-                    frame.addClass('closed');
-                    $('.escamote', frame).hide();
-                    frame.unbind('click.escamote').bind('click.escamote', function () {
-                        that.open();
-                    });
-                }
-            },
-            'open': function () {
-                var frame = $('#idFrameC');
-
-                if (frame.hasClass('closed')) {
-                    var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
-                    frame.css({width: width});
-                    answerSizer();
-                    linearize();
-                    frame.removeClass('closed');
-                    $('.escamote', frame).show();
-                    frame.unbind('click.escamote');
-                    // show tabs content
-                    var activeTabIdx = $('#idFrameC .tabs').tabs("option", "active");
-                    $('#idFrameC .tabs > div:eq(' + activeTabIdx + ')').show();
-                }
-            }
-        };
-    });
-
-    return;
+    return {
+        setRemoveWarning: setRemoveWarning,
+        toggleRemoveWarning: toggleRemoveWarning
+    }
 }(p4));

@@ -447,7 +447,7 @@
 
                 var k = el.attr('id').split('_').pop();
 
-                if (is_shift_key(evt) && $('tr.last_selected', cont).length != 0) {
+                if (utilsModule.is_shift_key(evt) && $('tr.last_selected', cont).length != 0) {
                     var lst = $('tr', cont);
                     var index1 = $.inArray($('tr.last_selected', cont)[0], lst);
                     var index2 = $.inArray($(el)[0], lst);
@@ -478,7 +478,7 @@
                     }
                 }
                 else {
-                    if (!is_ctrl_key(evt)) {
+                    if (!utilsModule.is_ctrl_key(evt)) {
                         if ($.inArray(k, p4.users.sel) < 0) {
                             p4.users.sel = new Array();
                             $('tr', cont).removeClass('selected');

@@ -45,12 +45,12 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
+                             onclick="prodModule.openDownloadModal('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
                           <div title="" class="context-menu-item menu3-custom-item">
-                            <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
+                            <div onclick="prodModule.openRecordEditor('SSTT','{{basket.getId()}}');" style=""
                                  class="context-menu-item-inner">{{ 'edit' | trans }}
                             </div>
                           </div>
@@ -139,7 +139,7 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
+                             onclick="prodModule.openDownloadModal('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
@@ -173,7 +173,7 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
-                             onclick="checkDeleteThis('SSTT',this);return false;">
+                             onclick="prodModule.deleteConfirmation('SSTT',this);return false;">
                           {{ 'action : supprimer' | trans }}
                         </div>
                       </div>
@@ -227,12 +227,12 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
+                             onclick="prodModule.openDownloadModal('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
                       <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
+                        <div onclick="prodModule.openRecordEditor('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
                              class="context-menu-item-inner">{{ 'action::editer' | trans }}
                         </div>
                       </div>
@@ -277,7 +277,7 @@
 
   {% import 'common/thumbnail.html.twig' as thumbnail %}
 
-  <div ondblclick="{% if wz_scope == 'groupings' %}openPreview('REG',{{ ord }},'{{container.get_sbas_id()}}_{{container.get_record_id()}}');{% else %}openPreview('BASK',{{ ord }},{{container.getId()}});{% endif %}"
+  <div ondblclick="{% if wz_scope == 'groupings' %}recordPreviewModule.openPreview('REG',{{ ord }},'{{container.get_sbas_id()}}_{{container.get_record_id()}}');{% else %}recordPreviewModule.openPreview('BASK',{{ ord }},{{container.getId()}});{% endif %}"
        class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
        id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
        <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>

@@ -46,7 +46,7 @@
 
                 var k = get_value($that, $this);
 
-                if (is_shift_key(event) && jQuery('.last_selected', this.$container).filter($this.options.selector).length != 0) {
+                if (utilsModule.is_shift_key(event) && jQuery('.last_selected', this.$container).filter($this.options.selector).length != 0) {
                     var lst = jQuery($this.options.selector, this.$container);
 
                     var index1 = jQuery.inArray(jQuery('.last_selected', this.$container).filter($this.options.selector)[0], lst);
@@ -89,7 +89,7 @@
                     }
                 }
                 else {
-                    if (!is_ctrl_key(event)) {
+                    if (!utilsModule.is_ctrl_key(event)) {
                         $this.empty().push(k);
                         jQuery('.selected', this.$container).filter($this.options.selector).removeClass('selected');
                         $that.addClass('selected');
@@ -133,7 +133,7 @@
         }
     }
 
-    function is_ctrl_key(event) {
+    function utilsModule.is_ctrl_key(event) {
         if (event.altKey)
             return true;
         if (event.ctrlKey)
@@ -150,7 +150,7 @@
         return false;
     }
 
-    function is_shift_key(event) {
+    function utilsModule.is_shift_key(event) {
         if (event.shiftKey)
             return true;
         return false;

@@ -97,41 +97,41 @@ class QueryController extends Controller
                         }
                         for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))searchResultModule.gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                             else
-                                $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
+                                $string .= "<a onclick='searchResultModule.gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                         }
                         if ($npages > 4)
                             $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini'></a>";
-                        $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini' id='last'></a>";
+                        $string .= "<a onclick='searchResultModule.gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini' id='last'></a>";
                     } else {
                         $start = $npages - 4;
                         if (($start) > 0){
-                            $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini' id='first'></a>";
+                            $string .= "<a onclick='searchResultModule.gotopage(1);return false;' class='btn btn-primary btn-mini' id='first'></a>";
                             $string .= "<a id='PREV_PAGE' class='btn btn-primary btn-mini'></a>";
                         }else
                             $start = 1;
                         for ($i = ($start); $i <= $npages; $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))searchResultModule.gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                             else
-                                $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
+                                $string .= "<a onclick='searchResultModule.gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                         }
                         if($page < $npages){
                             $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini'></a>";
                         }
                     }
                 } else {
-                    $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini' id='first'></a>";
+                    $string .= "<a onclick='searchResultModule.gotopage(1);return false;' class='btn btn-primary btn-mini' id='first'></a>";
 
                     for ($i = ($page - 2); $i <= ($page + 2); $i++) {
                         if ($i == $page)
-                            $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                            $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))searchResultModule.gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                         else
-                            $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
+                            $string .= "<a onclick='searchResultModule.gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                     }
 
-                    $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini' id='last'></a>";
+                    $string .= "<a onclick='searchResultModule.gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini' id='last'></a>";
                 }
             }
             $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';

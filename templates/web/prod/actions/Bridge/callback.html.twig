@@ -3,7 +3,7 @@
     {% if error_message is empty %}
 
      <script type="text/javascript">
-        window.opener.publicator_reload_publicator("{{ path("prod_bridge_manager") }}");
+        window.opener.pushModule.reloadBridge("{{ path("prod_bridge_manager") }}");
         window.close();
       </script>
 

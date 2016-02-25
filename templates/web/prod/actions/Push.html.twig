@@ -266,8 +266,8 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
-        p4.ListManager = new ListManager($('#ListManager'));
+        p4.Feedback = new pushModule.Feedback($('#PushBox'), '{{ context }}');
+        p4.ListManager = new pushModule.ListManager($('#ListManager'));
     });
 </script>
 {%  endif %}

@@ -407,7 +407,7 @@
                     <table>
                         <tr>
                             <td class="infos">
-                                <a href="#" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
+                                <a href="#" onclick="preferencesModule.lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
                                 |
                                 <span id="tool_results">
 
@@ -684,7 +684,7 @@
         <div class="PNB" style="width:180px;left:auto;">
             <div class="PNB10 ui-corner-all" style="height:20px;">
 
-                <button type="button" onclick="closePreview();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" aria-disabled="false" title="close">
+                <button type="button" onclick="recordPreviewModule.closePreview();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" aria-disabled="false" title="close">
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
@@ -765,7 +765,7 @@
         })
 
         $(document).ready(function(){
-            p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
+            workzoneModule.setRemoveWarning("{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
         });
 
         function setCss(color) {

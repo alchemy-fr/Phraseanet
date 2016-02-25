@@ -4,9 +4,9 @@ var utilsModule = (function (p4) {
 
 
     function RGBtoHex(R, G, B) {
-        return toHex(R) + toHex(G) + toHex(B);
+        return _toHex(R) + _toHex(G) + _toHex(B);
     }
-    function toHex(N) {
+    function _toHex(N) {
         if (N === null) return "00";
         N = parseInt(N);
         if (N === 0 || isNaN(N)) return "00";
@@ -30,9 +30,9 @@ var utilsModule = (function (p4) {
                 m2 = l + s - l * s;
             m1 = l * 2 - m2;
             hue = h / 360;
-            r = HueToRgb(m1, m2, hue + 1 / 3);
-            g = HueToRgb(m1, m2, hue);
-            b = HueToRgb(m1, m2, hue - 1 / 3);
+            r = _HueToRgb(m1, m2, hue + 1 / 3);
+            g = _HueToRgb(m1, m2, hue);
+            b = _HueToRgb(m1, m2, hue - 1 / 3);
         }
         return {
             r: r,
@@ -41,7 +41,7 @@ var utilsModule = (function (p4) {
         };
     }
 
-    function HueToRgb(m1, m2, hue) {
+    function _HueToRgb(m1, m2, hue) {
         var v;
         if (hue < 0)
             hue += 1;
@@ -59,7 +59,34 @@ var utilsModule = (function (p4) {
 
         return 255 * v;
     }
+
+    function is_ctrl_key(event) {
+        if (event.altKey)
+            return true;
+        if (event.ctrlKey)
+            return true;
+        if (event.metaKey)	// apple key opera
+            return true;
+        if (event.keyCode === 17)	// apple key opera
+            return true;
+        if (event.keyCode === 224)	// apple key mozilla
+            return true;
+        if (event.keyCode === 91)	// apple key safari
+            return true;
+
+        return false;
+    }
+
+    function is_shift_key(event) {
+        if (event.shiftKey)
+            return true;
+        return false;
+    }
+
     return {
-        RGBtoHex: RGBtoHex, hsl2rgb: hsl2rgb
+        RGBtoHex: RGBtoHex,
+        hsl2rgb: hsl2rgb,
+        is_ctrl_key: is_ctrl_key,
+        is_shift_key: is_shift_key
     };
 }(p4));

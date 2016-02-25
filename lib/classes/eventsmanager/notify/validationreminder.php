@@ -53,7 +53,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             $basket_name = $this->app->trans('Une selection');
         }
 
-        $bask_link = '<a href="#" onclick="openPreview(\'BASK\',1,\''
+        $bask_link = '<a href="#" onclick="recordPreviewModule.openPreview(\'BASK\',1,\''
             . $ssel_id . '\');return false;">'
             . $basket_name . '</a>';
 

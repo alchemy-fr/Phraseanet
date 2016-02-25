@@ -112,7 +112,7 @@ class queries
                     if(qry=="")
                         qry = "all";
 
-                    doSpecialSearch(qry,true);
+                    prodModule.doSpecialSearch(qry,true);
 
                     return;
                 }
@@ -191,7 +191,7 @@ class queries
         $queries = $app['repo.user-queries']->findBy(['user' => $usrId], ['created' => 'ASC'], 25, 0);
 
         foreach ($queries as $query) {
-            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(["'", '"'], ["\'", '&quot;'], $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';
+            $history .= '<li onclick="prodModule.doSpecialSearch(\'' . str_replace(["'", '"'], ["\'", '&quot;'], $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';
         }
 
         $history .= '<ul>';
@@ -246,7 +246,7 @@ class queries
             $l = '<span class=\'topic_' . $depth . '\'>' . $l . '</span>';
             if ($subtopic->query) {
                 $q = str_replace(["\\", "\"", "'", "\r", "\n"], ["\\\\", "&quot;", "\\'", "\\r", "\\n"], $subtopic->query);
-                $q = '<a href="javascript:void();" onClick="doSpecialSearch(\'' . $q . '\',true);">' . $l . '</a>';
+                $q = '<a href="javascript:void();" onClick="prodModule.doSpecialSearch(\'' . $q . '\',true);">' . $l . '</a>';
             } else {
                 $q = $l;
             }
@@ -256,13 +256,13 @@ class queries
                     $view = $defaultview;
                 switch ($view) {
                     case 'opened':
-                        $out .= ( '<li><a id=\'TOPIC_TRI' . $tid . '\' class="opened" href="javascript:void();" onclick="clktri(\'' . $tid . '\');return(false);"></a>&nbsp;' . $q . '</li>' . "\n");
+                        $out .= ( '<li><a id=\'TOPIC_TRI' . $tid . '\' class="opened" href="javascript:void();" onclick="prodModule.toggleTopic(\'' . $tid . '\');return(false);"></a>&nbsp;' . $q . '</li>' . "\n");
                         $out .= ( "<ul id='TOPIC_UL$tid' class='opened'>\n");
                         $out .= self::drawTopics($subtopic->topics, $depth + 1, $tid, $defaultview);
                         $out .= ( "</ul>\n<div style='height:1px;'></div>\n");
                         break;
                     case 'closed':
-                        $out .= ( '<li><a id=\'TOPIC_TRI' . $tid . '\' class="closed" href="javascript:void();" onclick="clktri(\'' . $tid . '\');return(false);"></a>&nbsp;' . $q . '</li>' . "\n");
+                        $out .= ( '<li><a id=\'TOPIC_TRI' . $tid . '\' class="closed" href="javascript:void();" onclick="prodModule.toggleTopic(\'' . $tid . '\');return(false);"></a>&nbsp;' . $q . '</li>' . "\n");
                         $out .= ( "<ul id='TOPIC_UL$tid' class='closed'>\n");
                         $out .= self::drawTopics($subtopic->topics, $depth + 1, $tid, $defaultview);
                         $out .= ( "</ul>\n<div style='height:1px;'></div>\n");

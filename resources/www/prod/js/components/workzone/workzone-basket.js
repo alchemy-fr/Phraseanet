@@ -98,5 +98,10 @@ var workzoneBasketModule = (function (p4) {
 
 
 
-    return {archiveBasket: archiveBasket, deleteBasket: deleteBasket, openBasketPreferences: openBasketPreferences}
+    return {
+        archiveBasket: archiveBasket,
+        deleteBasket: deleteBasket,
+        openBasketPreferences: openBasketPreferences
+
+    }
 })(p4);

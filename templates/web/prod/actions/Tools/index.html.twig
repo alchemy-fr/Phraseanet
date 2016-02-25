@@ -638,7 +638,7 @@ $(document).ready(function(){
         }).done(function(data) {
             // self reload tab with current active tab:
             var activeTab = tabs.tabs('option', 'active');
-            toolREFACTOR($dialog.getOption('contextArgs'), activeTab);
+            prodModule.openToolModal($dialog.getOption('contextArgs'), activeTab);
         }).error(function(err) {
             alert('forbidden action')
         });

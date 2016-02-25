@@ -1,5 +1,5 @@
-;
-(function (window) {
+
+var pushModule = (function (window, p4) {
 
     var Feedback = function ($container, context) {
         this.container = $($container);
@@ -690,7 +690,19 @@
     };
 
 
-    window.Feedback = Feedback;
-    window.ListManager = ListManager;
+    function reloadBridge(url) {
+        var options = $('#dialog_publicator form[name="current_datas"]').serializeArray();
+        var dialog = p4.Dialog.get(1);
+        dialog.load(url, 'POST', options);
+    }
 
-}(window));
+
+
+    // instance wil be stored in p4.Feedback
+    return {
+        Feedback: Feedback,
+        ListManager: ListManager,
+        reloadBridge: reloadBridge
+    }
+
+}(window, p4));

@@ -1,6 +1,6 @@
 var p4 = p4 || {};
 
-(function (p4, window) {
+var searchResultModule = (function (p4, window) {
 
     p4.Results = {
         'Selection': new Selectable($('#answers'), {
@@ -10,7 +10,7 @@ var p4 = p4 || {};
                 $('#answercontextwrap table:visible').hide();
             },
             selectStop: function (event, selection) {
-                viewNbSelect();
+                searchModule.viewNbSelect();
             },
             callbackSelection: function (element) {
                 var elements = $(element).attr('id').split('_');
@@ -20,5 +20,13 @@ var p4 = p4 || {};
         })
     };
 
-    return;
+    function gotopage(pag) {
+        $('#searchForm input[name="sel"]').val(p4.Results.Selection.serialize());
+        $('#formAnswerPage').val(pag);
+        $('#searchForm').submit();
+    }
+
+    return {
+        gotopage: gotopage
+    };
 }(p4, window));

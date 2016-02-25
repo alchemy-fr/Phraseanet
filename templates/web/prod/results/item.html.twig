@@ -6,7 +6,7 @@
      sbas="{{ record.databoxId }}"
      id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
      class="IMGT diapo type-{{ record.type }}"
-     onDblClick="openPreview('FEED',{{ record.getNumber }},{{ entry.id }});"
+     onDblClick="recordPreviewModule.openPreview('FEED',{{ record.getNumber }},{{ entry.id }});"
 >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">

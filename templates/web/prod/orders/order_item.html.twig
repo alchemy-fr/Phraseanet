@@ -116,7 +116,7 @@ $(document).ready(function(){
 
         var $this = $(this);
 
-        if(is_ctrl_key(event))
+        if(utilsModule.is_ctrl_key(event))
         {
             if($this.hasClass('selected')) {
                 $this.removeClass('selected');
@@ -126,7 +126,7 @@ $(document).ready(function(){
         }
         else
         {
-            if(is_shift_key(event))
+            if(utilsModule.is_shift_key(event))
             {
                 var first = false, last = false;
 

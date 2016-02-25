@@ -791,7 +791,7 @@ var recordEditorModule = (function (p4) {
                                     edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);
                                 }
                                 else {
-                                    if (is_ctrl_key(e)) {
+                                    if (utilsModule.is_ctrl_key(e)) {
                                         var t = $("#idEditZTextArea", p4.edit.editBox).val();
                                         $("#idEditZTextArea", p4.edit.editBox).val(t + (t ? " ; " : "") + label);
                                     }
@@ -1105,7 +1105,7 @@ var recordEditorModule = (function (p4) {
         if (evt && evt.type == "mousedown" && p4.edit.T_records[i]._selected)
             return;
 
-        if (evt && is_shift_key(evt) && p4.edit.lastClickId != null) {
+        if (evt && utilsModule.is_shift_key(evt) && p4.edit.lastClickId != null) {
             // shift donc on sel du p4.edit.lastClickId a ici
             var pos_from = p4.edit.T_pos[p4.edit.lastClickId];
             var pos_to = p4.edit.T_pos[i];
@@ -1126,7 +1126,7 @@ var recordEditorModule = (function (p4) {
             }
         }
         else {
-            if (!evt || !is_ctrl_key(evt)) {
+            if (!evt || !utilsModule.is_ctrl_key(evt)) {
                 // on deselectionne tout avant
                 var id;
                 for (id in p4.edit.T_records) {
@@ -1252,7 +1252,7 @@ var recordEditorModule = (function (p4) {
                 $('#EDITWINDOW').hide();
                 hideOverlay(2);
                 if (p4.preview.open)
-                    reloadPreview();
+                    recordPreviewModule.reloadPreview();
                 return;
             }
         });

@@ -5,7 +5,7 @@
      sbas="{{ record.databoxId }}"
      id="{{ prefix|default('IMGT') }}_{{ record.id }}"
      class="IMGT diapo {% if record.story %}grouping{% endif %} type-{{ record.type }}"
-     onDblClick="openPreview('{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');">
+     onDblClick="recordPreviewModule.openPreview('{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');">
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.title(app.locale) }}">
@@ -103,7 +103,7 @@
                                         {% if granted_on_collection(record.baseId, 'canputinalbum') and not record.story %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
-                                                     onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
+                                                     onclick="prodModule.addToBasket('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
                                                     {{ 'action : ajouter au panier' | trans }}
                                                 </div>
                                             </div>
@@ -111,14 +111,14 @@
                                         {% if granted_on_collection(record.baseId, 'candwnldpreview') or granted_on_collection(record.baseId, 'candwnldhd') %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
-                                                     onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
+                                                     onclick="prodModule.openDownloadModal('{{record.id}}','lst');return(false);">
                                                     {{ 'action : exporter' | trans }}
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
                                             <div class="context-menu-item-inner"
-                                                 onclick="evt_print('{{record.id}}');return(false);">
+                                                 onclick="prodModule.openPrintModal('{{record.id}}');return(false);">
                                                 {{ 'action : print' | trans }}
                                             </div>
                                         </div>
@@ -128,7 +128,7 @@
                                             {% if record.story is empty %}
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner"
-                                                         onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
+                                                         onclick="prodModule.openShareModal('{{record.baseId}}','{{record.recordId}}');">
                                                         {{ 'reponses:: partager' | trans }}
                                                     </div>
                                                 </div>
