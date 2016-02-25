@@ -46,73 +46,31 @@ class OrderController extends Controller
      */
     public function createOrder(Request $request)
     {
-        $success = false;
-        $collectionHasOrderAdmins = new ArrayCollection();
-        $toRemove = [];
-
         $records = RecordsRequest::fromRequest($this->app, $request, true, ['cancmd']);
-        $hasOneAdmin = [];
 
-        if (!$records->isEmpty()) {
+        try {
+            if ($records->isEmpty()) {
+                throw new OrderControllerException($this->app->trans('There is no record eligible for an order'));
+            }
+
+            if (null !== $deadLine = $request->request->get('deadline')) {
+                $deadLine = new \DateTime($deadLine);
+            }
+
+            $orderUsage = $request->request->get('use', '');
+
             $order = new OrderEntity();
             $order->setUser($this->getAuthenticatedUser());
-            $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
-            $order->setOrderUsage($request->request->get('use', ''));
-            foreach ($records as $key => $record) {
-                if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
-                    if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
-                        $records->remove($key);
-                    }
-                }
+            $order->setDeadline($deadLine);
+            $order->setOrderUsage($orderUsage);
 
-                if (!isset($hasOneAdmin[$record->get_base_id()])) {
-                    $query = $this->createUserQuery();
-                    $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids([$record->get_base_id()])
-                        ->who_have_right(['order_master'])
-                        ->execute()->get_results());
-                }
+            $this->fillOrderFromRequest($records, $order);
 
-                $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin[$record->get_base_id()]);
-
-                if (!$hasOneAdmin[$record->get_base_id()]) {
-                    $toRemove[] = $key;
-                } else {
-                    $orderElement = new OrderElement();
-                    $order->addElement($orderElement);
-                    $orderElement->setOrder($order);
-                    $orderElement->setBaseId($record->get_base_id());
-                    $orderElement->setRecordId($record->get_record_id());
-                    $this->getEntityManager()->persist($orderElement);
-                }
-            }
-
-            foreach ($toRemove as $key) {
-                if ($records->containsKey($key)) {
-                    $records->remove($key);
-                }
-            }
-
-            $noAdmins = $collectionHasOrderAdmins->forAll(function ($key, $hasAdmin) {
-                return false === $hasAdmin;
-            });
-
-            if ($noAdmins) {
-                $msg = $this->app->trans('There is no one to validate orders, please contact an administrator');
-            } else {
-                $order->setTodo($order->getElements()->count());
-
-                try {
-                    $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
-                    $this->getEntityManager()->persist($order);
-                    $this->getEntityManager()->flush();
-                    $msg = $this->app->trans('The records have been properly ordered');
-                    $success = true;
-                } catch (\Exception $e) {
-                    $msg = $this->app->trans('An error occured');
-                }
-            }
-        } else {
-            $msg = $this->app->trans('There is no record eligible for an order');
+            $success = true;
+            $msg = $this->app->trans('The records have been properly ordered');
+        } catch (OrderControllerException $exception) {
+            $success = false;
+            $msg = $exception->getMessage();
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -321,5 +279,47 @@ class OrderController extends Controller
     private function getOrderRepository()
     {
         return $this->app['repo.orders'];
+    }
+
+    private function fillOrderFromRequest(RecordsRequest $records, Order $order)
+    {
+        $collectionIds = [];
+
+        foreach ($records->collections() as $collection) {
+            $collectionIds[] = $collection->get_base_id();
+        }
+
+        $hasOneAdmin = [];
+
+        foreach ($this->app['repo.collection-references']->findHavingOrderMaster($collectionIds) as $reference) {
+            $hasOneAdmin[$reference->getBaseId()] = $reference;
+        }
+
+        if (!empty(array_diff($collectionIds, array_keys($hasOneAdmin)))) {
+            throw new OrderControllerException($this->app->trans('There is no one to validate orders, please contact an administrator'));
+        }
+
+        $entityManager = $this->getEntityManager();
+
+        foreach ($records as $key => $record) {
+            $orderElement = new OrderElement();
+            $order->addElement($orderElement);
+            $orderElement->setOrder($order);
+            $orderElement->setBaseId($record->get_base_id());
+            $orderElement->setRecordId($record->get_record_id());
+            $entityManager->persist($orderElement);
+        }
+
+        $order->setTodo($order->getElements()->count());
+
+        $entityManager->persist($order);
+
+        try {
+            $entityManager->flush();
+
+            $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+        } catch (\Exception $e) {
+            throw new OrderControllerException($this->app->trans('An error occurred'), 0, $e);
+        }
     }
 }
