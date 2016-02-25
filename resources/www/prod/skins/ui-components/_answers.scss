@@ -54,14 +54,19 @@ $answersInfoLabelColor: #949494 !default;
     cursor: pointer;
   }
   .list {
+    box-sizing: border-box;
     position: relative;
     float: left;
-    margin: 10px;
+    margin: 8px;
     width: 600px;
     overflow: hidden;
     border: 3px solid $darkerBorderColor;
+    .diapo {
+      margin: 5px;
+    }
     .desc {
       .dl-horizontal {
+        margin-bottom: 0;
         dt {
           width: 70px; //100
         }
@@ -78,7 +83,7 @@ $answersInfoLabelColor: #949494 !default;
     background-color: $darkerBackgroundColor;
     top: 55px;
     bottom: 0;
-    margin-right: 8px;
+    margin-right: 0;
     //overflow-y: hidden;
     padding-left: 10px;
     overflow-y: auto;
