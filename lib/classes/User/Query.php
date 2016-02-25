@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Utilities\Countries;
-use Doctrine\Common\Collections\Collection;
 
 class User_Query implements User_QueryInterface
 {
@@ -81,7 +80,7 @@ class User_Query implements User_QueryInterface
     /**
      * Return query results
      *
-     * @return User[]|Collection
+     * @return User[]|\Doctrine\Common\Collections\Collection
      */
     public function get_results()
     {
@@ -257,13 +256,22 @@ class User_Query implements User_QueryInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $users = new ArrayCollection();
+        $userIndexes = [];
 
-        foreach ($rs as $row) {
-            $users[] = $this->app['repo.users']->find($row['id']);
+        foreach ($rs as $index => $row) {
+            $userIndexes[$row['id']] = $index;
         }
 
-        $this->results = $users;
+        $users = [];
+
+        /** @var User $user */
+        foreach ($this->app['repo.users']->findBy(['id' => array_keys($userIndexes)]) as $user) {
+            $users[$userIndexes[$user->getId()]] = $user;
+        }
+
+        ksort($users);
+
+        $this->results = new ArrayCollection($users);
 
         return $this;
     }
