@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Collection\Reference;
 
-use Alchemy\Phrasea\Core\Database\QueryBuilder;
 use Doctrine\DBAL\Connection;
 
 class DbalCollectionReferenceRepository implements CollectionReferenceRepository
@@ -105,6 +104,29 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
         }
 
         return null;
+    }
+
+    public function findHavingOrderMaster(array $subset = null)
+    {
+        $query = self::$selectQuery
+            . ' WHERE EXISTS(SELECT 1 FROM basusr WHERE basusr.order_master = 1 AND basusr.base_id = bas.base_id)';
+
+        $parameters = [];
+        $types = [];
+
+        if (null !== $subset) {
+            if (empty($subset)) {
+                return [];
+            }
+
+            $query .= ' AND bas.base_id IN (:subset)';
+            $parameters['subset'] = $subset;
+            $types['subset'] = Connection::PARAM_INT_ARRAY;
+        }
+
+        $rows = $this->connection->fetchAll($query, $parameters);
+
+        return $this->createManyReferences($rows);
     }
 
     public function save(CollectionReference $collectionReference)

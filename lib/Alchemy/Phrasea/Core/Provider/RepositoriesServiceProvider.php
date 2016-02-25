@@ -175,7 +175,8 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             $repository = new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
 
             return new ArrayCacheCollectionReferenceRepository($repository);
-        });	
+        });
+
         $app['repo.collections-registry'] = $app->share(function (PhraseaApplication $app) {
             $factory = new CollectionFactory($app);
             $connectionProvider = new DataboxConnectionProvider($app->getApplicationBox());

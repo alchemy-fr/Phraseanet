@@ -37,6 +37,14 @@ interface CollectionReferenceRepository
     public function findByCollectionId($databoxId, $collectionId);
 
     /**
+     * Find Collection references having at least one Order Master
+     *
+     * @param array<int>|null $subset Restrict search to a subset of base ids.
+     * @return CollectionReference[]
+     */
+    public function findHavingOrderMaster(array $subset = null);
+
+    /**
      * @param CollectionReference $reference
      * @return void
      */
