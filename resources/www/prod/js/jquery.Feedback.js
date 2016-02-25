@@ -413,13 +413,13 @@
         this.list = null;
         this.container = $container;
 
-        $('.back_link', this.container).bind('click', function () {
+        $container.on('click', '.back_link', function() {
             $('#PushBox').show();
             $('#ListManager').hide();
             return false;
         });
 
-        $('a.list_sharer', this.container).off('click').on('click', function () {
+        $container.on('click', 'a.list_sharer', function() {
 
             var $this = $(this),
                 options = {
@@ -434,8 +434,7 @@
             return false;
         });
 
-
-        $('a.user_adder', this.container).bind('click', function () {
+        $container.on('click', 'a.user_adder', function() {
 
             var $this = $(this);
 
