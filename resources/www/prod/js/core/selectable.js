@@ -133,7 +133,7 @@
         }
     }
 
-    function utilsModule.is_ctrl_key(event) {
+    /*function is_ctrl_key(event) {
         if (event.altKey)
             return true;
         if (event.ctrlKey)
@@ -150,11 +150,11 @@
         return false;
     }
 
-    function utilsModule.is_shift_key(event) {
+    function is_shift_key(event) {
         if (event.shiftKey)
             return true;
         return false;
-    }
+    }*/
 
 
     Selectable.prototype = {
