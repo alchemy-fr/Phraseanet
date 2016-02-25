@@ -30,7 +30,7 @@
     "require":      {
         "php": ">=5.5",
         "alchemy-fr/tcpdf-clone": "~6.0",
-        "alchemy/embed-bundle": "^0.2.0",
+        "alchemy/embed-bundle": "^0.3.2",
         "alchemy/geonames-api-consumer": "~0.1.0",
         "alchemy/google-plus-api-client": "~0.6.2",
         "alchemy/mediavorus": "^0.4.4",
