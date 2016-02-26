@@ -751,18 +751,19 @@ function linearize() {
         $('#answers .list').width(w);
     }
     else {
-
+        var minMargin = 5;
         var margin = 0;
         var el = $('#answers .diapo:first');
-        var brdrWidth = el.css('border-width');
-        var stdWidth = el.outerWidth() + 10;
+        var diapoWidth = el.outerWidth() + (minMargin * 2);
         var fllWidth = $('#answers').innerWidth();
-        fllWidth -= 16;
+        fllWidth -= 26;
 
-        var n = Math.floor(fllWidth / (stdWidth));
+        var n = Math.floor(fllWidth / (diapoWidth));
 
-        margin = Math.floor((fllWidth % stdWidth) / (2 * n));
-        $('#answers .diapo').css('margin', '5px ' + (5 + margin) + 'px');
+        margin = Math.floor((fllWidth % diapoWidth) / (2 * n));
+        margin = margin + minMargin;
+
+        $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
     }
 
 }
@@ -1209,7 +1210,7 @@ $(document).ready(function () {
             $('#idFrameC .icon-menu li').last().find('a').trigger('click');
             $('#idFrameC .icon-menu li').first().find('a').trigger('click');
             $(previousTab).find('a').trigger('click');
-        }        
+        }
 
         event.stopImmediatePropagation();
         //p4.WorkZone.close();

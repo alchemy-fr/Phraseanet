@@ -38,6 +38,7 @@ $answersInfoLabelColor: #949494 !default;
 
 
 #answers {
+  box-sizing: border-box;
   .status {
     img {
       max-width: 16px;
