@@ -20,7 +20,19 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class set_export extends set_abstract
 {
-    const MAX_FILENAME_LENGTH = 32;
+    private static $maxFilenameLength = 256;
+
+    /**
+     * @param int $newLength
+     */
+    public static function setMaxFilenameLength($newLength)
+    {
+        if (!is_int($newLength) || $newLength <= 0) {
+            throw new \InvalidArgumentException('Expects $newLength argument to be a positive integer');
+        }
+
+        self::$maxFilenameLength = $newLength;
+    }
 
     /**
      * @var Application
@@ -596,7 +608,7 @@ class set_export extends set_abstract
                 }
             }
 
-            $max_length = self::MAX_FILENAME_LENGTH - 1 - $sizeMaxExt - $sizeMaxAjout;
+            $max_length = self::$maxFilenameLength - 1 - $sizeMaxExt - $sizeMaxAjout;
 
             $name = $files[$id]["export_name"];
 
@@ -609,7 +621,7 @@ class set_export extends set_abstract
             while (in_array(mb_strtolower($name), $file_names)) {
                 $n++;
                 $suffix = "-" . $n; // pour diese si besoin
-                $max_length = self::MAX_FILENAME_LENGTH - 1 - $sizeMaxExt - $sizeMaxAjout - mb_strlen($suffix);
+                $max_length = self::$maxFilenameLength - 1 - $sizeMaxExt - $sizeMaxAjout - mb_strlen($suffix);
                 $name = mb_strtolower($files[$id]["export_name"]);
                 if ($start_length > $max_length)
                     $name = mb_substr($name, 0, $max_length) . $suffix;
