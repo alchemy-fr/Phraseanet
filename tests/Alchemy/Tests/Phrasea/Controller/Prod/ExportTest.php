@@ -1,6 +1,7 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
+use Alchemy\Phrasea\Model\Entities\User;
 
 /**
  * @group functional
@@ -130,22 +131,28 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExportFtp()
     {
-        if (!self::$DI['app']['conf']->get(['registry', 'ftp', 'ftp-enabled'])) {
-           self::$DI['app']['conf']->set(['registry', 'ftp', 'ftp-enabled'], true);
+        $app = $this->getApplication();
+
+        if (!$app['conf']->get(['registry', 'ftp', 'ftp-enabled'])) {
+            $app['conf']->set(['registry', 'ftp', 'ftp-enabled'], true);
            self::$GV_activeFTP = true;
         }
+
+        /** @var User $user */
+        $user = self::$DI['user'];
+
         //inserted rows from this function are deleted in tearDownAfterClass
-        self::$DI['client']->request('POST', '/prod/export/ftp/', [
-            'lst'        => self::$DI['record_1']->get_serialize_key(),
-            'user_dest'  => self::$DI['user']->getId(),
+        $this->getClient()->request('POST', '/prod/export/ftp/', [
+            'lst'        => $this->getRecord1()->get_serialize_key(),
+            'user_dest'  => $user->getId(),
             'address'    => 'local.phrasea.test',
-            'login'      => self::$DI['user']->getEmail(),
+            'login'      => $user->getEmail(),
             'dest_folder' => '/home/test/',
             'prefix_folder' => 'test2/',
             'obj'        => ['preview']
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->getClient()->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -161,13 +168,13 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
 
-        self::$DI['client']->request('POST', '/prod/export/mail/', [
-            'lst'        => self::$DI['record_1']->get_serialize_key(),
+        $this->getClient()->request('POST', '/prod/export/mail/', [
+            'lst'        => $this->getRecord1()->get_serialize_key(),
             'destmail'   => 'user@example.com',
             'obj'        => ['preview'],
         ]);
 
-        $response = self::$DI['client']->getResponse();
+        $response = $this->getClient()->getResponse();
         $this->assertTrue($response->isOk());
     }
 
@@ -177,8 +184,8 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRequireAuthentication()
     {
-        $this->logout(self::$DI['app']);
-        self::$DI['client']->request('POST', '/prod/export/multi-export/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->logout($this->getApplication());
+        $this->getClient()->request('POST', '/prod/export/multi-export/');
+        $this->assertTrue($this->getClient()->getResponse()->isRedirect());
     }
 }
