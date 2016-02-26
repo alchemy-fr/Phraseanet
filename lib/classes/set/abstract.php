@@ -12,36 +12,22 @@
 abstract class set_abstract implements IteratorAggregate
 {
     /**
-     *
-     * @var Array
+     * @var \record_adapter[]
      */
     protected $elements = [];
 
     /**
-     *
      * @return ArrayIterator
      */
     public function getIterator()
     {
-        $this->load_elements();
-
         return new ArrayIterator($this->elements);
     }
 
     /**
-     *
-     * @return set
-     */
-    protected function load_elements()
-    {
-        return $this;
-    }
-
-    /**
-     *
      * @param  string $offset
-     * @param  string $value
-     * @return Void
+     * @param  record_adapter $value
+     * @return void
      */
     public function offsetSet($offset, $value)
     {
@@ -53,9 +39,8 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
      * @param  string  $offset
-     * @return boolean
+     * @return bool
      */
     public function offsetExists($offset)
     {
@@ -63,9 +48,8 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
      * @param  string $offset
-     * @return Void
+     * @return void
      */
     public function offsetUnset($offset)
     {
@@ -73,9 +57,8 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
      * @param  string         $offset
-     * @return record_adapter
+     * @return record_adapter|null
      */
     public function offsetGet($offset)
     {
@@ -83,8 +66,7 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
-     * @return int
+     * @return bool
      */
     public function is_empty()
     {
@@ -104,7 +86,7 @@ abstract class set_abstract implements IteratorAggregate
     /**
      * Get the number of element in the set
      *
-     * @return Int
+     * @return int
      */
     public function get_count()
     {
@@ -112,7 +94,6 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
      * @return int
      */
     public function get_count_groupings()
@@ -127,20 +108,16 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
-     * @return Array
+     * @return record_adapter[]
      */
     public function get_elements()
     {
-        $this->load_elements();
-
         return $this->elements;
     }
 
     /**
-     *
      * @param  record_adapter $record
-     * @return set
+     * @return $this
      */
     public function add_element(\record_adapter $record)
     {
@@ -150,9 +127,8 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
      * @param  record_adapter $record
-     * @return set
+     * @return $this
      */
     public function remove_element(\record_adapter $record)
     {
@@ -164,7 +140,6 @@ abstract class set_abstract implements IteratorAggregate
     }
 
     /**
-     *
      * @return string
      */
     public function serialize_list()
