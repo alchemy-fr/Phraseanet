@@ -673,6 +673,11 @@ function edit_clk_editimg(evt, i) {
     updateEditSelectedRecords(evt);
 }
 
+function toggleGroupSelection() {
+    var groupIndex = 0;
+    edit_clk_editimg(false, groupIndex);
+}
+
 // ---------------------------------------------------------------------------
 // on a clique sur une checkbox de status
 // ---------------------------------------------------------------------------
@@ -1651,7 +1656,12 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
     if ($('#editcontextwrap').length == 0)
         $('body').append('<div id="editcontextwrap"></div>');
 
-    self.setTimeout("edit_select_all();", 100);
+    // if is a group, only select the group
+    if (p4.edit.what === 'GRP') {
+        toggleGroupSelection();
+    } else {
+        self.setTimeout("edit_select_all();", 100);
+    }
 
     $('.previewTips, .DCESTips, .fieldTips', p4.edit.editBox).tooltip({
         fixable: true,
