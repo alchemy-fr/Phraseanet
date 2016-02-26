@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -53,7 +54,7 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all basket for a given user that are not marked as archived
      *
-     * @param  User                                         $user
+     * @param  User $user
      * @return Basket[]
      */
     public function findActiveByUser(User $user, $sort = null)
@@ -145,8 +146,8 @@ class BasketRepository extends EntityRepository
      *
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
-     * @param  type                      $basket_id
-     * @param  User                      $user
+     * @param  int $basket_id
+     * @param  User $user
      * @return Basket
      */
     public function findUserBasket($basket_id, User $user, $requireOwner)
@@ -207,8 +208,6 @@ class BasketRepository extends EntityRepository
 
     public function findWorkzoneBasket(User $user, $query, $year, $type, $offset, $perPage)
     {
-        $params = [];
-
         switch ($type) {
             case self::RECEIVED:
                 $dql = 'SELECT b
@@ -241,18 +240,6 @@ class BasketRepository extends EntityRepository
                     'usr_id' => $user->getId()
                 ];
                 break;
-            default:
-                $dql = 'SELECT b
-                FROM Phraseanet:Basket b
-                LEFT JOIN b.elements e
-                LEFT JOIN b.validation s
-                LEFT JOIN s.participants p
-                WHERE (b.user = :usr_id OR p.user = :validating_usr_id)';
-                $params = [
-                    'usr_id'            => $user->getId(),
-                    'validating_usr_id' => $user->getId()
-                ];
-                break;
             case self::MYBASKETS:
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
@@ -264,6 +251,17 @@ class BasketRepository extends EntityRepository
                     'usr_id' => $user->getId()
                 ];
                 break;
+            default:
+                $dql = 'SELECT b
+                FROM Phraseanet:Basket b
+                LEFT JOIN b.elements e
+                LEFT JOIN b.validation s
+                LEFT JOIN s.participants p
+                WHERE (b.user = :usr_id OR p.user = :validating_usr_id)';
+                $params = [
+                    'usr_id'            => $user->getId(),
+                    'validating_usr_id' => $user->getId()
+                ];
         }
 
         if (ctype_digit($year) && strlen($year) == 4) {
@@ -287,9 +285,7 @@ class BasketRepository extends EntityRepository
             ->setFirstResult($offset)
             ->setMaxResults($perPage);
 
-        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query, true);
-
-        return $paginator;
+        return new Paginator($query, true);
     }
 
     /**
