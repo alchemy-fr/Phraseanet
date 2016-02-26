@@ -34,7 +34,7 @@ class UserPreferenceController extends Controller
         $success = false;
         $msg = $this->app->trans('Error while saving preference');
 
-        if ($prop && $value) {
+        if (!is_null($prop) && !is_null($value)) {
             $this->getSession()->set('phraseanet.' . $prop, $value);
             $success = true;
             $msg = $this->app->trans('Preference saved !');
