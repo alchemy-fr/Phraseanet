@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
