@@ -384,7 +384,7 @@ function manageSession(data, showMessages) {
                 $('body').append('<div id="#MESSAGE"></div>');
             $('#MESSAGE')
                 .empty()
-                .append(data.message + '<div style="margin:20px;"><input type="checkbox" class="dialog_remove" />' + language.hideMessage + '</div>')
+                .append('<div style="margin:30px 10px;"><h4><b>' + data.message + '</b></h4></div><div style="margin:20px 0px 10px;"><label class="checkbox"><input type="checkbox" class="dialog_remove" />' + language.hideMessage + '</label></div>')
                 .attr('title', 'Global Message')
                 .dialog({
                     autoOpen: false,
@@ -393,8 +393,20 @@ function manageSession(data, showMessages) {
                     draggable: false,
                     modal: true,
                     close: function () {
-                        if ($('.dialog_remove:checked', $(this)).length > 0)
-                            setTemporaryPref('message', 0);
+                        if ($('.dialog_remove:checked', $(this)).length > 0) {
+                            // setTemporaryPref
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/preferences/temporary/",
+                                data: {
+                                    prop: 'message',
+                                    value: 0
+                                },
+                                success: function (data) {
+                                    return;
+                                }
+                            });
+                        }
                     }
                 })
                 .dialog('open');

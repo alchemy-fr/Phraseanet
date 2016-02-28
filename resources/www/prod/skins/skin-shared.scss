@@ -88,10 +88,6 @@ a:hover {
   TEXT-DECORATION: none
 }
 
-#desktop {
-  min-width: 1100px;
-}
-
 EM {
   FONT-STYLE: normal;
   BACKGROUND-COLOR: #D82400;
@@ -535,6 +531,7 @@ h4 {
 @import 'ui-components/thumb-extractor';
 @import 'ui-components/pagination';
 @import 'ui-components/upload';
+@import 'ui-components/modal-basket-pref';
 @import 'ui-components/modal-publish';
 @import 'ui-components/modal-edit';
 @import 'ui-components/modal-export';

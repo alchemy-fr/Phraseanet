@@ -565,12 +565,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $name = strtolower($name);
 
-        if (!in_array($name, $this->get_available_subdefs())) {
-            throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
-        }
-
         if (isset($this->subdefs[$name])) {
             return $this->subdefs[$name];
+        }
+
+        if (!in_array($name, $this->get_available_subdefs())) {
+            throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
         }
 
         if (!$this->subdefs) {
@@ -1583,7 +1583,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @return set_selection
+     * @return set_selection|record_adapter[]
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
      * @deprecated use {@link self::getChildren} instead.
@@ -1593,6 +1593,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->getChildren();
     }
 
+    /**
+     * @return set_selection|record_adapter[]
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function getChildren()
     {
         if (!$this->isStory()) {

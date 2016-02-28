@@ -87,6 +87,14 @@ function openPreview(env, pos, contId, reload) {
     // update real absolute position with pagination:
     var absolutePos = parseInt(navigation.perPage,10) * (parseInt(navigation.page, 10) - 1) + parseInt(pos,10);
 
+    // if comes from story, work with relative positionning
+    if (env == 'REG') {
+        // @TODO - if event comes from workzone (basket|story),
+        // we can use the relative position in order to display the doubleclicked records
+        // except we can't know the original event in this implementation
+        absolutePos = 0;
+    }
+
     prevAjax = $.ajax({
         type: "POST",
         url: "../prod/records/",

@@ -86,7 +86,7 @@ class SessionController extends Controller
             }
 
             if ($this->getConf()->get(['registry', 'maintenance', 'enabled'], false)) {
-                $ret['message'] .= strip_tags($this->getConf()->get(['registry', 'maintenance', 'enabled']));
+                $ret['message'] .= strip_tags($this->getConf()->get(['registry', 'maintenance', 'message']));
             }
         }
 

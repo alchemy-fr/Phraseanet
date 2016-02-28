@@ -14,21 +14,17 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 
 class set_selection extends set_abstract
 {
-    protected $app;
     /**
-     *
-     * @return set_selection
+     * @var Application
      */
+    protected $app;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->elements = [];
-
-        return $this;
     }
 
     /**
-     *
      * @param  Basket        $Basket
      * @return set_selection
      */
@@ -42,20 +38,19 @@ class set_selection extends set_abstract
     }
 
     /**
-     *
      * @param array $rights
      * @param array $sbas_rights
      *
      * @return set_selection
      */
-    public function grep_authorized(Array $rights = [], Array $sbas_rights = [])
+    public function grep_authorized(array $rights = [], array $sbas_rights = [])
     {
         $to_remove = [];
 
-        foreach ($this->elements as $id => $record) {
-            $base_id = $record->get_base_id();
-            $sbas_id = $record->get_sbas_id();
-            $record_id = $record->get_record_id();
+        foreach ($this->get_elements() as $id => $record) {
+            $base_id = $record->getBaseId();
+            $sbas_id = $record->getDataboxId();
+            $record_id = $record->getRecordId();
             if (! $rights) {
                 if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_hd_grant($record)) {
                     continue;
@@ -84,7 +79,7 @@ class set_selection extends set_abstract
             }
 
             try {
-                $connsbas = $record->get_databox()->get_connection();
+                $connsbas = $record->getDatabox()->get_connection();
 
                 $sql = 'SELECT record_id
                 FROM record
@@ -105,31 +100,30 @@ class set_selection extends set_abstract
             }
         }
         foreach ($to_remove as $id) {
-            unset($this->elements[$id]);
+            $this->offsetUnset($id);
         }
 
         return $this;
     }
 
     /**
-     *
      * @param array   $lst
      * @param Boolean $flatten_groupings
      *
      * @return set_selection
      */
-    public function load_list(Array $lst, $flatten_groupings = false)
+    public function load_list(array $lst, $flatten_groupings = false)
     {
         foreach ($lst as $basrec) {
             $basrec = explode('_', $basrec);
             if (count($basrec) == 2) {
                 try {
-                    $record = new record_adapter($this->app, (int) $basrec[0], (int) $basrec[1], count($this->elements));
+                    $record = new record_adapter($this->app, (int) $basrec[0], (int) $basrec[1], $this->get_count());
                 } catch (\Exception $e) {
                     continue;
                 }
                 if ($record->isStory() && $flatten_groupings === true) {
-                    foreach ($record->get_children() as $rec) {
+                    foreach ($record->getChildren() as $rec) {
                         $this->add_element($rec);
                     }
                 } else {
@@ -142,14 +136,13 @@ class set_selection extends set_abstract
     }
 
     /**
-     *
-     * @return array
+     * @return array<int>
      */
     public function get_distinct_sbas_ids()
     {
         $ret = [];
-        foreach ($this->elements as $record) {
-            $sbas_id = phrasea::sbasFromBas($this->app, $record->get_base_id());
+        foreach ($this->get_elements() as $record) {
+            $sbas_id = $record->getDataboxId();
             $ret[$sbas_id] = $sbas_id;
         }
 
