@@ -3157,9 +3157,9 @@
         <target state="translated">Creates an audio file</target>
         <jms:reference-file line="44">Media/Subdef/Audio.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image">
+      <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image" approved="yes">
         <source>Generates an image</source>
-        <target state="new">Generates an image</target>
+        <target state="translated">Generates an image</target>
         <jms:reference-file line="47">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efd1f5fd46c31701d2e70555e9ab45efe27b4048" resname="Geonames server address" approved="yes">
@@ -11816,9 +11816,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Enable status search in advanced search.</target>
         <jms:reference-file line="149">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6292a8663176cc229b6c77e5a170fc8fcd72b36a" resname="subdef.document">
+      <trans-unit id="6292a8663176cc229b6c77e5a170fc8fcd72b36a" resname="subdef.document" approved="yes">
         <source>subdef.document</source>
-        <target state="new">subdef.document</target>
+        <target state="translated">Original document</target>
         <jms:reference-file line="212">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable" approved="yes">
