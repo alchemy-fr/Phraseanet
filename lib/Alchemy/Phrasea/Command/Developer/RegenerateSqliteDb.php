@@ -160,8 +160,8 @@ class RegenerateSqliteDb extends Command
         $fixtures['lazaret']['lazaret_1'] = $DI['lazaret_1']->getId();
 
         $fixtures['user']['user_1'] = $DI['user_1']->getId();
-        $fixtures['user']['user_2'] = $DI['user_1']->getId();
-        $fixtures['user']['user_3'] = $DI['user_1']->getId();
+        $fixtures['user']['user_2'] = $DI['user_2']->getId();
+        $fixtures['user']['user_3'] = $DI['user_3']->getId();
         $fixtures['user']['user_1_deleted'] = $DI['user_1_deleted']->getId();
         $fixtures['user']['user_2_deleted'] = $DI['user_2_deleted']->getId();
         $fixtures['user']['user_3_deleted'] = $DI['user_3_deleted']->getId();

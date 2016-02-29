@@ -308,6 +308,14 @@ abstract class PhraseanetTestCase extends WebTestCase
     /**
      * @return record_adapter
      */
+    public function getRecord2()
+    {
+        return self::$DI['record_2'];
+    }
+
+    /**
+     * @return record_adapter
+     */
     public function getRecordStory1()
     {
         return self::$DI['record_story_1'];
