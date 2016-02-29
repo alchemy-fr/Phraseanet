@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Doctrine\Common\Collections\ArrayCollection;
+use Alchemy\Phrasea\Notification\Deliverer;
 use Symfony\Component\EventDispatcher\Event;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
@@ -17,42 +17,33 @@ use Alchemy\Phrasea\Model\Entities\OrderElement;
 class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
-     *
-     * @return Client A Client instance
-     */
-    protected $client;
-
-    /**
      * @covers Alchemy\Phrasea\Controller\Prod\Order::createOrder
      * @covers Alchemy\Phrasea\Controller\Prod\Order::connect
      * @covers Alchemy\Phrasea\Controller\Prod\Order::call
      */
     public function testCreateOrder()
     {
-        self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
+        $app = $this->getApplication();
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $app['notification.deliverer'] = $this->getMockBuilder(Deliverer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $triggered = false;
-        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
         });
-        self::$DI['client']->request('POST', '/prod/order/', [
-            'lst'      => self::$DI['record_1']->get_serialize_key(),
+        $client = $this->getClient();
+        $client->request('POST', '/prod/order/', [
+            'lst'      => $this->getRecord1()->get_serialize_key(),
             'deadline' => '+10 minutes'
         ]);
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertTrue($client->getResponse()->isRedirect(), 'Response should be redirect');
+        $url = parse_url($client->getResponse()->headers->get('location'));
         $var = [];
         parse_str($url['query'], $var);
-        $this->assertTrue(!!$var['success']);
-        $this->assertTrue($triggered);
+        $this->assertTrue(!!$var['success'], 'Response should have a success parameter');
+        $this->assertTrue($triggered, 'Creation listener should have been triggered');
     }
 
     /**
@@ -60,35 +51,30 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testCreateOrderJson()
     {
-        self::$DI['app']['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
-        self::$DI['app']['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
+        $app = $this->getApplication();
 
-
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $app['notification.deliverer'] = $this->getMockBuilder(Deliverer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $triggered = false;
-        self::$DI['app']['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
         });
 
         $this->XMLHTTPRequest('POST', '/prod/order/', [
-            'lst'      => self::$DI['record_1']->get_serialize_key(),
+            'lst'      => $this->getRecord1()->get_serialize_key(),
             'deadline' => '+10 minutes'
         ]);
 
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isOk());
-        $this->assertTrue($triggered);
+        $response = $this->getClient()->getResponse();
+        $this->assertTrue($response->isOk(), 'Invalid response from create order');
+        $this->assertTrue($triggered, 'Order create listener not triggered');
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
-        $this->assertTrue(is_object($content));
+        $this->assertTrue(is_object($content), 'content of response should be a valid JSON object');
         $this->assertObjectHasAttribute('success', $content, $response->getContent());
         $this->assertObjectHasAttribute('msg', $content, $response->getContent());
-        $this->assertTrue($content->success);
+        $this->assertTrue($content->success, 'Success attribute of response content should be true');
     }
 
     /**
@@ -97,13 +83,14 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDisplayOrders()
     {
         $this->XMLHTTPRequest('POST', '/prod/order/', [
-            'lst'      => self::$DI['record_1']->get_serialize_key(),
+            'lst'      => $this->getRecord1()->get_serialize_key(),
             'deadline' => '+10 minutes'
         ]);
-        self::$DI['client']->request('GET', '/prod/order/', [
+        $client = $this->getClient();
+        $client->request('GET', '/prod/order/', [
             'sort' => 'usage'
         ]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $this->assertTrue($client->getResponse()->isOk());
     }
 
     /**
@@ -112,8 +99,9 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDisplayOneOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
-        self::$DI['client']->request('GET', '/prod/order/' . $order->getId() . '/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $client = $this->getClient();
+        $client->request('GET', '/prod/order/' . $order->getId() . '/');
+        $this->assertTrue($client->getResponse()->isOk());
     }
 
     /**
@@ -130,9 +118,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
+        $client = $this->getClient();
+        $client->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
+        $this->assertTrue($client->getResponse()->isRedirect());
+        $url = parse_url($client->getResponse()->headers->get('location'));
         parse_str($url['query']);
         $this->assertTrue( strpos($url['query'], 'success=1') === 0);
     }
@@ -152,7 +141,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
             $parameters[] = $element->getId();
         }
         $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->getClient()->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
@@ -177,9 +166,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
+        $client = $this->getClient();
+        $client->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
+        $this->assertTrue($client->getResponse()->isRedirect());
+        $url = parse_url($client->getResponse()->headers->get('location'));
         $var = [];
         parse_str($url['query'], $var);
         $this->assertTrue( ! ! $var['success']);
@@ -200,7 +190,8 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
             $parameters[] = $element->getId();
         }
         $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
-        $response = self::$DI['client']->getResponse();
+        $client = $this->getClient();
+        $response = $client->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
@@ -222,9 +213,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
+        $this->getClient()->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
 
-        $testOrder = self::$DI['app']['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
+        $app = $this->getApplication();
+        $testOrder = $app['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
@@ -232,36 +224,41 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $order = $this->createOneOrder('I need this pictures');
         $orderElement = new OrderElement();
-        $orderElement->setBaseId(self::$DI['record_2']->get_base_id());
-        $orderElement->setRecordId(self::$DI['record_2']->get_record_id());
+        $record2 = $this->getRecord2();
+        $orderElement->setBaseId($record2->getBaseId());
+        $orderElement->setRecordId($record2->getRecordId());
         $orderElement->setOrder($order);
 
         $order->addElement($orderElement);
         $order->setTodo(2);
 
-        self::$DI['app']['orm.em']->persist($order);
-        self::$DI['app']['orm.em']->persist($orderElement);
-        self::$DI['app']['orm.em']->flush();
+        $app = $this->getApplication();
+        $entityManager = $app['orm.em'];
+        $entityManager->persist($order);
+        $entityManager->persist($orderElement);
+        $entityManager->flush();
 
         $parameters = [$order->getElements()->first()->getId()];
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $testOrder = self::$DI['app']['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
+        $client = $this->getClient();
+        $client->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
+        $testOrder = $entityManager->getRepository('Phraseanet:Order')->find($order->getId());
         $this->assertEquals(1, $testOrder->getTodo());
 
         $parameters = [$orderElement->getId()];
-        self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
+        $client->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
 
-        $testOrder = self::$DI['app']['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $entityManager->getRepository('Phraseanet:Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
     private function createOneOrder($usage)
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $app = $this->getApplication();
+        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $receveid = [self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']];
+        $record1 = $this->getRecord1();
 
         $order = new Order();
         $order->setOrderUsage($usage);
@@ -269,16 +266,17 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $order->setDeadline(new \DateTime('+10 minutes'));
 
         $orderElement = new OrderElement();
-        $orderElement->setBaseId(self::$DI['record_1']->get_base_id());
-        $orderElement->setRecordId(self::$DI['record_1']->get_record_id());
+        $orderElement->setBaseId($record1->getBaseId());
+        $orderElement->setRecordId($record1->getRecordId());
         $orderElement->setOrder($order);
 
         $order->addElement($orderElement);
         $order->setTodo(1);
 
-        self::$DI['app']['orm.em']->persist($order);
-        self::$DI['app']['orm.em']->persist($orderElement);
-        self::$DI['app']['orm.em']->flush();
+        $entityManager = $app['orm.em'];
+        $entityManager->persist($order);
+        $entityManager->persist($orderElement);
+        $entityManager->flush();
 
         return $order;
     }
