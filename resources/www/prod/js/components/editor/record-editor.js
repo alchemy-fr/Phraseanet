@@ -105,7 +105,13 @@ var recordEditorModule = (function (p4) {
             $('body').append('<div id="editcontextwrap"></div>');
 
 
-        _edit_select_all();
+        // if is a group, only select the group
+        if (p4.edit.what === 'GRP') {
+            _toggleGroupSelection();
+        } else {
+            _edit_select_all();
+        }
+
 
         $('.previewTips, .DCESTips, .fieldTips', p4.edit.editBox).tooltip({
             fixable: true,
@@ -335,6 +341,12 @@ var recordEditorModule = (function (p4) {
         catch (err) {
 
         }
+    }
+
+    function _toggleGroupSelection() {
+        var groupIndex = 0;
+        edit_clk_editimg(false, groupIndex);
+
     }
 
     function _preset_paint(data) {
