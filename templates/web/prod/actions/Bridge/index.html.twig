@@ -161,7 +161,7 @@ $(function() {
                             pushModule.reloadBridge(managerUrl);
                         } else {
                             confirmBox.Close();
-                            var alertBox = p4.Dialog.Create({
+                            var alertBox = dialogModule.dialog.create({
                                 size : 'Alert',
                                 closeOnEscape : true,
                                 closeButton:true
@@ -173,7 +173,7 @@ $(function() {
                 });
             };
 
-            var confirmBox = p4.Dialog.Create({
+            var confirmBox = dialogModule.dialog.create({
                 size : 'Alert',
                 closeOnEscape : true,
                 closeButton:true,

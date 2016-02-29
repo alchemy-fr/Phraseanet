@@ -29,7 +29,7 @@
 
                   },
                   success: function(data){
-                      $dialog = p4.Dialog.get(1).Close();
+                      $dialog = dialogModule.dialog.get(1).Close();
                       if(data.success) {
                           humane.info(data.message);
                           return p4.WorkZone.refresh(data.basket.id);

@@ -104,7 +104,7 @@ function T_replaceBy2(f)
 
   var msg = $.sprintf("{{ message | e('js') }}", {'from':term, 'to':f});
 
-  var confirmBox = p4.Dialog.Create({
+  var confirmBox = dialogModule.dialog.create({
       size : 'Alert',
       closeOnEscape : true,
       cancelButton: true,
@@ -227,7 +227,7 @@ function T_replaceCandidates_OK()
     {{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}
   {% endset %}
 
-  var replacingBox = p4.Dialog.Create({
+  var replacingBox = dialogModule.dialog.create({
     size : 'Alert'
   });
   replacingBox.setContent("{{ replaceing_msg | e('js') }}");
@@ -252,7 +252,7 @@ function T_replaceCandidates_OK()
 
       if(result.msg != '')
       {
-        var alert = p4.Dialog.Create({
+        var alert = dialogModule.dialog.create({
           size : 'Alert',
           closeOnEscape : true,
           closeButton:true
@@ -280,7 +280,7 @@ function T_acceptCandidates_OK()
     {{ 'prod::thesaurusTab:dlg:Acceptation en cours.' | trans }}
   {% endset %}
 
-  var acceptingBox = p4.Dialog.Create({
+  var acceptingBox = dialogModule.dialog.create({
     size : 'Alert'
   });
   acceptingBox.setContent("{{ accepting_msg | e('js') }}");
@@ -363,7 +363,7 @@ function C_deleteCandidates_OK()
     {{ 'prod::thesaurusTab:dlg:Suppression en cours.' | trans }}
   {% endset %}
 
-  var deletingBox = p4.Dialog.Create({
+  var deletingBox = dialogModule.dialog.create({
     size : 'Alert'
   });
   deletingBox.setContent("{{ deleting_msg | e('js') }}");
@@ -391,7 +391,7 @@ function C_deleteCandidates_OK()
 
       if(result.msg != '')
       {
-        var alert = p4.Dialog.Create({
+        var alert = dialogModule.dialog.create({
           size : 'Alert',
           closeOnEscape : true,
           closeButton:true
@@ -445,7 +445,7 @@ function T_acceptCandidates(menuItem, menu, type)
   trees.C._toAccept.type = type;
   trees.C._toAccept.dst = lidst.eq(0).attr("id");
 
-  var confirmBox = p4.Dialog.Create({
+  var confirmBox = dialogModule.dialog.create({
       size : 'Alert',
       closeOnEscape : true,
       cancelButton: true,
@@ -567,7 +567,7 @@ function C_MenuOption(menuItem, menu, option, parm)
         msg = $.sprintf("{{ messageMany | e('js') }}", trees.C._selInfos.n);
       }
 
-      var confirmBox = p4.Dialog.Create({
+      var confirmBox = dialogModule.dialog.create({
         size : 'Alert',
         closeOnEscape : true,
         cancelButton: true,

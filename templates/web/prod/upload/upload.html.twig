@@ -270,7 +270,7 @@ $(document).ready(function () {
             $(".number-files-to-transmit").html(totalElement);
             $(".transmit-box").show();
 
-            var dialog = p4.Dialog.get(1);
+            var dialog = dialogModule.dialog.get(1);
 
             //reset progressbar for iframe uploads
             if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
@@ -386,7 +386,7 @@ $(document).ready(function () {
                 progressbarAll.width('100%');
                 bitrateBox.empty();
                 $('#uploadBoxRight .progress').removeClass('progress-striped active');
-                var dialog = p4.Dialog.get(1);
+                var dialog = dialogModule.dialog.get(1);
                 //unbind check before close event & disabled button for cancel all download
                 dialog.getDomElement().unbind("dialogbeforeclose");
                 //disabled cancel-all button, if queue is empty and last upload success

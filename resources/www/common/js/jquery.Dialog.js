@@ -1,8 +1,7 @@
 ;
-var p4 = p4 || {};
+var dialogModule = (function ($) {
 
-;
-(function (p4, $) {
+    var _dialog = {};
 
     function getLevel(level) {
 
@@ -19,24 +18,24 @@ var p4 = p4 || {};
         return 'DIALOG' + getLevel(level);
     };
 
-    function addButtons(buttons, dialog) {
+    function _addButtons(buttons, dialog) {
         if (dialog.options.closeButton === true) {
             buttons[language.fermer] = function () {
-                dialog.Close();
+                dialog.close();
             };
         }
         if (dialog.options.cancelButton === true) {
             buttons[language.annuler] = function () {
-                dialog.Close();
+                dialog.close();
             };
         }
 
         return buttons;
     }
 
-    var phraseaDialog = function (options, level) {
+    var _phraseaDialog = function (options, level) {
 
-        var createDialog = function (level) {
+        var _createDialog = function (level) {
 
             var $dialog = $('#' + getId(level));
 
@@ -73,7 +72,7 @@ var p4 = p4 || {};
 
         this.level = getLevel(level);
 
-        this.options.buttons = addButtons(this.options.buttons, this);
+        this.options.buttons = _addButtons(this.options.buttons, this);
 
         if (/\d+x\d+/.test(this.options.size)) {
             var dimension = this.options.size.split('x');
@@ -109,17 +108,17 @@ var p4 = p4 || {};
          *  - Small  | 730 x 480
          *
          **/
-        this.$dialog = createDialog(this.level),
+        this.$dialog = _createDialog(this.level),
             zIndex = Math.min(this.level * 5000 + 5000, 32767);
 
-        var CloseCallback = function () {
+        var _closeCallback = function () {
             if (typeof $this.options.closeCallback === 'function') {
                 $this.options.closeCallback($this.$dialog);
             }
 
             if ($this.closing === false) {
                 $this.closing = true;
-                $this.Close();
+                $this.close();
             }
         };
 
@@ -140,7 +139,7 @@ var p4 = p4 || {};
                 open: function () {
                     $(this).dialog("widget").css("z-index", zIndex);
                 },
-                close: CloseCallback
+                close: _closeCallback
             })
             .dialog('open').addClass('dialog-' + this.options.size);
 
@@ -164,9 +163,9 @@ var p4 = p4 || {};
         return this;
     };
 
-    phraseaDialog.prototype = {
-        Close: function () {
-            p4.Dialog.Close(this.level);
+    _phraseaDialog.prototype = {
+        close: function () {
+            _dialog.close(this.level);
         },
         setContent: function (content) {
             this.$dialog.removeClass('loading').empty().append(content);
@@ -218,7 +217,7 @@ var p4 = p4 || {};
         },
         setOption: function (optionName, optionValue) {
             if (optionName === 'buttons') {
-                optionValue = addButtons(optionValue, this);
+                optionValue = _addButtons(optionValue, this);
             }
             if (this.$dialog.data("ui-dialog")) {
                 this.$dialog.dialog('option', optionName, optionValue);
@@ -231,13 +230,13 @@ var p4 = p4 || {};
     };
 
     Dialog.prototype = {
-        Create: function (options, level) {
+        create: function (options, level) {
 
-            if (this.get(level) instanceof phraseaDialog) {
-                this.get(level).Close();
+            if (this.get(level) instanceof _phraseaDialog) {
+                this.get(level).close();
             }
 
-            $dialog = new phraseaDialog(options, level);
+            $dialog = new _phraseaDialog(options, level);
 
             this.currentStack[$dialog.getId()] = $dialog;
 
@@ -253,7 +252,7 @@ var p4 = p4 || {};
 
             return null;
         },
-        Close: function (level) {
+        close: function (level) {
 
             $(window).unbind('resize.DIALOG' + getLevel(level));
 
@@ -272,6 +271,9 @@ var p4 = p4 || {};
         }
     };
 
-    p4.Dialog = new Dialog();
+    _dialog = new Dialog();
+    return {
+        dialog: _dialog
+    }
 
-}(p4, jQuery));
+}(jQuery));

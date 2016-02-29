@@ -200,7 +200,7 @@ var publicationModule = (function () {
 
         var buttons = {};
         buttons[language.valider] = function () {
-            var dialog = p4.Dialog.get(1);
+            var dialog = dialogModule.dialog.get(1);
             var error = false;
             var $form = $('form.main_form', dialog.getDomElement());
 
@@ -258,13 +258,13 @@ var publicationModule = (function () {
                         });
                     }
 
-                    p4.Dialog.Close(1);
+                    dialogModule.dialog.close(1);
                 }
             });
-            p4.Dialog.Close(1);
+            dialogModule.dialog.close(1);
         };
 
-        var dialog = p4.Dialog.Create({
+        var dialog = dialogModule.dialog.create({
             size: 'Full',
             closeOnEscape: true,
             closeButton: true,

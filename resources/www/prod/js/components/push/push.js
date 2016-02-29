@@ -37,18 +37,18 @@ var pushModule = (function (window, p4) {
                         size: 'Medium',
                         title: $this.html()
                     };
-                    p4.Dialog.Create(options, 2).getDomElement().addClass('loading');
+                    dialogModule.dialog.create(options, 2).getDomElement().addClass('loading');
                 },
                 success: function (data) {
-                    p4.Dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
+                    dialogModule.dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
                     return;
                 },
                 error: function () {
-                    p4.Dialog.get(2).Close();
+                    dialogModule.dialog.get(2).Close();
                     return;
                 },
                 timeout: function () {
-                    p4.Dialog.get(2).Close();
+                    dialogModule.dialog.get(2).Close();
                     return;
                 }
             });
@@ -73,7 +73,7 @@ var pushModule = (function (window, p4) {
                 title: $(this).attr('title')
             };
 
-            $dialog = p4.Dialog.Create(options, 2);
+            $dialog = dialogModule.dialog.create(options, 2);
             $dialog.setContent(content);
 
             $dialog.getDomElement().find('a.adder').bind('click', function () {
@@ -117,7 +117,7 @@ var pushModule = (function (window, p4) {
                 success: function (data) {
                     if (data.success) {
                         humane.info(data.message);
-                        p4.Dialog.Close(1);
+                        dialogModule.dialog.close(1);
                         p4.WorkZone.refresh();
                     }
                     else {
@@ -153,7 +153,7 @@ var pushModule = (function (window, p4) {
                         closeButton: true,
                         title: language.warning
                     }
-                    var $dialogAlert = p4.Dialog.Create(options, 3);
+                    var $dialogAlert = dialogModule.dialog.create(options, 3);
                     $dialogAlert.setContent(language.FeedBackNameMandatory);
 
                     return false;
@@ -179,7 +179,7 @@ var pushModule = (function (window, p4) {
                 cancelButton: true
             };
 
-            var $dialog = p4.Dialog.Create(options, 2);
+            var $dialog = dialogModule.dialog.create(options, 2);
 
             var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
@@ -427,7 +427,7 @@ var pushModule = (function (window, p4) {
                     closeButton: true,
                     title: $this.attr('title')
                 },
-                $dialog = p4.Dialog.Create(options, 2);
+                $dialog = dialogModule.dialog.create(options, 2);
 
             $dialog.load($this.attr('href'), 'GET');
 
@@ -447,18 +447,18 @@ var pushModule = (function (window, p4) {
                         size: 'Medium',
                         title: $this.html()
                     };
-                    p4.Dialog.Create(options, 2).getDomElement().addClass('loading');
+                    dialogModule.dialog.create(options, 2).getDomElement().addClass('loading');
                 },
                 success: function (data) {
-                    p4.Dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
+                    dialogModule.dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
                     return;
                 },
                 error: function () {
-                    p4.Dialog.get(2).Close();
+                    dialogModule.dialog.get(2).Close();
                     return;
                 },
                 timeout: function () {
-                    p4.Dialog.get(2).Close();
+                    dialogModule.dialog.get(2).Close();
                     return;
                 }
             });
@@ -492,10 +492,10 @@ var pushModule = (function (window, p4) {
 
                         var callbackOK = function () {
                             $('a.list_refresh', $container).trigger('click');
-                            p4.Dialog.get(2).Close();
+                            dialogModule.dialog.get(2).Close();
                         };
 
-                        var name = $('input[name="name"]', p4.Dialog.get(2).getDomElement()).val();
+                        var name = $('input[name="name"]', dialogModule.dialog.get(2).getDomElement()).val();
 
                         if ($.trim(name) === '') {
                             alert(language.listNameCannotBeEmpty);
@@ -511,7 +511,7 @@ var pushModule = (function (window, p4) {
                         size: '700x170'
                     };
 
-                    p4.Dialog.Create(options, 2).setContent(box);
+                    dialogModule.dialog.create(options, 2).setContent(box);
                 };
 
                 var html = _.template($("#list_editor_dialog_add_tpl").html());
@@ -630,7 +630,7 @@ var pushModule = (function (window, p4) {
 
                         var callbackOK = function () {
                             $('#ListManager .all-lists a.list_refresh').trigger('click');
-                            p4.Dialog.get(2).Close();
+                            dialogModule.dialog.get(2).Close();
                         };
 
                         var List = new document.List(list_id);
@@ -643,7 +643,7 @@ var pushModule = (function (window, p4) {
                         size: 'Alert'
                     };
 
-                    p4.Dialog.Create(options, 2).setContent(box);
+                    dialogModule.dialog.create(options, 2).setContent(box);
                 };
 
                 var html = _.template($("#list_editor_dialog_delete_tpl").html());
@@ -692,7 +692,7 @@ var pushModule = (function (window, p4) {
 
     function reloadBridge(url) {
         var options = $('#dialog_publicator form[name="current_datas"]').serializeArray();
-        var dialog = p4.Dialog.get(1);
+        var dialog = dialogModule.dialog.get(1);
         dialog.load(url, 'POST', options);
     }
 

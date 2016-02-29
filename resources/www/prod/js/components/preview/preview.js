@@ -24,7 +24,7 @@ var recordPreviewModule = (function (p4) {
         var justOpen = false;
 
         if (!p4.preview.open) {
-            showOverlay();
+            commonModule.showOverlay();
 
             $('#PREVIEWIMGCONT').disableSelection();
 
@@ -199,7 +199,7 @@ var recordPreviewModule = (function (p4) {
 
     function closePreview() {
         p4.preview.open = false;
-        hideOverlay();
+        commonModule.hideOverlay();
 
         $('#PREVIEWBOX').fadeTo(500, 0);
         $('#PREVIEWBOX').queue(function () {

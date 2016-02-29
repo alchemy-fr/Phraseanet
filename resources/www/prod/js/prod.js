@@ -34,7 +34,7 @@ var prodModule = (function (p4, humane) {
                 closeOnEscape: true
             };
 
-            $dialog = p4.Dialog.Create(options);
+            $dialog = dialogModule.dialog.create(options);
 
             $.ajax({
                 type: "GET",
@@ -79,7 +79,7 @@ var prodModule = (function (p4, humane) {
                 }
             };
 
-            $dialog = p4.Dialog.Create(options);
+            $dialog = dialogModule.dialog.create(options);
 
             searchForm.appendTo($dialog.getDomElement());
 
@@ -373,7 +373,11 @@ var prodModule = (function (p4, humane) {
             if ($('#MODALDL').is(':visible')) {
                 switch (event.keyCode) {
                     case 27:
-                        hideDwnl();
+                        // hide download
+                        commonModule.hideOverlay(2);
+                        $('#MODALDL').css({
+                            'display': 'none'
+                        });
                         break;
                 }
             }
@@ -708,7 +712,7 @@ var prodModule = (function (p4, humane) {
     function openRecordEditor(type, value) {
 
         $('#idFrameE').empty().addClass('loading');
-        showOverlay(2);
+        commonModule.showOverlay(2);
 
         $('#EDITWINDOW').show();
 
@@ -754,7 +758,7 @@ var prodModule = (function (p4, humane) {
     }
 
     function openShareModal(bas, rec) {
-        var dialog = p4.Dialog.Create({
+        var dialog = dialogModule.dialog.create({
             title: language['share']
         });
 
@@ -802,7 +806,7 @@ var prodModule = (function (p4, humane) {
 
     function openToolModal(datas, activeTab) {
 
-        var dialog = p4.Dialog.Create({
+        var dialog = dialogModule.dialog.create({
             size: 'Medium',
             title: language.toolbox,
             loading: true
@@ -832,7 +836,7 @@ var prodModule = (function (p4, humane) {
     }
     // @TODO duplicate with external module
     function _onOpenDownloadModal(datas) {
-        var dialog = p4.Dialog.Create({title: language['export']});
+        var dialog = dialogModule.dialog.create({title: language['export']});
 
         $.post("../prod/export/multi-export/", datas, function (data) {
 
@@ -899,7 +903,7 @@ var prodModule = (function (p4, humane) {
             return false;
         }
 
-        var $dialog = p4.Dialog.Create({
+        var $dialog = dialogModule.dialog.create({
             size: 'Small',
             title: language.deleteRecords
         });

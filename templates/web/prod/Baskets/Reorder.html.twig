@@ -37,7 +37,7 @@
 
   <script type="text/javascript">
     $(document).ready(function(){
-        var container = $('#reorder_box');//p4.Dialog.get(1).getDomElement();
+        var container = $('#reorder_box');
 
         $('button.autoorder', container).bind('click', function(){
             autoorder();
@@ -202,7 +202,7 @@
                         alert(data.message);
                     }
                     p4.WorkZone.refresh('current');
-                    p4.Dialog.get(1).Close();
+                    dialogModule.dialog.get(1).Close();
 
                     return;
                 },

@@ -372,7 +372,7 @@
         <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
         <input type='button' class='btn btn-inverse'
             value="{{ 'boutton::fermer' | trans }}"
-            onClick="$('#EDITWINDOW').fadeOut();hideOverlay(2);return(false);" />
+            onClick="$('#EDITWINDOW').fadeOut();commonModule.hideOverlay(2);return(false);" />
     </center>
 </div>
 
@@ -402,7 +402,7 @@
 <script type="text/javascript">
     {% if multipleDataboxes or recordsRequest|length == 0 %}
         $('#EDITWINDOW').hide();
-        hideOverlay(2);
+        commonModule.hideOverlay(2);
 
         $(function() {
             // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!

@@ -193,7 +193,7 @@
                         p4.WorkZone.refresh();
                     } else {
                         confirmBox.Close();
-                        var alertBox = p4.Dialog.Create({
+                        var alertBox = dialogModule.dialog.create({
                             size : 'Alert',
                             closeOnEscape : true,
                             closeButton:true
@@ -204,7 +204,7 @@
                 },
                 error: function() {
                     confirmBox.Close();
-                    var alertBox = p4.Dialog.Create({
+                    var alertBox = dialogModule.dialog.create({
                             size : 'Alert',
                             closeOnEscape : true,
                             closeButton:true
@@ -215,7 +215,7 @@
             });
         };
 
-        var confirmBox = p4.Dialog.Create({
+        var confirmBox = dialogModule.dialog.create({
             size : 'Alert',
             closeOnEscape : true,
             cancelButton: true,

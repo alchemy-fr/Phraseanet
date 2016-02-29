@@ -77,7 +77,7 @@
       $completer_form = $('form[name="list_share_user"]', $container),
       $owners_form = $('form[name="owners"]', $container),
       $autocompleter = $('input[name="user"]', $completer_form),
-      $dialog = p4.Dialog.get(2);
+      $dialog = dialogModule.dialog.get(2); //p4.Dialog.get(2);
 
       $completer_form.bind('submit', function(){
         return false;

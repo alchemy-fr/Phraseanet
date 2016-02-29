@@ -80,8 +80,8 @@
 
 {% if app['conf'].get(['registry', 'actions', 'auth-required-for-export']) and app.getAuthenticatedUser().isGuest() %}
     <script type="text/javascript">
-        p4.Dialog.get(1).Close();
-        var $dialog = p4.Dialog.Create({
+        dialogModule.dialog.get(1).Close();
+        var $dialog = dialogModule.dialog.create({
             size : '500x100',
             closeOnEscape : true,
             closeButton:false,
@@ -493,7 +493,7 @@
                         $('#ftp_form_selector').bind('change',function(){
                         $('#ftp .ftp_form').hide();
                         $('#ftp .ftp_form_'+$(this).val()).show();
-                            $('.ftp_folder_check', p4.Dialog.get(1).getDomElement()).unbind('change').bind('change', function(){
+                            $('.ftp_folder_check', dialogModule.dialog.get(1).getDomElement()).unbind('change').bind('change', function(){
                                 if($(this).prop('checked'))
                                     $(this).next().prop('disabled',false);
                                 else
@@ -519,7 +519,7 @@
                     {{ 'You must agree to the Terms of Use to continue.' | trans }}
                 {% endset %}
 
-                var alert = p4.Dialog.Create({
+                var alert = dialogModule.dialog.create({
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
@@ -562,7 +562,7 @@
                     {{ 'Certains champs sont obligatoires, veuillez les remplir' | trans }}
                 {% endset %}
 
-                var alert = p4.Dialog.Create({
+                var alert = dialogModule.dialog.create({
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
@@ -579,7 +579,7 @@
                     {{ 'Vous devez selectionner un type de sous definitions' | trans }}
                 {% endset %}
 
-                var alert = p4.Dialog.Create({
+                var alert = dialogModule.dialog.create({
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
@@ -599,7 +599,7 @@
         {% endset %}
 
         $(document).ready(function(){
-            var dialog = p4.Dialog.get(1);
+            var dialog = dialogModule.dialog.get(1);
             var tabs = $('.tabs', dialog.getDomElement());
 
             $('a.TOUview').bind('click', function(){
@@ -609,7 +609,7 @@
                   title :'{{ TOUTitle|e('js') }}'
                 };
 
-                $dialog = p4.Dialog.Create(options, 2);
+                $dialog = dialogModule.dialog.create(options, 2);
 
                 $.get($(this).attr('href'), function(content){$dialog.setContent(content);});
             });
@@ -709,7 +709,7 @@
                           title : title
                         };
 
-                        p4.Dialog.Create(options, 2).setContent(data.msg);
+                        dialogModule.dialog.create(options, 2).setContent(data.msg);
 
                         if(!data.error)
                         {
@@ -753,7 +753,7 @@
                             humane.info(data.message);
                             dialog.Close();
                         } else {
-                            var alert = p4.Dialog.Create({
+                            var alert = dialogModule.dialog.create({
                                 size : 'Alert',
                                 closeOnEscape : true,
                                 closeButton:true,
@@ -785,7 +785,7 @@
                           title : data.success ? '{{ "Success" | trans | e('js') }}' : '{{ "Warning !" | trans | e('js') }}'
                         };
 
-                        p4.Dialog.Create(options, 3).setContent(data.message);
+                        dialogModule.dialog.create(options, 3).setContent(data.message);
 
                         $this.prop('disabled', false);
 

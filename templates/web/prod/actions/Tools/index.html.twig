@@ -382,7 +382,7 @@ $(document).ready(function(){
                 if(!data.success){
                     humane.error(data.message);
                 }else{
-                    var dialog = p4.Dialog.get(1);
+                    var dialog = dialogModule.dialog.get(1);
                     dialog.Close();
                 }
             },
@@ -395,7 +395,7 @@ $(document).ready(function(){
     });
 
     $(".action_cancel", $scope).bind("click", function(){
-        var dialog = p4.Dialog.get(1);
+        var dialog = dialogModule.dialog.get(1);
         dialog.Close();
 
         return false;
@@ -485,7 +485,7 @@ $(document).ready(function(){
 
             if(thumbnail.length === 0)
             {
-                var dialog = p4.Dialog.Create({
+                var dialog = dialogModule.dialog.create({
                     size:'Alert',
                     title: '{{ "alert" | trans }}',
                     closeOnEscape:true
@@ -536,7 +536,7 @@ $(document).ready(function(){
             }
 
             buttons[language.valider] = function(){
-                var dialog = p4.Dialog.get(2);
+                var dialog = dialogModule.dialog.get(2);
                 var buttonPanel = dialog.getDomElement().closest('.ui-dialog').find(".ui-dialog-buttonpane");
                 var loadingDiv = buttonPanel.find('.info-div');
 
@@ -571,7 +571,7 @@ $(document).ready(function(){
                         if(data.success)
                         {
                             dialog.Close();
-                            p4.Dialog.get(1).Close();
+                            dialogModule.dialog.get(1).Close();
                         }
                         else
                         {
@@ -584,7 +584,7 @@ $(document).ready(function(){
             };
 
             //show confirm box, content is loaded here /prod/tools/thumb-extractor/confirm-box/
-            var dialog = p4.Dialog.Create({
+            var dialog = dialogModule.dialog.create({
                 size:'Small',
                 title:"{{ 'thumbnail validation' | trans }}",
                 cancelButton:true,

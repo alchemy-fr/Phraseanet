@@ -1,9 +1,9 @@
 
 var dialogUserResetTemplateConfirm = function (callback) {
     var buttons = {};
-    buttons[language.reset_template_do_reset_apply_button] = function () { p4.Dialog.Close(2); callback('1'); };
+    buttons[language.reset_template_do_reset_apply_button] = function () { dialogModule.dialog.close(2); callback('1'); };
 
-    var $dialog = p4.Dialog.Create({
+    var $dialog = dialogModule.dialog.create({
         size : '550x200',
         closeOnEscape : true,
         closeButton:false,
@@ -17,10 +17,10 @@ var dialogUserResetTemplateConfirm = function (callback) {
 
 var dialogUserTemplate = function (callback) {
     var buttons = {};
-    buttons[language.reset_template_do_not_reset_button] = function () { p4.Dialog.Close(1); callback('0'); };
-    buttons[language.reset_template_do_reset_button] = function () { p4.Dialog.Close(1); dialogUserResetTemplateConfirm(callback); };
+    buttons[language.reset_template_do_not_reset_button] = function () { dialogModule.dialog.close(1); callback('0'); };
+    buttons[language.reset_template_do_reset_button] = function () { dialogModule.dialog.close(1); dialogUserResetTemplateConfirm(callback); };
 
-    var $dialog = p4.Dialog.Create({
+    var $dialog = dialogModule.dialog.create({
         size : '550x200',
         closeOnEscape : true,
         closeButton:false,

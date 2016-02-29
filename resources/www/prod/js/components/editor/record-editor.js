@@ -1262,7 +1262,7 @@ var recordEditorModule = (function (p4) {
                 }
                 $("#Edit_copyPreset_dlg").remove();
                 $('#EDITWINDOW').hide();
-                hideOverlay(2);
+                commonModule.hideOverlay(2);
                 if (p4.preview.open)
                     recordPreviewModule.reloadPreview();
                 return;
@@ -1307,7 +1307,7 @@ var recordEditorModule = (function (p4) {
                 if (e)
                     e.style.display = "";
             }
-            self.setTimeout("$('#EDITWINDOW').fadeOut();hideOverlay(2);", 100);
+            self.setTimeout("$('#EDITWINDOW').fadeOut();commonModule.hideOverlay(2);", 100);
 
         }
     }
