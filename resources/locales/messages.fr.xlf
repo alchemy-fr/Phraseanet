@@ -11817,7 +11817,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6292a8663176cc229b6c77e5a170fc8fcd72b36a" resname="subdef.document" approved="yes">
         <source>subdef.document</source>
-        <target state="translated">Sous définition</target>
+        <target state="translated">Document original</target>
         <jms:reference-file line="212">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable" approved="yes">
