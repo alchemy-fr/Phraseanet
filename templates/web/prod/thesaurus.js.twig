@@ -110,7 +110,7 @@ function T_replaceBy2(f)
       cancelButton: true,
       buttons: {
           "Ok" : function() {
-              confirmBox.Close();
+              confirmBox.close();
               T_replaceCandidates_OK();
           }
       }
@@ -248,7 +248,7 @@ function T_replaceCandidates_OK()
       trees.C._toReplace = null;
       thesauShowWizard("wiz_0", false);
 
-      replacingBox.Close();
+      replacingBox.close();
 
       if(result.msg != '')
       {
@@ -346,10 +346,10 @@ function T_acceptCandidates_OK()
       }
       trees.C._toAccept = null;
       thesauShowWizard("wiz_0",false);
-      acceptingBox.Close();
+      acceptingBox.close();
     },
-    error:function(){acceptingBox.Close();},
-    timeout:function(){acceptingBox.Close();},
+    error:function(){acceptingBox.close();},
+    timeout:function(){acceptingBox.close();},
     _ret: null	// private alchemy
   };
 
@@ -387,7 +387,7 @@ function C_deleteCandidates_OK()
     timeout:10*60*1000,	// 10 minutes !
     success: function(result, textStatus)
     {
-      deletingBox.Close();
+      deletingBox.close();
 
       if(result.msg != '')
       {
@@ -451,7 +451,7 @@ function T_acceptCandidates(menuItem, menu, type)
       cancelButton: true,
       buttons: {
           "Ok" : function() {
-              confirmBox.Close();
+              confirmBox.close();
               T_acceptCandidates_OK();
           }
       }
@@ -573,7 +573,7 @@ function C_MenuOption(menuItem, menu, option, parm)
         cancelButton: true,
         buttons: {
             "Ok" : function() {
-                confirmBox.Close();
+                confirmBox.close();
                 C_deleteCandidates_OK();
             }
         }
@@ -638,7 +638,7 @@ function Xclick(e)
       {
         tids.pop();
         var tid3 = tids.join('.');
-        if(!is_ctrl_key(e) && !is_shift_key(e))
+        if(!utilsModule.is_ctrl_key(e) && !utilsModule.is_shift_key(e))
         {
           $("LI", trees[type].tree).removeClass('selected');
           p4.thesau.lastClickedCandidate = null;

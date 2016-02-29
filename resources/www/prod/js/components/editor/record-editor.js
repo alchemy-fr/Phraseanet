@@ -450,7 +450,6 @@ var recordEditorModule = (function (p4) {
     }
 
     function _setPreviewEdit() {
-        console.log('set preview edit on resize')
         if (!$('#TH_Opreview').is(':visible'))
             return false;
 

@@ -1,7 +1,22 @@
 ;
 var dialogModule = (function ($) {
-
+    var $body = null;
+    var bodySize = {};
     var _dialog = {};
+
+    $('document').ready(function(){
+        $body = $('body');
+
+        $(window).on('resize', function () {
+            bodySize.y = $body.height();
+            bodySize.x = $body.width();
+
+            //@TODO modal resize should be in a stream
+            $('.overlay').height(bodySize.y).width(bodySize.x);
+            //_resizeAll();
+        });
+    });
+
 
     function getLevel(level) {
 
@@ -79,6 +94,10 @@ var dialogModule = (function ($) {
             height = dimension[1];
             width = dimension[0];
         } else {
+
+            bodySize.y = $body.height();
+            bodySize.x = $body.width();
+
             switch (this.options.size) {
                 case 'Full':
                     height = bodySize.y - 30;

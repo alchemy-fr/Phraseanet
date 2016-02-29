@@ -157,10 +157,10 @@ $(function() {
                     data: {},
                     success: function(datas){
                         if(datas.success) {
-                            confirmBox.Close();
+                            confirmBox.close();
                             pushModule.reloadBridge(managerUrl);
                         } else {
-                            confirmBox.Close();
+                            confirmBox.close();
                             var alertBox = dialogModule.dialog.create({
                                 size : 'Alert',
                                 closeOnEscape : true,

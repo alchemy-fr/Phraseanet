@@ -151,7 +151,7 @@
             var $dialogBox = $dialog.getDomElement();
 
             $("button.cancel", $dialogBox).bind("click", function(){
-                $dialog.Close();
+                $dialog.close();
             });
 
             $("button.submiter", $dialogBox).bind("click", function(){
@@ -169,7 +169,7 @@
                         loader.show();
                     },
                     success: function(data){
-                        $dialog.Close();
+                        $dialog.close();
                     },
                     complete: function(){
                         $this.attr("disabled", false);

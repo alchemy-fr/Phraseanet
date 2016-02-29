@@ -35,7 +35,7 @@
         var $cancelButton = $("button.cancel", $dialogBox);
 
         $cancelButton.bind("click", function(){
-            $dialog.Close();
+            $dialog.close();
         });
 
         $("button.submiter", $dialogBox).bind("click", function(){
@@ -56,7 +56,7 @@
                     loader.show();
                 },
                 success: function(data){
-                    $dialog.Close();
+                    $dialog.close();
                     $.each(data,function(i,n){
                         var imgt = $('#IMGT_'+n),
                         chim = $('.CHIM_'+n),

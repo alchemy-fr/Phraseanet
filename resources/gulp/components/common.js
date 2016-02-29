@@ -26,6 +26,7 @@ gulp.task('build-common-css', ['build-common-font-css'],function(){
 
 gulp.task('build-common-js', function(){
     var commonGroup = [
+        config.paths.src + 'common/js/components/utils.js',
         config.paths.src + 'common/js/components/user.js',
         // config.paths.dist + 'assets/bootstrap/js/bootstrap.js', // should append no conflict
         config.paths.src + 'vendors/jquery-mousewheel/js/jquery.mousewheel.js',

@@ -383,7 +383,7 @@ $(document).ready(function(){
                     humane.error(data.message);
                 }else{
                     var dialog = dialogModule.dialog.get(1);
-                    dialog.Close();
+                    dialog.close();
                 }
             },
             complete: function(){
@@ -396,7 +396,7 @@ $(document).ready(function(){
 
     $(".action_cancel", $scope).bind("click", function(){
         var dialog = dialogModule.dialog.get(1);
-        dialog.Close();
+        dialog.close();
 
         return false;
     });
@@ -570,8 +570,8 @@ $(document).ready(function(){
 
                         if(data.success)
                         {
-                            dialog.Close();
-                            dialogModule.dialog.get(1).Close();
+                            dialog.close();
+                            dialogModule.dialog.get(1).close();
                         }
                         else
                         {

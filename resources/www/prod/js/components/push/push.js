@@ -44,11 +44,11 @@ var pushModule = (function (window, p4) {
                     return;
                 },
                 error: function () {
-                    dialogModule.dialog.get(2).Close();
+                    dialogModule.dialog.get(2).close();
                     return;
                 },
                 timeout: function () {
-                    dialogModule.dialog.get(2).Close();
+                    dialogModule.dialog.get(2).close();
                     return;
                 }
             });
@@ -159,7 +159,7 @@ var pushModule = (function (window, p4) {
                     return false;
                 }
 
-                $dialog.Close();
+                $dialog.close();
 
                 $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
                 $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
@@ -454,11 +454,11 @@ var pushModule = (function (window, p4) {
                     return;
                 },
                 error: function () {
-                    dialogModule.dialog.get(2).Close();
+                    dialogModule.dialog.get(2).close();
                     return;
                 },
                 timeout: function () {
-                    dialogModule.dialog.get(2).Close();
+                    dialogModule.dialog.get(2).close();
                     return;
                 }
             });
@@ -492,7 +492,7 @@ var pushModule = (function (window, p4) {
 
                         var callbackOK = function () {
                             $('a.list_refresh', $container).trigger('click');
-                            dialogModule.dialog.get(2).Close();
+                            dialogModule.dialog.get(2).close();
                         };
 
                         var name = $('input[name="name"]', dialogModule.dialog.get(2).getDomElement()).val();
@@ -630,7 +630,7 @@ var pushModule = (function (window, p4) {
 
                         var callbackOK = function () {
                             $('#ListManager .all-lists a.list_refresh').trigger('click');
-                            dialogModule.dialog.get(2).Close();
+                            dialogModule.dialog.get(2).close();
                         };
 
                         var List = new document.List(list_id);

@@ -80,7 +80,7 @@
 
 {% if app['conf'].get(['registry', 'actions', 'auth-required-for-export']) and app.getAuthenticatedUser().isGuest() %}
     <script type="text/javascript">
-        dialogModule.dialog.get(1).Close();
+        dialogModule.dialog.get(1).close();
         var $dialog = dialogModule.dialog.create({
             size : '500x100',
             closeOnEscape : true,
@@ -615,7 +615,7 @@
             });
 
             $('.close_button').bind('click',function(){
-                dialog.Close();
+                dialog.close();
             });
 
             /*define([
@@ -676,7 +676,7 @@
                 }
 
                 $('#download form').submit();
-                dialog.Close();
+                dialog.close();
             });
 
             $('#order .order_button').bind('click',function(){
@@ -714,7 +714,7 @@
                         if(!data.error)
                         {
                             humane.info(data.msg);
-                            dialog.Close();
+                            dialog.close();
                         } else {
                             humane.error(data.msg);
                         }
@@ -751,7 +751,7 @@
 
                         if(data.success) {
                             humane.info(data.message);
-                            dialog.Close();
+                            dialog.close();
                         } else {
                             var alert = dialogModule.dialog.create({
                                 size : 'Alert',
@@ -808,7 +808,7 @@
                 }
 
                 $('#sendmail form').submit();
-                dialog.Close();
+                dialog.close();
             });
 
             $('.datepicker', dialog.getDomElement()).datepicker({

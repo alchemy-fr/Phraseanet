@@ -178,7 +178,7 @@
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
   <script type="text/javascript">
     {% if basket.getValidation() %}
-    p4.releasable = {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+    lightboxModule.setReleasable({% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %});
     {% endif %}
   </script>
 {% endblock %}

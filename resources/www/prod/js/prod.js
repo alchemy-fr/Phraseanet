@@ -88,7 +88,7 @@ var prodModule = (function (p4, humane) {
 
             $dialog.getDomElement().find('form').bind('submit.conbo', function () {
                 $(this).unbind('submit.conbo');
-                $dialog.Close();
+                $dialog.close();
                 return false;
             });
 
@@ -623,11 +623,9 @@ var prodModule = (function (p4, humane) {
     });
 
     function _resizeAll() {
-        var body = $('#mainContainer');
+        var body = $('body');
         bodySize.y = body.height();
         bodySize.x = body.width();
-
-        $('.overlay').height(bodySize.y).width(bodySize.x);
 
         var headBlockH = $('#headBlock').outerHeight();
         var bodyY = bodySize.y - headBlockH - 2;
@@ -845,7 +843,7 @@ var prodModule = (function (p4, humane) {
             $('.tabs', dialog.getDomElement()).tabs();
 
             $('.close_button', dialog.getDomElement()).bind('click', function () {
-                dialog.Close();
+                dialog.close();
             });
 
             return false;

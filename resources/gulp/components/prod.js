@@ -84,7 +84,6 @@ gulp.task('build-prod-js', function(){
         config.paths.src + 'prod/js/components/workzone/workzone-basket.js',
         config.paths.src + 'prod/js/components/workzone/workzone-facets.js',
         config.paths.src + 'prod/js/components/workzone/workzone-thesaurus.js',
-        config.paths.src + 'prod/js/components/utils.js',
         config.paths.src + 'prod/js/components/cgu.js',
         config.paths.src + 'prod/js/components/preferences.js',
         // config.paths.src + 'prod/js/jquery.form.2.49.js',

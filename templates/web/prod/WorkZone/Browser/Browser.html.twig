@@ -188,11 +188,11 @@
                 data: {},
                 success: function(datas){
                     if(datas.success) {
-                        confirmBox.Close();
+                        confirmBox.close();
                         $('form[name="BasketBrowser"]', $container).trigger('submit');
                         p4.WorkZone.refresh();
                     } else {
-                        confirmBox.Close();
+                        confirmBox.close();
                         var alertBox = dialogModule.dialog.create({
                             size : 'Alert',
                             closeOnEscape : true,
@@ -203,7 +203,7 @@
                     }
                 },
                 error: function() {
-                    confirmBox.Close();
+                    confirmBox.close();
                     var alertBox = dialogModule.dialog.create({
                             size : 'Alert',
                             closeOnEscape : true,
