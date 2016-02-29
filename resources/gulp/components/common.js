@@ -38,9 +38,9 @@ gulp.task('build-common-js', function(){
         config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-en-GB.js',
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
         config.paths.src + 'vendors/jquery-contextmenu/js/jquery.contextmenu_custom.js',
-        config.paths.src + 'common/js/jquery.common.js',
-        config.paths.src + 'common/js/jquery.tooltip.js',
-        config.paths.src + 'common/js/jquery.Dialog.js'
+        config.paths.src + 'common/js/components/common.js',
+        config.paths.src + 'common/js/components/tooltip.js',
+        config.paths.src + 'common/js/components/dialog.js'
     ];
     return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });
