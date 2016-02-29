@@ -26,17 +26,23 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
         'aliases' => 'alias'
     ];
 
-    private static $selectQuery = 'SELECT base_id AS baseId, sbas_id AS databoxId, server_coll_id AS collectionId,
-                                    ord AS displayIndex, active AS isActive, aliases AS alias
-                              FROM bas';
+    private static $selectQuery = 'SELECT
+ base_id AS baseId,
+ sbas_id AS databoxId,
+ server_coll_id AS collectionId,
+ ord AS displayIndex,
+ active AS isActive,
+ aliases AS alias
+FROM bas';
 
     private static $insertQuery = 'INSERT INTO bas (sbas_id, server_coll_id, ord, active, aliases)
-                                   VALUES (:databoxId, :collectionId,
-                                           (SELECT COALESCE(MAX(b.ord), 0) + 1 AS ord FROM bas b WHERE b.sbas_id = :databoxId),
-                                           :isActive, :alias)';
+VALUES (:databoxId, :collectionId, (SELECT COALESCE(MAX(b.ord), 0) + 1 AS ord FROM bas b WHERE b.sbas_id = :databoxId), :isActive, :alias)';
 
-    private static $updateQuery = 'UPDATE bas SET ord = :displayIndex, active = :isActive, aliases = :alias
-                                   WHERE base_id = :baseId';
+    private static $updateQuery = 'UPDATE bas SET
+ ord = :displayIndex,
+ active = :isActive,
+ aliases = :alias
+WHERE base_id = :baseId';
 
     private static $deleteQuery = 'DELETE FROM bas WHERE base_id = :baseId';
 
@@ -124,7 +130,7 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
             $types['subset'] = Connection::PARAM_INT_ARRAY;
         }
 
-        $rows = $this->connection->fetchAll($query, $parameters);
+        $rows = $this->connection->fetchAll($query, $parameters, $types);
 
         return $this->createManyReferences($rows);
     }
