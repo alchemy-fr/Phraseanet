@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4a4be962ac360e78c18f8b90434d9914",
-    "content-hash": "a497a76c4246aa71ea395fd3beddf113",
+    "hash": "8382f188717e70e4e0150abea9da5fd3",
+    "content-hash": "c7a5fad569e1e9c75ffd2a698b84b742",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -249,6 +249,62 @@
             "time": "2013-08-06 09:10:01"
         },
         {
+            "name": "alchemy/mediavorus",
+            "version": "0.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/MediaVorus.git",
+                "reference": "2df98b5b180c50b1bc7be838e36bc6ecc573e646"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/2df98b5b180c50b1bc7be838e36bc6ecc573e646",
+                "reference": "2df98b5b180c50b1bc7be838e36bc6ecc573e646",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "~1.0",
+                "monolog/monolog": "~1.0",
+                "php": ">=5.3.0",
+                "php-ffmpeg/php-ffmpeg": "~0.3",
+                "phpexiftool/phpexiftool": "~0.1",
+                "symfony/console": "~2.0",
+                "symfony/http-foundation": "~2.0"
+            },
+            "require-dev": {
+                "jms/serializer": "~0.12.0",
+                "phpunit/phpunit": "~3.7",
+                "silex/silex": "~1.0",
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "jms/serializer": "To serialize Medias",
+                "symfony/yaml": "To serialize Medias in Yaml format"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "MediaVorus": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                }
+            ],
+            "description": "MediaVorus",
+            "keywords": [
+                "metadata"
+            ],
+            "time": "2014-08-26 12:32:10"
+        },
+        {
             "name": "alchemy/oauth2php",
             "version": "1.0.0",
             "source": {
@@ -377,7 +433,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/a0e2c2b8a1d2c9c405fc9663b698f56a20831946",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/9048a99dd328cd2d01efaad16e6af648d11ad2b4",
                 "reference": "833effa4531684827b086cd46755146ff6010256",
                 "shasum": ""
             },
@@ -423,8 +479,8 @@
             "version": "0.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/symfony-cors",
-                "reference": "9e7f249e689e66f05a1e3d4d166224aaa1e9cc63"
+                "url": "https://github.com/alchemy-fr/symfony-cors.git",
+                "reference": "dbf7fcff1ce9fc1265db12955476ff169eab7375"
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -1338,16 +1394,16 @@
         },
         {
             "name": "goodby/csv",
-            "version": "dev-master",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goodby/csv.git",
-                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a"
+                "reference": "e71217b8d6110f3d1ac3784ef9b8a2383c3398b9"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/goodby/csv/zipball/e71217b8d6110f3d1ac3784ef9b8a2383c3398b9",
-                "reference": "b289ca3e3f6ad3c76b7d8c3bef3effd0232ca13a",
+                "reference": "e71217b8d6110f3d1ac3784ef9b8a2383c3398b9",
                 "shasum": ""
             },
             "require": {
@@ -1391,7 +1447,7 @@
                 "export",
                 "import"
             ],
-            "time": "2015-02-02 12:29:23"
+            "time": "2015-06-29 10:28:19"
         },
         {
             "name": "guzzle/guzzle",
@@ -1927,37 +1983,38 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.4.8",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "cf1fdacbaf0d54440fa7b61c750234d0befde0c8"
+                "reference": "cc279e0dcf22e47322028084dd1145a44a219c1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/cf1fdacbaf0d54440fa7b61c750234d0befde0c8",
-                "reference": "cf1fdacbaf0d54440fa7b61c750234d0befde0c8",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/cc279e0dcf22e47322028084dd1145a44a219c1a",
+                "reference": "cc279e0dcf22e47322028084dd1145a44a219c1a",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
+                "alchemy/mediavorus": "^0.4.4",
                 "imagine/imagine": "0.6.x@dev",
-                "mediavorus/mediavorus": ">=0.4.2,<0.5",
                 "monolog/monolog": "~1.0",
-                "neutron/temporary-filesystem": "~2.1",
+                "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
                 "php-ffmpeg/php-ffmpeg": ">=0.4.2,<0.6",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
                 "swftools/swftools": "~0.3.0",
-                "symfony/console": "~2.0",
-                "symfony/filesystem": "~2.0"
+                "symfony/console": "^2.1|^3.0",
+                "symfony/filesystem": "^2.1|^3.0",
+                "symfony/process": "^2.1.1|^3.0"
             },
             "require-dev": {
+                "alchemy/phpexiftool": "^0.4.0|^0.5.0",
                 "neutron/silex-imagine-provider": "~0.1",
-                "phpexiftool/phpexiftool": "~0.1",
-                "phpunit/phpunit": "~3.7",
+                "phpunit/phpunit": "^4.1|^5.0",
                 "silex/silex": "~1.0"
             },
             "type": "library",
@@ -1996,7 +2053,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2015-02-03 16:25:38"
+            "time": "2016-02-17 14:25:54"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -2445,6 +2502,54 @@
                 "paging"
             ],
             "time": "2014-10-06 10:57:25"
+        },
+        {
+            "name": "paragonie/random_compat",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "f078eba3bcf140fd69b5fcc3ea5ac809abf729dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/f078eba3bcf140fd69b5fcc3ea5ac809abf729dc",
+                "reference": "f078eba3bcf140fd69b5fcc3ea5ac809abf729dc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2016-02-29 17:25:04"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -3384,31 +3489,35 @@
             "time": "2013-04-11 10:22:09"
         },
         {
-            "name": "symfony/icu",
-            "version": "v1.2.2",
-            "target-dir": "Symfony/Component/Icu",
+            "name": "symfony/polyfill-apcu",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/icu.git",
-                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a"
+                "url": "https://github.com/symfony/polyfill-apcu.git",
+                "reference": "d1911e6caeb4b6a4c8e2d5c46b978a66b3745e4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/icu/zipball/d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
-                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
+                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/d1911e6caeb4b6a4c8e2d5c46b978a66b3745e4c",
+                "reference": "d1911e6caeb4b6a4c8e2d5c46b978a66b3745e4c",
                 "shasum": ""
             },
             "require": {
-                "ext-intl": "*",
-                "lib-icu": ">=4.4",
-                "php": ">=5.3.3",
-                "symfony/intl": "~2.3"
+                "php": ">=5.3.3"
             },
             "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Icu\\": ""
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
                 }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -3416,42 +3525,46 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
                 },
                 {
-                    "name": "Bernhard Schussek",
-                    "email": "bschussek@gmail.com"
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Contains an excerpt of the ICU data and classes to load it.",
-            "homepage": "http://symfony.com",
+            "description": "Symfony polyfill backporting apcu_* functions to lower PHP versions",
+            "homepage": "https://symfony.com",
             "keywords": [
-                "icu",
-                "intl"
+                "apcu",
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
             ],
-            "time": "2014-07-25 09:58:17"
+            "time": "2016-01-20 09:13:37"
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.3.19",
+            "version": "v2.3.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "1fc05758044fa1cf54460d7d4aff5f55b0f1b0db"
+                "reference": "c51503db3f4e8f22a075cc9a226cfe7c42a7663e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/1fc05758044fa1cf54460d7d4aff5f55b0f1b0db",
-                "reference": "1fc05758044fa1cf54460d7d4aff5f55b0f1b0db",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/c51503db3f4e8f22a075cc9a226cfe7c42a7663e",
+                "reference": "c51503db3f4e8f22a075cc9a226cfe7c42a7663e",
                 "shasum": ""
             },
             "require": {
-                "doctrine/common": "~2.2",
+                "doctrine/common": "~2.4",
+                "paragonie/random_compat": "~1.0",
                 "php": ">=5.3.3",
                 "psr/log": "~1.0",
-                "symfony/icu": "~1.0",
-                "twig/twig": "~1.12"
+                "symfony/polyfill-apcu": "~1.1",
+                "twig/twig": "~1.23|~2.0"
             },
             "replace": {
                 "symfony/browser-kit": "self.version",
@@ -3480,7 +3593,10 @@
                 "symfony/proxy-manager-bridge": "self.version",
                 "symfony/routing": "self.version",
                 "symfony/security": "self.version",
+                "symfony/security-acl": "self.version",
                 "symfony/security-bundle": "self.version",
+                "symfony/security-core": "self.version",
+                "symfony/security-http": "self.version",
                 "symfony/serializer": "self.version",
                 "symfony/stopwatch": "self.version",
                 "symfony/swiftmailer-bridge": "self.version",
@@ -3494,12 +3610,12 @@
             },
             "require-dev": {
                 "doctrine/data-fixtures": "1.0.*",
-                "doctrine/dbal": "~2.2",
-                "doctrine/orm": "~2.2,>=2.2.3",
-                "ircmaxell/password-compat": "1.0.*",
+                "doctrine/dbal": "~2.4",
+                "doctrine/orm": "~2.4,>=2.4.5",
+                "ircmaxell/password-compat": "~1.0",
                 "monolog/monolog": "~1.3",
-                "ocramius/proxy-manager": ">=0.3.1,<0.4-dev",
-                "propel/propel1": "1.6.*"
+                "ocramius/proxy-manager": "~0.3.1|~1.0|~2.0",
+                "propel/propel1": "~1.6"
             },
             "type": "library",
             "extra": {
@@ -3517,6 +3633,9 @@
                 ],
                 "files": [
                     "src/Symfony/Component/Intl/Resources/stubs/functions.php"
+                ],
+                "exclude-from-classmap": [
+                    "**/Tests/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3525,20 +3644,20 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "The Symfony PHP framework",
-            "homepage": "http://symfony.com",
+            "homepage": "https://symfony.com",
             "keywords": [
                 "framework"
             ],
-            "time": "2014-09-03 09:45:27"
+            "time": "2016-02-28 18:24:22"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -3629,25 +3748,29 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.16.0",
+            "version": "v1.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "8ce37115802e257a984a82d38254884085060024"
+                "reference": "3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
-                "reference": "8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8",
+                "reference": "3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.4"
+                "php": ">=5.2.7"
+            },
+            "require-dev": {
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.16-dev"
+                    "dev-master": "1.24-dev"
                 }
             },
             "autoload": {
@@ -3673,7 +3796,7 @@
                 },
                 {
                     "name": "Twig Team",
-                    "homepage": "https://github.com/fabpot/Twig/graphs/contributors",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
                     "role": "Contributors"
                 }
             ],
@@ -3682,7 +3805,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "time": "2016-01-25 21:22:18"
         },
         {
             "name": "vierbergenlars/php-semver",
@@ -4746,6 +4869,55 @@
                 "xunit"
             ],
             "time": "2013-01-13 10:24:48"
+        },
+        {
+            "name": "symfony/icu",
+            "version": "v1.2.2",
+            "target-dir": "Symfony/Component/Icu",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/icu.git",
+                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/icu/zipball/d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
+                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "lib-icu": ">=4.4",
+                "php": ">=5.3.3",
+                "symfony/intl": "~2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Icu\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                }
+            ],
+            "description": "Contains an excerpt of the ICU data and classes to load it.",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "icu",
+                "intl"
+            ],
+            "time": "2014-07-25 09:58:17"
         }
     ],
     "aliases": [
@@ -4759,7 +4931,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "alchemy/rest-bundle": 20,
-        "goodby/csv": 20,
         "imagine/imagine": 20,
         "twig/extensions": 20,
         "willdurand/negotiation": 15
