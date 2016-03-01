@@ -125,6 +125,7 @@ class GooglePlusTest extends ProviderTestCase
 
     protected function getProviderForSuccessIdentity()
     {
+        $this->markTestIncomplete('Incomplete flow for google plus API check');
         $provider = $this->getProvider();
 
         $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
