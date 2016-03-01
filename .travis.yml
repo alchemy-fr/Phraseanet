@@ -16,11 +16,6 @@ matrix:
       env: TEST_SUITE=2
     - php: 7.0
       env: TEST_SUITE=2
-  allow_failures:
-    - php: 7.0
-      env: TEST_SUITE=1
-    - php: 7.0
-      env: TEST_SUITE=2
 
 services:
   - mysql
