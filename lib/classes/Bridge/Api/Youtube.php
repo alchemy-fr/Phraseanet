@@ -485,26 +485,18 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         switch ($connector_status) {
             case self::UPLOAD_STATE_RESTRICTED:
                 return $this->translator->trans('La video est restreinte');
-                break;
             case self::UPLOAD_STATE_DELETED:
                 return $this->translator->trans('La video a ete supprimee');
-                break;
             case self::UPLOAD_STATE_REJECTED:
                 return $this->translator->trans('La video a ete rejetee');
-                break;
             case self::UPLOAD_STATE_FAILED:
                 return $this->translator->trans('L\'upload a echoue');
-                break;
-            default:
             case self::UPLOAD_STATE_PROCESSING:
                 return $this->translator->trans('En cours d\'encodage');
-                break;
             default:
                 return '';
-                break;
             case self::UPLOAD_STATE_DONE:
                 return $this->translator->trans('OK');
-                break;
         }
     }
 

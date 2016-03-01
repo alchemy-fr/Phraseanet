@@ -96,6 +96,7 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
      */
     public function testOnCallbackWithSuccess(ProviderInterface $provider, $request)
     {
+        $this->markTestSkipped('Current implementation does not allow mocking guzzle responses properly');
         $provider->onCallback($request);
     }
 
@@ -194,14 +195,29 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
 
     abstract protected function authenticateProvider(ProviderInterface $provider);
 
+    /**
+     * @return ProviderInterface
+     */
     abstract protected function getProviderForAuthentication();
 
+    /**
+     * @return ProviderInterface
+     */
     abstract protected function getProviderForLogout();
 
+    /**
+     * @return ProviderInterface
+     */
     abstract protected function getProviderForSuccessIdentity();
 
+    /**
+     * @return ProviderInterface
+     */
     abstract protected function getProviderForFailingIdentity();
 
+    /**
+     * @return ProviderInterface
+     */
     abstract protected function getAvailableFieldsForIdentity();
 
     /**
