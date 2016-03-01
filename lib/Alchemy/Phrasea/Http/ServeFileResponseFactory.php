@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Http;
 
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 class ServeFileResponseFactory implements DeliverDataInterface
 {
     private $unicode;
