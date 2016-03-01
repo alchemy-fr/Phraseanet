@@ -496,7 +496,7 @@ abstract class PhraseanetTestCase extends WebTestCase
      */
     protected function XMLHTTPRequest($method, $uri, array $parameters = [], $httpAccept = 'application/json')
     {
-        return self::$DI['client']->request($method, $uri, $parameters, [], [
+        return $this->getClient()->request($method, $uri, $parameters, [], [
             'HTTP_ACCEPT'           => $httpAccept,
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
@@ -655,37 +655,42 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function mockNotificationDeliverer($expectedMail, $qty = 1, $receipt = null)
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $app = $this->getApplication();
+        $delivererMock = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-        self::$DI['app']['notification.deliverer']->expects($this->exactly($qty))
+        $delivererMock->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
+        $app['notification.deliverer'] = $delivererMock;
     }
 
     protected function mockNotificationsDeliverer(array &$expectedMails)
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $app = $this->getApplication();
+        $delivererMock = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->any())
+        $delivererMock->expects($this->any())
             ->method('deliver')
             ->will($this->returnCallback(function ($email, $receipt) use (&$expectedMails) {
                 $this->assertTrue(isset($expectedMails[get_class($email)]));
                 $expectedMails[get_class($email)]++;
             }));
+        $app['notification.deliverer'] = $delivererMock;
     }
 
     protected function mockUserNotificationSettings($notificationName, $returnValue = true)
     {
-        if (false === self::$DI['app']['settings'] instanceof \PHPUnit_Framework_MockObject_MockObject) {
-            self::$DI['app']['settings'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\DisplaySettingService')
+        $app = $this->getApplication();
+        if (false === $app['settings'] instanceof \PHPUnit_Framework_MockObject_MockObject) {
+            $app['settings'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\DisplaySettingService')
                 ->disableOriginalConstructor()
                 ->getMock();
         }
 
-        self::$DI['app']['settings']
+        $app['settings']
             ->expects($this->any())
             ->method('getUserNotificationSetting')
             ->with(
@@ -694,7 +699,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             )
             ->will($this->returnValue($returnValue));
 
-        self::$DI['app']['setting'] = 'toto';
+        $app['setting'] = 'toto';
     }
 
     public function createGeneratorMock()
