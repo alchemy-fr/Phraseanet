@@ -62,7 +62,7 @@ class PhraseaRegisterForm extends AbstractType
                 'label'         => 'Terms of Use',
                 'mapped'        => false,
                 "constraints"   => [
-                    new Assert\True([
+                    new Assert\IsTrue([
                         "message" => "Please accept the Terms and conditions in order to register."
                     ])],
             ]);
