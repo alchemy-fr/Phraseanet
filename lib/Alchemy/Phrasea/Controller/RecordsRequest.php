@@ -64,7 +64,7 @@ class RecordsRequest extends ArrayCollection
 
         $i = 0;
         $records = $this->toArray();
-        array_walk($records, function ($record) use (&$i) {
+        array_walk($records, function (\record_adapter $record) use (&$i) {
             $record->setNumber($i++);
         });
     }
@@ -103,8 +103,8 @@ class RecordsRequest extends ArrayCollection
 
             /** @var \record_adapter $record */
             foreach ($this as $record) {
-                if (false === array_key_exists($record->get_base_id(), $this->collections)) {
-                    $this->collections[$record->get_base_id()] = $record->get_collection();
+                if (! isset($this->collections[$record->getBaseId()])) {
+                    $this->collections[$record->getBaseId()] = $record->get_collection();
                 }
             }
 
