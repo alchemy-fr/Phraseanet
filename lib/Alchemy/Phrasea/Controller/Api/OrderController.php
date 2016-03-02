@@ -21,6 +21,8 @@ use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Item;
 use Symfony\Component\HttpFoundation\Request;
 
 class OrderController extends Controller
@@ -51,8 +53,11 @@ class OrderController extends Controller
 
         $transformer = new OrderTransformer(new OrderElementTransformer($this->app));
 
+        $fractal = new Manager();
+        $fractal->parseIncludes([]);
+
         $result = Result::create($request, [
-            'order' => $transformer->transform($order),
+            'order' => $fractal->createData(new Item($order, $transformer))->toArray(),
         ]);
 
         $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
