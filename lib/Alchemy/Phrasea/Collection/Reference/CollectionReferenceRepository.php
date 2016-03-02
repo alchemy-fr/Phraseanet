@@ -39,10 +39,10 @@ interface CollectionReferenceRepository
     /**
      * Find Collection references having at least one Order Master
      *
-     * @param array<int>|null $subset Restrict search to a subset of base ids.
+     * @param array<int>|null $baseIdsSubset Restrict search to a subset of base ids.
      * @return CollectionReference[]
      */
-    public function findHavingOrderMaster(array $subset = null);
+    public function findHavingOrderMaster(array $baseIdsSubset = null);
 
     /**
      * @param CollectionReference $reference

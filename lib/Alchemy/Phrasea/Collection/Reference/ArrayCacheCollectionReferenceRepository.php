@@ -90,13 +90,9 @@ class ArrayCacheCollectionReferenceRepository implements CollectionReferenceRepo
         return null;
     }
 
-    /**
-     * @param array|null $subset
-     * @return CollectionReference[]
-     */
-    public function findHavingOrderMaster(array $subset = null)
+    public function findHavingOrderMaster(array $baseIdsSubset = null)
     {
-        return $this->repository->findHavingOrderMaster($subset);
+        return $this->repository->findHavingOrderMaster($baseIdsSubset);
     }
 
     /**
