@@ -128,7 +128,7 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     });
 
     // Fake routes required to send emails. Sorry.
-    $routes = array('root' => '/', 'admin' => '/admin/');
+    $routes = array('root' => '/', 'admin' => '/admin/', 'prod' => '/prod/');
     foreach ($routes as $name => $route) {
         $app->get($route, function () {
             return '';

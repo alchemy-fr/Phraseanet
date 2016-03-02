@@ -34,15 +34,54 @@
                 "id": {
                     "type": "integer"
                 },
-                "records": {
+                "owner_id": {
+                    "type": "integer"
+                },
+                "created": {
+                    "type": "date-time"
+                },
+                "usage": {
+                    "type": "string"
+                },
+                "deadline": {
+                    "type": "date-time"
+                },
+                "elements": {
                     "type": "array",
                     "items": {
                         "$ref": "records.json#/definitions/record"
                     }
+                },
+                "basket_id": {
+                    "$ref": "records.json#/definitions/record"
                 }
             },
             "required": [
-                "databox_id",
+                "id",
+                "owner_id",
+                "created",
+                "usage",
+                "records"
+            ]
+        },
+        "order_element": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "record_id": {
+                    "$ref": "records.json#/definitions/record"
+                },
+                "order_master_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "enum": ["accepted", "rejected"]
+                }
+            },
+            "required": [
+                "id",
                 "record_id"
             ]
         }

@@ -17,7 +17,9 @@ use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
+use Alchemy\Phrasea\Order\OrderTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -47,8 +49,10 @@ class OrderController extends Controller
 
         $filler->fillOrder($order, $recordRequest);
 
+        $transformer = new OrderTransformer(new OrderElementTransformer($this->app));
+
         $result = Result::create($request, [
-            'order' => $order,
+            'order' => $transformer->transform($order),
         ]);
 
         $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
@@ -95,7 +99,7 @@ class OrderController extends Controller
         foreach ($perDataboxRecords as $databoxId => $recordIndexes) {
             $repository = $this->findDataboxById($databoxId)->getRecordRepository();
 
-            foreach ($repository->findByRecordIds($perDataboxRecords[$databoxId]) as $record) {
+            foreach ($repository->findByRecordIds(array_keys($perDataboxRecords[$databoxId])) as $record) {
                 $records[$recordIndexes[$record->getRecordId()]] = $record;
             }
         }
@@ -114,7 +118,7 @@ class OrderController extends Controller
         $acl = $this->getAclForUser();
 
         return array_filter($records, function (\record_adapter $record) use ($acl) {
-            return $acl->has_right_on_base($record->getBaseId(), 'can_cmd');
+            return $acl->has_right_on_base($record->getBaseId(), 'cancmd');
         });
     }
 }
