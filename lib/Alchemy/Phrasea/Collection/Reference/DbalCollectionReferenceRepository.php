@@ -112,7 +112,7 @@ WHERE base_id = :baseId';
         return null;
     }
 
-    public function findHavingOrderMaster(array $subset = null)
+    public function findHavingOrderMaster(array $baseIdsSubset = null)
     {
         $query = self::$selectQuery
             . ' WHERE EXISTS(SELECT 1 FROM basusr WHERE basusr.order_master = 1 AND basusr.base_id = bas.base_id)';
@@ -120,13 +120,13 @@ WHERE base_id = :baseId';
         $parameters = [];
         $types = [];
 
-        if (null !== $subset) {
-            if (empty($subset)) {
+        if (null !== $baseIdsSubset) {
+            if (empty($baseIdsSubset)) {
                 return [];
             }
 
             $query .= ' AND bas.base_id IN (:subset)';
-            $parameters['subset'] = $subset;
+            $parameters['subset'] = $baseIdsSubset;
             $types['subset'] = Connection::PARAM_INT_ARRAY;
         }
 
