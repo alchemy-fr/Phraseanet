@@ -24,6 +24,7 @@ use MediaVorus\MediaVorus;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  *
@@ -1188,11 +1189,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return record_adapter
      */
-    public function set_binary_status($status, $doSendEvent=true)
+    public function set_binary_status($new_status, $doSendEvent=true)
     {
+        $old_status = $this->get_status();
+
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
-        $sql = 'UPDATE record SET status = 0b' . $status . '
+        $sql = 'UPDATE record SET status = 0b' . $new_status . '
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->record_id));
@@ -1201,7 +1204,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
         $stmt = $connbas->prepare($sql);
 
-        $status = strrev($status);
+        $status = strrev($new_status);
         for ($i = 4; $i < strlen($status); $i++) {
             $stmt->execute(array(
                 ':record_id' => $this->get_record_id(),
@@ -1214,10 +1217,21 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
         if($doSendEvent) {
-            $this->app['dispatcher']->dispatch(PhraseaEvents::STATUS_CHANGED, new StatusChanged($this));
+            $dispatcher = $this->getEventDispatcher();
+            if($dispatcher->hasListeners(PhraseaEvents::STATUS_CHANGED)) {
+                $dispatcher->dispatch(PhraseaEvents::STATUS_CHANGED, new StatusChanged($this, $old_status));
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 
     /**

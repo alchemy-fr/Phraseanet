@@ -271,6 +271,35 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
+     * delete a subdef
+     * useful to restore a story as a blue folder icon
+     *
+     * @return $this
+     */
+    public function delete()
+    {
+        $this->remove_file();
+
+        $connbas = $this->record->get_databox()->get_connection();
+
+        $sql = 'DELETE FROM subdef
+                WHERE name = :name AND record_id = :record_id';
+
+        $params = array(
+            ':record_id' => $this->record->get_record_id(),
+            ':name'      => $this->name
+        );
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        $this->delete_data_from_cache();
+
+        return $this;
+    }
+
+    /**
      * Find a substitution file for a sibdef
      *
      * @return \media_subdef
