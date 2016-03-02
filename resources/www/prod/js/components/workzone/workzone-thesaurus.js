@@ -1,3 +1,4 @@
+/*
 var p4 = p4 || {};
 
 var workzoneThesaurusModule = (function (p4) {
@@ -31,3 +32,4 @@ var workzoneThesaurusModule = (function (p4) {
 
     return {};
 })(p4);
+*/

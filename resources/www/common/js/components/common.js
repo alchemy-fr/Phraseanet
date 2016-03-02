@@ -33,11 +33,11 @@ var commonModule = (function ($, p4) {
             $(this).removeClass('context-menu-item-hover');
         });
 
-        $('#help-trigger').contextMenu('#mainMenu .helpcontextmenu', {openEvt: 'click', dropDown: true, theme: 'vista', dropDown: true,
+        /*$('#help-trigger').contextMenu('#mainMenu .helpcontextmenu', {openEvt: 'click', dropDown: true, theme: 'vista', dropDown: true,
             showTransition: 'slideDown',
             hideTransition: 'hide',
             shadow: false
-        });
+        });*/
     });
 
 

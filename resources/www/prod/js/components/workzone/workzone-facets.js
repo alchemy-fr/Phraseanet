@@ -1,3 +1,4 @@
+/*
 var p4 = p4 || {};
 
 var workzoneFacetsModule = (function (p4) {
@@ -159,4 +160,4 @@ var workzoneFacetsModule = (function (p4) {
 
     return { loadFacets: loadFacets, getSelectedFacets: getSelectedFacets, resetSelectedFacets: resetSelectedFacets}
 
-})(p4);
+})(p4);*/

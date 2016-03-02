@@ -1,6 +1,55 @@
 var p4 = p4 || {};
 
 var searchModule = (function (p4) {
+    $(document).ready(function(){
+        $('.adv_search_button').on('click', function () {
+            var searchForm = $('#searchForm');
+            var parent = searchForm.parent();
+
+            var options = {
+                size: (bodySize.x - 120)+'x'+(bodySize.y - 120),
+                loading: false,
+                closeCallback: function (dialog) {
+
+                    var datas = dialog.find('form.phrasea_query').appendTo(parent);//.clone();
+
+                    $('.adv_trigger', searchForm).show();
+                    $('.adv_options', searchForm).hide();
+                }
+            };
+
+            $dialog = dialogModule.dialog.create(options);
+
+            searchForm.appendTo($dialog.getDomElement());
+
+            $dialog.getDomElement().find('.adv_options').show();
+            $dialog.getDomElement().find('.adv_trigger').hide();
+
+            $dialog.getDomElement().find('form').bind('submit.conbo', function () {
+                $(this).unbind('submit.conbo');
+                $dialog.close();
+                return false;
+            });
+
+
+            return false;
+        });
+
+        $('input[name=search_type]').bind('click', function () {
+
+            var $this = $(this);
+            var $record_types = $('#recordtype_sel');
+
+            if ($this.hasClass('mode_type_reg')) {
+                $record_types.css("visibility", "hidden");  // better than hide because does not change layout
+                $record_types.prop("selectedIndex", 0);
+            } else {
+                $record_types.css("visibility", "visible");
+            }
+        });
+
+    });
+
     function toggleCollection(deployer, todeploy_selector)
     {
         if($(deployer).hasClass("deployer_opened")) {

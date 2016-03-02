@@ -1,8 +1,9 @@
+/*
 var videoEditorModule = (function (document) {
 
-    /*****************
+    /!*****************
      * Canva Object
-     *****************/
+     *****************!/
     var Canva = function (domCanva) {
         this.domCanva = domCanva;
     };
@@ -93,9 +94,9 @@ var videoEditorModule = (function (document) {
     };
 
 
-    /******************
+    /!******************
      *  Image Object
-     ******************/
+     ******************!/
     var Image = function (domElement) {
         this.domElement = domElement;
     };
@@ -112,9 +113,9 @@ var videoEditorModule = (function (document) {
         }
     };
 
-    /******************
+    /!******************
      *  Video Object inherits from Image object
-     ******************/
+     ******************!/
 
     var Video = function (domElement) {
         Image.call(this, domElement);
@@ -130,9 +131,9 @@ var videoEditorModule = (function (document) {
         return this.aspectRatio;
     };
 
-    /******************
+    /!******************
      *  Cache Object
-     ******************/
+     ******************!/
     var Store = function () {
         this.datas = {};
     };
@@ -163,9 +164,9 @@ var videoEditorModule = (function (document) {
         }
     };
 
-    /******************
+    /!******************
      *  Screenshot Object
-     ******************/
+     ******************!/
     var ScreenShot = function (id, canva, video, altCanvas) {
 
         var date = new Date();
@@ -214,9 +215,9 @@ var videoEditorModule = (function (document) {
         }
     };
 
-    /**
+    /!**
      * THUMB EDITOR
-     */
+     *!/
     var ThumbnailEditor = function (videoId, canvaId, outputOptions) {
 
         var domElement = document.getElementById(videoId);
@@ -320,3 +321,4 @@ var videoEditorModule = (function (document) {
 
 })(document);
 
+*/

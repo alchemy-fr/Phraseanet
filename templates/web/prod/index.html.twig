@@ -393,7 +393,7 @@
             <div id="idFrameT" class="PNB ui-corner-top">
                 <div class="tools PNB10 btn-toolbar">
                     {% include "prod/toolbar.html.twig" with {acl: app.getAclForUser(app.getAuthenticatedUser())} %}
-                    <a href="#" id="settings" onclick="preferencesModule.lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
+                    <a href="#" id="settings" class="open-preferences" data-action="">{{ 'Preferences' | trans }} </a>
                 </div>
                 <div id="answers" class=" PNB10"></div>
                 <div id="answers_status">
@@ -403,22 +403,6 @@
                         </span>
                     </div>
                 </div>
-                <!--div id="answers_status" class="PNB">
-                    <table>
-                        <tr>
-                            <td class="infos">
-                                <a href="#" onclick="preferencesModule.lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
-                                |
-                                <span id="tool_results">
-
-                                </span>
-                            </td>
-                            <td class="navigation">
-                                <div id="tool_navigate"></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div-->
             </div>
         </div>
     </div>
@@ -611,7 +595,7 @@
                         <h1>{{ 'Affichage au demarrage' | trans }}</h1>
                         <form class="form-inline">
                             {% set start_page_pref = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') %}
-                            <select class="span4" name="start_page" onchange="preferencesModule.setInitialStateOptions();">
+                            <select class="span4 preferences-options-start-page" name="start_page">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
                                     {{ 'Ma derniere question' | trans }}
                                 </option>
@@ -626,7 +610,7 @@
                                 </option>
                             </select>
                             <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
-                            <input type="button" class="btn btn-inverse" value="{{'boutton::valider'  | trans }}" onclick="preferencesModule.setInitialState();" />
+                            <input type="button" class="btn btn-inverse preferences-options-submit" value="{{'boutton::valider'  | trans }}" />
                         </form>
                     </div>
                 </div>
@@ -752,7 +736,7 @@
         {% set initialAppState = 'publication' %}
         {% endif %}
 
-        ProductionApplication.bootstrap({
+        var prodApp = ProductionApplication.bootstrap({
             lang: "{{ app.locale }}",
             baseUrl: '{{ app['request'].getUriForPath('/') }}',
             basePath: '{{ app.request.basePath|e('js') }}',
@@ -763,6 +747,7 @@
             },
             initialState: "{{ initialAppState }}"
         })
+        prodApp.appEvents.emit('search.doSpecialSearch', {'special': true});
 
         $(document).ready(function(){
             workzoneModule.setRemoveWarning("{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");

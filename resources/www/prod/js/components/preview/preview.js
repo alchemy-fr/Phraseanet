@@ -7,6 +7,21 @@ var recordPreviewModule = (function (p4) {
 
     $(document).ready(function () {
         $('#PREVIEWIMGDESC').tabs();
+
+        $('#PREVIEWBOX .gui_vsplitter', p4.edit.editBox).draggable({
+            axis: 'x',
+            containment: 'parent',
+            drag: function (event, ui) {
+                var x = $(ui.position.left)[0];
+                if (x < 330 || x > (bodySize.x - 400)) {
+                    return false;
+                }
+                var v = $(ui.position.left)[0];
+                $("#PREVIEWLEFT").width(v);
+                $("#PREVIEWRIGHT").css("left", $(ui.position.left)[0]);
+                recordPreviewModule.resizePreview();
+            }
+        });
     });
 
     /**
@@ -285,11 +300,6 @@ var recordPreviewModule = (function (p4) {
 
         var h = parseInt(p4.preview.current.height);
         var w = parseInt(p4.preview.current.width);
-//	if(p4.preview.current.type == 'video')
-//	{
-//		var h = parseInt(p4.preview.current.flashcontent.height);
-//		var w = parseInt(p4.preview.current.flashcontent.width);
-//	}
         var t = 20;
         var de = 0;
 
@@ -301,9 +311,6 @@ var recordPreviewModule = (function (p4) {
             de = 60;
         }
 
-
-//	if(p4.preview.current.type != 'flash')
-//	{
         var ratioP = w / h;
         var ratioD = parseInt(p4.preview.width) / parseInt(p4.preview.height);
 
@@ -320,13 +327,7 @@ var recordPreviewModule = (function (p4) {
                 h = Math.round(w / ratioP);
             }
         }
-//	}
-//	else
-//	{
 
-//		h = Math.round(parseInt(p4.preview.height) - margY);
-//		w = Math.round(parseInt(p4.preview.width) - margX);
-//	}
         t = Math.round((parseInt(p4.preview.height) - h - de) / 2);
         var l = Math.round((parseInt(p4.preview.width) - w) / 2);
         $('#PREVIEWIMGCONT .record').css({

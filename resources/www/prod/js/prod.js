@@ -17,7 +17,7 @@ var prodModule = (function (p4, humane) {
         humane.info = humane.spawn({addnCls: 'humane-libnotify-info', timeout: 1000});
         humane.error = humane.spawn({addnCls: 'humane-libnotify-error', timeout: 1000});
         humane.forceNew = true;
-        cguModule.activateCgus();
+        // cguModule.activateCgus();
         $('body').on('click', 'a.dialog', function (event) {
             var $this = $(this), size = 'Medium';
 
@@ -49,52 +49,8 @@ var prodModule = (function (p4, humane) {
             return false;
         });
 
-        $('input[name=search_type]').bind('click', function () {
-            console.log('search bind')
-            var $this = $(this);
-            var $record_types = $('#recordtype_sel');
-
-            console.log($this.hasClass('mode_type_reg'), $record_types)
-            if ($this.hasClass('mode_type_reg')) {
-                $record_types.css("visibility", "hidden");  // better than hide because does not change layout
-                $record_types.prop("selectedIndex", 0);
-            } else {
-                $record_types.css("visibility", "visible");
-            }
-        });
-
-        $('.adv_search_button').on('click', function () {
-            var searchForm = $('#searchForm');
-            var parent = searchForm.parent();
-
-            var options = {
-                size: (bodySize.x - 120)+'x'+(bodySize.y - 120),
-                loading: false,
-                closeCallback: function (dialog) {
-
-                    var datas = dialog.find('form.phrasea_query').appendTo(parent);//.clone();
-
-                    $('.adv_trigger', searchForm).show();
-                    $('.adv_options', searchForm).hide();
-                }
-            };
-
-            $dialog = dialogModule.dialog.create(options);
-
-            searchForm.appendTo($dialog.getDomElement());
-
-            $dialog.getDomElement().find('.adv_options').show();
-            $dialog.getDomElement().find('.adv_trigger').hide();
-
-            $dialog.getDomElement().find('form').bind('submit.conbo', function () {
-                $(this).unbind('submit.conbo');
-                $dialog.close();
-                return false;
-            });
 
 
-            return false;
-        });
 
         $(document).bind('contextmenu', function (event) {
             var targ;
@@ -119,73 +75,22 @@ var prodModule = (function (p4, humane) {
             return gogo;
         });
 
-        $('.basket_refresher').on('click', function () {
-            return p4.WorkZone.refresh('current');
-            return false;
-        });
+
 
         $('#loader_bar').stop().animate({
             width: '70%'
         }, 450);
+
         p4.preview = {
             open: false,
             current: false
         };
-        p4.currentViewMode = 'classic';
-        p4.nbNoview = 0;
         p4.sel = [];
-        p4.baskSel = [];
         p4.edit = {};
         p4.thesau = {
             tabs: null
         };
         p4.active_zone = false;
-        p4.next_bask_scroll = false;
-
-
-        $('#backcolorpickerHolder').ColorPicker({
-            flat: true,
-            color: '404040',
-            livePreview: false,
-            eventName: 'mouseover',
-            onSubmit: function (hsb, hex, rgb, el) {
-                var back_hex = '';
-                var unactive = '';
-
-
-                if (hsb.b >= 50) {
-                    back_hex = '000000';
-
-                    var sim_b = 0.1 * hsb.b;
-                }
-                else {
-                    back_hex = 'FFFFFF';
-
-                    var sim_b = 100 - 0.1 * (100 - hsb.b);
-                }
-
-                var sim_b = 0.1 * hsb.b;
-
-                var sim_rgb = utilsModule.hsl2rgb(hsb.h, hsb.s, sim_b);
-                var sim_hex = utilsModule.RGBtoHex(sim_rgb.r, sim_rgb.g, sim_rgb.b);
-
-                userModule.setPref('background-selection', hex);
-                userModule.setPref('background-selection-disabled', sim_hex);
-                userModule.setPref('fontcolor-selection', back_hex);
-
-                $('style[title=color_selection]').empty();
-
-                var datas = '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
-                    '{' +
-                    '    COLOR: #' + back_hex + ';' +
-                    '    BACKGROUND-COLOR: #' + hex + ';' +
-                    '}';
-                $('style[title=color_selection]').empty().text(datas);
-            }
-        });
-        $('#backcolorpickerHolder').find('.colorpicker_submit').append($('#backcolorpickerHolder .submiter')).bind('click', function () {
-            $(this).highlight('#CCCCCC');
-        });
 
         $('#search_submit').on('mousedown', function (event) {
             return false;
@@ -206,97 +111,9 @@ var prodModule = (function (p4, humane) {
             _triggerShortcuts();
         });
 
-        $('#idFrameC').resizable({
-            handles: 'e',
-            resize: function () {
-                answerSizer();
-                linearizeUi();
-            },
-            stop: function () {
-
-                var el = $('.SSTT.active').next().find('div:first');
-                var w = el.find('div.chim-wrapper:first').outerWidth();
-                var iw = el.innerWidth();
-                var diff = $('#idFrameC').width() - el.outerWidth();
-                var n = Math.floor(iw / w);
-
-                $('#idFrameC').height('auto');
-
-                var nwidth = (n) * w + diff + n;
-                if (isNaN(nwidth)) {
-                    _saveWindows();
-                    return;
-                }
-                if (nwidth < 265)
-                    nwidth = 265;
-                if (el.find('div.chim-wrapper:first').hasClass('valid') && nwidth < 410)
-                    nwidth = 410;
 
 
-                $('#idFrameC').stop().animate({
-                        width: nwidth
-                    },
-                    300,
-                    'linear',
-                    function () {
-                        answerSizer();
-                        linearizeUi();
-                        _saveWindows();
-                    });
-            }
-        });
 
-        $('#idFrameC .ui-tabs-nav li').on('click', function (event) {
-            if($('#idFrameC').attr('data-status') == 'closed'){
-                $('#idFrameC').width(300);
-                $('#rightFrame').css('left', 300);
-                $('#rightFrame').width($(window).width()-300);
-                $('#baskets, #proposals, #thesaurus_tab').hide();
-                $('.ui-resizable-handle, #basket_menu_trigger').show();
-                var IDname = $(this).attr('aria-controls');
-                $('#'+IDname).show();
-            }
-
-            $('#idFrameC').attr('data-status', 'open');
-            $('.WZbasketTab').css('background-position', '9px 21px');
-            $('#idFrameC').removeClass('closed');
-        });
-
-        var previousTab = "";
-
-        $('#idFrameC #retractableButton').bind('click', function (event) {
-
-            if($('#idFrameC').attr('data-status') != 'closed'){
-                $(this).find('i').removeClass('icon-double-angle-left').addClass('icon-double-angle-right')
-                $('#idFrameC').width(80);
-                $('#rightFrame').css('left', 80);
-                $('#rightFrame').width($(window).width()-80);
-                $('#idFrameC').attr('data-status', 'closed');
-                $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
-                $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
-                $('.WZbasketTab').css('background-position', '15px 16px');
-                $('#idFrameC').addClass('closed');
-                previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
-            }else{
-                $(this).find('i').removeClass('icon-double-angle-right').addClass('icon-double-angle-left')
-                $('#idFrameC').width(300);
-                $('#rightFrame').css('left', 300);
-                $('#rightFrame').width($(window).width()-300);
-                $('#idFrameC').attr('data-status', 'open');
-                $('.ui-resizable-handle, #basket_menu_trigger').show();
-                $('.WZbasketTab').css('background-position', '9px 16px');
-                $('#idFrameC').removeClass('closed');
-                $('#idFrameC .icon-menu li').last().find('a').trigger('click');
-                $('#idFrameC .icon-menu li').first().find('a').trigger('click');
-                $(previousTab).find('a').trigger('click');
-            }
-
-            event.stopImmediatePropagation();
-            //p4.WorkZone.close();
-            return false;
-        });
-
-        $('#look_box .tabs').tabs();
 
         _resizeAll();
 
@@ -307,17 +124,6 @@ var prodModule = (function (p4, humane) {
 
         $('body').append('<iframe id="idHFrameZ" src="about:blank" style="display:none;" name="HFrameZ"></iframe>');
 
-        $('#basket_menu_trigger').contextMenu('#basket_menu', {
-            openEvt: 'click',
-            dropDown: true,
-            theme: 'vista',
-            showTransition: 'slideDown',
-            hideTransition: 'hide',
-            shadow: false
-        });
-
-        $('#basket_menu_trigger').trigger("click");
-        $('#basket_menu_trigger').trigger("click");
 
         $('.datepicker').datepicker({
             changeYear: true,
@@ -361,8 +167,6 @@ var prodModule = (function (p4, humane) {
         // getLanguage();
 
         _initAnswerForm();
-
-        preferencesModule.initLook();
 
         // setTimeout("pollNotifications();", 10000);
 
@@ -574,33 +378,9 @@ var prodModule = (function (p4, humane) {
             $(this).removeClass('focused');
         });
 
-        $('.basketTips').tooltip({
-            delay: 200
-        });
 
-        $('#idFrameC .tabs').tabs({
-            activate: function (event, ui) {
-                if (ui.newTab.context.hash == "#thesaurus_tab") {
-                    thesau_show();
-                }
-                p4.WorkZone.open();
-            }
-        });
 
-        $('#PREVIEWBOX .gui_vsplitter', p4.edit.editBox).draggable({
-            axis: 'x',
-            containment: 'parent',
-            drag: function (event, ui) {
-                var x = $(ui.position.left)[0];
-                if (x < 330 || x > (bodySize.x - 400)) {
-                    return false;
-                }
-                var v = $(ui.position.left)[0];
-                $("#PREVIEWLEFT").width(v);
-                $("#PREVIEWRIGHT").css("left", $(ui.position.left)[0]);
-                recordPreviewModule.resizePreview();
-            }
-        });
+
 
         $('input.input_select_copy').on('focus', function () {
             $(this).select();
@@ -688,14 +468,14 @@ var prodModule = (function (p4, humane) {
 
     }
 
-    function doSpecialSearch(qry, allbase) {
+    /*function doSpecialSearch(qry, allbase) {
         if (allbase) {
             searchModule.toggleDatabase(true);
         }
         workzoneFacetsModule.resetSelectedFacets();
         $('#EDIT_query').val(decodeURIComponent(qry).replace(/\+/g, " "));
         searchModule.newSearch(qry);
-    }
+    }*/
 
     function addToBasket(sbas_id, record_id, event, singleSelection) {
         var singleSelection = singleSelection || false;

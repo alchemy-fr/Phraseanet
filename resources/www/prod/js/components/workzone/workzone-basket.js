@@ -1,3 +1,4 @@
+/*
 var p4 = p4 || {};
 
 var workzoneBasketModule = (function (p4) {
@@ -104,4 +105,4 @@ var workzoneBasketModule = (function (p4) {
         openBasketPreferences: openBasketPreferences
 
     }
-})(p4);
+})(p4);*/

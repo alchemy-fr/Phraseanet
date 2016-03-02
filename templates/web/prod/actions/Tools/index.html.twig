@@ -402,10 +402,13 @@ $(document).ready(function(){
     });
 
     //thumbExtractor
-
-    var ThumbEditor = new videoEditorModule.ThumbnailEditor("thumb_video", "thumb_canvas", {
+    var ThumbEditor = new ProductionApplication.VideoEditor("thumb_video", "thumb_canvas", {
         altCanvas: $('#alt_canvas_container .alt_canvas')
     });
+
+    /*var ThumbEditor = new videoEditorModule.ThumbnailEditor("thumb_video", "thumb_canvas", {
+        altCanvas: $('#alt_canvas_container .alt_canvas')
+    });*/
 
     if(ThumbEditor.isSupported()) {
 
