@@ -43,7 +43,7 @@ class SchedulerRun extends Command
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
-        declare(ticks=1);
+        declare(ticks=1000);
 
         if ($this->container['task-manager.logger.configuration']['enabled']) {
             $file = $this->container['task-manager.log-file.factory']->forManager();
