@@ -30,7 +30,7 @@ class OrderElementTransformer extends TransformerAbstract
     {
         $data = [
             'id' => $element->getId(),
-            'record_id' => [
+            'record' => [
                 'databox_id' => $element->getSbasId($this->app),
                 'record_id' => $element->getRecordId(),
             ],
