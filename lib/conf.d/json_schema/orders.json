@@ -11,7 +11,8 @@
                             "type": "string"
                         },
                         "deadline": {
-                            "type": "date-time"
+                            "type": "string",
+                            "format": "date-time"
                         },
                         "records": {
                             "type": "array",
@@ -38,13 +39,15 @@
                     "type": "integer"
                 },
                 "created": {
-                    "type": "date-time"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "usage": {
                     "type": "string"
                 },
                 "deadline": {
-                    "type": "date-time"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "elements": {
                     "type": "array",
