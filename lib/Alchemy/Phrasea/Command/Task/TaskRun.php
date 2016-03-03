@@ -47,7 +47,7 @@ class TaskRun extends Command
             throw new RuntimeException('The use of the task manager is disabled on this instance.');
         }
 
-        declare(ticks=1);
+        declare(ticks=1000);
 
         if (null === $task = $this->container['repo.tasks']->find($input->getArgument('task_id'))) {
             throw new RuntimeException('Invalid task_id');
