@@ -82,7 +82,7 @@
                             p4.WorkZone.Selection.remove(n);
                         }
                     });
-                    searchModule.viewNbSelect();
+                    prodApp.appEvents.emit('search.doRefreshSelection')
                 },
                 complete: function(){
                     $this.prop('disabled', false);

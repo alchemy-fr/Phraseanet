@@ -167,7 +167,7 @@
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="workzoneBasketModule.archiveBasket({{ basket.getId() }});return false;">
+                             onclick="prodApp.appEvents.emit('baskets.doArchiveBasket', {{ basket.getId() }});return false;">
                           {{ 'Archive' | trans }}
                         </div>
                       </div>

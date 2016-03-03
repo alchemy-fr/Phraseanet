@@ -10,7 +10,7 @@ var searchResultModule = (function (p4, window) {
                 $('#answercontextwrap table:visible').hide();
             },
             selectStop: function (event, selection) {
-                searchModule.viewNbSelect();
+                prodApp.appEvents.emit('search.doRefreshSelection')
             },
             callbackSelection: function (element) {
                 var elements = $(element).attr('id').split('_');

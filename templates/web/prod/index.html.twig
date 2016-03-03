@@ -5,9 +5,8 @@
         <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas">
-                <span  onclick="searchModule.toggleCollection(this, '.sbascont_{{sbas_id}}' );" class="deployer_closed" ></span>
-                <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
-                       onchange="searchModule.selectDatabase(this, {{sbas_id}});" />
+                <span class="toggle-collection deployer_closed" data-database="{{sbas_id}}"  ></span>
+                <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="select-database sbasChkr_{{sbas_id}}"  data-database="{{sbas_id}}" />
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox danger_indicator" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <span>{{sbas_id|sbas_labels(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
@@ -23,8 +22,8 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
-                                            onchange="searchModule.checkFilters(true);"
+                                        <input class="ck_{{collection["base_id"]}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
+
                                             id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
                                             name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
@@ -167,7 +166,7 @@
                         </div>
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="workzoneBasketModule.openBasketPreferences();">
+                        <div class="context-menu-item-inner" onclick="prodApp.appEvents.emit('baskets.doOpenBasketPreferences')">
                             {{ 'Preferences' | trans }}
                         </div>
                     </li>
@@ -222,10 +221,11 @@
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
                                             <div class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button"
-                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="searchModule.toggleDatabase(true);" />
-                                                <input class="btn btn-inverse" type="button"
-                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" onclick="searchModule.toggleDatabase(false);" />
+                                                <input class="btn btn-inverse toggle-database" type="button"
+                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}"
+                                                       data-state="true" />
+                                                <input class="btn btn-inverse toggle-database" type="button" data-state="false"
+                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" />
                                             </div>
                                             {{_self.bas_list(module_prod, search_datas)}}
                                         </div>
@@ -233,7 +233,7 @@
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="sbasfiltercont">
                                             <div  class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="searchModule.resetSearch();" />
+                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="prodApp.appEvents.emit('search.doResetSearch');" />
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">
@@ -250,7 +250,7 @@
                                                         {% set sortOrderPreference = search_datas.elasticSort.order %}
                                                     {% endif %}
                                                     <span>{{ 'Trier par' | trans }}</span>
-                                                    <select name="sort" class="input-medium" onchange="searchModule.checkFilters(true);">
+                                                    <select name="sort" class="input-medium check-filters" data-save="true">
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
@@ -267,7 +267,7 @@
                                                         {% endfor %}
                                                         </optgroup>
                                                     </select>
-                                                    <select name="ord" class="input-medium" onchange="searchModule.checkFilters(true);">
+                                                    <select name="ord" class="input-medium check-filters" data-save="true">
                                                         {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
                                                             {% set isSelected = (sortOrderPreference == ord) %}
                                                             {% set isDefault = (sortOrderDefault == ord) %}
@@ -278,7 +278,7 @@
 
                                                 <div id="ADVSRCH_FIELDS_ZONE" class="danger_indicator">
                                                     <span>{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
-                                                    <select size="8" multiple onchange="searchModule.checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
+                                                    <select size="8" multiple onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" name="fields[]" style="vertical-align:middle; width:99%;">
                                                         <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                         {% for field_id, field in search_datas['fields'] %}
                                                             {% if field['type'] != 'date' %}
@@ -311,7 +311,7 @@
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="searchModule.checkFilters(true);" class="field_switch field_{{databox_id}}"
+                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
                                                                         type="checkbox" value="0"
                                                                         n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
                                                                         {{status['labels_off_i18n'][app['locale']]}}
@@ -322,7 +322,7 @@
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="searchModule.checkFilters(true);" class="field_switch field_{{databox_id}}"
+                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
                                                                         type="checkbox" value="1"
                                                                         n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
                                                                         {{status['labels_on_i18n'][app['locale']]}}
@@ -341,7 +341,7 @@
                                                     {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
                                                     <hr />
                                                     <span>
-                                                        <select name="date_field" class="input-medium" onchange="searchModule.checkFilters(true);">
+                                                        <select name="date_field" class="input-medium check-filters" data-save="true">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
@@ -354,12 +354,12 @@
                                                         {{ 'phraseanet::time:: de' | trans }}
                                                         <div class="input-prepend">
                                                             <span class="add-on"><i class="icon-calendar"></i></span>
-                                                            <input onchange="searchModule.checkFilters(true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                         {{ 'phraseanet::time:: a' | trans }}
                                                         <div class="input-prepend">
                                                             <span class="add-on"><i class="icon-calendar"></i></span>
-                                                            <input onchange="searchModule.checkFilters(true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                     </span>
                                                     {% endif %}
@@ -747,10 +747,11 @@
             },
             initialState: "{{ initialAppState }}"
         })
-        prodApp.appEvents.emit('search.doSpecialSearch', {'special': true});
+        // prodApp.appEvents.emit('search.doCheckFilters', true);
 
         $(document).ready(function(){
-            workzoneModule.setRemoveWarning("{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
+            prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
+
         });
 
         function setCss(color) {

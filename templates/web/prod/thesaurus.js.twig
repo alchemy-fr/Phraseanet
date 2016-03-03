@@ -776,10 +776,11 @@ function doThesSearch(type, sbid, term, field)
     v = '[' + term + ']';
   else
     v = field + '="' + term + '"';
-  workzoneFacetsModule.resetSelectedFacets();
+  prodApp.appEvents.emit('facets.doResetSelectedFacets');
   $('#EDIT_query').val(v);
-  searchModule.checkFilters();
-  searchModule.newSearch(v);
+  prodApp.appEvents.emit('search.doCheckFilters');
+  prodApp.appEvents.emit('search.doNewSearch', v);
+  //searchModule.newSearch(v);
 }
 
 
