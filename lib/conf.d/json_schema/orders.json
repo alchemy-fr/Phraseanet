@@ -1,0 +1,60 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "order_request": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "usage": {
+                            "type": "string"
+                        },
+                        "deadline": {
+                            "type": "date-time"
+                        },
+                        "records": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "records.json#/definitions/record"
+                            }
+                        }
+                    },
+                    "required": [
+                        "usage",
+                        "records"
+                    ]
+                }
+            },
+            "required": ["data"]
+        },
+        "order": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "records.json#/definitions/record"
+                    }
+                }
+            },
+            "required": [
+                "databox_id",
+                "record_id"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "data": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/order"
+            }
+        }
+    },
+    "required": ["data"]
+}

@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Core\Event\Basket\ElementsAdded;
 use Alchemy\Phrasea\Core\Event\Basket\ElementsRemoved;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Symfony\Component\HttpFoundation\Request;
 
 class BasketController extends Controller

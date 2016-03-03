@@ -160,6 +160,7 @@ class Order
     public function addElement(OrderElement $elements)
     {
         $this->elements[] = $elements;
+        $elements->setOrder($this);
 
         return $this;
     }
@@ -172,6 +173,7 @@ class Order
     public function removeElement(OrderElement $elements)
     {
         $this->elements->removeElement($elements);
+        $elements->setOrder(null);
     }
 
     /**
