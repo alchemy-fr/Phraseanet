@@ -10,9 +10,10 @@
 
 namespace Alchemy\Phrasea\Record;
 
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Assert\Assertion;
 
-class RecordReference
+class RecordReference implements RecordReferenceInterface
 {
     /**
      * @var int
