@@ -121,8 +121,6 @@ class SubdefSubstituer
             $record->write_metas();
         }
 
-        $record->rebuild_subdefs();
-
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
     }
 
