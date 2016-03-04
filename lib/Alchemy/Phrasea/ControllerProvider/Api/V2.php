@@ -101,6 +101,8 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('api_v2_orders_create');
         $controllers->get('/orders/', 'controller.api.v2.orders:indexAction')
             ->bind('api_v2_orders_index');
+        $controllers->get('/orders/{orderId}', 'controller.api.v2.orders:showAction')
+            ->bind('api_v2_orders_show');
 
         return $controllers;
     }

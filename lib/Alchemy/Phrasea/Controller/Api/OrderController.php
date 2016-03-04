@@ -20,14 +20,21 @@ use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
+use Assert\Assertion;
+use Assert\InvalidArgumentException;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
+use League\Fractal\Resource\ResourceInterface;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderController extends Controller
 {
@@ -55,56 +62,72 @@ class OrderController extends Controller
 
         $filler->fillOrder($order, $recordRequest);
 
-        $transformer = new OrderTransformer(new OrderElementTransformer($this->app));
-
-        $fractal = new Manager();
-        $fractal->parseIncludes(['elements']);
-
-        $result = Result::create($request, [
-            'order' => $fractal->createData(new Item($order, $transformer))->toArray(),
-        ]);
-
         $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
 
-        return $result->createResponse();
+        $resource = new Item($order, $this->getOrderTransformer());
+
+        return $this->returnResourceResponse($request, ['elements'], $resource);
     }
 
     public function indexAction(Request $request)
     {
         $page = max((int) $request->get('page', '1'), 1);
         $perPage = min(max((int)$request->get('per_page', '10'), 10), 100);
-        $includes = $request->get('includes', '');
-
-        $offset = ($page - 1) * $perPage;
-
-        $orders = $this->app['repo.orders']->createQueryBuilder('o');
-        $orders
-            ->where($orders->expr()->eq('o.user', $this->getAuthenticatedUser()->getId()))
-            ->setFirstResult($offset)
-            ->setMaxResults($perPage)
-        ;
-
-        $transformer = new OrderTransformer(new OrderElementTransformer($this->app));
+        $includes = $request->get('includes', []);
 
         $routeGenerator = function ($page) use ($perPage) {
-            return $this->app->url('api_v2_orders_index', [
+            return $this->app->path('api_v2_orders_index', [
                 'page' => $page,
-                'perPage' => $perPage,
+                'per_page' => $perPage,
             ]);
         };
 
 
-        $fractal = new Manager();
-        $fractal->parseIncludes($includes);
+        $builder = $this->app['repo.orders']->createQueryBuilder('o');
+        $builder
+            ->where($builder->expr()->eq('o.user', $this->getAuthenticatedUser()->getId()))
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+        ;
 
-        $collection = new Collection($orders, $transformer);
+        $resource = new Collection($builder->getQuery()->getResult(), $this->getOrderTransformer());
 
-        $paginator = new PagerfantaPaginatorAdapter(new Pagerfanta(new DoctrineORMAdapter($orders, false)), $routeGenerator);
-        $collection->setPaginator($paginator);
+        $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
+        $pager->setCurrentPage($page);
+        $paginator = new PagerfantaPaginatorAdapter($pager, $routeGenerator);
+        $resource->setPaginator($paginator);
 
-        $result = Result::create($request, $fractal->createData($collection)->toArray());
+        return $this->returnResourceResponse($request, $includes, $resource);
+    }
 
-        return $result->createResponse();
+    /**
+     * @param Request $request
+     * @param int $orderId
+     * @return Response
+     */
+    public function showAction(Request $request, $orderId)
+    {
+        try {
+            Assertion::integerish($orderId);
+        } catch (InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage(), $exception);
+        }
+
+        $includes = $request->get('includes', []);
+
+        $order = $this->app['repo.orders']->find((int)$orderId);
+
+        if (!$order instanceof Order) {
+            throw new NotFoundHttpException(sprintf('Order "%d" was not found', (int) $orderId));
+        }
+
+        if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
+            throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
+        }
+
+        $resource = new Item($order, $this->getOrderTransformer());
+
+        return $this->returnResourceResponse($request, $includes, $resource);
     }
 
     /**
@@ -167,5 +190,27 @@ class OrderController extends Controller
         return array_filter($records, function (\record_adapter $record) use ($acl) {
             return $acl->has_right_on_base($record->getBaseId(), 'cancmd');
         });
+    }
+
+    /**
+     * @return OrderTransformer
+     */
+    private function getOrderTransformer()
+    {
+        return new OrderTransformer(new OrderElementTransformer($this->app));
+    }
+
+    /**
+     * @param Request $request
+     * @param string|array $includes
+     * @param ResourceInterface $resource
+     * @return Response
+     */
+    private function returnResourceResponse(Request $request, $includes, ResourceInterface $resource)
+    {
+        $fractal = new Manager();
+        $fractal->parseIncludes($includes);
+
+        return Result::create($request, $fractal->createData($resource)->toArray())->createResponse();
     }
 }
