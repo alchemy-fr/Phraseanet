@@ -249,7 +249,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function touch()
     {
-        $this->getDatabox()->get_connection()->executeUpdate(
+        $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW() WHERE record_id = :record_id',
             ['record_id' => $this->getRecordId()]
         );
@@ -290,7 +290,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
         }
 
-        if ($this->getDatabox()->get_connection()->executeUpdate(
+        if ($this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), mime = :mime WHERE record_id = :record_id',
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
@@ -471,7 +471,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ':record_id' => $this->getRecordId(),
         ];
 
-        $stmt = $this->getDatabox()->get_connection()->prepare($sql);
+        $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -546,7 +546,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $data;
         }
 
-        $status = $this->getDatabox()->get_connection()->fetchColumn(
+        $status = $this->getDataboxConnection()->fetchColumn(
             'SELECT BIN(status) as status FROM record WHERE record_id = :record_id',
             [':record_id' => $this->getRecordId()]
         );
@@ -813,7 +813,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
         }
 
-        $this->getDatabox()->get_connection()->executeUpdate(
+        $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), originalname = :originalname WHERE record_id = :record_id',
             ['originalname' => $original_name, 'record_id' => $this->getRecordId()]
         );
@@ -1088,7 +1088,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function write_metas()
     {
         $tokenMask = PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF;
-        $this->getDatabox()->get_connection()->executeUpdate(
+        $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET jeton = jeton | :tokenMask WHERE record_id= :record_id',
             ['tokenMask' => $tokenMask, 'record_id' => $this->getRecordId()]
         );
@@ -1102,7 +1102,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function set_binary_status($status)
     {
-        $connection = $this->getDatabox()->get_connection();
+        $connection = $this->getDataboxConnection();
 
         $connection->executeUpdate(
             'UPDATE record SET moddate = NOW(), status = :status WHERE record_id= :record_id',
@@ -1254,7 +1254,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
-        $connection = $this->getDatabox()->get_connection();
+        $connection = $this->getDataboxConnection();
         $sql = 'DELETE FROM technical_datas WHERE record_id = :record_id';
         $stmt = $connection->prepare($sql);
         $stmt->execute([':record_id' => $this->getRecordId()]);
@@ -1635,7 +1635,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ];
         }
 
-        $stmt = $this->getDatabox()->get_connection()->prepare($sql);
+        $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1675,7 +1675,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             . " ON (g.rid_parent = r.record_id)\n"
             . " WHERE rid_child = :record_id";
 
-        $stmt = $this->getDatabox()->get_connection()->prepare($sql);
+        $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute([
             ':site'      => $this->app['conf']->get(['main', 'key']),
             ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
@@ -1877,7 +1877,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
 
-        return $this->getDatabox()->get_connection()
+        return $this->getDataboxConnection()
             ->fetchAll($sql, ['record_id' => $this->getRecordId()]);
     }
 
