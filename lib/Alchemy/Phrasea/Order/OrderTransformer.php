@@ -20,10 +20,6 @@ class OrderTransformer extends TransformerAbstract
         'elements',
     ];
 
-    protected $defaultIncludes = [
-        'elements',
-    ];
-
     /**
      * @var OrderElementTransformer
      */

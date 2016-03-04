@@ -98,7 +98,9 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->match('/search/', 'controller.api.v2.search:searchAction');
 
         $controllers->post('/orders/', 'controller.api.v2.orders:createAction')
-            ->bind('api_v2_order_create');
+            ->bind('api_v2_orders_create');
+        $controllers->get('/orders/', 'controller.api.v2.orders:indexAction')
+            ->bind('api_v2_orders_index');
 
         return $controllers;
     }

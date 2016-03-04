@@ -22,7 +22,11 @@ use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
+use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
+use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 
 class OrderController extends Controller
@@ -54,13 +58,51 @@ class OrderController extends Controller
         $transformer = new OrderTransformer(new OrderElementTransformer($this->app));
 
         $fractal = new Manager();
-        $fractal->parseIncludes([]);
+        $fractal->parseIncludes(['elements']);
 
         $result = Result::create($request, [
             'order' => $fractal->createData(new Item($order, $transformer))->toArray(),
         ]);
 
         $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+
+        return $result->createResponse();
+    }
+
+    public function indexAction(Request $request)
+    {
+        $page = max((int) $request->get('page', '1'), 1);
+        $perPage = min(max((int)$request->get('per_page', '10'), 10), 100);
+        $includes = $request->get('includes', '');
+
+        $offset = ($page - 1) * $perPage;
+
+        $orders = $this->app['repo.orders']->createQueryBuilder('o');
+        $orders
+            ->where($orders->expr()->eq('o.user', $this->getAuthenticatedUser()->getId()))
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage)
+        ;
+
+        $transformer = new OrderTransformer(new OrderElementTransformer($this->app));
+
+        $routeGenerator = function ($page) use ($perPage) {
+            return $this->app->url('api_v2_orders_index', [
+                'page' => $page,
+                'perPage' => $perPage,
+            ]);
+        };
+
+
+        $fractal = new Manager();
+        $fractal->parseIncludes($includes);
+
+        $collection = new Collection($orders, $transformer);
+
+        $paginator = new PagerfantaPaginatorAdapter(new Pagerfanta(new DoctrineORMAdapter($orders, false)), $routeGenerator);
+        $collection->setPaginator($paginator);
+
+        $result = Result::create($request, $fractal->createData($collection)->toArray());
 
         return $result->createResponse();
     }
