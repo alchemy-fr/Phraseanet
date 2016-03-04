@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Record;
 
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Assert\Assertion;
 
 class RecordReferenceCollection implements \IteratorAggregate
@@ -36,16 +37,16 @@ class RecordReferenceCollection implements \IteratorAggregate
     }
 
     /**
-     * @var RecordReference[]
+     * @var RecordReferenceInterface[]
      */
     private $references = [];
 
     /**
-     * @param RecordReference[] $references
+     * @param RecordReferenceInterface[] $references
      */
     public function __construct($references)
     {
-        Assertion::allIsInstanceOf($references, RecordReference::class);
+        Assertion::allIsInstanceOf($references, RecordReferenceInterface::class);
 
         $this->references = $references;
     }
