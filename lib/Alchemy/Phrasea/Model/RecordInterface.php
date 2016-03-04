@@ -2,13 +2,8 @@
 
 namespace Alchemy\Phrasea\Model;
 
-interface RecordInterface
+interface RecordInterface extends RecordReferenceInterface
 {
-    /**
-     * @return string
-     */
-    public function getId();
-
     /**
      * The unique id of the collection where belong the record.
      *
@@ -26,13 +21,6 @@ interface RecordInterface
     /** @return \DateTime */
     public function getCreated();
 
-    /**
-     * The id of the databox where belong the record.
-     *
-     * @return integer
-     */
-    public function getDataboxId();
-
     /** @return boolean */
     public function isStory();
 
@@ -41,9 +29,6 @@ interface RecordInterface
 
     /** @return string */
     public function getOriginalName();
-
-    /** @return integer */
-    public function getRecordId();
 
     /** @return string */
     public function getSha256();

@@ -53,11 +53,11 @@ use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
+use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
-use Alchemy\Phrasea\SearchEngine\SearchEngineResultToRecordsConverter;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
@@ -1065,10 +1065,10 @@ class V1Controller extends Controller
 
         $ret['results'] = ['records' => [], 'stories' => []];
 
-        $converter = new SearchEngineResultToRecordsConverter($this->getApplicationBox());
-
         /** @var SearchEngineResult $search_result */
-        foreach ($converter->convert($search_result->getResults()) as $record) {
+        $references = new RecordReferenceCollection($search_result->getResults());
+
+        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
             if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {

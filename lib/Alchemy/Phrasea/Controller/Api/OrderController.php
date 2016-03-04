@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
+use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Assert\Assertion;
 use Assert\InvalidArgumentException;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -45,8 +46,7 @@ class OrderController extends Controller
     {
         $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_request');
 
-        $requestedRecords = $this->toRequestedRecordsArray($data->data->records);
-        $availableRecords = $this->fetchRecords($requestedRecords);
+        $availableRecords = $this->toRequestedRecords($data->data->records);
         $records = $this->filterOrderableRecords($availableRecords);
 
         $recordRequest = new RecordsRequest($records, new ArrayCollection($availableRecords), null, RecordsRequest::FLATTEN_YES);
@@ -132,9 +132,9 @@ class OrderController extends Controller
 
     /**
      * @param array $records
-     * @return array
+     * @return \record_adapter[]
      */
-    private function toRequestedRecordsArray(array $records)
+    private function toRequestedRecords(array $records)
     {
         $requestedRecords = [];
 
@@ -145,38 +145,7 @@ class OrderController extends Controller
             ];
         }
 
-        return $requestedRecords;
-    }
-
-    /**
-     * @param array $recordIds
-     * @return \record_adapter[]
-     */
-    private function fetchRecords(array $recordIds)
-    {
-        $perDataboxRecords = [];
-
-        foreach ($recordIds as $index => $record) {
-            if (!isset($perDataboxRecords[$record['databox_id']])) {
-                $perDataboxRecords[$record['databox_id']] = [];
-            }
-
-            $perDataboxRecords[$record['databox_id']][$record['record_id']] = $index;
-        }
-
-        $records = [];
-
-        foreach ($perDataboxRecords as $databoxId => $recordIndexes) {
-            $repository = $this->findDataboxById($databoxId)->getRecordRepository();
-
-            foreach ($repository->findByRecordIds(array_keys($perDataboxRecords[$databoxId])) as $record) {
-                $records[$recordIndexes[$record->getRecordId()]] = $record;
-            }
-        }
-
-        ksort($records);
-
-        return $records;
+        return RecordReferenceCollection::fromArrayOfArray($requestedRecords)->toRecords($this->getApplicationBox());
     }
 
     /**
@@ -187,9 +156,15 @@ class OrderController extends Controller
     {
         $acl = $this->getAclForUser();
 
-        return array_filter($records, function (\record_adapter $record) use ($acl) {
-            return $acl->has_right_on_base($record->getBaseId(), 'cancmd');
-        });
+        $filtered = [];
+
+        foreach ($records as $index => $record) {
+            if ($acl->has_right_on_base($record->getBaseId(), 'cancmd')) {
+                $filtered[$index] = $record;
+            }
+        }
+
+        return $filtered;
     }
 
     /**
