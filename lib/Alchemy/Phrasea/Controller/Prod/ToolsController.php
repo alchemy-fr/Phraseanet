@@ -406,12 +406,12 @@ class ToolsController extends Controller
     }
 
     /**
-     * @param $record
-     * @param $subDefName
-     * @param $subDefDataUri
+     * @param \record_adapter $record
+     * @param string $subDefName
+     * @param string $subDefDataUri
      * @throws \DataURI\Exception\InvalidDataException
      */
-    private function substituteMedia($record, $subDefName, $subDefDataUri)
+    private function substituteMedia(\record_adapter $record, $subDefName, $subDefDataUri)
     {
         $dataUri = Parser::parse($subDefDataUri);
 

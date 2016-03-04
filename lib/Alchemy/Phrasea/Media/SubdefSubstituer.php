@@ -46,7 +46,7 @@ class SubdefSubstituer
     public function substitute(\record_adapter $record, $name, MediaInterface $media, $adapt = true)
     {
         if ($name == 'document') {
-            $this->substituteDocument($record, $media);
+            $this->substituteDocument($record, $media, $adapt);
 
             return;
         }
@@ -54,7 +54,12 @@ class SubdefSubstituer
         $this->substituteSubdef($record, $name, $media, $adapt);
     }
 
-    public function substituteDocument(\record_adapter $record, MediaInterface $media)
+    /**
+     * @param \record_adapter $record
+     * @param MediaInterface $media
+     * @param bool $shouldSubdefsBeRebuilt
+     */
+    public function substituteDocument(\record_adapter $record, MediaInterface $media, $shouldSubdefsBeRebuilt = true)
     {
         /** @var \SplFileInfo $file */
         $file = $media->getFile();
@@ -70,7 +75,9 @@ class SubdefSubstituer
 
         $record->write_metas();
 
-        $record->rebuild_subdefs();
+        if ($shouldSubdefsBeRebuilt) {
+            $record->rebuild_subdefs();
+        }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
     }
@@ -120,8 +127,6 @@ class SubdefSubstituer
         if ($databox_subdef->isMetadataUpdateRequired()) {
             $record->write_metas();
         }
-
-        $record->rebuild_subdefs();
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
     }
