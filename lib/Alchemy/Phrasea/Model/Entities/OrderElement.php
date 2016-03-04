@@ -79,7 +79,7 @@ class OrderElement
     }
 
     /**
-     * @return mixed
+     * @return User|null
      */
     public function getOrderMaster()
     {
