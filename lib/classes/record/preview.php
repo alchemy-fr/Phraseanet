@@ -10,8 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Guzzle\Http\Url;
@@ -54,17 +53,17 @@ class record_preview extends record_adapter
     protected $short_history;
 
     /**
-     * @var media
+     * @var media_adapter
      */
     protected $view_popularity;
 
     /**
-     * @var media
+     * @var media_adapter
      */
     protected $refferer_popularity;
 
     /**
-     * @var media
+     * @var media_adapter
      */
     protected $download_popularity;
 
@@ -131,7 +130,6 @@ class record_preview extends record_adapter
                 $Basket = $app['converter.basket']->convert($contId);
                 $app['acl.basket']->hasAccess($Basket, $app->getAuthenticatedUser());
 
-                /* @var $Basket Basket */
                 $this->container = $Basket;
                 $this->total = $Basket->getElements()->count();
                 $i = 0;
@@ -139,25 +137,18 @@ class record_preview extends record_adapter
 
                 foreach ($Basket->getElements() as $element) {
                     $i ++;
-                    if ($first) {
+                    if ($element->getOrd() == $pos || $first) {
                         $this->original_item = $element;
-                        $sbas_id = $element->getRecord($this->app)->getDataboxId();
-                        $record_id = $element->getRecord($this->app)->getRecordId();
+                        $sbas_id = $element->getSbasId();
+                        $record_id = $element->getRecordId();
                         $this->name = $Basket->getName();
                         $number = $element->getOrd();
-                    }
-                    $first = false;
-
-                    if ($element->getOrd() == $pos) {
-                        $this->original_item = $element;
-                        $sbas_id = $element->getRecord($this->app)->getDataboxId();
-                        $record_id = $element->getRecord($this->app)->getRecordId();
-                        $this->name = $Basket->getName();
-                        $number = $element->getOrd();
+                        $first = false;
                     }
                 }
                 break;
             case "FEED":
+                /** @var FeedEntry $entry */
                 $entry = $app['repo.feed-entries']->find($contId);
 
                 $this->container = $entry;
@@ -167,25 +158,24 @@ class record_preview extends record_adapter
 
                 foreach ($entry->getItems() as $element) {
                     $i ++;
-                    if ($first) {
-                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
-                        $record_id = $element->getRecord($this->app)->get_record_id();
+                    if ($element->getOrd() == $pos || $first) {
+                        $sbas_id = $element->getSbasId();
+                        $record_id = $element->getRecordId();
                         $this->name = $entry->getTitle();
                         $this->original_item = $element;
                         $number = $element->getOrd();
-                    }
-                    $first = false;
-
-                    if ($element->getOrd() == $pos) {
-                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
-                        $record_id = $element->getRecord($this->app)->get_record_id();
-                        $this->name = $entry->getTitle();
-                        $this->original_item = $element;
-                        $number = $element->getOrd();
+                        $first = false;
                     }
                 }
                 break;
+            default:
+                throw new InvalidArgumentException(sprintf('Expects env argument to one of (RESULT, REG, BASK, FEED) got %s', $env));
         }
+
+        if (!(isset($sbas_id) && isset($record_id))) {
+            throw new Exception('No record could be found');
+        }
+
         parent::__construct($app, $sbas_id, $record_id, $number);
     }
 
@@ -215,22 +205,23 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_from_result()
     {
         return $this->env == 'RESULT';
     }
 
+    /**
+     * @return bool
+     */
     public function is_from_feed()
     {
         return $this->env == 'FEED';
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_from_basket()
     {
@@ -238,8 +229,7 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function is_from_reg()
     {
@@ -292,7 +282,6 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
      * @return mixed content
      */
     public function get_container()
@@ -301,8 +290,7 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
-     * @return Array
+     * @return array
      */
     public function get_short_history()
     {
@@ -313,9 +301,6 @@ class record_preview extends record_adapter
         $tab = [];
 
         $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'canreport');
-
-        $databox = $this->app->findDataboxById($this->getDataboxId());
-        $connsbas = $databox->get_connection();
 
         $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
                 FROM log_docs d, log l
@@ -331,12 +316,7 @@ class record_preview extends record_adapter
 
         $sql .= 'ORDER BY d.date, usrid DESC';
 
-        $stmt = $connsbas->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
+        foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
 
             if ( ! isset($tab[$hour]))
@@ -379,8 +359,7 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
-     * @return media_image
+     * @return media_adapter
      */
     public function get_view_popularity()
     {
@@ -418,19 +397,14 @@ class record_preview extends record_adapter
           AND site_id = :site
           GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app->findDataboxById($this->getDataboxId());
-        $connsbas = $databox->get_connection();
-        $stmt = $connsbas->prepare($sql);
-        $stmt->execute(
-            [
+        $result = $this->getDataboxConnection()
+            ->executeQuery($sql, [
                 ':record_id' => $this->getRecordId(),
-                ':site'      => $this->app['conf']->get(['main', 'key'])
-            ]
-        );
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+                ':site' => $this->app['conf']->get(['main', 'key'])
+            ])
+            ->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($rs as $row) {
+        foreach ($result as $row) {
             if (isset($views[$row['datee']])) {
                 $views[$row['datee']] = (int) $row['views'];
                 $top = max((int) $row['views'], $top);
@@ -469,8 +443,7 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
-     * @return media
+     * @return media_adapter
      */
     public function get_refferer_popularity()
     {
@@ -487,23 +460,19 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $databox = $this->app->findDataboxById($this->getDataboxId());
-        $connsbas = $databox->get_connection();
-
         $sql = 'SELECT count( id ) AS views, referrer
           FROM `log_view`
           WHERE record_id = :record_id
             AND date > ( NOW( ) - INTERVAL 1 MONTH )
             GROUP BY referrer ORDER BY referrer ASC';
 
-        $stmt = $connsbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $result = $this->getDataboxConnection()
+            ->executeQuery($sql, [':record_id' => $this->getRecordId()])
+            ->fetchAll(PDO::FETCH_ASSOC);
 
         $referrers = [];
 
-        foreach ($rs as $row) {
+        foreach ($result as $row) {
             if ($row['referrer'] == 'NO REFERRER')
                 $row['referrer'] = $this->app->trans('report::acces direct');
             if ($row['referrer'] == $this->app['conf']->get('servername') . 'prod/')
@@ -542,8 +511,7 @@ class record_preview extends record_adapter
     }
 
     /**
-     *
-     * @return media
+     * @return media_adapter
      */
     public function get_download_popularity()
     {
@@ -581,21 +549,16 @@ class record_preview extends record_adapter
         AND site= :site
         GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app->findDataboxById($this->getDataboxId());
-        $connsbas = $databox->get_connection();
-        $stmt = $connsbas->prepare($sql);
-        $stmt->execute(
-            [
+        $result = $this->getDataboxConnection()
+            ->executeQuery($sql, [
                 ':record_id' => $this->getRecordId(),
                 ':site'      => $this->app['conf']->get(['main', 'key'])
-            ]
-        );
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+            ])
+            ->fetchAll(PDO::FETCH_ASSOC);
 
         $top = 10;
 
-        foreach ($rs as $row) {
+        foreach ($result as $row) {
             if (isset($dwnls[$row['datee']])) {
                 $dwnls[$row['datee']] = (int) $row['dwnl'];
                 $top = max(((int) $row['dwnl'] + 10), $top);

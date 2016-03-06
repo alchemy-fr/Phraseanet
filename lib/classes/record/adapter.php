@@ -1917,7 +1917,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @return Connection
      */
-    private function getDataboxConnection()
+    protected function getDataboxConnection()
     {
         if (null === $this->connection) {
             $this->connection = $this->getDatabox()->get_connection();
