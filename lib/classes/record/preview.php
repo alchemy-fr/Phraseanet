@@ -19,61 +19,51 @@ use Guzzle\Http\Url;
 class record_preview extends record_adapter
 {
     /**
-     *
      * @var string
      */
     protected $env;
 
     /**
-     *
      * @var int
      */
     protected $total;
 
     /**
-     *
      * @var string
      */
     protected $name;
 
     /**
-     *
      * @var mixed content
      */
     protected $container;
 
     /**
-     *
      * @var mixed content
      */
     protected $train;
 
     /**
-     *
      * @var string
      */
     protected $title;
 
     /**
-     *
-     * @var Array
+     * @var array
      */
     protected $short_history;
 
     /**
-     *
      * @var media
      */
     protected $view_popularity;
 
     /**
-     *
      * @var media
      */
     protected $refferer_popularity;
 
     /**
-     *
      * @var media
      */
     protected $download_popularity;
@@ -81,7 +71,7 @@ class record_preview extends record_adapter
     protected $original_item;
 
     protected $pos;
-    protected$search_engine;
+    protected $searchEngine;
     protected $query;
     protected $options;
 
@@ -148,7 +138,6 @@ class record_preview extends record_adapter
                 $first = true;
 
                 foreach ($Basket->getElements() as $element) {
-                    /* @var $element BasketElement */
                     $i ++;
                     if ($first) {
                         $this->original_item = $element;
