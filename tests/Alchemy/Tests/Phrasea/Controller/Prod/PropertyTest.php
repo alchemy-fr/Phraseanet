@@ -121,7 +121,7 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, substr($storyStatus, 8, 1));
         $this->assertEquals(1, substr($storyStatus, 11, 1));
 
-        foreach ($story->get_children() as $child) {
+        foreach ($story->getChildren() as $child) {
             $childStatus = strrev($child->get_status());
             $this->assertEquals(1, substr($childStatus, 6, 1));
             $this->assertEquals(1, substr($childStatus, 8, 1));

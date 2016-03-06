@@ -124,7 +124,7 @@ class record_preview extends record_adapter
                 if ($pos == 0) {
                     $number = 0;
                 } else {
-                    $children = $this->container->get_children();
+                    $children = $this->container->getChildren();
                     foreach ($children as $child) {
                         $sbas_id = $child->getDataboxId();
                         $this->original_item = $child;

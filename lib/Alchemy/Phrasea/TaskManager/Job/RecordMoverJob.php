@@ -108,7 +108,7 @@ class RecordMoverJob extends AbstractJob
             case 'DELETE':
                 if ($row['deletechildren'] && $rec->isStory()) {
                     /** @var record_adapter $child */
-                    foreach ($rec->get_children() as $child) {
+                    foreach ($rec->getChildren() as $child) {
                         $child->delete();
                         if ($logsql) {
                             $this->log('debug', sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->getRecordId()));

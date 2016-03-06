@@ -1706,7 +1706,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function hasChild(\record_adapter $record)
     {
-        return $this->get_children()->offsetExists($record->getId());
+        return $this->getChildren()->offsetExists($record->getId());
     }
 
     public function appendChild(\record_adapter $record)

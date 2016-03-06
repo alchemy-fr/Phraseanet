@@ -115,7 +115,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $this->assertEquals(2, $story->get_children()->get_count());
+        $this->assertEquals(2, $story->getChildren()->get_count());
         $story->delete();
     }
 
@@ -140,7 +140,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals(2, $story->get_children()->get_count());
+        $this->assertEquals(2, $story->getChildren()->get_count());
         $story->delete();
     }
 
@@ -157,7 +157,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
             $story->appendChild($record);
         }
 
-        $totalRecords = $story->get_children()->get_count();
+        $totalRecords = $story->getChildren()->get_count();
         $n = 0;
         foreach ($records as $record) {
             /* @var $record \record_adapter */
@@ -188,7 +188,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
                 $this->assertTrue($data['success']);
             }
             $n ++;
-            $this->assertEquals($totalRecords - $n, $story->get_children()->get_count());
+            $this->assertEquals($totalRecords - $n, $story->getChildren()->get_count());
         }
         $story->delete();
     }

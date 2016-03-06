@@ -1231,7 +1231,7 @@ class V1Controller extends Controller
 
         $records = array_map(function (\record_adapter $record) use ($request) {
             return $this->listRecord($request, $record);
-        }, array_values($story->get_children()->get_elements()));
+        }, array_values($story->getChildren()->get_elements()));
 
         $caption = $story->get_caption();
 
