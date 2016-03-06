@@ -126,9 +126,9 @@ class record_preview extends record_adapter
                 } else {
                     $children = $this->container->get_children();
                     foreach ($children as $child) {
-                        $sbas_id = $child->get_sbas_id();
+                        $sbas_id = $child->getDataboxId();
                         $this->original_item = $child;
-                        $record_id = $child->get_record_id();
+                        $record_id = $child->getRecordId();
                         if ($child->getNumber() == $pos)
                             break;
                     }
@@ -152,8 +152,8 @@ class record_preview extends record_adapter
                     $i ++;
                     if ($first) {
                         $this->original_item = $element;
-                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
-                        $record_id = $element->getRecord($this->app)->get_record_id();
+                        $sbas_id = $element->getRecord($this->app)->getDataboxId();
+                        $record_id = $element->getRecord($this->app)->getRecordId();
                         $this->name = $Basket->getName();
                         $number = $element->getOrd();
                     }
@@ -161,8 +161,8 @@ class record_preview extends record_adapter
 
                     if ($element->getOrd() == $pos) {
                         $this->original_item = $element;
-                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
-                        $record_id = $element->getRecord($this->app)->get_record_id();
+                        $sbas_id = $element->getRecord($this->app)->getDataboxId();
+                        $record_id = $element->getRecord($this->app)->getRecordId();
                         $this->name = $Basket->getName();
                         $number = $element->getOrd();
                     }
@@ -272,7 +272,7 @@ class record_preview extends record_adapter
             return $this->title;
         }
 
-        $this->title = collection::getLogo($this->get_base_id(), $this->app) . ' ';
+        $this->title = collection::getLogo($this->getBaseId(), $this->app) . ' ';
 
         switch ($this->env) {
 
@@ -323,16 +323,16 @@ class record_preview extends record_adapter
 
         $tab = [];
 
-        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'canreport');
 
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->getDataboxId());
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
                 FROM log_docs d, log l
                 WHERE d.log_id = l.id
                 AND d.record_id = :record_id ';
-        $params = [':record_id' => $this->get_record_id()];
+        $params = [':record_id' => $this->getRecordId()];
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
@@ -374,7 +374,7 @@ class record_preview extends record_adapter
 
             if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
                 if ($action == 'collection') {
-                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->get_sbas_id(), $row['final'], $this->app);
+                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->getDataboxId(), $row['final'], $this->app);
                 } else {
                     $tab[$hour][$site][$action][$row['usr_id']]['final'][] = $row['final'];
                 }
@@ -400,7 +400,7 @@ class record_preview extends record_adapter
         }
 
         $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
-            $this->get_base_id(), 'canreport');
+            $this->getBaseId(), 'canreport');
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->view_popularity = false;
@@ -429,12 +429,12 @@ class record_preview extends record_adapter
           AND site_id = :site
           GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->getDataboxId());
         $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
             [
-                ':record_id' => $this->get_record_id(),
+                ':record_id' => $this->getRecordId(),
                 ':site'      => $this->app['conf']->get(['main', 'key'])
             ]
         );
@@ -490,7 +490,7 @@ class record_preview extends record_adapter
         }
 
         $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
-            $this->get_base_id(), 'canreport');
+            $this->getBaseId(), 'canreport');
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->refferer_popularity = false;
@@ -498,7 +498,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->getDataboxId());
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT count( id ) AS views, referrer
@@ -508,7 +508,7 @@ class record_preview extends record_adapter
             GROUP BY referrer ORDER BY referrer ASC';
 
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->get_record_id()]);
+        $stmt->execute([':record_id' => $this->getRecordId()]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -562,7 +562,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'canreport');
 
         $ret = false;
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
@@ -592,12 +592,12 @@ class record_preview extends record_adapter
         AND site= :site
         GROUP BY datee ORDER BY datee ASC';
 
-        $databox = $this->app->findDataboxById($this->get_sbas_id());
+        $databox = $this->app->findDataboxById($this->getDataboxId());
         $connsbas = $databox->get_connection();
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
             [
-                ':record_id' => $this->get_record_id(),
+                ':record_id' => $this->getRecordId(),
                 ':site'      => $this->app['conf']->get(['main', 'key'])
             ]
         );

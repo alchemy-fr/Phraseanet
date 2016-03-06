@@ -124,7 +124,7 @@ class PushController extends Controller
                         );
                     }
 
-                    $this->getDataboxLogger($element->get_databox())->log(
+                    $this->getDataboxLogger($element->getDatabox())->log(
                         $element,
                         \Session_Logger::EVENT_VALIDATE,
                         $user_receiver->getId(),
@@ -322,7 +322,7 @@ class PushController extends Controller
                     $manager->merge($basketElement);
                     $manager->persist($validationData);
 
-                    $this->getDataboxLogger($basketElement->getRecord($this->app)->get_databox())->log(
+                    $this->getDataboxLogger($basketElement->getRecord($this->app)->getDatabox())->log(
                         $basketElement->getRecord($this->app),
                         \Session_Logger::EVENT_PUSH,
                         $participantUser->getId(),

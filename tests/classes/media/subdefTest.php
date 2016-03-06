@@ -80,10 +80,10 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_record()
     {
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectNotPresent->get_record()->get_record_id());
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectPresent->get_record()->get_record_id());
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectNotPresent->get_record()->get_sbas_id());
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectPresent->get_record()->get_sbas_id());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectNotPresent->get_record()->getRecordId());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectPresent->get_record()->getRecordId());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectNotPresent->get_record()->getDataboxId());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectPresent->get_record()->getDataboxId());
     }
 
     /**
@@ -111,8 +111,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_record_id()
     {
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectNotPresent->get_record()->get_record_id());
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectPresent->get_record()->get_record_id());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectNotPresent->get_record()->getRecordId());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectPresent->get_record()->getRecordId());
     }
 
     /**
@@ -140,8 +140,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_sbas_id()
     {
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectNotPresent->get_record()->get_sbas_id());
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectPresent->get_record()->get_sbas_id());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectNotPresent->get_record()->getDataboxId());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectPresent->get_record()->getDataboxId());
     }
 
     /**

@@ -178,7 +178,7 @@ class UploadController extends Controller
             }
 
             if ($elementCreated instanceof \record_adapter) {
-                $id = $elementCreated->get_serialize_key();
+                $id = $elementCreated->getId();
                 $element = 'record';
                 $message = $this->app->trans('The record was successfully created');
 
@@ -194,7 +194,7 @@ class UploadController extends Controller
                         $media = $this->app->getMediaFromUri($fileName);
 
                         $this->getSubDefinitionSubstituer()->substitute($elementCreated, 'thumbnail', $media);
-                        $this->getDataboxLogger($elementCreated->get_databox())
+                        $this->getDataboxLogger($elementCreated->getDatabox())
                             ->log($elementCreated, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
                         unset($media);

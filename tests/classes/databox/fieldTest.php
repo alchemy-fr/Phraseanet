@@ -23,7 +23,7 @@ class databox_fieldTest extends \PhraseanetTestCase
 
         /** @var record_adapter $record_1 */
         $record_1 = self::$DI['record_1'];
-        $this->databox = $record_1->get_databox();
+        $this->databox = $record_1->getDatabox();
         $this->name_mono = 'Field Test Mono';
         $this->name_multi = 'Field Test Multi';
 

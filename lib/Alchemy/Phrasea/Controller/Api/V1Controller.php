@@ -2182,7 +2182,7 @@ class V1Controller extends Controller
             $story->removeChild($record);
         }
 
-        return $record->get_serialize_key();
+        return $record->getId();
     }
 
     public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
@@ -2244,7 +2244,7 @@ class V1Controller extends Controller
 
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
-        return $record->get_serialize_key();
+        return $record->getId();
     }
 
     public function getCurrentUserAction(Request $request)

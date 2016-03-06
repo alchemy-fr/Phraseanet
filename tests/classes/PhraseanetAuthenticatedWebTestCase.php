@@ -202,8 +202,8 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $app = $this->getApplication();
 
         $elasticsearchRecord = new ElasticsearchRecord();
-        $elasticsearchRecord->setDataboxId($record->get_sbas_id());
-        $elasticsearchRecord->setRecordId($record->get_record_id());
+        $elasticsearchRecord->setDataboxId($record->getDataboxId());
+        $elasticsearchRecord->setRecordId($record->getRecordId());
 
         $result = new SearchEngineResult(
             new SearchEngineOptions(),

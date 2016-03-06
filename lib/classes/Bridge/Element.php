@@ -448,13 +448,13 @@ class Bridge_Element
               ,:datas , :status, NOW(), NOW())';
 
         $params = [
-            ':account_id' => $account->get_id()
-            , ':sbas_id'    => $record->get_sbas_id()
-            , ':record_id'  => $record->get_record_id()
-            , ':status'     => $status
-            , ':title'      => $title
-            , ':type'       => $type
-            , ':datas'      => serialize($datas)
+            ':account_id' => $account->get_id(),
+            ':sbas_id' => $record->getDataboxId(),
+            ':record_id' => $record->getRecordId(),
+            ':status' => $status,
+            ':title' => $title,
+            ':type' => $type,
+            ':datas' => serialize($datas),
         ];
 
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);

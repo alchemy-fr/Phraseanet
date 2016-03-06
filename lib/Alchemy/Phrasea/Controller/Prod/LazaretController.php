@@ -203,7 +203,7 @@ class LazaretController extends Controller
 
         //Check if the chosen record is eligible to the substitution
         foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $record) {
-            if ($record->get_record_id() !== (int) $recordId) {
+            if ($record->getRecordId() !== (int) $recordId) {
                 continue;
             }
 
@@ -227,7 +227,7 @@ class LazaretController extends Controller
             $record = $lazaretFile->getCollection($this->app)->get_databox()->get_record($recordId);
             $this->getSubDefinitionSubstituer()
                 ->substitute($record, 'document', $media);
-            $this->getDataboxLogger($record->get_databox())->log(
+            $this->getDataboxLogger($record->getDatabox())->log(
                 $record,
                 \Session_Logger::EVENT_SUBSTITUTE,
                 'HD',

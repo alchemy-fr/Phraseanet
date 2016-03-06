@@ -255,8 +255,8 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['subdef.substituer']->substitute($story, $name, $media);
 
         $path = self::$DI['app']['url_generator']->generate('datafile', [
-            'sbas_id' =>  $story->get_sbas_id(),
-            'record_id' => $story->get_record_id(),
+            'sbas_id' =>  $story->getDataboxId(),
+            'record_id' => $story->getRecordId(),
             'subdef' => $name,
         ]);
 
@@ -334,13 +334,13 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         // Ensure permalink is created
         \media_Permalink_Adapter::getPermalink(
             self::$DI['app'],
-            $record->get_databox(),
+            $record->getDatabox(),
             $record->get_subdef('preview')
         );
 
         $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', [
-            'sbas_id' => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id(),
+            'sbas_id' => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
             'subdef' => 'preview',
         ]);
 

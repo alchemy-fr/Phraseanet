@@ -142,7 +142,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //Provide some valid test values
         $lazaretAttribute->expects($this->exactly(4))
             ->method('getValue')
-            ->will($this->onConsecutiveCalls('metadataValue', $story->get_serialize_key(), '00001111', 'metafieldValue'));
+            ->will($this->onConsecutiveCalls('metadataValue', $story->getId(), '00001111', 'metafieldValue'));
 
         //Add the 5 attribute
         $lazaretFile->addAttribute($lazaretAttribute);

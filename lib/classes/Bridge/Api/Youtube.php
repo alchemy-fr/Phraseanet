@@ -418,7 +418,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public function acceptable_records()
     {
         return function (record_adapter $record) {
-                return $record->get_type() === 'video';
+                return $record->getType() === 'video';
             };
     }
 
@@ -638,7 +638,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function upload(record_adapter $record, array $options = [])
     {
-        switch ($record->get_type()) {
+        switch ($record->getType()) {
             case 'video':
 
                 $video_entry = new Zend_Gdata_YouTube_VideoEntry();
@@ -894,7 +894,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         $errors = $this->check_record_constraints($record);
 
         $check = function ($field) use (&$errors, $datas, $record) {
-                $key = $record->get_serialize_key();
+                $key = $record->getId();
                 $name = $field['name'];
                 $length = (int) $field['length'];
                 $required = ! ! $field['required'];
@@ -973,7 +973,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function get_upload_datas(Request $request, record_adapter $record)
     {
-        $key = $record->get_serialize_key();
+        $key = $record->getId();
         $datas = [
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
@@ -1004,7 +1004,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     private function check_record_constraints(record_adapter $record)
     {
         $errors = [];
-        $key = $record->get_serialize_key();
+        $key = $record->getId();
         //Record must rely on real file
         if ( ! $record->get_hd_file() instanceof SplFileInfo) {
             $errors["file_size_" . $key] = $this->translator->trans("Le record n'a pas de fichier physique");

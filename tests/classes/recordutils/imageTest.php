@@ -17,7 +17,7 @@ class recordutils_imageTest extends \PhraseanetTestCase
         $app->getApplicationBox()->write_collection_pic(
             $app['media-alchemyst'],
             $app['filesystem'],
-            $record_1->get_collection(),
+            $record_1->getCollection(),
             null,
             \collection::PIC_WM
         );
@@ -36,7 +36,7 @@ class recordutils_imageTest extends \PhraseanetTestCase
         $app->getApplicationBox()->write_collection_pic(
             $app['media-alchemyst'],
             $app['filesystem'],
-            $record_1->get_collection(),
+            $record_1->getCollection(),
             new SymfoFile(__DIR__ . '/../../files/logocoll.gif'),
             \collection::PIC_WM
         );
@@ -82,13 +82,13 @@ class recordutils_imageTest extends \PhraseanetTestCase
     {
         /** @var record_adapter $record_1 */
         $record_1 = self::$DI['record_1'];
-        $this->addStampConf($record_1->get_collection());
+        $this->addStampConf($record_1->getCollection());
 
         $app = $this->getApplication();
         $app->getApplicationBox()->write_collection_pic(
             $app['media-alchemyst'],
             $app['filesystem'],
-            $record_1->get_collection(),
+            $record_1->getCollection(),
             null,
             \collection::PIC_STAMP
         );
@@ -103,13 +103,13 @@ class recordutils_imageTest extends \PhraseanetTestCase
     {
         /** @var record_adapter $record_1 */
         $record_1 = self::$DI['record_1'];
-        $this->addStampConf($record_1->get_collection());
+        $this->addStampConf($record_1->getCollection());
 
         $app = $this->getApplication();
         $app->getApplicationBox()->write_collection_pic(
             $app['media-alchemyst'],
             $app['filesystem'],
-            $record_1->get_collection(),
+            $record_1->getCollection(),
             new SymfoFile(__DIR__ . '/../../files/logocoll.gif'),
             \collection::PIC_STAMP
         );

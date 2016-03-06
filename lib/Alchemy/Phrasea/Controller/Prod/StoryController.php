@@ -84,8 +84,8 @@ class StoryController extends Controller
                 'message'  => $this->app->trans('Story created'),
                 'WorkZone' => $storyWZ->getId(),
                 'story'    => [
-                    'sbas_id'   => $story->get_sbas_id(),
-                    'record_id' => $story->get_record_id(),
+                    'sbas_id'   => $story->getDataboxId(),
+                    'record_id' => $story->getRecordId(),
                 ],
             ];
 
@@ -109,7 +109,7 @@ class StoryController extends Controller
     {
         $Story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        if (!$this->getAclForUser()->has_right_on_base($Story->get_base_id(), 'canmodifrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($Story->getBaseId(), 'canmodifrecord')) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
         }
 
@@ -145,7 +145,7 @@ class StoryController extends Controller
         $story = new \record_adapter($this->app, $sbas_id, $record_id);
         $record = new \record_adapter($this->app, $child_sbas_id, $child_record_id);
 
-        if (!$this->getAclForUser()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), 'canmodifrecord')) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
         }
 
@@ -188,17 +188,17 @@ class StoryController extends Controller
                 throw new \Exception('This is not a story');
             }
 
-            if (!$this->getAclForUser()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+            if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), 'canmodifrecord')) {
                 throw new ControllerException($this->app->trans('You can not edit this story'));
             }
 
             $sql = 'UPDATE regroup SET ord = :ord WHERE rid_parent = :parent_id AND rid_child = :children_id';
-            $stmt = $story->get_databox()->get_connection()->prepare($sql);
+            $stmt = $story->getDatabox()->get_connection()->prepare($sql);
 
             foreach ($request->request->get('element') as $record_id => $ord) {
                 $params = [
                     ':ord'         => $ord,
-                    ':parent_id'   => $story->get_record_id(),
+                    ':parent_id'   => $story->getRecordId(),
                     ':children_id' => $record_id
                 ];
                 $stmt->execute($params);

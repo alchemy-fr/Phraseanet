@@ -36,12 +36,12 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst'     => $record->get_serialize_key()]);
+        $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst'     => $record->getId()]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
-        $this->assertContains($record->get_serialize_key(), $datas);
+        $this->assertContains($record->getId(), $datas);
         try {
-            new \record_adapter(self::$DI['app'], $record->get_sbas_id(), $record->get_record_id());
+            new \record_adapter(self::$DI['app'], $record->getDataboxId(), $record->getRecordId());
             $this->fail('Record not deleted');
         } catch (\Exception $e) {
 
@@ -56,7 +56,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst'     => $record->get_serialize_key()]);
+        $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst'     => $record->getId()]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertTrue(count($datas) > 0);

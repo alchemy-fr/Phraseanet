@@ -60,8 +60,8 @@ class ApiJsonTest extends ApiTestCase
         $record = \record_adapter::createFromFile($file, $app);
 
         $story['story_records'] = array(array(
-                                            'databox_id' => $record->get_sbas_id(),
-                                            'record_id' => $record->get_record_id()
+                                            'databox_id' => $record->getDataboxId(),
+                                            'record_id' => $record->getRecordId()
                                         ));
 
         $client = $this->getClient();
@@ -96,7 +96,7 @@ class ApiJsonTest extends ApiTestCase
         $this->setToken($this->userAccessToken);
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $route = sprintf('/api/v1/stories/%s/%s/addrecords', $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf('/api/v1/stories/%s/%s/addrecords', $story->getDataboxId(), $story->getRecordId());
 
         $file = new File(
             self::$DI['app'],
@@ -106,8 +106,8 @@ class ApiJsonTest extends ApiTestCase
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
         $records = array(
-            'databox_id' => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id()
+            'databox_id' => $record->getDataboxId(),
+            'record_id' => $record->getRecordId()
         );
 
         self::$DI['client']->request(
@@ -569,7 +569,7 @@ class ApiJsonTest extends ApiTestCase
         $record_1 = $this->getRecord1();
         $client = $this->getClient();
 
-        $route = '/api/v1/records/' . $record_1->get_sbas_id() . '/' . $record_1->get_record_id() . '/';
+        $route = '/api/v1/records/' . $record_1->getDataboxId() . '/' . $record_1->getRecordId() . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
         $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
@@ -1032,7 +1032,7 @@ class ApiJsonTest extends ApiTestCase
 
         /** @var \record_adapter $record_1 */
         $record_1 = self::$DI['record_1'];
-        $route = '/api/v1/records/' . $record_1->get_sbas_id() . '/' . $record_1->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . $record_1->getDataboxId() . '/' . $record_1->getRecordId() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
         /** @var Client $client */
@@ -1119,7 +1119,7 @@ class ApiJsonTest extends ApiTestCase
         /** @var \record_adapter $story */
         $story = self::$DI['record_story_1'];
 
-        $route = '/api/v1/stories/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/embed/';
+        $route = '/api/v1/stories/' . $story->getDataboxId() . '/' . $story->getRecordId() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
         /** @var Client $client */
@@ -1296,7 +1296,7 @@ class ApiJsonTest extends ApiTestCase
         /**
          * Get fresh record_1
          */
-        $testRecord = new \record_adapter(self::$DI['app'], $testRecord->get_sbas_id(), $testRecord->get_record_id());
+        $testRecord = new \record_adapter(self::$DI['app'], $testRecord->getDataboxId(), $testRecord->getRecordId());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -1319,11 +1319,11 @@ class ApiJsonTest extends ApiTestCase
 
         $this->setToken($this->userAccessToken);
 
-        $route = '/api/v1/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
+        $route = '/api/v1/records/' . $record->getDataboxId() . '/' . $record->getRecordId() . '/setcollection/';
 
         $base_id = false;
-        foreach ($record->get_databox()->get_collections() as $collection) {
-            if ($collection->get_base_id() != $record->get_base_id()) {
+        foreach ($record->getDatabox()->get_collections() as $collection) {
+            if ($collection->get_base_id() != $record->getBaseId()) {
                 $base_id = $collection->get_base_id();
                 break;
             }

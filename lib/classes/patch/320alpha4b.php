@@ -133,8 +133,8 @@ class patch_320alpha4b extends patchAbstract
                     $item = new FeedItem();
                     $item->setEntry($entry);
                     $entry->addItem($item);
-                    $item->setRecordId($record->get_record_id());
-                    $item->setSbasId($record->get_sbas_id());
+                    $item->setRecordId($record->getRecordId());
+                    $item->setSbasId($record->getDataboxId());
                     $app['orm.em']->persist($item);
                 } catch (NotFoundHttpException $e) {
 

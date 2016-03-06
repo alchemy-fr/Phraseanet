@@ -100,7 +100,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%s/%s/addElements/", $story->getDataboxId(), $story->getRecordId());
 
         $records = [
             self::$DI['record_1']->get_serialize_key(),
@@ -123,7 +123,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%s/%s/addElements/", $story->getDataboxId(), $story->getRecordId());
 
         $records = [
             self::$DI['record_1']->get_serialize_key(),
@@ -162,11 +162,11 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($records as $record) {
             /* @var $record \record_adapter */
             $route = sprintf(
-                "/prod/story/%s/%s/delete/%s/%s/"
-                , $story->get_sbas_id()
-                , $story->get_record_id()
-                , $record->get_sbas_id()
-                , $record->get_record_id()
+                "/prod/story/%s/%s/delete/%s/%s/",
+                $story->getDataboxId(),
+                $story->getRecordId(),
+                $record->getDataboxId(),
+                $record->getRecordId()
             );
 
             if (($n % 2) === 0) {

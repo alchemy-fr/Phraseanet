@@ -49,7 +49,7 @@ class recordutils_image
             }
         };
 
-        $base_id = $subdef->get_record()->get_base_id();
+        $base_id = $subdef->get_record()->getBaseId();
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
             return $subdef->getRealPath();
@@ -71,7 +71,7 @@ class recordutils_image
 
         $domprefs = new DOMDocument();
 
-        if (false === $domprefs->loadXML($subdef->get_record()->get_collection()->get_prefs())) {
+        if (false === $domprefs->loadXML($subdef->get_record()->getCollection()->get_prefs())) {
             return $subdef->getRealPath();
         }
 
@@ -172,7 +172,7 @@ class recordutils_image
                         @unlink($pathOut);  // no cache possible when date changes
                         break;
                     case 'RECORD_ID':
-                        $varval = $subdef->get_record()->get_record_id();
+                        $varval = $subdef->get_record()->getRecordId();
                         break;
                 }
                 $n->parentNode->replaceChild($domprefs->createTextNode($varval), $n);
@@ -381,7 +381,7 @@ class recordutils_image
             $palette = new RGB();
         }
 
-        $base_id = $subdef->get_record()->get_base_id();
+        $base_id = $subdef->get_record()->getBaseId();
 
         if ($subdef->get_name() !== 'preview') {
             return $subdef->getRealPath();
@@ -429,7 +429,7 @@ class recordutils_image
 
             $in_image->paste($wm_image, new Point(($in_w - $wm_size->getWidth()) >> 1, ($in_h - $wm_size->getHeight()) >> 1))->save($pathOut);
         } else {
-            $collname = $subdef->get_record()->get_collection()->get_name();
+            $collname = $subdef->get_record()->getCollection()->get_name();
             $draw = $in_image->draw();
             $black = $palette->color("000000");
             $white = $palette->color("FFFFFF");

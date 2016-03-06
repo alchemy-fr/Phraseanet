@@ -34,7 +34,7 @@ class PrinterController extends Controller
         $layout = $request->request->get('lay');
 
         foreach ($printer->get_elements() as $record) {
-            $this->getDataboxLogger($record->get_databox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
+            $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
         $PDF = new PDFExport($this->app, $printer->get_elements(), $layout);
 

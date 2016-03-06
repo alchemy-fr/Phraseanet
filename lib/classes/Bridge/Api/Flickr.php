@@ -502,7 +502,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
         $privacy = $this->get_default_privacy();
         $uploader->setPerms($privacy['public'], $privacy['friends'], $privacy['family']);
-        $type = $record->get_type() == 'image' ? self::ELEMENT_TYPE_PHOTO : $record->get_type();
+        $type = $record->getType() == 'image' ? self::ELEMENT_TYPE_PHOTO : $record->getType();
         switch ($type) {
             case self::ELEMENT_TYPE_PHOTO :
                 return $uploader->upload($record->get_hd_file()->getRealPath(), $options['title'], $options['description'], $options['tags'], true);
@@ -520,7 +520,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     public function acceptable_records()
     {
         return function (record_adapter $record) {
-                return in_array($record->get_type(), ['image']);
+                return in_array($record->getType(), ['image']);
             };
     }
 
@@ -681,7 +681,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     {
         $errors = $this->check_record_constraints($record);
         $check = function ($field) use (&$errors, $datas, $record) {
-                $key = $record->get_serialize_key();
+                $key = $record->getId();
                 $name = $field['name'];
                 $length = (int) $field['length'];
                 $required = ! ! $field['required'];
@@ -749,7 +749,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function get_upload_datas(Request $request, record_adapter $record)
     {
-        $key = $record->get_serialize_key();
+        $key = $record->getId();
         $datas = [
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
