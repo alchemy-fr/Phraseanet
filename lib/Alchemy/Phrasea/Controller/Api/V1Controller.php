@@ -1206,7 +1206,7 @@ class V1Controller extends Controller
 
             $extendedData = [
                 'subdefs'  => $subdefs,
-                'metadata' => $this->listRecordCaption($record->get_caption()),
+                'metadata' => $this->listRecordCaption($record),
                 'status'   => $this->listRecordStatus($record),
                 'caption'  => $caption
             ];
@@ -1316,22 +1316,22 @@ class V1Controller extends Controller
     public function getRecordMetadataAction(Request $request, $databox_id, $record_id)
     {
         $record = $this->findDataboxById($databox_id)->get_record($record_id);
-        $ret = ["record_metadatas" => $this->listRecordCaption($record->get_caption())];
+        $ret = ["record_metadatas" => $this->listRecordCaption($record)];
 
         return Result::create($request, $ret)->createResponse();
     }
 
     /**
-     * List all fields about a specified caption
+     * List all fields of given record
      *
-     * @param \caption_record $caption
-     *
+     * @param \record_adapter $record
      * @return array
      */
-    private function listRecordCaption(\caption_record $caption)
+    private function listRecordCaption(\record_adapter $record)
     {
         $ret = [];
-        foreach ($caption->get_fields() as $field) {
+
+        foreach ($record->get_caption()->get_fields() as $field) {
             foreach ($field->get_values() as $value) {
                 $ret[] = $this->listRecordCaptionField($value, $field);
             }
@@ -1526,7 +1526,7 @@ class V1Controller extends Controller
         $record->set_metadatas($metadata);
 
         return Result::create($request, [
-            "record_metadatas" => $this->listRecordCaption($record->get_caption()),
+            "record_metadatas" => $this->listRecordCaption($record),
         ])->createResponse();
     }
 
