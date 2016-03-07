@@ -15,6 +15,8 @@ use Assert\Assertion;
 
 class RecordReferenceCollection implements \IteratorAggregate
 {
+    private $groups;
+
     /**
      * @param array<int|string,array> $records
      * @return RecordReferenceCollection
@@ -48,7 +50,7 @@ class RecordReferenceCollection implements \IteratorAggregate
     {
         Assertion::allIsInstanceOf($references, RecordReferenceInterface::class);
 
-        $this->references = $references;
+        $this->references = $references instanceof \Traversable ? iterator_to_array($references) : $references;
     }
 
     public function getIterator()
@@ -61,19 +63,29 @@ class RecordReferenceCollection implements \IteratorAggregate
      */
     public function groupPerDataboxId()
     {
-        $groups = [];
+        if (null === $this->groups) {
+            $this->groups = [];
 
-        foreach ($this->references as $index => $reference) {
-            $databoxId = $reference->getDataboxId();
+            foreach ($this->references as $index => $reference) {
+                $databoxId = $reference->getDataboxId();
 
-            if (!isset($groups[$databoxId])) {
-                $groups[$databoxId] = [];
+                if (!isset($this->groups[$databoxId])) {
+                    $this->groups[$databoxId] = [];
+                }
+
+                $this->groups[$databoxId][$reference->getRecordId()] = $index;
             }
-
-            $groups[$databoxId][$reference->getRecordId()] = $index;
         }
 
-        return $groups;
+        return $this->groups;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataboxIds()
+    {
+        return array_keys($this->groupPerDataboxId());
     }
 
     /**
