@@ -20,7 +20,7 @@ class PhraseanetMetadataSetter
         $metadatas = [];
 
         $tagnameToFieldnameMapping = [];
-        $arrayStructure = iterator_to_array($record->get_databox()->get_meta_structure());
+        $arrayStructure = iterator_to_array($record->get_collection()->get_databox()->get_meta_structure());
 
         array_walk($arrayStructure, function ($databoxField) use (&$tagnameToFieldnameMapping) {
             $tagname = $databoxField->get_tag()->getTagname();
