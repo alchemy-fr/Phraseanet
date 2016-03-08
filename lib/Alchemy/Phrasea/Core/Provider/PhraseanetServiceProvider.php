@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinkerEncoder;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
@@ -68,8 +69,8 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
             return $reader;
         });
 
-        $app['phraseanet.metadata-setter'] = $app->share(function () {
-            return new PhraseanetMetadataSetter();
+        $app['phraseanet.metadata-setter'] = $app->share(function (Application $app) {
+            return new PhraseanetMetadataSetter($app['repo.databoxes']);
         });
 
         $app['phraseanet.user-query'] = function (SilexApplication $app) {
