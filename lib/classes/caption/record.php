@@ -17,20 +17,17 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 class caption_record implements caption_interface, cache_cacheableInterface
 {
     /**
-     *
      * @var array
      */
     protected $fields;
 
     /**
-     *
      * @var int
      */
     protected $sbas_id;
 
     /**
-     *
-     * @var record
+     * @var record_adapter
      */
     protected $record;
     protected $databox;

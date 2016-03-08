@@ -1186,30 +1186,12 @@ class V1Controller extends Controller
         ];
 
         if ($request->attributes->get('_extended', false)) {
-            $subdefs = $caption = [];
-
-            foreach ($record->get_embedable_medias([], []) as $name => $media) {
-                if (null !== $subdef = $this->listEmbeddableMedia($request, $record, $media)) {
-                    $subdefs[] = $subdef;
-                }
-            }
-
-            foreach ($record->get_caption()->get_fields() as $field) {
-                $caption[] = [
-                    'meta_structure_id' => $field->get_meta_struct_id(),
-                    'name'              => $field->get_name(),
-                    'value'             => $field->get_serialized_values(';'),
-                ];
-            }
-
-            $extendedData = [
-                'subdefs'  => $subdefs,
-                'metadata' => $this->listRecordCaption($record->get_caption()),
-                'status'   => $this->listRecordStatus($record),
-                'caption'  => $caption
-            ];
-
-            $data = array_merge($data, $extendedData);
+            $data = array_merge($data, [
+                'subdefs' => $this->listRecordEmbeddableMedias($request, $record),
+                'metadata' => $this->listRecordMetadata($record),
+                'status' => $this->listRecordStatus($record),
+                'caption' => $this->listRecordCaption($record),
+            ]);
         }
 
         return $data;
@@ -1314,51 +1296,57 @@ class V1Controller extends Controller
     public function getRecordMetadataAction(Request $request, $databox_id, $record_id)
     {
         $record = $this->findDataboxById($databox_id)->get_record($record_id);
-        $ret = ["record_metadatas" => $this->listRecordCaption($record->get_caption())];
+        $ret = ["record_metadatas" => $this->listRecordMetadata($record)];
 
         return Result::create($request, $ret)->createResponse();
     }
 
     /**
-     * List all fields about a specified caption
+     * List all fields of given record
      *
-     * @param \caption_record $caption
-     *
+     * @param \record_adapter $record
      * @return array
      */
-    private function listRecordCaption(\caption_record $caption)
+    private function listRecordMetadata(\record_adapter $record)
+    {
+        $includeBusiness = $this->getAclForUser()->can_see_business_fields($record->getDatabox());
+
+        return $this->listRecordCaptionFields($record->get_caption()->get_fields(null, $includeBusiness));
+    }
+
+    /**
+     * @param \caption_field[] $fields
+     * @return array
+     */
+    private function listRecordCaptionFields($fields)
     {
         $ret = [];
-        foreach ($caption->get_fields() as $field) {
+
+        foreach ($fields as $field) {
+            $databox_field = $field->get_databox_field();
+
+            $fieldData = [
+                'meta_structure_id' => $field->get_meta_struct_id(),
+                'name' => $field->get_name(),
+                'labels' => [
+                    'fr' => $databox_field->get_label('fr'),
+                    'en' => $databox_field->get_label('en'),
+                    'de' => $databox_field->get_label('de'),
+                    'nl' => $databox_field->get_label('nl'),
+                ],
+            ];
+
             foreach ($field->get_values() as $value) {
-                $ret[] = $this->listRecordCaptionField($value, $field);
+                $data = [
+                    'meta_id' => $value->getId(),
+                    'value' => $value->getValue(),
+                ];
+
+                $ret[] = $fieldData + $data;
             }
         }
 
         return $ret;
-    }
-
-    /**
-     * Retrieve information about a caption field
-     *
-     * @param \caption_Field_Value $value
-     * @param \caption_field       $field
-     * @return array
-     */
-    private function listRecordCaptionField(\caption_Field_Value $value, \caption_field $field)
-    {
-        return [
-            'meta_id' => $value->getId(),
-            'meta_structure_id' => $field->get_meta_struct_id(),
-            'name' => $field->get_name(),
-            'labels' => [
-                'fr' => $field->get_databox_field()->get_label('fr'),
-                'en' => $field->get_databox_field()->get_label('en'),
-                'de' => $field->get_databox_field()->get_label('de'),
-                'nl' => $field->get_databox_field()->get_label('nl'),
-            ],
-            'value' => $value->getValue(),
-        ];
     }
 
     /**
@@ -1524,7 +1512,7 @@ class V1Controller extends Controller
         $record->set_metadatas($metadata);
 
         return Result::create($request, [
-            "record_metadatas" => $this->listRecordCaption($record->get_caption()),
+            "record_metadatas" => $this->listRecordMetadata($record),
         ])->createResponse();
     }
 
@@ -2571,5 +2559,44 @@ class V1Controller extends Controller
     private function getSubdefSubstituer()
     {
         return $this->app['subdef.substituer'];
+    }
+
+    /**
+     * @param Request $request
+     * @param \record_adapter $record
+     * @return array
+     */
+    private function listRecordEmbeddableMedias(Request $request, \record_adapter $record)
+    {
+        $subdefs = [];
+
+        foreach ($record->get_embedable_medias([], []) as $name => $media) {
+            if (null !== $subdef = $this->listEmbeddableMedia($request, $record, $media)) {
+                $subdefs[] = $subdef;
+            }
+        }
+
+        return $subdefs;
+    }
+
+    /**
+     * @param \record_adapter $record
+     * @return array
+     */
+    private function listRecordCaption(\record_adapter $record)
+    {
+        $includeBusiness = $this->getAclForUser()->can_see_business_fields($record->getDatabox());
+
+        $caption = [];
+
+        foreach ($record->get_caption()->get_fields(null, $includeBusiness) as $field) {
+            $caption[] = [
+                'meta_structure_id' => $field->get_meta_struct_id(),
+                'name' => $field->get_name(),
+                'value' => $field->get_serialized_values(';'),
+            ];
+        }
+
+        return $caption;
     }
 }
