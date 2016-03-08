@@ -151,7 +151,7 @@ class FilesystemService
     {
         switch ($spec->getType()) {
             case SpecificationInterface::TYPE_IMAGE:
-                return 'jpg';
+                return $this->getExtensionFromImageCodec($spec->getImageCodec());
             case SpecificationInterface::TYPE_ANIMATION:
                 return 'gif';
             case SpecificationInterface::TYPE_AUDIO:
@@ -181,6 +181,27 @@ class FilesystemService
                 return 'ogg';
             case 'libmp3lame':
                 return 'mp3';
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the extension from imageCodec
+     *
+     * @param  string $imageCodec
+     *
+     * @return string
+     */
+    protected function getExtensionFromImageCodec($imageCodec)
+    {
+        switch ($imageCodec) {
+            case 'tiff':
+                return 'tif';
+            case 'jpeg':
+                return 'jpg';
+            case 'png':
+                return 'png';
         }
 
         return null;

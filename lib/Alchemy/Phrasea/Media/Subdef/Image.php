@@ -21,6 +21,7 @@ class Image extends Provider
     const OPTION_STRIP = 'strip';
     const OPTION_QUALITY = 'quality';
     const OPTION_FLATTEN = 'flatten';
+    const OPTION_ICODEC = 'icodec';
 
     protected $options = [];
 
@@ -33,6 +34,7 @@ class Image extends Provider
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Remove ICC Profile'), self::OPTION_STRIP, false));
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Flatten layers'), self::OPTION_FLATTEN, false));
         $this->registerOption(new OptionType\Range($this->translator->trans('Quality'), self::OPTION_QUALITY, 0, 100, 75));
+        $this->registerOption(new OptionType\Enum('Image Codec', self::OPTION_ICODEC, array('jpeg', 'png', 'tiff'), 'jpeg'));
     }
 
     public function getType()
@@ -42,7 +44,7 @@ class Image extends Provider
 
     public function getDescription()
     {
-        return $this->translator->trans('Generates a Jpeg image');
+        return $this->translator->trans('Generates an image');
     }
 
     public function getMediaAlchemystSpec()
@@ -54,6 +56,7 @@ class Image extends Provider
         $size = $this->getOption(self::OPTION_SIZE)->getValue();
         $resolution = $this->getOption(self::OPTION_RESOLUTION)->getValue();
 
+        $this->spec->setImageCodec($this->getOption(self::OPTION_ICODEC)->getValue());
         $this->spec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
         $this->spec->setDimensions($size, $size);
         $this->spec->setQuality($this->getOption(self::OPTION_QUALITY)->getValue());
