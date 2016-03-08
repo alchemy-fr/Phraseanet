@@ -43,8 +43,8 @@ class DataboxFieldFactory
     {
         $instances = [];
 
-        foreach ($rows as $id => $raw) {
-            $instances[$id] = new databox_field($this->app, $this->databox, $raw);
+        foreach ($rows as $index => $raw) {
+            $instances[$index] = new databox_field($this->app, $this->databox, $raw);
         }
 
         return $instances;
