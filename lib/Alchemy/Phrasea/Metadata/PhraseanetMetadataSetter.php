@@ -11,10 +11,21 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
+use Alchemy\Phrasea\Databox\DataboxRepository;
 use PHPExiftool\Driver\Metadata\Metadata;
 
 class PhraseanetMetadataSetter
 {
+    /**
+     * @var DataboxRepository
+     */
+    private $repository;
+
+    public function __construct(DataboxRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * @param Metadata[] $metadataCollection
      * @param \record_adapter $record
@@ -22,7 +33,7 @@ class PhraseanetMetadataSetter
      */
     public function replaceMetadata($metadataCollection, \record_adapter $record)
     {
-        $metaStructure = $record->getCollection()->get_databox()->get_meta_structure();
+        $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure();
 
         $metadataPerField = $this->extractMetadataPerField($metaStructure, $metadataCollection);
 
