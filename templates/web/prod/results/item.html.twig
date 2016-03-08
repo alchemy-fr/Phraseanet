@@ -5,8 +5,10 @@
 <div style="width:{{ images_size+30 }}px;"
      sbas="{{ record.databoxId }}"
      id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
-     class="IMGT diapo type-{{ record.type }}"
-     onDblClick="recordPreviewModule.openPreview('FEED',{{ record.getNumber }},{{ entry.id }});"
+     class="IMGT diapo type-{{ record.type }} open-preview-action"
+     data-kind="FEED"
+     data-position="{{ record.getNumber }}"
+     data-id="{{ entry.id }}"
 >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">

@@ -264,10 +264,15 @@
 
 {% include "prod/templates/push.html.twig" %}
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        p4.Feedback = new pushModule.Feedback($('#PushBox'), '{{ context }}');
-        p4.ListManager = new pushModule.ListManager($('#ListManager'));
+{#<script type="text/javascript">
+    prodApp.appEvents.emit('push.doInitialize', {
+        feedback: {
+            containerId: '#PushBox',
+            context: '{{ context }}'
+        },
+        listManager: {
+            containerId: '#ListManager',
+        }
     });
-</script>
+</script>#}
 {%  endif %}

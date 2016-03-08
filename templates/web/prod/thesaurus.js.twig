@@ -599,9 +599,9 @@ function Xclick(e)
       if((type=='T'||type=='C') && tid.substr(1, 4)=="X_P")	// TX_P ou CX_P
       {
         var ul = li.children('ul').eq(0);
-        if(ul.css("display")=='none' || is_ctrl_key(e))
+        if(ul.css("display")=='none' || prodApp.utils.is_ctrl_key(e))
         {
-          if(is_ctrl_key(e))
+          if(prodApp.utils.is_ctrl_key(e))
           {
             ul.text("{{ 'prod::thesaurusTab:tree:loading' | trans }}");
             li.removeAttr('loaded');

@@ -625,6 +625,30 @@ $(document).ready(function(){
     }
 
     {% if selectionLength == 1%}
+    function openToolModal(datas, activeTab) {
+
+        var dialog = dialogModule.dialog.create({
+            size: 'Medium',
+            title: language.toolbox,
+            loading: true
+        });
+
+        $.get("../prod/tools/"
+                , datas
+                , function (data) {
+                    dialog.setContent(data);
+                    dialog.setOption('contextArgs', datas);
+                    var tabs = $('.tabs', dialog.getDomElement()).tabs();
+
+                    // activate tab if exists:
+                    if( activeTab !== undefined ) {
+                        tabs.tabs('option', 'active', activeTab);
+                    }
+                    return;
+                }
+        );
+    }
+
     $('#tools-sharing .stateChange_button').bind('click',function(event){
         var $btn = $(event.currentTarget),
                 state = true;
@@ -641,7 +665,7 @@ $(document).ready(function(){
         }).done(function(data) {
             // self reload tab with current active tab:
             var activeTab = tabs.tabs('option', 'active');
-            prodModule.openToolModal($dialog.getOption('contextArgs'), activeTab);
+            openToolModal($dialog.getOption('contextArgs'), activeTab);
         }).error(function(err) {
             alert('forbidden action')
         });

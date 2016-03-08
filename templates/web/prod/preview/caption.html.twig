@@ -5,7 +5,7 @@
 
   {% if can_edit %}
     <div class="edit_button" style="text-align:right">
-        <a href="#" onclick="prodModule.openRecordEditor('IMGT','{{ record.get_serialize_key }}');">
+        <a href="#" class="edit-record-action" data-kind="record" data-id="{{ record.get_serialize_key }}">
         <img style="vertical-align:middle" src="/assets/common/images/icons/ppen_history.png" width="16" class="btn-image"/>
         {{ 'action : editer' | trans }}
       </a>
