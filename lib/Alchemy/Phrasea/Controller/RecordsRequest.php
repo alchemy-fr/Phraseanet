@@ -104,7 +104,7 @@ class RecordsRequest extends ArrayCollection
             /** @var \record_adapter $record */
             foreach ($this as $record) {
                 if (! isset($this->collections[$record->getBaseId()])) {
-                    $this->collections[$record->getBaseId()] = $record->get_collection();
+                    $this->collections[$record->getBaseId()] = $record->getCollection();
                 }
             }
 
@@ -180,7 +180,7 @@ class RecordsRequest extends ArrayCollection
     public function serializedList()
     {
         if ($this->isSingleStory()) {
-            return $this->singleStory()->get_serialize_key();
+            return $this->singleStory()->getId();
         }
 
         $basrec = [];
@@ -211,7 +211,7 @@ class RecordsRequest extends ArrayCollection
             $app['acl.basket']->hasAccess($basket, $app->getAuthenticatedUser());
 
             foreach ($basket->getElements() as $basket_element) {
-                $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
+                $received[$basket_element->getRecord($app)->getId()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
             $repository = $app['repo.story-wz'];
@@ -230,7 +230,7 @@ class RecordsRequest extends ArrayCollection
                 }
                 try {
                     $record = new \record_adapter($app, (int) $basrec[0], (int) $basrec[1]);
-                    $received[$record->get_serialize_key()] = $record;
+                    $received[$record->getId()] = $record;
                     unset($record);
                 } catch (NotFoundHttpException $e) {
                     continue;

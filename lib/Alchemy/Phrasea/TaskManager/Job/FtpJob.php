@@ -412,7 +412,7 @@ class FtpJob extends AbstractJob
     private function logexport(Application $app, \record_adapter $record, $obj, $ftpLog)
     {
         foreach ($obj as $oneObj) {
-            $app['phraseanet.logger']($record->get_databox())
+            $app['phraseanet.logger']($record->getDatabox())
                 ->log($record, \Session_Logger::EVENT_EXPORTFTP, $ftpLog, '');
         }
 

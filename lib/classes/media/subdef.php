@@ -710,7 +710,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function get_cache_key($option = null)
     {
-        return 'subdef_' . $this->get_record()->get_serialize_key()
+        return 'subdef_' . $this->get_record()->getId()
             . '_' . $this->name . ($option ? '_' . $option : '');
     }
 

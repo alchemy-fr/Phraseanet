@@ -73,11 +73,11 @@ class Session_Logger
         $stmt = $this->databox->get_connection()->prepare($sql);
 
         $params = [
-            ':log_id'    => $this->get_id()
-            , ':record_id' => $record->get_record_id()
-            , ':action'    => $action
-            , ':final'     => $final
-            , ':comm'      => $comment
+            ':log_id'    => $this->get_id(),
+            ':record_id' => $record->getRecordId(),
+            ':action'    => $action,
+            ':final' => $final,
+            ':comm' => $comment,
         ];
 
         $stmt->execute($params);

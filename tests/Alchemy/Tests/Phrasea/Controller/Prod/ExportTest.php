@@ -143,7 +143,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
 
         //inserted rows from this function are deleted in tearDownAfterClass
         $this->getClient()->request('POST', '/prod/export/ftp/', [
-            'lst'        => $this->getRecord1()->get_serialize_key(),
+            'lst'        => $this->getRecord1()->getId(),
             'user_dest'  => $user->getId(),
             'address'    => 'local.phrasea.test',
             'login'      => $user->getEmail(),
@@ -169,7 +169,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
 
         $this->getClient()->request('POST', '/prod/export/mail/', [
-            'lst'        => $this->getRecord1()->get_serialize_key(),
+            'lst'        => $this->getRecord1()->getId(),
             'destmail'   => 'user@example.com',
             'obj'        => ['preview'],
         ]);

@@ -281,7 +281,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_cache_key($option = null)
     {
-        return 'caption_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+        return 'caption_' . $this->record->getId() . ($option ? '_' . $option : '');
     }
 
     /**

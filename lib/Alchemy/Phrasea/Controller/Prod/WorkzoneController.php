@@ -100,7 +100,7 @@ class WorkzoneController extends Controller
                 throw new \Exception('You can only attach stories');
             }
 
-            if (!$acl->has_access_to_base($story->get_base_id())) {
+            if (!$acl->has_access_to_base($story->getBaseId())) {
                 throw new AccessDeniedHttpException('You do not have access to this Story');
             }
 

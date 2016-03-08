@@ -325,7 +325,7 @@ class caption_Field_Value implements cache_cacheableInterface
                 . ' VALUES (null, :record_id, :field, :value, :VocabType, :VocabId)';
 
         $params = [
-            ':record_id' => $record->get_record_id(),
+            ':record_id' => $record->getRecordId(),
             ':field'     => $databox_field->get_id(),
             ':value'     => $value,
             ':VocabType' => $vocabulary ? $vocabulary->getType() : null,

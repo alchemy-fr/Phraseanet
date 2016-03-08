@@ -70,8 +70,8 @@ class Bridge_ElementTest extends \PhraseanetTestCase
     public function testGet_record()
     {
         $this->assertInstanceOf('record_adapter', $this->object->get_record());
-        $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $this->object->get_record()->get_sbas_id());
-        $this->assertEquals(self::$DI['record_1']->get_record_id(), $this->object->get_record()->get_record_id());
+        $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $this->object->get_record()->getDataboxId());
+        $this->assertEquals(self::$DI['record_1']->get_record_id(), $this->object->get_record()->getRecordId());
     }
 
     public function testGet_dist_id()

@@ -325,8 +325,8 @@ class InformationController extends Controller
 
         /** @var \record_adapter $record */
         $reportArray = $what->buildTabUserWhat(
-            $record->get_base_id(),
-            $record->get_record_id(),
+            $record->getBaseId(),
+            $record->getRecordId(),
             $config
         );
 
@@ -393,7 +393,7 @@ class InformationController extends Controller
                 }
             }
 
-            $filter->addfilter('record_id', '=', $record->get_record_id());
+            $filter->addfilter('record_id', '=', $record->getRecordId());
 
             $download->setFilter($filter->getTabFilter());
             $download->setOrder('ddate', 'DESC');

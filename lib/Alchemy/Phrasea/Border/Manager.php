@@ -277,7 +277,7 @@ class Manager
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new TfRecordid(), new MonoValue($element->get_record_id())
+                    new TfRecordid(), new MonoValue($element->getRecordId())
                 )
             )
         );

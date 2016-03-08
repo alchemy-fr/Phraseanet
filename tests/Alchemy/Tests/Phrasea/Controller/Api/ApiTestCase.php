@@ -694,7 +694,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function evaluateRecordsStatusResponse(\record_adapter $record, $content)
     {
-        $statusStructure = $record->get_databox()->getStatusStructure();
+        $statusStructure = $record->getDatabox()->getStatusStructure();
 
         $r_status = strrev($record->get_status());
         $this->assertArrayHasKey('status', $content['response']);
@@ -714,7 +714,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function injectMetadatas(\record_adapter $record)
     {
-        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+        foreach ($record->getDatabox()->get_meta_structure()->get_elements() as $field) {
             try {
                 $values = $record->get_caption()->get_field($field->get_name())->get_values();
                 $value = array_pop($values);

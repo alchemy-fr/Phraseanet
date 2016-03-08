@@ -1231,7 +1231,7 @@ class V1Controller extends Controller
 
         $records = array_map(function (\record_adapter $record) use ($request) {
             return $this->listRecord($request, $record);
-        }, array_values($story->get_children()->get_elements()));
+        }, array_values($story->getChildren()->get_elements()));
 
         $caption = $story->get_caption();
 
@@ -2182,7 +2182,7 @@ class V1Controller extends Controller
             $story->removeChild($record);
         }
 
-        return $record->get_serialize_key();
+        return $record->getId();
     }
 
     public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
@@ -2244,7 +2244,7 @@ class V1Controller extends Controller
 
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
-        return $record->get_serialize_key();
+        return $record->getId();
     }
 
     public function getCurrentUserAction(Request $request)

@@ -73,8 +73,8 @@ class BasketElementRepository extends EntityRepository
             AND e.sbas_id = :sbas_id';
 
         $params = [
-            'sbas_id'   => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id()
+            'sbas_id'   => $record->getDataboxId(),
+            'record_id' => $record->getRecordId()
         ];
 
         $query = $this->_em->createQuery($dql);
@@ -121,8 +121,8 @@ class BasketElementRepository extends EntityRepository
             AND e.sbas_id = :sbas_id';
 
         $params = [
-            'sbas_id'   => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id(),
+            'sbas_id'   => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
             'usr_id'    => $user->getId()
         ];
 
@@ -144,8 +144,8 @@ class BasketElementRepository extends EntityRepository
             AND e.sbas_id = :sbas_id';
 
         $params = [
-            'sbas_id'   => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id(),
+            'sbas_id'   => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
             'usr_id'    => $user->getId()
         ];
 

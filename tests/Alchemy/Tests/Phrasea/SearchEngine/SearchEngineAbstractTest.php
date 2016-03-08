@@ -137,7 +137,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
     {
         $date_field = null;
 
-        foreach ($record->get_databox()->get_meta_structure() as $databox_field) {
+        foreach ($record->getDatabox()->get_meta_structure() as $databox_field) {
             if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
                 continue;
             }
@@ -239,7 +239,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         $toupdate = [];
         $field = null;
 
-        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+        foreach ($record->getDatabox()->get_meta_structure()->get_elements() as $field) {
 
             if ($indexable !== $field->is_indexable() || $field->isBusiness() !== $business) {
                 continue;

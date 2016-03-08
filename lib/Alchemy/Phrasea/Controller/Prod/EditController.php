@@ -146,15 +146,15 @@ class EditController extends Controller
             foreach ($records as $record) {
                 $indice = $record->getNumber();
                 $elements[$indice] = [
-                    'bid'         => $record->get_base_id(),
-                    'rid'         => $record->get_record_id(),
+                    'bid'         => $record->getBaseId(),
+                    'rid'         => $record->getRecordId(),
                     'sselcont_id' => null,
                     '_selected'   => false,
                     'fields'      => $databox_fields,
                 ];
 
                 $elements[$indice]['statbits'] = [];
-                if ($this->getAclForUser()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                if ($this->getAclForUser()->has_right_on_base($record->getBaseId(), 'chgstatus')) {
                     foreach ($status as $n => $s) {
                         $tmp_val = substr(strrev($record->get_status()), $n, 1);
                         $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
@@ -209,7 +209,7 @@ class EditController extends Controller
                     ['record' => $record]
                 );
 
-                $elements[$indice]['type'] = $record->get_type();
+                $elements[$indice]['type'] = $record->getType();
             }
         }
 
@@ -287,7 +287,7 @@ class EditController extends Controller
             try {
                 $reg_record = $records->singleStory();
 
-                $newsubdef_reg = new \record_adapter($this->app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
+                $newsubdef_reg = new \record_adapter($this->app, $reg_record->getDataboxId(), $request->request->get('newrepresent'));
 
                 foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
                     if (!in_array($name, ['thumbnail', 'preview'])) {
@@ -300,7 +300,7 @@ class EditController extends Controller
                     $media = $this->app->getMediaFromUri($value->getRealPath());
                     $this->getSubDefinitionSubstituer()->substitute($reg_record, $name, $media);
                     $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
-                    $this->getDataboxLogger($reg_record->get_databox())->log(
+                    $this->getDataboxLogger($reg_record->getDatabox())->log(
                         $reg_record,
                         \Session_Logger::EVENT_SUBSTITUTE,
                         $name == 'document' ? 'HD' : $name,
@@ -325,7 +325,7 @@ class EditController extends Controller
                 continue;
             }
 
-            $key = $record->get_serialize_key();
+            $key = $record->getId();
 
             if (!array_key_exists($key, $elements)) {
                 continue;
@@ -364,8 +364,8 @@ class EditController extends Controller
 
             $record
                 ->write_metas()
-                ->get_collection()
-                ->reset_stamp($record->get_record_id());
+                ->getCollection()
+                ->reset_stamp($record->getRecordId());
 
             if ($statbits != '') {
                 $this->getDataboxLogger($databox)

@@ -252,9 +252,9 @@ class module_console_systemExport extends Command
         $dest_file = new \SplFileInfo($outfile);
 
         touch(
-            $dest_file->getPathname()
-            , $record->get_creation_date()->format('U')
-            , $record->get_modification_date()->format('U')
+            $dest_file->getPathname(),
+            $record->getCreated()->format('U'),
+            $record->getUpdated()->format('U')
         );
 
         switch (strtolower($caption)) {

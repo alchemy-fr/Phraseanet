@@ -122,7 +122,7 @@ class PermalinkController extends AbstractDelivery
         $watermark = $stamp = false;
 
         if ($this->authentication->isAuthenticated()) {
-            $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
+            $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->getBaseId(), 'nowatermark');
 
             if ($watermark) {
                 /** @var BasketElementRepository $repository */
@@ -138,7 +138,7 @@ class PermalinkController extends AbstractDelivery
             return $this->deliverContentWithCaptionLink($request, $record, $subdef, $watermark, $stamp, $token);
         }
 
-        $collection = \collection::getByBaseId($this->app, $record->get_base_id());
+        $collection = \collection::getByBaseId($this->app, $record->getBaseId());
         switch ($collection->get_pub_wm()) {
             default:
             case 'none':
@@ -169,8 +169,8 @@ class PermalinkController extends AbstractDelivery
         $response = $this->deliverContent($request, $record, $subdef, $watermark, $stamp);
 
         $response->headers->set('Link', $this->app->url("permalinks_caption", [
-            'sbas_id'   => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id(),
+            'sbas_id'   => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
             'token'     => $token,
         ]));
 

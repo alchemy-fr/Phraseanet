@@ -875,7 +875,7 @@ class ArchiveJob extends AbstractJob
                     $story = $this->createStory($app, $collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName, $stat0, $stat1);
                 }
 
-                $rid = $story->get_record_id();
+                $rid = $story->getRecordId();
 
                 $this->log('debug', sprintf('story %s created', $rid));
 

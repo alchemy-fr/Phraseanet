@@ -388,7 +388,7 @@ class RSSFeedTest extends \PhraseanetWebTestCase
                     $this->assertEquals($ressource->get_mime(), $value);
                     break;
                 case "medium":
-                    $this->assertEquals(strtolower($record->get_type()), $value);
+                    $this->assertEquals(strtolower($record->getType()), $value);
                     break;
                 case "isDefault":
                     !$is_thumbnail ? $this->assertEquals("true", $value) : $this->assertEquals("false", $value);

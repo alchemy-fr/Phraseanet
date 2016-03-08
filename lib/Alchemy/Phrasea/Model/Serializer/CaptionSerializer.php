@@ -77,7 +77,7 @@ class CaptionSerializer extends AbstractSerializer
         $dom_doc->standalone = true;
 
         $record = $dom_doc->createElement('record');
-        $record->setAttribute('record_id', $caption->get_record()->get_record_id());
+        $record->setAttribute('record_id', $caption->get_record()->getRecordId());
         $dom_doc->appendChild($record);
         $description = $dom_doc->createElement('description');
         $record->appendChild($description);

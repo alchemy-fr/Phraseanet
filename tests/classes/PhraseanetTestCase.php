@@ -234,7 +234,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$DI['collection_no_access']);
             $record = record_adapter::createFromFile($file, self::$DI['app']);
             self::$DI['app']['subdef.generator']->generateSubdefs($record);
-            self::$fixtureIds['records'][$id] = $record->get_record_id();
+            self::$fixtureIds['records'][$id] = $record->getRecordId();
 
             return self::$fixtureIds['records'][$id];
         });
@@ -250,7 +250,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$DI['collection_no_access_by_status']);
             $record = record_adapter::createFromFile($file, self::$DI['app']);
             self::$DI['app']['subdef.generator']->generateSubdefs($record);
-            self::$fixtureIds['records'][$id] = $record->get_record_id();
+            self::$fixtureIds['records'][$id] = $record->getRecordId();
 
             return self::$fixtureIds['records'][$id];
         });

@@ -21,7 +21,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         // Reset thumbtitle in order to have consistent tests (testGet_title)
         if (!self::$thumbtitled) {
-            foreach ($this->getRecord1()->get_databox()->get_meta_structure() as $databox_field) {
+            foreach ($this->getRecord1()->getDatabox()->get_meta_structure() as $databox_field) {
                 $databox_field->set_thumbtitle(false)->save();
             }
             self::$thumbtitled = true;
@@ -86,7 +86,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         $this->getClient()->request(
             'POST', $app['url_generator']->generate('prod_order_new'), [
-            'lst'      => $this->getRecord1()->get_serialize_key(),
+            'lst'      => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
 
@@ -137,16 +137,16 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $record_1 = $this->getRecord1();
         try {
-            $record_1->set_type('jambon');
+            $record_1->setType('jambon');
             $this->fail();
         } catch (Exception $e) {
 
         }
-        $old_type = $record_1->get_type();
-        $record_1->set_type('video');
-        $this->assertEquals('video', $record_1->get_type());
-        $record_1->set_type($old_type);
-        $this->assertEquals($old_type, $record_1->get_type());
+        $old_type = $record_1->getType();
+        $record_1->setType('video');
+        $this->assertEquals('video', $record_1->getType());
+        $record_1->setType($old_type);
+        $this->assertEquals($old_type, $record_1->getType());
     }
 
     public function testIs_grouping()
@@ -158,17 +158,17 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_base_id()
     {
         $record_1 = $this->getRecord1();
-        $this->assertTrue(is_int($record_1->get_base_id()));
-        $this->assertEquals($this->getCollection()->get_base_id(), $record_1->get_base_id());
+        $this->assertTrue(is_int($record_1->getBaseId()));
+        $this->assertEquals($this->getCollection()->get_base_id(), $record_1->getBaseId());
         $record_story_1 = $this->getRecordStory1();
-        $this->assertTrue(is_int($record_story_1->get_base_id()));
-        $this->assertEquals($this->getCollection()->get_base_id(), $record_story_1->get_base_id());
+        $this->assertTrue(is_int($record_story_1->getBaseId()));
+        $this->assertEquals($this->getCollection()->get_base_id(), $record_story_1->getBaseId());
     }
 
     public function testGet_record_id()
     {
-        $this->assertTrue(is_int($this->getRecord1()->get_record_id()));
-        $this->assertTrue(is_int($this->getRecordStory1()->get_record_id()));
+        $this->assertTrue(is_int($this->getRecord1()->getRecordId()));
+        $this->assertTrue(is_int($this->getRecordStory1()->getRecordId()));
     }
 
     public function testGet_thumbnail()
@@ -187,7 +187,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_type()
     {
-        $this->assertTrue(in_array($this->getRecord1()->get_type(), ['video', 'audio', 'image', 'document', 'flash', 'unknown']));
+        $this->assertTrue(in_array($this->getRecord1()->getType(), ['video', 'audio', 'image', 'document', 'flash', 'unknown']));
     }
 
     public function testGet_formatted_duration()
@@ -208,26 +208,26 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_sha256()
     {
         $record_1 = $this->getRecord1();
-        $this->assertNotNull($record_1->get_sha256());
-        $this->assertRegExp('/[a-zA-Z0-9]{32}/', $record_1->get_sha256());
-        $this->assertNull($this->getRecordStory1()->get_sha256());
+        $this->assertNotNull($record_1->getSha256());
+        $this->assertRegExp('/[a-zA-Z0-9]{32}/', $record_1->getSha256());
+        $this->assertNull($this->getRecordStory1()->getSha256());
     }
 
     public function testGet_mime()
     {
-        $this->assertRegExp('/image\/\w+/', $this->getRecord1()->get_mime());
+        $this->assertRegExp('/image\/\w+/', $this->getRecord1()->getMimeType());
     }
 
     public function testSetMimeType()
     {
         $record_1 = $this->getRecord1();
 
-        $oldMime = $record_1->get_mime();
-        $record_1->set_mime('foo/bar');
-        $this->assertEquals('foo/bar', $record_1->get_mime());
+        $oldMime = $record_1->getMimeType();
+        $record_1->setMimeType('foo/bar');
+        $this->assertEquals('foo/bar', $record_1->getMimeType());
 
-        $record_1->set_mime($oldMime);
-        $this->assertEquals($oldMime, $record_1->get_mime());
+        $record_1->setMimeType($oldMime);
+        $this->assertEquals($oldMime, $record_1->getMimeType());
     }
 
     public function testGet_status()
@@ -307,12 +307,12 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_serialize_key()
     {
         $record_1 = $this->getRecord1();
-        $this->assertTrue($record_1->get_serialize_key() == $record_1->get_sbas_id() . '_' . $record_1->get_record_id());
+        $this->assertTrue($record_1->getId() == $record_1->getDataboxId() . '_' . $record_1->getRecordId());
     }
 
     public function testGet_sbas_id()
     {
-        $this->assertTrue(is_int($this->getRecord1()->get_sbas_id()));
+        $this->assertTrue(is_int($this->getRecord1()->getDataboxId()));
     }
 
     public function testSet_metadatas()
@@ -431,15 +431,15 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
               AND record_id = :record_id';
-        $stmt = $record_1->get_databox()->get_connection()->prepare($sql);
+        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
 
-        $stmt->execute([':record_id' => $record_1->get_record_id()]);
+        $stmt->execute([':record_id' => $record_1->getRecordId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
             $this->fail();
-        if ($row['record_id'] != $record_1->get_record_id())
+        if ($row['record_id'] != $record_1->getRecordId())
             $this->fail();
     }
 
@@ -450,15 +450,15 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $sql = 'SELECT record_id, coll_id, jeton
             FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)
             AND record_id = :record_id';
-        $stmt = $record_1->get_databox()->get_connection()->prepare($sql);
+        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
 
-        $stmt->execute([':record_id' => $record_1->get_record_id()]);
+        $stmt->execute([':record_id' => $record_1->getRecordId()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
             $this->fail();
-        if ($row['record_id'] != $record_1->get_record_id())
+        if ($row['record_id'] != $record_1->getRecordId())
             $this->fail();
     }
 
@@ -482,26 +482,26 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_record_by_sha()
     {
         $record_1 = $this->getRecord1();
-        $tmp_records = record_adapter::get_record_by_sha($record_1->getDatabox(), $record_1->get_sha256());
+        $tmp_records = record_adapter::get_record_by_sha($record_1->getDatabox(), $record_1->getSha256());
         $this->assertTrue(is_array($tmp_records));
 
         foreach ($tmp_records as $tmp_record) {
             $this->assertInstanceOf('record_adapter', $tmp_record);
-            $this->assertEquals($record_1->get_sha256(), $tmp_record->get_sha256());
+            $this->assertEquals($record_1->getSha256(), $tmp_record->getSha256());
         }
 
         $tmp_records = record_adapter::get_record_by_sha(
             $record_1->getDatabox(),
-            $record_1->get_sha256(),
-            $record_1->get_record_id()
+            $record_1->getSha256(),
+            $record_1->getRecordId()
         );
         $this->assertTrue(is_array($tmp_records));
         $this->assertTrue(count($tmp_records) === 1);
 
         foreach ($tmp_records as $tmp_record) {
             $this->assertInstanceOf('record_adapter', $tmp_record);
-            $this->assertEquals($record_1->get_sha256(), $tmp_record->get_sha256());
-            $this->assertEquals($record_1->get_record_id(), $tmp_record->get_record_id());
+            $this->assertEquals($record_1->getSha256(), $tmp_record->getSha256());
+            $this->assertEquals($record_1->getRecordId(), $tmp_record->getRecordId());
         }
     }
 
@@ -518,8 +518,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $found = $sselcont_id = false;
 
         $record_1 = $this->getRecord1();
-        $sbas_id = $record_1->get_sbas_id();
-        $record_id = $record_1->get_record_id();
+        $sbas_id = $record_1->getDataboxId();
+        $record_id = $record_1->getRecordId();
 
         foreach ($record_1->get_container_baskets($app['orm.em'], self::$DI['user']) as $c_basket) {
             if ($c_basket->getId() == $basket->getId()) {
@@ -538,7 +538,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testSetStatus()
     {
         $record_1 = $this->getRecord1();
-        $record = new \record_adapter($this->getApplication(), $record_1->get_sbas_id(), $record_1->get_record_id());
+        $record = new \record_adapter($this->getApplication(), $record_1->getDataboxId(), $record_1->getRecordId());
         $record->set_binary_status('1001001001010101');
         $this->assertSame('00000000000000001001001001010101', $record->get_status());
     }

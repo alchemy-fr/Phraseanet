@@ -196,7 +196,7 @@ class BasketRepository extends EntityRepository
               AND b.user = :usr_id';
 
         $params = [
-            'record_id' => $record->get_record_id(),
+            'record_id' => $record->getRecordId(),
             'usr_id'    => $user->getId()
         ];
 

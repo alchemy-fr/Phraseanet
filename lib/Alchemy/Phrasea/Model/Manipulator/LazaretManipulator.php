@@ -203,10 +203,10 @@ class LazaretManipulator
                     }
                 }
 
-                $data = $metadataBag->toMetadataArray($record->get_databox()->get_meta_structure());
+                $data = $metadataBag->toMetadataArray($record->getDatabox()->get_meta_structure());
                 $record->set_metadatas($data);
 
-                $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
+                $fields = $metaFields->toMetadataArray($record->getDatabox()->get_meta_structure());
                 $record->set_metadatas($fields);
             }
 

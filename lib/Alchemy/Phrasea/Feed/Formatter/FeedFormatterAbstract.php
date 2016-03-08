@@ -52,7 +52,7 @@ abstract class FeedFormatterAbstract
         $thumbnail_sd = $content->getRecord($app)->get_thumbnail();
         $thumbnail_permalink = $thumbnail_sd->get_permalink();
 
-        $medium = strtolower($content->getRecord($app)->get_type());
+        $medium = strtolower($content->getRecord($app)->getType());
 
         if ( ! in_array($medium, ['image', 'audio', 'video'])) {
             return $this;

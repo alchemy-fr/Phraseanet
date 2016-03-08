@@ -370,8 +370,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * Return record collection
      *
      * @return \collection
+     * @deprecated use {@link self::getCollection} instead.
      */
     public function get_collection()
+    {
+        return $this->getCollection();
+    }
+
+    /**
+     * Return collection to which the record belongs to.
+     *
+     * @return \collection
+     */
+    public function getCollection()
     {
         return \collection::getByCollectionId($this->app, $this->getDatabox(), $this->collection_id);
     }
@@ -460,7 +471,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function move_to_collection(collection $collection, appbox $appbox)
     {
-        if ($this->get_collection()->get_base_id() === $collection->get_base_id()) {
+        if ($this->getCollection()->get_base_id() === $collection->get_base_id()) {
             return $this;
         }
 
@@ -904,6 +915,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @return string
+     * @deprecated use {@link self::getId} instead.
      */
     public function get_serialize_key()
     {
@@ -1694,7 +1706,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function hasChild(\record_adapter $record)
     {
-        return $this->get_children()->offsetExists($record->get_serialize_key());
+        return $this->getChildren()->offsetExists($record->getId());
     }
 
     public function appendChild(\record_adapter $record)
@@ -1905,7 +1917,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @return Connection
      */
-    private function getDataboxConnection()
+    protected function getDataboxConnection()
     {
         if (null === $this->connection) {
             $this->connection = $this->getDatabox()->get_connection();
