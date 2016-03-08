@@ -52,8 +52,9 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepository
     public function find($id)
     {
         $row = $this->fetchRow($id);
+
         if (is_array($row)) {
-            return $this->factory->create($id, $row);
+            return $this->factory->create($row);
         }
 
         return null;
