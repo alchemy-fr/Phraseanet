@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Event\StatusChanged;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -22,6 +24,7 @@ use MediaVorus\MediaVorus;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  *
@@ -1095,8 +1098,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $xml = new DOMDocument();
         $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML, true));
 
-        $this->set_xml($xml);
-        $this->reindex();
+        $this->set_xml($xml);   // will do this->reindex()
 
         unset($xml);
 
@@ -1182,14 +1184,18 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  string         $status
+     * @param  string $status
+     * @param  bool   $doSendEvent    // set to false when only private sb(3..0) are changed
+     *
      * @return record_adapter
      */
-    public function set_binary_status($status)
+    public function set_binary_status($new_status, $doSendEvent=true)
     {
+        $old_status = $this->get_status();
+
         $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
-        $sql = 'UPDATE record SET status = 0b' . $status . '
+        $sql = 'UPDATE record SET status = 0b' . $new_status . '
             WHERE record_id= :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->record_id));
@@ -1198,7 +1204,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $sql = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
         $stmt = $connbas->prepare($sql);
 
-        $status = strrev($status);
+        $status = strrev($new_status);
         for ($i = 4; $i < strlen($status); $i++) {
             $stmt->execute(array(
                 ':record_id' => $this->get_record_id(),
@@ -1210,7 +1216,22 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
+        if($doSendEvent) {
+            $dispatcher = $this->getEventDispatcher();
+            if($dispatcher->hasListeners(PhraseaEvents::STATUS_CHANGED)) {
+                $dispatcher->dispatch(PhraseaEvents::STATUS_CHANGED, new StatusChanged($this, $old_status));
+            }
+        }
+
         return $this;
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 
     /**

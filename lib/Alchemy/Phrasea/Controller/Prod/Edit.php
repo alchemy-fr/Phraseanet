@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\Event\StoryCoverChanged;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Controller\RecordsRequest;
@@ -287,6 +288,7 @@ class Edit implements ControllerProviderInterface
 
                     $newsubdef_reg = new \record_adapter($app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
 
+                    $subdefChanged = false;
                     foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
                         if (!in_array($name, array('thumbnail', 'preview'))) {
                             continue;
@@ -294,17 +296,21 @@ class Edit implements ControllerProviderInterface
                         if ($value->get_type() !== \media_subdef::TYPE_IMAGE) {
                             continue;
                         }
-
                         $media = $app['mediavorus']->guess($value->get_pathfile());
                         $reg_record->substitute_subdef($name, $media, $app);
-                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
                         $app['phraseanet.logger']($reg_record->get_databox())->log(
                             $reg_record,
                             \Session_Logger::EVENT_SUBSTITUTE,
                             $name == 'document' ? 'HD' : $name,
                             ''
                         );
+                        $subdefChanged = true;
                     }
+                    if($subdefChanged) {
+                        $app['dispatcher']->dispatch(PhraseaEvents::STORY_COVER_CHANGED, new StoryCoverChanged($reg_record, $newsubdef_reg));
+                        $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
+                    }
+
                 } catch (\Exception $e) {
 
                 }

@@ -293,7 +293,8 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function updateRecord(\record_adapter $record)
     {
-        $record->set_binary_status(\databox_status::dec2bin($this->app, bindec($record->get_status()) & ~7 | 4));
+        // change the "toindex" status but don't send the STATUS_CHANGED event
+        $record->set_binary_status(\databox_status::dec2bin($this->app, bindec($record->get_status()) & ~7 | 4), false);
 
         return $this;
     }
