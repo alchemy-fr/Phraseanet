@@ -34,7 +34,7 @@ class PhraseanetMetadataSetter
      */
     public function replaceMetadata($metadataCollection, \record_adapter $record)
     {
-        $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure();
+        $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure()->get_elements();
 
         $metadataPerField = $this->extractMetadataPerField($metaStructure, $metadataCollection);
 
