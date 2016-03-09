@@ -143,6 +143,9 @@ class databox_field implements cache_cacheableInterface
         }
 
         $this->name = $row['name'];
+        if ($this->tag instanceof Nosource) {
+            $this->tag = new Nosource($this->name);
+        }
         $this->indexable = (bool)$row['indexable'];
         $this->readonly = (bool)$row['readonly'];
         $this->required = (bool)$row['required'];
