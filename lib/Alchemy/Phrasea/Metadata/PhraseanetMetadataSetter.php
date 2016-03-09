@@ -11,88 +11,163 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
+use Alchemy\Phrasea\Databox\DataboxRepository;
+use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use PHPExiftool\Driver\Metadata\Metadata;
 
 class PhraseanetMetadataSetter
 {
+    /**
+     * @var DataboxRepository
+     */
+    private $repository;
+
+    public function __construct(DataboxRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
+     * @param Metadata[] $metadataCollection
+     * @param \record_adapter $record
+     * @throws \Exception_InvalidArgument
+     */
     public function replaceMetadata($metadataCollection, \record_adapter $record)
     {
-        $metadatas = [];
+        $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure()->get_elements();
 
-        $tagnameToFieldnameMapping = [];
-        $arrayStructure = iterator_to_array($record->get_databox()->get_meta_structure());
+        $metadataPerField = $this->extractMetadataPerField($metaStructure, $metadataCollection);
 
-        array_walk($arrayStructure, function ($databoxField) use (&$tagnameToFieldnameMapping) {
-            $tagname = $databoxField->get_tag()->getTagname();
-            $tagnameToFieldnameMapping[$tagname][] = $databoxField->get_name();
-        });
+        $metadataInRecordFormat = [];
 
-        array_walk($metadataCollection, function (Metadata $metadata) use (&$metadatas, $tagnameToFieldnameMapping) {
-            $tagname = $metadata->getTag()->getTagname();
+        foreach ($metaStructure as $field) {
+            $fieldName = $field->get_name();
 
-            if (!isset($tagnameToFieldnameMapping[$tagname])) {
-                return;
+            if (!isset($metadataPerField[$fieldName])) {
+                continue;
             }
 
-            foreach ($tagnameToFieldnameMapping[$tagname] as $fieldname) {
-                if ( ! isset($metadatas[$fieldname])) {
-                    $metadatas[$fieldname] = [];
-                }
-                $metadatas[$fieldname] = array_merge($metadatas[$fieldname], $metadata->getValue()->asArray());
-            }
-        });
+            $this->deleteCaptionValues($record, $fieldName);
 
-        $metas = [];
-
-        array_walk($arrayStructure, function (\databox_field $field) use (&$metas, $metadatas, $record) {
-            $fieldname = $field->get_name();
-
-            if (!isset($metadatas[$fieldname])) {
-                return;
-            }
-
-            $values = $metadatas[$fieldname];
-
-            if ($record->get_caption()->has_field($fieldname)) {
-                foreach ($record->get_caption()->get_field($fieldname)->get_values() as $value) {
-                    $value->delete();
-                }
-            }
+            $values = $metadataPerField[$fieldName];
 
             if ($field->is_multi()) {
-                $tmpValues = [];
-                foreach ($values as $value) {
-                    $tmpValues = array_merge($tmpValues, \caption_field::get_multi_values($value, $field->get_separator()));
-                }
-
-                $values = array_unique($tmpValues);
-
-                foreach ($values as $value) {
-                    if (trim($value) === '') {
-                        continue;
-                    }
-                    $metas[] = [
-                        'meta_struct_id' => $field->get_id(),
-                        'meta_id'        => null,
-                        'value'          => $value,
-                    ];
-                }
-            } else {
-                $value = array_pop($values);
-                if (trim($value) === '') {
-                    return;
-                }
-
-                $metas[] = [
-                    'meta_struct_id' => $field->get_id(),
-                    'meta_id'        => null,
-                    'value'          => $value,
-                ];
+                $values = $this->getUniqueValues($values, $field->get_separator());
             }
-        });
 
-        if (count($metas) > 0) {
-            $record->set_metadatas($metas, true);
+            $data = [
+                'meta_struct_id' => $field->get_id(),
+                'meta_id' => null,
+            ];
+
+            foreach ($values as $value) {
+                if (trim($value) === '') {
+                    continue;
+                }
+
+                $data['value'] = $value;
+
+                $metadataInRecordFormat[] = $data;
+            }
         }
+
+        if (! empty($metadataInRecordFormat)) {
+            $record->set_metadatas($metadataInRecordFormat, true);
+        }
+    }
+
+    /**
+     * @param \databox_field[] $metaStructure
+     * @return array<string,array<string>>
+     */
+    private function groupDataboxFieldNamesPerTagName($metaStructure)
+    {
+        $groups = [];
+
+        foreach ($metaStructure as $databoxField) {
+            $tagName = $this->extractTagNameFromTag($databoxField->get_tag());
+
+            if (!isset($groups[$tagName])) {
+                $groups[$tagName] = [];
+            }
+
+            $groups[$tagName][] = $databoxField->get_name();
+        }
+
+        return $groups;
+    }
+
+    /**
+     * @param \databox_field[] $metaStructure
+     * @param Metadata[] $metadataCollection
+     * @return array
+     */
+    private function extractMetadataPerField($metaStructure, $metadataCollection)
+    {
+        $databoxFields = $this->groupDataboxFieldNamesPerTagName($metaStructure);
+
+        $metadataPerField = [];
+
+        foreach ($metadataCollection as $metadata) {
+            $tagName = $this->extractTagNameFromTag($metadata->getTag());
+
+            if (!isset($databoxFields[$tagName])) {
+                continue;
+            }
+
+            foreach ($databoxFields[$tagName] as $fieldName) {
+                if (!isset($metadataPerField[$fieldName])) {
+                    $metadataPerField[$fieldName] = [];
+                }
+
+                $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+            }
+        }
+
+        return $metadataPerField;
+    }
+
+    /**
+     * @param \record_adapter $record
+     * @param string $fieldName
+     * @return void
+     * @throws \Exception
+     */
+    private function deleteCaptionValues(\record_adapter $record, $fieldName)
+    {
+        $recordCaption = $record->get_caption();
+
+        if ($recordCaption->has_field($fieldName)) {
+            foreach ($recordCaption->get_field($fieldName)->get_values() as $value) {
+                $value->delete();
+            }
+        }
+    }
+
+    /**
+     * @param string[] $values
+     * @param string $separator
+     * @return array
+     */
+    private function getUniqueValues($values, $separator)
+    {
+        $tmpValues = [];
+
+        foreach ($values as $value) {
+            $tmpValues = array_merge($tmpValues, \caption_field::get_multi_values($value, $separator));
+        }
+
+        $values = array_unique($tmpValues);
+
+        return $values;
+    }
+
+    /**
+     * @param object $tag TagInterface
+     * @return string
+     */
+    private function extractTagNameFromTag($tag)
+    {
+        return $tag instanceof NoSource ? $tag->getFieldName() : $tag->getTagname();
     }
 }

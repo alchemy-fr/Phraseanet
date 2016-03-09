@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
-use Alchemy\Phrasea\Metadata\Tag\Nosource;
+use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use Doctrine\DBAL\Driver\Connection;
 use PHPExiftool\Exception\TagUnknown;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -131,10 +131,13 @@ class databox_field implements cache_cacheableInterface
     protected function loadFromRow(array $row)
     {
         $this->id = (int)$row['id'];
+        $this->name = $row['name'];
         $this->original_src = $row['src'];
-        $this->tag = self::loadClassFromTagName($row['src'], false);
+        $this->tag = in_array($row['src'], ['', 'Phraseanet:no-source'], true)
+            ? new NoSource($this->name)
+            : self::loadClassFromTagName($row['src'], false);
 
-        if ($row['src'] != $this->tag->getTagname()) {
+        if ($row['src'] !== '' && $row['src'] !== $this->tag->getTagname()) {
             $this->on_error = true;
         }
 
@@ -142,7 +145,6 @@ class databox_field implements cache_cacheableInterface
             $this->labels[$code] = $row['label_' . $code];
         }
 
-        $this->name = $row['name'];
         $this->indexable = (bool)$row['indexable'];
         $this->readonly = (bool)$row['readonly'];
         $this->required = (bool)$row['required'];
@@ -464,7 +466,7 @@ class databox_field implements cache_cacheableInterface
         $tagName = str_ireplace('/rdf:rdf/rdf:description/', '', $tagName);
 
         if ('' === trim($tagName)) {
-            return new Nosource();
+            return new NoSource();
         }
 
         try {
@@ -475,7 +477,7 @@ class databox_field implements cache_cacheableInterface
             }
         }
 
-        return new Nosource();
+        return new NoSource($tagName);
     }
 
     /**
@@ -485,7 +487,7 @@ class databox_field implements cache_cacheableInterface
     public function set_tag($tag = null)
     {
         if ($tag === null) {
-            $tag = new Nosource();
+            $tag = new NoSource();
         }
 
         $this->tag = $tag;

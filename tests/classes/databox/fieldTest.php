@@ -21,9 +21,9 @@ class databox_fieldTest extends \PhraseanetTestCase
     {
         parent::setUp();
 
-        /** @var record_adapter $record_1 */
-        $record_1 = self::$DI['record_1'];
-        $this->databox = $record_1->get_databox();
+        $record_1 = $this->getRecord1();
+        $this->databox = $record_1->getDatabox();
+
         $this->name_mono = 'Field Test Mono';
         $this->name_multi = 'Field Test Multi';
 
@@ -56,16 +56,6 @@ class databox_fieldTest extends \PhraseanetTestCase
         parent::tearDown();
     }
 
-    /**
-     * @todo Implement testSet_databox().
-     */
-    public function testSet_databox()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_connection()
     {
         $this->assertInstanceOf('Doctrine\DBAL\Driver\Connection', $this->object_mono->get_connection());
@@ -74,10 +64,13 @@ class databox_fieldTest extends \PhraseanetTestCase
 
     public function testGet_databox()
     {
+        $record1 = $this->getRecord1();
+
         $this->assertInstanceOf('\databox', $this->object_mono->get_databox());
-        $this->assertEquals(self::$DI['record_1']->get_databox()->get_sbas_id(), $this->object_mono->get_databox()->get_sbas_id());
+        $this->assertEquals($record1->getDataboxId(), $this->object_mono->get_databox()->get_sbas_id());
+
         $this->assertInstanceOf('\databox', $this->object_multi->get_databox());
-        $this->assertEquals(self::$DI['record_1']->get_databox()->get_sbas_id(), $this->object_multi->get_databox()->get_sbas_id());
+        $this->assertEquals($record1->getDataboxId(), $this->object_multi->get_databox()->get_sbas_id());
     }
 
     /**
@@ -127,7 +120,7 @@ class databox_fieldTest extends \PhraseanetTestCase
             $this->object_mono->set_name('éà');
             $this->assertEquals('ea', $this->object_mono->get_name());
         } catch (Exception $e) {
-
+            $this->fail('No errors should throw with UTF-8 characters in name');
         }
     }
 
@@ -155,8 +148,8 @@ class databox_fieldTest extends \PhraseanetTestCase
         $this->object_mono->set_tag(null);
         $this->object_multi->set_tag(null);
 
-        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\Nosource(), $this->object_mono->get_tag());
-        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\Nosource(), $this->object_multi->get_tag());
+        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\NoSource(), $this->object_mono->get_tag());
+        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\NoSource(), $this->object_multi->get_tag());
     }
 
     public function testGet_tag()
