@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
-use Alchemy\Phrasea\Metadata\Tag\Nosource;
+use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use Doctrine\DBAL\Driver\Connection;
 use PHPExiftool\Exception\TagUnknown;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -143,8 +143,8 @@ class databox_field implements cache_cacheableInterface
         }
 
         $this->name = $row['name'];
-        if ($this->tag instanceof Nosource) {
-            $this->tag = new Nosource($this->name);
+        if ($this->tag instanceof NoSource) {
+            $this->tag = new NoSource($this->name);
         }
         $this->indexable = (bool)$row['indexable'];
         $this->readonly = (bool)$row['readonly'];
@@ -467,7 +467,7 @@ class databox_field implements cache_cacheableInterface
         $tagName = str_ireplace('/rdf:rdf/rdf:description/', '', $tagName);
 
         if ('' === trim($tagName)) {
-            return new Nosource();
+            return new NoSource();
         }
 
         try {
@@ -478,7 +478,7 @@ class databox_field implements cache_cacheableInterface
             }
         }
 
-        return new Nosource($tagName);
+        return new NoSource($tagName);
     }
 
     /**
@@ -488,7 +488,7 @@ class databox_field implements cache_cacheableInterface
     public function set_tag($tag = null)
     {
         if ($tag === null) {
-            $tag = new Nosource();
+            $tag = new NoSource();
         }
 
         $this->tag = $tag;

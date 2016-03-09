@@ -148,8 +148,8 @@ class databox_fieldTest extends \PhraseanetTestCase
         $this->object_mono->set_tag(null);
         $this->object_multi->set_tag(null);
 
-        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\Nosource(), $this->object_mono->get_tag());
-        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\Nosource(), $this->object_multi->get_tag());
+        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\NoSource(), $this->object_mono->get_tag());
+        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\NoSource(), $this->object_multi->get_tag());
     }
 
     public function testGet_tag()

@@ -2,13 +2,13 @@
 
 namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
-use Alchemy\Phrasea\Metadata\Tag\Nosource;
+use Alchemy\Phrasea\Metadata\Tag\NoSource;
 
-class NosourceTest extends \PHPUnit_Framework_TestCase
+class NoSourceTest extends \PHPUnit_Framework_TestCase
 {
     public function testObject()
     {
-        $object = new Nosource;
+        $object = new NoSource;
 
         $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $object);
         $this->assertInternalType('string', $object->getDescription());
