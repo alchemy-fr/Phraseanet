@@ -131,10 +131,13 @@ class databox_field implements cache_cacheableInterface
     protected function loadFromRow(array $row)
     {
         $this->id = (int)$row['id'];
+        $this->name = $row['name'];
         $this->original_src = $row['src'];
-        $this->tag = self::loadClassFromTagName($row['src'], false);
+        $this->tag = in_array($row['src'], ['', 'Phraseanet:no-source'], true)
+            ? new NoSource($this->name)
+            : self::loadClassFromTagName($row['src'], false);
 
-        if ($row['src'] != $this->tag->getTagname()) {
+        if ($row['src'] !== '' && $row['src'] !== $this->tag->getTagname()) {
             $this->on_error = true;
         }
 
@@ -142,10 +145,6 @@ class databox_field implements cache_cacheableInterface
             $this->labels[$code] = $row['label_' . $code];
         }
 
-        $this->name = $row['name'];
-        if ($this->tag instanceof NoSource) {
-            $this->tag = new NoSource($this->name);
-        }
         $this->indexable = (bool)$row['indexable'];
         $this->readonly = (bool)$row['readonly'];
         $this->required = (bool)$row['required'];
