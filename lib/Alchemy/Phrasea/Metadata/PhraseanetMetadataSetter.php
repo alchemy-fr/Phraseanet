@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Metadata;
 
 use Alchemy\Phrasea\Databox\DataboxRepository;
+use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use PHPExiftool\Driver\Metadata\Metadata;
 
 class PhraseanetMetadataSetter
@@ -84,7 +85,7 @@ class PhraseanetMetadataSetter
         $groups = [];
 
         foreach ($metaStructure as $databoxField) {
-            $tagName = $databoxField->get_tag()->getTagname();
+            $tagName = $this->extractTagNameFromTag($databoxField->get_tag());
 
             if (!isset($groups[$tagName])) {
                 $groups[$tagName] = [];
@@ -108,7 +109,7 @@ class PhraseanetMetadataSetter
         $metadataPerField = [];
 
         foreach ($metadataCollection as $metadata) {
-            $tagName = (string)$metadata->getTag()->getTagname();
+            $tagName = $this->extractTagNameFromTag($metadata->getTag());
 
             if (!isset($databoxFields[$tagName])) {
                 continue;
@@ -159,5 +160,14 @@ class PhraseanetMetadataSetter
         $values = array_unique($tmpValues);
 
         return $values;
+    }
+
+    /**
+     * @param object $tag TagInterface
+     * @return string
+     */
+    private function extractTagNameFromTag($tag)
+    {
+        return $tag instanceof NoSource ? $tag->getFieldName() : $tag->getTagname();
     }
 }
