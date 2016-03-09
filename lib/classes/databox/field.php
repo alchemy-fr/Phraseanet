@@ -475,7 +475,7 @@ class databox_field implements cache_cacheableInterface
             }
         }
 
-        return new Nosource();
+        return new Nosource($tagName);
     }
 
     /**
