@@ -47,7 +47,10 @@ class Manager
     protected $checkers = [];
     protected $app;
     protected $filesystem;
-    /** @var boolean */
+
+    /**
+     * @var bool
+     */
     private $enabled = true;
 
     const RECORD_CREATED = 1;
@@ -68,7 +71,7 @@ class Manager
     /**
      * Whether checks are activated while electing Visa
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnabled()
     {
@@ -304,15 +307,7 @@ class Manager
                     $values = $attribute->getValue();
                     $value = $attribute->getField()->is_multi() ? new Multi($values) : new MonoValue(array_pop($values));
 
-                    $tag = $attribute->getField()->get_tag();
-
-                    if ($tag instanceof \Alchemy\Phrasea\Metadata\Tag\Nosource) {
-                        $tag->setTagname($attribute->getField()->get_name());
-                        $_meta = new Metadata($tag, $value);
-                    } else {
-                        $_meta = new Metadata($attribute->getField()->get_tag(), $value);
-                    }
-                    $newMetadata[] = $_meta;
+                    $newMetadata[] = new Metadata($attribute->getField()->get_tag(), $value);
                     break;
 
                 case AttributeInterface::NAME_METADATA:

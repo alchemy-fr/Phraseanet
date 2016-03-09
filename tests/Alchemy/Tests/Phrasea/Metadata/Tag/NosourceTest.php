@@ -4,16 +4,8 @@ namespace Alchemy\Tests\Phrasea\Metadata\Tag;
 
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
 
-/**
- * @group functional
- * @group legacy
- */
-class NosourceTest extends \PhraseanetTestCase
+class NosourceTest extends \PHPUnit_Framework_TestCase
 {
-
-    /**
-     * @covers Alchemy\Phrasea\Metadata\Tag\Nosource
-     */
     public function testObject()
     {
         $object = new Nosource;
