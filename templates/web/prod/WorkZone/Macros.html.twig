@@ -149,7 +149,7 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog small-dialog" title="{{ 'action::renommer' | trans }}" href="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}">
+                          <a class="basket-update-action" data-basket-id="{{ basket.getId() }}" title="{{ 'action::renommer' | trans }}" href="#">
                             {{ 'action::renommer' | trans }}
                           </a>
                         </div>
@@ -166,19 +166,19 @@
                       {% endif %}
 
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner archive-basket-action" data-basket-id="{{ basket.getId() }}" >
+                        <div class="context-menu-item-inner basket-archive-action" data-basket-id="{{ basket.getId() }}" >
                           {{ 'Archive' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner delete-basket-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
+                        <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
                           {{ 'action : supprimer' | trans }}
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
+                          <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
                             {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
@@ -245,7 +245,10 @@
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                          <a class="story-reorder-content-action" title="{{ 'Re-ordonner' | trans }}"
+                             data-db-id="{{ story.getRecord(app).get_sbas_id }}"
+                             data-record-id="{{ story.getRecord(app).get_record_id() }}"
+                             href="#">
                             {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>

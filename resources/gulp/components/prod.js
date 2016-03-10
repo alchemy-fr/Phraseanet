@@ -65,20 +65,20 @@ gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey', 'b
 });
 gulp.task('build-prod-js', function(){
     var prodGroup = [
-        config.paths.vendors +  'underscore-amd/underscore.js',
+        // config.paths.vendors +  'underscore-amd/underscore.js',
         config.paths.src + 'vendors/colorpicker/js/colorpicker.js',
-        config.paths.vendors +  'jquery.lazyload/jquery.lazyload.js',
-        config.paths.vendors + 'humane-js/humane.js', // @TODO > extra files
+        //config.paths.vendors +  'jquery.lazyload/jquery.lazyload.js',
+        // config.paths.vendors + 'humane-js/humane.js', // @TODO > extra files
         config.paths.vendors + 'blueimp-load-image/js/load-image.js', // @TODO > extra files
         config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
         config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
         config.paths.vendors + 'geonames-server-jquery-plugin/jquery.geonames.js',
         //config.paths.src + 'prod/js/core/lists.js',
-        config.paths.src + 'prod/js/core/selectable.js',
+        //config.paths.src + 'prod/js/core/selectable.js',
         config.paths.src + 'prod/js/core/alert.js',
 
-        config.paths.src + 'prod/js/components/search/search.js',
-        config.paths.src + 'prod/js/components/search/search-result.js',
+        //config.paths.src + 'prod/js/components/search/search.js',
+        //config.paths.src + 'prod/js/components/search/search-result.js',
         // config.paths.src + 'prod/js/components/publication.js',
         // config.paths.src + 'prod/js/components/workzone/workzone.js',
         // config.paths.src + 'prod/js/components/workzone/workzone-basket.js',
@@ -86,10 +86,10 @@ gulp.task('build-prod-js', function(){
         // config.paths.src + 'prod/js/components/workzone/workzone-thesaurus.js',
         // config.paths.src + 'prod/js/components/cgu.js',
         // config.paths.src + 'prod/js/components/preferences.js',
-        config.paths.src + 'prod/js/components/record/editable-record.js',
+        //config.paths.src + 'prod/js/components/record/editable-record.js',
         //config.paths.src + 'prod/js/components/push/push.js',
         config.paths.src + 'prod/js/prod.js',
-        config.paths.src + 'prod/js/components/upload/upload.js',
+        //config.paths.src + 'prod/js/components/upload/upload.js',
         // config.paths.src + 'prod/js/components/video-editor.js',
         config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',
         //config.paths.src + 'prod/js/components/preview/preview.js',

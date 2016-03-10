@@ -105,21 +105,20 @@
                                     <div class="context-menu context-menu-theme-vista">
                                         {% if granted_on_collection(record.baseId, 'canputinalbum') and not record.story %}
                                             <div title="" class="context-menu-item">
-                                                <div class="context-menu-item-inner"
-                                                     onclick="prodModule.addToBasket('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
+                                                <div class="context-menu-item-inner record-add-to-basket-action" data-db-id="{{record.databoxId}}" data-record-id="{{record.recordId}}">
                                                     {{ 'action : ajouter au panier' | trans }}
                                                 </div>
                                             </div>
                                         {% endif %}
                                         {% if granted_on_collection(record.baseId, 'candwnldpreview') or granted_on_collection(record.baseId, 'candwnldhd') %}
                                             <div title="" class="context-menu-item">
-                                                <div class="context-menu-item-inner export-record-action" data-kind="record" data-id="{{record.id}}">
+                                                <div class="context-menu-item-inner record-export-action" data-kind="record" data-id="{{record.id}}">
                                                     {{ 'action : exporter' | trans }}
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
-                                            <div class="context-menu-item-inner print-record-action"
+                                            <div class="context-menu-item-inner record-print-action"
                                                  data-kind="record" data-id="{{record.id}}">
                                                 {{ 'action : print' | trans }}
                                             </div>

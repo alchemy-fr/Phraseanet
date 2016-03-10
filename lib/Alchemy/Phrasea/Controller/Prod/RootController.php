@@ -76,14 +76,7 @@ class RootController extends Controller
 
         $thjslist = "";
 
-        $queries_topics = '';
-
         $conf = $this->getConf();
-        if ($conf->get(['registry', 'classic', 'render-topics']) == 'popups') {
-            $queries_topics = \queries::dropdown_topics($this->app['translator'], $this->app['locale']);
-        } elseif ($conf->get(['registry', 'classic', 'render-topics']) == 'tree') {
-            $queries_topics = \queries::tree_topics($this->app['locale']);
-        }
 
         $sbas = $bas2sbas = [];
 
@@ -130,9 +123,7 @@ class RootController extends Controller
             'feeds'                => $feeds,
             'aggregate'            => $aggregate,
             'GV_google_api'        => $conf->get(['registry', 'webservices', 'google-charts-enabled']),
-            'queries_topics'       => $queries_topics,
             'search_status'        => \databox_status::getSearchStatus($this->app),
-            'queries_history'      => \queries::history($this->app, $user->getId()),
             'thesau_js_list'       => $thjslist,
             'thesau_json_sbas'     => json_encode($sbas),
             'thesau_json_bas2sbas' => json_encode($bas2sbas),

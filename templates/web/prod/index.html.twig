@@ -5,7 +5,7 @@
         <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas">
-                <span class="toggle-collection deployer_closed" data-database="{{sbas_id}}"  ></span>
+                <span class="toggle-collection deployer_closed" data-toggle-content=".sbascont_{{sbas_id}}"></span>
                 <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="select-database sbasChkr_{{sbas_id}}"  data-database="{{sbas_id}}" />
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox danger_indicator" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <span>{{sbas_id|sbas_labels(app)}}</span>
@@ -114,8 +114,7 @@
                             {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                         </div>
                         {% if GV_thesaurus %}
-                            <div id="proposals" class="PNB"
-                                ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
+                            <div id="proposals" class="PNB thesaurus-from-facets-action">
                                 <button id="facets-back-btn" style="display:none;">back</button>
                             </div>
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
@@ -134,19 +133,19 @@
                 <ul style="list-style-type:none;margin:0;padding:0">
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
-                            <a title="{{ 'action:: nouveau panier' | trans }}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
+                            <a title="{{ 'action:: nouveau panier' | trans }}" class="basket-create-action" href="#">
                                 <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
                                 {{ 'action:: nouveau panier' | trans }}
                             </a>
                         </div>
                         <div class="context-menu-item-inner">
-                            <a title="{{ 'Browse Baskets' | trans }}" class="dialog" href="{{ path('prod_workzone_browse') }}">
+                            <a title="{{ 'Browse Baskets' | trans }}" class="basket-browse-action" href="#">
                                 {{ 'Browse Baskets' | trans }}
                             </a>
                         </div>
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
-                                <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
+                                <a title="{{ 'action:: nouveau reportage' | trans }}" class="story-create-action" href="#">
                                     <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
                                     {{ 'action:: nouveau reportage' | trans }}
                                 </a>
@@ -154,19 +153,19 @@
                        {% endif %}
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
+                        <div class="context-menu-item-inner basket-filter-action" data-sort="date">
                             <img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
                             {{ 'phraseanet:: tri par date' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
+                        <div class="context-menu-item-inner basket-filter-action" data-sort="name">
                             <img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
                             {{ 'phraseanet:: tri par nom' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="prodApp.appEvents.emit('baskets.doOpenBasketPreferences')">
+                        <div class="context-menu-item-inner basket-preferences-action">
                             {{ 'Preferences' | trans }}
                         </div>
                     </li>
@@ -298,7 +297,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <td colspan="2">
-                                                                    <span onclick="searchModule.toggleCollection(this, '#ADVSRCH_SB_{{databox_id}}' );return false;" class="deployer_closed" ></span>
+                                                                    <span class="toggle-collection deployer_closed" data-toggle-content="#ADVSRCH_SB_{{databox_id}}"></span>
                                                                     <span class="danger_indicator">{{ databox['name'] }}</span>
                                                                 </td>
                                                             </tr>
@@ -372,22 +371,6 @@
                         </div>
                     </form>
                 </div>
-
-                <!--
-                <div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
-                    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-                    {{queries_history|raw}}
-                    </div>
-                </div>
-                {% if queries_topics %}
-                <div id="choosen-topics" class="PNB" style="top:30px;overflow:hidden;">
-                    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-                    {{queries_topics|raw}}
-                    </div>
-                </div>
-                {% endif %}
-                </div>
-                </div>-->
             </div>
 
             <div id="idFrameT" class="PNB ui-corner-top">
@@ -719,9 +702,6 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
-    <script type="text/javascript">
-        {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
-    </script>
     <script type="text/javascript" src="/assets/production/app{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
@@ -745,7 +725,43 @@
                 moduleId: 1,
                 userId: {{app.getAuthenticatedUser().getId()}}
             },
-            initialState: "{{ initialAppState }}"
+            initialState: "{{ initialAppState }}",
+            thesaurusConfig: {
+                replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
+                replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
+                acceptMsg: '{{ 'prod::thesaurusTab:dlg:Acceptation en cours.' | trans }}',
+                deleteMsg: '{{ 'prod::thesaurusTab:dlg:Suppression en cours.' | trans }}',
+                candidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' | trans }}',
+                candidateManyMsg: '{{ 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' | trans }}',
+                acceptCandidateUniqueMsg: '{{ 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' | trans }}',
+                acceptCandidateManyMsg: '{{ "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" | trans }}',
+                replaceCandidateUniqueMsg: '{{ "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" | trans }}',
+                replaceCandidateManyMsg: '{{ "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" | trans }}',
+                deleteCandidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' | trans }}',
+                deleteCandidateManyMsg: '{{ 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' | trans }}',
+                loadingMsg: '{{ 'prod::thesaurusTab:tree:loading' | trans }}',
+                searchMsg: '{{ 'boutton::chercher' | trans }}',
+                acceptSpecificTermMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme terme specifique' | trans }}',
+                acceptSynonymeMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme synonyme' | trans }}',
+                replaceWithMsg: '{{ 'prod::thesaurusTab:cmenu:Remplacer par...' | trans }}',
+                removeActionMsg: '{{ 'boutton::supprimer' | trans }}',
+                sbas: {{thesau_json_sbas|raw}},
+                bas2sbas: {{thesau_json_bas2sbas|raw}},
+                availableDatabases: [
+                        {% for base in search_datas['bases'] %}{% if base['thesaurus'] %}{
+                        id: {{base['sbas_id']}}
+                    }{% if not loop.last %},{% endif %}{% endif %}{% endfor %}
+                ],
+                languagesCount: {{ thesau_languages|length }},
+                langContextMenu: [
+                    {% for lng_code, lng in thesau_languages %}
+                    {
+                        label:'{% trans with {'%lng_code%' : lng_code} %}prod::thesaurusTab:cmenu:Accepter en %lng_code%{% endtrans %}',
+                        lngCode: '{{lng_code}}',
+                    },
+                    {% endfor %}
+                ]
+            }
         })
         // prodApp.appEvents.emit('search.doCheckFilters', true);
 
