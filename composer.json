@@ -37,7 +37,7 @@
         "alchemy/oauth2php": "1.0.0",
         "alchemy/phlickr": "0.2.9",
         "alchemy/phpexiftool": "^0.5.0",
-        "alchemy/rest-bundle": "master@dev",
+        "alchemy/rest-bundle": "^0.0.4",
         "alchemy/symfony-cors": "^0.1.0",
         "alchemy/task-manager": "2.0.x-dev@dev",
         "alchemy/zippy": "^0.3.0",
