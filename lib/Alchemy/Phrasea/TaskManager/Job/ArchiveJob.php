@@ -142,7 +142,9 @@ class ArchiveJob extends AbstractJob
         }
 
         while ($this->isStarted()) {
-            $path_in = (string) $settings->hotfolder;
+            $path_in = rtrim((string) $settings->hotfolder, '\\/');
+            $path_in = $filesystem->exists($path_in) ? realpath($path_in) : $path_in;
+
             if (!@is_dir($path_in)) {
                 throw new RuntimeException(sprintf('Error : missing hotfolder \'%s\', stopping.', $path_in));
             }
