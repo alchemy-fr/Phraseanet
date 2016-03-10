@@ -44,11 +44,6 @@ class Indexer
     private $indexQueue;        // contains RecordInterface(s)
     private $deleteQueue;
 
-    private $previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
-
-    const DEFAULT_REFRESH_INTERVAL = '1s';
-    const REFRESH_INTERVAL_KEY = 'index.refresh_interval';
-
     public function __construct(Client $client, ElasticsearchOptions $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
     {
         $this->client   = $client;
@@ -208,58 +203,14 @@ class Indexer
 
     private function apply(Closure $work)
     {
-        $this->disableShardRefreshing();
-
-        try {
-            // Prepare the bulk operation
-            $bulk = new BulkOperation($this->client, $this->logger);
-            $bulk->setDefaultIndex($this->options->getIndexName());
-            $bulk->setAutoFlushLimit(1000);
-            // Do the work
-            $work($bulk);
-            // Flush just in case, it's a noop when already done
-            $bulk->flush();
-        } finally {
-            $this->restoreShardRefreshing();
-        }
-    }
-
-    private function disableShardRefreshing()
-    {
-        $refreshInterval = $this->getSetting(self::REFRESH_INTERVAL_KEY);
-        if (null !== $refreshInterval) {
-            $this->previousRefreshInterval = $refreshInterval;
-        }
-        $this->setSetting(self::REFRESH_INTERVAL_KEY, "30s");
-    }
-
-    private function restoreShardRefreshing()
-    {
-        $this->setSetting(self::REFRESH_INTERVAL_KEY, $this->previousRefreshInterval);
-        $this->previousRefreshInterval = self::DEFAULT_REFRESH_INTERVAL;
-    }
-
-    private function getSetting($name)
-    {
-        $index = $this->options->getIndexName();
-        $params = array();
-        $params['index'] = $index;
-        $params['name'] = $name;
-        $params['flat_settings'] = true;
-        $response = $this->client->indices()->getSettings($params);
-
-        return igorw\get_in($response, [$index, 'settings', $name]);
-    }
-
-    private function setSetting($name, $value)
-    {
-        $index = $this->options->getIndexName();
-        $params = array();
-        $params['index'] = $index;
-        $params['body'][$name] = $value;
-        $response = $this->client->indices()->putSettings($params);
-
-        return igorw\get_in($response, ['acknowledged']);
+        // Prepare the bulk operation
+        $bulk = new BulkOperation($this->client, $this->logger);
+        $bulk->setDefaultIndex($this->options->getIndexName());
+        $bulk->setAutoFlushLimit(1000);
+        // Do the work
+        $work($bulk);
+        // Flush just in case, it's a noop when already done
+        $bulk->flush();
     }
 
     /**
