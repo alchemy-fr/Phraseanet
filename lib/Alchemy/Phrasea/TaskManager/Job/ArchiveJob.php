@@ -1,9 +1,9 @@
 <?php
 
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -114,30 +114,25 @@ class ArchiveJob extends AbstractJob
             $stat1 = '0';
         }
 
-        // check the data-repository exists
-        $pathhd = (string) $settings->path;
-
-        if ($pathhd) {
-            $app['filesystem']->mkdir($pathhd, 0750);
-        }
+        $filesystem = $app['filesystem'];
 
         // load masks
         if ($settings->files && $settings->files->file) {
             foreach ($settings->files->file as $ft) {
                 $tmask[] = [
-                    "mask"    => (string) $ft["mask"]
-                    , "caption" => (string) $ft["caption"]
-                    , "accept"  => (string) $ft["accept"]
+                    "mask" => (string)$ft["mask"],
+                    "caption" => (string)$ft["caption"],
+                    "accept" => (string)$ft["accept"],
                 ];
             }
         }
         if ($settings->files && $settings->files->grouping) {
             foreach ($settings->files->grouping as $ft) {
                 $tmaskgrp[] = [
-                    "mask"           => (string) $ft["mask"]
-                    , "caption"        => (string) $ft["caption"]
-                    , "representation" => (string) $ft["representation"]
-                    , "accept"         => (string) $ft["accept"]
+                    "mask" => (string)$ft["mask"],
+                    "caption" => (string)$ft["caption"],
+                    "representation" => (string)$ft["representation"],
+                    "accept" => (string)$ft["accept"],
                 ];
             }
         }
@@ -158,18 +153,18 @@ class ArchiveJob extends AbstractJob
 
             clearstatcache();
 
-            if (false === $app['filesystem']->exists($path_in . "/.phrasea.xml")) {
+            if (false === $filesystem->exists($path_in . "/.phrasea.xml")) {
                 throw new RuntimeException(sprintf('NO .phrasea.xml AT ROOT \'%s\' !', $path_in));
             }
 
             $path_archived = $path_error = null;
             if ($moveArchived) {
                 $path_archived = $path_in . '_archived';
-                $app['filesystem']->mkdir($path_archived, 0755);
+                $filesystem->mkdir($path_archived, 0755);
             }
             if ($moveError) {
                 $path_error = $path_in . '_error';
-                $app['filesystem']->mkdir($path_error, 0755);
+                $filesystem->mkdir($path_error, 0755);
             }
 
             $dom = new \DOMDocument();
