@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "455f2f5469072352ed9a240d8c170956",
-    "content-hash": "bb783826a1ca0339baf5bff696d69a73",
+    "hash": "51c6f036a5c4458c3745218d7a826c16",
+    "content-hash": "8d0505b59a415d5f0c8f62fbf0fcfcb8",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -489,7 +489,7 @@
         },
         {
             "name": "alchemy/rest-bundle",
-            "version": "dev-master",
+            "version": "0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
@@ -4682,7 +4682,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c18abc6df90257ddbbe2654a98cc5cc7be804411",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/dcdeb1d923b981a55f0a4ce6c2ceac14cb8476f8",
                 "reference": "c18abc6df90257ddbbe2654a98cc5cc7be804411",
                 "shasum": ""
             },
@@ -7337,7 +7337,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "alchemy/rest-bundle": 20,
         "alchemy/task-manager": 20,
         "imagine/imagine": 20,
         "jms/translation-bundle": 20,
